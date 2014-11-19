@@ -1,0 +1,1154 @@
+﻿<!DOCTYPE html>
+
+<html lang="zh">
+    <head>
+        <meta charset="utf-8">
+        <meta name="description" content="android,ios" />
+        <meta name="keywords" content="android,ios" />
+
+        <title>叶小钗</title>
+        <style type='text/css'>
+            body {
+                background-color: #CCC;
+            }
+        </style>
+        <link rel="stylesheet" href="../../../css/bootstrap.css" />
+    </head>
+
+    <body>
+        <div class="container">
+
+            <h1>叶小钗</h1>
+
+            <div class='navbar navbar-inverse'>
+                <div class='navbar-inner nav-collapse' style="height: auto;">
+                    <ul class="nav">
+                              				<li><a href="http://songboriceboy.github.io/xxoo/html/blade/index.html">blade</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/css/index.html">css</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/HTML5&CSS3/index.html">HTML5&CSS3</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/index.html">javascript</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Javaxx/index.html">Java学习</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/nodejs/index.html">nodejs</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/requirejs/index.html">requirejs</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/index.html">Web前端</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/xxgw/index.html">学习感悟</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/gzdd/index.html">工作点滴</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/jkxx/index.html">接口学习</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/wfl/index.html">未分类</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/ydkf/index.html">移动开发</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/sjms/index.html">设计模式</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/mst/index.html">面试题</a></li>
+    				                      </ul>
+                </div>
+            </div>
+
+            <div id='content' class='row-fluid'>
+
+                <div class='span9 main'>
+				<div style="color:blue" align=center>【IScroll深入学习】突破移动端黑暗的利器（上）</div><br><h1>前言</h1>
+<p>在去年，我们对IScroll的源码进行了学习，并且分离出了一段代码自己使用，在使用学习过程中发现几个致命问题：</p>
+<p>① 光标移位</p>
+<p>② 文本框找不到（先让文本框获取焦点，再滑动一下，输入文字便可重现）</p>
+<p>③ 偶尔导致头部消失，头部可不是fixed哦</p>
+<p><img src="38310076780019.jpg" alt="" width="233" height="350">&nbsp;<img src="13722337218856.jpg" alt="" width="233" height="350"></p>
+<p>由于以上问题，加之去年我们团队的工作量极大，和中间一些组织架构调整，这个事情一直被放到了今天，心里一直对此耿耿于怀，因为IScroll让人忘不了的好处</p>
+<p>小钗坚信，IScroll可以带来前端体验上的革命，因为他可以解决以下问题</p>
+<ul>
+<li>区域滑动顺滑感的体验</li>
+<li>解决fixed移位问题</li>
+<li>解决动画过程中长短页的问题，并且可以优化view切换动画的顺畅度</li>
+</ul>
+<p>我们不能因为一两个小问题而放弃如此牛逼的点子，所以我们要处理其中的问题，那么这些问题是否真的不可解决，而引起这些问题的原因又到底是什么，我们今天来一一探索</p>
+<h1>抽离IScroll</h1>
+<p>第一步依旧是抽离IScroll核心逻辑，我们这里先在简单层面上探究问题，以免被旁枝末节的BUG困扰，这里形成的一个库只支持纵向滚动，代码量比较少</p>
+<p><img src="32758606610390.png" alt="" width="864" height="886"></p>
+<div class="cnblogs_code" onclick="cnblogs_code_show('9a796958-8da9-42dc-b63a-68aa76ce0b40')"><img id="code_img_closed_9a796958-8da9-42dc-b63a-68aa76ce0b40" class="code_img_closed" src="43570758473519.gif" alt=""><img id="code_img_opened_9a796958-8da9-42dc-b63a-68aa76ce0b40" class="code_img_opened" style="display: none;" onclick="cnblogs_code_hide('9a796958-8da9-42dc-b63a-68aa76ce0b40',event)" src="16365178109279.gif" alt="">
+<div id="cnblogs_code_open_9a796958-8da9-42dc-b63a-68aa76ce0b40" class="cnblogs_code_hide">
+<pre><span style="color: #008080;">  1</span> <span style="color: #0000ff;">&lt;!</span><span style="color: #ff00ff;">DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">  2</span> <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">html </span><span style="color: #ff0000;">xmlns</span><span style="color: #0000ff;">="http://www.w3.org/1999/xhtml"</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">  3</span> <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">head</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">  4</span>   <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">title</span><span style="color: #0000ff;">&gt;&lt;/</span><span style="color: #800000;">title</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">  5</span>   <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">meta </span><span style="color: #ff0000;">http-equiv</span><span style="color: #0000ff;">="Content-Type"</span><span style="color: #ff0000;"> content</span><span style="color: #0000ff;">="text/html; charset=gb2312"</span> <span style="color: #0000ff;">/&gt;</span>
+<span style="color: #008080;">  6</span>   <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">meta </span><span style="color: #ff0000;">name</span><span style="color: #0000ff;">="viewport"</span><span style="color: #ff0000;"> content</span><span style="color: #0000ff;">="width=device-width, initial-scale=1.0, user-scalable=0, minimum-scale=1.0, maximum-scale=1.0"</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">  7</span>   <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">meta </span><span style="color: #ff0000;">name</span><span style="color: #0000ff;">="keywords"</span><span style="color: #ff0000;"> content</span><span style="color: #0000ff;">=""</span> <span style="color: #0000ff;">/&gt;</span>
+<span style="color: #008080;">  8</span>   <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">meta </span><span style="color: #ff0000;">name</span><span style="color: #0000ff;">="description"</span><span style="color: #ff0000;"> content</span><span style="color: #0000ff;">=""</span> <span style="color: #0000ff;">/&gt;</span>
+<span style="color: #008080;">  9</span>   <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">meta </span><span style="color: #ff0000;">name</span><span style="color: #0000ff;">="robots"</span><span style="color: #ff0000;"> content</span><span style="color: #0000ff;">="all"</span> <span style="color: #0000ff;">/&gt;</span>
+<span style="color: #008080;"> 10</span>   <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">style </span><span style="color: #ff0000;">type</span><span style="color: #0000ff;">="text/css"</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 11</span> <span style="background-color: #f5f5f5; color: #800000;">    * </span><span style="background-color: #f5f5f5; color: #000000;">{</span><span style="background-color: #f5f5f5; color: #ff0000;"> -webkit-box-sizing</span><span style="background-color: #f5f5f5; color: #000000;">:</span><span style="background-color: #f5f5f5; color: #0000ff;"> border-box</span><span style="background-color: #f5f5f5; color: #000000;">;</span><span style="background-color: #f5f5f5; color: #ff0000;"> -moz-box-sizing</span><span style="background-color: #f5f5f5; color: #000000;">:</span><span style="background-color: #f5f5f5; color: #0000ff;"> border-box</span><span style="background-color: #f5f5f5; color: #000000;">;</span><span style="background-color: #f5f5f5; color: #ff0000;"> box-sizing</span><span style="background-color: #f5f5f5; color: #000000;">:</span><span style="background-color: #f5f5f5; color: #0000ff;"> border-box</span><span style="background-color: #f5f5f5; color: #000000;">;</span> <span style="background-color: #f5f5f5; color: #000000;">}</span>
+<span style="color: #008080;"> 12</span> <span style="background-color: #f5f5f5; color: #800000;">    html </span><span style="background-color: #f5f5f5; color: #000000;">{</span><span style="background-color: #f5f5f5; color: #ff0000;"> -ms-touch-action</span><span style="background-color: #f5f5f5; color: #000000;">:</span><span style="background-color: #f5f5f5; color: #0000ff;"> none</span><span style="background-color: #f5f5f5; color: #000000;">;</span> <span style="background-color: #f5f5f5; color: #000000;">}</span>
+<span style="color: #008080;"> 13</span> <span style="background-color: #f5f5f5; color: #800000;">    body, ul, li </span><span style="background-color: #f5f5f5; color: #000000;">{</span><span style="background-color: #f5f5f5; color: #ff0000;"> padding</span><span style="background-color: #f5f5f5; color: #000000;">:</span><span style="background-color: #f5f5f5; color: #0000ff;"> 0</span><span style="background-color: #f5f5f5; color: #000000;">;</span><span style="background-color: #f5f5f5; color: #ff0000;"> margin</span><span style="background-color: #f5f5f5; color: #000000;">:</span><span style="background-color: #f5f5f5; color: #0000ff;"> 0</span><span style="background-color: #f5f5f5; color: #000000;">;</span><span style="background-color: #f5f5f5; color: #ff0000;"> border</span><span style="background-color: #f5f5f5; color: #000000;">:</span><span style="background-color: #f5f5f5; color: #0000ff;"> 0</span><span style="background-color: #f5f5f5; color: #000000;">;</span> <span style="background-color: #f5f5f5; color: #000000;">}</span>
+<span style="color: #008080;"> 14</span> <span style="background-color: #f5f5f5; color: #800000;">    body </span><span style="background-color: #f5f5f5; color: #000000;">{</span><span style="background-color: #f5f5f5; color: #ff0000;"> font-size</span><span style="background-color: #f5f5f5; color: #000000;">:</span><span style="background-color: #f5f5f5; color: #0000ff;"> 12px</span><span style="background-color: #f5f5f5; color: #000000;">;</span><span style="background-color: #f5f5f5; color: #ff0000;"> font-family</span><span style="background-color: #f5f5f5; color: #000000;">:</span><span style="background-color: #f5f5f5; color: #0000ff;"> ubuntu, helvetica, arial</span><span style="background-color: #f5f5f5; color: #000000;">;</span><span style="background-color: #f5f5f5; color: #ff0000;"> overflow</span><span style="background-color: #f5f5f5; color: #000000;">:</span><span style="background-color: #f5f5f5; color: #0000ff;"> hidden</span><span style="background-color: #f5f5f5; color: #000000;">;</span> <span style="background-color: #f5f5f5; color: #008000;">/*</span><span style="background-color: #f5f5f5; color: #008000;"> this is important to prevent the whole page to bounce </span><span style="background-color: #f5f5f5; color: #008000;">*/</span> <span style="background-color: #f5f5f5; color: #000000;">}</span>
+<span style="color: #008080;"> 15</span> <span style="background-color: #f5f5f5; color: #800000;">    #header </span><span style="background-color: #f5f5f5; color: #000000;">{</span><span style="background-color: #f5f5f5; color: #ff0000;"> position</span><span style="background-color: #f5f5f5; color: #000000;">:</span><span style="background-color: #f5f5f5; color: #0000ff;"> absolute</span><span style="background-color: #f5f5f5; color: #000000;">;</span><span style="background-color: #f5f5f5; color: #ff0000;"> z-index</span><span style="background-color: #f5f5f5; color: #000000;">:</span><span style="background-color: #f5f5f5; color: #0000ff;"> 2</span><span style="background-color: #f5f5f5; color: #000000;">;</span><span style="background-color: #f5f5f5; color: #ff0000;"> top</span><span style="background-color: #f5f5f5; color: #000000;">:</span><span style="background-color: #f5f5f5; color: #0000ff;"> 0</span><span style="background-color: #f5f5f5; color: #000000;">;</span><span style="background-color: #f5f5f5; color: #ff0000;"> left</span><span style="background-color: #f5f5f5; color: #000000;">:</span><span style="background-color: #f5f5f5; color: #0000ff;"> 0</span><span style="background-color: #f5f5f5; color: #000000;">;</span><span style="background-color: #f5f5f5; color: #ff0000;"> width</span><span style="background-color: #f5f5f5; color: #000000;">:</span><span style="background-color: #f5f5f5; color: #0000ff;"> 100%</span><span style="background-color: #f5f5f5; color: #000000;">;</span><span style="background-color: #f5f5f5; color: #ff0000;"> height</span><span style="background-color: #f5f5f5; color: #000000;">:</span><span style="background-color: #f5f5f5; color: #0000ff;"> 45px</span><span style="background-color: #f5f5f5; color: #000000;">;</span><span style="background-color: #f5f5f5; color: #ff0000;"> line-height</span><span style="background-color: #f5f5f5; color: #000000;">:</span><span style="background-color: #f5f5f5; color: #0000ff;"> 45px</span><span style="background-color: #f5f5f5; color: #000000;">;</span><span style="background-color: #f5f5f5; color: #ff0000;"> background</span><span style="background-color: #f5f5f5; color: #000000;">:</span><span style="background-color: #f5f5f5; color: #0000ff;"> #CD235C</span><span style="background-color: #f5f5f5; color: #000000;">;</span><span style="background-color: #f5f5f5; color: #ff0000;"> padding</span><span style="background-color: #f5f5f5; color: #000000;">:</span><span style="background-color: #f5f5f5; color: #0000ff;"> 0</span><span style="background-color: #f5f5f5; color: #000000;">;</span><span style="background-color: #f5f5f5; color: #ff0000;"> color</span><span style="background-color: #f5f5f5; color: #000000;">:</span><span style="background-color: #f5f5f5; color: #0000ff;"> #eee</span><span style="background-color: #f5f5f5; color: #000000;">;</span><span style="background-color: #f5f5f5; color: #ff0000;"> font-size</span><span style="background-color: #f5f5f5; color: #000000;">:</span><span style="background-color: #f5f5f5; color: #0000ff;"> 20px</span><span style="background-color: #f5f5f5; color: #000000;">;</span><span style="background-color: #f5f5f5; color: #ff0000;"> text-align</span><span style="background-color: #f5f5f5; color: #000000;">:</span><span style="background-color: #f5f5f5; color: #0000ff;"> center</span><span style="background-color: #f5f5f5; color: #000000;">;</span><span style="background-color: #f5f5f5; color: #ff0000;"> font-weight</span><span style="background-color: #f5f5f5; color: #000000;">:</span><span style="background-color: #f5f5f5; color: #0000ff;"> bold</span><span style="background-color: #f5f5f5; color: #000000;">;</span> <span style="background-color: #f5f5f5; color: #000000;">}</span>
+<span style="color: #008080;"> 16</span> <span style="background-color: #f5f5f5; color: #800000;">    #footer </span><span style="background-color: #f5f5f5; color: #000000;">{</span><span style="background-color: #f5f5f5; color: #ff0000;"> position</span><span style="background-color: #f5f5f5; color: #000000;">:</span><span style="background-color: #f5f5f5; color: #0000ff;"> absolute</span><span style="background-color: #f5f5f5; color: #000000;">;</span><span style="background-color: #f5f5f5; color: #ff0000;"> z-index</span><span style="background-color: #f5f5f5; color: #000000;">:</span><span style="background-color: #f5f5f5; color: #0000ff;"> 2</span><span style="background-color: #f5f5f5; color: #000000;">;</span><span style="background-color: #f5f5f5; color: #ff0000;"> bottom</span><span style="background-color: #f5f5f5; color: #000000;">:</span><span style="background-color: #f5f5f5; color: #0000ff;"> 0</span><span style="background-color: #f5f5f5; color: #000000;">;</span><span style="background-color: #f5f5f5; color: #ff0000;"> left</span><span style="background-color: #f5f5f5; color: #000000;">:</span><span style="background-color: #f5f5f5; color: #0000ff;"> 0</span><span style="background-color: #f5f5f5; color: #000000;">;</span><span style="background-color: #f5f5f5; color: #ff0000;"> width</span><span style="background-color: #f5f5f5; color: #000000;">:</span><span style="background-color: #f5f5f5; color: #0000ff;"> 100%</span><span style="background-color: #f5f5f5; color: #000000;">;</span><span style="background-color: #f5f5f5; color: #ff0000;"> height</span><span style="background-color: #f5f5f5; color: #000000;">:</span><span style="background-color: #f5f5f5; color: #0000ff;"> 48px</span><span style="background-color: #f5f5f5; color: #000000;">;</span><span style="background-color: #f5f5f5; color: #ff0000;"> background</span><span style="background-color: #f5f5f5; color: #000000;">:</span><span style="background-color: #f5f5f5; color: #0000ff;"> #444</span><span style="background-color: #f5f5f5; color: #000000;">;</span><span style="background-color: #f5f5f5; color: #ff0000;"> padding</span><span style="background-color: #f5f5f5; color: #000000;">:</span><span style="background-color: #f5f5f5; color: #0000ff;"> 0</span><span style="background-color: #f5f5f5; color: #000000;">;</span><span style="background-color: #f5f5f5; color: #ff0000;"> border-top</span><span style="background-color: #f5f5f5; color: #000000;">:</span><span style="background-color: #f5f5f5; color: #0000ff;"> 1px solid #444</span><span style="background-color: #f5f5f5; color: #000000;">;</span> <span style="background-color: #f5f5f5; color: #000000;">}</span>
+<span style="color: #008080;"> 17</span> <span style="background-color: #f5f5f5; color: #800000;">    #wrapper </span><span style="background-color: #f5f5f5; color: #000000;">{</span><span style="background-color: #f5f5f5; color: #ff0000;"> position</span><span style="background-color: #f5f5f5; color: #000000;">:</span><span style="background-color: #f5f5f5; color: #0000ff;"> absolute</span><span style="background-color: #f5f5f5; color: #000000;">;</span><span style="background-color: #f5f5f5; color: #ff0000;"> z-index</span><span style="background-color: #f5f5f5; color: #000000;">:</span><span style="background-color: #f5f5f5; color: #0000ff;"> 1</span><span style="background-color: #f5f5f5; color: #000000;">;</span><span style="background-color: #f5f5f5; color: #ff0000;"> top</span><span style="background-color: #f5f5f5; color: #000000;">:</span><span style="background-color: #f5f5f5; color: #0000ff;"> 45px</span><span style="background-color: #f5f5f5; color: #000000;">;</span><span style="background-color: #f5f5f5; color: #ff0000;"> bottom</span><span style="background-color: #f5f5f5; color: #000000;">:</span><span style="background-color: #f5f5f5; color: #0000ff;"> 48px</span><span style="background-color: #f5f5f5; color: #000000;">;</span><span style="background-color: #f5f5f5; color: #ff0000;"> left</span><span style="background-color: #f5f5f5; color: #000000;">:</span><span style="background-color: #f5f5f5; color: #0000ff;"> 0</span><span style="background-color: #f5f5f5; color: #000000;">;</span><span style="background-color: #f5f5f5; color: #ff0000;"> width</span><span style="background-color: #f5f5f5; color: #000000;">:</span><span style="background-color: #f5f5f5; color: #0000ff;"> 100%</span><span style="background-color: #f5f5f5; color: #000000;">;</span><span style="background-color: #f5f5f5; color: #ff0000;"> background</span><span style="background-color: #f5f5f5; color: #000000;">:</span><span style="background-color: #f5f5f5; color: #0000ff;"> #ccc</span><span style="background-color: #f5f5f5; color: #000000;">;</span><span style="background-color: #f5f5f5; color: #ff0000;"> overflow</span><span style="background-color: #f5f5f5; color: #000000;">:</span><span style="background-color: #f5f5f5; color: #0000ff;"> hidden</span><span style="background-color: #f5f5f5; color: #000000;">;</span> <span style="background-color: #f5f5f5; color: #000000;">}</span>
+<span style="color: #008080;"> 18</span> <span style="background-color: #f5f5f5; color: #800000;">    #scroller </span><span style="background-color: #f5f5f5; color: #000000;">{</span><span style="background-color: #f5f5f5; color: #ff0000;"> position</span><span style="background-color: #f5f5f5; color: #000000;">:</span><span style="background-color: #f5f5f5; color: #0000ff;"> absolute</span><span style="background-color: #f5f5f5; color: #000000;">;</span><span style="background-color: #f5f5f5; color: #ff0000;"> z-index</span><span style="background-color: #f5f5f5; color: #000000;">:</span><span style="background-color: #f5f5f5; color: #0000ff;"> 1</span><span style="background-color: #f5f5f5; color: #000000;">;</span><span style="background-color: #f5f5f5; color: #ff0000;"> -webkit-tap-highlight-color</span><span style="background-color: #f5f5f5; color: #000000;">:</span><span style="background-color: #f5f5f5; color: #0000ff;"> rgba(0,0,0,0)</span><span style="background-color: #f5f5f5; color: #000000;">;</span><span style="background-color: #f5f5f5; color: #ff0000;"> width</span><span style="background-color: #f5f5f5; color: #000000;">:</span><span style="background-color: #f5f5f5; color: #0000ff;"> 100%</span><span style="background-color: #f5f5f5; color: #000000;">;</span><span style="background-color: #f5f5f5; color: #ff0000;"> -webkit-transform</span><span style="background-color: #f5f5f5; color: #000000;">:</span><span style="background-color: #f5f5f5; color: #0000ff;"> translateZ(0)</span><span style="background-color: #f5f5f5; color: #000000;">;</span><span style="background-color: #f5f5f5; color: #ff0000;"> -moz-transform</span><span style="background-color: #f5f5f5; color: #000000;">:</span><span style="background-color: #f5f5f5; color: #0000ff;"> translateZ(0)</span><span style="background-color: #f5f5f5; color: #000000;">;</span><span style="background-color: #f5f5f5; color: #ff0000;"> -ms-transform</span><span style="background-color: #f5f5f5; color: #000000;">:</span><span style="background-color: #f5f5f5; color: #0000ff;"> translateZ(0)</span><span style="background-color: #f5f5f5; color: #000000;">;</span><span style="background-color: #f5f5f5; color: #ff0000;"> -o-transform</span><span style="background-color: #f5f5f5; color: #000000;">:</span><span style="background-color: #f5f5f5; color: #0000ff;"> translateZ(0)</span><span style="background-color: #f5f5f5; color: #000000;">;</span><span style="background-color: #f5f5f5; color: #ff0000;"> transform</span><span style="background-color: #f5f5f5; color: #000000;">:</span><span style="background-color: #f5f5f5; color: #0000ff;"> translateZ(0)</span><span style="background-color: #f5f5f5; color: #000000;">;</span><span style="background-color: #f5f5f5; color: #ff0000;"> -webkit-touch-callout</span><span style="background-color: #f5f5f5; color: #000000;">:</span><span style="background-color: #f5f5f5; color: #0000ff;"> none</span><span style="background-color: #f5f5f5; color: #000000;">;</span><span style="background-color: #f5f5f5; color: #ff0000;"> -webkit-user-select</span><span style="background-color: #f5f5f5; color: #000000;">:</span><span style="background-color: #f5f5f5; color: #0000ff;"> none</span><span style="background-color: #f5f5f5; color: #000000;">;</span><span style="background-color: #f5f5f5; color: #ff0000;"> -moz-user-select</span><span style="background-color: #f5f5f5; color: #000000;">:</span><span style="background-color: #f5f5f5; color: #0000ff;"> none</span><span style="background-color: #f5f5f5; color: #000000;">;</span><span style="background-color: #f5f5f5; color: #ff0000;"> -ms-user-select</span><span style="background-color: #f5f5f5; color: #000000;">:</span><span style="background-color: #f5f5f5; color: #0000ff;"> none</span><span style="background-color: #f5f5f5; color: #000000;">;</span><span style="background-color: #f5f5f5; color: #ff0000;"> user-select</span><span style="background-color: #f5f5f5; color: #000000;">:</span><span style="background-color: #f5f5f5; color: #0000ff;"> none</span><span style="background-color: #f5f5f5; color: #000000;">;</span><span style="background-color: #f5f5f5; color: #ff0000;"> -webkit-text-size-adjust</span><span style="background-color: #f5f5f5; color: #000000;">:</span><span style="background-color: #f5f5f5; color: #0000ff;"> none</span><span style="background-color: #f5f5f5; color: #000000;">;</span><span style="background-color: #f5f5f5; color: #ff0000;"> -moz-text-size-adjust</span><span style="background-color: #f5f5f5; color: #000000;">:</span><span style="background-color: #f5f5f5; color: #0000ff;"> none</span><span style="background-color: #f5f5f5; color: #000000;">;</span><span style="background-color: #f5f5f5; color: #ff0000;"> -ms-text-size-adjust</span><span style="background-color: #f5f5f5; color: #000000;">:</span><span style="background-color: #f5f5f5; color: #0000ff;"> none</span><span style="background-color: #f5f5f5; color: #000000;">;</span><span style="background-color: #f5f5f5; color: #ff0000;"> -o-text-size-adjust</span><span style="background-color: #f5f5f5; color: #000000;">:</span><span style="background-color: #f5f5f5; color: #0000ff;"> none</span><span style="background-color: #f5f5f5; color: #000000;">;</span><span style="background-color: #f5f5f5; color: #ff0000;"> text-size-adjust</span><span style="background-color: #f5f5f5; color: #000000;">:</span><span style="background-color: #f5f5f5; color: #0000ff;"> none</span><span style="background-color: #f5f5f5; color: #000000;">;</span> <span style="background-color: #f5f5f5; color: #000000;">}</span>
+<span style="color: #008080;"> 19</span> <span style="background-color: #f5f5f5; color: #800000;">    #scroller ul </span><span style="background-color: #f5f5f5; color: #000000;">{</span><span style="background-color: #f5f5f5; color: #ff0000;"> list-style</span><span style="background-color: #f5f5f5; color: #000000;">:</span><span style="background-color: #f5f5f5; color: #0000ff;"> none</span><span style="background-color: #f5f5f5; color: #000000;">;</span><span style="background-color: #f5f5f5; color: #ff0000;"> padding</span><span style="background-color: #f5f5f5; color: #000000;">:</span><span style="background-color: #f5f5f5; color: #0000ff;"> 0</span><span style="background-color: #f5f5f5; color: #000000;">;</span><span style="background-color: #f5f5f5; color: #ff0000;"> margin</span><span style="background-color: #f5f5f5; color: #000000;">:</span><span style="background-color: #f5f5f5; color: #0000ff;"> 0</span><span style="background-color: #f5f5f5; color: #000000;">;</span><span style="background-color: #f5f5f5; color: #ff0000;"> width</span><span style="background-color: #f5f5f5; color: #000000;">:</span><span style="background-color: #f5f5f5; color: #0000ff;"> 100%</span><span style="background-color: #f5f5f5; color: #000000;">;</span><span style="background-color: #f5f5f5; color: #ff0000;"> text-align</span><span style="background-color: #f5f5f5; color: #000000;">:</span><span style="background-color: #f5f5f5; color: #0000ff;"> left</span><span style="background-color: #f5f5f5; color: #000000;">;</span> <span style="background-color: #f5f5f5; color: #000000;">}</span>
+<span style="color: #008080;"> 20</span> <span style="background-color: #f5f5f5; color: #800000;">    #scroller li </span><span style="background-color: #f5f5f5; color: #000000;">{</span><span style="background-color: #f5f5f5; color: #ff0000;"> padding</span><span style="background-color: #f5f5f5; color: #000000;">:</span><span style="background-color: #f5f5f5; color: #0000ff;"> 0 10px</span><span style="background-color: #f5f5f5; color: #000000;">;</span><span style="background-color: #f5f5f5; color: #ff0000;"> height</span><span style="background-color: #f5f5f5; color: #000000;">:</span><span style="background-color: #f5f5f5; color: #0000ff;"> 40px</span><span style="background-color: #f5f5f5; color: #000000;">;</span><span style="background-color: #f5f5f5; color: #ff0000;"> line-height</span><span style="background-color: #f5f5f5; color: #000000;">:</span><span style="background-color: #f5f5f5; color: #0000ff;"> 40px</span><span style="background-color: #f5f5f5; color: #000000;">;</span><span style="background-color: #f5f5f5; color: #ff0000;"> border-bottom</span><span style="background-color: #f5f5f5; color: #000000;">:</span><span style="background-color: #f5f5f5; color: #0000ff;"> 1px solid #ccc</span><span style="background-color: #f5f5f5; color: #000000;">;</span><span style="background-color: #f5f5f5; color: #ff0000;"> border-top</span><span style="background-color: #f5f5f5; color: #000000;">:</span><span style="background-color: #f5f5f5; color: #0000ff;"> 1px solid #fff</span><span style="background-color: #f5f5f5; color: #000000;">;</span><span style="background-color: #f5f5f5; color: #ff0000;"> background-color</span><span style="background-color: #f5f5f5; color: #000000;">:</span><span style="background-color: #f5f5f5; color: #0000ff;"> #fafafa</span><span style="background-color: #f5f5f5; color: #000000;">;</span><span style="background-color: #f5f5f5; color: #ff0000;"> font-size</span><span style="background-color: #f5f5f5; color: #000000;">:</span><span style="background-color: #f5f5f5; color: #0000ff;"> 14px</span><span style="background-color: #f5f5f5; color: #000000;">;</span> <span style="background-color: #f5f5f5; color: #000000;">}</span>
+<span style="color: #008080;"> 21</span>   <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">style</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 22</span> <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">head</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 23</span> <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">body</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 24</span>  <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">div </span><span style="color: #ff0000;">id</span><span style="color: #0000ff;">="header"</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 25</span>     iScroll<span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">div</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 26</span>    <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">div </span><span style="color: #ff0000;">id</span><span style="color: #0000ff;">="wrapper"</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 27</span>     <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">div </span><span style="color: #ff0000;">id</span><span style="color: #0000ff;">="scroller"</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 28</span>       <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">ul</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 29</span>         <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">li</span><span style="color: #0000ff;">&gt;</span>Pretty row 1<span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">li</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 30</span>         <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">li</span><span style="color: #0000ff;">&gt;</span>Pretty row 2<span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">li</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 31</span>         <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">li</span><span style="color: #0000ff;">&gt;</span>Pretty row 3<span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">li</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 32</span>         <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">li</span><span style="color: #0000ff;">&gt;</span>Pretty row 4<span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">li</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 33</span>         <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">li</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 34</span>           <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">input </span><span style="color: #ff0000;">type</span><span style="color: #0000ff;">="text"</span><span style="color: #0000ff;">&gt;&lt;/</span><span style="color: #800000;">li</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 35</span>         <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">li</span><span style="color: #0000ff;">&gt;</span>Pretty row 6<span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">li</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 36</span>         <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">li</span><span style="color: #0000ff;">&gt;</span>Pretty row 7<span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">li</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 37</span>         <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">li</span><span style="color: #0000ff;">&gt;</span>Pretty row 8<span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">li</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 38</span>         <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">li</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 39</span>           <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">input </span><span style="color: #ff0000;">type</span><span style="color: #0000ff;">="checkbox"</span><span style="color: #0000ff;">&gt;&lt;/</span><span style="color: #800000;">li</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 40</span>         <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">li</span><span style="color: #0000ff;">&gt;</span>Pretty row 10<span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">li</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 41</span>         <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">li</span><span style="color: #0000ff;">&gt;</span>Pretty row 11<span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">li</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 42</span>         <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">li</span><span style="color: #0000ff;">&gt;</span>Pretty row 12<span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">li</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 43</span>         <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">li</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 44</span>           <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">input </span><span style="color: #ff0000;">type</span><span style="color: #0000ff;">="radio"</span><span style="color: #0000ff;">&gt;&lt;/</span><span style="color: #800000;">li</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 45</span>         <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">li</span><span style="color: #0000ff;">&gt;</span>Pretty row 14<span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">li</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 46</span>         <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">li</span><span style="color: #0000ff;">&gt;</span>Pretty row 15<span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">li</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 47</span>         <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">li</span><span style="color: #0000ff;">&gt;</span>Pretty row 16<span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">li</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 48</span>         <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">li</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 49</span>           <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">textarea</span><span style="color: #0000ff;">&gt;&lt;/</span><span style="color: #800000;">textarea</span><span style="color: #0000ff;">&gt;&lt;/</span><span style="color: #800000;">li</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 50</span>         <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">li</span><span style="color: #0000ff;">&gt;</span>Pretty row 18<span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">li</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 51</span>         <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">li</span><span style="color: #0000ff;">&gt;</span>Pretty row 19<span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">li</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 52</span>         <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">li</span><span style="color: #0000ff;">&gt;</span>Pretty row 20<span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">li</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 53</span>         <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">li</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 54</span>           <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">select</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 55</span>             <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">option</span><span style="color: #0000ff;">&gt;</span>option<span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">option</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 56</span>           <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">select</span><span style="color: #0000ff;">&gt;&lt;/</span><span style="color: #800000;">li</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 57</span>         <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">li</span><span style="color: #0000ff;">&gt;</span>Pretty row 22<span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">li</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 58</span>         <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">li</span><span style="color: #0000ff;">&gt;</span>Pretty row 23<span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">li</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 59</span>         <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">li</span><span style="color: #0000ff;">&gt;</span>Pretty row 24<span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">li</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 60</span>         <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">li</span><span style="color: #0000ff;">&gt;</span>Pretty row 25<span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">li</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 61</span>         <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">li</span><span style="color: #0000ff;">&gt;</span>Pretty row 26<span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">li</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 62</span>         <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">li</span><span style="color: #0000ff;">&gt;</span>Pretty row 27<span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">li</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 63</span>         <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">li</span><span style="color: #0000ff;">&gt;</span>Pretty row 28<span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">li</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 64</span>         <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">li</span><span style="color: #0000ff;">&gt;</span>Pretty row 29<span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">li</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 65</span>         <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">li</span><span style="color: #0000ff;">&gt;</span>Pretty row 30<span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">li</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 66</span>         <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">li</span><span style="color: #0000ff;">&gt;</span>Pretty row 31<span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">li</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 67</span>         <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">li</span><span style="color: #0000ff;">&gt;</span>Pretty row 32<span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">li</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 68</span>         <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">li</span><span style="color: #0000ff;">&gt;</span>Pretty row 33<span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">li</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 69</span>         <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">li</span><span style="color: #0000ff;">&gt;</span>Pretty row 34<span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">li</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 70</span>         <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">li</span><span style="color: #0000ff;">&gt;</span>Pretty row 35<span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">li</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 71</span>         <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">li</span><span style="color: #0000ff;">&gt;</span>Pretty row 36<span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">li</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 72</span>         <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">li</span><span style="color: #0000ff;">&gt;</span>Pretty row 37<span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">li</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 73</span>         <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">li</span><span style="color: #0000ff;">&gt;</span>Pretty row 38<span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">li</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 74</span>         <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">li</span><span style="color: #0000ff;">&gt;</span>Pretty row 39<span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">li</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 75</span>         <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">li</span><span style="color: #0000ff;">&gt;</span>Pretty row 40<span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">li</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 76</span>         <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">li</span><span style="color: #0000ff;">&gt;</span>Pretty row 41<span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">li</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 77</span>         <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">li</span><span style="color: #0000ff;">&gt;</span>Pretty row 42<span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">li</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 78</span>         <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">li</span><span style="color: #0000ff;">&gt;</span>Pretty row 43<span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">li</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 79</span>         <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">li</span><span style="color: #0000ff;">&gt;</span>Pretty row 44<span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">li</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 80</span>         <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">li</span><span style="color: #0000ff;">&gt;</span>Pretty row 45<span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">li</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 81</span>         <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">li</span><span style="color: #0000ff;">&gt;</span>Pretty row 46<span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">li</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 82</span>         <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">li</span><span style="color: #0000ff;">&gt;</span>Pretty row 47<span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">li</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 83</span>         <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">li</span><span style="color: #0000ff;">&gt;</span>Pretty row 48<span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">li</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 84</span>         <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">li</span><span style="color: #0000ff;">&gt;</span>Pretty row 49<span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">li</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 85</span>         <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">li</span><span style="color: #0000ff;">&gt;</span>Pretty row 50<span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">li</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 86</span>       <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">ul</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 87</span>     <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">div</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 88</span>   <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">div</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 89</span>    <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">div </span><span style="color: #ff0000;">id</span><span style="color: #0000ff;">="footer"</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 90</span>   <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">div</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 91</span>   <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">script </span><span style="color: #ff0000;">src</span><span style="color: #0000ff;">="../../zepto/zepto.js"</span><span style="color: #ff0000;"> type</span><span style="color: #0000ff;">="text/javascript"</span><span style="color: #0000ff;">&gt;&lt;/</span><span style="color: #800000;">script</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 92</span>   <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">script </span><span style="color: #ff0000;">src</span><span style="color: #0000ff;">="../../fastclick-1.0.0/lib/fastclick.js"</span><span style="color: #ff0000;"> type</span><span style="color: #0000ff;">="text/javascript"</span><span style="color: #0000ff;">&gt;&lt;/</span><span style="color: #800000;">script</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 93</span>   <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">script </span><span style="color: #ff0000;">type</span><span style="color: #0000ff;">="text/javascript"</span><span style="color: #ff0000;"> src</span><span style="color: #0000ff;">="c.ui.scroll.js"</span><span style="color: #0000ff;">&gt;&lt;/</span><span style="color: #800000;">script</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 94</span>   <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">script </span><span style="color: #ff0000;">type</span><span style="color: #0000ff;">="text/javascript"</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 95</span> 
+<span style="color: #008080;"> 96</span>     <span style="background-color: #f5f5f5; color: #0000ff;">var</span><span style="background-color: #f5f5f5; color: #000000;"> s </span><span style="background-color: #f5f5f5; color: #000000;">=</span> <span style="background-color: #f5f5f5; color: #0000ff;">new</span><span style="background-color: #f5f5f5; color: #000000;"> IScroll({
+</span><span style="color: #008080;"> 97</span> <span style="background-color: #f5f5f5; color: #000000;">      wrapper: $(</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">#wrapper</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">),
+</span><span style="color: #008080;"> 98</span> <span style="background-color: #f5f5f5; color: #000000;">      scroller: $(</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">#scroller</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">)
+</span><span style="color: #008080;"> 99</span>     
+<span style="color: #008080;">100</span> <span style="background-color: #f5f5f5; color: #000000;">    });
+</span><span style="color: #008080;">101</span> 
+<span style="color: #008080;">102</span>     <span style="background-color: #f5f5f5; color: #0000ff;">new</span><span style="background-color: #f5f5f5; color: #000000;"> FastClick(document.body);
+</span><span style="color: #008080;">103</span> 
+<span style="color: #008080;">104</span>   <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">script</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">105</span> <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">body</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">106</span> <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">html</span><span style="color: #0000ff;">&gt;</span></pre>
+</div>
+<span class="cnblogs_code_collapse">Demo</span></div>
+<div class="cnblogs_code" onclick="cnblogs_code_show('b7b29d23-8975-4dd0-a25b-a6155d6d96bc')"><img id="code_img_closed_b7b29d23-8975-4dd0-a25b-a6155d6d96bc" class="code_img_closed" src="43570758473519.gif" alt=""><img id="code_img_opened_b7b29d23-8975-4dd0-a25b-a6155d6d96bc" class="code_img_opened" style="display: none;" onclick="cnblogs_code_hide('b7b29d23-8975-4dd0-a25b-a6155d6d96bc',event)" src="16365178109279.gif" alt="">
+<div id="cnblogs_code_open_b7b29d23-8975-4dd0-a25b-a6155d6d96bc" class="cnblogs_code_hide">
+<pre><span style="color: #008080;">  1</span>   <span style="color: #0000ff;">var</span> utils = (<span style="color: #0000ff;">function</span><span style="color: #000000;"> () {
+</span><span style="color: #008080;">  2</span>     <span style="color: #0000ff;">var</span> me =<span style="color: #000000;"> {};
+</span><span style="color: #008080;">  3</span>     <span style="color: #0000ff;">var</span> _elementStyle = document.createElement('div'<span style="color: #000000;">).style;
+</span><span style="color: #008080;">  4</span> 
+<span style="color: #008080;">  5</span>     <span style="color: #008000;">//</span><span style="color: #008000;">获得需要兼容CSS3前缀</span>
+<span style="color: #008080;">  6</span>     <span style="color: #0000ff;">var</span> _vendor = (<span style="color: #0000ff;">function</span><span style="color: #000000;"> () {
+</span><span style="color: #008080;">  7</span>       <span style="color: #0000ff;">var</span> vendors = ['t', 'webkitT', 'MozT', 'msT', 'OT'<span style="color: #000000;">];
+</span><span style="color: #008080;">  8</span>       <span style="color: #0000ff;">var</span><span style="color: #000000;"> transform;
+</span><span style="color: #008080;">  9</span>       <span style="color: #0000ff;">var</span> i = 0<span style="color: #000000;">;
+</span><span style="color: #008080;"> 10</span>       <span style="color: #0000ff;">var</span> l =<span style="color: #000000;"> vendors.length;
+</span><span style="color: #008080;"> 11</span> 
+<span style="color: #008080;"> 12</span>       <span style="color: #0000ff;">for</span> (; i &lt; l; i++<span style="color: #000000;">) {
+</span><span style="color: #008080;"> 13</span>         transform = vendors[i] + 'ransform'<span style="color: #000000;">;
+</span><span style="color: #008080;"> 14</span>         <span style="color: #0000ff;">if</span> (transform <span style="color: #0000ff;">in</span> _elementStyle) <span style="color: #0000ff;">return</span> vendors[i].substr(0, vendors[i].length - 1<span style="color: #000000;">);
+</span><span style="color: #008080;"> 15</span> <span style="color: #000000;">      }
+</span><span style="color: #008080;"> 16</span>       <span style="color: #0000ff;">return</span> <span style="color: #0000ff;">false</span><span style="color: #000000;">;
+</span><span style="color: #008080;"> 17</span> <span style="color: #000000;">    })();
+</span><span style="color: #008080;"> 18</span> 
+<span style="color: #008080;"> 19</span>     <span style="color: #008000;">//</span><span style="color: #008000;">获取样式（CSS3兼容）</span>
+<span style="color: #008080;"> 20</span>     <span style="color: #0000ff;">function</span><span style="color: #000000;"> _prefixStyle(style) {
+</span><span style="color: #008080;"> 21</span>       <span style="color: #0000ff;">if</span> (_vendor === <span style="color: #0000ff;">false</span>) <span style="color: #0000ff;">return</span> <span style="color: #0000ff;">false</span><span style="color: #000000;">;
+</span><span style="color: #008080;"> 22</span>       <span style="color: #0000ff;">if</span> (_vendor === '') <span style="color: #0000ff;">return</span><span style="color: #000000;"> style;
+</span><span style="color: #008080;"> 23</span>       <span style="color: #0000ff;">return</span> _vendor + style.charAt(0).toUpperCase() + style.substr(1<span style="color: #000000;">);
+</span><span style="color: #008080;"> 24</span> <span style="color: #000000;">    }
+</span><span style="color: #008080;"> 25</span> 
+<span style="color: #008080;"> 26</span>     me.getTime = Date.now || <span style="color: #0000ff;">function</span> getTime() { <span style="color: #0000ff;">return</span> <span style="color: #0000ff;">new</span><span style="color: #000000;"> Date().getTime(); };
+</span><span style="color: #008080;"> 27</span> 
+<span style="color: #008080;"> 28</span>     me.addEvent = <span style="color: #0000ff;">function</span><span style="color: #000000;"> (el, type, fn, capture) {
+</span><span style="color: #008080;"> 29</span>       <span style="color: #0000ff;">if</span> (el[0]) el = el[0<span style="color: #000000;">];
+</span><span style="color: #008080;"> 30</span>       el.addEventListener(type, fn, !!<span style="color: #000000;">capture);
+</span><span style="color: #008080;"> 31</span> <span style="color: #000000;">    };
+</span><span style="color: #008080;"> 32</span> 
+<span style="color: #008080;"> 33</span>     me.removeEvent = <span style="color: #0000ff;">function</span><span style="color: #000000;"> (el, type, fn, capture) {
+</span><span style="color: #008080;"> 34</span>       <span style="color: #0000ff;">if</span> (el[0]) el = el[0<span style="color: #000000;">];
+</span><span style="color: #008080;"> 35</span>       el.removeEventListener(type, fn, !!<span style="color: #000000;">capture);
+</span><span style="color: #008080;"> 36</span> <span style="color: #000000;">    };
+</span><span style="color: #008080;"> 37</span> 
+<span style="color: #008080;"> 38</span>     <span style="color: #008000;">/*</span>
+<span style="color: #008080;"> 39</span> <span style="color: #008000;">    current：当前鼠标位置
+</span><span style="color: #008080;"> 40</span> <span style="color: #008000;">    start：touchStart时候记录的Y（可能是X）的开始位置，但是在touchmove时候可能被重写
+</span><span style="color: #008080;"> 41</span> <span style="color: #008000;">    time： touchstart到手指离开时候经历的时间，同样可能被touchmove重写
+</span><span style="color: #008080;"> 42</span> <span style="color: #008000;">    lowerMargin：y可移动的最大距离，这个一般为计算得出 this.wrapperHeight - this.scrollerHeight
+</span><span style="color: #008080;"> 43</span> <span style="color: #008000;">    wrapperSize：如果有边界距离的话就是可拖动，不然碰到0的时候便停止
+</span><span style="color: #008080;"> 44</span>     <span style="color: #008000;">*/</span>
+<span style="color: #008080;"> 45</span>     me.momentum = <span style="color: #0000ff;">function</span><span style="color: #000000;"> (current, start, time, lowerMargin, wrapperSize) {
+</span><span style="color: #008080;"> 46</span>       <span style="color: #0000ff;">var</span> distance = current -<span style="color: #000000;"> start,
+</span><span style="color: #008080;"> 47</span>         speed = Math.abs(distance) /<span style="color: #000000;"> time,
+</span><span style="color: #008080;"> 48</span> <span style="color: #000000;">        destination,
+</span><span style="color: #008080;"> 49</span> <span style="color: #000000;">        duration,
+</span><span style="color: #008080;"> 50</span>         deceleration = 0.0006<span style="color: #000000;">;
+</span><span style="color: #008080;"> 51</span> 
+<span style="color: #008080;"> 52</span>       destination = current + (speed * speed) / (2 * deceleration) * (distance &lt; 0 ? -1 : 1<span style="color: #000000;">);
+</span><span style="color: #008080;"> 53</span>       duration = speed /<span style="color: #000000;"> deceleration;
+</span><span style="color: #008080;"> 54</span> 
+<span style="color: #008080;"> 55</span>       <span style="color: #0000ff;">if</span> (destination &lt;<span style="color: #000000;"> lowerMargin) {
+</span><span style="color: #008080;"> 56</span>         destination = wrapperSize ? lowerMargin - (wrapperSize / 2.5 * (speed / 8<span style="color: #000000;">)) : lowerMargin;
+</span><span style="color: #008080;"> 57</span>         distance = Math.abs(destination -<span style="color: #000000;"> current);
+</span><span style="color: #008080;"> 58</span>         duration = distance /<span style="color: #000000;"> speed;
+</span><span style="color: #008080;"> 59</span>       } <span style="color: #0000ff;">else</span> <span style="color: #0000ff;">if</span> (destination &gt; 0<span style="color: #000000;">) {
+</span><span style="color: #008080;"> 60</span>         destination = wrapperSize ? wrapperSize / 2.5 * (speed / 8) : 0<span style="color: #000000;">;
+</span><span style="color: #008080;"> 61</span>         distance = Math.abs(current) +<span style="color: #000000;"> destination;
+</span><span style="color: #008080;"> 62</span>         duration = distance /<span style="color: #000000;"> speed;
+</span><span style="color: #008080;"> 63</span> <span style="color: #000000;">      }
+</span><span style="color: #008080;"> 64</span> 
+<span style="color: #008080;"> 65</span>       <span style="color: #0000ff;">return</span><span style="color: #000000;"> {
+</span><span style="color: #008080;"> 66</span> <span style="color: #000000;">        destination: Math.round(destination),
+</span><span style="color: #008080;"> 67</span> <span style="color: #000000;">        duration: duration
+</span><span style="color: #008080;"> 68</span> <span style="color: #000000;">      };
+</span><span style="color: #008080;"> 69</span> 
+<span style="color: #008080;"> 70</span> <span style="color: #000000;">    };
+</span><span style="color: #008080;"> 71</span> 
+<span style="color: #008080;"> 72</span> <span style="color: #000000;">    $.extend(me, {
+</span><span style="color: #008080;"> 73</span>       hasTouch: 'ontouchstart' <span style="color: #0000ff;">in</span><span style="color: #000000;"> window
+</span><span style="color: #008080;"> 74</span> <span style="color: #000000;">    });
+</span><span style="color: #008080;"> 75</span> 
+<span style="color: #008080;"> 76</span> 
+<span style="color: #008080;"> 77</span>     <span style="color: #008000;">//</span><span style="color: #008000;">我们暂时只判断touch 和 mouse即可</span>
+<span style="color: #008080;"> 78</span>     $.extend(me.style =<span style="color: #000000;"> {}, {
+</span><span style="color: #008080;"> 79</span>       transform: _prefixStyle('transform'<span style="color: #000000;">),
+</span><span style="color: #008080;"> 80</span>       transitionTimingFunction: _prefixStyle('transitionTimingFunction'<span style="color: #000000;">),
+</span><span style="color: #008080;"> 81</span>       transitionDuration: _prefixStyle('transitionDuration'<span style="color: #000000;">),
+</span><span style="color: #008080;"> 82</span>       transitionDelay: _prefixStyle('transitionDelay'<span style="color: #000000;">),
+</span><span style="color: #008080;"> 83</span>       transformOrigin: _prefixStyle('transformOrigin'<span style="color: #000000;">)
+</span><span style="color: #008080;"> 84</span> <span style="color: #000000;">    });
+</span><span style="color: #008080;"> 85</span> 
+<span style="color: #008080;"> 86</span>     $.extend(me.eventType =<span style="color: #000000;"> {}, {
+</span><span style="color: #008080;"> 87</span>       touchstart: 1<span style="color: #000000;">,
+</span><span style="color: #008080;"> 88</span>       touchmove: 1<span style="color: #000000;">,
+</span><span style="color: #008080;"> 89</span>       touchend: 1<span style="color: #000000;">,
+</span><span style="color: #008080;"> 90</span> 
+<span style="color: #008080;"> 91</span>       mousedown: 2<span style="color: #000000;">,
+</span><span style="color: #008080;"> 92</span>       mousemove: 2<span style="color: #000000;">,
+</span><span style="color: #008080;"> 93</span>       mouseup: 2
+<span style="color: #008080;"> 94</span> <span style="color: #000000;">    });
+</span><span style="color: #008080;"> 95</span> 
+<span style="color: #008080;"> 96</span>     $.extend(me.ease =<span style="color: #000000;"> {}, {
+</span><span style="color: #008080;"> 97</span> <span style="color: #000000;">      quadratic: {
+</span><span style="color: #008080;"> 98</span>         style: 'cubic-bezier(0.25, 0.46, 0.45, 0.94)'<span style="color: #000000;">,
+</span><span style="color: #008080;"> 99</span>         fn: <span style="color: #0000ff;">function</span><span style="color: #000000;"> (k) {
+</span><span style="color: #008080;">100</span>           <span style="color: #0000ff;">return</span> k * (2 -<span style="color: #000000;"> k);
+</span><span style="color: #008080;">101</span> <span style="color: #000000;">        }
+</span><span style="color: #008080;">102</span> <span style="color: #000000;">      },
+</span><span style="color: #008080;">103</span> <span style="color: #000000;">      circular: {
+</span><span style="color: #008080;">104</span>         style: 'cubic-bezier(0.1, 0.57, 0.1, 1)', <span style="color: #008000;">//</span><span style="color: #008000;"> Not properly "circular" but this looks better, it should be (0.075, 0.82, 0.165, 1)</span>
+<span style="color: #008080;">105</span>         fn: <span style="color: #0000ff;">function</span><span style="color: #000000;"> (k) {
+</span><span style="color: #008080;">106</span>           <span style="color: #0000ff;">return</span> Math.sqrt(1 - (--k *<span style="color: #000000;"> k));
+</span><span style="color: #008080;">107</span> <span style="color: #000000;">        }
+</span><span style="color: #008080;">108</span> <span style="color: #000000;">      },
+</span><span style="color: #008080;">109</span> <span style="color: #000000;">      back: {
+</span><span style="color: #008080;">110</span>         style: 'cubic-bezier(0.175, 0.885, 0.32, 1.275)'<span style="color: #000000;">,
+</span><span style="color: #008080;">111</span>         fn: <span style="color: #0000ff;">function</span><span style="color: #000000;"> (k) {
+</span><span style="color: #008080;">112</span>           <span style="color: #0000ff;">var</span> b = 4<span style="color: #000000;">;
+</span><span style="color: #008080;">113</span>           <span style="color: #0000ff;">return</span> (k = k - 1) * k * ((b + 1) * k + b) + 1<span style="color: #000000;">;
+</span><span style="color: #008080;">114</span> <span style="color: #000000;">        }
+</span><span style="color: #008080;">115</span> <span style="color: #000000;">      },
+</span><span style="color: #008080;">116</span> <span style="color: #000000;">      bounce: {
+</span><span style="color: #008080;">117</span>         style: ''<span style="color: #000000;">,
+</span><span style="color: #008080;">118</span>         fn: <span style="color: #0000ff;">function</span><span style="color: #000000;"> (k) {
+</span><span style="color: #008080;">119</span>           <span style="color: #0000ff;">if</span> ((k /= 1) &lt; (1 / 2.75<span style="color: #000000;">)) {
+</span><span style="color: #008080;">120</span>             <span style="color: #0000ff;">return</span> 7.5625 * k *<span style="color: #000000;"> k;
+</span><span style="color: #008080;">121</span>           } <span style="color: #0000ff;">else</span> <span style="color: #0000ff;">if</span> (k &lt; (2 / 2.75<span style="color: #000000;">)) {
+</span><span style="color: #008080;">122</span>             <span style="color: #0000ff;">return</span> 7.5625 * (k -= (1.5 / 2.75)) * k + 0.75<span style="color: #000000;">;
+</span><span style="color: #008080;">123</span>           } <span style="color: #0000ff;">else</span> <span style="color: #0000ff;">if</span> (k &lt; (2.5 / 2.75<span style="color: #000000;">)) {
+</span><span style="color: #008080;">124</span>             <span style="color: #0000ff;">return</span> 7.5625 * (k -= (2.25 / 2.75)) * k + 0.9375<span style="color: #000000;">;
+</span><span style="color: #008080;">125</span>           } <span style="color: #0000ff;">else</span><span style="color: #000000;"> {
+</span><span style="color: #008080;">126</span>             <span style="color: #0000ff;">return</span> 7.5625 * (k -= (2.625 / 2.75)) * k + 0.984375<span style="color: #000000;">;
+</span><span style="color: #008080;">127</span> <span style="color: #000000;">          }
+</span><span style="color: #008080;">128</span> <span style="color: #000000;">        }
+</span><span style="color: #008080;">129</span> <span style="color: #000000;">      },
+</span><span style="color: #008080;">130</span> <span style="color: #000000;">      elastic: {
+</span><span style="color: #008080;">131</span>         style: ''<span style="color: #000000;">,
+</span><span style="color: #008080;">132</span>         fn: <span style="color: #0000ff;">function</span><span style="color: #000000;"> (k) {
+</span><span style="color: #008080;">133</span>           <span style="color: #0000ff;">var</span> f = 0.22<span style="color: #000000;">,
+</span><span style="color: #008080;">134</span>         e = 0.4<span style="color: #000000;">;
+</span><span style="color: #008080;">135</span> 
+<span style="color: #008080;">136</span>           <span style="color: #0000ff;">if</span> (k === 0) { <span style="color: #0000ff;">return</span> 0<span style="color: #000000;">; }
+</span><span style="color: #008080;">137</span>           <span style="color: #0000ff;">if</span> (k == 1) { <span style="color: #0000ff;">return</span> 1<span style="color: #000000;">; }
+</span><span style="color: #008080;">138</span> 
+<span style="color: #008080;">139</span>           <span style="color: #0000ff;">return</span> (e * Math.pow(2, -10 * k) * Math.sin((k - f / 4) * (2 * Math.PI) / f) + 1<span style="color: #000000;">);
+</span><span style="color: #008080;">140</span> <span style="color: #000000;">        }
+</span><span style="color: #008080;">141</span> <span style="color: #000000;">      }
+</span><span style="color: #008080;">142</span> <span style="color: #000000;">    });
+</span><span style="color: #008080;">143</span>     <span style="color: #0000ff;">return</span><span style="color: #000000;"> me;
+</span><span style="color: #008080;">144</span> <span style="color: #000000;">  })();
+</span><span style="color: #008080;">145</span> 
+<span style="color: #008080;">146</span>   <span style="color: #0000ff;">function</span><span style="color: #000000;"> IScroll(opts) {
+</span><span style="color: #008080;">147</span>     <span style="color: #0000ff;">this</span>.wrapper = <span style="color: #0000ff;">typeof</span> opts.wrapper == 'string' ?<span style="color: #000000;"> $(opts.wrapper) : opts.wrapper;
+</span><span style="color: #008080;">148</span>     <span style="color: #0000ff;">this</span>.scroller = <span style="color: #0000ff;">typeof</span> opts.scroller == 'string' ?<span style="color: #000000;"> $(opts.scroller) : opts.scroller;
+</span><span style="color: #008080;">149</span>     <span style="color: #0000ff;">if</span> (!opts.wrapper[0] || !opts.scroller[0]) <span style="color: #0000ff;">throw</span> 'param error'<span style="color: #000000;">;
+</span><span style="color: #008080;">150</span> 
+<span style="color: #008080;">151</span>     <span style="color: #0000ff;">this</span>.wrapper = <span style="color: #0000ff;">this</span>.wrapper[0<span style="color: #000000;">];
+</span><span style="color: #008080;">152</span>     <span style="color: #0000ff;">this</span>.scroller = <span style="color: #0000ff;">this</span>.scroller[0<span style="color: #000000;">];
+</span><span style="color: #008080;">153</span> 
+<span style="color: #008080;">154</span>     <span style="color: #008000;">//</span><span style="color: #008000;">这个属性会被动态改变的，如果这里</span>
+<span style="color: #008080;">155</span>     <span style="color: #0000ff;">this</span>.scrollerStyle = <span style="color: #0000ff;">this</span><span style="color: #000000;">.scroller.style;
+</span><span style="color: #008080;">156</span> 
+<span style="color: #008080;">157</span>     <span style="color: #0000ff;">this</span>.options =<span style="color: #000000;"> {
+</span><span style="color: #008080;">158</span>       <span style="color: #008000;">//</span><span style="color: #008000;">是否具有滚动条</span>
+<span style="color: #008080;">159</span>       scrollbars: <span style="color: #0000ff;">true</span><span style="color: #000000;">,
+</span><span style="color: #008080;">160</span>       <span style="color: #008000;">//</span><span style="color: #008000;"> 其实时期Y的位置</span>
+<span style="color: #008080;">161</span>       startY: 0<span style="color: #000000;">,
+</span><span style="color: #008080;">162</span>       <span style="color: #008000;">//</span><span style="color: #008000;">超出边界还原时间点</span>
+<span style="color: #008080;">163</span>       bounceTime: 600<span style="color: #000000;">,
+</span><span style="color: #008080;">164</span>       <span style="color: #008000;">//</span><span style="color: #008000;">超出边界返回的动画</span>
+<span style="color: #008080;">165</span> <span style="color: #000000;">      bounceEasing: utils.ease.circular,
+</span><span style="color: #008080;">166</span> 
+<span style="color: #008080;">167</span>       <span style="color: #008000;">//</span><span style="color: #008000;">超出边界时候是否还能拖动</span>
+<span style="color: #008080;">168</span>       bounce: <span style="color: #0000ff;">true</span><span style="color: #000000;">,
+</span><span style="color: #008080;">169</span> 
+<span style="color: #008080;">170</span>       bindToWrapper: <span style="color: #0000ff;">true</span><span style="color: #000000;">,
+</span><span style="color: #008080;">171</span> 
+<span style="color: #008080;">172</span>       <span style="color: #008000;">//</span><span style="color: #008000;">当window触发resize事件60ms后还原</span>
+<span style="color: #008080;">173</span>       resizePolling: 60<span style="color: #000000;">,
+</span><span style="color: #008080;">174</span>       startX: 0<span style="color: #000000;">,
+</span><span style="color: #008080;">175</span>       startY: 0
+<span style="color: #008080;">176</span> <span style="color: #000000;">    };
+</span><span style="color: #008080;">177</span> 
+<span style="color: #008080;">178</span>     <span style="color: #0000ff;">for</span> (<span style="color: #0000ff;">var</span> i <span style="color: #0000ff;">in</span><span style="color: #000000;"> opts) {
+</span><span style="color: #008080;">179</span>       <span style="color: #0000ff;">this</span>.options[i] =<span style="color: #000000;"> opts[i];
+</span><span style="color: #008080;">180</span> <span style="color: #000000;">    }
+</span><span style="color: #008080;">181</span> 
+<span style="color: #008080;">182</span>     <span style="color: #0000ff;">this</span>.translateZ = ' translateZ(0)'<span style="color: #000000;">;
+</span><span style="color: #008080;">183</span> 
+<span style="color: #008080;">184</span>     <span style="color: #0000ff;">this</span>.x = 0<span style="color: #000000;">;
+</span><span style="color: #008080;">185</span>     <span style="color: #0000ff;">this</span>.y = 0<span style="color: #000000;">;
+</span><span style="color: #008080;">186</span>     <span style="color: #0000ff;">this</span>._events =<span style="color: #000000;"> {};
+</span><span style="color: #008080;">187</span>     <span style="color: #0000ff;">this</span><span style="color: #000000;">._init();
+</span><span style="color: #008080;">188</span> 
+<span style="color: #008080;">189</span>     <span style="color: #008000;">//</span><span style="color: #008000;">更新滚动条位置</span>
+<span style="color: #008080;">190</span>     <span style="color: #0000ff;">this</span><span style="color: #000000;">.refresh();
+</span><span style="color: #008080;">191</span> 
+<span style="color: #008080;">192</span>     <span style="color: #008000;">//</span><span style="color: #008000;">更新本身位置</span>
+<span style="color: #008080;">193</span>     <span style="color: #0000ff;">this</span>.scrollTo(<span style="color: #0000ff;">this</span>.options.startX, <span style="color: #0000ff;">this</span><span style="color: #000000;">.options.startY);
+</span><span style="color: #008080;">194</span> 
+<span style="color: #008080;">195</span>     <span style="color: #0000ff;">this</span><span style="color: #000000;">.enable();
+</span><span style="color: #008080;">196</span> 
+<span style="color: #008080;">197</span> <span style="color: #000000;">  };
+</span><span style="color: #008080;">198</span> 
+<span style="color: #008080;">199</span>   IScroll.prototype =<span style="color: #000000;"> {
+</span><span style="color: #008080;">200</span>     _init: <span style="color: #0000ff;">function</span><span style="color: #000000;"> () {
+</span><span style="color: #008080;">201</span>       <span style="color: #0000ff;">this</span><span style="color: #000000;">._initEvents();
+</span><span style="color: #008080;">202</span> 
+<span style="color: #008080;">203</span>       <span style="color: #008000;">//</span><span style="color: #008000;">初始化滚动条，滚动条此处需要做重要处理</span>
+<span style="color: #008080;">204</span>       <span style="color: #0000ff;">if</span> (<span style="color: #0000ff;">this</span><span style="color: #000000;">.options.scrollbars) {
+</span><span style="color: #008080;">205</span>         <span style="color: #0000ff;">this</span><span style="color: #000000;">._initIndicator();
+</span><span style="color: #008080;">206</span> <span style="color: #000000;">      }
+</span><span style="color: #008080;">207</span> <span style="color: #000000;">    },
+</span><span style="color: #008080;">208</span>     refresh: <span style="color: #0000ff;">function</span><span style="color: #000000;"> () {
+</span><span style="color: #008080;">209</span>       <span style="color: #0000ff;">var</span> rf = <span style="color: #0000ff;">this</span>.wrapper.offsetHeight;     <span style="color: #008000;">//</span><span style="color: #008000;"> Force reflow</span>
+<span style="color: #008080;">210</span> 
+<span style="color: #008080;">211</span>       <span style="color: #0000ff;">this</span>.wrapperHeight = <span style="color: #0000ff;">this</span><span style="color: #000000;">.wrapper.clientHeight;
+</span><span style="color: #008080;">212</span>       <span style="color: #0000ff;">this</span>.scrollerHeight = <span style="color: #0000ff;">this</span><span style="color: #000000;">.scroller.offsetHeight;
+</span><span style="color: #008080;">213</span>       <span style="color: #0000ff;">this</span>.maxScrollY = <span style="color: #0000ff;">this</span>.wrapperHeight - <span style="color: #0000ff;">this</span><span style="color: #000000;">.scrollerHeight;
+</span><span style="color: #008080;">214</span> 
+<span style="color: #008080;">215</span>       <span style="color: #0000ff;">this</span>.endTime = 0<span style="color: #000000;">;
+</span><span style="color: #008080;">216</span> 
+<span style="color: #008080;">217</span>       <span style="color: #0000ff;">this</span>._execEvent('refresh'<span style="color: #000000;">);
+</span><span style="color: #008080;">218</span> 
+<span style="color: #008080;">219</span>       <span style="color: #0000ff;">this</span><span style="color: #000000;">.resetPosition();
+</span><span style="color: #008080;">220</span> 
+<span style="color: #008080;">221</span> <span style="color: #000000;">    },
+</span><span style="color: #008080;">222</span>     _initEvents: <span style="color: #0000ff;">function</span><span style="color: #000000;"> (remove) {
+</span><span style="color: #008080;">223</span>       <span style="color: #0000ff;">var</span> eventType = remove ?<span style="color: #000000;"> utils.removeEvent : utils.addEvent;
+</span><span style="color: #008080;">224</span>       <span style="color: #0000ff;">var</span> target = <span style="color: #0000ff;">this</span>.options.bindToWrapper ? <span style="color: #0000ff;">this</span><span style="color: #000000;">.wrapper : window;
+</span><span style="color: #008080;">225</span> 
+<span style="color: #008080;">226</span>       eventType(window, 'orientationchange', <span style="color: #0000ff;">this</span><span style="color: #000000;">);
+</span><span style="color: #008080;">227</span>       eventType(window, 'resize', <span style="color: #0000ff;">this</span><span style="color: #000000;">);
+</span><span style="color: #008080;">228</span> 
+<span style="color: #008080;">229</span>       <span style="color: #0000ff;">if</span><span style="color: #000000;"> (utils.hasTouch) {
+</span><span style="color: #008080;">230</span>         eventType(<span style="color: #0000ff;">this</span>.wrapper, 'touchstart', <span style="color: #0000ff;">this</span><span style="color: #000000;">);
+</span><span style="color: #008080;">231</span>         eventType(target, 'touchmove', <span style="color: #0000ff;">this</span><span style="color: #000000;">);
+</span><span style="color: #008080;">232</span>         eventType(target, 'touchcancel', <span style="color: #0000ff;">this</span><span style="color: #000000;">);
+</span><span style="color: #008080;">233</span>         eventType(target, 'touchend', <span style="color: #0000ff;">this</span><span style="color: #000000;">);
+</span><span style="color: #008080;">234</span>       } <span style="color: #0000ff;">else</span><span style="color: #000000;"> {
+</span><span style="color: #008080;">235</span>         eventType(<span style="color: #0000ff;">this</span>.wrapper, 'mousedown', <span style="color: #0000ff;">this</span><span style="color: #000000;">);
+</span><span style="color: #008080;">236</span>         eventType(target, 'mousemove', <span style="color: #0000ff;">this</span><span style="color: #000000;">);
+</span><span style="color: #008080;">237</span>         eventType(target, 'mousecancel', <span style="color: #0000ff;">this</span><span style="color: #000000;">);
+</span><span style="color: #008080;">238</span>         eventType(target, 'mouseup', <span style="color: #0000ff;">this</span><span style="color: #000000;">);
+</span><span style="color: #008080;">239</span> <span style="color: #000000;">      }
+</span><span style="color: #008080;">240</span> 
+<span style="color: #008080;">241</span>       eventType(<span style="color: #0000ff;">this</span>.scroller, 'transitionend', <span style="color: #0000ff;">this</span><span style="color: #000000;">);
+</span><span style="color: #008080;">242</span>       eventType(<span style="color: #0000ff;">this</span>.scroller, 'webkitTransitionEnd', <span style="color: #0000ff;">this</span><span style="color: #000000;">);
+</span><span style="color: #008080;">243</span>       eventType(<span style="color: #0000ff;">this</span>.scroller, 'oTransitionEnd', <span style="color: #0000ff;">this</span><span style="color: #000000;">);
+</span><span style="color: #008080;">244</span>       eventType(<span style="color: #0000ff;">this</span>.scroller, 'MSTransitionEnd', <span style="color: #0000ff;">this</span><span style="color: #000000;">);
+</span><span style="color: #008080;">245</span> <span style="color: #000000;">    },
+</span><span style="color: #008080;">246</span>     _start: <span style="color: #0000ff;">function</span><span style="color: #000000;"> (e) {
+</span><span style="color: #008080;">247</span>       <span style="color: #0000ff;">if</span> (!<span style="color: #0000ff;">this</span>.enabled || (<span style="color: #0000ff;">this</span>.initiated &amp;&amp; utils.eventType[e.type] !== <span style="color: #0000ff;">this</span><span style="color: #000000;">.initiated)) {
+</span><span style="color: #008080;">248</span>         <span style="color: #0000ff;">return</span><span style="color: #000000;">;
+</span><span style="color: #008080;">249</span> <span style="color: #000000;">      }
+</span><span style="color: #008080;">250</span> 
+<span style="color: #008080;">251</span>       <span style="color: #0000ff;">var</span> point = e.touches ? e.touches[0<span style="color: #000000;">] : e, pos;
+</span><span style="color: #008080;">252</span>       <span style="color: #0000ff;">this</span>.initiated =<span style="color: #000000;"> utils.eventType[e.type];
+</span><span style="color: #008080;">253</span> 
+<span style="color: #008080;">254</span>       <span style="color: #0000ff;">this</span>.moved = <span style="color: #0000ff;">false</span><span style="color: #000000;">;
+</span><span style="color: #008080;">255</span> 
+<span style="color: #008080;">256</span>       <span style="color: #0000ff;">this</span>.distY = 0<span style="color: #000000;">;
+</span><span style="color: #008080;">257</span> 
+<span style="color: #008080;">258</span>       <span style="color: #008000;">//</span><span style="color: #008000;">开启动画时间，如果之前有动画的话，便要停止动画，这里因为没有传时间，所以动画便直接停止了</span>
+<span style="color: #008080;">259</span>       <span style="color: #0000ff;">this</span><span style="color: #000000;">._transitionTime();
+</span><span style="color: #008080;">260</span> 
+<span style="color: #008080;">261</span>       <span style="color: #0000ff;">this</span>.startTime =<span style="color: #000000;"> utils.getTime();
+</span><span style="color: #008080;">262</span> 
+<span style="color: #008080;">263</span>       <span style="color: #008000;">//</span><span style="color: #008000;">如果正在进行动画，需要停止，并且触发滑动结束事件</span>
+<span style="color: #008080;">264</span>       <span style="color: #0000ff;">if</span> (<span style="color: #0000ff;">this</span><span style="color: #000000;">.isInTransition) {
+</span><span style="color: #008080;">265</span>         <span style="color: #0000ff;">this</span>.isInTransition = <span style="color: #0000ff;">false</span><span style="color: #000000;">;
+</span><span style="color: #008080;">266</span>         pos = <span style="color: #0000ff;">this</span><span style="color: #000000;">.getComputedPosition();
+</span><span style="color: #008080;">267</span>         <span style="color: #0000ff;">var</span> _x =<span style="color: #000000;"> Math.round(pos.x);
+</span><span style="color: #008080;">268</span>         <span style="color: #0000ff;">var</span> _y =<span style="color: #000000;"> Math.round(pos.y);
+</span><span style="color: #008080;">269</span> 
+<span style="color: #008080;">270</span>         <span style="color: #0000ff;">if</span> (_y &lt; 0 &amp;&amp; _y &gt; <span style="color: #0000ff;">this</span>.maxScrollY &amp;&amp; <span style="color: #0000ff;">this</span><span style="color: #000000;">.options.adjustXY) {
+</span><span style="color: #008080;">271</span>           _y = <span style="color: #0000ff;">this</span>.options.adjustXY.call(<span style="color: #0000ff;">this</span><span style="color: #000000;">, _x, _y).y;
+</span><span style="color: #008080;">272</span> <span style="color: #000000;">        }
+</span><span style="color: #008080;">273</span> 
+<span style="color: #008080;">274</span>         <span style="color: #008000;">//</span><span style="color: #008000;">移动过去</span>
+<span style="color: #008080;">275</span>         <span style="color: #0000ff;">this</span><span style="color: #000000;">._translate(_x, _y);
+</span><span style="color: #008080;">276</span>         <span style="color: #0000ff;">this</span>._execEvent('scrollEnd'<span style="color: #000000;">);
+</span><span style="color: #008080;">277</span> <span style="color: #000000;">      }
+</span><span style="color: #008080;">278</span> 
+<span style="color: #008080;">279</span>       <span style="color: #0000ff;">this</span>.startX = <span style="color: #0000ff;">this</span><span style="color: #000000;">.x;
+</span><span style="color: #008080;">280</span>       <span style="color: #0000ff;">this</span>.startY = <span style="color: #0000ff;">this</span><span style="color: #000000;">.y;
+</span><span style="color: #008080;">281</span>       <span style="color: #0000ff;">this</span>.absStartX = <span style="color: #0000ff;">this</span><span style="color: #000000;">.x;
+</span><span style="color: #008080;">282</span>       <span style="color: #0000ff;">this</span>.absStartY = <span style="color: #0000ff;">this</span><span style="color: #000000;">.y;
+</span><span style="color: #008080;">283</span>       <span style="color: #0000ff;">this</span>.pointX =<span style="color: #000000;"> point.pageX;
+</span><span style="color: #008080;">284</span>       <span style="color: #0000ff;">this</span>.pointY =<span style="color: #000000;"> point.pageY;
+</span><span style="color: #008080;">285</span> 
+<span style="color: #008080;">286</span>       <span style="color: #0000ff;">this</span>._execEvent('beforeScrollStart'<span style="color: #000000;">);
+</span><span style="color: #008080;">287</span> 
+<span style="color: #008080;">288</span> <span style="color: #000000;">      e.preventDefault();
+</span><span style="color: #008080;">289</span> 
+<span style="color: #008080;">290</span> <span style="color: #000000;">    },
+</span><span style="color: #008080;">291</span> 
+<span style="color: #008080;">292</span>     _move: <span style="color: #0000ff;">function</span><span style="color: #000000;"> (e) {
+</span><span style="color: #008080;">293</span>       <span style="color: #0000ff;">if</span> (!<span style="color: #0000ff;">this</span>.enabled || utils.eventType[e.type] !== <span style="color: #0000ff;">this</span><span style="color: #000000;">.initiated) {
+</span><span style="color: #008080;">294</span>         <span style="color: #0000ff;">return</span><span style="color: #000000;">;
+</span><span style="color: #008080;">295</span> <span style="color: #000000;">      }
+</span><span style="color: #008080;">296</span> <span style="color: #000000;">      e.preventDefault();
+</span><span style="color: #008080;">297</span> 
+<span style="color: #008080;">298</span>       <span style="color: #0000ff;">var</span> point = e.touches ? e.touches[0<span style="color: #000000;">] : e,
+</span><span style="color: #008080;">299</span>       deltaX = point.pageX - <span style="color: #0000ff;">this</span><span style="color: #000000;">.pointX,
+</span><span style="color: #008080;">300</span>       deltaY = point.pageY - <span style="color: #0000ff;">this</span><span style="color: #000000;">.pointY,
+</span><span style="color: #008080;">301</span>       timestamp =<span style="color: #000000;"> utils.getTime(),
+</span><span style="color: #008080;">302</span> <span style="color: #000000;">      newX, newY,
+</span><span style="color: #008080;">303</span> <span style="color: #000000;">      absDistX, absDistY;
+</span><span style="color: #008080;">304</span> 
+<span style="color: #008080;">305</span>       <span style="color: #0000ff;">this</span>.pointX =<span style="color: #000000;"> point.pageX;
+</span><span style="color: #008080;">306</span>       <span style="color: #0000ff;">this</span>.pointY =<span style="color: #000000;"> point.pageY;
+</span><span style="color: #008080;">307</span> 
+<span style="color: #008080;">308</span>       <span style="color: #0000ff;">this</span>.distX +=<span style="color: #000000;"> deltaX;
+</span><span style="color: #008080;">309</span>       <span style="color: #0000ff;">this</span>.distY +=<span style="color: #000000;"> deltaY;
+</span><span style="color: #008080;">310</span>       absDistX = Math.abs(<span style="color: #0000ff;">this</span><span style="color: #000000;">.distX);
+</span><span style="color: #008080;">311</span>       absDistY = Math.abs(<span style="color: #0000ff;">this</span><span style="color: #000000;">.distY);
+</span><span style="color: #008080;">312</span> 
+<span style="color: #008080;">313</span>       <span style="color: #008000;">//</span><span style="color: #008000;"> 如果一直按着没反应的话这里就直接返回了</span>
+<span style="color: #008080;">314</span>       <span style="color: #0000ff;">if</span> (timestamp - <span style="color: #0000ff;">this</span>.endTime &gt; 300 &amp;&amp; (absDistX &lt; 10 &amp;&amp; absDistY &lt; 10<span style="color: #000000;">)) {
+</span><span style="color: #008080;">315</span>         <span style="color: #0000ff;">return</span><span style="color: #000000;">;
+</span><span style="color: #008080;">316</span> <span style="color: #000000;">      }
+</span><span style="color: #008080;">317</span> 
+<span style="color: #008080;">318</span>       newY = <span style="color: #0000ff;">this</span>.y +<span style="color: #000000;"> deltaY;
+</span><span style="color: #008080;">319</span> 
+<span style="color: #008080;">320</span>       <span style="color: #0000ff;">if</span> (newY &gt; 0 || newY &lt; <span style="color: #0000ff;">this</span><span style="color: #000000;">.maxScrollY) {
+</span><span style="color: #008080;">321</span>         newY = <span style="color: #0000ff;">this</span>.options.bounce ? <span style="color: #0000ff;">this</span>.y + deltaY / 3 : newY &gt; 0 ? 0 : <span style="color: #0000ff;">this</span><span style="color: #000000;">.maxScrollY;
+</span><span style="color: #008080;">322</span> <span style="color: #000000;">      }
+</span><span style="color: #008080;">323</span> 
+<span style="color: #008080;">324</span>       <span style="color: #0000ff;">if</span> (!<span style="color: #0000ff;">this</span><span style="color: #000000;">.moved) {
+</span><span style="color: #008080;">325</span>         <span style="color: #0000ff;">this</span>._execEvent('scrollStart'<span style="color: #000000;">);
+</span><span style="color: #008080;">326</span> <span style="color: #000000;">      }
+</span><span style="color: #008080;">327</span> 
+<span style="color: #008080;">328</span>       <span style="color: #0000ff;">this</span>.moved = <span style="color: #0000ff;">true</span><span style="color: #000000;">;
+</span><span style="color: #008080;">329</span> 
+<span style="color: #008080;">330</span>       <span style="color: #0000ff;">this</span>._translate(0<span style="color: #000000;">, newY);
+</span><span style="color: #008080;">331</span> 
+<span style="color: #008080;">332</span>       <span style="color: #0000ff;">if</span> (timestamp - <span style="color: #0000ff;">this</span>.startTime &gt; 300<span style="color: #000000;">) {
+</span><span style="color: #008080;">333</span>         <span style="color: #0000ff;">this</span>.startTime =<span style="color: #000000;"> timestamp;
+</span><span style="color: #008080;">334</span>         <span style="color: #0000ff;">this</span>.startX = <span style="color: #0000ff;">this</span><span style="color: #000000;">.x;
+</span><span style="color: #008080;">335</span>         <span style="color: #0000ff;">this</span>.startY = <span style="color: #0000ff;">this</span><span style="color: #000000;">.y;
+</span><span style="color: #008080;">336</span> <span style="color: #000000;">      }
+</span><span style="color: #008080;">337</span> 
+<span style="color: #008080;">338</span> 
+<span style="color: #008080;">339</span> <span style="color: #000000;">    },
+</span><span style="color: #008080;">340</span>     _end: <span style="color: #0000ff;">function</span><span style="color: #000000;"> (e) {
+</span><span style="color: #008080;">341</span> 
+<span style="color: #008080;">342</span>       <span style="color: #0000ff;">if</span> (!<span style="color: #0000ff;">this</span>.enabled || utils.eventType[e.type] !== <span style="color: #0000ff;">this</span><span style="color: #000000;">.initiated) {
+</span><span style="color: #008080;">343</span>         <span style="color: #0000ff;">return</span><span style="color: #000000;">;
+</span><span style="color: #008080;">344</span> <span style="color: #000000;">      }
+</span><span style="color: #008080;">345</span> 
+<span style="color: #008080;">346</span>       <span style="color: #0000ff;">var</span> point = e.changedTouches ? e.changedTouches[0<span style="color: #000000;">] : e,
+</span><span style="color: #008080;">347</span> <span style="color: #000000;">      momentumY,
+</span><span style="color: #008080;">348</span>       duration = utils.getTime() - <span style="color: #0000ff;">this</span><span style="color: #000000;">.startTime,
+</span><span style="color: #008080;">349</span>       newX = Math.round(<span style="color: #0000ff;">this</span><span style="color: #000000;">.x),
+</span><span style="color: #008080;">350</span>       newY = Math.round(<span style="color: #0000ff;">this</span><span style="color: #000000;">.y),
+</span><span style="color: #008080;">351</span>       distanceX = Math.abs(newX - <span style="color: #0000ff;">this</span><span style="color: #000000;">.startX),
+</span><span style="color: #008080;">352</span>       distanceY = Math.abs(newY - <span style="color: #0000ff;">this</span><span style="color: #000000;">.startY),
+</span><span style="color: #008080;">353</span>       time = 0<span style="color: #000000;">,
+</span><span style="color: #008080;">354</span>       easing = ''<span style="color: #000000;">;
+</span><span style="color: #008080;">355</span> 
+<span style="color: #008080;">356</span>       <span style="color: #0000ff;">this</span>.isInTransition = 0<span style="color: #000000;">;
+</span><span style="color: #008080;">357</span>       <span style="color: #0000ff;">this</span>.initiated = 0<span style="color: #000000;">;
+</span><span style="color: #008080;">358</span>       <span style="color: #0000ff;">this</span>.endTime =<span style="color: #000000;"> utils.getTime();
+</span><span style="color: #008080;">359</span> 
+<span style="color: #008080;">360</span>       <span style="color: #0000ff;">if</span> (<span style="color: #0000ff;">this</span>.resetPosition(<span style="color: #0000ff;">this</span><span style="color: #000000;">.options.bounceTime)) {
+</span><span style="color: #008080;">361</span>         <span style="color: #0000ff;">return</span><span style="color: #000000;">;
+</span><span style="color: #008080;">362</span> <span style="color: #000000;">      }
+</span><span style="color: #008080;">363</span> 
+<span style="color: #008080;">364</span>       <span style="color: #0000ff;">this</span><span style="color: #000000;">.scrollTo(newX, newY);
+</span><span style="color: #008080;">365</span>       <span style="color: #0000ff;">if</span> (!<span style="color: #0000ff;">this</span><span style="color: #000000;">.moved) {
+</span><span style="color: #008080;">366</span>         <span style="color: #008000;">//</span><span style="color: #008000;">click 的情况</span>
+<span style="color: #008080;">367</span> 
+<span style="color: #008080;">368</span>         <span style="color: #0000ff;">this</span>._execEvent('scrollCancel'<span style="color: #000000;">);
+</span><span style="color: #008080;">369</span>         <span style="color: #0000ff;">return</span><span style="color: #000000;">;
+</span><span style="color: #008080;">370</span> <span style="color: #000000;">      }
+</span><span style="color: #008080;">371</span> 
+<span style="color: #008080;">372</span>       <span style="color: #0000ff;">if</span> (duration &lt; 300<span style="color: #000000;">) {
+</span><span style="color: #008080;">373</span> 
+<span style="color: #008080;">374</span>         momentumY = utils.momentum(<span style="color: #0000ff;">this</span>.y, <span style="color: #0000ff;">this</span>.startY, duration, <span style="color: #0000ff;">this</span>.maxScrollY, <span style="color: #0000ff;">this</span>.options.bounce ? <span style="color: #0000ff;">this</span>.wrapperHeight : 0<span style="color: #000000;">);
+</span><span style="color: #008080;">375</span>         <span style="color: #008000;">//</span><span style="color: #008000;">      newX = momentumX.destination;</span>
+<span style="color: #008080;">376</span>         newY =<span style="color: #000000;"> momentumY.destination;
+</span><span style="color: #008080;">377</span>         time =<span style="color: #000000;"> Math.max(momentumY.duration);
+</span><span style="color: #008080;">378</span>         <span style="color: #0000ff;">this</span>.isInTransition = 1<span style="color: #000000;">;
+</span><span style="color: #008080;">379</span> <span style="color: #000000;">      }
+</span><span style="color: #008080;">380</span> 
+<span style="color: #008080;">381</span>       <span style="color: #0000ff;">if</span> (newY != <span style="color: #0000ff;">this</span><span style="color: #000000;">.y) {
+</span><span style="color: #008080;">382</span>         <span style="color: #0000ff;">if</span> (newY &gt; 0 || newY &lt; <span style="color: #0000ff;">this</span><span style="color: #000000;">.maxScrollY) {
+</span><span style="color: #008080;">383</span>           easing =<span style="color: #000000;"> utils.ease.quadratic;
+</span><span style="color: #008080;">384</span> <span style="color: #000000;">        }
+</span><span style="color: #008080;">385</span> 
+<span style="color: #008080;">386</span>         <span style="color: #0000ff;">this</span><span style="color: #000000;">.scrollTo(newX, newY, time, easing);
+</span><span style="color: #008080;">387</span>         <span style="color: #0000ff;">return</span><span style="color: #000000;">;
+</span><span style="color: #008080;">388</span> <span style="color: #000000;">      }
+</span><span style="color: #008080;">389</span> 
+<span style="color: #008080;">390</span>       <span style="color: #0000ff;">this</span>._execEvent('scrollEnd'<span style="color: #000000;">);
+</span><span style="color: #008080;">391</span> <span style="color: #000000;">    },
+</span><span style="color: #008080;">392</span> 
+<span style="color: #008080;">393</span>     _resize: <span style="color: #0000ff;">function</span><span style="color: #000000;"> () {
+</span><span style="color: #008080;">394</span>       <span style="color: #0000ff;">var</span> that = <span style="color: #0000ff;">this</span><span style="color: #000000;">;
+</span><span style="color: #008080;">395</span> 
+<span style="color: #008080;">396</span>       clearTimeout(<span style="color: #0000ff;">this</span><span style="color: #000000;">.resizeTimeout);
+</span><span style="color: #008080;">397</span> 
+<span style="color: #008080;">398</span>       <span style="color: #0000ff;">this</span>.resizeTimeout = setTimeout(<span style="color: #0000ff;">function</span><span style="color: #000000;"> () {
+</span><span style="color: #008080;">399</span> <span style="color: #000000;">        that.refresh();
+</span><span style="color: #008080;">400</span>       }, <span style="color: #0000ff;">this</span><span style="color: #000000;">.options.resizePolling);
+</span><span style="color: #008080;">401</span> <span style="color: #000000;">    },
+</span><span style="color: #008080;">402</span> 
+<span style="color: #008080;">403</span>     _transitionTimingFunction: <span style="color: #0000ff;">function</span><span style="color: #000000;"> (easing) {
+</span><span style="color: #008080;">404</span>       <span style="color: #0000ff;">this</span>.scrollerStyle[utils.style.transitionTimingFunction] =<span style="color: #000000;"> easing;
+</span><span style="color: #008080;">405</span> 
+<span style="color: #008080;">406</span>       <span style="color: #0000ff;">this</span>.indicator &amp;&amp; <span style="color: #0000ff;">this</span><span style="color: #000000;">.indicator.transitionTimingFunction(easing);
+</span><span style="color: #008080;">407</span> <span style="color: #000000;">    },
+</span><span style="color: #008080;">408</span> 
+<span style="color: #008080;">409</span>     <span style="color: #008000;">//</span><span style="color: #008000;">开始或者停止动画</span>
+<span style="color: #008080;">410</span>     _transitionTime: <span style="color: #0000ff;">function</span><span style="color: #000000;"> (time) {
+</span><span style="color: #008080;">411</span>       time = time || 0<span style="color: #000000;">;
+</span><span style="color: #008080;">412</span>       <span style="color: #0000ff;">this</span>.scrollerStyle[utils.style.transitionDuration] = time + 'ms'<span style="color: #000000;">;
+</span><span style="color: #008080;">413</span> 
+<span style="color: #008080;">414</span>       <span style="color: #008000;">//</span><span style="color: #008000;">滚动条，我们这里只会出现一个滚动条就不搞那么复杂了</span>
+<span style="color: #008080;">415</span>       <span style="color: #0000ff;">this</span>.indicator &amp;&amp; <span style="color: #0000ff;">this</span><span style="color: #000000;">.indicator.transitionTime(time);
+</span><span style="color: #008080;">416</span> 
+<span style="color: #008080;">417</span> <span style="color: #000000;">    },
+</span><span style="color: #008080;">418</span> 
+<span style="color: #008080;">419</span>     getComputedPosition: <span style="color: #0000ff;">function</span><span style="color: #000000;"> () {
+</span><span style="color: #008080;">420</span>       <span style="color: #0000ff;">var</span> matrix = window.getComputedStyle(<span style="color: #0000ff;">this</span>.scroller, <span style="color: #0000ff;">null</span><span style="color: #000000;">), x, y;
+</span><span style="color: #008080;">421</span> 
+<span style="color: #008080;">422</span>       matrix = matrix[utils.style.transform].split(')')[0].split(', '<span style="color: #000000;">);
+</span><span style="color: #008080;">423</span>       x = +(matrix[12] || matrix[4<span style="color: #000000;">]);
+</span><span style="color: #008080;">424</span>       y = +(matrix[13] || matrix[5<span style="color: #000000;">]);
+</span><span style="color: #008080;">425</span> 
+<span style="color: #008080;">426</span>       <span style="color: #0000ff;">return</span><span style="color: #000000;"> { x: x, y: y };
+</span><span style="color: #008080;">427</span> <span style="color: #000000;">    },
+</span><span style="color: #008080;">428</span> 
+<span style="color: #008080;">429</span>     _initIndicator: <span style="color: #0000ff;">function</span><span style="color: #000000;"> () {
+</span><span style="color: #008080;">430</span>       <span style="color: #008000;">//</span><span style="color: #008000;">滚动条</span>
+<span style="color: #008080;">431</span>       <span style="color: #0000ff;">var</span> el =<span style="color: #000000;"> createDefaultScrollbar();
+</span><span style="color: #008080;">432</span>       <span style="color: #0000ff;">this</span><span style="color: #000000;">.wrapper.appendChild(el);
+</span><span style="color: #008080;">433</span>       <span style="color: #0000ff;">this</span>.indicator = <span style="color: #0000ff;">new</span> Indicator(<span style="color: #0000ff;">this</span><span style="color: #000000;">, { el: el });
+</span><span style="color: #008080;">434</span> 
+<span style="color: #008080;">435</span>       <span style="color: #0000ff;">this</span>.on('scrollEnd', <span style="color: #0000ff;">function</span><span style="color: #000000;"> () {
+</span><span style="color: #008080;">436</span>         <span style="color: #0000ff;">this</span><span style="color: #000000;">.indicator.fade();
+</span><span style="color: #008080;">437</span> <span style="color: #000000;">      });
+</span><span style="color: #008080;">438</span> 
+<span style="color: #008080;">439</span>       <span style="color: #0000ff;">var</span> scope = <span style="color: #0000ff;">this</span><span style="color: #000000;">;
+</span><span style="color: #008080;">440</span>       <span style="color: #0000ff;">this</span>.on('scrollCancel', <span style="color: #0000ff;">function</span><span style="color: #000000;"> () {
+</span><span style="color: #008080;">441</span> <span style="color: #000000;">        scope.indicator.fade();
+</span><span style="color: #008080;">442</span> <span style="color: #000000;">      });
+</span><span style="color: #008080;">443</span> 
+<span style="color: #008080;">444</span>       <span style="color: #0000ff;">this</span>.on('scrollStart', <span style="color: #0000ff;">function</span><span style="color: #000000;"> () {
+</span><span style="color: #008080;">445</span>         scope.indicator.fade(1<span style="color: #000000;">);
+</span><span style="color: #008080;">446</span> <span style="color: #000000;">      });
+</span><span style="color: #008080;">447</span> 
+<span style="color: #008080;">448</span>       <span style="color: #0000ff;">this</span>.on('beforeScrollStart', <span style="color: #0000ff;">function</span><span style="color: #000000;"> () {
+</span><span style="color: #008080;">449</span>         scope.indicator.fade(1, <span style="color: #0000ff;">true</span><span style="color: #000000;">);
+</span><span style="color: #008080;">450</span> <span style="color: #000000;">      });
+</span><span style="color: #008080;">451</span> 
+<span style="color: #008080;">452</span>       <span style="color: #0000ff;">this</span>.on('refresh', <span style="color: #0000ff;">function</span><span style="color: #000000;"> () {
+</span><span style="color: #008080;">453</span> <span style="color: #000000;">        scope.indicator.refresh();
+</span><span style="color: #008080;">454</span> <span style="color: #000000;">      });
+</span><span style="color: #008080;">455</span> 
+<span style="color: #008080;">456</span> <span style="color: #000000;">    },
+</span><span style="color: #008080;">457</span> 
+<span style="color: #008080;">458</span>     <span style="color: #008000;">//</span><span style="color: #008000;">移动x，y这里比较简单就不分离y了</span>
+<span style="color: #008080;">459</span>     _translate: <span style="color: #0000ff;">function</span><span style="color: #000000;"> (x, y) {
+</span><span style="color: #008080;">460</span>       <span style="color: #0000ff;">this</span>.scrollerStyle[utils.style.transform] = 'translate(' + x + 'px,' + y + 'px)' + <span style="color: #0000ff;">this</span><span style="color: #000000;">.translateZ;
+</span><span style="color: #008080;">461</span> 
+<span style="color: #008080;">462</span>       <span style="color: #0000ff;">this</span>.x =<span style="color: #000000;"> x;
+</span><span style="color: #008080;">463</span>       <span style="color: #0000ff;">this</span>.y =<span style="color: #000000;"> y;
+</span><span style="color: #008080;">464</span> 
+<span style="color: #008080;">465</span>       <span style="color: #0000ff;">if</span> (<span style="color: #0000ff;">this</span><span style="color: #000000;">.options.scrollbars) {
+</span><span style="color: #008080;">466</span>         <span style="color: #0000ff;">this</span><span style="color: #000000;">.indicator.updatePosition();
+</span><span style="color: #008080;">467</span> <span style="color: #000000;">      }
+</span><span style="color: #008080;">468</span> 
+<span style="color: #008080;">469</span> <span style="color: #000000;">    },
+</span><span style="color: #008080;">470</span> 
+<span style="color: #008080;">471</span>     resetPosition: <span style="color: #0000ff;">function</span><span style="color: #000000;"> (time) {
+</span><span style="color: #008080;">472</span>       <span style="color: #0000ff;">var</span> x = <span style="color: #0000ff;">this</span><span style="color: #000000;">.x,
+</span><span style="color: #008080;">473</span>         y = <span style="color: #0000ff;">this</span><span style="color: #000000;">.y;
+</span><span style="color: #008080;">474</span> 
+<span style="color: #008080;">475</span>       time = time || 0<span style="color: #000000;">;
+</span><span style="color: #008080;">476</span> 
+<span style="color: #008080;">477</span>       <span style="color: #0000ff;">if</span> (<span style="color: #0000ff;">this</span>.y &gt; 0<span style="color: #000000;">) {
+</span><span style="color: #008080;">478</span>         y = 0<span style="color: #000000;">;
+</span><span style="color: #008080;">479</span>       } <span style="color: #0000ff;">else</span> <span style="color: #0000ff;">if</span> (<span style="color: #0000ff;">this</span>.y &lt; <span style="color: #0000ff;">this</span><span style="color: #000000;">.maxScrollY) {
+</span><span style="color: #008080;">480</span>         y = <span style="color: #0000ff;">this</span><span style="color: #000000;">.maxScrollY;
+</span><span style="color: #008080;">481</span> <span style="color: #000000;">      }
+</span><span style="color: #008080;">482</span> 
+<span style="color: #008080;">483</span>       <span style="color: #0000ff;">if</span> (y == <span style="color: #0000ff;">this</span><span style="color: #000000;">.y) {
+</span><span style="color: #008080;">484</span>         <span style="color: #0000ff;">return</span> <span style="color: #0000ff;">false</span><span style="color: #000000;">;
+</span><span style="color: #008080;">485</span> <span style="color: #000000;">      }
+</span><span style="color: #008080;">486</span> 
+<span style="color: #008080;">487</span>       <span style="color: #0000ff;">this</span>.scrollTo(x, y, time, <span style="color: #0000ff;">this</span><span style="color: #000000;">.options.bounceEasing);
+</span><span style="color: #008080;">488</span> 
+<span style="color: #008080;">489</span>       <span style="color: #0000ff;">return</span> <span style="color: #0000ff;">true</span><span style="color: #000000;">;
+</span><span style="color: #008080;">490</span> <span style="color: #000000;">    },
+</span><span style="color: #008080;">491</span> 
+<span style="color: #008080;">492</span>     <span style="color: #008000;">//</span><span style="color: #008000;">移动</span>
+<span style="color: #008080;">493</span>     scrollTo: <span style="color: #0000ff;">function</span><span style="color: #000000;"> (x, y, time, easing) {
+</span><span style="color: #008080;">494</span> 
+<span style="color: #008080;">495</span>       <span style="color: #008000;">//</span><span style="color: #008000;">      //l_wang 必须项目高度的整数</span>
+<span style="color: #008080;">496</span>       <span style="color: #008000;">//</span><span style="color: #008000;">      if (y &lt; 0 &amp;&amp; y &gt; this.maxScrollY &amp;&amp; this.options.adjustXY) {</span>
+<span style="color: #008080;">497</span>       <span style="color: #008000;">//</span><span style="color: #008000;">        y = this.options.adjustXY.call(this, x, y).y;</span>
+<span style="color: #008080;">498</span>       <span style="color: #008000;">//</span><span style="color: #008000;">      }</span>
+<span style="color: #008080;">499</span> 
+<span style="color: #008080;">500</span> 
+<span style="color: #008080;">501</span>       <span style="color: #0000ff;">if</span> (<span style="color: #0000ff;">this</span><span style="color: #000000;">.options.adjustXY) {
+</span><span style="color: #008080;">502</span>         y = <span style="color: #0000ff;">this</span>.options.adjustXY.call(<span style="color: #0000ff;">this</span><span style="color: #000000;">, x, y).y;
+</span><span style="color: #008080;">503</span> <span style="color: #000000;">      }
+</span><span style="color: #008080;">504</span> 
+<span style="color: #008080;">505</span>       <span style="color: #008000;">//</span><span style="color: #008000;">l_wang 验证该项是否可选</span>
+<span style="color: #008080;">506</span>       <span style="color: #0000ff;">if</span> (<span style="color: #0000ff;">this</span><span style="color: #000000;">.options.checkSelected) {
+</span><span style="color: #008080;">507</span>         y = <span style="color: #0000ff;">this</span>.options.checkSelected.call(<span style="color: #0000ff;">this</span><span style="color: #000000;">, x, y).y;
+</span><span style="color: #008080;">508</span> <span style="color: #000000;">      }
+</span><span style="color: #008080;">509</span> 
+<span style="color: #008080;">510</span>       easing = easing ||<span style="color: #000000;"> utils.ease.circular;
+</span><span style="color: #008080;">511</span> 
+<span style="color: #008080;">512</span>       <span style="color: #0000ff;">this</span>.isInTransition = time &gt; 0<span style="color: #000000;">;
+</span><span style="color: #008080;">513</span> 
+<span style="color: #008080;">514</span>       <span style="color: #0000ff;">if</span> (!time ||<span style="color: #000000;"> easing.style) {
+</span><span style="color: #008080;">515</span>         <span style="color: #0000ff;">this</span><span style="color: #000000;">._transitionTimingFunction(easing.style);
+</span><span style="color: #008080;">516</span>         <span style="color: #0000ff;">this</span><span style="color: #000000;">._transitionTime(time);
+</span><span style="color: #008080;">517</span>         <span style="color: #0000ff;">this</span><span style="color: #000000;">._translate(x, y);
+</span><span style="color: #008080;">518</span> <span style="color: #000000;">      }
+</span><span style="color: #008080;">519</span> <span style="color: #000000;">    },
+</span><span style="color: #008080;">520</span> 
+<span style="color: #008080;">521</span>     <span style="color: #008000;">//</span><span style="color: #008000;">统一的关闭接口</span>
+<span style="color: #008080;">522</span>     disable: <span style="color: #0000ff;">function</span><span style="color: #000000;"> () {
+</span><span style="color: #008080;">523</span>       <span style="color: #0000ff;">this</span>.enabled = <span style="color: #0000ff;">false</span><span style="color: #000000;">;
+</span><span style="color: #008080;">524</span> <span style="color: #000000;">    },
+</span><span style="color: #008080;">525</span>     <span style="color: #008000;">//</span><span style="color: #008000;">统一的open接口</span>
+<span style="color: #008080;">526</span>     enable: <span style="color: #0000ff;">function</span><span style="color: #000000;"> () {
+</span><span style="color: #008080;">527</span>       <span style="color: #0000ff;">this</span>.enabled = <span style="color: #0000ff;">true</span><span style="color: #000000;">;
+</span><span style="color: #008080;">528</span> <span style="color: #000000;">    },
+</span><span style="color: #008080;">529</span> 
+<span style="color: #008080;">530</span>     on: <span style="color: #0000ff;">function</span><span style="color: #000000;"> (type, fn) {
+</span><span style="color: #008080;">531</span>       <span style="color: #0000ff;">if</span> (!<span style="color: #0000ff;">this</span><span style="color: #000000;">._events[type]) {
+</span><span style="color: #008080;">532</span>         <span style="color: #0000ff;">this</span>._events[type] =<span style="color: #000000;"> [];
+</span><span style="color: #008080;">533</span> <span style="color: #000000;">      }
+</span><span style="color: #008080;">534</span> 
+<span style="color: #008080;">535</span>       <span style="color: #0000ff;">this</span><span style="color: #000000;">._events[type].push(fn);
+</span><span style="color: #008080;">536</span> <span style="color: #000000;">    },
+</span><span style="color: #008080;">537</span> 
+<span style="color: #008080;">538</span>     _execEvent: <span style="color: #0000ff;">function</span><span style="color: #000000;"> (type) {
+</span><span style="color: #008080;">539</span>       <span style="color: #0000ff;">if</span> (!<span style="color: #0000ff;">this</span><span style="color: #000000;">._events[type]) {
+</span><span style="color: #008080;">540</span>         <span style="color: #0000ff;">return</span><span style="color: #000000;">;
+</span><span style="color: #008080;">541</span> <span style="color: #000000;">      }
+</span><span style="color: #008080;">542</span> 
+<span style="color: #008080;">543</span>       <span style="color: #0000ff;">var</span> i = 0<span style="color: #000000;">,
+</span><span style="color: #008080;">544</span>             l = <span style="color: #0000ff;">this</span><span style="color: #000000;">._events[type].length;
+</span><span style="color: #008080;">545</span> 
+<span style="color: #008080;">546</span>       <span style="color: #0000ff;">if</span> (!<span style="color: #000000;">l) {
+</span><span style="color: #008080;">547</span>         <span style="color: #0000ff;">return</span><span style="color: #000000;">;
+</span><span style="color: #008080;">548</span> <span style="color: #000000;">      }
+</span><span style="color: #008080;">549</span> 
+<span style="color: #008080;">550</span>       <span style="color: #0000ff;">for</span> (; i &lt; l; i++<span style="color: #000000;">) {
+</span><span style="color: #008080;">551</span>         <span style="color: #0000ff;">this</span>._events[type][i].call(<span style="color: #0000ff;">this</span><span style="color: #000000;">);
+</span><span style="color: #008080;">552</span> <span style="color: #000000;">      }
+</span><span style="color: #008080;">553</span> <span style="color: #000000;">    },
+</span><span style="color: #008080;">554</span>     destroy: <span style="color: #0000ff;">function</span><span style="color: #000000;"> () {
+</span><span style="color: #008080;">555</span>       <span style="color: #0000ff;">this</span>._initEvents(<span style="color: #0000ff;">true</span><span style="color: #000000;">);
+</span><span style="color: #008080;">556</span>       <span style="color: #0000ff;">this</span>._execEvent('destroy'<span style="color: #000000;">);
+</span><span style="color: #008080;">557</span>       <span style="color: #0000ff;">this</span>.indicator &amp;&amp; <span style="color: #0000ff;">this</span><span style="color: #000000;">.indicator.destroy();
+</span><span style="color: #008080;">558</span> 
+<span style="color: #008080;">559</span>       console.log('destroy'<span style="color: #000000;">)
+</span><span style="color: #008080;">560</span> 
+<span style="color: #008080;">561</span> <span style="color: #000000;">    },
+</span><span style="color: #008080;">562</span> 
+<span style="color: #008080;">563</span>     _transitionEnd: <span style="color: #0000ff;">function</span><span style="color: #000000;"> (e) {
+</span><span style="color: #008080;">564</span>       <span style="color: #0000ff;">if</span> (e.target != <span style="color: #0000ff;">this</span>.scroller || !<span style="color: #0000ff;">this</span><span style="color: #000000;">.isInTransition) {
+</span><span style="color: #008080;">565</span>         <span style="color: #0000ff;">return</span><span style="color: #000000;">;
+</span><span style="color: #008080;">566</span> <span style="color: #000000;">      }
+</span><span style="color: #008080;">567</span> 
+<span style="color: #008080;">568</span>       <span style="color: #0000ff;">this</span><span style="color: #000000;">._transitionTime();
+</span><span style="color: #008080;">569</span>       <span style="color: #0000ff;">if</span> (!<span style="color: #0000ff;">this</span>.resetPosition(<span style="color: #0000ff;">this</span><span style="color: #000000;">.options.bounceTime)) {
+</span><span style="color: #008080;">570</span>         <span style="color: #0000ff;">this</span>.isInTransition = <span style="color: #0000ff;">false</span><span style="color: #000000;">;
+</span><span style="color: #008080;">571</span>         <span style="color: #0000ff;">this</span>._execEvent('scrollEnd'<span style="color: #000000;">);
+</span><span style="color: #008080;">572</span> <span style="color: #000000;">      }
+</span><span style="color: #008080;">573</span> <span style="color: #000000;">    },
+</span><span style="color: #008080;">574</span> 
+<span style="color: #008080;">575</span>     <span style="color: #008000;">//</span><span style="color: #008000;">事件具体触发点</span>
+<span style="color: #008080;">576</span>     handleEvent: <span style="color: #0000ff;">function</span><span style="color: #000000;"> (e) {
+</span><span style="color: #008080;">577</span>       <span style="color: #0000ff;">switch</span><span style="color: #000000;"> (e.type) {
+</span><span style="color: #008080;">578</span>         <span style="color: #0000ff;">case</span> 'touchstart'<span style="color: #000000;">:
+</span><span style="color: #008080;">579</span>         <span style="color: #0000ff;">case</span> 'mousedown'<span style="color: #000000;">:
+</span><span style="color: #008080;">580</span>           <span style="color: #0000ff;">this</span><span style="color: #000000;">._start(e);
+</span><span style="color: #008080;">581</span>           <span style="color: #0000ff;">break</span><span style="color: #000000;">;
+</span><span style="color: #008080;">582</span>         <span style="color: #0000ff;">case</span> 'touchmove'<span style="color: #000000;">:
+</span><span style="color: #008080;">583</span>         <span style="color: #0000ff;">case</span> 'mousemove'<span style="color: #000000;">:
+</span><span style="color: #008080;">584</span>           <span style="color: #0000ff;">this</span><span style="color: #000000;">._move(e);
+</span><span style="color: #008080;">585</span>           <span style="color: #0000ff;">break</span><span style="color: #000000;">;
+</span><span style="color: #008080;">586</span>         <span style="color: #0000ff;">case</span> 'touchend'<span style="color: #000000;">:
+</span><span style="color: #008080;">587</span>         <span style="color: #0000ff;">case</span> 'mouseup'<span style="color: #000000;">:
+</span><span style="color: #008080;">588</span>         <span style="color: #0000ff;">case</span> 'touchcancel'<span style="color: #000000;">:
+</span><span style="color: #008080;">589</span>         <span style="color: #0000ff;">case</span> 'mousecancel'<span style="color: #000000;">:
+</span><span style="color: #008080;">590</span>           <span style="color: #0000ff;">this</span><span style="color: #000000;">._end(e);
+</span><span style="color: #008080;">591</span>           <span style="color: #0000ff;">break</span><span style="color: #000000;">;
+</span><span style="color: #008080;">592</span>         <span style="color: #0000ff;">case</span> 'orientationchange'<span style="color: #000000;">:
+</span><span style="color: #008080;">593</span>         <span style="color: #0000ff;">case</span> 'resize'<span style="color: #000000;">:
+</span><span style="color: #008080;">594</span>           <span style="color: #0000ff;">this</span><span style="color: #000000;">._resize();
+</span><span style="color: #008080;">595</span>           <span style="color: #0000ff;">break</span><span style="color: #000000;">;
+</span><span style="color: #008080;">596</span>         <span style="color: #0000ff;">case</span> 'transitionend'<span style="color: #000000;">:
+</span><span style="color: #008080;">597</span>         <span style="color: #0000ff;">case</span> 'webkitTransitionEnd'<span style="color: #000000;">:
+</span><span style="color: #008080;">598</span>         <span style="color: #0000ff;">case</span> 'oTransitionEnd'<span style="color: #000000;">:
+</span><span style="color: #008080;">599</span>         <span style="color: #0000ff;">case</span> 'MSTransitionEnd'<span style="color: #000000;">:
+</span><span style="color: #008080;">600</span>           <span style="color: #0000ff;">this</span><span style="color: #000000;">._transitionEnd(e);
+</span><span style="color: #008080;">601</span>           <span style="color: #0000ff;">break</span><span style="color: #000000;">;
+</span><span style="color: #008080;">602</span> <span style="color: #000000;">      }
+</span><span style="color: #008080;">603</span> <span style="color: #000000;">    }
+</span><span style="color: #008080;">604</span> 
+<span style="color: #008080;">605</span> <span style="color: #000000;">  };
+</span><span style="color: #008080;">606</span> 
+<span style="color: #008080;">607</span>   <span style="color: #0000ff;">function</span><span style="color: #000000;"> createDefaultScrollbar() {
+</span><span style="color: #008080;">608</span>     <span style="color: #0000ff;">var</span> scrollbar = document.createElement('div'<span style="color: #000000;">),
+</span><span style="color: #008080;">609</span>         indicator = document.createElement('div'<span style="color: #000000;">);
+</span><span style="color: #008080;">610</span> 
+<span style="color: #008080;">611</span>     scrollbar.style.cssText = 'position:absolute;z-index:9999'<span style="color: #000000;">;
+</span><span style="color: #008080;">612</span>     scrollbar.style.cssText += ';width:7px;bottom:2px;top:2px;right:1px'<span style="color: #000000;">;
+</span><span style="color: #008080;">613</span>     scrollbar.style.cssText += ';overflow:hidden'<span style="color: #000000;">;
+</span><span style="color: #008080;">614</span> 
+<span style="color: #008080;">615</span>     indicator.style.cssText = '-webkit-box-sizing:border-box;-moz-box-sizing:border-box;box-sizing:border-box;position:absolute;background:rgba(0,0,0,0.5);border:1px solid rgba(255,255,255,0.9);border-radius:3px'<span style="color: #000000;">;
+</span><span style="color: #008080;">616</span>     indicator.style.width = '100%'<span style="color: #000000;">;
+</span><span style="color: #008080;">617</span> 
+<span style="color: #008080;">618</span> <span style="color: #000000;">    scrollbar.appendChild(indicator);
+</span><span style="color: #008080;">619</span> 
+<span style="color: #008080;">620</span>     <span style="color: #0000ff;">return</span><span style="color: #000000;"> scrollbar;
+</span><span style="color: #008080;">621</span> <span style="color: #000000;">  }
+</span><span style="color: #008080;">622</span> 
+<span style="color: #008080;">623</span>   <span style="color: #0000ff;">function</span><span style="color: #000000;"> Indicator(scroller, opts) {
+</span><span style="color: #008080;">624</span>     <span style="color: #0000ff;">this</span>.wrapper = <span style="color: #0000ff;">typeof</span> opts.el == 'string' ?<span style="color: #000000;"> document.querySelector(opts.el) : opts.el;
+</span><span style="color: #008080;">625</span>     <span style="color: #0000ff;">this</span>.indicator = <span style="color: #0000ff;">this</span>.wrapper.children[0<span style="color: #000000;">];
+</span><span style="color: #008080;">626</span> 
+<span style="color: #008080;">627</span>     <span style="color: #0000ff;">this</span>.wrapperStyle = <span style="color: #0000ff;">this</span><span style="color: #000000;">.wrapper.style;
+</span><span style="color: #008080;">628</span>     <span style="color: #0000ff;">this</span>.indicatorStyle = <span style="color: #0000ff;">this</span><span style="color: #000000;">.indicator.style;
+</span><span style="color: #008080;">629</span>     <span style="color: #0000ff;">this</span>.scroller =<span style="color: #000000;"> scroller;
+</span><span style="color: #008080;">630</span> 
+<span style="color: #008080;">631</span>     <span style="color: #0000ff;">this</span>.sizeRatioY = 1<span style="color: #000000;">;
+</span><span style="color: #008080;">632</span>     <span style="color: #0000ff;">this</span>.maxPosY = 0<span style="color: #000000;">;
+</span><span style="color: #008080;">633</span> 
+<span style="color: #008080;">634</span>     <span style="color: #0000ff;">this</span>.wrapperStyle[utils.style.transform] = <span style="color: #0000ff;">this</span><span style="color: #000000;">.scroller.translateZ;
+</span><span style="color: #008080;">635</span>     <span style="color: #0000ff;">this</span>.wrapperStyle[utils.style.transitionDuration] = '0ms'<span style="color: #000000;">;
+</span><span style="color: #008080;">636</span>     <span style="color: #008000;">//</span><span style="color: #008000;">this.wrapperStyle.opacity = '0';</span>
+<span style="color: #008080;">637</span> <span style="color: #000000;">  }
+</span><span style="color: #008080;">638</span> 
+<span style="color: #008080;">639</span>   Indicator.prototype =<span style="color: #000000;"> {
+</span><span style="color: #008080;">640</span>     transitionTime: <span style="color: #0000ff;">function</span><span style="color: #000000;"> (time) {
+</span><span style="color: #008080;">641</span>       time = time || 0<span style="color: #000000;">;
+</span><span style="color: #008080;">642</span>       <span style="color: #0000ff;">this</span>.indicatorStyle[utils.style.transitionDuration] = time + 'ms'<span style="color: #000000;">;
+</span><span style="color: #008080;">643</span> <span style="color: #000000;">    },
+</span><span style="color: #008080;">644</span>     transitionTimingFunction: <span style="color: #0000ff;">function</span><span style="color: #000000;"> (easing) {
+</span><span style="color: #008080;">645</span>       <span style="color: #0000ff;">this</span>.indicatorStyle[utils.style.transitionTimingFunction] =<span style="color: #000000;"> easing;
+</span><span style="color: #008080;">646</span> <span style="color: #000000;">    },
+</span><span style="color: #008080;">647</span>     refresh: <span style="color: #0000ff;">function</span><span style="color: #000000;"> () {
+</span><span style="color: #008080;">648</span> 
+<span style="color: #008080;">649</span>       <span style="color: #0000ff;">this</span><span style="color: #000000;">.transitionTime();
+</span><span style="color: #008080;">650</span> 
+<span style="color: #008080;">651</span>       <span style="color: #0000ff;">var</span> r = <span style="color: #0000ff;">this</span>.wrapper.offsetHeight; <span style="color: #008000;">//</span><span style="color: #008000;"> force refresh</span>
+<span style="color: #008080;">652</span> 
+<span style="color: #008080;">653</span>       <span style="color: #0000ff;">this</span>.wrapperHeight = <span style="color: #0000ff;">this</span><span style="color: #000000;">.wrapper.clientHeight;
+</span><span style="color: #008080;">654</span> 
+<span style="color: #008080;">655</span> 
+<span style="color: #008080;">656</span>       <span style="color: #0000ff;">this</span>.indicatorHeight = Math.max(Math.round(<span style="color: #0000ff;">this</span>.wrapperHeight * <span style="color: #0000ff;">this</span>.wrapperHeight / (<span style="color: #0000ff;">this</span>.scroller.scrollerHeight || <span style="color: #0000ff;">this</span>.wrapperHeight || 1)), 8<span style="color: #000000;">);
+</span><span style="color: #008080;">657</span>       <span style="color: #0000ff;">this</span>.indicatorStyle.height = <span style="color: #0000ff;">this</span>.indicatorHeight + 'px'<span style="color: #000000;">;
+</span><span style="color: #008080;">658</span> 
+<span style="color: #008080;">659</span> 
+<span style="color: #008080;">660</span>       <span style="color: #0000ff;">this</span>.maxPosY = <span style="color: #0000ff;">this</span>.wrapperHeight - <span style="color: #0000ff;">this</span><span style="color: #000000;">.indicatorHeight;
+</span><span style="color: #008080;">661</span>       <span style="color: #0000ff;">this</span>.sizeRatioY = (<span style="color: #0000ff;">this</span>.scroller.maxScrollY &amp;&amp; (<span style="color: #0000ff;">this</span>.maxPosY / <span style="color: #0000ff;">this</span><span style="color: #000000;">.scroller.maxScrollY));
+</span><span style="color: #008080;">662</span> 
+<span style="color: #008080;">663</span>       <span style="color: #0000ff;">this</span><span style="color: #000000;">.updatePosition();
+</span><span style="color: #008080;">664</span> <span style="color: #000000;">    },
+</span><span style="color: #008080;">665</span>     destroy: <span style="color: #0000ff;">function</span><span style="color: #000000;"> () {
+</span><span style="color: #008080;">666</span>       <span style="color: #0000ff;">this</span><span style="color: #000000;">.wrapper.remove();
+</span><span style="color: #008080;">667</span> <span style="color: #000000;">    },
+</span><span style="color: #008080;">668</span>     updatePosition: <span style="color: #0000ff;">function</span><span style="color: #000000;"> () {
+</span><span style="color: #008080;">669</span>       <span style="color: #0000ff;">var</span> y = Math.round(<span style="color: #0000ff;">this</span>.sizeRatioY * <span style="color: #0000ff;">this</span>.scroller.y) || 0<span style="color: #000000;">;
+</span><span style="color: #008080;">670</span>       <span style="color: #0000ff;">this</span>.y =<span style="color: #000000;"> y;
+</span><span style="color: #008080;">671</span> 
+<span style="color: #008080;">672</span>       <span style="color: #008000;">//</span><span style="color: #008000;">不需要兼容方式了</span>
+<span style="color: #008080;">673</span>       <span style="color: #0000ff;">this</span>.indicatorStyle[utils.style.transform] = 'translate(0px,' + y + 'px)' + <span style="color: #0000ff;">this</span><span style="color: #000000;">.scroller.translateZ;
+</span><span style="color: #008080;">674</span> 
+<span style="color: #008080;">675</span> <span style="color: #000000;">    },
+</span><span style="color: #008080;">676</span>     fade: <span style="color: #0000ff;">function</span><span style="color: #000000;"> (val, hold) {
+</span><span style="color: #008080;">677</span>       <span style="color: #0000ff;">if</span> (hold &amp;&amp; !<span style="color: #0000ff;">this</span><span style="color: #000000;">.visible) {
+</span><span style="color: #008080;">678</span>         <span style="color: #0000ff;">return</span><span style="color: #000000;">;
+</span><span style="color: #008080;">679</span> <span style="color: #000000;">      }
+</span><span style="color: #008080;">680</span> 
+<span style="color: #008080;">681</span>       clearTimeout(<span style="color: #0000ff;">this</span><span style="color: #000000;">.fadeTimeout);
+</span><span style="color: #008080;">682</span>       <span style="color: #0000ff;">this</span>.fadeTimeout = <span style="color: #0000ff;">null</span><span style="color: #000000;">;
+</span><span style="color: #008080;">683</span> 
+<span style="color: #008080;">684</span>       <span style="color: #0000ff;">var</span> time = val ? 250 : 500<span style="color: #000000;">,
+</span><span style="color: #008080;">685</span>             delay = val ? 0 : 300<span style="color: #000000;">;
+</span><span style="color: #008080;">686</span> 
+<span style="color: #008080;">687</span>       val = val ? '1' : '0'<span style="color: #000000;">;
+</span><span style="color: #008080;">688</span> 
+<span style="color: #008080;">689</span>       <span style="color: #0000ff;">this</span>.wrapperStyle[utils.style.transitionDuration] = time + 'ms'<span style="color: #000000;">;
+</span><span style="color: #008080;">690</span> 
+<span style="color: #008080;">691</span>       <span style="color: #0000ff;">this</span>.fadeTimeout = setTimeout($.proxy(<span style="color: #0000ff;">function</span><span style="color: #000000;"> (val) {
+</span><span style="color: #008080;">692</span>         <span style="color: #0000ff;">this</span>.wrapperStyle.opacity =<span style="color: #000000;"> val;
+</span><span style="color: #008080;">693</span>         <span style="color: #0000ff;">this</span>.visible = +<span style="color: #000000;">val;
+</span><span style="color: #008080;">694</span>       }, <span style="color: #0000ff;">this</span><span style="color: #000000;">), delay);
+</span><span style="color: #008080;">695</span> 
+<span style="color: #008080;">696</span> <span style="color: #000000;">    }
+</span><span style="color: #008080;">697</span> <span style="color: #000000;">  };
+</span><span style="color: #008080;">698</span> 
+<span style="color: #008080;">699</span>   IScroll.utils = utils;</pre>
+</div>
+<span class="cnblogs_code_collapse" style="color: #ff0000;">核心代码</span></div>
+<p>代码中引入了fastclick解决其移动端点击问题，demo效果在此：</p>
+<p>9573907843705.jpg</p>
+<p><iframe src="9573907843705.jpg" width="300" height="500"></iframe></p>
+<p>基本代码出来了，我们现在来一个个埋坑，首先解决难的问题！</p>
+<h1>光标跳动/文本框消失</h1>
+<p><span style="line-height: 1.5;">光标跳动是什么现象大家都知道了，至于导致的原因又我们测试下来，即可确定罪魁祸首为：transform，于是我们看看滑动过程中发生了什么</span></p>
+<p><span style="line-height: 1.5;">① 每次滑动会涉及到位置的变化</span></p>
+<div class="cnblogs_code">
+<pre><span style="color: #0000ff;">this</span>._translate(0, newY);</pre>
+</div>
+<p>② 每次变化会改变transform属性</p>
+<div class="cnblogs_code">
+<pre><span style="color: #008080;"> 1</span> <span style="color: #008000;">//</span><span style="color: #008000;">移动x，y这里比较简单就不分离y了</span>
+<span style="color: #008080;"> 2</span> _translate: <span style="color: #0000ff;">function</span><span style="color: #000000;"> (x, y) {
+</span><span style="color: #008080;"> 3</span>   <span style="color: #0000ff;">this</span>.scrollerStyle[utils.style.transform] = 'translate(' + x + 'px,' + y + 'px)' + <span style="color: #0000ff;">this</span><span style="color: #000000;">.translateZ;
+</span><span style="color: #008080;"> 4</span> 
+<span style="color: #008080;"> 5</span>   <span style="color: #0000ff;">this</span>.x =<span style="color: #000000;"> x;
+</span><span style="color: #008080;"> 6</span>   <span style="color: #0000ff;">this</span>.y =<span style="color: #000000;"> y;
+</span><span style="color: #008080;"> 7</span> 
+<span style="color: #008080;"> 8</span>   <span style="color: #0000ff;">if</span> (<span style="color: #0000ff;">this</span><span style="color: #000000;">.options.scrollbars) {
+</span><span style="color: #008080;"> 9</span>     <span style="color: #0000ff;">this</span><span style="color: #000000;">.indicator.updatePosition();
+</span><span style="color: #008080;">10</span> <span style="color: #000000;">  }
+</span><span style="color: #008080;">11</span> 
+<span style="color: #008080;">12</span> },</pre>
+</div>
+<p>我们这里做一次剥离，将transform改成直接改变top值看看效果</p>
+<div class="cnblogs_code">
+<pre><span style="color: #0000ff;">this</span>.scrollerStyle['top'] = y + 'px';</pre>
+</div>
+<p>而事实证明，一旦去除transform属性，我们这里便不再有光标闪动的问题了。</p>
+<p><span style="line-height: 1.5;">更进一步的分析，实验，你会发现其实引起的原因是这句：</span></p>
+<div class="cnblogs_code">
+<pre><span style="color: #008000;">//</span><span style="color: #008000;">       this.scrollerStyle[utils.style.transform] = 'translate(' + x + 'px,' + y + 'px)' + this.translateZ;</span>
+       <span style="color: #0000ff;">this</span>.scrollerStyle[utils.style.transform] = 'translate(' + x + 'px,' + y + 'px)' ;</pre>
+</div>
+<p>没错，就是css3d加速引起的，他的优势是让动画变得顺畅，却不曾想到会引起文本框光标闪烁的问题</p>
+<p>针对ios闪烁有一个神奇的属性是</p>
+<div class="cnblogs_code">
+<pre><span style="color: #800000;">-webkit-backface-visibility: hidden;</span></pre>
+</div>
+<p>于是加入到，scroller元素上后观察之，无效，舍弃该方案再来就是一些怪办法了：</p>
+<h3>滑动隐藏虚拟键盘</h3>
+<p><span style="line-height: 1.5;">文本获取焦点的情况下，会隐藏虚拟键盘，连焦点都没有了，这个问题自然不药而愈，于是我们只要滑动便让其失去焦点，这样似乎狡猾的绕过了这个问题</span></p>
+<p><span style="line-height: 1.5;">在touchmove逻辑处加入以下逻辑</span></p>
+<div class="cnblogs_code">
+<pre><span style="color: #008080;"> 1</span> <span style="color: #008000;">//</span><span style="color: #008000;">暂时只考虑input问题，有效再扩展</span>
+<span style="color: #008080;"> 2</span> <span style="color: #0000ff;">var</span> el =<span style="color: #000000;"> document.activeElement;
+</span><span style="color: #008080;"> 3</span> <span style="color: #0000ff;">if</span> (el.nodeName.toLowerCase() == 'input'<span style="color: #000000;">) {
+</span><span style="color: #008080;"> 4</span> <span style="color: #000000;">  el.blur();
+</span><span style="color: #008080;"> 5</span>   <span style="color: #0000ff;">this</span><span style="color: #000000;">.disable();
+</span><span style="color: #008080;"> 6</span>   setTimeout($.proxy(<span style="color: #0000ff;">function</span><span style="color: #000000;"> () {
+</span><span style="color: #008080;"> 7</span>     <span style="color: #0000ff;">this</span><span style="color: #000000;">.enable();
+</span><span style="color: #008080;"> 8</span>   }, <span style="color: #0000ff;">this</span>), 250<span style="color: #000000;">);
+</span><span style="color: #008080;"> 9</span>   <span style="color: #0000ff;">return</span><span style="color: #000000;">;
+</span><span style="color: #008080;">10</span> }</pre>
+</div>
+<p>该方案最为简单粗暴，他在我们意图滑动时便直接导致虚拟键盘失效，从而根本不会滑动，便错过了光标跳动的问题</p>
+<p>甚至，<span style="color: #ff0000;"><strong>解决了由于滚动导致的文本框消失问题</strong></span>！！！<span style="line-height: 1.5;"><br></span></p>
+<p>其中有一个250ms的延时，这个期间是虚拟键盘隐藏所用时间，这个时间段将不可对IScroll进行操作，该方案实验下来效果还行</p>
+<p><span style="line-height: 1.5;">其中这个延时在200-300之间比较符合人的操作习惯，不设置滚动区域会乱闪，取什么值各位自己去尝试，测试地址：</span></p>
+<p><span style="line-height: 1.5;">http://sandbox.runjs.cn/show/8nkmlmz5</span></p>
+<p><span style="line-height: 1.5;">这个方案是我觉得最优的方案，其是否接受还要看产品态度</span></p>
+<h2><span style="line-height: 1.5;">死磕-重写_translate</span></h2>
+<p><span style="line-height: 1.5;">_translate是IScroll滑动的总控，这里默认是使用transform进行移动，但若是获取焦点的情况下我们可以具有不一样的方案</span></p>
+<p><span style="line-height: 1.5;">在文本框具有焦点是，我们使用top代替transform！</span></p>
+<p><span style="line-height: 1.5;">PS：这是个烂方法不建议采用</span></p>
+<div class="cnblogs_code">
+<pre><span style="color: #008080;"> 1</span> <span style="color: #008000;">//</span><span style="color: #008000;">移动x，y这里比较简单就不分离y了</span>
+<span style="color: #008080;"> 2</span> _translate: <span style="color: #0000ff;">function</span><span style="color: #000000;"> (x, y) {
+</span><span style="color: #008080;"> 3</span> 
+<span style="color: #008080;"> 4</span>   <span style="color: #0000ff;">var</span> el =<span style="color: #000000;"> document.activeElement;
+</span><span style="color: #008080;"> 5</span>   <span style="color: #0000ff;">if</span> (el.nodeName.toLowerCase() == 'input'<span style="color: #000000;">) {
+</span><span style="color: #008080;"> 6</span>     <span style="color: #0000ff;">this</span>.scrollerStyle['top'] = y + 'px'<span style="color: #000000;">;
+</span><span style="color: #008080;"> 7</span>   } <span style="color: #0000ff;">else</span><span style="color: #000000;"> {
+</span><span style="color: #008080;"> 8</span>     <span style="color: #0000ff;">this</span>.scrollerStyle[utils.style.transform] = 'translate(' + x + 'px,' + y + 'px)' + <span style="color: #0000ff;">this</span><span style="color: #000000;">.translateZ;
+</span><span style="color: #008080;"> 9</span> <span style="color: #000000;">  }
+</span><span style="color: #008080;">10</span> 
+<span style="color: #008080;">11</span>   <span style="color: #0000ff;">this</span>.x =<span style="color: #000000;"> x;
+</span><span style="color: #008080;">12</span>   <span style="color: #0000ff;">this</span>.y =<span style="color: #000000;"> y;
+</span><span style="color: #008080;">13</span> 
+<span style="color: #008080;">14</span>   <span style="color: #0000ff;">if</span> (<span style="color: #0000ff;">this</span><span style="color: #000000;">.options.scrollbars) {
+</span><span style="color: #008080;">15</span>     <span style="color: #0000ff;">this</span><span style="color: #000000;">.indicator.updatePosition();
+</span><span style="color: #008080;">16</span> <span style="color: #000000;">  }
+</span><span style="color: #008080;">17</span> 
+<span style="color: #008080;">18</span> },</pre>
+</div>
+<p>该方案被测试确实可行，不会出现光标闪的现象，但是有一个问题却需要我们处理，便是一旦文本框失去焦点，我们要做top与transform的换算</p>
+<p>所以这是一个烂方法！！！这里换算事实上也不难，就是将top值重新归还transform，但是整个这个逻辑却是让人觉得别扭</p>
+<p>而且我们这里还需要一个定时器去做计算，判断何时文本框失去焦点，整个这个逻辑就是一个字&nbsp;<span style="color: #ff0000; font-size: 18pt;"><strong>坑！</strong></span></p>
+<div class="cnblogs_code">
+<pre><span style="color: #008080;"> 1</span> <span style="color: #008000;">//</span><span style="color: #008000;">移动x，y这里比较简单就不分离y了</span>
+<span style="color: #008080;"> 2</span> _translate: <span style="color: #0000ff;">function</span><span style="color: #000000;"> (x, y) {
+</span><span style="color: #008080;"> 3</span> 
+<span style="color: #008080;"> 4</span>   <span style="color: #0000ff;">var</span> el =<span style="color: #000000;"> document.activeElement;
+</span><span style="color: #008080;"> 5</span>   <span style="color: #0000ff;">if</span> (el.nodeName.toLowerCase() == 'input'<span style="color: #000000;">) {
+</span><span style="color: #008080;"> 6</span>     <span style="color: #0000ff;">this</span>.scrollerStyle['top'] = y + 'px'<span style="color: #000000;">;
+</span><span style="color: #008080;"> 7</span> 
+<span style="color: #008080;"> 8</span>     <span style="color: #008000;">//</span><span style="color: #008000;">便需要做距离换算相关清理，一旦文本框事情焦点，我们要做top值还原</span>
+<span style="color: #008080;"> 9</span>     <span style="color: #0000ff;">if</span> (!<span style="color: #0000ff;">this</span><span style="color: #000000;">.TimerSrc) {
+</span><span style="color: #008080;">10</span>       <span style="color: #0000ff;">this</span>.TimerSrc = setInterval($.proxy(<span style="color: #0000ff;">function</span><span style="color: #000000;"> () {
+</span><span style="color: #008080;">11</span>         <span style="color: #0000ff;">var</span> el =<span style="color: #000000;"> document.activeElement;
+</span><span style="color: #008080;">12</span>         <span style="color: #0000ff;">if</span> (el.nodeName.toLowerCase() != 'input'<span style="color: #000000;">) {
+</span><span style="color: #008080;">13</span> 
+<span style="color: #008080;">14</span>           pos = <span style="color: #0000ff;">this</span><span style="color: #000000;">.getComputedPosition();
+</span><span style="color: #008080;">15</span> 
+<span style="color: #008080;">16</span>           <span style="color: #0000ff;">var</span> top = $(scroller).css('top'<span style="color: #000000;">);
+</span><span style="color: #008080;">17</span>           <span style="color: #0000ff;">this</span>.scrollerStyle['top'] = '0px'<span style="color: #000000;">;
+</span><span style="color: #008080;">18</span> <span style="color: #000000;">          console.log(pos);
+</span><span style="color: #008080;">19</span> 
+<span style="color: #008080;">20</span>           <span style="color: #0000ff;">var</span> _x =<span style="color: #000000;"> Math.round(pos.x);
+</span><span style="color: #008080;">21</span>           <span style="color: #0000ff;">var</span> _y =<span style="color: #000000;"> Math.round(pos.y);
+</span><span style="color: #008080;">22</span>           _y = _y +<span style="color: #000000;"> parseInt(top);
+</span><span style="color: #008080;">23</span> 
+<span style="color: #008080;">24</span>           <span style="color: #008000;">//</span><span style="color: #008000;">移动过去</span>
+<span style="color: #008080;">25</span>           <span style="color: #0000ff;">this</span><span style="color: #000000;">._translate(_x, _y);
+</span><span style="color: #008080;">26</span> 
+<span style="color: #008080;">27</span>           clearInterval(<span style="color: #0000ff;">this</span><span style="color: #000000;">.TimerSrc);
+</span><span style="color: #008080;">28</span>           <span style="color: #0000ff;">this</span>.TimerSrc = <span style="color: #0000ff;">null</span><span style="color: #000000;">;
+</span><span style="color: #008080;">29</span> <span style="color: #000000;">        }
+</span><span style="color: #008080;">30</span>       }, <span style="color: #0000ff;">this</span>), 20<span style="color: #000000;">);
+</span><span style="color: #008080;">31</span> <span style="color: #000000;">    }
+</span><span style="color: #008080;">32</span>   } <span style="color: #0000ff;">else</span><span style="color: #000000;"> {
+</span><span style="color: #008080;">33</span>     <span style="color: #0000ff;">this</span>.scrollerStyle[utils.style.transform] = 'translate(' + x + 'px,' + y + 'px)' + <span style="color: #0000ff;">this</span><span style="color: #000000;">.translateZ;
+</span><span style="color: #008080;">34</span> <span style="color: #000000;">  }
+</span><span style="color: #008080;">35</span> 
+<span style="color: #008080;">36</span>   <span style="color: #0000ff;">this</span>.x =<span style="color: #000000;"> x;
+</span><span style="color: #008080;">37</span>   <span style="color: #0000ff;">this</span>.y =<span style="color: #000000;"> y;
+</span><span style="color: #008080;">38</span> 
+<span style="color: #008080;">39</span>   <span style="color: #0000ff;">if</span> (<span style="color: #0000ff;">this</span><span style="color: #000000;">.options.scrollbars) {
+</span><span style="color: #008080;">40</span>     <span style="color: #0000ff;">this</span><span style="color: #000000;">.indicator.updatePosition();
+</span><span style="color: #008080;">41</span> <span style="color: #000000;">  }
+</span><span style="color: #008080;">42</span> 
+<span style="color: #008080;">43</span> },</pre>
+</div>
+<p>经测试，该代码可以解决光标跳动问题，但是坑不坑大家心里有数，一旦需要被迫使用定时器的地方，必定会有点坑！测试地址</p>
+<p>http://sandbox.runjs.cn/show/v9pno9d8</p>
+<h2>死磕-文本框消失</h2>
+<p><span style="line-height: 1.5;">文本框消息是由于滚动中产生动画，将文本框搞到区域外了，这个时候一旦我们输入文字，导致input change，系统便会自动将文本定位到中间，而出现文本不可见问题</span></p>
+<p><span style="line-height: 1.5;">该问题的处理最好的方案，依旧是方案一，若是这里要死磕，又会有许多问题，方案无非是给文本设置changed事件，或者定时器什么的，当变化时，自动将文本元素</span></p>
+<p><span style="line-height: 1.5;">至于IScroll可视区域，楼主这里就不献丑了，因为我基本决定使用方案一了。</span></p>
+<h1><span style="line-height: 1.5;">步长移动</span></h1>
+<p><span style="line-height: 1.5;">所谓步长移动便是我一次必须移动一定距离，这个与图片横向轮播功能有点类似，而这类需求在移动端数不胜数，</span><span style="line-height: 1.5;">那我们的IScroll应该如何处理才能加上这一伟大特性呢？</span></p>
+<p><span style="line-height: 1.5;">去看IScroll的源码，人家都已经实现了，居然人家都实现了，哎，但是我们这里不管他，照旧做我们的事情吧，加入步长功能</span></p>
+<p><span style="line-height: 1.5;">PS：这里有点小小的失落，我以为没有实现呢，这样我搞出来肯定没有官方的优雅了！</span></p>
+<h3><span style="line-height: 1.5;">思路</span></h3>
+<p><span style="line-height: 1.5;">思路其实很简单，我们若是设置了一个步长属性，暂时我们认为他是一个数字（其实可以是bool值，由库自己计算该值），然后每次移动时候便必须强制移动该属性的整数倍即可，</span><span style="line-height: 1.5;">比如：</span></p>
+<div class="cnblogs_code">
+<pre><span style="color: #008080;">1</span> <span style="color: #0000ff;">var</span> s = <span style="color: #0000ff;">new</span><span style="color: #000000;"> IScroll({
+</span><span style="color: #008080;">2</span>   wrapper: $('#wrapper'<span style="color: #000000;">),
+</span><span style="color: #008080;">3</span>   scroller: $('#scroller'<span style="color: #000000;">),
+</span><span style="color: #008080;">4</span>   setp: 40
+<span style="color: #008080;">5</span> });</pre>
+</div>
+<p>这个便要求每次都得移动10px的步长，那么这个如何实现呢？其实实现点，依然是_translate处，我们这里需要一点处理</p>
+<div class="cnblogs_code">
+<pre><span style="color: #008080;"> 1</span> <span style="color: #008000;">//</span><span style="color: #008000;">移动x，y这里比较简单就不分离y了</span>
+<span style="color: #008080;"> 2</span> _translate: <span style="color: #0000ff;">function</span><span style="color: #000000;"> (x, y, isStep) {
+</span><span style="color: #008080;"> 3</span> 
+<span style="color: #008080;"> 4</span>   <span style="color: #008000;">//</span><span style="color: #008000;">处理步长</span>
+<span style="color: #008080;"> 5</span>   <span style="color: #0000ff;">if</span> (<span style="color: #0000ff;">this</span>.options.setp &amp;&amp; !<span style="color: #000000;">isStep) {
+</span><span style="color: #008080;"> 6</span>     <span style="color: #0000ff;">var</span> flag2 = y &gt; 0 ? 1 : -1; <span style="color: #008000;">//</span><span style="color: #008000;">这个会影响后面的计算结果</span>
+<span style="color: #008080;"> 7</span>     <span style="color: #0000ff;">var</span> top =<span style="color: #000000;"> Math.abs(y);
+</span><span style="color: #008080;"> 8</span>     <span style="color: #0000ff;">var</span> mod = top % <span style="color: #0000ff;">this</span><span style="color: #000000;">.options.setp;
+</span><span style="color: #008080;"> 9</span>     top = (parseInt(top / <span style="color: #0000ff;">this</span>.options.setp) * <span style="color: #0000ff;">this</span>.options.setp + (mod &gt; (<span style="color: #0000ff;">this</span>.options.setp/2) ? this.options.setp : 0)) * flag2;
+<span style="color: #008080;">10</span>     y =<span style="color: #000000;"> top;
+</span><span style="color: #008080;">11</span> <span style="color: #000000;">  }
+</span><span style="color: #008080;">12</span> 
+<span style="color: #008080;">13</span>   <span style="color: #0000ff;">this</span>.scrollerStyle[utils.style.transform] = 'translate(' + x + 'px,' + y + 'px)' + <span style="color: #0000ff;">this</span><span style="color: #000000;">.translateZ;
+</span><span style="color: #008080;">14</span> 
+<span style="color: #008080;">15</span>   <span style="color: #0000ff;">this</span>.x =<span style="color: #000000;"> x;
+</span><span style="color: #008080;">16</span>   <span style="color: #0000ff;">this</span>.y =<span style="color: #000000;"> y;
+</span><span style="color: #008080;">17</span> 
+<span style="color: #008080;">18</span>   <span style="color: #0000ff;">if</span> (<span style="color: #0000ff;">this</span><span style="color: #000000;">.options.scrollbars) {
+</span><span style="color: #008080;">19</span>     <span style="color: #0000ff;">this</span><span style="color: #000000;">.indicator.updatePosition();
+</span><span style="color: #008080;">20</span> <span style="color: #000000;">  }
+</span><span style="color: #008080;">21</span> 
+<span style="color: #008080;">22</span> },</pre>
+</div>
+<p>这样一改后，每次便要求移动40px的步长，当然，我这里代码写的不是太好，整个效果在此</p>
+<p><iframe src="23307266792142.jpg" width="300" height="500"></iframe></p>
+<p><span style="line-height: 1.5;">这里唯一需要处理的就是touchmove了，每次move的时候，我们不应该对其进行步长控制，而后皆可以，这种控制步长的效果有什么用呢？</span><span style="line-height: 1.5;">请看这个例子：</span></p>
+<p><span style="line-height: 1.5;"><iframe src="38432135729667.jpg" width="300" height="500"></iframe></span></p>
+<h1><span style="line-height: 1.5;">双IScroll的问题</span></h1>
+<p><span style="line-height: 1.5;">todo......</span></p>
+<p>&nbsp;</p>
+<h1><span style="line-height: 1.5;">异步DOM加载，不可滑动</span></h1>
+<p><span style="line-height: 1.5;">todo......</span></p>
+<p>&nbsp;</p>
+<h1><span style="line-height: 1.5;">结语</span></h1>
+<p><span style="line-height: 1.5;">今日耗时比较长了，学习暂时到此，我们下次继续。</span></p>
+                </div>
+
+                <div class='span3 sidebar'>
+                    <h2>导航栏</h2>
+                    <ul class="nav nav-tabs nav-stacked">
+                             				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/javascriptzdyxhxzsdyjxyzyddf/index.html">javascript中的一些核心知识点以及需要注意的地方</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/[zd]webappdyhzlyzydqdyhdpyjlkkb/index.html">[置顶]【webapp的优化整理】要做移动前端优化的朋友进来看看吧</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/[zd]yddjrwtyjjavascriptsjjzxjsjydjr/index.html">[置顶]【移动端兼容问题研究】javascript事件机制详解（涉及移动兼容）</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/gruntzhb30fzxhsygruntdbqddm/index.html">【grunt整合版】30分钟学会使用grunt打包前端代码</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/gruntdyd30fzxhsygruntdbqddm/index.html">【grunt第一弹】30分钟学会使用grunt打包前端代码</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/gruntdsdgruntzqdsjxmzdyy/index.html">【grunt第三弹】grunt在前端实际项目中的应用</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/gruntded30fzxhsygruntdbqddm02/index.html">【grunt第二弹】30分钟学会使用grunt打包前端代码（02）</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/IScrollsrxxtpyddhadlqs/index.html">【IScroll深入学习】突破移动端黑暗的利器（上）</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/IScrollsrxxjjIScrollynzz/index.html">【IScroll深入学习】解决IScroll疑难杂症</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/iScrollymxx00mniScroll/index.html">【iScroll源码学习00】模拟iScroll</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/iScrollymxx01zbjd/index.html">【iScroll源码学习01】准备阶段</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/iScrollymxx02fjiScrollsghxsjd/index.html">【iScroll源码学习02】分解iScroll三个核心事件点</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/iScrollymxx03iScrollsjjzygdtdsx/index.html">【iScroll源码学习03】iScroll事件机制与滚动条的实现</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/iScrollymxx04flIScrollhx/index.html">【iScroll源码学习04】分离IScroll核心</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/javascriptpxdytyyjc/index.html">【javascript培训第一天】语言基础</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/javascriptpxdstcybl/index.html">【javascript培训第三天】查遗补漏</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/javascriptpxdetDOMyBOM/index.html">【javascript培训第二天】DOM与BOM</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/javascriptjzdsk01mkhbc/index.html">【javascript激增的思考01】模块化编程</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/javascriptjzdsk02mkhyMVC/index.html">【javascript激增的思考02】模块化与MVC</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/javascriptjzdsk03MVVMyKnockout/index.html">【javascript激增的思考03】MVVM与Knockout</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/javascriptjzdsk04MVCyBackbonejs(beta)/index.html">【javascript激增的思考04】MVC与Backbonejs(beta)</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/javascriptmxdxzlrwmyqltkdzb01/index.html">【javascript面向对象之路】让我们一起来坦克大战吧01</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/NodeJSxxbj04xwfbxt/index.html">【NodeJS学习笔记04】新闻发布系统</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/requireJSymxx01ljzgrequireJSdjg/index.html">【requireJS源码学习01】了解整个requireJS的结构</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/requireJSymxx02datamainjzdsx/index.html">【requireJS源码学习02】datamain加载的实现</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/requireJSymxx03xjrequireJSdjzlc/index.html">【requireJS源码学习03】细究requireJS的加载流程</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/UIcjkfygjdrlcjs/index.html">【UI插件】开发一个简单日历插件（上）</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/UIcjjddrlcjxxxMVCsx/index.html">【UI插件】简单的日历插件（下）——学习MVC思想</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/zeptoxxbj01hxff$()/index.html">【zepto学习笔记01】核心方法$()</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/zeptoxxbj01hxff$()b/index.html">【zepto学习笔记01】核心方法$()（补）</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/zeptoxxbj02lsd/index.html">【zepto学习笔记02】零碎点</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/zeptoxxbj03sjjz/index.html">【zepto学习笔记03】事件机制</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/ycmsztjavascriptzdjc/index.html">【一次面试】再谈javascript中的继承</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/ztbackbone01mxModel/index.html">【再探backbone01】模型Model</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/ztbackbone02jhCollection/index.html">【再探backbone02】集合Collection</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/ztbackbone03bkydyyysltgym/index.html">【再探backbone03】博客园单页应用实例（提供源码）</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/ztbackbone04dyyydjslycl/index.html">【再探backbone04】单页应用的基石路由处理</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/ctUnderscorezsmbyq/index.html">【初探Underscore】再说模版引擎</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/ckjavascriptamzAjaxjsxnszddAjax/index.html">【初窥javascript奥秘之Ajax】简述下你所知道的Ajax？</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/ckjavascriptamzsjmpnxnwmyqmdp/index.html">【初窥javascript奥秘之事件冒泡】那些年我们一起冒的泡</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/ckjavascriptamzsjjzldtygdj/index.html">【初窥javascript奥秘之事件机制】论“点透”与“鬼点击”</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/ckjavascriptamzrrzmbddthisnzdxzthiszxnlm/index.html">【初窥javascript奥秘之让人捉摸不定的this】你知道现在this指向哪里吗？？？</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/ckjavascriptamzbbydxbdhlqbcl/index.html">【初窥javascript奥秘之闭包】叶大侠病都好了，求不踩了：）</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/ckjavascriptamzmxdxfzyjc/index.html">【初窥javascript奥秘之面向对象】封装与继承</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/qdmdsjdjgjdnzdljm/index.html">【前端盲点】事件的几个阶段你真的了解么？？？</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/dyyyviewymodelxgsl/index.html">【单页应用】view与model相关梳理</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/dyyyyqldyyybsxjdwbgns/index.html">【单页应用】一起来单页应用吧，实现简单微博功能！（上）</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/dyyyqjkzqappyggxsm/index.html">【单页应用】全局控制器app应该干些什么？</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/dyyywmgrhclkjdcccjgx/index.html">【单页应用】我们该如何处理框架弹出层层级关系？</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/dyyyljMVC/index.html">【单页应用】理解MVC</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/dyyyztxjzviewzjygrhtx/index.html">【单页应用之通信机制】view之间应该如何通信</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/dyyyjkzHistoryxsHistorydgdyyydm/index.html">【单页应用巨坑之History】细数History带给单页应用的噩梦</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/xtszeptofindysyjiosdcjpknrnhtt/index.html">【小贴士】zeptofind元素以及ios弹出键盘可能让你很头疼</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/xtsgytransitionEndanimatedygyqgs/index.html">【小贴士】关于transitionEndanimate的一个有趣故事</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/xtsgzzdbbysjwtdzzmp/index.html">【小贴士】工作中的”闭包“与事件委托的”阻止冒泡“</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/xtstytjavascriptzdreplace/index.html">【小贴士】探一探javascript中的replace</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/xtsxnjpyfixeddgydddt/index.html">【小贴士】虚拟键盘与fixed带给移动端的痛！</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/ttjavascriptsjjzdcsxyl/index.html">【探讨】javascript事件机制底层实现原理</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/mkhbcljrequireJSsxygjddmkjzq/index.html">【模块化编程】理解requireJS实现一个简单的模块加载器</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/zyJavaScriptmfjmtsdqlxkjzbfgndcljz/index.html">【转】【译】JavaScript魔法揭秘探索当前流行框架中部分功能的处理机制</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/zxjavascriptgszl01javascriptcszds/index.html">【追寻javascript高手之路01】javascript参数知多少？</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/zxjavascriptgszl02blzyyzds/index.html">【追寻javascript高手之路02】变量、作用域知多少？</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/zxjavascriptgszl03javascriptdxdld/index.html">【追寻javascript高手之路03】javascript对象大乱斗</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/zxjavascriptgszl04ljprototype/index.html">【追寻javascript高手之路04】理解prototype</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/zxjavascriptgszl05ljsjl/index.html">【追寻javascript高手之路05】理解事件流</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/zgbj04zxzzsj(2)/index.html">【重构笔记04】重新组织数据(2)</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/zgbj05jhtjbds/index.html">【重构笔记05】简化条件表达式</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/zgbj06jhhsdy/index.html">【重构笔记06】简化函数调用</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/ycmshgttbxysjfl/index.html">一次面试回顾——探讨表现与数据分离</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/dhzwebappzdxz/index.html">动画在webapp中的现状</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/ysandriodlqhthdomclicksjqtsxwttj/index.html">原生andriod浏览器回退后dom（click）事件全体失效问题探究</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/scsbdjxysdsbsjytouchsjdnxs/index.html">手持设备点击响应速度，鼠标事件与touch事件的那些事</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/mnbjQueryzeptohxymfx/index.html">迷你版jQuery——zepto核心源码分析</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/dbsgzdlwmlyqxjdddomxzqb/index.html">都别说工资低了，我们来一起写简单的dom选择器吧！</a></li>
+    				                                         
+                    </ul>
+                </div>
+            </div>
+
+        </div>
+    </body>
+</html>

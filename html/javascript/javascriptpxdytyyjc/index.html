@@ -1,0 +1,439 @@
+﻿<!DOCTYPE html>
+
+<html lang="zh">
+    <head>
+        <meta charset="utf-8">
+        <meta name="description" content="android,ios" />
+        <meta name="keywords" content="android,ios" />
+
+        <title>叶小钗</title>
+        <style type='text/css'>
+            body {
+                background-color: #CCC;
+            }
+        </style>
+        <link rel="stylesheet" href="../../../css/bootstrap.css" />
+    </head>
+
+    <body>
+        <div class="container">
+
+            <h1>叶小钗</h1>
+
+            <div class='navbar navbar-inverse'>
+                <div class='navbar-inner nav-collapse' style="height: auto;">
+                    <ul class="nav">
+                              				<li><a href="http://songboriceboy.github.io/xxoo/html/blade/index.html">blade</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/css/index.html">css</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/HTML5&CSS3/index.html">HTML5&CSS3</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/index.html">javascript</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Javaxx/index.html">Java学习</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/nodejs/index.html">nodejs</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/requirejs/index.html">requirejs</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/index.html">Web前端</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/xxgw/index.html">学习感悟</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/gzdd/index.html">工作点滴</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/jkxx/index.html">接口学习</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/wfl/index.html">未分类</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/ydkf/index.html">移动开发</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/sjms/index.html">设计模式</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/mst/index.html">面试题</a></li>
+    				                      </ul>
+                </div>
+            </div>
+
+            <div id='content' class='row-fluid'>
+
+                <div class='span9 main'>
+				<div style="color:blue" align=center>【javascript培训第一天】语言基础</div><br><h1>前言</h1>
+<p>因为公司要进行前端团队建设，这一培训任务就落到了我手里，有时候会望着后端几个工作5年甚至10年的同事，心里还是有点虚的，虚完事情还是要做的，所以首先需要先复习复习，后面再根据最近的博客形成PPT吧，所以&ldquo;本老师&rdquo;来了。。。</p>
+<p>这次培训的内容由CSS、javascript、jquery组成，按道理说该先写CSS的，但是我CSS很水已经是默认的标准了，所以还是先看看js吧，希望我js不这样水</p>
+<h1>javascript基本数据类型</h1>
+<p>这次培训对象还是会有新人，所以还是需要介绍基本数据类型的，话说我现在也不能完全说出来呢。。。</p>
+<div class="cnblogs_code">
+<pre><span style="color: #800000;">javascript数据类型分为两种：原始类型与对象类型
+
+原始类型：
+数字、字符串、布尔值、null、undefined
+其中null与undefined代表了各自特殊类型的唯一成员
+
+对象类型：
+所谓对象类型便是属性的集合，每个属性都是由键值对组成
+普通的对象时无序键值对，有序的键值对便是我们的数组了
+
+还有一个特殊的对象便是函数
+函数是具有与他相关联的可执行代码的对象，通过调用函数运行可执行代码并返回结果
+
+若是使用new操作符来新建一个对象我们便称之为构造函数
+每个构造函数定义了一个类&mdash;&mdash;由构造函数初始化对象组合的集合（可看做对象类型的子类型）<br>数组是类（Array）<br>函数式类（Function）<br>日期是类（Date）<br>正则式类（RegExp）<br>类与函数贯穿js始终</span></pre>
+</div>
+<h2>数字</h2>
+<p>javascript是不区分整数与浮点数的，所有数均用浮点数表示</p>
+<p><strong>Math</strong></p>
+<p>现在我们来认识一位与数字非常有关系的对象Math，这个家伙可以干很多事情呢！</p>
+<p>Math.round(0.6) 四舍五入</p>
+<p>Math.random() 生成一个大于0小于1的伪随机数</p>
+<p><strong>运算溢出</strong></p>
+<p>当js运算溢出时不会报错，会使用无穷大infinity与无穷小-infinity表示；</p>
+<p>若是出现没有意义的运算便会返回NaN，NaN的判断无论如何都是false（他与自身也不相等），所以判断他要使用isNaN()函数</p>
+<p><strong>parseInt与parseFloat</strong></p>
+<div class="cnblogs_code">
+<pre><span style="color: #800000;">parseInt(string, radix)
+ 
+radix，表示转换的基数，也就是我们常说的2进制、8进制、10进制、16进制等。范围从2~36，但我们在JS中一般调用该方法时，基本都是以10为基数进行转换的。
+ 
+如果该参数小于 2 或者大于 36，则 parseInt() 将返回 NaN。</span></pre>
+</div>
+<p>parseInt这个函数非常有用的，可以将一个字符串返回为整数</p>
+<div class="cnblogs_code">
+<pre><span style="color: #0000ff;">&lt;</span><span style="color: #800000;">script </span><span style="color: #ff0000;">type</span><span style="color: #0000ff;">="text/javascript"</span><span style="color: #0000ff;">&gt;</span>
+    <span style="background-color: #f5f5f5; color: #0000ff;">var</span><span style="background-color: #f5f5f5; color: #000000;"> a </span><span style="background-color: #f5f5f5; color: #000000;">=</span><span style="background-color: #f5f5f5; color: #000000;"> parseInt(</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">334dd</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">);
+    </span><span style="background-color: #f5f5f5; color: #0000ff;">var</span><span style="background-color: #f5f5f5; color: #000000;"> b </span><span style="background-color: #f5f5f5; color: #000000;">=</span><span style="background-color: #f5f5f5; color: #000000;"> parseInt(</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">3d34dd</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">);
+    </span><span style="background-color: #f5f5f5; color: #0000ff;">var</span><span style="background-color: #f5f5f5; color: #000000;"> c </span><span style="background-color: #f5f5f5; color: #000000;">=</span><span style="background-color: #f5f5f5; color: #000000;"> parseInt(</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">ss3d34dd</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">);
+    s </span><span style="background-color: #f5f5f5; color: #000000;">=</span> <span style="background-color: #f5f5f5; color: #000000;">''</span><span style="background-color: #f5f5f5; color: #000000;">;
+</span><span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">script</span><span style="color: #0000ff;">&gt;</span></pre>
+</div>
+<p><img src="13201038593599.png" alt=""></p>
+<h2>字符串</h2>
+<p>字符串是由一组16位值组成的不可变有序序列，每个字符通常来源于Unicode字符集。</p>
+<p>字符串一旦第一便不会改变，我们使用函数操作他也只是返回了新的字符串，下面介绍下与字符串有关的函数</p>
+<div class="cnblogs_code">
+<pre><span style="color: #000000;">var s = 'hellow world';
+s.charAt(0);//h
+s.charAt(s.length - 1);//d
+s.substring(1, 4);ell第2到第四的字符
+s.slice(1, 4);//同上
+s.slice(-3);//rld，最后三个字符
+s.indexOf('l');//2首次出现l的位置
+s.lastIndexOf('l');//最后一次出现l的位置，10
+s.indexOf('l', 3);//3在在位置3以后首次出现l的位置
+s.split(', ');//使用", "分割将字符串变为数组，非常有用的家伙
+s.replace('h', 'H');//全文字替换，支持正则表达式
+s.toUpperCase();//转换为大写</span></pre>
+</div>
+<h2>布尔值</h2>
+<p>布尔值只有true与false两个，此处略去200字。。。</p>
+<h2>null和undefined</h2>
+<p>null在js中式用来描述&ldquo;空值&rdquo;的，使用typeof null 会返回对象（object），也就是说null为特殊的对象，但是该对象只有他一个人；</p>
+<p>undefined表示值的空缺，表示变量没有被初始化，比如</p>
+<p>var a，这种情况a便是undefined，若是我们定义一个对象，但他开始没值便可设置其为null。</p>
+<h2>包装对象</h2>
+<p>我们前面看到s为字符串，却可以执行很多函数，这简直就是对象的行为嘛，原因是他确实变成对象了。。。</p>
+<p>javascript通过new String(s)，将字符串转换为对象，所以s便拥有了方法，一旦函数操作结束新建的对象便会被销毁</p>
+<p>数字与bool值是一样的包装的。</p>
+<h2>类型转换</h2>
+<p>javascript的类型非常灵活，类型的转换有时候便会自动发生：</p>
+<div class="cnblogs_code">
+<pre>10 + ' sss' <span style="color: #008000;">//</span><span style="color: #008000;">=&gt; 10 sss</span>
+'7' * '4'/28
+1 - 'd'<span style="color: #008000;">//</span><span style="color: #008000;">NaN</span>
+1 - 'd' + 's'<span style="color: #008000;">//</span><span style="color: #008000;">NaNs(注意啦)</span></pre>
+</div>
+<h2>对象字面量</h2>
+<p>对象字面量真是js中的好东西，对象字面量提供了一种方便创建新对象值的表示法：</p>
+<div class="cnblogs_code">
+<pre><span style="color: #0000ff;">var</span> obj =<span style="color: #000000;"> {
+</span>'name': '叶小钗'<span style="color: #000000;">,
+age: </span>'秘密'<span style="color: #000000;">,
+sayName: </span><span style="color: #0000ff;">function</span><span style="color: #000000;"> () :
+alert(</span><span style="color: #0000ff;">this</span><span style="color: #000000;">.name);
+}};</span></pre>
+</div>
+<p>做后端开发的同学对hashtable一定不陌生，对象字面量便是标准的键值对。</p>
+<p>我们可以通过new Object的方式创建对象，但是这里还是推荐以上写法。</p>
+<p>我们通过.或者[]的方式访问对象：</p>
+<div class="cnblogs_code">
+<pre><span style="color: #000000;">obj.name
+obj[</span>'name'<span style="color: #000000;">]
+
+若是要判断对象是否包含某个属性，使用：
+obj.hasOwnProperty(</span>'age'</pre>
+</div>
+<h2>序列化对象（Json）</h2>
+<p>我们若是序列化对象字面量，他便会变成一个一般的字符串，我们亲切的称呼他为json串！</p>
+<p>json串是个神奇的家伙，他可以将数据表中二维的数据转化为一个字符串，传到前端后，他又会还原为二维，</p>
+<p>所以我们数据表中某个普通的字段，搞不好包含的就是一个二维对象！</p>
+<h2>数组</h2>
+<p>js中的数组无比的灵活！！！因为他可以随意的装东西，而且他的长度便会也是非常灵活的。</p>
+<p><strong>初始化</strong></p>
+<div class="cnblogs_code">
+<pre><span style="color: #0000ff;">var</span> arr =<span style="color: #000000;"> [];
+</span><span style="color: #0000ff;">var</span> arr = <span style="color: #0000ff;">new</span> Array();</pre>
+</div>
+<p><strong>length</strong></p>
+<p>数组的长度是个神奇的东东：</p>
+<div class="cnblogs_code">
+<pre>&lt;script type="text/javascript"&gt;<span style="color: #000000;">
+    [ ].length; </span><span style="color: #008000;">//</span><span style="color: #008000;">0</span>
+    ['a', 1, <span style="color: #0000ff;">function</span> () { } ].length; <span style="color: #008000;">//</span><span style="color: #008000;">3</span>
+
+    <span style="color: #0000ff;">var</span> arr = [1, 2, 3, 4, 5]; <span style="color: #008000;">//</span><span style="color: #008000;">5个元素</span>
+    arr.length = 3; <span style="color: #008000;">//</span><span style="color: #008000;">arr = [1, 2, 3]</span>
+    arr.length = 0; <span style="color: #008000;">//</span><span style="color: #008000;">arr = []</span>
+    arr.length = 6; <span style="color: #008000;">//</span><span style="color: #008000;">相当于arr = new Array(6)</span>
+&lt;/script&gt;</pre>
+</div>
+<p><strong>动态添加数组项</strong></p>
+<div class="cnblogs_code">
+<pre><span style="color: #0000ff;">var</span> arr =<span style="color: #000000;"> [];
+arr[arr.length] </span>= 1<span style="color: #000000;">;
+...
+
+arr.push(</span>1<span style="color: #000000;">);
+...</span></pre>
+</div>
+<p><strong>数组遍历这些便不说了。。。我们来看看数组的函数</strong><br><strong>join</strong></p>
+<p>该函数与字符串的spilt对应，可以将一个数转换为字符串，很不错的家伙</p>
+<div class="cnblogs_code">
+<pre><span style="color: #0000ff;">var</span> arr = [1, 2, 3<span style="color: #000000;">];
+arr.join();</span><span style="color: #008000;">//</span><span style="color: #008000;">'1,2,3'</span>
+arr.join(';');<span style="color: #008000;">//</span><span style="color: #008000;">'1;2;3'</span></pre>
+</div>
+<p><strong>reverse</strong></p>
+<p>用于翻转数组</p>
+<p><strong>sort</strong></p>
+<p>这个家伙我们一定要记住他，因为他很常用的：</p>
+<div class="cnblogs_code">
+<pre>&lt;script type="text/javascript"&gt;
+    <span style="color: #0000ff;">var</span> arr = [1, 4, 562, 43, 4346, 433, 645<span style="color: #000000;">];
+    arr.sort();
+    </span><span style="color: #0000ff;">var</span> ss =<span style="color: #000000;"> arr.join();
+    </span><span style="color: #0000ff;">var</span> s =''<span style="color: #000000;">;
+</span>&lt;/script&gt;</pre>
+</div>
+<p><img src="34712405597091.png" alt=""></p>
+<p>我们当然会遇到更复杂的情况，比如我们要为年龄排序了，而我们数组也不是那么单一的：</p>
+<div class="cnblogs_code">
+<pre>&lt;script type="text/javascript"&gt;
+    <span style="color: #0000ff;">var</span> arr = [{ name: '叶小钗', age: 123 }, { name: '一页书', age: 456 }, { name: '素还真', age: 222 }, {name: '素续缘', age: 14<span style="color: #000000;">}];
+    arr.sort(</span><span style="color: #0000ff;">function</span><span style="color: #000000;"> (a, b) {
+        </span><span style="color: #0000ff;">return</span> a.age -<span style="color: #000000;"> b.age;
+    });
+    </span><span style="color: #0000ff;">var</span> s =''<span style="color: #000000;">;
+</span>&lt;/script&gt;</pre>
+</div>
+<p><img src="8658509134046.png" alt=""></p>
+<p><strong>concat()</strong></p>
+<p>创建并返回一个新数组：</p>
+<div class="cnblogs_code">
+<pre><span style="color: #0000ff;">var</span> a = [1, 2<span style="color: #000000;">];
+a.concat(</span>3, 4);<span style="color: #008000;">//</span><span style="color: #008000;">1,2,3,4</span>
+a.concat([2], [3, 3]); //1,2,2,3,3<span style="color: #000000;">
+a.concat(</span>4, [5, [6, 7]]);<span style="color: #008000;">//</span><span style="color: #008000;">1,2,3,4,5,[6,7]</span></pre>
+</div>
+<p><strong>slice()</strong></p>
+<p>返回指定数组的片段：</p>
+<div class="cnblogs_code">
+<pre><span style="color: #0000ff;">var</span> arr = [1, 2, 3, 4, 5<span style="color: #000000;">];
+a.slice(</span>0, 3);<span style="color: #008000;">//</span><span style="color: #008000;">1,2,3</span>
+a.slice(3);<span style="color: #008000;">//</span><span style="color: #008000;">4,5</span>
+a.slice(1, -1);<span style="color: #008000;">//</span><span style="color: #008000;">2,3,4</span>
+a.slice(-3, -2);<span style="color: #008000;">//</span><span style="color: #008000;">3</span><span style="color: #008000;">
+//</span><span style="color: #008000;">负数便是相对于最后一个元素的位置</span></pre>
+</div>
+<p><strong>splice()</strong></p>
+<p>..................................</p>
+<p>&nbsp;</p>
+<h2>函数</h2>
+<p>函数式js的核心（其实函数是任何语言的核心）。这家伙有很多故事，我们下一次再来讨论他。&nbsp;</p>
+<h1>变量与作用域</h1>
+<h2>变量声明</h2>
+<p>js使用var 申明变量：</p>
+<p>var a = 1;</p>
+<p>var a = 1,</p>
+<p>　　b = 2;</p>
+<p><strong>重复声明&nbsp;</strong></p>
+<p>重复声明一个变量时无害的，若重复声明且赋值的话，这个就和简单的赋值语句一样了：</p>
+<div class="cnblogs_code">
+<pre>&lt;script type="text/javascript"&gt;
+    <span style="color: #0000ff;">var</span><span style="color: #000000;"> s;
+    </span><span style="color: #0000ff;">var</span> s = 'a'<span style="color: #000000;">;
+    </span><span style="color: #0000ff;">var</span> s = { 1: ''<span style="color: #000000;"> };
+
+    </span><span style="color: #008000;">//</span><span style="color: #008000;">以上语句相当于</span>
+    <span style="color: #0000ff;">var</span><span style="color: #000000;"> s;
+    s </span>= 'a'<span style="color: #000000;">;
+    s </span>= { 1: ''<span style="color: #000000;"> };
+
+</span>&lt;/script&gt;</pre>
+</div>
+<h2>变量作用域</h2>
+<p>作用域即程序源代码中定义这个变量的区域。</p>
+<p>在函数内的变量具有局部变量的特性，不会被外部变量访问。</p>
+<h2>申明提前</h2>
+<p>javascript中没有块级作用域（{}），javascript拥有函数作用域，在函数中任何位置定义的变量都会是有意义的，一种有意思的事情便是我在后面定义的变量其实前面就可以用了：</p>
+<div class="cnblogs_code">
+<pre>&lt;script type="text/javascript"&gt;
+    <span style="color: #0000ff;">var</span> a = 'outer'<span style="color: #000000;">;
+    (</span><span style="color: #0000ff;">function</span><span style="color: #000000;"> () {
+        alert(a);</span><span style="color: #008000;">//</span><span style="color: #008000;">undefind</span>
+        <span style="color: #0000ff;">var</span> a = 'inner'<span style="color: #000000;">;
+        alert(a);</span><span style="color: #008000;">//</span><span style="color: #008000;">inner</span>
+<span style="color: #000000;">    })();
+</span>&lt;/script&gt;</pre>
+</div>
+<p>也许有朋友对此感到疑惑，其实他是这个意思了：</p>
+<div class="cnblogs_code">
+<pre>&lt;script type="text/javascript"&gt;
+<span style="color: #008000;">//</span><span style="color: #008000;">    var a = 'outer';</span>
+    (<span style="color: #0000ff;">function</span><span style="color: #000000;"> () {
+        alert(a); </span><span style="color: #008000;">//</span><span style="color: #008000;">undefind</span>
+        <span style="color: #0000ff;">var</span> a = 'inner'<span style="color: #000000;">;
+        alert(a); </span><span style="color: #008000;">//</span><span style="color: #008000;">inner</span>
+
+        <span style="color: #008000;">//</span><span style="color: #008000;">代码相当于</span>
+        <span style="color: #0000ff;">var</span><span style="color: #000000;"> a;
+        alert(a); </span><span style="color: #008000;">//</span><span style="color: #008000;">undefind</span>
+        a = 'inner'<span style="color: #000000;">;
+        alert(a); </span><span style="color: #008000;">//</span><span style="color: #008000;">inner</span>
+<span style="color: #000000;">
+    })();
+</span>&lt;/script&gt;</pre>
+</div>
+<p>所以，我们有些团队在声明变量时候都要求将变量全部声明到函数头部。</p>
+<p>&nbsp;</p>
+<h1>运算符</h1>
+<h2>||</h2>
+<p>或用于if条件判断没有什么说的，但是我们在赋值运算中可能会有不同的用法：</p>
+<div class="cnblogs_code">
+<pre><span style="color: #0000ff;">function</span><span style="color: #000000;"> (a) {
+a </span>= a ||<span style="color: #000000;"> {};
+}
+</span><span style="color: #008000;">//</span><span style="color: #008000;">此处若是a不存在便初始化a为对象以免报错</span></pre>
+</div>
+<p>这个用法是非常有用的。</p>
+<h2>in运算符</h2>
+<p>in用于判断一个属性是否在对象中：</p>
+<div class="cnblogs_code">
+<pre><span style="color: #0000ff;">var</span> obj = {x: 1, y: 2<span style="color: #000000;">};
+</span>'x' <span style="color: #0000ff;">in</span> obj;<span style="color: #008000;">//</span><span style="color: #008000;">true</span>
+'z' <span style="color: #0000ff;">in</span> obj;<span style="color: #008000;">//</span><span style="color: #008000;">false</span>
+
+<span style="color: #0000ff;">for</span> (<span style="color: #0000ff;">var</span> k <span style="color: #0000ff;">in</span><span style="color: #000000;"> obj) {
+</span><span style="color: #008000;">//</span><span style="color: #008000;">遍历对象</span>
+}</pre>
+</div>
+<h2>instanceof运算符</h2>
+<p>该操作符用于判断某个对象是否属于某类：</p>
+<div class="cnblogs_code">
+<pre><span style="color: #0000ff;">var</span> d = <span style="color: #0000ff;">new</span><span style="color: #000000;"> Date();
+d </span><span style="color: #0000ff;">instanceof</span> Date; <span style="color: #008000;">//</span><span style="color: #008000;">true</span>
+d <span style="color: #0000ff;">instanceof</span> Object;<span style="color: #008000;">//</span><span style="color: #008000;">true</span>
+d <span style="color: #0000ff;">instanceof</span> Number;<span style="color: #008000;">//</span><span style="color: #008000;">false</span>
+
+<span style="color: #008000;">//</span><span style="color: #008000;">有一次面试我因为不忘记了这家伙导致那次面试非常被动，面试官直接认为我是菜鸟，实习岗位都不给。。。很受打击</span></pre>
+</div>
+<p>&nbsp;</p>
+<h2>eval运算符</h2>
+<p>eval这个家伙很强大！！！他相当于一个冬天js编译器，可以将你的字符串作为js执行，当然安全性效率会有一定问题。</p>
+<div class="cnblogs_code">
+<pre>eval('2+3');<span style="color: #008000;">//</span><span style="color: #008000;">5</span>
+<span style="color: #0000ff;">function</span><span style="color: #000000;"> a() {
+alert(</span>'aa'<span style="color: #000000;">);
+}
+eval(</span>'a();');</pre>
+</div>
+<p>&nbsp;</p>
+<h2>typeof运算符</h2>
+<p>typeof用于判断一个对象的类型：</p>
+<div class="cnblogs_code">
+<pre><span style="color: #0000ff;">typeof</span> undefined; <span style="color: #008000;">//</span><span style="color: #008000;">undefind</span>
+<span style="color: #0000ff;">typeof</span> <span style="color: #0000ff;">null</span>; <span style="color: #008000;">//</span><span style="color: #008000;">object</span>
+<span style="color: #0000ff;">typeof</span> <span style="color: #0000ff;">true</span>; <span style="color: #008000;">//</span><span style="color: #008000;">boolean</span>
+<span style="color: #0000ff;">typeof</span> 1; <span style="color: #008000;">//</span><span style="color: #008000;">或者NaN;number</span>
+<span style="color: #0000ff;">typeof</span> 'sss'; <span style="color: #008000;">//</span><span style="color: #008000;">string</span>
+<span style="color: #0000ff;">typeof</span> <span style="color: #0000ff;">function</span> () { }; <span style="color: #008000;">//</span><span style="color: #008000;">function</span></pre>
+</div>
+<p>&nbsp;</p>
+<h2>delete运算符</h2>
+<p>用于删除对象的属性，后面还是介绍这里便不多说了。</p>
+<h1>结语</h1>
+<p>最近新租了个房子，环境不行，网线太短，我只能撅着写博客，撅着看书，我那个难受啊！</p>
+<p>所以最近写起来不自觉就有点心浮气躁，现在是腰酸背痛的，就暂时到这里吧。。。。&nbsp;&nbsp;</p>
+                </div>
+
+                <div class='span3 sidebar'>
+                    <h2>导航栏</h2>
+                    <ul class="nav nav-tabs nav-stacked">
+                             				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/javascriptzdyxhxzsdyjxyzyddf/index.html">javascript中的一些核心知识点以及需要注意的地方</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/[zd]webappdyhzlyzydqdyhdpyjlkkb/index.html">[置顶]【webapp的优化整理】要做移动前端优化的朋友进来看看吧</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/[zd]yddjrwtyjjavascriptsjjzxjsjydjr/index.html">[置顶]【移动端兼容问题研究】javascript事件机制详解（涉及移动兼容）</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/gruntzhb30fzxhsygruntdbqddm/index.html">【grunt整合版】30分钟学会使用grunt打包前端代码</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/gruntdyd30fzxhsygruntdbqddm/index.html">【grunt第一弹】30分钟学会使用grunt打包前端代码</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/gruntdsdgruntzqdsjxmzdyy/index.html">【grunt第三弹】grunt在前端实际项目中的应用</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/gruntded30fzxhsygruntdbqddm02/index.html">【grunt第二弹】30分钟学会使用grunt打包前端代码（02）</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/IScrollsrxxtpyddhadlqs/index.html">【IScroll深入学习】突破移动端黑暗的利器（上）</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/IScrollsrxxjjIScrollynzz/index.html">【IScroll深入学习】解决IScroll疑难杂症</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/iScrollymxx00mniScroll/index.html">【iScroll源码学习00】模拟iScroll</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/iScrollymxx01zbjd/index.html">【iScroll源码学习01】准备阶段</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/iScrollymxx02fjiScrollsghxsjd/index.html">【iScroll源码学习02】分解iScroll三个核心事件点</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/iScrollymxx03iScrollsjjzygdtdsx/index.html">【iScroll源码学习03】iScroll事件机制与滚动条的实现</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/iScrollymxx04flIScrollhx/index.html">【iScroll源码学习04】分离IScroll核心</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/javascriptpxdytyyjc/index.html">【javascript培训第一天】语言基础</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/javascriptpxdstcybl/index.html">【javascript培训第三天】查遗补漏</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/javascriptpxdetDOMyBOM/index.html">【javascript培训第二天】DOM与BOM</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/javascriptjzdsk01mkhbc/index.html">【javascript激增的思考01】模块化编程</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/javascriptjzdsk02mkhyMVC/index.html">【javascript激增的思考02】模块化与MVC</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/javascriptjzdsk03MVVMyKnockout/index.html">【javascript激增的思考03】MVVM与Knockout</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/javascriptjzdsk04MVCyBackbonejs(beta)/index.html">【javascript激增的思考04】MVC与Backbonejs(beta)</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/javascriptmxdxzlrwmyqltkdzb01/index.html">【javascript面向对象之路】让我们一起来坦克大战吧01</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/NodeJSxxbj04xwfbxt/index.html">【NodeJS学习笔记04】新闻发布系统</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/requireJSymxx01ljzgrequireJSdjg/index.html">【requireJS源码学习01】了解整个requireJS的结构</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/requireJSymxx02datamainjzdsx/index.html">【requireJS源码学习02】datamain加载的实现</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/requireJSymxx03xjrequireJSdjzlc/index.html">【requireJS源码学习03】细究requireJS的加载流程</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/UIcjkfygjdrlcjs/index.html">【UI插件】开发一个简单日历插件（上）</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/UIcjjddrlcjxxxMVCsx/index.html">【UI插件】简单的日历插件（下）——学习MVC思想</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/zeptoxxbj01hxff$()/index.html">【zepto学习笔记01】核心方法$()</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/zeptoxxbj01hxff$()b/index.html">【zepto学习笔记01】核心方法$()（补）</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/zeptoxxbj02lsd/index.html">【zepto学习笔记02】零碎点</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/zeptoxxbj03sjjz/index.html">【zepto学习笔记03】事件机制</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/ycmsztjavascriptzdjc/index.html">【一次面试】再谈javascript中的继承</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/ztbackbone01mxModel/index.html">【再探backbone01】模型Model</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/ztbackbone02jhCollection/index.html">【再探backbone02】集合Collection</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/ztbackbone03bkydyyysltgym/index.html">【再探backbone03】博客园单页应用实例（提供源码）</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/ztbackbone04dyyydjslycl/index.html">【再探backbone04】单页应用的基石路由处理</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/ctUnderscorezsmbyq/index.html">【初探Underscore】再说模版引擎</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/ckjavascriptamzAjaxjsxnszddAjax/index.html">【初窥javascript奥秘之Ajax】简述下你所知道的Ajax？</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/ckjavascriptamzsjmpnxnwmyqmdp/index.html">【初窥javascript奥秘之事件冒泡】那些年我们一起冒的泡</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/ckjavascriptamzsjjzldtygdj/index.html">【初窥javascript奥秘之事件机制】论“点透”与“鬼点击”</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/ckjavascriptamzrrzmbddthisnzdxzthiszxnlm/index.html">【初窥javascript奥秘之让人捉摸不定的this】你知道现在this指向哪里吗？？？</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/ckjavascriptamzbbydxbdhlqbcl/index.html">【初窥javascript奥秘之闭包】叶大侠病都好了，求不踩了：）</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/ckjavascriptamzmxdxfzyjc/index.html">【初窥javascript奥秘之面向对象】封装与继承</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/qdmdsjdjgjdnzdljm/index.html">【前端盲点】事件的几个阶段你真的了解么？？？</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/dyyyviewymodelxgsl/index.html">【单页应用】view与model相关梳理</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/dyyyyqldyyybsxjdwbgns/index.html">【单页应用】一起来单页应用吧，实现简单微博功能！（上）</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/dyyyqjkzqappyggxsm/index.html">【单页应用】全局控制器app应该干些什么？</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/dyyywmgrhclkjdcccjgx/index.html">【单页应用】我们该如何处理框架弹出层层级关系？</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/dyyyljMVC/index.html">【单页应用】理解MVC</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/dyyyztxjzviewzjygrhtx/index.html">【单页应用之通信机制】view之间应该如何通信</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/dyyyjkzHistoryxsHistorydgdyyydm/index.html">【单页应用巨坑之History】细数History带给单页应用的噩梦</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/xtszeptofindysyjiosdcjpknrnhtt/index.html">【小贴士】zeptofind元素以及ios弹出键盘可能让你很头疼</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/xtsgytransitionEndanimatedygyqgs/index.html">【小贴士】关于transitionEndanimate的一个有趣故事</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/xtsgzzdbbysjwtdzzmp/index.html">【小贴士】工作中的”闭包“与事件委托的”阻止冒泡“</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/xtstytjavascriptzdreplace/index.html">【小贴士】探一探javascript中的replace</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/xtsxnjpyfixeddgydddt/index.html">【小贴士】虚拟键盘与fixed带给移动端的痛！</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/ttjavascriptsjjzdcsxyl/index.html">【探讨】javascript事件机制底层实现原理</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/mkhbcljrequireJSsxygjddmkjzq/index.html">【模块化编程】理解requireJS实现一个简单的模块加载器</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/zyJavaScriptmfjmtsdqlxkjzbfgndcljz/index.html">【转】【译】JavaScript魔法揭秘探索当前流行框架中部分功能的处理机制</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/zxjavascriptgszl01javascriptcszds/index.html">【追寻javascript高手之路01】javascript参数知多少？</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/zxjavascriptgszl02blzyyzds/index.html">【追寻javascript高手之路02】变量、作用域知多少？</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/zxjavascriptgszl03javascriptdxdld/index.html">【追寻javascript高手之路03】javascript对象大乱斗</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/zxjavascriptgszl04ljprototype/index.html">【追寻javascript高手之路04】理解prototype</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/zxjavascriptgszl05ljsjl/index.html">【追寻javascript高手之路05】理解事件流</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/zgbj04zxzzsj(2)/index.html">【重构笔记04】重新组织数据(2)</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/zgbj05jhtjbds/index.html">【重构笔记05】简化条件表达式</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/zgbj06jhhsdy/index.html">【重构笔记06】简化函数调用</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/ycmshgttbxysjfl/index.html">一次面试回顾——探讨表现与数据分离</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/dhzwebappzdxz/index.html">动画在webapp中的现状</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/ysandriodlqhthdomclicksjqtsxwttj/index.html">原生andriod浏览器回退后dom（click）事件全体失效问题探究</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/scsbdjxysdsbsjytouchsjdnxs/index.html">手持设备点击响应速度，鼠标事件与touch事件的那些事</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/mnbjQueryzeptohxymfx/index.html">迷你版jQuery——zepto核心源码分析</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/dbsgzdlwmlyqxjdddomxzqb/index.html">都别说工资低了，我们来一起写简单的dom选择器吧！</a></li>
+    				                                         
+                    </ul>
+                </div>
+            </div>
+
+        </div>
+    </body>
+</html>

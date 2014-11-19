@@ -1,0 +1,577 @@
+﻿<!DOCTYPE html>
+
+<html lang="zh">
+    <head>
+        <meta charset="utf-8">
+        <meta name="description" content="android,ios" />
+        <meta name="keywords" content="android,ios" />
+
+        <title>叶小钗</title>
+        <style type='text/css'>
+            body {
+                background-color: #CCC;
+            }
+        </style>
+        <link rel="stylesheet" href="../../../css/bootstrap.css" />
+    </head>
+
+    <body>
+        <div class="container">
+
+            <h1>叶小钗</h1>
+
+            <div class='navbar navbar-inverse'>
+                <div class='navbar-inner nav-collapse' style="height: auto;">
+                    <ul class="nav">
+                              				<li><a href="http://songboriceboy.github.io/xxoo/html/blade/index.html">blade</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/css/index.html">css</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/HTML5&CSS3/index.html">HTML5&CSS3</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/index.html">javascript</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Javaxx/index.html">Java学习</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/nodejs/index.html">nodejs</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/requirejs/index.html">requirejs</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/index.html">Web前端</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/xxgw/index.html">学习感悟</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/gzdd/index.html">工作点滴</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/jkxx/index.html">接口学习</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/wfl/index.html">未分类</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/ydkf/index.html">移动开发</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/sjms/index.html">设计模式</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/mst/index.html">面试题</a></li>
+    				                      </ul>
+                </div>
+            </div>
+
+            <div id='content' class='row-fluid'>
+
+                <div class='span9 main'>
+				<div style="color:blue" align=center>初探Backbone</div><br><h1>前言</h1>
+<p>终于到周末了，几经转折老夫工作终于落实，干起了移动前端，于是真正进入了HTML5的开发时代。</p>
+<p>这周一开始入职，进来后发现真的像农村的来到了城市，很多东西不懂的，又要落实租房的问题，生活工作拧到了一坨。</p>
+<p>由于上次去河南折腾了一番，经济也在亮红灯，于是第一周有点浑浑噩噩的感觉，还没做什么就结束了。</p>
+<p>新的团队的人感觉都有点生猛，老同事完全没压力，另一个新同事适应的很快，居然都能进入框架开发了，难道这边真这么多高手？小的这边亚历山大啊。</p>
+<p>现在项目使用的是jquery+requireJS+backbone，前两天我们初略的学习了下requireJS，要说好熟悉纯粹是扯淡，只不过有个大概印象罢了。</p>
+<p>我们今天的任务是学习一番backbone，等熟悉后明天就把这几个家伙串起来试试，因为下周二就有任务了，不努力就等嗝屁吧。</p>
+<h1>Backbone简介</h1>
+<p>中文API：<a href="http://www.csser.com/tools/backbone/backbone.js.html">http://www.csser.com/tools/backbone/backbone.js.html</a></p>
+<p>英文API：<a href="http://backbonejs.org/">http://backbonejs.org/</a></p>
+<p>Backbone是构建javascript应用程序的一个优秀的类库。他简洁、轻量级、功能实在。</p>
+<p>backbone采用MVC模式，本身提供了模型、控制器和视图从而我们应用程序的骨架便形成。</p>
+<p>backbone依赖于underscore，他是一个类库，提供了60多个函数处理数组操作、函数绑定，以及javascript模板机制。</p>
+<p>于是我们来个图看看几个好基友吧：</p>
+<p><img src="17089486237597.png" alt=""></p>
+<p>有了初步印象后，我们来一步步看看他都干了些神马。</p>
+<h1>模型</h1>
+<p>模型是保存应用程序数据的地方。我们可以把模型看做对应用程序原始数据的精心抽象，并且添加了一些工具函数和事件。</p>
+<p>我们可以使用Backbone.Model的extend方法来创建Backbone模型：</p>
+<div class="cnblogs_code">
+<pre><span style="color: #0000ff;">var</span> User =<span style="color: #000000;"> Backbone.Model.extend({
+    initialize: </span><span style="color: #0000ff;">function</span><span style="color: #000000;"> () { }
+});</span></pre>
+</div>
+<p>extend的第一个参数是一个对象，他成为了模型实例的属性；</p>
+<p>第二个参数是可选的类属性的哈希，通过多次调用extend可以生成模型的子类，他们将继承父亲所有类和实例属性：</p>
+<div class="cnblogs_code">
+<pre><span style="color: #0000ff;">var</span> User =<span style="color: #000000;"> Backbone.Model.extend({
+    </span><span style="color: #008000;">//</span><span style="color: #008000;">实例属性</span>
+    instanceProperty: 'foo'<span style="color: #000000;">
+}, {
+    </span><span style="color: #008000;">//</span><span style="color: #008000;">类属性</span>
+    classProperty: 'bar'<span style="color: #000000;">
+});
+assertEqual(User.instanceProperty, </span>'foo'<span style="color: #000000;">);
+assertEqual(User.classProperty, </span>'bar');</pre>
+</div>
+<p>当模型实例化时，他的initialize方法可以接受任意实例参数，其工作原理是backbone模型本身就是构造函数，所以可以使用new生成实例：</p>
+<div class="cnblogs_code">
+<pre><span style="color: #0000ff;">var</span> User =<span style="color: #000000;"> Backbone.Model.extend({
+    initialize: </span><span style="color: #0000ff;">function</span><span style="color: #000000;"> (name) {
+        </span><span style="color: #0000ff;">this</span><span style="color: #000000;">.set({name: name});
+    }
+});
+</span><span style="color: #0000ff;">var</span> user = <span style="color: #0000ff;">new</span> User('刀狂剑痴'<span style="color: #000000;">);
+assertEqual(user.get(</span>'name'), '刀狂剑痴');</pre>
+</div>
+<p>Ps： <span style="font: 14px/26px Arial; text-align: left; color: #000000; text-transform: none; text-indent: 0px; letter-spacing: normal; word-spacing: 0px; float: none; display: inline !important; white-space: normal; font-size-adjust: none; font-stretch: normal; background-color: #ffffff; -webkit-text-stroke-width: 0px;">assertEqual判断相等</span></p>
+<h2>模型和属性</h2>
+<p>使用set和get方法设置获取实例的属性：</p>
+<div class="cnblogs_code">
+<pre><span style="color: #0000ff;">var</span> user = <span style="color: #0000ff;">new</span><span style="color: #000000;"> User();
+user.set({ name: </span>'叶小钗'<span style="color: #000000;"> });
+user.get(</span>'name'); <span style="color: #008000;">//</span><span style="color: #008000;">叶小钗</span>
+user.attributes;<span style="color: #008000;">//</span><span style="color: #008000;">{name: '叶小钗'}</span></pre>
+</div>
+<p>我们看到其实user.arributes是一个对象字面量，我们不会直接操作他，因为我们使用get/set方法可以进行我们的验证流程。</p>
+<p>我们使用validate方法来校验一个实例属性，默认情况没有任何验证，若是我们需要验证的话：</p>
+<div class="cnblogs_code">
+<pre><span style="color: #0000ff;">var</span> User =<span style="color: #000000;"> Backbone.Model.extend({
+    validate: </span><span style="color: #0000ff;">function</span><span style="color: #000000;"> (attr) {
+        </span><span style="color: #0000ff;">if</span> (!attr.name || attr.name.length &lt; 3<span style="color: #000000;">) {
+            </span><span style="color: #0000ff;">return</span> '名称长度过短'<span style="color: #000000;">;
+        }
+    }
+});</span></pre>
+</div>
+<p>如果属性合法，validate不会理睬之，不合法可以返回错误字符串或者Error对象，校验失败get/set方法就会触发error事件：</p>
+<div class="cnblogs_code">
+<pre><span style="color: #0000ff;">var</span> user = <span style="color: #0000ff;">new</span><span style="color: #000000;"> User();
+user.bind(</span>'error', <span style="color: #0000ff;">function</span><span style="color: #000000;"> (model, error) {
+    </span><span style="color: #008000;">//</span><span style="color: #008000;">错误处理</span>
+<span style="color: #000000;">});
+user.set({ name: </span>'0'<span style="color: #000000;"> });
+</span><span style="color: #008000;">//</span><span style="color: #008000;">给特定集合添加一个错误处理程序</span>
+user.set({ name: '0' }, { error: <span style="color: #0000ff;">function</span> (model, error) { } });</pre>
+</div>
+<p>使用hash名为default的对象来指定默认属性，在创建一个实例模型时，任何没有指定值的属性都会被设置为默认值：</p>
+<div class="cnblogs_code">
+<pre><span style="color: #0000ff;">var</span> Chat =<span style="color: #000000;"> Backbone.Model.extend({
+    defaults: { name: </span>'叶小钗'<span style="color: #000000;">}
+});
+assertEqual((</span><span style="color: #0000ff;">new</span> Chat).get('name'), '叶小钗');</pre>
+</div>
+<h2>集合</h2>
+<p>在backbone中，模型实例的数据存放在多个集合中，为什么模型之间要使用独立的集合，其原因有点复杂，但在实际中我们经常这么做（虽然我还没做过）。</p>
+<p>例如创建Twitter需要两个集合followers和followees，两者都有User的实例填充数据，虽然两个集合都是来自同一模型，但是各自包含了不同的实例数组，所以独立形成集合。</p>
+<p>针对模型，可以通过扩展backbone.collection来创建一个集合：</p>
+<div class="cnblogs_code">
+<pre><span style="color: #0000ff;">var</span> Users =<span style="color: #000000;"> Backbone.Collection.extend({
+    model: User
+});</span></pre>
+</div>
+<p>在上面的例子中，我们覆盖了model属性来指定与集合相关联的模型（这里是User模型），虽然这个步骤不是必须的，但是为该集合设置一个默认的模型指向往往能派上大用场。</p>
+<p>通常集合会包含单个模型的一个实例，而不是不同模型的多个实例。</p>
+<p>在创建一个集合时，可以传递一个模型数组，比如backbone模型，如果定义了一个初始化实例函数，在初始化时就会调用之：</p>
+<div class="cnblogs_code">
+<pre><span style="color: #0000ff;">var</span> users = <span style="color: #0000ff;">new</span> Users([{ name: '叶小钗' }, { name: '素还真'}]);</pre>
+</div>
+<p>另一种方法是使用add方法为集合添加模型：</p>
+<div class="cnblogs_code">
+<pre>users.add({ name: '叶小钗'<span style="color: #000000;"> });
+users.add([{ name: </span>'叶小钗' }, { name: '素还真' }]);</pre>
+</div>
+<p>在为集合添加模型时会触发add事件：</p>
+<div class="cnblogs_code">
+<pre>users.bind('add', <span style="color: #0000ff;">function</span><span style="color: #000000;"> (user) {
+    </span><span style="color: #008000;">//</span><span style="color: #008000;">...</span>
+<span style="color: #000000;">});
+</span><span style="color: #008000;">//</span><span style="color: #008000;">移除一个模型</span>
+users.bind('remove', <span style="color: #0000ff;">function</span><span style="color: #000000;"> (user) {
+    </span><span style="color: #008000;">//</span><span style="color: #008000;">...</span>
+<span style="color: #000000;">});
+</span><span style="color: #008000;">//</span><span style="color: #008000;">根据模型id获取模型</span>
+<span style="color: #0000ff;">var</span> user = users.get('moduleId'<span style="color: #000000;">);
+</span><span style="color: #008000;">//</span><span style="color: #008000;">集合中模型被修改后出发change事件</span>
+<span style="color: #0000ff;">var</span> user = <span style="color: #0000ff;">new</span> User({ name: '叶小钗'<span style="color: #000000;"> });
+</span><span style="color: #0000ff;">var</span> users = <span style="color: #0000ff;">new</span><span style="color: #000000;"> Backbone.Collection();
+users.bind(</span>'change', <span style="color: #0000ff;">function</span><span style="color: #000000;"> (rec) {
+</span><span style="color: #008000;">//</span><span style="color: #008000;">改变一个记录</span>
+<span style="color: #000000;">});
+users.add(user);
+user.set({ name; </span>'素还真'});</pre>
+</div>
+<h2>控制集合内部顺序</h2>
+<p>一个集合内部元素顺序可以通过comparator方法控制，该方法的返回值便是你希望集合内部排序的规则：</p>
+<div class="cnblogs_code">
+<pre><span style="color: #0000ff;">var</span> Users =<span style="color: #000000;"> Backbone.Collection.extend({
+    comparator: </span><span style="color: #0000ff;">function</span><span style="color: #000000;"> (user) {
+        </span><span style="color: #0000ff;">return</span> user.get('name'<span style="color: #000000;">);
+    }
+});</span></pre>
+</div>
+<p>返回值可以是值或者数字，具体例子我们下次有机会来试试看。</p>
+<h1>视图</h1>
+<p>backbone的视图并不是模板，而是一些控制类，他们处理模型的表现。</p>
+<p>在很多MVC中视图一般指html或者模板，他们在控制器中处理事件和渲染，但backbone中视图：</p>
+<div class="cnblogs_code">
+<pre><span style="color: #800000;">视图代表一个UI逻辑块，负责一个简单的DOM内容</span></pre>
+</div>
+<div class="cnblogs_code">
+<pre><span style="color: #0000ff;">var</span> UserView =<span style="color: #000000;"> Backbone.View.extend({
+    initialize: </span><span style="color: #0000ff;">function</span><span style="color: #000000;"> () { },
+    render: </span><span style="color: #0000ff;">function</span><span style="color: #000000;"> () { }
+});</span></pre>
+</div>
+<p>不管视图有没有被插入页面，每个视图都知道当前的Dom元素，即this.el，el是从视图的tagName、className或者id等属性中创建的元素，没有这些值el就是空div：</p>
+<div class="cnblogs_code">
+<pre><span style="color: #0000ff;">var</span> UserView =<span style="color: #000000;"> Backbone.View.extend({
+    tagName: </span>'span'<span style="color: #000000;">,
+    className: </span>'users'<span style="color: #000000;">
+});
+</span><span style="color: #0000ff;">var</span> userView = <span style="color: #0000ff;">new</span> UserView();<span style="color: #008000;">//</span><span style="color: #008000;">&lt;span class="users"&gt;&lt;/span&gt;</span></pre>
+</div>
+<p>若是希望视图绑定到页面上已存在的元素上，直接指定el就好（必须在页面加载后才能指定哦，不然找不到）：</p>
+<div class="cnblogs_code">
+<pre><span style="color: #0000ff;">var</span> UserView =<span style="color: #000000;"> Backbone.View.extend({
+    el: $(</span>'.usets'<span style="color: #000000;">)
+});
+</span><span style="color: #008000;">//</span><span style="color: #008000;">也可以实例化一个视图时传递el（tagName、className\id）</span>
+<span style="color: #0000ff;">new</span> UserView({ id: 'id' });</pre>
+</div>
+<h2>渲染视图</h2>
+<p>每个视图都有一个render方法，默认情况下没有任何操作，一旦视图需要重绘便会调render方法，不同的视图用不同功能的函数来覆盖函数，以处理模板渲染，并使用新的html来更新el：</p>
+<div class="cnblogs_code">
+<pre><span style="color: #0000ff;">var</span> TodoView =<span style="color: #000000;"> Backbone.View.extend({
+    template: _.template($(</span>'#tmpt'<span style="color: #000000;">).html()),
+    render: </span><span style="color: #0000ff;">function</span><span style="color: #000000;"> () {
+        $(</span><span style="color: #0000ff;">this</span>.el).html(<span style="color: #0000ff;">this</span>.template(<span style="color: #0000ff;">this</span><span style="color: #000000;">.model.toJSON()));
+        </span><span style="color: #0000ff;">return</span> <span style="color: #0000ff;">this</span><span style="color: #000000;">;
+    }
+});</span></pre>
+</div>
+<p>backbone本身并不知道我们是怎么渲染视图的，我们可以自己生产元素也可以使用模板类库（一般用这个）。</p>
+<p>在前面的代码中，我们使用了this.model的本地属性，他指向一个模型实例，在实例化时传递到视图中，模型的toJSON方法实际上返回模型未加工时的原始属性，可以在模板中使用：</p>
+<div class="cnblogs_code">
+<pre><span style="color: #0000ff;">new</span> TodoView({ model: <span style="color: #0000ff;">new</span> Todo });</pre>
+</div>
+<h2>委托事件</h2>
+<p>通过委托，backbone的视图提供了一种添加事件到el的简单快捷的方法：</p>
+<div class="cnblogs_code">
+<pre><span style="color: #0000ff;">var</span> TodoView =<span style="color: #000000;"> Backbone.View.extend({
+    events: {
+        </span>'change input[type=checkbox]': 'toggleDone'<span style="color: #000000;">,
+        </span>'click .destroy': 'clear'<span style="color: #000000;">
+    },
+    toggoleDone: </span><span style="color: #0000ff;">function</span><span style="color: #000000;"> () { },
+    clear; </span><span style="color: #0000ff;">function</span><span style="color: #000000;"> () {}
+});</span></pre>
+</div>
+<p>events对象为{'eventType selector': 'callback'}这种格式，selector是可选的，不提供便绑定值el上。</p>
+<p>委托利用了事件冒泡机制，意思是可以一直触发而不管el内容是否改变（估计类似于delegate吧）。</p>
+<p>上面的callback事件触发时，他的上下文是视图当前上下午，所以this中的this.model/el都可以使用。</p>
+<h2>绑定和上下文</h2>
+<p>事实上，每当视图的模型发生变化时，就会触发change事件，然后调用该函数，这就意味这应用程序的视图及HTML和与之对应的模型数据是同步的。</p>
+<div class="cnblogs_code">
+<pre><span style="color: #0000ff;">var</span> TodoView =<span style="color: #000000;"> Backbone.View.extend({
+    initialize: </span><span style="color: #0000ff;">function</span><span style="color: #000000;"> () {
+        _.bindAll(</span><span style="color: #0000ff;">this</span>, 'render', 'close'<span style="color: #000000;">);
+        </span><span style="color: #0000ff;">this</span>.model.bind('change', <span style="color: #0000ff;">this</span><span style="color: #000000;">.render);
+    },
+    close: </span><span style="color: #0000ff;">function</span><span style="color: #000000;"> () { }
+});</span></pre>
+</div>
+<p>需要注意在回调函数中的上下文已经改变，Underscore提供一个函数：</p>
+<div class="cnblogs_code">
+<pre>_.bindAll(context, func);</pre>
+</div>
+<p>他将函数名字和一个上下文绑定，bindAll保证了所有给定的函数总是在指定的上下文中被调用，因为函数上下文总在胡乱变化，这样做很有用。</p>
+<p>模型销毁需要视图绑定delete事件，触发时删除el即可：</p>
+<div class="cnblogs_code">
+<pre><span style="color: #0000ff;">var</span> TodoView =<span style="color: #000000;"> Backbone.View.extend({
+    initialize: </span><span style="color: #0000ff;">function</span><span style="color: #000000;"> () {
+        _.bindAll(</span><span style="color: #0000ff;">this</span>, 'render', 'close'<span style="color: #000000;">);
+        </span><span style="color: #0000ff;">this</span>.model.bind('change', <span style="color: #0000ff;">this</span><span style="color: #000000;">.render);
+        </span><span style="color: #0000ff;">this</span>.model.bind('delete', <span style="color: #0000ff;">this</span><span style="color: #000000;">.remove);
+    },
+    remove: </span><span style="color: #0000ff;">function</span> () { $(<span style="color: #0000ff;">this</span><span style="color: #000000;">.el).remove() }
+});</span></pre>
+</div>
+<h1>控制器</h1>
+<p>backbone的控制器将应用程序的状态和url的hash片段关联在一起，使url地址可分享，也可以作为书签使用。</p>
+<p>本质上，控制器是一些路由和函数组成，当导航到这些路由时那些函数便调用：</p>
+<div class="cnblogs_code">
+<pre><span style="color: #000000;">routes : {
+    </span>'help': 'help', <span style="color: #008000;">//</span><span style="color: #008000;">#help</span>
+    'search/:query': 'search', <span style="color: #008000;">//</span><span style="color: #008000;">#search/kiwis</span>
+    'search/:query/p:page': 'search', <span style="color: #008000;">//</span><span style="color: #008000;">#search/kiwis/p7</span>
+    'file/*peth': 'file' <span style="color: #008000;">//</span><span style="color: #008000;">#file/any/path.txt</span>
+}</pre>
+</div>
+<p>参数以&ldquo;:&rdquo;开始，然后是参数名，当路由被调用时，所有参数都会传递到他的函数，*为通配符，和参数一将和匹配的值一起传递到路由的函数中。</p>
+<p>路由是以哈希对象中定义顺序倒叙进行解析的，来创建一个控制器吧：</p>
+<div class="cnblogs_code">
+<pre><span style="color: #0000ff;">var</span> PageController =<span style="color: #000000;"> Backbone.Controller.extend({
+    routes: {
+        </span>'help': 'help', <span style="color: #008000;">//</span><span style="color: #008000;">#help</span>
+        'search/:query': 'search', <span style="color: #008000;">//</span><span style="color: #008000;">#search/kiwis</span>
+        'search/:query/p:page': 'search', <span style="color: #008000;">//</span><span style="color: #008000;">#search/kiwis/p7</span>
+        'file/*peth': 'file' <span style="color: #008000;">//</span><span style="color: #008000;">#file/any/path.txt</span>
+<span style="color: #000000;">    },
+    index: </span><span style="color: #0000ff;">function</span><span style="color: #000000;"> () { },
+    help: </span><span style="color: #0000ff;">function</span><span style="color: #000000;"> () { },
+    search: </span><span style="color: #0000ff;">function</span><span style="color: #000000;"> () { }
+});</span></pre>
+</div>
+<p>当用户被导航到&ldquo;http://....com#search/param&rdquo;时，不管手输还是后退都会调用search函数，并传递其参数param</p>
+<p>若是希望ajax与seo更加友好，路由前缀就必须是&ldquo;!/&rdquo;，同时服务器端还需要做一点调整。</p>
+<h2>服务器同步</h2>
+<p>默认情况下，模型发生变化（保存），backbone就会使用ajax与服务器通讯（Backbone.sync），成功便更新客户端模型。</p>
+<p>要使用这个属性便需要定义url，并且在服务器端处理rest形式请求，backbone会处理余下任务：</p>
+<div class="cnblogs_code">
+<pre><span style="color: #0000ff;">var</span> User =<span style="color: #000000;"> Backbone.Model.extend({
+    url: </span>'/users'<span style="color: #000000;">
+});</span></pre>
+</div>
+<p>url既可以是一个字符串也可以是一个函数返回字符串，backbone增删查改几个函数对应映射：</p>
+<div class="cnblogs_code">
+<pre><span style="color: #800000;">create =&gt; post /collection
+read =&gt; get /collection[/id]
+update =&gt; put /collection/id
+delete =&gt; delete /collection/id</span></pre>
+</div>
+<p>例如，我们要创建一个User实例，backbone会发送一个post请求道/uesrs，更新一个user实例，会发送至/users/id节点，服务器响应时会返回一个json格式的对象</p>
+<p>若是要使用save(attr, option)函数将模型保存至服务器，可以随意传递一个由属性和请求项组成的hash对象，若是模型有id，假设该模型在服务器上以存在，存在就是put请求，不然就post请求添加数据：</p>
+<div class="cnblogs_code">
+<pre><span style="color: #0000ff;">var</span> user = <span style="color: #0000ff;">new</span><span style="color: #000000;"> User();
+user.set({ name: </span>'叶小钗'<span style="color: #000000;"> });
+user.save(</span><span style="color: #0000ff;">null</span><span style="color: #000000;">, {
+    success: </span><span style="color: #0000ff;">function</span><span style="color: #000000;"> () {
+        </span><span style="color: #008000;">//</span><span style="color: #008000;">保存成功</span>
+<span style="color: #000000;">    }
+});</span></pre>
+</div>
+<p>所有save都是异步的，通过success或者failure来监听ajax回调，我们一般与jquery合用了。</p>
+<h2>填充集合</h2>
+<p>我们已经知道了如何创建/更新模型，但是第一次我们如何获取模型数据呢？</p>
+<p>这就是backbone集合出现的原因，他们用来请求远程数据并保存至本地，和模型类似，必须给集合指定一个url来设置其数据源，若是没有则默认使用与之关联的模型url：</p>
+<div class="cnblogs_code">
+<pre><span style="color: #0000ff;">var</span> Followers =<span style="color: #000000;"> Backbone.Collection.extend({
+    model: User,
+    url: </span>'/user'<span style="color: #000000;">
+});
+</span><span style="color: #008000;">//</span><span style="color: #008000;">fetch用于刷新模型，该函数会请求数据，若是远程数据和当前模型不一致，将触发change事件</span>
+Followers.fetch();</pre>
+</div>
+<p>集合的fetch函数将发送一个get请求道服务器，获取远程数据，最后刷新集合触发refresh事件。</p>
+<p>可以使用refresh函数手动刷新集合，传入一个模型对象即可，在第一次设置页面时候用这个方法很方便，这里和页面加载后发送get请求不一样，我们可以传递json对象给refresh，而预先填充到集合中，比如：</p>
+<div class="cnblogs_code">
+<pre>Users.refresh({name; ''});</pre>
+</div>
+<h2>自定义行为</h2>
+<p>在backbone视图读取或者保存模型到服务器时都会调用backbone.sync方法，我们可以覆盖该方法来改变其默认行为（存入xml、本地存储）：</p>
+<div class="cnblogs_code">
+<pre><span style="color: #008000;">/*</span><span style="color: #008000;">
+method 便是crud方法（create、read、update、delete）
+model 需要保存的模型
+options 请求可选项，包括成功失败函数
+</span><span style="color: #008000;">*/</span><span style="color: #000000;">
+Backbone.sync </span>= <span style="color: #0000ff;">function</span><span style="color: #000000;"> (method, model, options) {
+    options.success(model);
+};</span></pre>
+</div>
+<p>每个模型或者集合只能覆盖各自的sync函数。</p>
+<p>我们来看一个扩展HTML5本地存储的例子：</p>
+<div class="cnblogs_code">
+<pre><span style="color: #008000;">//</span><span style="color: #008000;">所有待完成的项都保存至本地存储命名空间&ldquo;todos&rdquo;中</span>
+Toto.prototype.localStorage = <span style="color: #0000ff;">new</span> Store('todos'<span style="color: #000000;">);
+</span><span style="color: #008000;">//</span><span style="color: #008000;">重写backbone.sync</span>
+Backbone.sync = <span style="color: #0000ff;">function</span><span style="color: #000000;"> (method, model, options) {
+    </span><span style="color: #0000ff;">var</span> resp, store = model.localStorage ||<span style="color: #000000;"> model.collection.localStorage;
+    </span><span style="color: #0000ff;">switch</span><span style="color: #000000;"> (method) {
+        </span><span style="color: #0000ff;">case</span> 'read': resp = model.id ? store.find(model) : store.findAll(); <span style="color: #0000ff;">break</span><span style="color: #000000;">;
+        </span><span style="color: #0000ff;">case</span> 'create': resp = store.create(model); <span style="color: #0000ff;">break</span><span style="color: #000000;">;
+        </span><span style="color: #0000ff;">case</span> 'update': resp = store.update(model); <span style="color: #0000ff;">break</span><span style="color: #000000;">;
+        </span><span style="color: #0000ff;">case</span> 'delete': resp = store.destroy(model); <span style="color: #0000ff;">break</span><span style="color: #000000;">;
+    }
+    </span><span style="color: #0000ff;">if</span><span style="color: #000000;"> (resp) {
+        options.success(resp);
+    } </span><span style="color: #0000ff;">else</span><span style="color: #000000;"> {
+        options.error(</span>'not find'<span style="color: #000000;">);
+    }
+}</span></pre>
+</div>
+<h1>简单实战-官方版</h1>
+<p>首先，我们来看一个官方给出的例子：</p>
+<p><img src="264397610350481.png" alt=""></p>
+<p>具体代码各位可以去下载，其中用到了很多类库我们也暂时不去管它，我们现在就来试试能不能做。</p>
+<p>这是一个简单的to-do列表应用程序，我们希望能进行增删查改操作，在页面刷新后仍能保持数据。</p>
+<p>页面结构（核心）</p>
+<div class="cnblogs_code">
+<pre><span style="color: #008080;"> 1</span> <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">html </span><span style="color: #ff0000;">lang</span><span style="color: #0000ff;">="en"</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 2</span> <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">head</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 3</span>     <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">meta </span><span style="color: #ff0000;">charset</span><span style="color: #0000ff;">="utf-8"</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 4</span>     <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">title</span><span style="color: #0000ff;">&gt;</span>Backbone.js Todos<span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">title</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 5</span>     <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">link </span><span style="color: #ff0000;">rel</span><span style="color: #0000ff;">="stylesheet"</span><span style="color: #ff0000;"> href</span><span style="color: #0000ff;">="todos.css"</span> <span style="color: #0000ff;">/&gt;</span>
+<span style="color: #008080;"> 6</span> <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">head</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 7</span> <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">body</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 8</span>     <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">div </span><span style="color: #ff0000;">id</span><span style="color: #0000ff;">="todoapp"</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 9</span>         <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">header</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">10</span>             <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">h1</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">11</span>                 Todos<span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">h1</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">12</span>             <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">input </span><span style="color: #ff0000;">id</span><span style="color: #0000ff;">="new-todo"</span><span style="color: #ff0000;"> type</span><span style="color: #0000ff;">="text"</span><span style="color: #ff0000;"> placeholder</span><span style="color: #0000ff;">="What needs to be done?"</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">13</span>         <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">header</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">14</span>         <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">section </span><span style="color: #ff0000;">id</span><span style="color: #0000ff;">="main"</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">15</span>             <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">input </span><span style="color: #ff0000;">id</span><span style="color: #0000ff;">="toggle-all"</span><span style="color: #ff0000;"> type</span><span style="color: #0000ff;">="checkbox"</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">16</span>             <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">label </span><span style="color: #ff0000;">for</span><span style="color: #0000ff;">="toggle-all"</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">17</span>                 Mark all as complete<span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">label</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">18</span>             <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">ul </span><span style="color: #ff0000;">id</span><span style="color: #0000ff;">="todo-list"</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">19</span>             <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">ul</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">20</span>         <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">section</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">21</span>     <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">div</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">22</span>     <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">script </span><span style="color: #ff0000;">src</span><span style="color: #0000ff;">="js/json2.js"</span><span style="color: #ff0000;"> type</span><span style="color: #0000ff;">="text/javascript"</span><span style="color: #0000ff;">&gt;&lt;/</span><span style="color: #800000;">script</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">23</span>     <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">script </span><span style="color: #ff0000;">src</span><span style="color: #0000ff;">="js/jquery.js"</span><span style="color: #ff0000;"> type</span><span style="color: #0000ff;">="text/javascript"</span><span style="color: #0000ff;">&gt;&lt;/</span><span style="color: #800000;">script</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">24</span>     <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">script </span><span style="color: #ff0000;">src</span><span style="color: #0000ff;">="js/underscore.js"</span><span style="color: #ff0000;"> type</span><span style="color: #0000ff;">="text/javascript"</span><span style="color: #0000ff;">&gt;&lt;/</span><span style="color: #800000;">script</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">25</span>     <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">script </span><span style="color: #ff0000;">src</span><span style="color: #0000ff;">="js/backbone.js"</span><span style="color: #ff0000;"> type</span><span style="color: #0000ff;">="text/javascript"</span><span style="color: #0000ff;">&gt;&lt;/</span><span style="color: #800000;">script</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">26</span>     <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">script </span><span style="color: #ff0000;">src</span><span style="color: #0000ff;">="js/backbone.localStorage.js"</span><span style="color: #ff0000;"> type</span><span style="color: #0000ff;">="text/javascript"</span><span style="color: #0000ff;">&gt;&lt;/</span><span style="color: #800000;">script</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">27</span>     <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">script </span><span style="color: #ff0000;">src</span><span style="color: #0000ff;">="js/todos.js"</span><span style="color: #ff0000;"> type</span><span style="color: #0000ff;">="text/javascript"</span><span style="color: #0000ff;">&gt;&lt;/</span><span style="color: #800000;">script</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">28</span> <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">body</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">29</span> <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">html</span><span style="color: #0000ff;">&gt;</span></pre>
+</div>
+<p>页面结构很简单，其核心为：</p>
+<p>一个文本框（#new-todo），用于创建新to-do</p>
+<p>一个列表（#todo-list），用于展示</p>
+<p>下面是基本的Todo模型，其拥有content与done属性，同时提供toggle方法设置done属性：</p>
+<div class="cnblogs_code">
+<pre><span style="color: #008000;">//</span><span style="color: #008000;">todo是备忘录的意思哦</span>
+<span style="color: #0000ff;">var</span> Toto =<span style="color: #000000;"> Backbone.Model.extend({
+    defaults: {
+        done: </span><span style="color: #0000ff;">false</span><span style="color: #000000;">
+    },
+    toggle: </span><span style="color: #0000ff;">function</span><span style="color: #000000;"> () {
+        </span><span style="color: #008000;">//</span><span style="color: #008000;">设置做了点击就没做，设置没做点击就做了...</span>
+        <span style="color: #0000ff;">this</span>.save({ done: !<span style="color: #0000ff;">this</span>.get('done'<span style="color: #000000;">) });
+    }
+});</span></pre>
+</div>
+<p>然后我们定义一个todo的集合，也是保存todo模型的地方：</p>
+<div class="cnblogs_code">
+<pre><span style="color: #0000ff;">var</span> TodoList =<span style="color: #000000;"> Backbone.Collection.extend({
+    model: Todo,
+    localStorage: </span><span style="color: #0000ff;">new</span> Store('todos'), <span style="color: #008000;">//</span><span style="color: #008000;">所有项目保存至todos命名空间</span>
+    <span style="color: #008000;">//</span><span style="color: #008000;">过滤已完成的项目</span>
+    done: <span style="color: #0000ff;">function</span><span style="color: #000000;"> () {
+        </span><span style="color: #0000ff;">return</span> <span style="color: #0000ff;">this</span>.filter(<span style="color: #0000ff;">function</span><span style="color: #000000;"> (todo) {
+            </span><span style="color: #0000ff;">return</span> todo.get('done'<span style="color: #000000;">);
+        });
+    },
+    remaining: </span><span style="color: #0000ff;">function</span><span style="color: #000000;"> () {
+        </span><span style="color: #0000ff;">return</span> <span style="color: #0000ff;">this</span>.without.applay(<span style="color: #0000ff;">this</span>, <span style="color: #0000ff;">this</span><span style="color: #000000;">.done);
+    }
+});
+</span><span style="color: #0000ff;">var</span> Todos = <span style="color: #0000ff;">new</span> TodoList();</pre>
+</div>
+<p>因为这里用的是本地存储所以引入了backbone.localstorage，下一步我们做用于显示的视图</p>
+<div class="cnblogs_code">
+<pre><span style="color: #008080;"> 1</span> <span style="color: #0000ff;">var</span> TodoView =<span style="color: #000000;"> Backbone.View.extend({
+</span><span style="color: #008080;"> 2</span>     tagName: 'li', <span style="color: #008000;">//</span><span style="color: #008000;">视图时一个个li标签</span>
+<span style="color: #008080;"> 3</span>     template: $('#item-template').template(), <span style="color: #008000;">//</span><span style="color: #008000;">获取模板</span>
+<span style="color: #008080;"> 4</span> <span style="color: #000000;">    events: {
+</span><span style="color: #008080;"> 5</span>         'change .check': 'toggleDone'<span style="color: #000000;">,
+</span><span style="color: #008080;"> 6</span>         'dblclick .todo-content': 'edit'<span style="color: #000000;">,
+</span><span style="color: #008080;"> 7</span>         'click .todo-destroy': 'destroy'<span style="color: #000000;">,
+</span><span style="color: #008080;"> 8</span>         'keypress .todo-input': 'updateOnEnter'<span style="color: #000000;">,
+</span><span style="color: #008080;"> 9</span>         'blur .todo-input': 'close'
+<span style="color: #008080;">10</span> <span style="color: #000000;">    },
+</span><span style="color: #008080;">11</span>     initialize: <span style="color: #0000ff;">function</span><span style="color: #000000;"> () {
+</span><span style="color: #008080;">12</span>         <span style="color: #008000;">//</span><span style="color: #008000;">确保在正确作用域</span>
+<span style="color: #008080;">13</span>         _.bindAll(<span style="color: #0000ff;">this</span>, 'render', 'close', 'remove'<span style="color: #000000;">);
+</span><span style="color: #008080;">14</span>         <span style="color: #008000;">//</span><span style="color: #008000;">监听存储模板修改以确定是否修改el</span>
+<span style="color: #008080;">15</span>         <span style="color: #0000ff;">this</span>.model.bind('change', <span style="color: #0000ff;">this</span><span style="color: #000000;">.render);
+</span><span style="color: #008080;">16</span>         <span style="color: #0000ff;">this</span>.model.bind('destroy', <span style="color: #0000ff;">this</span><span style="color: #000000;">.render);
+</span><span style="color: #008080;">17</span> <span style="color: #000000;">    },
+</span><span style="color: #008080;">18</span>     render: <span style="color: #0000ff;">function</span><span style="color: #000000;"> () {
+</span><span style="color: #008080;">19</span>         <span style="color: #008000;">//</span><span style="color: #008000;">使用存储模板更新el</span>
+<span style="color: #008080;">20</span>         <span style="color: #0000ff;">var</span> el = jQuery.tmpl(<span style="color: #0000ff;">this</span>.template, <span style="color: #0000ff;">this</span><span style="color: #000000;">.model.toJSON());
+</span><span style="color: #008080;">21</span>         $(<span style="color: #0000ff;">this</span><span style="color: #000000;">.el).html(el);
+</span><span style="color: #008080;">22</span>         <span style="color: #0000ff;">return</span> <span style="color: #0000ff;">this</span><span style="color: #000000;">;
+</span><span style="color: #008080;">23</span> <span style="color: #000000;">    },
+</span><span style="color: #008080;">24</span>     tiggleDone: <span style="color: #0000ff;">function</span><span style="color: #000000;"> () {
+</span><span style="color: #008080;">25</span>         <span style="color: #0000ff;">this</span><span style="color: #000000;">.model.toggle();
+</span><span style="color: #008080;">26</span> <span style="color: #000000;">    },
+</span><span style="color: #008080;">27</span>     edit: <span style="color: #0000ff;">function</span><span style="color: #000000;"> () {
+</span><span style="color: #008080;">28</span>         $(<span style="color: #0000ff;">this</span>.el).addClass('editing'<span style="color: #000000;">);
+</span><span style="color: #008080;">29</span>         <span style="color: #0000ff;">this</span><span style="color: #000000;">.input.focus();
+</span><span style="color: #008080;">30</span> <span style="color: #000000;">    },
+</span><span style="color: #008080;">31</span>     close: <span style="color: #0000ff;">function</span> () {<span style="color: #008000;">//</span><span style="color: #008000;">关闭编剧状态</span>
+<span style="color: #008080;">32</span>         <span style="color: #0000ff;">this</span>.model.save({ content: <span style="color: #0000ff;">this</span><span style="color: #000000;">.input.val() });
+</span><span style="color: #008080;">33</span>         $(<span style="color: #0000ff;">this</span>.el).removeClass('editing'<span style="color: #000000;">);
+</span><span style="color: #008080;">34</span> <span style="color: #000000;">    },
+</span><span style="color: #008080;">35</span>     <span style="color: #008000;">//</span><span style="color: #008000;">按下回车键结束编辑</span>
+<span style="color: #008080;">36</span>     updateOnEnter: <span style="color: #0000ff;">function</span><span style="color: #000000;"> (e) {
+</span><span style="color: #008080;">37</span>         <span style="color: #0000ff;">if</span> (e.keyCode == 13<span style="color: #000000;">)
+</span><span style="color: #008080;">38</span> <span style="color: #000000;">            e.target.blur();
+</span><span style="color: #008080;">39</span> <span style="color: #000000;">    },
+</span><span style="color: #008080;">40</span>     remove: <span style="color: #0000ff;">function</span><span style="color: #000000;"> () {
+</span><span style="color: #008080;">41</span>         $(<span style="color: #0000ff;">this</span><span style="color: #000000;">.el).remove();
+</span><span style="color: #008080;">42</span> <span style="color: #000000;">    },
+</span><span style="color: #008080;">43</span>     destroy: <span style="color: #0000ff;">function</span><span style="color: #000000;"> () {
+</span><span style="color: #008080;">44</span>         <span style="color: #0000ff;">this</span><span style="color: #000000;">.model.destroy();
+</span><span style="color: #008080;">45</span> <span style="color: #000000;">    }
+</span><span style="color: #008080;">46</span> });</pre>
+</div>
+<p>我们将血多事件委托给管理更新，完成和删除todo视图，例如每当复选框变化toggleDone就会调用，并切换done属性，最后又会触发change事件，导致视图重新渲染。</p>
+<p>来看看我们的模板：</p>
+<div class="cnblogs_code">
+<pre><span style="color: #0000ff;">&lt;</span><span style="color: #800000;">script </span><span style="color: #ff0000;">type</span><span style="color: #0000ff;">="text/template"</span><span style="color: #ff0000;"> id</span><span style="color: #0000ff;">="item-template"</span><span style="color: #0000ff;">&gt;</span>
+<span style="background-color: #f5f5f5; color: #000000;">&lt;</span><span style="background-color: #f5f5f5; color: #000000;">div class</span><span style="background-color: #f5f5f5; color: #000000;">=</span><span style="background-color: #f5f5f5; color: #000000;">"</span><span style="background-color: #f5f5f5; color: #000000;">view</span><span style="background-color: #f5f5f5; color: #000000;">"</span><span style="background-color: #f5f5f5; color: #000000;">&gt;</span>
+    <span style="background-color: #f5f5f5; color: #000000;">&lt;</span><span style="background-color: #f5f5f5; color: #000000;">input class</span><span style="background-color: #f5f5f5; color: #000000;">=</span><span style="background-color: #f5f5f5; color: #000000;">"</span><span style="background-color: #f5f5f5; color: #000000;">toggle</span><span style="background-color: #f5f5f5; color: #000000;">"</span><span style="background-color: #f5f5f5; color: #000000;"> type</span><span style="background-color: #f5f5f5; color: #000000;">=</span><span style="background-color: #f5f5f5; color: #000000;">"</span><span style="background-color: #f5f5f5; color: #000000;">checkbox</span><span style="background-color: #f5f5f5; color: #000000;">"</span> <span style="background-color: #f5f5f5; color: #000000;">&lt;%=</span><span style="background-color: #f5f5f5; color: #000000;"> done </span><span style="background-color: #f5f5f5; color: #000000;">?</span> <span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">checked="checked"</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;"> : </span><span style="background-color: #f5f5f5; color: #000000;">''</span> <span style="background-color: #f5f5f5; color: #000000;">%&gt;</span> <span style="background-color: #f5f5f5; color: #000000;">/</span><span style="background-color: #f5f5f5; color: #000000;">&gt;</span>
+    <span style="background-color: #f5f5f5; color: #000000;">&lt;</span><span style="background-color: #f5f5f5; color: #000000;">label</span><span style="background-color: #f5f5f5; color: #000000;">&gt;&lt;%-</span><span style="background-color: #f5f5f5; color: #000000;"> title </span><span style="background-color: #f5f5f5; color: #000000;">%&gt;&lt;</span><span style="background-color: #f5f5f5; color: #000000;">/</span><span style="background-color: #f5f5f5; color: #000000;">label&gt;</span>
+    <span style="background-color: #f5f5f5; color: #000000;">&lt;</span><span style="background-color: #f5f5f5; color: #000000;">a class</span><span style="background-color: #f5f5f5; color: #000000;">=</span><span style="background-color: #f5f5f5; color: #000000;">"</span><span style="background-color: #f5f5f5; color: #000000;">destroy</span><span style="background-color: #f5f5f5; color: #000000;">"</span><span style="background-color: #f5f5f5; color: #000000;">&gt;&lt;</span><span style="background-color: #f5f5f5; color: #000000;">/</span><span style="background-color: #f5f5f5; color: #000000;">a&gt;</span>
+<span style="background-color: #f5f5f5; color: #000000;">&lt;</span><span style="background-color: #f5f5f5; color: #000000;">/</span><span style="background-color: #f5f5f5; color: #000000;">div&gt;</span>
+<span style="background-color: #f5f5f5; color: #000000;">&lt;</span><span style="background-color: #f5f5f5; color: #000000;">input class</span><span style="background-color: #f5f5f5; color: #000000;">=</span><span style="background-color: #f5f5f5; color: #000000;">"</span><span style="background-color: #f5f5f5; color: #000000;">edit</span><span style="background-color: #f5f5f5; color: #000000;">"</span><span style="background-color: #f5f5f5; color: #000000;"> type</span><span style="background-color: #f5f5f5; color: #000000;">=</span><span style="background-color: #f5f5f5; color: #000000;">"</span><span style="background-color: #f5f5f5; color: #000000;">text</span><span style="background-color: #f5f5f5; color: #000000;">"</span><span style="background-color: #f5f5f5; color: #000000;"> value</span><span style="background-color: #f5f5f5; color: #000000;">=</span><span style="background-color: #f5f5f5; color: #000000;">"</span><span style="background-color: #f5f5f5; color: #000000;">&lt;%- title %&gt;</span><span style="background-color: #f5f5f5; color: #000000;">"</span> <span style="background-color: #f5f5f5; color: #000000;">/</span><span style="background-color: #f5f5f5; color: #000000;">&gt;</span>
+<span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">script</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #0000ff;">&lt;</span><span style="color: #800000;">script </span><span style="color: #ff0000;">type</span><span style="color: #0000ff;">="text/template"</span><span style="color: #ff0000;"> id</span><span style="color: #0000ff;">="stats-template"</span><span style="color: #0000ff;">&gt;</span>
+<span style="background-color: #f5f5f5; color: #000000;">&lt;%</span> <span style="background-color: #f5f5f5; color: #0000ff;">if</span><span style="background-color: #f5f5f5; color: #000000;"> (done) { </span><span style="background-color: #f5f5f5; color: #000000;">%&gt;</span>
+    <span style="background-color: #f5f5f5; color: #000000;">&lt;</span><span style="background-color: #f5f5f5; color: #000000;">a id</span><span style="background-color: #f5f5f5; color: #000000;">=</span><span style="background-color: #f5f5f5; color: #000000;">"</span><span style="background-color: #f5f5f5; color: #000000;">clear-completed</span><span style="background-color: #f5f5f5; color: #000000;">"</span><span style="background-color: #f5f5f5; color: #000000;">&gt;</span><span style="background-color: #f5f5f5; color: #000000;">Clear </span><span style="background-color: #f5f5f5; color: #000000;">&lt;%=</span><span style="background-color: #f5f5f5; color: #000000;"> done </span><span style="background-color: #f5f5f5; color: #000000;">%&gt;</span><span style="background-color: #f5f5f5; color: #000000;"> completed </span><span style="background-color: #f5f5f5; color: #000000;">&lt;%=</span><span style="background-color: #f5f5f5; color: #000000;"> done </span><span style="background-color: #f5f5f5; color: #000000;">==</span> <span style="background-color: #f5f5f5; color: #000000;">1</span> <span style="background-color: #f5f5f5; color: #000000;">?</span> <span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">item</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;"> : </span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">items</span><span style="background-color: #f5f5f5; color: #000000;">'</span> <span style="background-color: #f5f5f5; color: #000000;">%&gt;&lt;</span><span style="background-color: #f5f5f5; color: #000000;">/</span><span style="background-color: #f5f5f5; color: #000000;">a&gt;</span>
+<span style="background-color: #f5f5f5; color: #000000;">&lt;%</span><span style="background-color: #f5f5f5; color: #000000;"> } </span><span style="background-color: #f5f5f5; color: #000000;">%&gt;</span>
+<span style="background-color: #f5f5f5; color: #000000;">&lt;</span><span style="background-color: #f5f5f5; color: #000000;">div class</span><span style="background-color: #f5f5f5; color: #000000;">=</span><span style="background-color: #f5f5f5; color: #000000;">"</span><span style="background-color: #f5f5f5; color: #000000;">todo-count</span><span style="background-color: #f5f5f5; color: #000000;">"</span><span style="background-color: #f5f5f5; color: #000000;">&gt;&lt;</span><span style="background-color: #f5f5f5; color: #000000;">b</span><span style="background-color: #f5f5f5; color: #000000;">&gt;&lt;%=</span><span style="background-color: #f5f5f5; color: #000000;"> remaining </span><span style="background-color: #f5f5f5; color: #000000;">%&gt;&lt;</span><span style="background-color: #f5f5f5; color: #000000;">/</span><span style="background-color: #f5f5f5; color: #000000;">b&gt; &lt;%= remaining == 1 ? 'item' : 'items' %&gt; left&lt;</span><span style="background-color: #f5f5f5; color: #000000;">/</span><span style="background-color: #f5f5f5; color: #000000;">div</span><span style="background-color: #f5f5f5; color: #000000;">&gt;</span>
+<span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">script</span><span style="color: #0000ff;">&gt;</span></pre>
+</div>
+<p>PS：我这里写了大概思想，有不一致的地方各位看看就行。</p>
+<p>最后我们来一个终止：</p>
+<div class="cnblogs_code">
+<pre><span style="color: #008080;"> 1</span> <span style="color: #0000ff;">var</span> AppView =<span style="color: #000000;"> Backbone.View.extend({
+</span><span style="color: #008080;"> 2</span>     el: #('#todoapp'),<span style="color: #008000;">//</span><span style="color: #008000;">绑定至现有骨架</span>
+<span style="color: #008080;"> 3</span> <span style="color: #000000;">    events: {
+</span><span style="color: #008080;"> 4</span>         'keypress #new-todo': 'createOnEnter'<span style="color: #000000;">,
+</span><span style="color: #008080;"> 5</span>         'click .todo-clear a': 'clearCompleted'
+<span style="color: #008080;"> 6</span> <span style="color: #000000;">    },
+</span><span style="color: #008080;"> 7</span>     <span style="color: #008000;">/*</span>
+<span style="color: #008080;"> 8</span> <span style="color: #008000;">    初始化时，将相关事件绑定给todos集合，当添加或者修改集合中元素时触发事件，
+</span><span style="color: #008080;"> 9</span> <span style="color: #008000;">    通过载入可能存在本地存储中的记录来初始化数据
+</span><span style="color: #008080;">10</span>     <span style="color: #008000;">*/</span>
+<span style="color: #008080;">11</span>     initailize: <span style="color: #0000ff;">function</span><span style="color: #000000;"> () {
+</span><span style="color: #008080;">12</span>         _.bindAll(<span style="color: #0000ff;">this</span>, 'addOne', 'addAll', 'render'<span style="color: #000000;">);
+</span><span style="color: #008080;">13</span>         <span style="color: #0000ff;">this</span>.input = <span style="color: #0000ff;">this</span>.$('#new-todo'<span style="color: #000000;">);
+</span><span style="color: #008080;">14</span>         Todos.bind('add', <span style="color: #0000ff;">this</span><span style="color: #000000;">.addOne);
+</span><span style="color: #008080;">15</span>         Todos.bind('refresh', <span style="color: #0000ff;">this</span><span style="color: #000000;">.addAll);
+</span><span style="color: #008080;">16</span> <span style="color: #000000;">        Todos.fetch();
+</span><span style="color: #008080;">17</span> <span style="color: #000000;">    },
+</span><span style="color: #008080;">18</span>     addOne: <span style="color: #0000ff;">function</span><span style="color: #000000;"> (todo) {
+</span><span style="color: #008080;">19</span>         <span style="color: #0000ff;">var</span> view = <span style="color: #0000ff;">new</span><span style="color: #000000;"> TodoView({model: todo});
+</span><span style="color: #008080;">20</span>         <span style="color: #0000ff;">this</span>.$('#todo-list'<span style="color: #000000;">).append(view.render().el);
+</span><span style="color: #008080;">21</span> <span style="color: #000000;">    },
+</span><span style="color: #008080;">22</span>     <span style="color: #008000;">//</span><span style="color: #008000;">......</span>
+<span style="color: #008080;">23</span> <span style="color: #000000;">});
+</span><span style="color: #008080;">24</span> 
+<span style="color: #008080;">25</span> <span style="color: #0000ff;">var</span> App = <span style="color: #0000ff;">new</span> AppView();</pre>
+</div>
+<p>当页面首次加载后，Todos集合将填充数据，然后触发refresh事件，将调研addAll来获取todo模型，生成todoview视图，并将它们添加至#todo-list中。</p>
+<p>当有新的todo模型添加至Todos时，会触发add事件，调用addOne做到最后的视图更新。</p>
+<h2>简单总结</h2>
+<p>至此跌跌撞撞我们将官网的例子看了，不知道各位买账不？？？</p>
+<p>反正我有点不买账，因为我感觉自己还是有点迷糊，所以我们下面再自己写一个例子试试吧。</p>
+<h1>简单实战-demo</h1>
+<p>稍后继续。。。。。。</p>
+<p>&nbsp;</p>
+<h1>结语</h1>
+<p>好了，我们第一阶段的学习基本结束，其中还差一个实战的例子我稍后补上，于是我们就应该对backbone有初步的认识了</p>
+<p>明天我们的任务是结合requireJS于backbone做一点点小练习，于是我们后面就能说我们精通requireJS于backbone了。。。。。。</p>
+<h1>补充</h1>
+<p><span style="color: #ff0000;">刚刚在这里看到了几张不错的图，给贴出来吧</span>：</p>
+<h2 style="margin: 0px 0px 4px; color: #000000; text-transform: none; line-height: 25px; text-indent: 0px; letter-spacing: normal; font-family: 微软雅黑; font-size: 14px; font-style: normal; font-variant: normal; word-spacing: 0px; white-space: normal; background-color: #ffffff; -webkit-text-stroke-width: 0px;"><a id="cb_post_title_url" style="color: #223355; font-family: 微软雅黑; text-decoration: none;" href="http://www.cnblogs.com/nuysoft/archive/2012/03/19/2404274.html">[原创]Backbone源码分析-Backbone架构+流程图</a></h2>
+<p><img src="28050987482669.png" alt="Backbone-_thumb2"></p>
+<p><img src="29886625565444.png" alt="Backbone-事件"></p>
+<p><img src="45279657604475.png" alt="Backbone-模型"></p>
+<p><img src="8034477683566.png" alt="Backbone-集合"></p>
+<p><img src="1462159251013.png" alt="Backbone架构-路由"></p>
+<p><img src="26243006859651.png" alt="Backbone-视图"></p>
+<p>&nbsp;</p>
+                </div>
+
+                <div class='span3 sidebar'>
+                    <h2>导航栏</h2>
+                    <ul class="nav nav-tabs nav-stacked">
+                             				<li><a href="http://songboriceboy.github.io/xxoo/html/sjms/MVCxxbj01ckam/index.html">【MVC学习笔记01】初窥奥秘</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/sjms/zgbj01dygalbqcj/index.html">【重构笔记01】第一个案例补齐插件</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/sjms/zgbj02zxzzhs/index.html">【重构笔记02】重新组织函数</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/sjms/zgbj03dxzjbqtx/index.html">【重构笔记03】对象之间搬迁特性</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/sjms/zgbj04zxzzsjwhxmblsmssjyxwfl/index.html">【重构笔记04】重新组织数据（我好像明白了什么是数据与行为分离）</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/sjms/ctBackbone/index.html">初探Backbone</a></li>
+    				                                         
+                    </ul>
+                </div>
+            </div>
+
+        </div>
+    </body>
+</html>

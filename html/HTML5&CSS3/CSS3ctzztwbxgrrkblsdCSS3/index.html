@@ -1,0 +1,201 @@
+﻿<!DOCTYPE html>
+
+<html lang="zh">
+    <head>
+        <meta charset="utf-8">
+        <meta name="description" content="android,ios" />
+        <meta name="keywords" content="android,ios" />
+
+        <title>叶小钗</title>
+        <style type='text/css'>
+            body {
+                background-color: #CCC;
+            }
+        </style>
+        <link rel="stylesheet" href="../../../css/bootstrap.css" />
+    </head>
+
+    <body>
+        <div class="container">
+
+            <h1>叶小钗</h1>
+
+            <div class='navbar navbar-inverse'>
+                <div class='navbar-inner nav-collapse' style="height: auto;">
+                    <ul class="nav">
+                              				<li><a href="http://songboriceboy.github.io/xxoo/html/blade/index.html">blade</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/css/index.html">css</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/HTML5&CSS3/index.html">HTML5&CSS3</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/index.html">javascript</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Javaxx/index.html">Java学习</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/nodejs/index.html">nodejs</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/requirejs/index.html">requirejs</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/index.html">Web前端</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/xxgw/index.html">学习感悟</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/gzdd/index.html">工作点滴</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/jkxx/index.html">接口学习</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/wfl/index.html">未分类</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/ydkf/index.html">移动开发</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/sjms/index.html">设计模式</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/mst/index.html">面试题</a></li>
+    				                      </ul>
+                </div>
+            </div>
+
+            <div id='content' class='row-fluid'>
+
+                <div class='span9 main'>
+				<div style="color:blue" align=center>【CSS3初探之字体、文本相关】让人开不了始的CSS3。。。</div><br><h1>前言</h1>
+<p>2010年MIX大会上微软的工程师在介绍IE9时，以前端角度讲互联网发展分为了三个阶段：</p>
+<p>1 以内容为主的web1.0网络，前端主流技术为html与css</p>
+<p>2 以ajax为首的异步数据加载技术，热门技术是js/dom/异步数据请求</p>
+<p>3 便是即将迎来的HTML5+CSS3的时代</p>
+<p>PS：我记得大概08年的时候，ajax便在大事宣扬，但我私下发现周围会的人真心不多，应用也不多！！！</p>
+<p>到今天5年过去了，你页面不是ajax的都不好意思拿出来说，于是我在想5年后若是页面不是html5的，好意思拿出来说吗？？？</p>
+<p>因为，我css水平比较水，<span style="color: #ff0000;">所以学习CSS3时候也顺便复习下css2的东西</span>，真是一举两得啊！</p>
+<p>因为这个系列都是边学边写的，可能会比较乱或者我唧唧哇哇说很多话，请各位同学见谅了。</p>
+<h1>抱怨的正文</h1>
+<h2>关于选择器</h2>
+<p>哎，坑个爹！这篇文章开始的题目不是这个啦！！！他开始的题目是&ldquo;css3初探之选择器&rdquo;，我硬是在电脑面前呆若木鸡了将近半个时辰。。。</p>
+<p>发现一个事实，css确实坑爹！想我上个星期学html5时，基本上每天都会知道学什么，每天都会知道学的东西是干什么的，但是CSS3呢？？</p>
+<p>我们来看一下，他的第一章是&ldquo;选择器&rdquo;，我一看又多了属性选择器，里面还用到了正则表达式。。。。</p>
+<p>对，确实是正则表达式，我在想我们很多重构工程师都是妹妹，而且都只会将图片变成html（我们原来的美工只会作图呢，要他形成页面就是折磨他折磨自己）。</p>
+<p>现在选择器居然加上了一个这则表达式，这不坑爹吗？先不说效率会不会有问题，光说我就不会用的。</p>
+<p>我们来看看CSS2中的选择器已经够了吧，我感觉都够用了，CSS3多出的其它选择器都可以接受，唯独这个与正则有关的。。。。</p>
+<h2>关于选择器在页面插入内容</h2>
+<p>若是上面那个问题还可以理解，可以结束，这个功能的出现，小的就直接以为他在坑爹了，他做了个什么事情呢，我们来看看。<br>css3提供了一个content属性，可以让我们在某个选择器元素后面插入文字甚至插入图片！！！</p>
+<p>好吧，我忍了很久了，我们不是说好了吗？html控制结构，css控制样式，js控制行为，我倒是在想css3这个功能的出现究竟想干什么。。。。</p>
+<p>就我看来无论什么提示信息都该属于html的一部分，就算与js有关也好啊！我尤其不能接受居然使用css输出的。</p>
+<h2>关于其它</h2>
+<p>然后我们再看看后面的内容，这不就靠谱多了吗？</p>
+<p>文字与字体的样式相关盒模型相关样式</p>
+<p>背景与边框</p>
+<p>变形处理</p>
+<p>动画功能</p>
+<p>布局相关</p>
+<p>......</p>
+<p>瞧瞧下面这些，这些才对嘛，这些才是css3应该处理的问题嘛。</p>
+<h1>既然说它难，那它为什么难？</h1>
+<p>我感觉CSS3学习困难，那么我们来就应该分析下它为什么学起来困难：</p>
+<p>我学html或者js都是以单一知识点做学习，可以形成demo，但对css来说，我写了几个标签，我然后写了几个选择器.......好没成就感啊！！！</p>
+<p>因为html与js的知识点分散、而相对独立所以好学；但是css独立吗？他其实也独立的，但我们不能在网页上独立的输出一段文字或者一个框吧。。。</p>
+<p>于是我想到了，用css做一个完整的图，不错，这是一个比较不错的点子，但是他太大了，做的时候很容易就不知道哪里该是哪里了，是比较困难的。</p>
+<p>所以我这里总结下对我来说学习css困难的原因：</p>
+<p>1&nbsp;不能形成有效的demo</p>
+<p>2 由于1没有成就感，从而没有干劲；</p>
+<p>那么，这里又引出了一个问题：</p>
+<h1>如何学习CSS3</h1>
+<p>屁话，当然是慢慢学了，不能因为刚刚抱怨了一通就不学了，学习还是要讲诚信的，我们不能歧视，不能逃避。。。。。</p>
+<p>我这里就从文字这块开始学习吧，在最后学习结束后再找2、3张图形成完整的页面，这样应该达到目的了！</p>
+<h1>文本缩进</h1>
+<div class="cnblogs_code">
+<pre><span style="color: #000000;">text-indent 可以用于<span style="color: #ff0000;">块级元素</span>的文本缩进</span></pre>
+</div>
+<div class="cnblogs_code" onclick="cnblogs_code_show('a054cbc7-e828-4eb4-8323-9d05160e0dfc')"><img id="code_img_closed_a054cbc7-e828-4eb4-8323-9d05160e0dfc" class="code_img_closed" src="43570758473519.gif" alt=""><img id="code_img_opened_a054cbc7-e828-4eb4-8323-9d05160e0dfc" class="code_img_opened" style="display: none;" onclick="cnblogs_code_hide('a054cbc7-e828-4eb4-8323-9d05160e0dfc',event)" src="16365178109279.gif" alt=""><span class="cnblogs_code_collapse">text-indent</span>
+<div id="cnblogs_code_open_a054cbc7-e828-4eb4-8323-9d05160e0dfc" class="cnblogs_code_hide">
+<pre><span style="color: #008080;"> 1</span> <span style="color: #0000ff;">&lt;!</span><span style="color: #ff00ff;">DOCTYPE html</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 2</span> 
+<span style="color: #008080;"> 3</span> <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">html </span><span style="color: #ff0000;">xmlns</span><span style="color: #0000ff;">="http://www.w3.org/1999/xhtml"</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 4</span> <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">head</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 5</span>     <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">title</span><span style="color: #0000ff;">&gt;&lt;/</span><span style="color: #800000;">title</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 6</span>     <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">style </span><span style="color: #ff0000;">type</span><span style="color: #0000ff;">="text/css"</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 7</span> <span style="background-color: #f5f5f5; color: #800000;">        div </span><span style="background-color: #f5f5f5; color: #000000;">{</span><span style="background-color: #f5f5f5; color: #ff0000;"> text-indent</span><span style="background-color: #f5f5f5; color: #000000;">:</span><span style="background-color: #f5f5f5; color: #0000ff;"> 10px</span><span style="background-color: #f5f5f5; color: #000000;">;</span><span style="background-color: #f5f5f5; color: #000000;">}</span>
+<span style="color: #008080;"> 8</span>     <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">style</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 9</span> <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">head</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">10</span> <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">body</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">11</span>     <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">div</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">12</span> <span style="color: #000000;">        我感觉CSS3学习困难，那么我们来就应该分析下它为什么学起来困难： 我学html或者js都是以单一知识点做学习，可以形成demo，但对css来说，我写了几个标签，我然后写了几个选择器.......好没成就感啊！！！
+</span><span style="color: #008080;">13</span> <span style="color: #000000;">        因为html与js的知识点分散、而相对独立所以好学；但是css独立吗？他其实也独立的，但我们不能在网页上独立的输出一段文字或者一个框吧。。。 于是我想到了，用css做一个完整的图，不错，这是一个比较不错的点子，但是他太大了，做的时候很容易就不知道哪里该是哪里了，是比较困难的。
+</span><span style="color: #008080;">14</span> <span style="color: #000000;">        所以我这里总结下对我来说学习css困难的原因： 1 不能形成有效的demo 2 由于1没有成就感，从而没有干劲； 那么，这里又引出了一个问题：
+</span><span style="color: #008080;">15</span>     <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">div</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">16</span> <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">body</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">17</span> <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">html</span><span style="color: #0000ff;">&gt;</span></pre>
+</div>
+</div>
+<p><img src="349205710141036.jpg" alt=""></p>
+<p>若是设置负值的话文字将不会被显示：</p>
+<p><img src="46026085437429.jpg" alt=""></p>
+<h1>文本对齐</h1>
+<div class="cnblogs_code">
+<pre>text-align 会影响一个元素中文本的对齐方式；<span style="color: #ff0000;">应用于块级元素</span></pre>
+</div>
+<div class="cnblogs_code">
+<pre><span style="color: #000000;"><span style="color: #ff0000;"><strong>BUG
+</strong></span>在IE6中会把text-align理解为center元素，导致完全居中，因为ie6中margin: 0 auto;居中不管用，所以这居然提供了一个居中的方法。。。</span></pre>
+</div>
+<p>居中对齐还是比较简单的，我们就不做讨论了，下面来看看垂直对齐：</p>
+<div class="cnblogs_code">
+<pre><span style="color: #000000;">行高line-height是指文本行基线之间的距离，而不是指字体大小，他确定了将各个元素框的高度增加或减少多少（应用于多有元素）。
+在最基本情况下，指定line-height可以用来增加（减少）文本行之间的垂直间隔；
+但其实是line-height控制了行间距，即文本行之间超出字体大小的额外空间，再直白点：line-height和字体大小之差就是行间距。</span></pre>
+</div>
+<div class="cnblogs_code">
+<pre><span style="color: #000000;">文本行中每个元素都会生成一个内容区，它由字体大小确定，
+这个内容区会生成一个&ldquo;<span style="color: #ff0000;">行内框inline box</span>&rdquo;，如果不存在其它因素这个行内框就完全等于元素内容区。
+由line-height产生的行间距就是增加或者减少各个inline-box高度因素之一。
+要确定一个给定元素的行内框，只需用line-height减去font-size，这个就是行间距（可能是负值），将之除以2便是元素inline-box</span></pre>
+</div>
+<p>根据以上所述，我们可以得到两个结论：</p>
+<p>1 当font-size大于line-height时，文本上下就会产生重合。</p>
+<p>2 因为font-size固定以及line-height固定，所以可以得到相同的行间距，其实也就确定了每个元素的inline-box了。</p>
+<p>另外，若不给line-height设置值，他将会是font-size的1.2倍。</p>
+<h1>文字阴影</h1>
+<p>可以使用text-shadow给页面上的文字添加阴影效果</p>
+<div class="cnblogs_code">
+<pre><span style="color: #000000;">text-shadow: len len len color;
+第一个参数为横向偏移距离
+第二个参数为纵向偏移距离
+第三个参数为阴影的模糊半径
+最后一个为颜色</span></pre>
+</div>
+<p>几个属性可以不写<br><img src="46673137021558.jpg" alt=""></p>
+<p>话说带阴影的字真好看，若是作为标题神马的还真是不错，而且一个文字可以指定多个阴影：</p>
+<p><img src="37730826160936.jpg" alt=""></p>
+<h1>文本自动换行word-break</h1>
+<p>原来ie浏览器就支持该属性了，现在其他浏览器也支持了，所以我们貌似可以直接拿来用。</p>
+<p>浏览器本身自带换行功能，但若是一个单词过长或者数字过大，比如比尔的资金。。。那么浏览器估计就不能换行了，因为浏览器嫉妒。。。</p>
+<p>这个时候我们一般用word-break: break-all解决之。</p>
+<p>然后用word-wrap: break-word时浏览器不出现滚动条。</p>
+<p>......此处省略4千字。。。</p>
+<h1>结语</h1>
+<p>莫名其妙的一章就看完了，说实话没什么感觉，而且时间用的比搞其他事情多，明天继续吧。。。</p>
+                </div>
+
+                <div class='span3 sidebar'>
+                    <h2>导航栏</h2>
+                    <ul class="nav nav-tabs nav-stacked">
+                             				<li><a href="http://songboriceboy.github.io/xxoo/html/HTML5&CSS3/CSS3ctzMediaQuerieszywcldCSS3wmlgzzzj/index.html">【CSS3初探之MediaQueries】终于完成了的CSS3，我们来个终章总结！</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/HTML5&CSS3/CSS3ctzbxydhlrjtdCSS3/index.html">【CSS3初探之变形与动画】令人惊叹的CSS3</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/HTML5&CSS3/CSS3ctzztwbxgrrkblsdCSS3/index.html">【CSS3初探之字体、文本相关】让人开不了始的CSS3。。。</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/HTML5&CSS3/CSS3ctzhxgyswmyrygk/index.html">【CSS3初探之盒相关样式】我们一人一个框。。。</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/HTML5&CSS3/CSS3ctzbjbkxgqdyldclyjqdwfzofferqdyt/index.html">【CSS3初探之背景边框相关】奇葩的与老大吵了一架，奇葩的五分钟offer，奇葩的一天。。。</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/HTML5&CSS3/HTML5&CSS3jjxx02HeaderdsxCSSzdbj/index.html">【HTML5&CSS3进阶学习02】Header的实现·CSS中的布局</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/HTML5&CSS3/HTML5ctzformbqjfbdyzzjwjscjctf/index.html">【HTML5初探之form标签】解放表单验证、增加文件上传、集成拖放</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/HTML5&CSS3/HTML5ctzGeolocationAPIrwmhqnsddz/index.html">【HTML5初探之GeolocationAPI】让我们获取女神的地址</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/HTML5&CSS3/HTML5ctzWebWorkerswyyndxc/index.html">【HTML5初探之WebWorkers】网页也能多线程</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/HTML5&CSS3/HTML5ctzdmtysspbfHTML5Flashscswd/index.html">【HTML5初探之多媒体元素】视频播放HTML5、Flash谁才是王道？</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/HTML5&CSS3/HTML5ctzbdccrgmysjk/index.html">【HTML5初探之本地存储】如果没有数据库。。。</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/HTML5&CSS3/HTML5ctzlxyyrhdzlqqwlldwz/index.html">【HTML5初探之离线应用】如何打造零请求、无流量的网站？</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/HTML5&CSS3/HTML5ctzhztxskwcanvasysylxydwebym/index.html">【HTML5初探之绘制图像（上）】看我canvas元素引领下一代web页面</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/HTML5&CSS3/HTML5ctzhztxxkwcanvasysylxydwebym/index.html">【HTML5初探之绘制图像（下）】看我canvas元素引领下一代web页面</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/HTML5&CSS3/HTML5ctztxAPIkymjbzgsjtsbsm/index.html">【HTML5初探之通信API】跨域门槛不再高、数据推送不是梦</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/HTML5&CSS3/xpldbkrwmdbkgjplrwmdbkzcxysbj/index.html">【写漂亮的博客】让我们的博客更加漂亮，让我们的博客支持响应式布局！</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/HTML5&CSS3/ctHTML5zsyxbqbjyhtml5bjwdbky/index.html">【初探HTML5之使用新标签布局】用html5布局我的博客页！</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/HTML5&CSS3/szHTML5yCSS3mfzzwkymlfym/index.html">【实战HTML5与CSS3】免费制作威客页面啦（附源码）</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/HTML5&CSS3/szHTML5yCSS3yHTML5hCSS3zzyms/index.html">【实战HTML5与CSS3】用HTML5和CSS3制作页面（上）</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/HTML5&CSS3/szHTML5yCSS3dypctssmlddhxldtpbz/index.html">【实战HTML5与CSS3第一篇】初探水深，美丽的导航，绚丽的图片爆炸！！</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/HTML5&CSS3/szHTML5yCSS3dspwdygHTML5wydsl(tgym)/index.html">【实战HTML5与CSS3第三篇】我第一个HTML5网页诞生了(提供源码)</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/HTML5&CSS3/szHTML5yCSS3depxldksdh/index.html">【实战HTML5与CSS3第二篇】绚丽的快速导航！</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/HTML5&CSS3/tsHTML5ded01HTML5dqsjsyjls/index.html">【探索HTML5第二弹01】HTML5的前世今生以及来世</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/HTML5&CSS3/tsHTML5ded03zjdtyydsjkwmgoogledtkykxsm/index.html">【探索HTML5第二弹03】走近地图应用的世界，看我们google地图可以看些什么！</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/HTML5&CSS3/tsHTML5ded04xysbjsrwmyqlxysbjb/index.html">【探索HTML5第二弹04】响应式布局（上），让我们一起来响应式布局吧</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/HTML5&CSS3/tsHTML5ded05xysbjzybybxysbj/index.html">【探索HTML5第二弹05】响应式布局（中），一步一步响应式布局</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/HTML5&CSS3/rhtzCSS3ddh/index.html">如何停止CSS3的动画？</a></li>
+    				                                         
+                    </ul>
+                </div>
+            </div>
+
+        </div>
+    </body>
+</html>

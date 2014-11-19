@@ -1,0 +1,241 @@
+﻿<!DOCTYPE html>
+
+<html lang="zh">
+    <head>
+        <meta charset="utf-8">
+        <meta name="description" content="android,ios" />
+        <meta name="keywords" content="android,ios" />
+
+        <title>叶小钗</title>
+        <style type='text/css'>
+            body {
+                background-color: #CCC;
+            }
+        </style>
+        <link rel="stylesheet" href="../../../css/bootstrap.css" />
+    </head>
+
+    <body>
+        <div class="container">
+
+            <h1>叶小钗</h1>
+
+            <div class='navbar navbar-inverse'>
+                <div class='navbar-inner nav-collapse' style="height: auto;">
+                    <ul class="nav">
+                              				<li><a href="http://songboriceboy.github.io/xxoo/html/blade/index.html">blade</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/css/index.html">css</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/HTML5&CSS3/index.html">HTML5&CSS3</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/index.html">javascript</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Javaxx/index.html">Java学习</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/nodejs/index.html">nodejs</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/requirejs/index.html">requirejs</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/index.html">Web前端</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/xxgw/index.html">学习感悟</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/gzdd/index.html">工作点滴</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/jkxx/index.html">接口学习</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/wfl/index.html">未分类</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/ydkf/index.html">移动开发</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/sjms/index.html">设计模式</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/mst/index.html">面试题</a></li>
+    				                      </ul>
+                </div>
+            </div>
+
+            <div id='content' class='row-fluid'>
+
+                <div class='span9 main'>
+				<div style="color:blue" align=center>【javascript培训第三天】查遗补漏</div><br><h1>前言</h1>
+<p>先说说最近的工作吧，我刚进了一个新的团队，工作了快两周了，感觉新团队还是不错的，最重要的一点就是大家都在做事情，没人&ldquo;偷懒&rdquo;。</p>
+<p>因为后端同事很多原来没有互联网开发经验，所以对前端的一些东西不是很熟悉，我开始还认为彼此配合可能会出问题呢，但是我是错误的！后端老大哥很照顾人的，至少最近的工作中，后端同事表现出来的友好与担当就是我应该学习的，而且后端同事对我很尊重，有几次都提出了要向我学习前端知识，说实话我感觉到了团队的温暖，也感觉到了自己的责任，所以还得加油呢！这个团队是很有前途的，这是一个好的开始。</p>
+<p>然后，我开始担任着前端组长的角色，我认为我最近做的不够好，今天产品经理和组员聊天过程中，我突然意识到我已经不再是一个普通的程序员了，因为我事实上应该接受一个小组的任务，再与产品讨论确定具体的交互，然后与后端同事沟通数据接口，最后再分解给我的组员。</p>
+<p>但是，我却一头埋在了自己的任务里面，这方面需要改进，好了进入今天的正题。</p>
+<p>javascript的内容其实说多也多，说不多的话，今天就要说完了。。。当然这里先贴上我前段时间的一些研究，这里就不重复写了：</p>
+<p><a id="CategoryEntryList1_EntryStoryList_Entries_TitleUrl_5" class="entrylistItemTitle" href="http://www.cnblogs.com/yexiaochai/archive/2013/04/22/3034949.html">【初窥javascript奥秘之让人捉摸不定的this】你知道现在this指向哪里吗？？？</a></p>
+<p><a id="CategoryEntryList1_EntryStoryList_Entries_TitleUrl_4" class="entrylistItemTitle" href="http://www.cnblogs.com/yexiaochai/archive/2013/04/23/3037064.html">【初窥javascript奥秘之事件冒泡】那些年我们一起冒的泡</a></p>
+<p><a id="CategoryEntryList1_EntryStoryList_Entries_TitleUrl_3" class="entrylistItemTitle" href="http://www.cnblogs.com/yexiaochai/archive/2013/04/24/3037069.html">【初窥javascript奥秘之Ajax】简述下你所知道的Ajax？</a></p>
+<p><a id="CategoryEntryList1_EntryStoryList_Entries_TitleUrl_2" class="entrylistItemTitle" href="http://www.cnblogs.com/yexiaochai/archive/2013/04/25/3042113.html">【初窥javascript奥秘之面向对象】封装与继承</a></p>
+<p>以上博客的质量稍微要高一点，我觉得自己一个月能出两篇上述文章基本心满意足了。</p>
+<h1>javascript的作用域</h1>
+<p>javascript在执行时候有其执行环境，执行环境定义了变量或者函数有权限访问其他数据，决定了各自的行为。我们有时候也把它叫做执行上下午。</p>
+<p>当代码在一个环境中执行时，会创建由变量对象构成的一个作用域链，我们的函数就有其作用域链，而且内部可以访问外部作用域链。</p>
+<p>在javascript中，所有全局变量和函数都是作为window对象的属性或者方法创建的，所以我们创建变量时候一定要使用&ldquo;var&rdquo;，避免其全局化。</p>
+<p>某个执行环境的代码执行结束后，该环境就会被销毁，比如还是内部变量在函数执行结束后就销毁了，当然闭包是个例外，我们后面说一下。</p>
+<p>PS：那撒，这个扯那么多也没什么意义，我们通俗点来说吧：</p>
+<p>编程语言中，作用域控制着变量与参数的可见性及生命周期，作用域的提出减少了变量冲突，提供自动内存管理，这就是作用域的意义。</p>
+<h1>javascript中的函数</h1>
+<p>javascript中的函数几乎无所不能，函数包含一组语句，用于代码复用、信息隐藏和组合调用。函数用于指定对象的行为，所谓编程不过是将需求分解为一组函数与数据结构罢了。。。</p>
+<p>在javascript中函数就是对象，对象字面量产生的对象链接到Object.prototype，函数对象连接至Function.prototype（连接到Object.prototype）。</p>
+<p>函数在创建时附加两个隐藏属性：函数上下文与函数行为的代码。</p>
+<p>每个函数对象创建时也有一个prototype属性，该属性拥有一个constructor属性并且指向该函数的对象（所以我们完全可以将他当做对象用，但我一般不那么做。。。）</p>
+<p><strong>调用函数</strong></p>
+<p>函数调用有四种方法：</p>
+<p>① 作为函数</p>
+<p>② 作为方法</p>
+<p>③ 作为构造函数</p>
+<p>④ call与apply</p>
+<p>关于这块我写着确实没有意思，因为之前也写过了，这里就不赘述了，大家可以去看看上面几篇。</p>
+<h1>闭包</h1>
+<p>闭包是javascript中一个很有意思的东西：</p>
+<p>javascript函数的执行依赖其变量作用域，这个作用域是函数定义时决定的，函数对象可以通过作用域链互相关联起来，函数体内部的变量都可以保存在函数作用域内，这就是闭包了。。。</p>
+<p>说多了我们也不能理解，上代码吧，代码才是世界通用语言呢：</p>
+<div class="cnblogs_code">
+<pre><span style="color: #0000ff;">var</span> scope = 'window'<span style="color: #000000;">;
+</span><span style="color: #0000ff;">function</span><span style="color: #000000;"> checkScope() {
+    </span><span style="color: #0000ff;">var</span> scope = 'func'<span style="color: #000000;">;
+    </span><span style="color: #0000ff;">function</span> func() { <span style="color: #0000ff;">return</span><span style="color: #000000;"> scope; }
+    </span><span style="color: #0000ff;">return</span><span style="color: #000000;"> func();
+}
+</span><span style="color: #0000ff;">var</span> s = checkScope();</pre>
+</div>
+<p><img src="42411209546472.png" alt=""></p>
+<p>看完代码，我们再来理一理闭包：</p>
+<div class="cnblogs_code">
+<pre><span style="color: #000000;">从技术角度来说，所有javascript函数都是闭包
+他们都是对象，他们都关联到作用域链。
+大多数函数作用域链再起调用时依然有效，但是当调用函数时闭包所指向作用域链和定义时不是同一个作用域链时，就变得有点奇妙了。</span></pre>
+</div>
+<p>我们以上的代码就比较奇妙：</p>
+<p>checkScope定义了一个局部变量与一个函数，函数返回了变量的值，随后将执行函数作为返回值。</p>
+<p>在这里我们执行checkscope时候，其作用域链指向函数内部，所以得到了这个答案，现在我们对他做一点变形：</p>
+<div class="cnblogs_code">
+<pre><span style="color: #0000ff;">var</span> scope = 'window'<span style="color: #000000;">;
+</span><span style="color: #0000ff;">function</span><span style="color: #000000;"> checkScope() {
+    </span><span style="color: #0000ff;">var</span> scope = 'func'<span style="color: #000000;">;
+    </span><span style="color: #0000ff;">function</span> func() { <span style="color: #0000ff;">return</span><span style="color: #000000;"> scope; }
+    </span><span style="color: #0000ff;">return</span><span style="color: #000000;"> func;
+}
+</span><span style="color: #0000ff;">var</span> s = checkScope()();</pre>
+</div>
+<p>这样的话，情况又会有所不同了，这里回顾一下前面的知识：</p>
+<div class="cnblogs_code">
+<pre><span style="color: #000000;">javascript函数的执行到了作用域链，这个作用域链是定义函数时定义的
+func函数在作用域内部，无论任何时候调用f，其内部的scope仍然有效，所以内部的scope是被保存下来了，其作用域被延长了。</span></pre>
+</div>
+<div class="cnblogs_code">
+<pre><span style="color: #0000ff;">var</span> scope = 'window'<span style="color: #000000;">;
+</span><span style="color: #0000ff;">function</span><span style="color: #000000;"> checkScope() {
+</span><span style="color: #008000;">//</span><span style="color: #008000;">    var scope = 'func';</span>
+    <span style="color: #0000ff;">function</span> func() { <span style="color: #0000ff;">return</span><span style="color: #000000;"> scope; }
+    </span><span style="color: #0000ff;">return</span><span style="color: #000000;"> func;
+}
+</span><span style="color: #0000ff;">var</span> s = checkScope()();</pre>
+</div>
+<p>这个样子情况又会有所不同，以下这个例子出现了很多次了，我们再来看看：</p>
+<div class="cnblogs_code">
+<pre><span style="color: #0000ff;">function</span><span style="color: #000000;"> func() {
+    </span><span style="color: #0000ff;">var</span> fs =<span style="color: #000000;"> [];
+    </span><span style="color: #0000ff;">for</span> (<span style="color: #0000ff;">var</span> i = 0; i &lt; 10; i++<span style="color: #000000;">) {
+        fs[i] </span>= <span style="color: #0000ff;">function</span> () { <span style="color: #0000ff;">return</span><span style="color: #000000;"> i; };
+    }
+    </span><span style="color: #0000ff;">return</span><span style="color: #000000;"> fs;
+}
+</span><span style="color: #0000ff;">var</span> f =<span style="color: #000000;"> func();
+</span><span style="color: #0000ff;">var</span> s = f[5]();</pre>
+</div>
+<p>这是一个比较经典的讲述闭包的例子了，上段代码定义了10个闭包，并将之存储于数组当中，然后他们都在<span style="color: #ff0000;">同一个函数中定义</span>，因此他们共享着变量i。</p>
+<p>var f = func()，返回时，i的值为10，所有闭包都共享着这个10，所以每个函数都返回同一个数字。【关联到闭包的作用域链都是活动的】。</p>
+<p><strong>内存泄露</strong></p>
+<div class="cnblogs_code">
+<pre><span style="color: #0000ff;">&lt;</span><span style="color: #800000;">div </span><span style="color: #ff0000;">id</span><span style="color: #0000ff;">="state"</span><span style="color: #0000ff;">&gt;</span>
+         <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">input </span><span style="color: #ff0000;">type</span><span style="color: #0000ff;">="button"</span><span style="color: #ff0000;"> value</span><span style="color: #0000ff;">="提交试卷"</span><span style="color: #ff0000;"> id</span><span style="color: #0000ff;">="ok"</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">div</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #0000ff;">&lt;</span><span style="color: #800000;">script </span><span style="color: #ff0000;">type</span><span style="color: #0000ff;">="text/javascript"</span><span style="color: #0000ff;">&gt;</span>
+    <span style="background-color: #f5f5f5; color: #0000ff;">var</span><span style="background-color: #f5f5f5; color: #000000;"> btn </span><span style="background-color: #f5f5f5; color: #000000;">=</span><span style="background-color: #f5f5f5; color: #000000;"> document.getElementById(</span><span style="background-color: #f5f5f5; color: #000000;">"</span><span style="background-color: #f5f5f5; color: #000000;">ok</span><span style="background-color: #f5f5f5; color: #000000;">"</span><span style="background-color: #f5f5f5; color: #000000;">);
+    btn.onclick </span><span style="background-color: #f5f5f5; color: #000000;">=</span> <span style="background-color: #f5f5f5; color: #0000ff;">function</span><span style="background-color: #f5f5f5; color: #000000;">(){
+      </span><span style="background-color: #f5f5f5; color: #008000;">//</span><span style="background-color: #f5f5f5; color: #008000;">ajax操作</span>
+<span style="background-color: #f5f5f5; color: #000000;">      document.getElementById(</span><span style="background-color: #f5f5f5; color: #000000;">"</span><span style="background-color: #f5f5f5; color: #000000;">state</span><span style="background-color: #f5f5f5; color: #000000;">"</span><span style="background-color: #f5f5f5; color: #000000;">).innerHTML </span><span style="background-color: #f5f5f5; color: #000000;">=</span> <span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">提交成功</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">; 
+    }; 
+</span><span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">script</span><span style="color: #0000ff;">&gt;</span></pre>
+</div>
+<p>这段代码我们一定写过，他不是没有道理，的我们在点击ajax提交时候，为了防止用户重复点击，我们自然要隐藏或者删除按钮</p>
+<p>但是，按钮倒是删除了，他的事件还在呢！若是不手动处理的话，在IE下就很有可能会导致内存泄露。</p>
+<h1>结语</h1>
+<p>哎，没感觉呢。。。。今天就到这里吧</p>
+                </div>
+
+                <div class='span3 sidebar'>
+                    <h2>导航栏</h2>
+                    <ul class="nav nav-tabs nav-stacked">
+                             				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/javascriptzdyxhxzsdyjxyzyddf/index.html">javascript中的一些核心知识点以及需要注意的地方</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/[zd]webappdyhzlyzydqdyhdpyjlkkb/index.html">[置顶]【webapp的优化整理】要做移动前端优化的朋友进来看看吧</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/[zd]yddjrwtyjjavascriptsjjzxjsjydjr/index.html">[置顶]【移动端兼容问题研究】javascript事件机制详解（涉及移动兼容）</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/gruntzhb30fzxhsygruntdbqddm/index.html">【grunt整合版】30分钟学会使用grunt打包前端代码</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/gruntdyd30fzxhsygruntdbqddm/index.html">【grunt第一弹】30分钟学会使用grunt打包前端代码</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/gruntdsdgruntzqdsjxmzdyy/index.html">【grunt第三弹】grunt在前端实际项目中的应用</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/gruntded30fzxhsygruntdbqddm02/index.html">【grunt第二弹】30分钟学会使用grunt打包前端代码（02）</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/IScrollsrxxtpyddhadlqs/index.html">【IScroll深入学习】突破移动端黑暗的利器（上）</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/IScrollsrxxjjIScrollynzz/index.html">【IScroll深入学习】解决IScroll疑难杂症</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/iScrollymxx00mniScroll/index.html">【iScroll源码学习00】模拟iScroll</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/iScrollymxx01zbjd/index.html">【iScroll源码学习01】准备阶段</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/iScrollymxx02fjiScrollsghxsjd/index.html">【iScroll源码学习02】分解iScroll三个核心事件点</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/iScrollymxx03iScrollsjjzygdtdsx/index.html">【iScroll源码学习03】iScroll事件机制与滚动条的实现</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/iScrollymxx04flIScrollhx/index.html">【iScroll源码学习04】分离IScroll核心</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/javascriptpxdytyyjc/index.html">【javascript培训第一天】语言基础</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/javascriptpxdstcybl/index.html">【javascript培训第三天】查遗补漏</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/javascriptpxdetDOMyBOM/index.html">【javascript培训第二天】DOM与BOM</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/javascriptjzdsk01mkhbc/index.html">【javascript激增的思考01】模块化编程</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/javascriptjzdsk02mkhyMVC/index.html">【javascript激增的思考02】模块化与MVC</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/javascriptjzdsk03MVVMyKnockout/index.html">【javascript激增的思考03】MVVM与Knockout</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/javascriptjzdsk04MVCyBackbonejs(beta)/index.html">【javascript激增的思考04】MVC与Backbonejs(beta)</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/javascriptmxdxzlrwmyqltkdzb01/index.html">【javascript面向对象之路】让我们一起来坦克大战吧01</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/NodeJSxxbj04xwfbxt/index.html">【NodeJS学习笔记04】新闻发布系统</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/requireJSymxx01ljzgrequireJSdjg/index.html">【requireJS源码学习01】了解整个requireJS的结构</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/requireJSymxx02datamainjzdsx/index.html">【requireJS源码学习02】datamain加载的实现</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/requireJSymxx03xjrequireJSdjzlc/index.html">【requireJS源码学习03】细究requireJS的加载流程</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/UIcjkfygjdrlcjs/index.html">【UI插件】开发一个简单日历插件（上）</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/UIcjjddrlcjxxxMVCsx/index.html">【UI插件】简单的日历插件（下）——学习MVC思想</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/zeptoxxbj01hxff$()/index.html">【zepto学习笔记01】核心方法$()</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/zeptoxxbj01hxff$()b/index.html">【zepto学习笔记01】核心方法$()（补）</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/zeptoxxbj02lsd/index.html">【zepto学习笔记02】零碎点</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/zeptoxxbj03sjjz/index.html">【zepto学习笔记03】事件机制</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/ycmsztjavascriptzdjc/index.html">【一次面试】再谈javascript中的继承</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/ztbackbone01mxModel/index.html">【再探backbone01】模型Model</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/ztbackbone02jhCollection/index.html">【再探backbone02】集合Collection</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/ztbackbone03bkydyyysltgym/index.html">【再探backbone03】博客园单页应用实例（提供源码）</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/ztbackbone04dyyydjslycl/index.html">【再探backbone04】单页应用的基石路由处理</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/ctUnderscorezsmbyq/index.html">【初探Underscore】再说模版引擎</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/ckjavascriptamzAjaxjsxnszddAjax/index.html">【初窥javascript奥秘之Ajax】简述下你所知道的Ajax？</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/ckjavascriptamzsjmpnxnwmyqmdp/index.html">【初窥javascript奥秘之事件冒泡】那些年我们一起冒的泡</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/ckjavascriptamzsjjzldtygdj/index.html">【初窥javascript奥秘之事件机制】论“点透”与“鬼点击”</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/ckjavascriptamzrrzmbddthisnzdxzthiszxnlm/index.html">【初窥javascript奥秘之让人捉摸不定的this】你知道现在this指向哪里吗？？？</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/ckjavascriptamzbbydxbdhlqbcl/index.html">【初窥javascript奥秘之闭包】叶大侠病都好了，求不踩了：）</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/ckjavascriptamzmxdxfzyjc/index.html">【初窥javascript奥秘之面向对象】封装与继承</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/qdmdsjdjgjdnzdljm/index.html">【前端盲点】事件的几个阶段你真的了解么？？？</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/dyyyviewymodelxgsl/index.html">【单页应用】view与model相关梳理</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/dyyyyqldyyybsxjdwbgns/index.html">【单页应用】一起来单页应用吧，实现简单微博功能！（上）</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/dyyyqjkzqappyggxsm/index.html">【单页应用】全局控制器app应该干些什么？</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/dyyywmgrhclkjdcccjgx/index.html">【单页应用】我们该如何处理框架弹出层层级关系？</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/dyyyljMVC/index.html">【单页应用】理解MVC</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/dyyyztxjzviewzjygrhtx/index.html">【单页应用之通信机制】view之间应该如何通信</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/dyyyjkzHistoryxsHistorydgdyyydm/index.html">【单页应用巨坑之History】细数History带给单页应用的噩梦</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/xtszeptofindysyjiosdcjpknrnhtt/index.html">【小贴士】zeptofind元素以及ios弹出键盘可能让你很头疼</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/xtsgytransitionEndanimatedygyqgs/index.html">【小贴士】关于transitionEndanimate的一个有趣故事</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/xtsgzzdbbysjwtdzzmp/index.html">【小贴士】工作中的”闭包“与事件委托的”阻止冒泡“</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/xtstytjavascriptzdreplace/index.html">【小贴士】探一探javascript中的replace</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/xtsxnjpyfixeddgydddt/index.html">【小贴士】虚拟键盘与fixed带给移动端的痛！</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/ttjavascriptsjjzdcsxyl/index.html">【探讨】javascript事件机制底层实现原理</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/mkhbcljrequireJSsxygjddmkjzq/index.html">【模块化编程】理解requireJS实现一个简单的模块加载器</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/zyJavaScriptmfjmtsdqlxkjzbfgndcljz/index.html">【转】【译】JavaScript魔法揭秘探索当前流行框架中部分功能的处理机制</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/zxjavascriptgszl01javascriptcszds/index.html">【追寻javascript高手之路01】javascript参数知多少？</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/zxjavascriptgszl02blzyyzds/index.html">【追寻javascript高手之路02】变量、作用域知多少？</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/zxjavascriptgszl03javascriptdxdld/index.html">【追寻javascript高手之路03】javascript对象大乱斗</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/zxjavascriptgszl04ljprototype/index.html">【追寻javascript高手之路04】理解prototype</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/zxjavascriptgszl05ljsjl/index.html">【追寻javascript高手之路05】理解事件流</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/zgbj04zxzzsj(2)/index.html">【重构笔记04】重新组织数据(2)</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/zgbj05jhtjbds/index.html">【重构笔记05】简化条件表达式</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/zgbj06jhhsdy/index.html">【重构笔记06】简化函数调用</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/ycmshgttbxysjfl/index.html">一次面试回顾——探讨表现与数据分离</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/dhzwebappzdxz/index.html">动画在webapp中的现状</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/ysandriodlqhthdomclicksjqtsxwttj/index.html">原生andriod浏览器回退后dom（click）事件全体失效问题探究</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/scsbdjxysdsbsjytouchsjdnxs/index.html">手持设备点击响应速度，鼠标事件与touch事件的那些事</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/mnbjQueryzeptohxymfx/index.html">迷你版jQuery——zepto核心源码分析</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/dbsgzdlwmlyqxjdddomxzqb/index.html">都别说工资低了，我们来一起写简单的dom选择器吧！</a></li>
+    				                                         
+                    </ul>
+                </div>
+            </div>
+
+        </div>
+    </body>
+</html>

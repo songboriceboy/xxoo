@@ -1,0 +1,281 @@
+﻿<!DOCTYPE html>
+
+<html lang="zh">
+    <head>
+        <meta charset="utf-8">
+        <meta name="description" content="android,ios" />
+        <meta name="keywords" content="android,ios" />
+
+        <title>叶小钗</title>
+        <style type='text/css'>
+            body {
+                background-color: #CCC;
+            }
+        </style>
+        <link rel="stylesheet" href="../../../css/bootstrap.css" />
+    </head>
+
+    <body>
+        <div class="container">
+
+            <h1>叶小钗</h1>
+
+            <div class='navbar navbar-inverse'>
+                <div class='navbar-inner nav-collapse' style="height: auto;">
+                    <ul class="nav">
+                              				<li><a href="http://songboriceboy.github.io/xxoo/html/blade/index.html">blade</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/css/index.html">css</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/HTML5&CSS3/index.html">HTML5&CSS3</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/index.html">javascript</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Javaxx/index.html">Java学习</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/nodejs/index.html">nodejs</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/requirejs/index.html">requirejs</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/index.html">Web前端</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/xxgw/index.html">学习感悟</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/gzdd/index.html">工作点滴</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/jkxx/index.html">接口学习</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/wfl/index.html">未分类</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/ydkf/index.html">移动开发</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/sjms/index.html">设计模式</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/mst/index.html">面试题</a></li>
+    				                      </ul>
+                </div>
+            </div>
+
+            <div id='content' class='row-fluid'>
+
+                <div class='span9 main'>
+				<div style="color:blue" align=center>动画在webapp中的现状</div><br><div>webapp的一大优势便是在view切换时候可以拥有媲美与native的动画效果，但是很多时候那只是一种想法，真正的情况却不是这样</div>
+<div>产生此问题的原因有：</div>
+<div>① 手机CPU烂！</div>
+<div>② 手机显卡烂！就算四核其渲染也很有问题</div>
+<div>③ 高端手机浏览器会有BUG</div>
+<div>④ 低端手机支持不好（国内山寨机笑而不语）</div>
+<div>因为以上原因，事实上做webapp的都会不同程度的弱化动画，或者在局部区域使用动画</div>
+<div>问题虽难，总有方案，事实上的情况是，几行代码搞死人，就我们的这个动画问题，前后过手几轮</div>
+<div>最后又回到了我手上，中间甚至经手了国内著名的前端，其中两位还出过书，所以说动画老大难问题在移动端是真心难，今天就我所知的动画做一次分享，希望对各位有帮助，若是有好方案，麻烦赐教一番</div>
+<h2>难在何处</h2>
+<div><strong>dom树过多</strong></div>
+<div>view的移动与简单的图片slider组件相差甚剧！原因便是其dom结构可能很复杂，大dom树的移动在移动端效果很差</div>
+<div>就简单列表页来说，当项目超过100个时，使用IScroll类插件都应该很慎重，这类移动可能非常卡！</div>
+<div>而且dom树复杂度与业务直接相关，我们没有任何办法去控制dom树，因为业务代码可能不会经过我们的手，就算经过，你又肯定自己做出来的dom树有多小？不见得吧</div>
+<div><strong>长短页问题</strong></div>
+<div>所谓长短页便是一个view很长一个view很短，这里问题处理十分讨厌</div>
+<div>首先我们每次做切换需要将view位置切换至头部（window.scroll(0, 0)）如此的话ios中会引起</div>
+<div>页面viewport的变化（系统自动发生），或者会触发低端工具栏的出现，这个时候页面抖动无可避免</div>
+<div>若是每次不执行window.scroll(0, 0)，切换时候又会导致短的view不可见</div>
+<div>我现阶段想到的解决方案是，移动时候将scroll设得比较大，移动时候将bview的top值与scrollTop相同</div>
+<div>最后仍然需要执行window.scroll(0, 0)的操作，所以，这个问题只能缓解，无法解决</div>
+<div><strong>手机渲染问题</strong></div>
+<div>只要是做移动端的朋友，一定会对三星机或者一些低端机的渲染嗤之以鼻！</div>
+<div>具体表现为多次操作style后，后面的操作浏览器不会搭理你</div>
+<div>解决方案是：</div>
+<div>① 引起浏览器强烈重绘</div>
+<div>② 临时增删一个dom结构</div>
+<div>但是涉及view切换动画的话，很有可能会出现一些莫名其妙的问题！</div>
+<h2>动画的挣扎</h2>
+<div>以上是几个不可避免会遇到的问题，所谓解决方案，也不过自欺欺人</div>
+<div>如果不能提高效率，动画时候最大程度的减小DOM结构便是唯一方法，就算减少render Tree也是一种进步</div>
+<div>其基本想法是只显示视口处的元素，其余不予理睬</div>
+<div><span style="font-family: 微软雅黑, sans-serif;"><a href="http://sandbox.runjs.cn/show/5szc5wcf">http://sandbox.runjs.cn/show/5szc5wcf</a></span></div>
+<div>
+<div class="cnblogs_code">
+<pre><span style="color: #008080;"> 1</span> <span style="color: #0000ff;">var</span> FastRender = <span style="color: #0000ff;">new</span><span style="color: #000000;"> inherit({
+</span><span style="color: #008080;"> 2</span> 
+<span style="color: #008080;"> 3</span>   initialize: <span style="color: #0000ff;">function</span><span style="color: #000000;">(opts) {
+</span><span style="color: #008080;"> 4</span>     <span style="color: #0000ff;">this</span><span style="color: #000000;">.handleOpts(opts);
+</span><span style="color: #008080;"> 5</span>     <span style="color: #0000ff;">this</span><span style="color: #000000;">.init();
+</span><span style="color: #008080;"> 6</span> <span style="color: #000000;">  },
+</span><span style="color: #008080;"> 7</span> 
+<span style="color: #008080;"> 8</span>   handleOpts: <span style="color: #0000ff;">function</span><span style="color: #000000;">(opts) {
+</span><span style="color: #008080;"> 9</span>     <span style="color: #0000ff;">if</span> (!opts || !opts.doms || !opts.doms.length) <span style="color: #0000ff;">throw</span> 'FastRender param error'<span style="color: #000000;">;
+</span><span style="color: #008080;">10</span>     <span style="color: #0000ff;">this</span>.doms =<span style="color: #000000;"> opts.doms;
+</span><span style="color: #008080;">11</span>     <span style="color: #0000ff;">this</span>.container = opts.container ||<span style="color: #000000;"> $(window);
+</span><span style="color: #008080;">12</span>     <span style="color: #0000ff;">this</span>.renderContainer =<span style="color: #000000;"> {};
+</span><span style="color: #008080;">13</span>     <span style="color: #0000ff;">this</span>.step = 50<span style="color: #000000;">;
+</span><span style="color: #008080;">14</span> 
+<span style="color: #008080;">15</span> <span style="color: #000000;">  },
+</span><span style="color: #008080;">16</span> 
+<span style="color: #008080;">17</span>   init: <span style="color: #0000ff;">function</span><span style="color: #000000;">() {
+</span><span style="color: #008080;">18</span>     <span style="color: #0000ff;">this</span><span style="color: #000000;">.initImgContainer();
+</span><span style="color: #008080;">19</span>     <span style="color: #0000ff;">this</span><span style="color: #000000;">.initRender();
+</span><span style="color: #008080;">20</span>     <span style="color: #0000ff;">this</span><span style="color: #000000;">.bindEvents();
+</span><span style="color: #008080;">21</span> <span style="color: #000000;">  },
+</span><span style="color: #008080;">22</span> 
+<span style="color: #008080;">23</span>   bindEvents: <span style="color: #0000ff;">function</span><span style="color: #000000;">() {
+</span><span style="color: #008080;">24</span> 
+<span style="color: #008080;">25</span>     <span style="color: #008000;">//</span><span style="color: #008000;">为container绑定事件</span>
+<span style="color: #008080;">26</span>     <span style="color: #0000ff;">this</span>.container.on('scroll.fastRender', $.proxy(<span style="color: #0000ff;">function</span><span style="color: #000000;">() {
+</span><span style="color: #008080;">27</span>       <span style="color: #0000ff;">this</span><span style="color: #000000;">.initRender();
+</span><span style="color: #008080;">28</span> <span style="color: #000000;">    },
+</span><span style="color: #008080;">29</span>     <span style="color: #0000ff;">this</span><span style="color: #000000;">));
+</span><span style="color: #008080;">30</span> <span style="color: #000000;">  },
+</span><span style="color: #008080;">31</span> 
+<span style="color: #008080;">32</span>   initImgContainer: <span style="color: #0000ff;">function</span><span style="color: #000000;">() {
+</span><span style="color: #008080;">33</span>     <span style="color: #0000ff;">var</span><span style="color: #000000;"> el, i, len, offset;
+</span><span style="color: #008080;">34</span>     <span style="color: #0000ff;">for</span> (i = 0, len = <span style="color: #0000ff;">this</span>.doms.length; i &lt; len; i++<span style="color: #000000;">) {
+</span><span style="color: #008080;">35</span>       el = $(<span style="color: #0000ff;">this</span><span style="color: #000000;">.doms[i]);
+</span><span style="color: #008080;">36</span>       offset =<span style="color: #000000;"> el.offset();
+</span><span style="color: #008080;">37</span> 
+<span style="color: #008080;">38</span>       <span style="color: #008000;">//</span><span style="color: #008000;">这块卡</span>
+<span style="color: #008080;">39</span>       <span style="color: #008000;">//</span><span style="color: #008000;">      (function (el) {</span>
+<span style="color: #008080;">40</span>       <span style="color: #008000;">//</span><span style="color: #008000;">        setTimeout(function () {</span>
+<span style="color: #008080;">41</span> <span style="color: #000000;">      el.css({
+</span><span style="color: #008080;">42</span>         'width'<span style="color: #000000;">: offset.width,
+</span><span style="color: #008080;">43</span>         'height'<span style="color: #000000;">: offset.height
+</span><span style="color: #008080;">44</span> <span style="color: #000000;">      });
+</span><span style="color: #008080;">45</span>       <span style="color: #008000;">//</span><span style="color: #008000;">        }, 0);</span>
+<span style="color: #008080;">46</span>       <span style="color: #008000;">//</span><span style="color: #008000;">      })(el);</span>
+<span style="color: #008080;">47</span> 
+<span style="color: #008080;">48</span>       <span style="color: #0000ff;">if</span> (!<span style="color: #0000ff;">this</span><span style="color: #000000;">.renderContainer[offset.top]) {
+</span><span style="color: #008080;">49</span>         <span style="color: #0000ff;">this</span>.renderContainer[offset.top] =<span style="color: #000000;"> [];
+</span><span style="color: #008080;">50</span> <span style="color: #000000;">      }
+</span><span style="color: #008080;">51</span>       <span style="color: #0000ff;">this</span><span style="color: #000000;">.renderContainer[offset.top].push(el);
+</span><span style="color: #008080;">52</span> <span style="color: #000000;">    }
+</span><span style="color: #008080;">53</span> 
+<span style="color: #008080;">54</span> <span style="color: #000000;">  },
+</span><span style="color: #008080;">55</span> 
+<span style="color: #008080;">56</span>   <span style="color: #008000;">/*</span>
+<span style="color: #008080;">57</span> <span style="color: #008000;">        这里需要对对象遍历做优化，以坐标搜索替换数值搜索
+</span><span style="color: #008080;">58</span> 
+<span style="color: #008080;">59</span>         <span style="color: #008000;">*/</span>
+<span style="color: #008080;">60</span>   initRender: <span style="color: #0000ff;">function</span><span style="color: #000000;">() {
+</span><span style="color: #008080;">61</span>     <span style="color: #0000ff;">var</span> height = <span style="color: #0000ff;">this</span><span style="color: #000000;">.container.height();
+</span><span style="color: #008080;">62</span>     <span style="color: #0000ff;">var</span> srollHeight = <span style="color: #0000ff;">this</span><span style="color: #000000;">.container.scrollTop();
+</span><span style="color: #008080;">63</span>     <span style="color: #0000ff;">var</span><span style="color: #000000;"> k, _imgs, el, i, len, els;
+</span><span style="color: #008080;">64</span> 
+<span style="color: #008080;">65</span>     <span style="color: #0000ff;">this</span>.doms.removeClass('wl'<span style="color: #000000;">);
+</span><span style="color: #008080;">66</span> 
+<span style="color: #008080;">67</span>     <span style="color: #0000ff;">for</span> (k <span style="color: #0000ff;">in</span> <span style="color: #0000ff;">this</span><span style="color: #000000;">.renderContainer) {
+</span><span style="color: #008080;">68</span>       <span style="color: #008000;">//</span><span style="color: #008000;">                        if ((parseInt(k) &lt; srollHeight + height + this.step) &amp;&amp; (parseInt(k) &gt; srollHeight - this.step)) {</span>
+<span style="color: #008080;">69</span>       <span style="color: #0000ff;">if</span> ((parseInt(k) &lt; srollHeight + height - <span style="color: #0000ff;">this</span>.step) &amp;&amp; (parseInt(k) &gt; srollHeight + <span style="color: #0000ff;">this</span><span style="color: #000000;">.step)) {
+</span><span style="color: #008080;">70</span> 
+<span style="color: #008080;">71</span>         els = <span style="color: #0000ff;">this</span><span style="color: #000000;">.renderContainer[k];
+</span><span style="color: #008080;">72</span>         <span style="color: #0000ff;">for</span> (i = 0, len = els.length; i &lt; len; i++<span style="color: #000000;">) {
+</span><span style="color: #008080;">73</span>           el =<span style="color: #000000;"> $(els[i]);
+</span><span style="color: #008080;">74</span>           el.find('.lazy_wrapper'<span style="color: #000000;">).show();
+</span><span style="color: #008080;">75</span> <span style="color: #000000;">        }
+</span><span style="color: #008080;">76</span>       } <span style="color: #0000ff;">else</span><span style="color: #000000;"> {
+</span><span style="color: #008080;">77</span>         els = <span style="color: #0000ff;">this</span><span style="color: #000000;">.renderContainer[k];
+</span><span style="color: #008080;">78</span>         <span style="color: #0000ff;">for</span> (i = 0, len = els.length; i &lt; len; i++<span style="color: #000000;">) {
+</span><span style="color: #008080;">79</span>           el =<span style="color: #000000;"> $(els[i]);
+</span><span style="color: #008080;">80</span>           el.find('.lazy_wrapper'<span style="color: #000000;">).hide();
+</span><span style="color: #008080;">81</span> <span style="color: #000000;">        }
+</span><span style="color: #008080;">82</span> 
+<span style="color: #008080;">83</span> <span style="color: #000000;">      }
+</span><span style="color: #008080;">84</span>     } <span style="color: #008000;">//</span><span style="color: #008000;"> for</span>
+<span style="color: #008080;">85</span> 
+<span style="color: #008080;">86</span> <span style="color: #000000;">  },
+</span><span style="color: #008080;">87</span> 
+<span style="color: #008080;">88</span>   destroy: <span style="color: #0000ff;">function</span><span style="color: #000000;">() {
+</span><span style="color: #008080;">89</span>     <span style="color: #008000;">//</span><span style="color: #008000;">为container绑定事件</span>
+<span style="color: #008080;">90</span>     <span style="color: #0000ff;">this</span>.container.off('.fastRender'<span style="color: #000000;">);
+</span><span style="color: #008080;">91</span> <span style="color: #000000;">  }
+</span><span style="color: #008080;">92</span> 
+<span style="color: #008080;">93</span> <span style="color: #000000;">});
+</span><span style="color: #008080;">94</span> 
+<span style="color: #008080;">95</span> <span style="color: #0000ff;">var</span> f = <span style="color: #0000ff;">new</span><span style="color: #000000;"> FastRender({
+</span><span style="color: #008080;">96</span>   doms: $('.js_hotel_detail'<span style="color: #000000;">)
+</span><span style="color: #008080;">97</span> });</pre>
+</div>
+<p><span style="line-height: 1.5;">这个demo想法很美好，若是可实现的话，无疑是移动端一大功臣，事实上是</span></p>
+</div>
+<div>
+<p>浏览器：<span lang="EN-US">10分</span></p>
+<p><span lang="EN-US">IOS（<span lang="EN-US">4000）：<span lang="EN-US">6分</span></span></span></p>
+<p><span lang="EN-US">android小米（<span lang="EN-US">1800）：<span lang="EN-US">5分</span></span></span></p>
+<p>化为<span lang="EN-US">4核：<span lang="EN-US">4分（<span lang="EN-US">1800）</span></span></span></p>
+<p>其表现在浏览器上很好，手机上便不行了，所以今日的论证失败，该方案还需优化</p>
+<p>这个结果其实可以预见，在渲染上手机根本跟不上，所以平滑度就跟不上，方案抛弃</p>
+<p>换个方向想，若是可以绕过DOM树过多问题也是可取，比如移动时候直接以一个白页做动画，这个方案比较可耻</p>
+<p>另一个方案是使用cavas为本页面生成一个缩略图，每次移动实际上是缩略图，如此动画是顺畅了，但是此方案甚难，还可能引起其它问题，此方案我得再做验证</p>
+<h3>结局</h3>
+<p>结局并不美好，此问题我未找到很好的解决方案，移动端的动画还有很长的路要走......</p>
+</div>
+                </div>
+
+                <div class='span3 sidebar'>
+                    <h2>导航栏</h2>
+                    <ul class="nav nav-tabs nav-stacked">
+                             				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/javascriptzdyxhxzsdyjxyzyddf/index.html">javascript中的一些核心知识点以及需要注意的地方</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/[zd]webappdyhzlyzydqdyhdpyjlkkb/index.html">[置顶]【webapp的优化整理】要做移动前端优化的朋友进来看看吧</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/[zd]yddjrwtyjjavascriptsjjzxjsjydjr/index.html">[置顶]【移动端兼容问题研究】javascript事件机制详解（涉及移动兼容）</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/gruntzhb30fzxhsygruntdbqddm/index.html">【grunt整合版】30分钟学会使用grunt打包前端代码</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/gruntdyd30fzxhsygruntdbqddm/index.html">【grunt第一弹】30分钟学会使用grunt打包前端代码</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/gruntdsdgruntzqdsjxmzdyy/index.html">【grunt第三弹】grunt在前端实际项目中的应用</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/gruntded30fzxhsygruntdbqddm02/index.html">【grunt第二弹】30分钟学会使用grunt打包前端代码（02）</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/IScrollsrxxtpyddhadlqs/index.html">【IScroll深入学习】突破移动端黑暗的利器（上）</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/IScrollsrxxjjIScrollynzz/index.html">【IScroll深入学习】解决IScroll疑难杂症</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/iScrollymxx00mniScroll/index.html">【iScroll源码学习00】模拟iScroll</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/iScrollymxx01zbjd/index.html">【iScroll源码学习01】准备阶段</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/iScrollymxx02fjiScrollsghxsjd/index.html">【iScroll源码学习02】分解iScroll三个核心事件点</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/iScrollymxx03iScrollsjjzygdtdsx/index.html">【iScroll源码学习03】iScroll事件机制与滚动条的实现</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/iScrollymxx04flIScrollhx/index.html">【iScroll源码学习04】分离IScroll核心</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/javascriptpxdytyyjc/index.html">【javascript培训第一天】语言基础</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/javascriptpxdstcybl/index.html">【javascript培训第三天】查遗补漏</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/javascriptpxdetDOMyBOM/index.html">【javascript培训第二天】DOM与BOM</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/javascriptjzdsk01mkhbc/index.html">【javascript激增的思考01】模块化编程</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/javascriptjzdsk02mkhyMVC/index.html">【javascript激增的思考02】模块化与MVC</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/javascriptjzdsk03MVVMyKnockout/index.html">【javascript激增的思考03】MVVM与Knockout</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/javascriptjzdsk04MVCyBackbonejs(beta)/index.html">【javascript激增的思考04】MVC与Backbonejs(beta)</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/javascriptmxdxzlrwmyqltkdzb01/index.html">【javascript面向对象之路】让我们一起来坦克大战吧01</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/NodeJSxxbj04xwfbxt/index.html">【NodeJS学习笔记04】新闻发布系统</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/requireJSymxx01ljzgrequireJSdjg/index.html">【requireJS源码学习01】了解整个requireJS的结构</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/requireJSymxx02datamainjzdsx/index.html">【requireJS源码学习02】datamain加载的实现</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/requireJSymxx03xjrequireJSdjzlc/index.html">【requireJS源码学习03】细究requireJS的加载流程</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/UIcjkfygjdrlcjs/index.html">【UI插件】开发一个简单日历插件（上）</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/UIcjjddrlcjxxxMVCsx/index.html">【UI插件】简单的日历插件（下）——学习MVC思想</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/zeptoxxbj01hxff$()/index.html">【zepto学习笔记01】核心方法$()</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/zeptoxxbj01hxff$()b/index.html">【zepto学习笔记01】核心方法$()（补）</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/zeptoxxbj02lsd/index.html">【zepto学习笔记02】零碎点</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/zeptoxxbj03sjjz/index.html">【zepto学习笔记03】事件机制</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/ycmsztjavascriptzdjc/index.html">【一次面试】再谈javascript中的继承</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/ztbackbone01mxModel/index.html">【再探backbone01】模型Model</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/ztbackbone02jhCollection/index.html">【再探backbone02】集合Collection</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/ztbackbone03bkydyyysltgym/index.html">【再探backbone03】博客园单页应用实例（提供源码）</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/ztbackbone04dyyydjslycl/index.html">【再探backbone04】单页应用的基石路由处理</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/ctUnderscorezsmbyq/index.html">【初探Underscore】再说模版引擎</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/ckjavascriptamzAjaxjsxnszddAjax/index.html">【初窥javascript奥秘之Ajax】简述下你所知道的Ajax？</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/ckjavascriptamzsjmpnxnwmyqmdp/index.html">【初窥javascript奥秘之事件冒泡】那些年我们一起冒的泡</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/ckjavascriptamzsjjzldtygdj/index.html">【初窥javascript奥秘之事件机制】论“点透”与“鬼点击”</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/ckjavascriptamzrrzmbddthisnzdxzthiszxnlm/index.html">【初窥javascript奥秘之让人捉摸不定的this】你知道现在this指向哪里吗？？？</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/ckjavascriptamzbbydxbdhlqbcl/index.html">【初窥javascript奥秘之闭包】叶大侠病都好了，求不踩了：）</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/ckjavascriptamzmxdxfzyjc/index.html">【初窥javascript奥秘之面向对象】封装与继承</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/qdmdsjdjgjdnzdljm/index.html">【前端盲点】事件的几个阶段你真的了解么？？？</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/dyyyviewymodelxgsl/index.html">【单页应用】view与model相关梳理</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/dyyyyqldyyybsxjdwbgns/index.html">【单页应用】一起来单页应用吧，实现简单微博功能！（上）</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/dyyyqjkzqappyggxsm/index.html">【单页应用】全局控制器app应该干些什么？</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/dyyywmgrhclkjdcccjgx/index.html">【单页应用】我们该如何处理框架弹出层层级关系？</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/dyyyljMVC/index.html">【单页应用】理解MVC</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/dyyyztxjzviewzjygrhtx/index.html">【单页应用之通信机制】view之间应该如何通信</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/dyyyjkzHistoryxsHistorydgdyyydm/index.html">【单页应用巨坑之History】细数History带给单页应用的噩梦</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/xtszeptofindysyjiosdcjpknrnhtt/index.html">【小贴士】zeptofind元素以及ios弹出键盘可能让你很头疼</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/xtsgytransitionEndanimatedygyqgs/index.html">【小贴士】关于transitionEndanimate的一个有趣故事</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/xtsgzzdbbysjwtdzzmp/index.html">【小贴士】工作中的”闭包“与事件委托的”阻止冒泡“</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/xtstytjavascriptzdreplace/index.html">【小贴士】探一探javascript中的replace</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/xtsxnjpyfixeddgydddt/index.html">【小贴士】虚拟键盘与fixed带给移动端的痛！</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/ttjavascriptsjjzdcsxyl/index.html">【探讨】javascript事件机制底层实现原理</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/mkhbcljrequireJSsxygjddmkjzq/index.html">【模块化编程】理解requireJS实现一个简单的模块加载器</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/zyJavaScriptmfjmtsdqlxkjzbfgndcljz/index.html">【转】【译】JavaScript魔法揭秘探索当前流行框架中部分功能的处理机制</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/zxjavascriptgszl01javascriptcszds/index.html">【追寻javascript高手之路01】javascript参数知多少？</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/zxjavascriptgszl02blzyyzds/index.html">【追寻javascript高手之路02】变量、作用域知多少？</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/zxjavascriptgszl03javascriptdxdld/index.html">【追寻javascript高手之路03】javascript对象大乱斗</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/zxjavascriptgszl04ljprototype/index.html">【追寻javascript高手之路04】理解prototype</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/zxjavascriptgszl05ljsjl/index.html">【追寻javascript高手之路05】理解事件流</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/zgbj04zxzzsj(2)/index.html">【重构笔记04】重新组织数据(2)</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/zgbj05jhtjbds/index.html">【重构笔记05】简化条件表达式</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/zgbj06jhhsdy/index.html">【重构笔记06】简化函数调用</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/ycmshgttbxysjfl/index.html">一次面试回顾——探讨表现与数据分离</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/dhzwebappzdxz/index.html">动画在webapp中的现状</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/ysandriodlqhthdomclicksjqtsxwttj/index.html">原生andriod浏览器回退后dom（click）事件全体失效问题探究</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/scsbdjxysdsbsjytouchsjdnxs/index.html">手持设备点击响应速度，鼠标事件与touch事件的那些事</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/mnbjQueryzeptohxymfx/index.html">迷你版jQuery——zepto核心源码分析</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/dbsgzdlwmlyqxjdddomxzqb/index.html">都别说工资低了，我们来一起写简单的dom选择器吧！</a></li>
+    				                                         
+                    </ul>
+                </div>
+            </div>
+
+        </div>
+    </body>
+</html>

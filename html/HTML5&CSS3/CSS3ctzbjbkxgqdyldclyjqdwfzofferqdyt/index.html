@@ -1,0 +1,206 @@
+﻿<!DOCTYPE html>
+
+<html lang="zh">
+    <head>
+        <meta charset="utf-8">
+        <meta name="description" content="android,ios" />
+        <meta name="keywords" content="android,ios" />
+
+        <title>叶小钗</title>
+        <style type='text/css'>
+            body {
+                background-color: #CCC;
+            }
+        </style>
+        <link rel="stylesheet" href="../../../css/bootstrap.css" />
+    </head>
+
+    <body>
+        <div class="container">
+
+            <h1>叶小钗</h1>
+
+            <div class='navbar navbar-inverse'>
+                <div class='navbar-inner nav-collapse' style="height: auto;">
+                    <ul class="nav">
+                              				<li><a href="http://songboriceboy.github.io/xxoo/html/blade/index.html">blade</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/css/index.html">css</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/HTML5&CSS3/index.html">HTML5&CSS3</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/index.html">javascript</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Javaxx/index.html">Java学习</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/nodejs/index.html">nodejs</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/requirejs/index.html">requirejs</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/index.html">Web前端</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/xxgw/index.html">学习感悟</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/gzdd/index.html">工作点滴</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/jkxx/index.html">接口学习</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/wfl/index.html">未分类</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/ydkf/index.html">移动开发</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/sjms/index.html">设计模式</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/mst/index.html">面试题</a></li>
+    				                      </ul>
+                </div>
+            </div>
+
+            <div id='content' class='row-fluid'>
+
+                <div class='span9 main'>
+				<div style="color:blue" align=center>【CSS3初探之背景边框相关】奇葩的与老大吵了一架，奇葩</div><br><p><span style="color: #ff0000;"><strong>PS:注意标题党哦</strong></span></p>
+<h1>前言</h1>
+<p>本章主要介绍CSS3中与背景和边框相关的一些样式，其中包含与背景相关的属性，比如如何在一个元素背景中使用多个图片文件，如何绘制圆角边框以及如何给边框添加图片。</p>
+<p>这章的知识点都是很有意义的，是我们一定会用到的知识点，所以学习本章内容后需掌握：</p>
+<p>1 背景相关属性：background-clip、background-origin、background-size以及background-break</p>
+<p>2 如何在背景中使用多个图片完成负责背景的图像绘制</p>
+<p>3 设计圆角</p>
+<p>4 图像边框</p>
+<p>&nbsp;</p>
+<p><strong>PS：奇葩的一天：</strong></p>
+<p>今天算是我工作这么久以来最奇葩的一天，因为今天发生了两件事情：</p>
+<p>1 传说中的leader主动找我吵了一架，其实就是想骂我又找不到话说。。。</p>
+<p>2 下午面试，只用了五分钟就结束了，而且拿到了offer！</p>
+<p>其实根据以上两件事便可以单独成文了，而且会很有意思，但是我们还是要本着我是程序员的态度好好学习，插播到技术文章里吧。。。。</p>
+<h1>传说中的leader</h1>
+<p>对于此传说中的leader本来我有一肚子话要抨击之，但真的要说的时候却又感觉无力，我猜是我太善良了吧（当然不是了，今天不在状态，哪天我一定要单独为他写一篇深情并貌的文章！！！）</p>
+<p>领导有很多种，我原来在索贝就遇到过2个比较典型的：</p>
+<p>小领导扮猪吃虎型，该类领导技术能力非常强，做事干练，而且为人处事很好（认为好）会帮着上面镇压我们！&nbsp;虽说如此，对于他们的能力各方面我是非常认可的</p>
+<p>大领导深层透彻型，该类领导一般不搞技术，主要技能是忽悠，但你若是认为他只会忽悠就错了，他们有个共同的特征，思维敏捷，目光如炬，比如上面的小领导的花花肠子他一眼就能洞察，对业务亦相当熟悉！</p>
+<p>若是上面两个领导可以让你踏踏实实为他打工，甚至压榨了你，你虽说恨虽说怨，但也不得不佩服他们的手腕，那么以下这位就会令你瞠目结舌了！</p>
+<p>个人认为他是我所见过最奇葩的人了（注意不是领导，是人！），若是我个人这样认为就算了，主要是团队所有人一致认为他奇葩。。。。</p>
+<p>我们暂称他为bgg吧，bgg在这边待了快六年了，自己也是36,7的人了，说实话，你不得不感叹向他这么庸俗的人曾经居然会有机会当上总监！</p>
+<p>bgg有以下特点：</p>
+<p>1 杀手锏，个人的第一感觉非常好，真的非常好</p>
+<p>2 长时间相处下来给人的感觉非常不好，非常不好</p>
+<p>3 他是普通员工，他又是&ldquo;组长&rdquo;（一个团队是一个小组，几个小组是一个中心，中心有总监，小组有组长，我们团队没有组长，几年了一直没人被正式任命组长，bgg被暗示成为组长，暗示了4年了。。。。）</p>
+<p>4 他非常自以为是，非常</p>
+<p>5 他非常好胜，什么都要跟你挣个输赢，而且他非常小气，也很记仇。。。。</p>
+<p>6 他自以为很nice</p>
+<p>7 他很龟毛，生活中有很多策略，并喜欢把这些策略搬到工作中来，搬到代码中来。。。。比如我们饭卡充钱100,200很正常，他是501,499很奇葩</p>
+<p>8 他很多理论初听很有道理，细细一想一坨垃圾</p>
+<p>9 他是项目经理他也是产品经理，他是团队leader他也是技术人员，但是他管理不好团队，没人服他，他不写详细的需求文档，也也不出原形图，他更加不编码，但是他的思想会进入我们编程过程中的每一个环节</p>
+<p>10 <span style="color: #ff0000;">主要的来了</span>，他喜欢和领导博弈，甚至是大领导博弈，并且不响应大领导。。。。</p>
+<p>......</p>
+<p>算了，再写就真的变水文了，因为哪天我会单独写一篇文章来说下这位奇葩的领导！</p>
+<p>我们的故事是这样的，团队要解散了，我其实早想走了，在他手下只有死。</p>
+<p>然后他主导做的一个项目之垃圾，没人看好，上面也不看好（看好就不会团队解散了），因为要解散了，他会调到其他地方去，他想手里有点资本，于是在这个敏感实际居然是变本加厉的叫我们给他做事（要知道人人都有可能离职，而且不可能再与他在一个团队），好让他过去手里面有点东西，不至于没有筹码，但是这个项目公司类似的产品已经很多了，而且都比这个好。。。。</p>
+<p>我们这个项目前后后做了差不多一年了还在做，而且还没有规划，还不知道何时是个头！！！半年前主导的同事就在说不知道在做社么。。。。</p>
+<p>你说我一个都要离职的人了，他何苦再来拉着我做我认为什么也不是的东西，虽然他觉得像个宝？？？还叫我为他考虑下，人家上面真正领导意思都叫停了，你这个没意义，他就是不听，给你做，这不打黑工吗？于是，一个简单的功能，差不多一分钟的事情，10个字不到的代码，硬是被我拖了2天，真的不想做啊（其他同事更会拖）！！！</p>
+<p>这里大家可能要说我没有职业素养了，但是我已经有职业素养了将近一年了。。。。。。</p>
+<p>反正其他老同事早就不了他了，因为我一直对他客客气气的，他居然在离职的时候还想压榨我。。。。这不坑爹吗？</p>
+<p>临近中午吃饭的时候，另一个同事叫我吃饭，bgg把我叫住，说这个怎么还没改，哟哟，看着就要变色了哦。</p>
+<p>我当时正在写ajax那篇文章，哪个有闲工夫了他哦，我都要离职的人了，于是想草草的应付两句算了，就继续叫同事走。。</p>
+<p>哟哟，他可不服气了，又把我叫住，说了一通，脸都红完了，这估计是他发最大火一次了，因为我估计他最近也非常郁闷，他的处境很困难，</p>
+<p>过去深圳后水深火热还不知道呢，而且其他同事对他也是不理不睬，其实想想我们为什么要理睬他呢？？？<span style="color: #ff0000;">他的任命书在哪，他又不是我们的leader，</span><span style="color: #ff0000;">拿着鸡毛当令箭罢了！</span></p>
+<p>这下好了，火全部发我身上了，我最近心态也出奇的好，根本不来气，又随便应付了两句就拉着同事吃饭去了。。。。。</p>
+<p>吃饭回来后，居然又碰到了他，他又是把我叫住，非要跟我争说我没有响应他，我就在想你赢了，我没有响应你又如何呢？于是又是不理不睬的进去了。</p>
+<p>回来后，不得了，又是消息，又是邮件的，还把我们的对话截了图，说我没响应他（其实我响应了的，只是他没理解到），完了我就在邮件里面重新截图，</p>
+<p>把我响应的话给框了出来，我看他有多好胜呢？</p>
+<p>下午时间，我想到我要走了，于是在群里发了一句，是不是要请我吃饭？我猜各位看到这里都天真的笑了吧。。。。（之前除他之外的同事拉了小群，其中一个女同事说他只给了600的预算，团队8人，bgg要出差不来，有同事建议再多要点，反正不是bgg的钱），我刚一发不得了，先是一个老同事发了句&ldquo;巴菲盛宴&rdquo;，于是后面每个同事都发了一次。</p>
+<p>我期间还说了句&ldquo;巴菲盛宴啊，真是太好了！！！&ldquo;，然后心里一阵暗笑。。。。。结果bgg说只有600，好吧600也不错了。。。</p>
+<p>于是第一次与leader发生争执结束，请看下一段故事。不在状态居然说了这么多。。。。</p>
+<h1>5分钟的offer</h1>
+<p>这个是传奇，这绝对是个传奇，至少是我的奇迹！</p>
+<p>与bgg争吵结束后，我继续写着<a id="cb_post_title_url" class="postTitle2" href="http://www.cnblogs.com/yexiaochai/archive/2013/04/24/3037069.html">【初窥javascript奥秘之Ajax】简述下你所知道的Ajax？</a>，这篇文章，差不多两点左右完成了，我就开始准备下午一场面试。</p>
+<p>说实话，虽说最近还是学习了不少新东西的，但是对于面试来说，心里还是有点没底，因为手里已经有2个offer了，也没那么虚而已。</p>
+<p>过去后，填了些基本信息，然后一位35左右的面试官就来了，他进来没做什么事情，就说我要的工资有点高哟（其实我有的offer都那个水平），</p>
+<p>然后把手机摸了出来，让我用微信扫一扫，最后出来了个刮奖的页面（就跟我们挂彩票一样），让我说下是怎么实现的。</p>
+<p>说实话他这个东西的创意还是很不错的，然后我想了10秒就说了下我的想法，用html5中的canvas api可以实现，但是具体要查资料，</p>
+<p>若是向下兼容的话需要用到div遮盖，鼠标或者手滑动的时候去除div就可以了。于是我就回答结束了。</p>
+<p>结果他拿着我填的那个表翻了翻，居然问了句，那你好久来上班呢？？？</p>
+<p>我诧异的问了句，就没有了？</p>
+<p>他说，他比较认可我的能力!（我在想您认可我哪门子能力哟？）</p>
+<p>于是此次面试结束！！！</p>
+<p>我在想这是我的幸运还是他的幸运呢（潜台词是，他找到人才了哟，呵呵）</p>
+<p>然后和hr说了下，便回去公司了，前前后后30分钟都没有，技术只面了5分钟，不算摸手机，配置wifi密码，2分钟。。。。。</p>
+<p><strong><span style="color: #ff0000;">PS：题目事后思考：</span></strong></p>
+<p>之后我又详细看了下那道题，第一次划过出来了一点，第二次划过又出来一点，第三次划过又出来一点！</p>
+<p>我在想这个效果真心不错，便拿过去给师兄看看，让他猜猜怎么实现的，结果师兄也觉得不错，用手滑动了下，</p>
+<p>我无耻的突然发现每次滑动好像减少的痕迹都一样，拿过手机试了试，果然如此！！！这不就是简单的remove div吗？？？？</p>
+<p>好了，今天比较兴奋扯远了，现在回到正题吧！</p>
+<h1>CSS3背景相关</h1>
+<p>CSS3为我们的背景新增了几个不错的属性：</p>
+<div class="cnblogs_code">
+<pre>background-<span style="color: #000000;">clip 指定背景显示范围
+background</span>-<span style="color: #000000;">origin 指定绘制背景图片时的起点
+background</span>-<span style="color: #000000;">size 指定背景图片中图片尺寸
+background</span>-<span style="color: #0000ff;">break</span> 指定内联元素的背景图像进行平铺时的循环方式</pre>
+</div>
+<p>我们看到，这几个新增属性都是非常不错的属性，实现一些功能时可以帮我们省不少力气！</p>
+<p><strong>指定背景的显示范围 background-clip</strong></p>
+<p>这个属性我读了下，大概意思便是原来的背景图在padding处便结束了，不会蔓延到border上，但是为该属性指定border或者padding可以让背景到边框上</p>
+<p><strong>指定绘制背景图像的绘制起点 background-origin</strong></p>
+<p>该属性可以指定背景是有边框开始还是padding处开始，或者内容区域开始。。。。</p>
+<p><strong>指定背景的尺寸 background-size</strong></p>
+<p>意思是可以像搞img标签似的操作背景。。。</p>
+<p><strong>指定内联元素背景图像平铺方式 background-break</strong></p>
+<p>该属性有3个值:</p>
+<p>bounding-box 背景图像在整个内联元素中平铺</p>
+<p>each-box 背景图没一行平铺</p>
+<p>continuous 下一行中的图像紧接着上一行中的图像联系平铺</p>
+<h1>一个元素指定多个背景</h1>
+<p>这个属性有点意思，值得写个demo，一个元素可以显示多个背景图片，多个背景图片还可以重叠显示，这个真是好东西啊。</p>
+<div class="cnblogs_code">
+<pre><span style="color: #008080;"> 1</span> &lt;!DOCTYPE html&gt;
+<span style="color: #008080;"> 2</span> &lt;html xmlns=<span style="color: #800000;">"</span><span style="color: #800000;">http://www.w3.org/1999/xhtml</span><span style="color: #800000;">"</span>&gt;
+<span style="color: #008080;"> 3</span> &lt;head&gt;
+<span style="color: #008080;"> 4</span>     &lt;title&gt;&lt;/title&gt;
+<span style="color: #008080;"> 5</span>     &lt;style type=<span style="color: #800000;">"</span><span style="color: #800000;">text/css</span><span style="color: #800000;">"</span>&gt;
+<span style="color: #008080;"> 6</span>         div { background-image: url(<span style="color: #800000;">"</span><span style="color: #800000;">y.jpg</span><span style="color: #800000;">"</span>), url(<span style="color: #800000;">"</span><span style="color: #800000;">s.jpg</span><span style="color: #800000;">"</span>); background-repeat: no-repeat, no-repeat; <br>width: 800px; padding: 490px 0px; background-position: -800px <span style="color: #800080;">0</span><span style="color: #000000;">,  right top;}
+</span><span style="color: #008080;"> 7</span>     &lt;/style&gt;
+<span style="color: #008080;"> 8</span> &lt;/head&gt;
+<span style="color: #008080;"> 9</span> &lt;body&gt;
+<span style="color: #008080;">10</span> &lt;div&gt;&lt;/div&gt;
+<span style="color: #008080;">11</span> &lt;/body&gt;
+<span style="color: #008080;">12</span> &lt;/html&gt;</pre>
+</div>
+<p><img src="8241636286152.jpg" alt=""></p>
+<p>&nbsp;第一个图片在最前边，所以应该是小图片才行哟。</p>
+<h1>边框相关</h1>
+<p><strong>圆角 border-radius</strong></p>
+<p>传说中的圆角出现，其实都用了不知道多少次了，这里还要写。。。。。记住属性上右下左便可以了，具体应用再说了。。。</p>
+<p><strong>边框图片 border-image</strong></p>
+<p>略。。。。</p>
+<h1>结语</h1>
+<p><span style="color: #ff0000;"><strong>不要怪我水，这种文章我其实一般都不会发到首页的，只不过今天两件事情感觉有点搞笑，发出来让大家放松下心情，开始没想到CSS又写不出来东西</strong></span>。</p>
+<p>学习CSS不比js，我这边有点提不起干劲，特别是看书时候很多东西都知道，只不过不能运用到一起罢了，</p>
+<p>看来CSS还是需要来个完整的图才行啊，明后天水完后，直接在网上找个效果图来做做算了。。。</p>
+<p>&nbsp;</p>
+                </div>
+
+                <div class='span3 sidebar'>
+                    <h2>导航栏</h2>
+                    <ul class="nav nav-tabs nav-stacked">
+                             				<li><a href="http://songboriceboy.github.io/xxoo/html/HTML5&CSS3/CSS3ctzMediaQuerieszywcldCSS3wmlgzzzj/index.html">【CSS3初探之MediaQueries】终于完成了的CSS3，我们来个终章总结！</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/HTML5&CSS3/CSS3ctzbxydhlrjtdCSS3/index.html">【CSS3初探之变形与动画】令人惊叹的CSS3</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/HTML5&CSS3/CSS3ctzztwbxgrrkblsdCSS3/index.html">【CSS3初探之字体、文本相关】让人开不了始的CSS3。。。</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/HTML5&CSS3/CSS3ctzhxgyswmyrygk/index.html">【CSS3初探之盒相关样式】我们一人一个框。。。</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/HTML5&CSS3/CSS3ctzbjbkxgqdyldclyjqdwfzofferqdyt/index.html">【CSS3初探之背景边框相关】奇葩的与老大吵了一架，奇葩的五分钟offer，奇葩的一天。。。</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/HTML5&CSS3/HTML5&CSS3jjxx02HeaderdsxCSSzdbj/index.html">【HTML5&CSS3进阶学习02】Header的实现·CSS中的布局</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/HTML5&CSS3/HTML5ctzformbqjfbdyzzjwjscjctf/index.html">【HTML5初探之form标签】解放表单验证、增加文件上传、集成拖放</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/HTML5&CSS3/HTML5ctzGeolocationAPIrwmhqnsddz/index.html">【HTML5初探之GeolocationAPI】让我们获取女神的地址</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/HTML5&CSS3/HTML5ctzWebWorkerswyyndxc/index.html">【HTML5初探之WebWorkers】网页也能多线程</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/HTML5&CSS3/HTML5ctzdmtysspbfHTML5Flashscswd/index.html">【HTML5初探之多媒体元素】视频播放HTML5、Flash谁才是王道？</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/HTML5&CSS3/HTML5ctzbdccrgmysjk/index.html">【HTML5初探之本地存储】如果没有数据库。。。</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/HTML5&CSS3/HTML5ctzlxyyrhdzlqqwlldwz/index.html">【HTML5初探之离线应用】如何打造零请求、无流量的网站？</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/HTML5&CSS3/HTML5ctzhztxskwcanvasysylxydwebym/index.html">【HTML5初探之绘制图像（上）】看我canvas元素引领下一代web页面</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/HTML5&CSS3/HTML5ctzhztxxkwcanvasysylxydwebym/index.html">【HTML5初探之绘制图像（下）】看我canvas元素引领下一代web页面</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/HTML5&CSS3/HTML5ctztxAPIkymjbzgsjtsbsm/index.html">【HTML5初探之通信API】跨域门槛不再高、数据推送不是梦</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/HTML5&CSS3/xpldbkrwmdbkgjplrwmdbkzcxysbj/index.html">【写漂亮的博客】让我们的博客更加漂亮，让我们的博客支持响应式布局！</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/HTML5&CSS3/ctHTML5zsyxbqbjyhtml5bjwdbky/index.html">【初探HTML5之使用新标签布局】用html5布局我的博客页！</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/HTML5&CSS3/szHTML5yCSS3mfzzwkymlfym/index.html">【实战HTML5与CSS3】免费制作威客页面啦（附源码）</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/HTML5&CSS3/szHTML5yCSS3yHTML5hCSS3zzyms/index.html">【实战HTML5与CSS3】用HTML5和CSS3制作页面（上）</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/HTML5&CSS3/szHTML5yCSS3dypctssmlddhxldtpbz/index.html">【实战HTML5与CSS3第一篇】初探水深，美丽的导航，绚丽的图片爆炸！！</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/HTML5&CSS3/szHTML5yCSS3dspwdygHTML5wydsl(tgym)/index.html">【实战HTML5与CSS3第三篇】我第一个HTML5网页诞生了(提供源码)</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/HTML5&CSS3/szHTML5yCSS3depxldksdh/index.html">【实战HTML5与CSS3第二篇】绚丽的快速导航！</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/HTML5&CSS3/tsHTML5ded01HTML5dqsjsyjls/index.html">【探索HTML5第二弹01】HTML5的前世今生以及来世</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/HTML5&CSS3/tsHTML5ded03zjdtyydsjkwmgoogledtkykxsm/index.html">【探索HTML5第二弹03】走近地图应用的世界，看我们google地图可以看些什么！</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/HTML5&CSS3/tsHTML5ded04xysbjsrwmyqlxysbjb/index.html">【探索HTML5第二弹04】响应式布局（上），让我们一起来响应式布局吧</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/HTML5&CSS3/tsHTML5ded05xysbjzybybxysbj/index.html">【探索HTML5第二弹05】响应式布局（中），一步一步响应式布局</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/HTML5&CSS3/rhtzCSS3ddh/index.html">如何停止CSS3的动画？</a></li>
+    				                                         
+                    </ul>
+                </div>
+            </div>
+
+        </div>
+    </body>
+</html>

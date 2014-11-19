@@ -1,0 +1,557 @@
+﻿<!DOCTYPE html>
+
+<html lang="zh">
+    <head>
+        <meta charset="utf-8">
+        <meta name="description" content="android,ios" />
+        <meta name="keywords" content="android,ios" />
+
+        <title>叶小钗</title>
+        <style type='text/css'>
+            body {
+                background-color: #CCC;
+            }
+        </style>
+        <link rel="stylesheet" href="../../../css/bootstrap.css" />
+    </head>
+
+    <body>
+        <div class="container">
+
+            <h1>叶小钗</h1>
+
+            <div class='navbar navbar-inverse'>
+                <div class='navbar-inner nav-collapse' style="height: auto;">
+                    <ul class="nav">
+                              				<li><a href="http://songboriceboy.github.io/xxoo/html/blade/index.html">blade</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/css/index.html">css</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/HTML5&CSS3/index.html">HTML5&CSS3</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/index.html">javascript</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Javaxx/index.html">Java学习</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/nodejs/index.html">nodejs</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/requirejs/index.html">requirejs</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/index.html">Web前端</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/xxgw/index.html">学习感悟</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/gzdd/index.html">工作点滴</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/jkxx/index.html">接口学习</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/wfl/index.html">未分类</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/ydkf/index.html">移动开发</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/sjms/index.html">设计模式</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/mst/index.html">面试题</a></li>
+    				                      </ul>
+                </div>
+            </div>
+
+            <div id='content' class='row-fluid'>
+
+                <div class='span9 main'>
+				<div style="color:blue" align=center>工作中碰到的一些东西【弹出窗口】【拖放】【异步文件上传】</div><br><p>　　久不出技术类文章，我都忘了自己是一程序员啦......今天写一点工作中遇到的东西，大家共同学习，反正也比较浅显了。</p>
+<h1>弹出窗口</h1>
+<hr>
+<p>　　我们在工作中，经常会碰到弹出窗口类应用，有时候还需要一点遮盖层：</p>
+<p>&nbsp;<img src="40466027942806.jpg" alt=""></p>
+<p><img src="40011816367142.jpg" alt=""></p>
+<p><img src="9316276513524.jpg" alt=""></p>
+<p>这类圆角弹出框其实用得还是很广泛的，用CSS3可以很容易的出现，但是考虑到浏览器兼容问题，这类还是需要用图片实现了</p>
+<p>主要代码如下：</p>
+<div class="cnblogs_Highlighter">
+<pre class="brush:javascript;gutter:false;"> //弹出层剧中
+        function popup(popupName) {
+            var _scrollHeight = $(document).scrollTop(); //获取当前窗口距离页面顶部高度
+            _windowHeight = $(window).height(); //获取当前窗口高度
+            _windowWidth = $(window).width(); //获取当前窗口宽度
+            _popupHeight = popupName.height(); //获取弹出层高度
+            _popupWeight = popupName.width(); //获取弹出层宽度
+            //            _posiTop = (_windowHeight - _popupHeight) / 2 + _scrollHeight - 50;
+            _posiTop = _scrollHeight + 120;
+            _posiLeft = (_windowWidth - _popupWeight) / 2;
+            popupName.css({ "left": _posiLeft + "px", "top": _posiTop + "px", "display": "block" }); //设置position
+        }
+
+        function dragFunc(dragDiv, dragBody) {
+            if (dragDiv[0] &amp;&amp; dragBody[0]) {
+                var dragAble = false;
+                var x1 = 0;
+                var y1 = 0;
+                var l = 0;
+                var t = 0;
+                var divOffset = dragBody.offset();
+                dragDiv.mousedown(function (e) {
+                    var ss = this;
+                    //                    var rootId = 
+
+                    dragDiv.css("cursor", "move");
+                    dragAble = true;
+                    // 当前鼠标距离div边框的距离
+                    // 当前鼠标坐标，减去div相对左边的像素
+                    l = parseInt(dragBody.css("left"));
+                    t = parseInt(dragBody.css("top"));
+                    x1 = e.clientX - l;
+                    y1 = e.clientY - t;
+                    x1 = x1 &gt; 0 ? x1 : 0;
+                    y1 = y1 &gt; 0 ? y1 : 0;
+                    this.setCapture &amp;&amp; this.setCapture();
+                });
+                dragDiv.mousemove(function (e) {
+                    if (!dragAble)
+                        return;
+                    // 当前div左边的坐标
+                    // 当前鼠标坐标，减去鼠标拖动量
+                    var x2 = 0;
+                    var y2 = 0;
+                    //需要考虑滚动条问题！！！
+                    var top = $(document).scrollTop() ? $(document).scrollTop() - 15 : 0;
+                    var left = $(document).scrollLeft() ? $(document).scrollLeft() - 15 : 0;
+                    x2 = e.clientX - x1 + left;
+                    y2 = e.clientY - y1 + top;
+                    x2 = x2 &gt; 0 ? x2 : 0;
+                    y2 = y2 &gt; 0 ? y2 : 0;
+                    //要移动一定数量才移动
+                    if (Math.abs(l - x2) &gt; 10 || Math.abs(t - y2) &gt; 10) {
+                        dragBody.css("left", x2 + "px");
+                        dragBody.css("top", y2 + "px");
+                    }
+                });
+                dragDiv.mouseup(function (event) {
+                    if (!dragAble)
+                        return;
+                    dragAble = false;
+                    // dragDiv.css("position", "relative");
+                    this.releaseCapture &amp;&amp; this.releaseCapture();
+                });
+            }
+        }
+
+        var MyDialog = function (cfg) {
+            this.config = {
+                id: (new Date()).getTime().toString(),
+                el: null,
+                bodyId: null,
+                cover: true,
+                boxHtm: '&lt;div class="dialog"  &gt;  ' +
+        '&lt;table&gt;   ' +
+        '    &lt;tr class="top"&gt;  ' +
+        '       &lt;td class="tl"&gt; ' +
+        '        &lt;/td&gt; ' +
+        '        &lt;td class="c"&gt; ' +
+        '        &lt;/td&gt; ' +
+        '        &lt;td class="tr"&gt; ' +
+        '        &lt;/td&gt; ' +
+        '    &lt;/tr&gt; ' +
+        '    &lt;tr&gt; ' +
+        '        &lt;td class="c"&gt; ' +
+        '          &lt;div style="width:10px;"&gt;&lt;/div&gt;' +
+        '        &lt;/td&gt; ' +
+        '        &lt;td class="main"&gt; ' +
+        '            &lt;div class="title"&gt; ' +
+        '                &lt;h3&gt; ' +
+        '                    &lt;span class="title_text"&gt;请输入标题&lt;/span&gt; &lt;a class="cls" href="javascript:;"&gt;&lt;/a&gt; ' +
+        '                &lt;/h3&gt; ' +
+        '            &lt;/div&gt; ' +
+        '            &lt;div class="content"&gt; ' +
+        '             请输入内容   ' +
+        '            &lt;/div&gt; ' +
+        '        &lt;/td&gt; ' +
+        '        &lt;td class="c"&gt; ' +
+        '        &lt;/td&gt; ' +
+        '    &lt;/tr&gt; ' +
+        '    &lt;tr class="bottom"&gt; ' +
+        '        &lt;td class="bl"&gt; ' +
+        '        &lt;/td&gt; ' +
+        '        &lt;td class="c"&gt; ' +
+        '          &lt;div style="width:10px;"&gt;&lt;/div&gt;' +
+        '        &lt;/td&gt; ' +
+        '        &lt;td class="br"&gt; ' +
+        '        &lt;/td&gt; ' +
+        '    &lt;/tr&gt; ' +
+        '&lt;/table&gt; ' +
+    '&lt;/div&gt;'
+            };
+            var scope = this;
+            if (cfg) {
+                $.each(cfg, function (key, value) {
+                    scope.config[key] = value;
+                });
+            }
+            this.box = null;
+            this.cover = null;
+            this.tmpBody = null;
+        }
+
+
+        MyDialog.prototype.show = function () {
+            var scope = this;
+            var cover = null;
+            var box = null;
+            if (this.config.cover) {
+                if (this.config.id &amp;&amp; $('#' + this.config.id + '_cover')[0]) {
+                    cover = $('#' + this.config.id + '_cover');
+                    cover.show();
+                } else {
+                    cover = $('&lt;div style=" display:block; " id="' + this.config.id + '_cover" class="coverDiv" &gt;&lt;/div&gt;');
+                    $('body').append(cover);
+                }
+                scope.cover = cover;
+            }
+            if (!$('#' + this.config.id)[0]) {
+                box = $(this.config.boxHtm);
+                $('body').append(box);
+                box.attr('id', this.config.id);
+                if (this.config.title) {
+                    box.find('.title_text').html(this.config.title);
+                }
+                if (this.config.bodyId) {
+                    var body = $('#' + this.config.bodyId);
+                    var tmp = $('&lt;div&gt;&lt;/div&gt;').append(body);
+                    var initBody = tmp.html();
+                    scope.tmpBody = $(initBody);
+                    tmp = null;
+                    if (body[0]) {
+                        var con = box.find('.main .content');
+                        body.show();
+                        con.html('');
+                        con.append(body);
+                    }
+                }
+                if (this.config.el &amp;&amp; this.config.el[0]) {
+                    var con = box.find('.main .content');
+                    con.html(this.config.el);
+                }
+                //居中
+                popup(box);
+                //关闭dialog
+                box.find('.title .cls').click(function (e) {
+                    scope.close();
+                    e.preventDefault();
+                    return false;
+                });
+
+                dragFunc($('#' + this.config.id + ' .main .title'), $('#' + this.config.id));
+                box.show();
+                this.box = box;
+            }
+        }
+
+        MyDialog.prototype.close = function () {
+            //这里有问题
+            var box = this.box;
+            var tmpBody = this.tmpBody;
+            var cover = this.cover;
+            if (tmpBody &amp;&amp; tmpBody[0]) {
+                $('body').append(tmpBody);
+            }
+            if (box &amp;&amp; box[0]) {
+                box.remove();
+            }
+            if (cover &amp;&amp; cover[0]) {
+                cover.hide();
+            }
+        };
+</pre>
+</div>
+<p>调用方法：</p>
+<div class="cnblogs_Highlighter">
+<pre class="brush:javascript;gutter:false;">var dia = new MyDialog({
+	    		title : title,
+	    		bodyId : id,
+	    		id : id + '_box'
+		    });
+	    	dia.show();
+</pre>
+</div>
+<p>&nbsp;具体可能还需要一定函数回调，各位可以自己封装一番。</p>
+<h1>拖放</h1>
+<hr>
+<p>&nbsp;</p>
+<p>工作中也经常会出现拖放效果的一些需求：</p>
+<p><img src="30259649055280.jpg" alt=""></p>
+<p><img src="48241868554467.jpg" alt=""></p>
+<p><img src="35130916080872.jpg" alt=""></p>
+<p>代码如下：</p>
+<div class="cnblogs_Highlighter">
+<pre class="brush:html;gutter:false;">&lt;!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"&gt;
+&lt;html xmlns="http://www.w3.org/1999/xhtml"&gt;
+&lt;head&gt;
+    &lt;title&gt;&lt;/title&gt;
+    &lt;script src="http://www.cnblogs.com/scripts/jquery-1.7.1.js" type="text/javascript"&gt;&lt;/script&gt;
+    &lt;script type="text/javascript"&gt;
+
+        function dragFunc(dragDiv, dragBody, dropBody) {
+            if (!dropBody[0]) {
+                dropBody = $(document);
+            }
+            if (dragDiv[0] &amp;&amp; dragBody[0]) {
+                var dragAble = false;
+                var x1 = 0;
+                var y1 = 0;
+                var l = 10;
+                var t = 10;
+
+                var init_position = '';
+                var init_cursor = '';
+                var tmp_body = null;
+
+                dragDiv.mousedown(function (e) {
+                    var ss = this;
+
+                    init_position = dragBody.css("position");
+                    init_cursor = dragBody.css("init_cursor");
+                    dragBody.css("position", "absolute");
+                    dragDiv.css("cursor", "move");
+
+                    tmp_body = $('&lt;div class="tmp_div"&gt;&lt;/div&gt;');
+                    tmp_body.css('width', dragBody.css('width'));
+                    tmp_body.css('height', dragBody.css('height'));
+                    tmp_body.insertAfter(dragBody);
+                    $(document).bind("selectstart", function () { return false; });  
+
+
+                    dragAble = true;
+                    // 当前鼠标距离div边框的距离
+                    // 当前鼠标坐标，减去div相对左边的像素
+                    l = parseInt(dragBody.css("left")) ? parseInt(dragBody.css("left")) : 10;
+                    t = parseInt(dragBody.css("top")) ? parseInt(dragBody.css("top")) : 10;
+
+                    var offset = dragBody.offset();
+
+                    l = parseInt(offset.left);
+                    t = parseInt(offset.top);
+
+                    x1 = e.clientX - l;
+                    y1 = e.clientY - t;
+                    x1 = x1 &gt; 0 ? x1 : 0;
+                    y1 = y1 &gt; 0 ? y1 : 0;
+                    this.setCapture &amp;&amp; this.setCapture();
+                });
+                dragDiv.mousemove(function (e) {
+                    if (!dragAble)
+                        return;
+                    // 当前div左边的坐标
+                    // 当前鼠标坐标，减去鼠标拖动量
+                    var x2 = 0;
+                    var y2 = 0;
+                    //需要考虑滚动条问题！！！
+                    var top = $(document).scrollTop() ? $(document).scrollTop() - 15 : 0;
+                    var left = $(document).scrollLeft() ? $(document).scrollLeft() - 15 : 0;
+                    x2 = e.clientX - x1 + left;
+                    y2 = e.clientY - y1 + top;
+                    x2 = x2 &gt; 0 ? x2 : 0;
+                    y2 = y2 &gt; 0 ? y2 : 0;
+                    //要移动一定数量才移动
+                    if (Math.abs(l - x2) &gt; 10 || Math.abs(t - y2) &gt; 10) {
+                        dragBody.css("left", x2 + "px");
+                        dragBody.css("top", y2 + "px");
+                    }
+
+                    //红 #993300
+                    //灰 #DBEAF9
+                    //移动结束后判断拖放
+                    var w = parseInt(dragBody.css('width'));
+                    var h = parseInt(dragBody.css('height'));
+                    $.each(dropBody, function () {
+                        var el = $(this);
+                        el.css('background-color', 'Gray');
+                        var offset = el.offset();
+
+                        var _l = offset.left || 0;
+                        var _t = offset.top || 0;
+                        var _w = parseInt(el.css('width'));
+                        var _h = parseInt(el.css('height'));
+
+                        if (x2 &gt; _l &amp;&amp; x2 + w &lt; _l + _w &amp;&amp; y2 &gt; _t &amp;&amp; y2 + h &lt; _t + _h) {
+                            el.css('background-color', '#DBEAF9');
+                            
+                            el.append(tmp_body);
+
+                        }
+
+                        var s = '';
+
+                    });
+
+                });
+                dragDiv.mouseup(function (event) {
+                    if (!dragAble)
+                        return;
+
+                    $(document).unbind("selectstart");  
+
+                    //还原position 与 cursor
+                    dragBody.css("position", init_position);
+                    dragBody.css("cursor", init_cursor);
+
+                    //dragBody.css("left", '0');
+                    //dragBody.css("top", '0');
+                    if (tmp_body) {
+                        dragBody.insertAfter(tmp_body);
+                        var offset = tmp_body.offset();
+                        l = parseInt(offset.left);
+                        t = parseInt(offset.top);
+                        dragBody.css("left", l);
+                        dragBody.css("top", t);
+                        tmp_body.remove();
+
+                    }
+                    dragAble = false;
+                    // dragDiv.css("position", "relative");
+                    this.releaseCapture &amp;&amp; this.releaseCapture();
+                });
+            }
+        }
+
+
+
+        $(document).ready(function () {
+            var d1 = $('#d1');
+            var c = $('.c');
+
+            dragFunc(d1, d1, c);
+
+
+        });
+    
+    
+    &lt;/script&gt;
+    &lt;style type="text/css"&gt;
+        div
+        {
+            width: 100px;
+            height: 100px;
+            border: 1px solid black;
+          
+        }
+        .tmp_div 
+        {
+            border-style: dashed;
+            
+        }
+        
+        #c1
+        {
+            background-color:  Gray;
+            width: 300px;
+            height:300px;
+            float:left;
+            margin:20px;
+        }
+        
+         #c2
+        {
+            background-color:  Gray;
+            width: 300px;
+            height:300px;
+            float:left;
+            margin:20px;
+        }
+        
+        
+       
+        
+    &lt;/style&gt;
+&lt;/head&gt;
+&lt;body&gt;
+    &lt;div id="c1" class="c"&gt;1
+        &lt;div id="d1"&gt;me
+        &lt;/div&gt;
+    &lt;/div&gt;
+    &lt;div id="c2" class="c"&gt;2
+    &lt;/div&gt;
+
+  
+
+
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+</div>
+<p>&nbsp;</p>
+<h1>异步文件上传</h1>
+<hr>
+<p>&nbsp;</p>
+<p>我们所谓的AJAX异步文件上传事实上用js技术好像暂时还不能实现，就我所谓的异步上传事实上还是表单提交，而将form的target指向一</p>
+<p>隐藏的iframe，然后成功后回调即可，真是十分坑爹的做法。。。。。</p>
+<p>若是要更好的体验，便需要借助flash或者XX框架了，但是我也没有研究过.</p>
+<div class="cnblogs_Highlighter">
+<pre class="brush:html;gutter:false;">&lt;form id="formImg" name="formImg" enctype="multipart/form-data" method="post" action=""&gt;
+&lt;input type="hidden" name="MAX_FILE_SIZE" value="800000" id="max_size"/&gt;
+&lt;input type="hidden" name="callback" value="parent.add_img_input" id="callback"/&gt;
+&lt;a class="upbtn"&gt;&lt;input type="file" name="userfile" id="userfile" title="支持JPG、GIF、PNG格式，文件小于1M" 
+name="pic" value="" onchange="javascript:up_img(17);"&gt;上传&lt;/a&gt;
+&lt;/form&gt;
+document.charset='utf-8';
+		    	var form = $('#formImg');
+				var frame = $('#frame_img');
+		        if (!frame[0]) {
+		            frame = $('&lt;iframe id="frame_img" name="frame_img" style="display:none;" &gt;&lt;/iframe&gt;');
+		        }
+		    	form.append(frame);
+		    	form.attr('target', 'frame_img');
+		    	form.attr('action', url);
+		    	form.submit();
+		    	
+		    	document.charset='gbk';
+</pre>
+</div>
+<p>&nbsp;但是回调会涉及一点跨域的问题，需要在同一大域名下才行。</p>
+<p>&nbsp;</p>
+<h1>现况</h1>
+<hr>
+<p>&nbsp;</p>
+<p>爱生活，爱工作，今年继续努力吧！</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+                </div>
+
+                <div class='span3 sidebar'>
+                    <h2>导航栏</h2>
+                    <ul class="nav nav-tabs nav-stacked">
+                             				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/Fiddlerznqddsq/index.html">Fiddler真乃前端大杀器！！！</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/Requirejs/index.html">Requirejs</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/RequireJSyBackbonejdzh/index.html">RequireJS与Backbone简单整合</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/RequireJSxxbj/index.html">RequireJS学习笔记</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/Webqdyhctxdpzyyqdgsgpng/index.html">Web前端优化初探，小弟抛砖引玉，期待高手共破难关！</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/Webqdlqjrctxsqwpzyyqdgsgpng/index.html">Web前端浏览器兼容初探，小生浅文抛砖引玉，期待高手攻破难关！</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/jqueryfdataListxnyhmbybysxtgxn10bys/index.html">【jquery仿dataList——性能优化】模板预编译思想提高性能10倍以上！！！</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/jqueryfdataListyyzmfigoogledzhtdpxzdhfp/index.html">【jquery仿dataList】应用之——模仿igoogle【定制化、拖动排序，最大化、分屏】</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/jqueryfdatalistdygwtqzszmxxsjlkzDIVdjjbf/index.html">【jquery仿datalist的一个问题，求助】——设置每行显示几列，块状DIV的解决办法</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/jquerymfnetkjcbGridViewmxsxjqjdyy/index.html">【jquery模仿net控件】初步GridView模型实现，及其简单应用</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/jquerymfnetkjjdfykj10fsgridviewsycs/index.html">【jquery模仿net控件】简单分页控件10，附上gridview使用测试</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/jquerymfnetkjjdddatalistkjgxjqjdyy/index.html">【jquery模仿net控件】简单的datalist控件更新，及其简单应用</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/jquerymfnetkjjdddropdownlistydatalist/index.html">【jquery模仿net控件】简单的dropdownlist与datalist</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/jquerybnetkjdropdownlistfymhydjzdzzpz/index.html">【jquery版net控件—dropdownlist】附源码，欢迎大家指点、指正、拍砖！！！</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/positionykyhfzddccyslsbdws/index.html">【position也可以很复杂】当弹出层遇上了鼠标定位（上）</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/positionykyhfzddccyslsbdwx/index.html">【position也可以很复杂】当弹出层遇上了鼠标定位（下）</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/SEOzmlwljnmtsbwmlyqkkSEOb/index.html">【SEO】周末了，为了纪念明天上班，我们来一起看看SEO吧</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/webqdyhqdwyhyrzrz/index.html">【web前端优化】前端无优化，庸人自扰之！</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/webqdyhzreflowjsymdhl/index.html">【web前端优化之reflow】减少页面的回流</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/webqdyhztpycjzctzwbsxwbk/index.html">【web前端优化之图片延迟加载初探】中午不睡，下午崩溃</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/webqdyhztpmhdqxkwQQkjrhxsxp/index.html">【web前端优化之图片模糊到清晰】看我QQ空间如何显示相片</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/webqdpxzqhddphsywmsxdDatalistsmwtb/index.html">【web前端培训之前后端的配合（上）】以我们熟悉的Datalist说明问题吧</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/webqdpxzqhddphzjxzrdgs/index.html">【web前端培训之前后端的配合（中）】继续昨日的故事</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/dyyygybkydbfgqym/index.html">【单页应用】关于博客园的补发（高清有码）。。。</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/xtsstringifysBUGlocalstoragesxxmSafarialertksfycjzym10pxbp/index.html">【小贴士】【stringify神BUG】【localstorage失效】【消灭Safarialert框】【是否延迟加载】【页面10px白屏】</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/dalhdmsthhdsdmstjsh/index.html">【答阿里寒冬面试题】呵呵，大神的面试题就是好！</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/ycsjmstdldgwxxdgjxxdff/index.html">一次上机面试题带来的感悟【学习的感觉、学习的方法】</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/ydmstdldqdyhsxxxdp/index.html">一道面试题带来的前端优化——实现星星点评</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/zysyzjjhfzwebqdbfxlgxmndjjfa/index.html">只言碎语总结，今后发展web前端，并分享两个项目难点解决方案。</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/gwjlytbllbnwmljxwwdbdyzb/index.html">各位加了一天班累了吧？那我们来继续未完的表单验证吧</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/gwzmwlytllbwmyqlzldmstbjstbdy/index.html">各位周末玩了一天累了吧，我们一起来做两道面试题吧（据说淘宝的哟）！</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/jyjQuerydxlcdcjzwsy/index.html">基于jQuery的下拉菜单插件，诸位上眼！！！</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/jyjQuerydxlcdcd02zwsy/index.html">基于jQuery的下拉菜单菜单【02】，诸位上眼！！！</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/gzzpddyxdxdccktfybwjsc/index.html">工作中碰到的一些东西【弹出窗口】【拖放】【异步文件上传】</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/gzlygxqgwydllbnwmyqlbdyzyfb/index.html">工作了一个星期各位一定累了吧，那我们一起来表单验证一番吧！</a></li>
+    				                                         
+                    </ul>
+                </div>
+            </div>
+
+        </div>
+    </body>
+</html>

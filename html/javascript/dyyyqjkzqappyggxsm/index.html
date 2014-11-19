@@ -1,0 +1,408 @@
+﻿<!DOCTYPE html>
+
+<html lang="zh">
+    <head>
+        <meta charset="utf-8">
+        <meta name="description" content="android,ios" />
+        <meta name="keywords" content="android,ios" />
+
+        <title>叶小钗</title>
+        <style type='text/css'>
+            body {
+                background-color: #CCC;
+            }
+        </style>
+        <link rel="stylesheet" href="../../../css/bootstrap.css" />
+    </head>
+
+    <body>
+        <div class="container">
+
+            <h1>叶小钗</h1>
+
+            <div class='navbar navbar-inverse'>
+                <div class='navbar-inner nav-collapse' style="height: auto;">
+                    <ul class="nav">
+                              				<li><a href="http://songboriceboy.github.io/xxoo/html/blade/index.html">blade</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/css/index.html">css</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/HTML5&CSS3/index.html">HTML5&CSS3</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/index.html">javascript</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Javaxx/index.html">Java学习</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/nodejs/index.html">nodejs</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/requirejs/index.html">requirejs</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/index.html">Web前端</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/xxgw/index.html">学习感悟</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/gzdd/index.html">工作点滴</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/jkxx/index.html">接口学习</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/wfl/index.html">未分类</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/ydkf/index.html">移动开发</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/sjms/index.html">设计模式</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/mst/index.html">面试题</a></li>
+    				                      </ul>
+                </div>
+            </div>
+
+            <div id='content' class='row-fluid'>
+
+                <div class='span9 main'>
+				<div style="color:blue" align=center>【单页应用】全局控制器app应该干些什么？</div><br><h1>前言</h1>
+<p><img src="355435810044281.jpg" alt=""></p>
+<p>之前，我们形成了页面片相关的mvc结构，但是该结构还仅适用于view（页面）级，那么真正的全局控制器app应该干些什么事情呢？我觉得至少需要干这些：</p>
+<h2>功能点</h2>
+<p>① 提供URL解析机制，以便让控制器可以根据URL获得当前是要加载哪个view的实例，比如</p>
+<p>http://www.baidu.com/index.html#index</p>
+<p>http://www.baidu.com/index</p>
+<p>若是使用hashChange实现浏览器跳转便直接取出index这个键值；</p>
+<p>若是使用pushState方案的话，便需要业务同事给出取出URL键值的方法，最终我们需要得到index这个键值</p>
+<p>② app应该保留各个view的实例，并且维护一个队列关系</p>
+<p>以现在博客园为例，我们可能具有两个view页面片：index-&gt;detail</p>
+<p>我们首次便是加载index这个view，点击其中一个项目便加载detail这个view，这个时候app是应该同时保存两个view，并且内部要维系一个访问顺序队列</p>
+<p>这个队列最好可与浏览器保存一致，若不能保存一致，后期便可能会出现点击浏览器后退死循环的问题</p>
+<p>③ app应该提供view实例化的方法</p>
+<p>所以的view实例若无特殊原因，皆应该由app生成，app应该具有实例化view的能力，view一般使用AMD规范管理，这里涉及异步加载</p>
+<p>PS：真实工作环境中，view需要自建一套事件机制，比如实例化时候要触发什么事件，显示时候要触发什么事件，皆需要有，app只会负责</p>
+<p>实例化-&gt;显示-&gt;隐藏</p>
+<p>④ app应该提供监控浏览器事件，每次自动加载各个view</p>
+<p>如上面所述，app会注册一个hashChange事件或者popState事件以达到改变URL不刷新页面的功能，这个功能主要用于用户点击浏览器原生后退键</p>
+<p>以上便是全局控制器app该干的事情，按程序逻辑说，应该是这样的</p>
+<h2>程序逻辑</h2>
+<p>用户键入一个URL，进到一个单页应用，于是首次会发生以下事情：</p>
+<p>① 属性初始化，并且为浏览器绑定hashChange/popState事件</p>
+<p>② 解析URL取出，当前需要加载的VIEW键值，一般而言是index，或者会有一些参数</p>
+<p>③ 根据键值使用requireJS语法加载view类，并且产生实例化操作</p>
+<p>④ 实例化结束后，便调用view的show方法，首屏view显示结束，内部会触发view自身事件达到页面渲染的效果</p>
+<p>用户点击其中一个项目会触发一个类似forward/back的操作，这个时候流程会有所不同：</p>
+<p>① app首先会屏蔽监控浏览器的变化，因为这个是用户主动触发，不应该触发hashChange类似事件</p>
+<p>② app开始加载forward的view，这里比如是list，将list实例化，然后执行index的hide方法，执行list的show方法，这里便完成了一次view的切换</p>
+<p>整个逻辑还可能发生动画，我们这里暂时忽略。</p>
+<p>这时当用户点击浏览器后退，情况又会有所不同</p>
+<p>① app中的hashChange或者popstate会捕捉到这次URL变化</p>
+<p>② app会解析这个URL并且安装之前约定取出键值，这个时候会发现app中已经保存了这个view的实例</p>
+<p>③ 直接执行list view的hide方法，然后执行index view的show方法，整体逻辑结束</p>
+<p>整个app要干的事情基本就是这样，这种app逻辑一般为3-7百行，代码少，但是其实现的功能比较复杂，往往是一个单页应用的核心！</p>
+<h1><span style="line-height: 1.5;">Backbone的控制器</span></h1>
+<p><span style="line-height: 1.5;">事实上Backbone只有一个History，并不具有控制器的行为，总的来说，Backbone最为有用的就是其view一块的逻辑，我们很多时候也只是需要这段逻辑</span></p>
+<p><span style="line-height: 1.5;">其路由功能本身没有什么问题，实现也很好，但是我们可以看到他并未完成我们以上需要的功能，所以<span style="color: #ff0000;">对我</span>来说，他便只是一个简单的路由功能，不是控制器</span></p>
+<p><span style="line-height: 1.5;">Backbone的路由首先会要求你将一个应用中的所有url与键值全部做一个映射，比如</span></p>
+<div class="cnblogs_code">
+<pre><span style="color: #008080;"> 1</span> <span style="color: #0000ff;">var</span> App =<span style="color: #000000;"> Backbone.Router.extend({
+</span><span style="color: #008080;"> 2</span> <span style="color: #000000;">  routes: {
+</span><span style="color: #008080;"> 3</span>     "": "index",    <span style="color: #008000;">//</span><span style="color: #008000;"> #index</span>
+<span style="color: #008080;"> 4</span>     "index": "index",    <span style="color: #008000;">//</span><span style="color: #008000;"> #index</span>
+<span style="color: #008080;"> 5</span>     "detail": "detail"    <span style="color: #008000;">//</span><span style="color: #008000;"> #detail</span>
+<span style="color: #008080;"> 6</span> <span style="color: #000000;">  },
+</span><span style="color: #008080;"> 7</span>   index: <span style="color: #0000ff;">function</span><span style="color: #000000;"> () {
+</span><span style="color: #008080;"> 8</span>     <span style="color: #0000ff;">var</span> index = <span style="color: #0000ff;">new</span> Index(<span style="color: #0000ff;">this</span><span style="color: #000000;">.interface);
+</span><span style="color: #008080;"> 9</span> 
+<span style="color: #008080;">10</span> <span style="color: #000000;">  },
+</span><span style="color: #008080;">11</span>   detail: <span style="color: #0000ff;">function</span><span style="color: #000000;"> () {
+</span><span style="color: #008080;">12</span>     <span style="color: #0000ff;">var</span> detail = <span style="color: #0000ff;">new</span> Detail(<span style="color: #0000ff;">this</span><span style="color: #000000;">.interface);
+</span><span style="color: #008080;">13</span> 
+<span style="color: #008080;">14</span> <span style="color: #000000;">  },
+</span><span style="color: #008080;">15</span>   initialize: <span style="color: #0000ff;">function</span><span style="color: #000000;"> () {
+</span><span style="color: #008080;">16</span> 
+<span style="color: #008080;">17</span> <span style="color: #000000;">  },
+</span><span style="color: #008080;">18</span> <span style="color: #000000;">  interface: {
+</span><span style="color: #008080;">19</span>     forward: <span style="color: #0000ff;">function</span><span style="color: #000000;"> (url) {
+</span><span style="color: #008080;">20</span>       window.location.href = ('#' + url).replace(/^#+/, '#'<span style="color: #000000;">);
+</span><span style="color: #008080;">21</span> <span style="color: #000000;">    }
+</span><span style="color: #008080;">22</span> 
+<span style="color: #008080;">23</span> <span style="color: #000000;">  }
+</span><span style="color: #008080;">24</span> 
+<span style="color: #008080;">25</span> });</pre>
+</div>
+<p>然后整体的功能完全依赖于URL的变化触发，那么意味着一个单页应用中所有的url我都需要在此做映射，我这里当然不愿意这样做</p>
+<p>事实上我做变化时候，只需要一个view类的键值即可，所以我们这里便直接跳过了路由映射这个逻辑</p>
+<p><span style="color: #ff0000;">每次浏览器主动发生的变化，我们直接解析其URL，拿出我们要的view 键值，从而加载这个view的实例</span></p>
+<h1><span style="line-height: 1.5;">我们的控制器</span></h1>
+<p><span style="line-height: 1.5;">根据前面的想法，我们的控制器一定会包含以下接口：</span></p>
+<p><span style="line-height: 1.5;">① 解析URL形成view键值的接口，并且该接口可被各业务覆盖：</span></p>
+<div class="cnblogs_code">
+<pre>getViewIdRules</pre>
+</div>
+<p>② 异步加载View类以及实例化view的接口</p>
+<div class="cnblogs_code">
+<pre>loadView</pre>
+</div>
+<p>③ 浏览器事件监听</p>
+<div class="cnblogs_code">
+<pre>buildEvent(hashChange/popState)</pre>
+</div>
+<p>以上是几个关键接口，其它接口，如view切换也需要提出，这里我们首先得得出整个app的时序</p>
+<p><img src="15402466006327.png" alt="" width="1128" height="1603"></p>
+<p><span style="line-height: 1.5;">其时序简单分为三类，其实还有更加复杂的情况，我们这里暂时不予考虑</span></p>
+<p><span style="line-height: 1.5;">① 首先是初始化的操作，首次便只需要解析URL，加载默认view实例并且显示即可，这个时候虽然注册了hashChange/popState事件，不会触发其中逻辑</span></p>
+<p><span style="line-height: 1.5;">② 其次是框架主动行为，主动要加载第二个view（view），这个时候便会实例化之，然后触发自身switchview事件，切换两个view</span></p>
+<p><span style="line-height: 1.5;">③ 最后是浏览器触发hashChange/popState事件，导致框架发生切换view的事件，这个时候两个view实例已经存在，所以只需要切换即可</span></p>
+<p><span style="line-height: 1.5;">PS：每次框架只需要执行简单的show、hide方法即可，view内部自有其逻辑处理余下事情，这些我们留待后面说</span></p>
+<p><span style="line-height: 1.5;">时序图，出来后，我们就要考虑我们这个全局控制器app，的方法了，这里先给出类图再做一一实现：</span></p>
+<p><img src="42628895624830.png" alt=""></p>
+<p>这里做初步的实现：</p>
+<div class="cnblogs_code">
+<pre><span style="color: #008080;">  1</span> "use strict"<span style="color: #000000;">;
+</span><span style="color: #008080;">  2</span> <span style="color: #0000ff;">var</span> Application =<span style="color: #000000;"> _.inherit({
+</span><span style="color: #008080;">  3</span> 
+<span style="color: #008080;">  4</span>   <span style="color: #008000;">//</span><span style="color: #008000;">设置默认的属性</span>
+<span style="color: #008080;">  5</span>   defaultPropery: <span style="color: #0000ff;">function</span><span style="color: #000000;"> () {
+</span><span style="color: #008080;">  6</span> 
+<span style="color: #008080;">  7</span>     <span style="color: #008000;">//</span><span style="color: #008000;">存储view队列的hash对象，这里会新建一个hash数据结构，暂时不予理睬</span>
+<span style="color: #008080;">  8</span>     <span style="color: #0000ff;">this</span>.views = <span style="color: #0000ff;">new</span><span style="color: #000000;"> _.Hash();
+</span><span style="color: #008080;">  9</span> 
+<span style="color: #008080;"> 10</span>     <span style="color: #008000;">//</span><span style="color: #008000;">当前view</span>
+<span style="color: #008080;"> 11</span>     <span style="color: #0000ff;">this</span><span style="color: #000000;">.curView;
+</span><span style="color: #008080;"> 12</span> 
+<span style="color: #008080;"> 13</span>     <span style="color: #008000;">//</span><span style="color: #008000;">最后访问的view</span>
+<span style="color: #008080;"> 14</span>     <span style="color: #0000ff;">this</span><span style="color: #000000;">.lastView;
+</span><span style="color: #008080;"> 15</span> 
+<span style="color: #008080;"> 16</span>     <span style="color: #008000;">//</span><span style="color: #008000;">各个view的映射地址</span>
+<span style="color: #008080;"> 17</span>     <span style="color: #0000ff;">this</span>.viewMapping =<span style="color: #000000;"> {};
+</span><span style="color: #008080;"> 18</span> 
+<span style="color: #008080;"> 19</span>     <span style="color: #008000;">//</span><span style="color: #008000;">本地维护History逻辑</span>
+<span style="color: #008080;"> 20</span>     <span style="color: #0000ff;">this</span>.history =<span style="color: #000000;"> [];
+</span><span style="color: #008080;"> 21</span> 
+<span style="color: #008080;"> 22</span>     <span style="color: #008000;">//</span><span style="color: #008000;">是否开启路由监控 </span>
+<span style="color: #008080;"> 23</span>     <span style="color: #0000ff;">this</span>.isListeningRoute = <span style="color: #0000ff;">false</span><span style="color: #000000;">;
+</span><span style="color: #008080;"> 24</span> 
+<span style="color: #008080;"> 25</span>     <span style="color: #008000;">//</span><span style="color: #008000;">view的根目录</span>
+<span style="color: #008080;"> 26</span>     <span style="color: #0000ff;">this</span>.viewRootPath = 'app/views/'<span style="color: #000000;">;
+</span><span style="color: #008080;"> 27</span> 
+<span style="color: #008080;"> 28</span>     <span style="color: #008000;">//</span><span style="color: #008000;">当前对应url请求</span>
+<span style="color: #008080;"> 29</span>     <span style="color: #0000ff;">this</span>.request =<span style="color: #000000;"> {};
+</span><span style="color: #008080;"> 30</span> 
+<span style="color: #008080;"> 31</span>     <span style="color: #008000;">//</span><span style="color: #008000;">当前对应的参数</span>
+<span style="color: #008080;"> 32</span>     <span style="color: #0000ff;">this</span>.query =<span style="color: #000000;"> {};
+</span><span style="color: #008080;"> 33</span> 
+<span style="color: #008080;"> 34</span>     <span style="color: #008000;">//</span><span style="color: #008000;">pushState的支持能力</span>
+<span style="color: #008080;"> 35</span>     <span style="color: #0000ff;">this</span>.hasPushState = !!(<span style="color: #0000ff;">this</span>.history &amp;&amp; <span style="color: #0000ff;">this</span><span style="color: #000000;">.history.pushState);
+</span><span style="color: #008080;"> 36</span> 
+<span style="color: #008080;"> 37</span>     <span style="color: #008000;">//</span><span style="color: #008000;">由用户定义的获取viewid规则</span>
+<span style="color: #008080;"> 38</span>     <span style="color: #0000ff;">this</span>.getViewIdRules = <span style="color: #0000ff;">function</span><span style="color: #000000;"> (url, hasPushState) {
+</span><span style="color: #008080;"> 39</span>       <span style="color: #0000ff;">return</span> _.getUrlParam(url, 'viewId'<span style="color: #000000;">);
+</span><span style="color: #008080;"> 40</span> <span style="color: #000000;">    };
+</span><span style="color: #008080;"> 41</span> 
+<span style="color: #008080;"> 42</span> <span style="color: #000000;">  },
+</span><span style="color: #008080;"> 43</span> 
+<span style="color: #008080;"> 44</span>   <span style="color: #008000;">//</span><span style="color: #008000;">@override</span>
+<span style="color: #008080;"> 45</span>   handleOptions: <span style="color: #0000ff;">function</span><span style="color: #000000;"> (opts) {
+</span><span style="color: #008080;"> 46</span>     _.extend(<span style="color: #0000ff;">this</span><span style="color: #000000;">, opts);
+</span><span style="color: #008080;"> 47</span> <span style="color: #000000;">  },
+</span><span style="color: #008080;"> 48</span> 
+<span style="color: #008080;"> 49</span>   initialize: <span style="color: #0000ff;">function</span><span style="color: #000000;"> (opts) {
+</span><span style="color: #008080;"> 50</span> 
+<span style="color: #008080;"> 51</span>     <span style="color: #0000ff;">this</span><span style="color: #000000;">.defaultPropery();
+</span><span style="color: #008080;"> 52</span>     <span style="color: #0000ff;">this</span><span style="color: #000000;">.handleOptions(opts);
+</span><span style="color: #008080;"> 53</span> 
+<span style="color: #008080;"> 54</span>     <span style="color: #008000;">//</span><span style="color: #008000;">构造系统各个事件</span>
+<span style="color: #008080;"> 55</span>     <span style="color: #0000ff;">this</span><span style="color: #000000;">.buildEvent();
+</span><span style="color: #008080;"> 56</span> 
+<span style="color: #008080;"> 57</span>     <span style="color: #008000;">//</span><span style="color: #008000;">首次动态调用，生成view</span>
+<span style="color: #008080;"> 58</span>     <span style="color: #0000ff;">this</span><span style="color: #000000;">.start();
+</span><span style="color: #008080;"> 59</span> <span style="color: #000000;">  },
+</span><span style="color: #008080;"> 60</span> 
+<span style="color: #008080;"> 61</span>   buildEvent: <span style="color: #0000ff;">function</span><span style="color: #000000;"> () {
+</span><span style="color: #008080;"> 62</span>     <span style="color: #0000ff;">this</span><span style="color: #000000;">._requireEvent();
+</span><span style="color: #008080;"> 63</span>     <span style="color: #0000ff;">this</span><span style="color: #000000;">._routeEvent();
+</span><span style="color: #008080;"> 64</span> <span style="color: #000000;">  },
+</span><span style="color: #008080;"> 65</span> 
+<span style="color: #008080;"> 66</span>   _requireEvent: <span style="color: #0000ff;">function</span><span style="color: #000000;"> () {
+</span><span style="color: #008080;"> 67</span>     requirejs.onError = <span style="color: #0000ff;">function</span><span style="color: #000000;"> (e) {
+</span><span style="color: #008080;"> 68</span>       <span style="color: #0000ff;">if</span> (e &amp;&amp;<span style="color: #000000;"> e.requireModules) {
+</span><span style="color: #008080;"> 69</span>         <span style="color: #0000ff;">for</span> (<span style="color: #0000ff;">var</span> i = 0; i &lt; e.requireModules.length; i++<span style="color: #000000;">) {
+</span><span style="color: #008080;"> 70</span>           console.log('抱歉，当前的网络状况不给力，请刷新重试!'<span style="color: #000000;">);
+</span><span style="color: #008080;"> 71</span>           <span style="color: #0000ff;">break</span><span style="color: #000000;">;
+</span><span style="color: #008080;"> 72</span> <span style="color: #000000;">        }
+</span><span style="color: #008080;"> 73</span> <span style="color: #000000;">      }
+</span><span style="color: #008080;"> 74</span> <span style="color: #000000;">    };
+</span><span style="color: #008080;"> 75</span> <span style="color: #000000;">  },
+</span><span style="color: #008080;"> 76</span> 
+<span style="color: #008080;"> 77</span>   <span style="color: #008000;">//</span><span style="color: #008000;">路由相关处理逻辑，可能是hash，可能是pushState</span>
+<span style="color: #008080;"> 78</span>   _routeEvent: <span style="color: #0000ff;">function</span><span style="color: #000000;"> () {
+</span><span style="color: #008080;"> 79</span> 
+<span style="color: #008080;"> 80</span>     <span style="color: #008000;">//</span><span style="color: #008000;">默认使用pushState逻辑，否则使用hashChange，后续出pushState的方案</span>
+<span style="color: #008080;"> 81</span>     $(window).bind('hashchange', _.bind(<span style="color: #0000ff;">this</span>.onURLChange, <span style="color: #0000ff;">this</span><span style="color: #000000;">));
+</span><span style="color: #008080;"> 82</span> 
+<span style="color: #008080;"> 83</span> <span style="color: #000000;">  },
+</span><span style="color: #008080;"> 84</span> 
+<span style="color: #008080;"> 85</span>   <span style="color: #008000;">//</span><span style="color: #008000;">当URL变化时</span>
+<span style="color: #008080;"> 86</span>   onURLChange: <span style="color: #0000ff;">function</span><span style="color: #000000;"> () {
+</span><span style="color: #008080;"> 87</span>     <span style="color: #0000ff;">if</span> (!<span style="color: #0000ff;">this</span>.isListeningRoute) <span style="color: #0000ff;">return</span><span style="color: #000000;">;
+</span><span style="color: #008080;"> 88</span> 
+<span style="color: #008080;"> 89</span> <span style="color: #000000;">  },
+</span><span style="color: #008080;"> 90</span> 
+<span style="color: #008080;"> 91</span>   startListeningRoute: <span style="color: #0000ff;">function</span><span style="color: #000000;"> () {
+</span><span style="color: #008080;"> 92</span>     <span style="color: #0000ff;">this</span>.isListeningRoute = <span style="color: #0000ff;">true</span><span style="color: #000000;">;
+</span><span style="color: #008080;"> 93</span> <span style="color: #000000;">  },
+</span><span style="color: #008080;"> 94</span> 
+<span style="color: #008080;"> 95</span>   stopListeningRoute: <span style="color: #0000ff;">function</span><span style="color: #000000;"> () {
+</span><span style="color: #008080;"> 96</span>     <span style="color: #0000ff;">this</span>.isListeningRoute = <span style="color: #0000ff;">false</span><span style="color: #000000;">;
+</span><span style="color: #008080;"> 97</span> <span style="color: #000000;">  },
+</span><span style="color: #008080;"> 98</span> 
+<span style="color: #008080;"> 99</span>   <span style="color: #008000;">//</span><span style="color: #008000;">解析的当前url，并且根据getViewIdRules生成当前viewID</span>
+<span style="color: #008080;">100</span>   parseUrl: <span style="color: #0000ff;">function</span><span style="color: #000000;"> (url) {
+</span><span style="color: #008080;">101</span> 
+<span style="color: #008080;">102</span> <span style="color: #000000;">  },
+</span><span style="color: #008080;">103</span> 
+<span style="color: #008080;">104</span>   <span style="color: #008000;">//</span><span style="color: #008000;">入口点</span>
+<span style="color: #008080;">105</span>   start: <span style="color: #0000ff;">function</span><span style="color: #000000;"> () {
+</span><span style="color: #008080;">106</span>     <span style="color: #0000ff;">var</span> url = decodeURIComponent(window.location.hash.replace(/^#+/i, ''<span style="color: #000000;">)).toLowerCase();
+</span><span style="color: #008080;">107</span>     <span style="color: #0000ff;">this</span><span style="color: #000000;">.history.push(window.location.href);
+</span><span style="color: #008080;">108</span>     <span style="color: #008000;">//</span><span style="color: #008000;">处理当前url，会将viewid写入request对象</span>
+<span style="color: #008080;">109</span>     <span style="color: #0000ff;">this</span><span style="color: #000000;">.parseUrl(url);
+</span><span style="color: #008080;">110</span> 
+<span style="color: #008080;">111</span>     <span style="color: #0000ff;">var</span> viewId = <span style="color: #0000ff;">this</span><span style="color: #000000;">.request.viewId;
+</span><span style="color: #008080;">112</span> 
+<span style="color: #008080;">113</span>     <span style="color: #008000;">//</span><span style="color: #008000;">首次不会触发路由监听，直接程序导入</span>
+<span style="color: #008080;">114</span>     <span style="color: #0000ff;">this</span><span style="color: #000000;">.switchView(viewId);
+</span><span style="color: #008080;">115</span> 
+<span style="color: #008080;">116</span> <span style="color: #000000;">  },
+</span><span style="color: #008080;">117</span> 
+<span style="color: #008080;">118</span>   <span style="color: #008000;">//</span><span style="color: #008000;">根据viewId判断当前view是否实例化</span>
+<span style="color: #008080;">119</span>   viewExist: <span style="color: #0000ff;">function</span><span style="color: #000000;"> (viewId) {
+</span><span style="color: #008080;">120</span>     <span style="color: #0000ff;">return</span> <span style="color: #0000ff;">this</span><span style="color: #000000;">.views.exist(viewId);
+</span><span style="color: #008080;">121</span> <span style="color: #000000;">  },
+</span><span style="color: #008080;">122</span> 
+<span style="color: #008080;">123</span>   <span style="color: #008000;">//</span><span style="color: #008000;">根据viewid，加载view的类，并会实例化</span>
+<span style="color: #008080;">124</span>   <span style="color: #008000;">//</span><span style="color: #008000;">注意，这里只会返回一个view的实例，并不会显示或者怎样，也不会执行app的逻辑</span>
+<span style="color: #008080;">125</span>   loadView: <span style="color: #0000ff;">function</span><span style="color: #000000;"> (viewId, callback) {
+</span><span style="color: #008080;">126</span> 
+<span style="color: #008080;">127</span>     <span style="color: #008000;">//</span><span style="color: #008000;">每个键值还是在全局views保留一个存根，若是已经加载过便不予理睬</span>
+<span style="color: #008080;">128</span>     <span style="color: #0000ff;">if</span> (<span style="color: #0000ff;">this</span><span style="color: #000000;">.viewExist(viewId)) {
+</span><span style="color: #008080;">129</span>       _.callmethod(callback, <span style="color: #0000ff;">this</span>, <span style="color: #0000ff;">this</span><span style="color: #000000;">.views.get(viewId));
+</span><span style="color: #008080;">130</span>       <span style="color: #0000ff;">return</span><span style="color: #000000;">;
+</span><span style="color: #008080;">131</span> <span style="color: #000000;">    }
+</span><span style="color: #008080;">132</span> 
+<span style="color: #008080;">133</span>     requirejs([<span style="color: #0000ff;">this</span>._buildPath(viewId)], $.proxy(<span style="color: #0000ff;">function</span><span style="color: #000000;"> (View) {
+</span><span style="color: #008080;">134</span>       <span style="color: #0000ff;">var</span> view = <span style="color: #0000ff;">new</span><span style="color: #000000;"> View();
+</span><span style="color: #008080;">135</span> 
+<span style="color: #008080;">136</span>       <span style="color: #0000ff;">this</span><span style="color: #000000;">.views.push(viewId, view);
+</span><span style="color: #008080;">137</span> 
+<span style="color: #008080;">138</span>       <span style="color: #008000;">//</span><span style="color: #008000;">将当前view实例传入，执行回调</span>
+<span style="color: #008080;">139</span>       _.callmethod(callback, <span style="color: #0000ff;">this</span><span style="color: #000000;">, view);
+</span><span style="color: #008080;">140</span> 
+<span style="color: #008080;">141</span>     }, <span style="color: #0000ff;">this</span><span style="color: #000000;">));
+</span><span style="color: #008080;">142</span> <span style="color: #000000;">  },
+</span><span style="color: #008080;">143</span> 
+<span style="color: #008080;">144</span>   <span style="color: #008000;">//</span><span style="color: #008000;">根据viewId生成路径</span>
+<span style="color: #008080;">145</span>   _buildPath: <span style="color: #0000ff;">function</span><span style="color: #000000;"> (viewId) {
+</span><span style="color: #008080;">146</span>     <span style="color: #0000ff;">return</span> <span style="color: #0000ff;">this</span>.viewMapping[viewId] ? <span style="color: #0000ff;">this</span>.viewMapping[viewId] : <span style="color: #0000ff;">this</span>.viewRootPath +<span style="color: #000000;"> viewId;
+</span><span style="color: #008080;">147</span> <span style="color: #000000;">  },
+</span><span style="color: #008080;">148</span> 
+<span style="color: #008080;">149</span>   <span style="color: #008000;">//</span><span style="color: #008000;">注意，此处的url可能是id，也可能是其它莫名其妙的，这里需要进行解析</span>
+<span style="color: #008080;">150</span>   forward: <span style="color: #0000ff;">function</span><span style="color: #000000;"> (viewId) {
+</span><span style="color: #008080;">151</span> 
+<span style="color: #008080;">152</span>     <span style="color: #008000;">//</span><span style="color: #008000;">解析viewId逻辑暂时省略</span>
+<span style="color: #008080;">153</span>     <span style="color: #008000;">//</span><span style="color: #008000;">......</span>
+<span style="color: #008080;">154</span>     <span style="color: #0000ff;">this</span><span style="color: #000000;">.switchView(viewId);
+</span><span style="color: #008080;">155</span> 
+<span style="color: #008080;">156</span> <span style="color: #000000;">  },
+</span><span style="color: #008080;">157</span> 
+<span style="color: #008080;">158</span>   <span style="color: #008000;">//</span><span style="color: #008000;">后退操作</span>
+<span style="color: #008080;">159</span>   back: <span style="color: #0000ff;">function</span><span style="color: #000000;"> () {
+</span><span style="color: #008080;">160</span> 
+<span style="color: #008080;">161</span> <span style="color: #000000;">  },
+</span><span style="color: #008080;">162</span> 
+<span style="color: #008080;">163</span>   <span style="color: #008000;">//</span><span style="color: #008000;">view切换，传入要显示和隐藏的view实例</span>
+<span style="color: #008080;">164</span>   switchView: <span style="color: #0000ff;">function</span><span style="color: #000000;"> (viewId) {
+</span><span style="color: #008080;">165</span>     <span style="color: #0000ff;">if</span> (!viewId) <span style="color: #0000ff;">return</span><span style="color: #000000;">;
+</span><span style="color: #008080;">166</span> 
+<span style="color: #008080;">167</span>     <span style="color: #0000ff;">this</span>.loadView(viewId, <span style="color: #0000ff;">function</span><span style="color: #000000;"> (view) {
+</span><span style="color: #008080;">168</span>       <span style="color: #0000ff;">this</span>.lastView = <span style="color: #0000ff;">this</span><span style="color: #000000;">.curView;
+</span><span style="color: #008080;">169</span>       <span style="color: #0000ff;">this</span>.curView =<span style="color: #000000;"> view;
+</span><span style="color: #008080;">170</span> 
+<span style="color: #008080;">171</span>       <span style="color: #0000ff;">if</span> (<span style="color: #0000ff;">this</span>.curView) <span style="color: #0000ff;">this</span><span style="color: #000000;">.curView.show();
+</span><span style="color: #008080;">172</span>       <span style="color: #0000ff;">if</span> (<span style="color: #0000ff;">this</span>.lastView) <span style="color: #0000ff;">this</span><span style="color: #000000;">.lastView.show();
+</span><span style="color: #008080;">173</span> 
+<span style="color: #008080;">174</span> <span style="color: #000000;">    });
+</span><span style="color: #008080;">175</span> <span style="color: #000000;">  }
+</span><span style="color: #008080;">176</span> 
+<span style="color: #008080;">177</span> });</pre>
+</div>
+<h1>结语</h1>
+<p>今天，我们一起分析了全局控制器app应该做些什么，并且整理了下基本思路，那么我们这个星期的主要目的便是实现这个app，今日到此结束。</p>
+                </div>
+
+                <div class='span3 sidebar'>
+                    <h2>导航栏</h2>
+                    <ul class="nav nav-tabs nav-stacked">
+                             				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/javascriptzdyxhxzsdyjxyzyddf/index.html">javascript中的一些核心知识点以及需要注意的地方</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/[zd]webappdyhzlyzydqdyhdpyjlkkb/index.html">[置顶]【webapp的优化整理】要做移动前端优化的朋友进来看看吧</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/[zd]yddjrwtyjjavascriptsjjzxjsjydjr/index.html">[置顶]【移动端兼容问题研究】javascript事件机制详解（涉及移动兼容）</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/gruntzhb30fzxhsygruntdbqddm/index.html">【grunt整合版】30分钟学会使用grunt打包前端代码</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/gruntdyd30fzxhsygruntdbqddm/index.html">【grunt第一弹】30分钟学会使用grunt打包前端代码</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/gruntdsdgruntzqdsjxmzdyy/index.html">【grunt第三弹】grunt在前端实际项目中的应用</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/gruntded30fzxhsygruntdbqddm02/index.html">【grunt第二弹】30分钟学会使用grunt打包前端代码（02）</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/IScrollsrxxtpyddhadlqs/index.html">【IScroll深入学习】突破移动端黑暗的利器（上）</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/IScrollsrxxjjIScrollynzz/index.html">【IScroll深入学习】解决IScroll疑难杂症</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/iScrollymxx00mniScroll/index.html">【iScroll源码学习00】模拟iScroll</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/iScrollymxx01zbjd/index.html">【iScroll源码学习01】准备阶段</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/iScrollymxx02fjiScrollsghxsjd/index.html">【iScroll源码学习02】分解iScroll三个核心事件点</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/iScrollymxx03iScrollsjjzygdtdsx/index.html">【iScroll源码学习03】iScroll事件机制与滚动条的实现</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/iScrollymxx04flIScrollhx/index.html">【iScroll源码学习04】分离IScroll核心</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/javascriptpxdytyyjc/index.html">【javascript培训第一天】语言基础</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/javascriptpxdstcybl/index.html">【javascript培训第三天】查遗补漏</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/javascriptpxdetDOMyBOM/index.html">【javascript培训第二天】DOM与BOM</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/javascriptjzdsk01mkhbc/index.html">【javascript激增的思考01】模块化编程</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/javascriptjzdsk02mkhyMVC/index.html">【javascript激增的思考02】模块化与MVC</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/javascriptjzdsk03MVVMyKnockout/index.html">【javascript激增的思考03】MVVM与Knockout</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/javascriptjzdsk04MVCyBackbonejs(beta)/index.html">【javascript激增的思考04】MVC与Backbonejs(beta)</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/javascriptmxdxzlrwmyqltkdzb01/index.html">【javascript面向对象之路】让我们一起来坦克大战吧01</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/NodeJSxxbj04xwfbxt/index.html">【NodeJS学习笔记04】新闻发布系统</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/requireJSymxx01ljzgrequireJSdjg/index.html">【requireJS源码学习01】了解整个requireJS的结构</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/requireJSymxx02datamainjzdsx/index.html">【requireJS源码学习02】datamain加载的实现</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/requireJSymxx03xjrequireJSdjzlc/index.html">【requireJS源码学习03】细究requireJS的加载流程</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/UIcjkfygjdrlcjs/index.html">【UI插件】开发一个简单日历插件（上）</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/UIcjjddrlcjxxxMVCsx/index.html">【UI插件】简单的日历插件（下）——学习MVC思想</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/zeptoxxbj01hxff$()/index.html">【zepto学习笔记01】核心方法$()</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/zeptoxxbj01hxff$()b/index.html">【zepto学习笔记01】核心方法$()（补）</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/zeptoxxbj02lsd/index.html">【zepto学习笔记02】零碎点</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/zeptoxxbj03sjjz/index.html">【zepto学习笔记03】事件机制</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/ycmsztjavascriptzdjc/index.html">【一次面试】再谈javascript中的继承</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/ztbackbone01mxModel/index.html">【再探backbone01】模型Model</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/ztbackbone02jhCollection/index.html">【再探backbone02】集合Collection</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/ztbackbone03bkydyyysltgym/index.html">【再探backbone03】博客园单页应用实例（提供源码）</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/ztbackbone04dyyydjslycl/index.html">【再探backbone04】单页应用的基石路由处理</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/ctUnderscorezsmbyq/index.html">【初探Underscore】再说模版引擎</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/ckjavascriptamzAjaxjsxnszddAjax/index.html">【初窥javascript奥秘之Ajax】简述下你所知道的Ajax？</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/ckjavascriptamzsjmpnxnwmyqmdp/index.html">【初窥javascript奥秘之事件冒泡】那些年我们一起冒的泡</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/ckjavascriptamzsjjzldtygdj/index.html">【初窥javascript奥秘之事件机制】论“点透”与“鬼点击”</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/ckjavascriptamzrrzmbddthisnzdxzthiszxnlm/index.html">【初窥javascript奥秘之让人捉摸不定的this】你知道现在this指向哪里吗？？？</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/ckjavascriptamzbbydxbdhlqbcl/index.html">【初窥javascript奥秘之闭包】叶大侠病都好了，求不踩了：）</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/ckjavascriptamzmxdxfzyjc/index.html">【初窥javascript奥秘之面向对象】封装与继承</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/qdmdsjdjgjdnzdljm/index.html">【前端盲点】事件的几个阶段你真的了解么？？？</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/dyyyviewymodelxgsl/index.html">【单页应用】view与model相关梳理</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/dyyyyqldyyybsxjdwbgns/index.html">【单页应用】一起来单页应用吧，实现简单微博功能！（上）</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/dyyyqjkzqappyggxsm/index.html">【单页应用】全局控制器app应该干些什么？</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/dyyywmgrhclkjdcccjgx/index.html">【单页应用】我们该如何处理框架弹出层层级关系？</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/dyyyljMVC/index.html">【单页应用】理解MVC</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/dyyyztxjzviewzjygrhtx/index.html">【单页应用之通信机制】view之间应该如何通信</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/dyyyjkzHistoryxsHistorydgdyyydm/index.html">【单页应用巨坑之History】细数History带给单页应用的噩梦</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/xtszeptofindysyjiosdcjpknrnhtt/index.html">【小贴士】zeptofind元素以及ios弹出键盘可能让你很头疼</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/xtsgytransitionEndanimatedygyqgs/index.html">【小贴士】关于transitionEndanimate的一个有趣故事</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/xtsgzzdbbysjwtdzzmp/index.html">【小贴士】工作中的”闭包“与事件委托的”阻止冒泡“</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/xtstytjavascriptzdreplace/index.html">【小贴士】探一探javascript中的replace</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/xtsxnjpyfixeddgydddt/index.html">【小贴士】虚拟键盘与fixed带给移动端的痛！</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/ttjavascriptsjjzdcsxyl/index.html">【探讨】javascript事件机制底层实现原理</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/mkhbcljrequireJSsxygjddmkjzq/index.html">【模块化编程】理解requireJS实现一个简单的模块加载器</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/zyJavaScriptmfjmtsdqlxkjzbfgndcljz/index.html">【转】【译】JavaScript魔法揭秘探索当前流行框架中部分功能的处理机制</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/zxjavascriptgszl01javascriptcszds/index.html">【追寻javascript高手之路01】javascript参数知多少？</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/zxjavascriptgszl02blzyyzds/index.html">【追寻javascript高手之路02】变量、作用域知多少？</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/zxjavascriptgszl03javascriptdxdld/index.html">【追寻javascript高手之路03】javascript对象大乱斗</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/zxjavascriptgszl04ljprototype/index.html">【追寻javascript高手之路04】理解prototype</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/zxjavascriptgszl05ljsjl/index.html">【追寻javascript高手之路05】理解事件流</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/zgbj04zxzzsj(2)/index.html">【重构笔记04】重新组织数据(2)</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/zgbj05jhtjbds/index.html">【重构笔记05】简化条件表达式</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/zgbj06jhhsdy/index.html">【重构笔记06】简化函数调用</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/ycmshgttbxysjfl/index.html">一次面试回顾——探讨表现与数据分离</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/dhzwebappzdxz/index.html">动画在webapp中的现状</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/ysandriodlqhthdomclicksjqtsxwttj/index.html">原生andriod浏览器回退后dom（click）事件全体失效问题探究</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/scsbdjxysdsbsjytouchsjdnxs/index.html">手持设备点击响应速度，鼠标事件与touch事件的那些事</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/mnbjQueryzeptohxymfx/index.html">迷你版jQuery——zepto核心源码分析</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/dbsgzdlwmlyqxjdddomxzqb/index.html">都别说工资低了，我们来一起写简单的dom选择器吧！</a></li>
+    				                                         
+                    </ul>
+                </div>
+            </div>
+
+        </div>
+    </body>
+</html>

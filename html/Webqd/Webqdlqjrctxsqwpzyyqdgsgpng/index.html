@@ -1,0 +1,284 @@
+﻿<!DOCTYPE html>
+
+<html lang="zh">
+    <head>
+        <meta charset="utf-8">
+        <meta name="description" content="android,ios" />
+        <meta name="keywords" content="android,ios" />
+
+        <title>叶小钗</title>
+        <style type='text/css'>
+            body {
+                background-color: #CCC;
+            }
+        </style>
+        <link rel="stylesheet" href="../../../css/bootstrap.css" />
+    </head>
+
+    <body>
+        <div class="container">
+
+            <h1>叶小钗</h1>
+
+            <div class='navbar navbar-inverse'>
+                <div class='navbar-inner nav-collapse' style="height: auto;">
+                    <ul class="nav">
+                              				<li><a href="http://songboriceboy.github.io/xxoo/html/blade/index.html">blade</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/css/index.html">css</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/HTML5&CSS3/index.html">HTML5&CSS3</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/index.html">javascript</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Javaxx/index.html">Java学习</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/nodejs/index.html">nodejs</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/requirejs/index.html">requirejs</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/index.html">Web前端</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/xxgw/index.html">学习感悟</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/gzdd/index.html">工作点滴</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/jkxx/index.html">接口学习</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/wfl/index.html">未分类</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/ydkf/index.html">移动开发</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/sjms/index.html">设计模式</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/mst/index.html">面试题</a></li>
+    				                      </ul>
+                </div>
+            </div>
+
+            <div id='content' class='row-fluid'>
+
+                <div class='span9 main'>
+				<div style="color:blue" align=center>Web前端浏览器兼容初探，小生浅文抛砖引玉，期待高手攻破难关！</div><br><h1>前言</h1>
+<p>浏览器兼容是前端开发人员必须掌握的一个技能，但是初入前端的同学或者其他后台web开发同学往往容易选择忽略，而形成两个极端：</p>
+<div class="cnblogs_code">
+<pre><span style="color: #800080;">1</span><span style="color: #000000;"> 我最开始都是使用IE6，IE6上没问题，其它浏览器坑爹（多出现与前端后端一起搞的同学，小生2年前就这种状态，鼓励人家用ie6.。。。）
+
+</span><span style="color: #800080;">2</span> 我要遵循标准，我只要ff就好，IE就是坑爹的玩意，我不必去理他（小生一年前的心态。。。）</pre>
+</div>
+<p>现在看来，之前的想法都是不对的，我们诚然应该追求最新的浏览器使用最新的技术，但是渐进增强，向后兼容的思想一定要有，</p>
+<p>因为就现在IE6在中国的份额也是不容小视的。</p>
+<p>抛开之前的大道理，我们说点实际的问题，哪次前端面试不问兼容性问题？哪次我们又能回答的很好？反正我就没一次说好的，知不足然后能改，</p>
+<p>我前端时间便经过整理形成这篇文章，<strong><span style="color: #ff0000;">文章有很多不足，希望各位指正、补充，后面若是能形成一篇较全面的前端兼容文章就善莫大焉了！</span></strong></p>
+<h1>为什么会有兼容问题？</h1>
+<p>由于市场上浏览器种类众多，而不同浏览器其内核亦不尽相同，所以各个浏览器对网页的解析就有一定出入，这也是导致浏览器兼容问题出现的主要原因，我们的网页需要在主流浏览器上正常运行，就需要做好浏览器兼容。</p>
+<div class="cnblogs_code">
+<pre><span style="color: #000000;">使用Trident内核的浏览器：IE、Maxthon、TT；
+
+使用Gecko内核的浏览器：Netcape6及以上版本、FireFox；
+
+使用Presto内核的浏览器：Opera7及以上版本；
+
+使用Webkit内核的浏览器：Safari、Chrome。</span></pre>
+</div>
+<p>而我现在所说的兼容性问题，主要是说IE与几个主流浏览器如firefox，google等。</p>
+<p>而对IE浏览器来说，IE7又是个跨度，因为之前的版本更新甚慢，bug甚多。从IE8开始，IE浏览器渐渐遵循标准，到IE9后由于大家都一致认为标准很重要，可以说在兼容性上比较好了，但是在中国来说，由于xp的占有率问题，使用IE7以下的用户仍然很多，所以我们不得不考虑低版本浏览器的兼容。</p>
+<p>对浏览器兼容问题，我一般是这样分类的，HTML，Javascript兼容，CSS兼容。 其中html相关问题比较容易处理，无非是高版本浏览器用了低版本浏览器无法识别的元素，导致其不能解析，所以平时注意一点就是。特别是HTML5增加了许多新标签，低版本浏览器有点影响时代进步啊；</p>
+<h1>javascript兼容性问题</h1>
+<p>在javascript中，各个浏览器基本语法差距不大，其兼容问题主要出现在各个浏览器的实现上，尤其对事件的支持有很大问题，在此我就说说我知道的几个问题。</p>
+<p>① 在标准的事件绑定中绑定事件的方法函数为 addEventListener,而IE使用的是attachEvent</p>
+<p>② 标准浏览器采用事件捕获的方式对应IE的事件冒泡机制（即标准由最外元素至最内元素或者IE由最内元素到最外元素）最后标准方亦觉得IE这方面的比较合理，所以便将事件冒泡纳入了标准，这也是addEventListener第三个参数的由来，而且事件冒泡作为了默认值。</p>
+<p>③ 事件处理中非常有用的event属性获得亦不相同，标准浏览器是作为参数带人，而ie是window.event方式获得，获得目标元素ie为e.srcElement 标准浏览器为e.target</p>
+<p>④ 然后在ie中是不能操作tr的innerHtml的</p>
+<p>⑤ 然后ie日期函数处理与其它浏览器不大一致，比如： var year= new Date().getYear(); 在IE中会获得当前年，但是在firefox中则会获得当前年与1900的差值。</p>
+<p><span style="color: #999999;">⑥&nbsp; 获得DOM节点的方法有所差异，其获得子节点方法不一致。 </span></p>
+<p><span style="color: #999999;">IE：parentElement parentElement.children Firefox：parentNode parentNode.childNodes childNodes的下标的含义在IE和Firefox中不同，Firefox使用DOM规范，childNodes中会插入空白文本节点。一般可以通过node.getElementsByTagName()来回避这个问题。</span></p>
+<p><span style="color: #999999;">当html中节点缺失时，IE和Firefox对parentNode的解释不同。例如:</span></p>
+<p><span style="color: #999999;">&lt;form&gt; &nbsp;&lt;table&gt; &nbsp;&nbsp;&lt;input/&gt; &nbsp;&lt;/table&gt; &lt;/form&gt; IE：input.parentNode的值为空节点 Firefox：input.parentNode的值为form 解决方法：Firefox中节点没有removeNode方法，必须使用如下方法 node.parentNode.removeChild(node)</span></p>
+<p>⑦&nbsp;关于AJAX的实现上亦有所不同；</p>
+<p>就javascript来说，各大浏览器之间的差异还是不少的，但是具体我变得这里都不大关注了，因为我们开发过程中一般都会使用类库，若是不使用，都会自己积累形成一个类库，所以就js而言，兼容性问题基本解决了。</p>
+<h1>让人头疼的CSS兼容</h1>
+<p>因为之前对css的理解不够深入，也没有经过系统的学习，所以一度认为css是前端最难的东西，但真的学习后，才发现css真的很难。。。有很多东西啊！！！</p>
+<p>我觉得最让人头疼的问题还是CSS问题，因为一点点布局上的bug，可能导致整个页面的错位，在用户看来这是极不专业的。</p>
+<p>现在我就简要说说我对CSS兼容问题的认识： 先说点Hack的知识（<span style="color: #ff0000;">真正的高手是不用Hack的，但要成为高手必须通过Hack这一关</span>）</p>
+<div class="cnblogs_code">
+<pre><span style="color: #008000;">/*</span><span style="color: #008000;"> CSS属性级Hack </span><span style="color: #008000;">*/</span><span style="color: #000000;"> 
+
+color:red; </span><span style="color: #008000;">/*</span><span style="color: #008000;"> 所有浏览器可识别</span><span style="color: #008000;">*/</span><span style="color: #000000;"> 
+
+_color:red; </span><span style="color: #008000;">/*</span><span style="color: #008000;"> 仅IE6 识别 </span><span style="color: #008000;">*/</span> 
+
+*color:red; <span style="color: #008000;">/*</span><span style="color: #008000;"> IE6、IE7 识别 </span><span style="color: #008000;">*/</span> 
+
++color:red; <span style="color: #008000;">/*</span><span style="color: #008000;"> IE6、IE7 识别 </span><span style="color: #008000;">*/</span> 
+
+*+color:red; <span style="color: #008000;">/*</span><span style="color: #008000;"> IE6、IE7 识别 </span><span style="color: #008000;">*/</span><span style="color: #000000;"> 
+
+[color:red; </span><span style="color: #008000;">/*</span><span style="color: #008000;"> IE6、IE7 识别 </span><span style="color: #008000;">*/</span><span style="color: #000000;"> 
+
+color:red\</span><span style="color: #800080;">9</span>; <span style="color: #008000;">/*</span><span style="color: #008000;"> IE6、IE7、IE8、IE9 识别 </span><span style="color: #008000;">*/</span><span style="color: #000000;"> 
+
+color:red\</span><span style="color: #800080;">0</span>; <span style="color: #008000;">/*</span><span style="color: #008000;"> IE8、IE9 识别</span><span style="color: #008000;">*/</span><span style="color: #000000;"> 
+
+color:red\</span><span style="color: #800080;">9</span>\<span style="color: #800080;">0</span>; <span style="color: #008000;">/*</span><span style="color: #008000;"> 仅IE9识别 </span><span style="color: #008000;">*/</span><span style="color: #000000;"> 
+
+color:red \</span><span style="color: #800080;">0</span>; <span style="color: #008000;">/*</span><span style="color: #008000;"> 仅IE9识别 </span><span style="color: #008000;">*/</span><span style="color: #000000;"> 
+
+color:red</span>!important; <span style="color: #008000;">/*</span><span style="color: #008000;"> IE6 不识别!important 有危险</span><span style="color: #008000;">*/</span>
+
+<span style="color: #008000;">/*</span><span style="color: #008000;"> CSS选择符级Hack </span><span style="color: #008000;">*/</span> 
+
+*html #demo { color:red;} <span style="color: #008000;">/*</span><span style="color: #008000;"> 仅IE6 识别 </span><span style="color: #008000;">*/</span> 
+
+*+html #demo { color:red;} <span style="color: #008000;">/*</span><span style="color: #008000;"> 仅IE7 识别 </span><span style="color: #008000;">*/</span><span style="color: #000000;"> 
+
+body:nth</span>-of-type(<span style="color: #800080;">1</span>) #demo { color:red;} <span style="color: #008000;">/*</span><span style="color: #008000;"> IE9+、FF3.5+、Chrome、Safari、Opera 可以识别 </span><span style="color: #008000;">*/</span><span style="color: #000000;"> 
+
+head:first</span>-child+body #demo { color:red; } <span style="color: #008000;">/*</span><span style="color: #008000;"> IE7+、FF、Chrome、Safari、Opera 可以识别 </span><span style="color: #008000;">*/</span><span style="color: #000000;"> 
+
+:root #demo { color:red\</span><span style="color: #800080;">9</span>; } : <span style="color: #008000;">/*</span><span style="color: #008000;"> 仅IE9识别 </span><span style="color: #008000;">*/</span>
+
+<span style="color: #008000;">/*</span><span style="color: #008000;"> IE条件注释Hack </span><span style="color: #008000;">*/</span> 
+
+&lt;!--[<span style="color: #0000ff;">if</span> IE <span style="color: #800080;">6</span>]&gt;此处内容只有IE6.0可见&lt;![endif]--&gt; 
+
+&lt;!--[<span style="color: #0000ff;">if</span> IE <span style="color: #800080;">7</span>]&gt;此处内容只有IE7.0可见&lt;![endif]--&gt;</pre>
+</div>
+<p>接下来说说一些我知道的BUG：</p>
+<div class="cnblogs_code" style="width: 95%; height: 87px;">
+<pre>① css盒模型在IE6下解析有问题，我们知道就width来说，一个块级元素的magin、padding、boder，width7个属性的宽度之和，应该等于其父级元素的内容区域（width），<br>而我们一般设置宽度若是未达到其长度，浏览器就会重置margin-right的值，将之它们的和等于其值，当然若是我们为margin设置负值，那么元素的width可能超出其父元素。<br>在标准下，width为padding所占区域，但是再ie6中设置width后，其真实width为所设width-其padding与border*<span style="color: #800080;">2</span>，我一般采用CSShack技术处理</pre>
+</div>
+<div class="cnblogs_code">
+<pre><span style="color: #000000;">② IE6的双倍边距BUG，在块级元素浮动后本来外边距10px,但IE解释为20px,解决办法是加上display: inline ，
+
+</span><span style="color: #800080;">1</span>、问题：在IE6下如果某个标签使用了float属性，同时设置了其外补丁&ldquo;margin:10px <span style="color: #800080;">0</span> <span style="color: #800080;">0</span><span style="color: #000000;"> 10px&rdquo;可以看出，上边距和左边距同样为10px，但第一个对象距左边有20px。
+
+</span><span style="color: #800080;">2</span><span style="color: #000000;">、解决办法：当将其display属性设置为inline时问题就都解决了。
+
+</span><span style="color: #800080;">3</span>、说明：这是因为块级对象默认的display属性值是block，当设置了浮动的同时，还设置了它的外边距 就会出现这种情况。<br>也许你会问：&ldquo;为什么第二个对象和第一个对象之间就不存在双倍边距的BUG&rdquo;？<br>因为浮动都有其相对应的对象，只有相对于其父对象的浮动 对象才会出现这样的问题。<br>第一个对象是相对父对象的，而第二个对象是相对第一个对象的，所以第二个对象在设置后不会出现问题。<br>另外在一些特殊布局中，可能需要组合使用display:block;和display:inline;才能达到预期效果。 <br>当然最坏的情况下，我们就可以使用<span style="color: #800000;">"</span><span style="color: #800000;">margin:10px 0 0 10px;*margin:10px 0 0 10px;_margin:10px 0 0 5px</span><span style="color: #800000;">"</span>，<br>这种&ldquo;标准属性;*<span style="color: #000000;">IE7识别属性;_IE6识别属性&rdquo;HACK方式解决
+
+</span><span style="color: #800080;">4</span><span style="color: #000000;">、总结：这个现象仅当块级对象设置了浮动属性后才会出现，内联对象（行级对象）不会出现此问题。并且只有设置左边距和右边距的值才会出问题，上下边距不会出现问题。
+
+</span>&lt;div style=<span style="color: #800000;">"</span><span style="color: #800000;">width:200px;height:50px;background:#ccc;</span><span style="color: #800000;">"</span>&gt;      
+
+&lt;div style=<span style="color: #800000;">"</span><span style="color: #800000;">width:100px; height:50px;float:left;margin-left:10px; background:#eee;</span><span style="color: #800000;">"</span>&gt;
+
+&lt;/div&gt;      
+
+&lt;/div&gt;<span style="color: #000000;">
+
+margin双布局可以说是IE6下经典的bug之一。产生的条件是：block元素</span>+浮动+<span style="color: #000000;">margin。
+
+还记得我自认为会css的那个阶段，这个问题我经常碰到，会很熟练的用hack解决这个问题，当时还自以为是，洋洋得意。现在看来，当时的自己嫩的就像个 豆芽菜。<br>真正css厉害的人基本上是不会碰到这个bug的，如果您时不时遇到这个bug，说明您的css还有好一段路要走。
+
+我的体会是越少的浮动，就会越少的代码，会有更灵活的页面，会有扩展性更强的页面。这不多说，归结为到一定水平了，浮动会用的较少。<br>另外，您也会避免使用浮动</span>+<span style="color: #000000;">margin的用法。所以，越后来越不易遇到这种bug。
+
+这里提一下解决方法，使用hack我是不推荐的，使用hack属于比初学者稍高一点的层次水平。一个页面，没有一个hack，但是各个浏览器下表现一致，这才是水平。<br>使用display:inline;可以解决这个问题。
+
+而为什么display:inline可以解决这个双边距bug，首先是inline元素或inline</span>-block元素是不存在双边距问题的。<br>然后，<span style="color: #0000ff;">float</span>:left等浮动属性可以让inline元素haslayout，会让inline元素表现得跟inline-block元素的特性一样， 支持高宽，垂直margin和padding等，<br>所以div class的所有样式可以用在这个display inline的元素上。</pre>
+</div>
+<div class="cnblogs_code">
+<pre>③ IE6下图片下方有空隙产生；解决这个BUG的方法也有很多,可以是改变html的排版,或者设置img 为display:block，<br>或者设置vertical-align 属性为vertical-align:top bottom middle text-bottom都可以解决.（但是最近我发现这个问题在其它浏览器中也有所体现）</pre>
+</div>
+<div class="cnblogs_code">
+<pre><span style="color: #000000;">④ IE6 3px bug 两个浮动层中间有间隙，这个IE的3PX BUG也是经常出现的,
+解决的办法是给右边元素也同样浮动 </span><span style="color: #0000ff;">float</span>:left 或者相对IE6定义.left margin-right:-<span style="color: #000000;">3px; 
+经典两列布局，</span><span style="color: #0000ff;">float</span>: left;width:200px; 第二个，margin-left,200px; 他们之间会产生3px的间距。</pre>
+</div>
+<div class="cnblogs_code">
+<pre>⑤ 在IE6中没有min-width的概念，其默认width就是min-width，所以有时字体过多它会选择撑开容器。</pre>
+</div>
+<div class="cnblogs_code">
+<pre><span style="color: #000000;">⑥ IE6无法定义1px左右高度的容器，是因为默认的行高造成的,解决的方法也有很多,
+例如: overflow:hidden zoom:</span><span style="color: #800080;">0.08</span> line-height:1px ⑦ 使用margin ： <span style="color: #800080;">0</span> auto；方法使容器居中依然在IE6中行不通，我们要对其父容器使用text-align:center;</pre>
+</div>
+<div class="cnblogs_code">
+<pre><span style="color: #000000;">⑧ 被点击访问过的超链接样式不在具有hover和active了,很多人应该都遇到过这个问题,
+解决方法是改变CSS属性的排列顺序: L</span>-V-H-A &lt;style type=<span style="color: #800000;">"</span><span style="color: #800000;">text/css</span><span style="color: #800000;">"</span>&gt;   a:link {}  a:visited {}  a:hover {}  a:active {} /style&gt;</pre>
+</div>
+<div class="cnblogs_code">
+<pre>⑨ 在使用绝对定位/相对定位时，设置z-index在ie中可能会失效，是因为其元素依赖于其父元素的z-index，而父元素默认为0 ？<br>所以子元素z-index高，而父元素底，依然不会改变其显示顺序；</pre>
+</div>
+<div class="cnblogs_code">
+<pre><span style="color: #800080;">10</span><span style="color: #000000;">、外边距叠加问题：
+
+#box{ margin:10px; background</span>-<span style="color: #000000;">color:Red; }
+
+#box p { margin:20px; background:gray; }
+
+</span>&lt;div id=<span style="color: #800000;">"</span><span style="color: #800000;">box</span><span style="color: #800000;">"</span>&gt;&lt;p&gt;dd&lt;/p&gt;&lt;/div&gt;<span style="color: #000000;">
+
+该代码会导致外边距叠加，并且外边距跑到div包裹外去，bug是由于块级子元素高度计算方式造成的。 <br>若是元素没有垂直边框或者padding，那么它的高度就是包含的子元素的顶部和底部边框的的距离。</span></pre>
+</div>
+<p>以上便是我所记得的一些bug，在这里我再顺带提一下haslayout（IE8废弃该属性）。</p>
+<p>在IE低版本浏览器时基本是表格布局的时代，几乎是所有的元素（除内联元素）都是一个盒子，内容不会超过表格的单元格，表格的单元格也不会超出表格。</p>
+<p>在IE6推出后，CSS改变这一假设&mdash;&mdash;因为CSS允许内容超出元素。 因此haslayout这个属性就诞生了。</p>
+<div class="cnblogs_code">
+<pre>在IE6，IE7中，每个元素都有haslayout这个属性，可以设置为 <span style="color: #0000ff;">true</span> 或者 <span style="color: #0000ff;">false</span><span style="color: #000000;">。
+如果设置为true，元素就必须去自我布局和渲染，因此元素会扩展去包含它溢出的内容，例如浮动或没截断的单词。
+如果haslayout 没有被设置成true，那么元素需依靠某个祖先元素来渲染它。这就是很多的ie bugs诞生的地方。IE浏览器下的很多bug都是haslayout </span>= <span style="color: #0000ff;">false</span> 引起的，</pre>
+</div>
+<div class="cnblogs_code">
+<pre><span style="color: #000000;">layout元素有以下特点：  
+
+</span><span style="color: #800080;">1</span>、拥有布局（haslayout=<span style="color: #0000ff;">true</span><span style="color: #000000;">）元素不会收缩，所以可能会发生文字截断、消失的现象；
+
+</span><span style="color: #800080;">2</span><span style="color: #000000;">、布局元素对浮动自动清理；
+
+</span><span style="color: #800080;">3</span><span style="color: #000000;">、相对定位的元素没有布局，这可能导致绝对元素定位偏差；
+
+</span><span style="color: #800080;">4</span><span style="color: #000000;">、拥有布局的元素外边距不叠加；
+
+</span><span style="color: #800080;">5</span><span style="color: #000000;">、滚动时，页面会有所跳动；
+
+</span><span style="color: #800080;">6</span><span style="color: #000000;">、边框消失
+
+</span><span style="color: #800080;">7</span>、像素偏差</pre>
+</div>
+<p>haslayout不是一个CSS属性，所以我们不能这样的来设置它 haslayout:true;</p>
+<p>一个元素被设置成haslayout：true将被渲染成一个 having haslayout，</p>
+<p>反之同理。 一些元素本身该属性为true，若是需要触发，最好的方法是设置其zoom属性； 哪些元素本身就 haslayout：true</p>
+<p>&lt;html&gt;, &lt;body&gt;&lt;table&gt;, &lt;tr&gt;, &lt;th&gt;, &lt;td&gt;&lt;iframe&gt;, &lt;embed&gt; (non-standard element),</p>
+<p>&lt;object&gt;, &lt;applet&gt; &lt;img&gt;&lt;hr&gt;&lt;input&gt;, &lt;button&gt;, &lt;select&gt;, &lt;textarea&gt;, &lt;fieldset&gt;, &lt;legend&gt;</p>
+<p>&nbsp;zoom:1，被认为是最好的触发Layout的方法，因为它对当前元素没有影响。 触发haslayout，相对来说比haslayout=false要简单。</p>
+<p>以下属性和值将给定一个元素进行布局</p>
+<p>position:&nbsp;absolute float:&nbsp;&nbsp;&nbsp; left or right display:&nbsp;&nbsp;&nbsp; inline-block；width:&nbsp;&nbsp; any value other than auto；</p>
+<p>height:&nbsp;&nbsp;&nbsp; any value other than auto；zoom:&nbsp;&nbsp; any value other than normal (*)；writing-mode:&nbsp; tb-rl</p>
+<p>最后，因为各个浏览器对一些元素的默认值设置不一致也会导致表现差异，比如浏览器默认字体，默认行高，默认间距等。所以我们一般会为几个主要元素设置默认值。</p>
+<h1>结语</h1>
+<p>以上便是我对浏览器兼容的简单认识，但是还是有很多不足的地方，由于技术所限，这里提出来和各位高手交流，希望在交流学习中和以后工作中积累相关经验，做出满足主流浏览器的网页；</p>
+<p>&nbsp;<strong>如果你觉得这篇文章还不错，请帮忙点击一下推荐，谢谢！</strong></p>
+                </div>
+
+                <div class='span3 sidebar'>
+                    <h2>导航栏</h2>
+                    <ul class="nav nav-tabs nav-stacked">
+                             				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/Fiddlerznqddsq/index.html">Fiddler真乃前端大杀器！！！</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/Requirejs/index.html">Requirejs</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/RequireJSyBackbonejdzh/index.html">RequireJS与Backbone简单整合</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/RequireJSxxbj/index.html">RequireJS学习笔记</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/Webqdyhctxdpzyyqdgsgpng/index.html">Web前端优化初探，小弟抛砖引玉，期待高手共破难关！</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/Webqdlqjrctxsqwpzyyqdgsgpng/index.html">Web前端浏览器兼容初探，小生浅文抛砖引玉，期待高手攻破难关！</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/jqueryfdataListxnyhmbybysxtgxn10bys/index.html">【jquery仿dataList——性能优化】模板预编译思想提高性能10倍以上！！！</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/jqueryfdataListyyzmfigoogledzhtdpxzdhfp/index.html">【jquery仿dataList】应用之——模仿igoogle【定制化、拖动排序，最大化、分屏】</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/jqueryfdatalistdygwtqzszmxxsjlkzDIVdjjbf/index.html">【jquery仿datalist的一个问题，求助】——设置每行显示几列，块状DIV的解决办法</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/jquerymfnetkjcbGridViewmxsxjqjdyy/index.html">【jquery模仿net控件】初步GridView模型实现，及其简单应用</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/jquerymfnetkjjdfykj10fsgridviewsycs/index.html">【jquery模仿net控件】简单分页控件10，附上gridview使用测试</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/jquerymfnetkjjdddatalistkjgxjqjdyy/index.html">【jquery模仿net控件】简单的datalist控件更新，及其简单应用</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/jquerymfnetkjjdddropdownlistydatalist/index.html">【jquery模仿net控件】简单的dropdownlist与datalist</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/jquerybnetkjdropdownlistfymhydjzdzzpz/index.html">【jquery版net控件—dropdownlist】附源码，欢迎大家指点、指正、拍砖！！！</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/positionykyhfzddccyslsbdws/index.html">【position也可以很复杂】当弹出层遇上了鼠标定位（上）</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/positionykyhfzddccyslsbdwx/index.html">【position也可以很复杂】当弹出层遇上了鼠标定位（下）</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/SEOzmlwljnmtsbwmlyqkkSEOb/index.html">【SEO】周末了，为了纪念明天上班，我们来一起看看SEO吧</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/webqdyhqdwyhyrzrz/index.html">【web前端优化】前端无优化，庸人自扰之！</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/webqdyhzreflowjsymdhl/index.html">【web前端优化之reflow】减少页面的回流</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/webqdyhztpycjzctzwbsxwbk/index.html">【web前端优化之图片延迟加载初探】中午不睡，下午崩溃</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/webqdyhztpmhdqxkwQQkjrhxsxp/index.html">【web前端优化之图片模糊到清晰】看我QQ空间如何显示相片</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/webqdpxzqhddphsywmsxdDatalistsmwtb/index.html">【web前端培训之前后端的配合（上）】以我们熟悉的Datalist说明问题吧</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/webqdpxzqhddphzjxzrdgs/index.html">【web前端培训之前后端的配合（中）】继续昨日的故事</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/dyyygybkydbfgqym/index.html">【单页应用】关于博客园的补发（高清有码）。。。</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/xtsstringifysBUGlocalstoragesxxmSafarialertksfycjzym10pxbp/index.html">【小贴士】【stringify神BUG】【localstorage失效】【消灭Safarialert框】【是否延迟加载】【页面10px白屏】</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/dalhdmsthhdsdmstjsh/index.html">【答阿里寒冬面试题】呵呵，大神的面试题就是好！</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/ycsjmstdldgwxxdgjxxdff/index.html">一次上机面试题带来的感悟【学习的感觉、学习的方法】</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/ydmstdldqdyhsxxxdp/index.html">一道面试题带来的前端优化——实现星星点评</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/zysyzjjhfzwebqdbfxlgxmndjjfa/index.html">只言碎语总结，今后发展web前端，并分享两个项目难点解决方案。</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/gwjlytbllbnwmljxwwdbdyzb/index.html">各位加了一天班累了吧？那我们来继续未完的表单验证吧</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/gwzmwlytllbwmyqlzldmstbjstbdy/index.html">各位周末玩了一天累了吧，我们一起来做两道面试题吧（据说淘宝的哟）！</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/jyjQuerydxlcdcjzwsy/index.html">基于jQuery的下拉菜单插件，诸位上眼！！！</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/jyjQuerydxlcdcd02zwsy/index.html">基于jQuery的下拉菜单菜单【02】，诸位上眼！！！</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/gzzpddyxdxdccktfybwjsc/index.html">工作中碰到的一些东西【弹出窗口】【拖放】【异步文件上传】</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/gzlygxqgwydllbnwmyqlbdyzyfb/index.html">工作了一个星期各位一定累了吧，那我们一起来表单验证一番吧！</a></li>
+    				                                         
+                    </ul>
+                </div>
+            </div>
+
+        </div>
+    </body>
+</html>

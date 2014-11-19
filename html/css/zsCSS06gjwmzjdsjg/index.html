@@ -1,0 +1,176 @@
+﻿<!DOCTYPE html>
+
+<html lang="zh">
+    <head>
+        <meta charset="utf-8">
+        <meta name="description" content="android,ios" />
+        <meta name="keywords" content="android,ios" />
+
+        <title>叶小钗</title>
+        <style type='text/css'>
+            body {
+                background-color: #CCC;
+            }
+        </style>
+        <link rel="stylesheet" href="../../../css/bootstrap.css" />
+    </head>
+
+    <body>
+        <div class="container">
+
+            <h1>叶小钗</h1>
+
+            <div class='navbar navbar-inverse'>
+                <div class='navbar-inner nav-collapse' style="height: auto;">
+                    <ul class="nav">
+                              				<li><a href="http://songboriceboy.github.io/xxoo/html/blade/index.html">blade</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/css/index.html">css</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/HTML5&CSS3/index.html">HTML5&CSS3</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/index.html">javascript</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Javaxx/index.html">Java学习</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/nodejs/index.html">nodejs</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/requirejs/index.html">requirejs</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/index.html">Web前端</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/xxgw/index.html">学习感悟</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/gzdd/index.html">工作点滴</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/jkxx/index.html">接口学习</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/wfl/index.html">未分类</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/ydkf/index.html">移动开发</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/sjms/index.html">设计模式</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/mst/index.html">面试题</a></li>
+    				                      </ul>
+                </div>
+            </div>
+
+            <div id='content' class='row-fluid'>
+
+                <div class='span9 main'>
+				<div style="color:blue" align=center>【正视CSS06】构建我们自己的世界观！</div><br><h1>前言</h1>
+<p>我们很小的时候什么都不知道，于是什么都会是别人对我们解释，也许是父母，也许是师长，但是随着年龄的增大，我们会逐步形成自己的世界观，并且当我们有小孩时候，他会问我们很多问题，我们会为他解答，那么我们的答案有何而来呢？</p>
+<p>我们的答案来自我们自己的世界，来自我们自己形成的世界观！</p>
+<p>我们初学CSS时候什么也不知道，于是我们从书上、博客上获取了很多知识，那么我们是不是也应该形成自己的世界观呢？我们碰到的问题是不是都可以用我们形成的世界观解释呢？</p>
+<p>以上是我最近思考的问题，我觉得我们有必要形成自己的世界观了，形成世界观才是长大的标志，我形成的世界观可以不坚固，可以很小但是他必须存在，你们的也必须存在。</p>
+<p>我们需要捍卫我们的世界观，我们需要建造我们的世界观，当我们的世界足够大，足够发达的时候，我们就会被称为高手啦，哇哈哈！！！</p>
+<h1>师尊，我们的页面是哪里来的？</h1>
+<p>在我们的浏览器中输入了一个url后，我们的服务器便会返回一堆字符串给我们，这个字符串就是传说中html。</p>
+<p>从得到html字节开始，dom树便开始勾践了，遇到以下情况时候dom树的构建会被暂时阻塞：</p>
+<p>① 网络卡</p>
+<p>② 有未加载的脚本</p>
+<p>③ 样式还未加载结束就遇到script</p>
+<p>dom树是基础，dom树构建结束以后便根据样式与dom构建我们的渲染树了，这个时候样式文件便会阻塞我们的页面渲染。</p>
+<p>PS：有些网页会把CSS写在页面里，而不是外部文件是为了避免页面闪烁，或者出现裸奔的局面。</p>
+<p>当样式表加载结束后，渲染树也被构建好了，我们的页面就基本成型了。</p>
+<p>渲染树一旦构建完成后，若是js脚本操作dom，就很可能引起页面回流，过多的回流是前端性能的杀手。</p>
+<p>浏览器下载的顺序是由上到下的，渲染顺序也是由上到下的，下载样式表与渲染树形成是同步完成的</p>
+<p>在渲染到页面某一部分时，上面的所有部分已经下载完成，并且渲染结束（一旦有js引起改变，边可能引起之前元素发生回流）</p>
+<p>若是浏览器中有多个样式表，在所有样式表下载结束后浏览器又会将所有的样式表放到一起重新解析，会对之前的所有元素重新渲染，所以样式表过多也不是太好的。</p>
+<p>PS：我们在做页面时候要注意页面的大小开始不宜过大，这样可以渲染的很快，以延迟加载的方式进行。</p>
+<p>以上的逻辑可以分割如下：</p>
+<p>① 构建dom树</p>
+<p>② 构建render树</p>
+<p>PS：渲染树，写英文为了防止以后被问到不知道是什么，包含颜色和属性的矩形块。</p>
+<p>③ 布局render树，确定每个节点在屏幕上的确切坐标，然后开始绘制。</p>
+<h1>师尊，我们的页面如何布局呢？</h1>
+<p>以上为浏览器干的事情，他干完了就形成了我们所看到的页面，我们不需要过于关注，但是我们需要关注他的布局。</p>
+<p>当渲染树被创建并添加到树中，他并没有位置和大小，计算他位置与大小的过程便是layout或者reflow。</p>
+<p>每个渲染对象都有一个layout或者reflow方法，每个渲染对象须有布局的children的layout方法。</p>
+<p>每个小变化都可能导致重新布局，浏览器使用一个dirty bit系统，一个渲染对象发生变化就会标记他以及他的children胃dirty，就会重新布局之，若是仅仅是其children有问题的话，就只会搞他的children。</p>
+<p>全局回流（reflow）是需要避免的，因为其很耗性能，窗口改变会引起全局回流是可以理解的，但是改变整个浏览器字体大小的事情我们要少做。</p>
+<p>渲染一个对象时候，这个元素的尺寸（高度不定）由其parent决定，他又会决定其children对象，children积累高度与margin、padding便为自己的尺寸，总之这个过程中浏览器很忙。</p>
+<p>浏览器在渲染页面的时候很忙，所以你一个不小心哪里不如他意了他就会使坏的，所以不要一来就认为浏览器有bug，他忙自然关注不了太多。</p>
+<p>PS：元素绘制的过程就是讲元素压入堆栈的过程，一个渲染对象的堆栈顺序为：背景色-&gt;背景图-&gt;border-&gt;children-&gt;outline。所以我们在写css时候规则可言参照之</p>
+<p>CSS规定所有元素都应该具有盒模型（内容区、padding、border、margin），但是不同元素又有差异：</p>
+<p>块级元素&mdash;&mdash;块级盒模型</p>
+<p>行内元素&mdash;&mdash;生成一个或者多个inline boxes ，inline boxes组成line boxes确定其行高</p>
+<p>none&mdash;&mdash;不生成盒模型</p>
+<h1>师尊，什么是盒模型？</h1>
+<p>盒模型对我们后面的布局至关重要</p>
+<p>浏览器要定位元素就必须知道其定位与尺寸,浏览器有三种方式布局：</p>
+<p>① normal 根据自身和模型大小布局</p>
+<p>② float 开始与普通流类似，然后脱离文档尽可能靠左或者靠右</p>
+<p>③ absolute 与dom无关，根据top等决定位置，盒模型决定尺寸</p>
+<p>以上三种无论如何都应该有其支点，这个支点就是传说中的containing block（包含快），也就是元素所处容器，再简单点就是依赖于其parent了（这块可能有误）</p>
+<p>前面我们说过，每个元素皆遵循盒模型定理，所以各个元素可以简单看做一个个盒子，小盒子摆放依赖于大盒子。</p>
+<p>① static/relative元素包含快为其父元素的内容区（出去padding部分）</p>
+<p>② absolute包含快为最近定位元素（absolute/relative）</p>
+<p>③ fixed为根元素（html）</p>
+<p>④ float包含快为最近的块级元素</p>
+<h1>师尊，BFC/IFC又是什么？</h1>
+<p>而在盒子们布局时候为了减除彼此间的影响，便出现了block formatting context（块级上下文）这种布局特性，我理解为隔开盒子的隔板。</p>
+<p>以下行为会产生bfc：</p>
+<p>① float不为none</p>
+<p>② overflow不为visible</p>
+<p>③ display为table-cell，table-caption，inline-block中的任何一个</p>
+<p>④ position不为relative和static时</p>
+<p>在IE7以下没有BFC的概念，其为了解决的这个问题便提出了haslayout，两者之间可以画等号，但是haslayout bug较多，所以IE7以下有很多bug。</p>
+<p>相邻的块级元素之间会发生margin collapse现象，便是外边距叠加行为。</p>
+<p>这个原因便是相邻且在同一bfc时垂直外边距叠加行为。</p>
+<p>垂直外边距便会叠加要解决的话，</p>
+<p>有两种方案（不让其相邻，处在不同的bfc）可以为外部设置padding属性将彼此隔开，当然也可以使用overflow触发器bfc导致其处在不同的bfc，便不会造成叠加</p>
+<h1>师尊，块级元素又是什么？</h1>
+<p>有了以上知识后，我们再来看看块级元素</p>
+<p>块级元素会独占一行，在normal中，其排布由其盒模型确定</p>
+<p>PS：IE6盒模型解析有误，需要向下兼容需要处理</p>
+<p>块级元素为布局大户，他与position的配合便是布局的瑞士军刀。</p>
+<p>我这里对absolute布局的块级元素有两种理解：</p>
+<p>1 absolute破坏了元素的高宽，并且将其剥离正常文档流，而形成了一个会飞的inline-block元素，其初始原点（top/left）与文档流中正常元素一致，但不会影响其它元素</p>
+<p>2 absolute拥有了自己的bfc环境，自成一格与主流bfc分割开后，大小由盒模型确定，位置由top等确定</p>
+<p>因为页面上可能出现多个absolute，所以彼此间的显示可能出现遮盖的现象，所以我们有了z-index遮盖家伙帮我们干事。</p>
+<p>PS：我猜测，要让元素靠近我们其实是让其bfc靠近我们，而ie7以下不存在bfc，取而代之的是haslayout，所以在ie7以下便会有这样那样的bug，并且元素需要依赖其父元素的z-index，事实上便是子元素的haslayout需要依赖父元素的haslayout，他这样的真相便是，标准浏览器的bfc是各自独立的，ie7/6的haslayout是依赖于父元素的（猜测，欢迎拍砖）</p>
+<h1>行内元素</h1>
+<p>对于行内元素来说，每个字会形成一个匿名inline boxes，每个行内元素也会有一个inline boxes，一行的inline boxes便会形成一个line boxes，行框决定着这行的高度。</p>
+<p>但是，我们这里的inline boxes干了什么事呢？</p>
+<p>既然有块级格式上下文，便会有inline formatting contexts（行内格式化上下文）</p>
+<p>ifc中，inline boxes都是水平排列的，起点是其containing block的头部，</p>
+<p>PS：这块我有所欠缺，后面再补上</p>
+<p>inline boxes会撑开line boxes，line boxes才给予了我们一行的高度，所以文字撑不开高度，是inline boxes撑开的高度，最后便是line-height决定高度（若是块级元素的高度未设定）。</p>
+<h1>float</h1>
+<p>我们知道float也会创建独立的bfc，这里我对他的理解也形成了两种：</p>
+<p>1 float这家伙破坏了元素的高度，将之变为会左右移动的inline-block，虽然高度不存在了，但是宽度还在，所以其它文本会围绕之，块级元素（边框等）却会覆盖之。</p>
+<p>2 float拥有了自己的bfc了，所以脱离了文档流，其margin属性与其它元素无关了（该理念还无法成型，暂时依赖第一个吧）</p>
+<h1>你的世界观形成了吗？</h1>
+<p>至此，我们便了解了css中的很多东西了，我们以此形成了世界观，于是我们今后需要在此世界中找到所有我们需要的答案，若是找不到就说明这个世界还不够发达，需要你在建，我们需要维护他，不让他崩毁，但他若是真的崩毁了也不要紧，因为你在形成的世界会无比的辉煌！！！</p>
+<p>好了我们以此世界观来解释我们遇到的一些问题：</p>
+<p><strong>兼容性问题？</strong></p>
+<p>其实我们说的兼容性问题主要是IE7以下有问题，IE7以下因为不存在BFC而替用了haslayout，所以会有很多bug，针对bug，</p>
+<p>高手会避免haslayout产生问题，而一般人会选择使用hack技术</p>
+<p><strong>为什么会高度坍塌？</strong></p>
+<p>因为float破坏了元素的inline boxes，而我们的inline boxes撑开了我们的块级元素，所以不动态指定高度的话，其实不会具有高度的。</p>
+<p><strong>如何解决高度坍塌，其原理是什么？</strong></p>
+<p>clear：我这里猜测清除浮动强制修复了行内元素的inline boxes，所以元素又能撑开块级元素了（但是我不能证明自己）</p>
+<p>overflow：overflow触发了元素的bfc，让元素具有独立的bfc，所以其元素不用坍塌了！以上就是坑爹的！因为我自欺欺人都不行，何况忽悠你们，所以我们这里换个说法，这里我想换个思路，我们知道bfc其实就是格式化上下文，说白了他会包裹着我们的元素（我们在IE7中有时候用a标签模拟按钮，但是没戏，触发layout后便可以了，应该就是这个原理），若是我们来看看触发了bfc的元素，他本来都没了高度，但是我要包括你，我们不能包裹没有的东西吧，所以浏览器又被迫恢复了其inline boxes。</p>
+<p>PS：我第一是确实一时间找不到还有什么问题可以让我自说自答了，二来是怕真的出现问题答不起，我好不容易搭建起了的世界就给崩毁了就太伤心啦，所以我暂时不在问自己问题了。</p>
+<p><strong>为什么我在js操作dom的时候风扇会不停的转？</strong></p>
+<p>因为操作dom后可能引起大量回流reflow，所以页面又要重新布局，这个过程很耗资源的。</p>
+<p><strong>为什么我们要指定图片的容器宽度</strong></p>
+<p>因为图片加载后，若是宽度不固定，会撑开他所在页面，以下部分会发生下层现象，也是一种reflow，（dom构建结束后才加载图片）</p>
+<h1>结语</h1>
+<p>我形成了自己的CSS时间观了，虽然他还很脆弱，但是我会慢慢建设他，让我的CSS世界坚固而美丽。</p>
+<p><span style="color: #ff0000;"><strong>各位，若是你们觉得有什么不足以及错误，请提出哦。</strong></span></p>
+<p>&nbsp;</p>
+                </div>
+
+                <div class='span3 sidebar'>
+                    <h2>导航栏</h2>
+                    <ul class="nav nav-tabs nav-stacked">
+                             				<li><a href="http://songboriceboy.github.io/xxoo/html/css/HTML5&CSS3jj03JseryCsserrhyqykdfxlzj/index.html">【HTML5&CSS3进阶03】Jser与Csser如何一起愉快的翻新老组件</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/css/HTML5&CSS3jj04CSS3dhygrhzwebappzyy/index.html">【HTML5&CSS3进阶04】CSS3动画应该如何在webapp中运用</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/css/HTML5&CSS3jjxx01qpzjdsx/index.html">【HTML5&CSS3进阶学习01】气泡组件的实现</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/css/ctHTMLbxdzzbgzrhtmlbqtshz/index.html">【初探HTML本相】道之真谛不过自然，html标签脱俗还真</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/css/qdmdDOMsjllzCSShmxsfjyhd/index.html">【前端盲点】DOM事件流论证CSS盒模型是否具有厚度</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/css/zsCSS02inlineylineheightfloatabsolutedgs/index.html">【正视CSS02】inline与lineheight、float、absolute的故事</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/css/zsCSS03blockypositioncmzwdpydwjkl/index.html">【正视CSS03】block与position，出门在外的朋友端午节快乐</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/css/zsCSS05wmcglxsmwhyx/index.html">【正视CSS05】我们错过了些什么，为何叶小钗？</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/css/zsCSS06gjwmzjdsjg/index.html">【正视CSS06】构建我们自己的世界观！</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/css/zsCSS07zkverticalalign/index.html">【正视CSS07】再看verticalalign</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/css/zsCSS08fdwzfloatnwsmyttwdys/index.html">【正视CSS08】巅峰对武之float你为什么要坍塌我的元素！！！</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/css/zsCSStszykyzBzxsmargin/index.html">【正视CSS】他山之玉可以装B之细说margin</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/css/gwzmjshdllbnwmyqlkkhddmstbjsaldy/index.html">各位周末结束后都累了吧，那我们一起来看看【寒冬】的面试题吧（据说阿里的哟）</a></li>
+    				                                         
+                    </ul>
+                </div>
+            </div>
+
+        </div>
+    </body>
+</html>

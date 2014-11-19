@@ -1,0 +1,618 @@
+﻿<!DOCTYPE html>
+
+<html lang="zh">
+    <head>
+        <meta charset="utf-8">
+        <meta name="description" content="android,ios" />
+        <meta name="keywords" content="android,ios" />
+
+        <title>叶小钗</title>
+        <style type='text/css'>
+            body {
+                background-color: #CCC;
+            }
+        </style>
+        <link rel="stylesheet" href="../../../css/bootstrap.css" />
+    </head>
+
+    <body>
+        <div class="container">
+
+            <h1>叶小钗</h1>
+
+            <div class='navbar navbar-inverse'>
+                <div class='navbar-inner nav-collapse' style="height: auto;">
+                    <ul class="nav">
+                              				<li><a href="http://songboriceboy.github.io/xxoo/html/blade/index.html">blade</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/css/index.html">css</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/HTML5&CSS3/index.html">HTML5&CSS3</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/index.html">javascript</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Javaxx/index.html">Java学习</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/nodejs/index.html">nodejs</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/requirejs/index.html">requirejs</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/index.html">Web前端</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/xxgw/index.html">学习感悟</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/gzdd/index.html">工作点滴</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/jkxx/index.html">接口学习</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/wfl/index.html">未分类</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/ydkf/index.html">移动开发</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/sjms/index.html">设计模式</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/mst/index.html">面试题</a></li>
+    				                      </ul>
+                </div>
+            </div>
+
+            <div id='content' class='row-fluid'>
+
+                <div class='span9 main'>
+				<div style="color:blue" align=center>【读fastclick源码有感】彻底解决tap“点透”，提升移动端点击响应速度</div><br><p><span style="color: #ff0000;"><strong>申明！！！最后发现判断有误，各位读读就好，正在研究中.....尼玛水太深了</strong></span></p>
+<h1>前言</h1>
+<p>近期使用tap事件为老夫带来了这样那样的问题，其中一个问题是解决了点透还需要将原来一个个click变为tap，这样的话我们就抛弃了ie用户<br>当然可以做兼容，但是没人想动老代码的，于是今天拿出了fastclick这个东西，</p>
+<p>这是最近第四次发文说tap的点透事件，我们一直对解决&ldquo;点透&rdquo;的蒙版耿耿于怀，于是今天老大提出了一个库fastclick，最后证明解决了我们的问题</p>
+<p>而且click不必替换为tap了，于是我们老大就语重心长的对我说了一句，你们就误我吧，我邮件都发出去了......</p>
+<p>于是我下午就在看fastclick这个库，看看是不是能解决我们的问题，于是我们开始吧</p>
+<h1>读fastclick源码</h1>
+<p>尼玛使用太简单了，直接一句：</p>
+<div class="cnblogs_code">
+<pre>FastClick.attach(document.body);</pre>
+</div>
+<p>于是所有的click响应速度直接提升，刚刚的！什么input获取焦点的问题也解决了！！！尼玛如果真的可以的话，原来改页面的同事肯定会啃了我</p>
+<p>一步步来，我们跟进去，入口就是attach方法：</p>
+<div class="cnblogs_code">
+<pre><span style="color: #008080;">1</span> FastClick.attach = <span style="color: #0000ff;">function</span><span style="color: #000000;">(layer) {
+</span><span style="color: #008080;">2</span>  'use strict'<span style="color: #000000;">;
+</span><span style="color: #008080;">3</span>  <span style="color: #0000ff;">return</span> <span style="color: #0000ff;">new</span><span style="color: #000000;"> FastClick(layer);
+</span><span style="color: #008080;">4</span> };</pre>
+</div>
+<p>这个兄弟不过实例化了下代码，所以我们还要看我们的构造函数：</p>
+<div class="cnblogs_code">
+<pre><span style="color: #008080;"> 1</span> <span style="color: #0000ff;">function</span><span style="color: #000000;"> FastClick(layer) {
+</span><span style="color: #008080;"> 2</span>  'use strict'<span style="color: #000000;">;
+</span><span style="color: #008080;"> 3</span>  <span style="color: #0000ff;">var</span> oldOnClick, self = <span style="color: #0000ff;">this</span><span style="color: #000000;">;
+</span><span style="color: #008080;"> 4</span>  <span style="color: #0000ff;">this</span>.trackingClick = <span style="color: #0000ff;">false</span><span style="color: #000000;">;
+</span><span style="color: #008080;"> 5</span>  <span style="color: #0000ff;">this</span>.trackingClickStart = 0<span style="color: #000000;">;
+</span><span style="color: #008080;"> 6</span>  <span style="color: #0000ff;">this</span>.targetElement = <span style="color: #0000ff;">null</span><span style="color: #000000;">;
+</span><span style="color: #008080;"> 7</span>  <span style="color: #0000ff;">this</span>.touchStartX = 0<span style="color: #000000;">;
+</span><span style="color: #008080;"> 8</span>  <span style="color: #0000ff;">this</span>.touchStartY = 0<span style="color: #000000;">;
+</span><span style="color: #008080;"> 9</span>  <span style="color: #0000ff;">this</span>.lastTouchIdentifier = 0<span style="color: #000000;">;
+</span><span style="color: #008080;">10</span>  <span style="color: #0000ff;">this</span>.touchBoundary = 10<span style="color: #000000;">;
+</span><span style="color: #008080;">11</span>  <span style="color: #0000ff;">this</span>.layer =<span style="color: #000000;"> layer;
+</span><span style="color: #008080;">12</span>  <span style="color: #0000ff;">if</span> (!layer || !<span style="color: #000000;">layer.nodeType) {
+</span><span style="color: #008080;">13</span>   <span style="color: #0000ff;">throw</span> <span style="color: #0000ff;">new</span> TypeError('Layer must be a document node'<span style="color: #000000;">);
+</span><span style="color: #008080;">14</span> <span style="color: #000000;"> }
+</span><span style="color: #008080;">15</span>  <span style="color: #0000ff;">this</span>.onClick = <span style="color: #0000ff;">function</span>() { <span style="color: #0000ff;">return</span><span style="color: #000000;"> FastClick.prototype.onClick.apply(self, arguments); };
+</span><span style="color: #008080;">16</span>  <span style="color: #0000ff;">this</span>.onMouse = <span style="color: #0000ff;">function</span>() { <span style="color: #0000ff;">return</span><span style="color: #000000;"> FastClick.prototype.onMouse.apply(self, arguments); };
+</span><span style="color: #008080;">17</span>  <span style="color: #0000ff;">this</span>.onTouchStart = <span style="color: #0000ff;">function</span>() { <span style="color: #0000ff;">return</span><span style="color: #000000;"> FastClick.prototype.onTouchStart.apply(self, arguments); };
+</span><span style="color: #008080;">18</span>  <span style="color: #0000ff;">this</span>.onTouchMove = <span style="color: #0000ff;">function</span>() { <span style="color: #0000ff;">return</span><span style="color: #000000;"> FastClick.prototype.onTouchMove.apply(self, arguments); };
+</span><span style="color: #008080;">19</span>  <span style="color: #0000ff;">this</span>.onTouchEnd = <span style="color: #0000ff;">function</span>() { <span style="color: #0000ff;">return</span><span style="color: #000000;"> FastClick.prototype.onTouchEnd.apply(self, arguments); };
+</span><span style="color: #008080;">20</span>  <span style="color: #0000ff;">this</span>.onTouchCancel = <span style="color: #0000ff;">function</span>() { <span style="color: #0000ff;">return</span><span style="color: #000000;"> FastClick.prototype.onTouchCancel.apply(self, arguments); };
+</span><span style="color: #008080;">21</span>  <span style="color: #0000ff;">if</span><span style="color: #000000;"> (FastClick.notNeeded(layer)) {
+</span><span style="color: #008080;">22</span>   <span style="color: #0000ff;">return</span><span style="color: #000000;">;
+</span><span style="color: #008080;">23</span> <span style="color: #000000;"> }
+</span><span style="color: #008080;">24</span>  <span style="color: #0000ff;">if</span> (<span style="color: #0000ff;">this</span><span style="color: #000000;">.deviceIsAndroid) {
+</span><span style="color: #008080;">25</span>   layer.addEventListener('mouseover', <span style="color: #0000ff;">this</span>.onMouse, <span style="color: #0000ff;">true</span><span style="color: #000000;">);
+</span><span style="color: #008080;">26</span>   layer.addEventListener('mousedown', <span style="color: #0000ff;">this</span>.onMouse, <span style="color: #0000ff;">true</span><span style="color: #000000;">);
+</span><span style="color: #008080;">27</span>   layer.addEventListener('mouseup', <span style="color: #0000ff;">this</span>.onMouse, <span style="color: #0000ff;">true</span><span style="color: #000000;">);
+</span><span style="color: #008080;">28</span> <span style="color: #000000;"> }
+</span><span style="color: #008080;">29</span>  layer.addEventListener('click', <span style="color: #0000ff;">this</span>.onClick, <span style="color: #0000ff;">true</span><span style="color: #000000;">);
+</span><span style="color: #008080;">30</span>  layer.addEventListener('touchstart', <span style="color: #0000ff;">this</span>.onTouchStart, <span style="color: #0000ff;">false</span><span style="color: #000000;">);
+</span><span style="color: #008080;">31</span>  layer.addEventListener('touchmove', <span style="color: #0000ff;">this</span>.onTouchMove, <span style="color: #0000ff;">false</span><span style="color: #000000;">);
+</span><span style="color: #008080;">32</span>  layer.addEventListener('touchend', <span style="color: #0000ff;">this</span>.onTouchEnd, <span style="color: #0000ff;">false</span><span style="color: #000000;">);
+</span><span style="color: #008080;">33</span>  layer.addEventListener('touchcancel', <span style="color: #0000ff;">this</span>.onTouchCancel, <span style="color: #0000ff;">false</span><span style="color: #000000;">);
+</span><span style="color: #008080;">34</span> 
+<span style="color: #008080;">35</span>  <span style="color: #0000ff;">if</span> (!<span style="color: #000000;">Event.prototype.stopImmediatePropagation) {
+</span><span style="color: #008080;">36</span>   layer.removeEventListener = <span style="color: #0000ff;">function</span><span style="color: #000000;">(type, callback, capture) {
+</span><span style="color: #008080;">37</span>    <span style="color: #0000ff;">var</span> rmv =<span style="color: #000000;"> Node.prototype.removeEventListener;
+</span><span style="color: #008080;">38</span>    <span style="color: #0000ff;">if</span> (type === 'click'<span style="color: #000000;">) {
+</span><span style="color: #008080;">39</span>     rmv.call(layer, type, callback.hijacked ||<span style="color: #000000;"> callback, capture);
+</span><span style="color: #008080;">40</span>    } <span style="color: #0000ff;">else</span><span style="color: #000000;"> {
+</span><span style="color: #008080;">41</span> <span style="color: #000000;">    rmv.call(layer, type, callback, capture);
+</span><span style="color: #008080;">42</span> <span style="color: #000000;">   }
+</span><span style="color: #008080;">43</span> <span style="color: #000000;">  };
+</span><span style="color: #008080;">44</span> 
+<span style="color: #008080;">45</span>   layer.addEventListener = <span style="color: #0000ff;">function</span><span style="color: #000000;">(type, callback, capture) {
+</span><span style="color: #008080;">46</span>    <span style="color: #0000ff;">var</span> adv =<span style="color: #000000;"> Node.prototype.addEventListener;
+</span><span style="color: #008080;">47</span>    <span style="color: #0000ff;">if</span> (type === 'click'<span style="color: #000000;">) {
+</span><span style="color: #008080;">48</span>     adv.call(layer, type, callback.hijacked || (callback.hijacked = <span style="color: #0000ff;">function</span><span style="color: #000000;">(event) {
+</span><span style="color: #008080;">49</span>      <span style="color: #0000ff;">if</span> (!<span style="color: #000000;">event.propagationStopped) {
+</span><span style="color: #008080;">50</span> <span style="color: #000000;">      callback(event);
+</span><span style="color: #008080;">51</span> <span style="color: #000000;">     }
+</span><span style="color: #008080;">52</span> <span style="color: #000000;">    }), capture);
+</span><span style="color: #008080;">53</span>    } <span style="color: #0000ff;">else</span><span style="color: #000000;"> {
+</span><span style="color: #008080;">54</span> <span style="color: #000000;">    adv.call(layer, type, callback, capture);
+</span><span style="color: #008080;">55</span> <span style="color: #000000;">   }
+</span><span style="color: #008080;">56</span> <span style="color: #000000;">  };
+</span><span style="color: #008080;">57</span> <span style="color: #000000;"> }
+</span><span style="color: #008080;">58</span>  <span style="color: #0000ff;">if</span> (<span style="color: #0000ff;">typeof</span> layer.onclick === 'function'<span style="color: #000000;">) {
+</span><span style="color: #008080;">59</span>   oldOnClick =<span style="color: #000000;"> layer.onclick;
+</span><span style="color: #008080;">60</span>   layer.addEventListener('click', <span style="color: #0000ff;">function</span><span style="color: #000000;">(event) {
+</span><span style="color: #008080;">61</span> <span style="color: #000000;">   oldOnClick(event);
+</span><span style="color: #008080;">62</span>   }, <span style="color: #0000ff;">false</span><span style="color: #000000;">);
+</span><span style="color: #008080;">63</span>   layer.onclick = <span style="color: #0000ff;">null</span><span style="color: #000000;">;
+</span><span style="color: #008080;">64</span> <span style="color: #000000;"> }
+</span><span style="color: #008080;">65</span> }</pre>
+</div>
+<p>看看这段代码，上面很多属性干了什么事情我也不知道......于是忽略了</p>
+<div class="cnblogs_code">
+<pre><span style="color: #008080;">1</span> <span style="color: #0000ff;">if</span> (!layer || !<span style="color: #000000;">layer.nodeType) {
+</span><span style="color: #008080;">2</span>  <span style="color: #0000ff;">throw</span> <span style="color: #0000ff;">new</span> TypeError('Layer must be a document node'<span style="color: #000000;">);
+</span><span style="color: #008080;">3</span> }</pre>
+</div>
+<p>其中这里要注意，我们必须传入一个节点给构造函数，否则会出问题</p>
+<p>然后这个家伙将一些基本的鼠标事件注册在自己的属性方法上了，具体是干神马的我们后面再说</p>
+<p>在后面点有个notNeeded方法：</p>
+<div class="cnblogs_code">
+<pre><span style="color: #008080;"> 1</span> FastClick.notNeeded = <span style="color: #0000ff;">function</span><span style="color: #000000;">(layer) {
+</span><span style="color: #008080;"> 2</span>  'use strict'<span style="color: #000000;">;
+</span><span style="color: #008080;"> 3</span>  <span style="color: #0000ff;">var</span><span style="color: #000000;"> metaViewport;
+</span><span style="color: #008080;"> 4</span>  <span style="color: #0000ff;">if</span> (<span style="color: #0000ff;">typeof</span> window.ontouchstart === 'undefined'<span style="color: #000000;">) {
+</span><span style="color: #008080;"> 5</span>   <span style="color: #0000ff;">return</span> <span style="color: #0000ff;">true</span><span style="color: #000000;">;
+</span><span style="color: #008080;"> 6</span> <span style="color: #000000;"> }
+</span><span style="color: #008080;"> 7</span>  <span style="color: #0000ff;">if</span> ((/Chrome\/[0-9]+/<span style="color: #000000;">).test(navigator.userAgent)) {
+</span><span style="color: #008080;"> 8</span>   <span style="color: #0000ff;">if</span><span style="color: #000000;"> (FastClick.prototype.deviceIsAndroid) {
+</span><span style="color: #008080;"> 9</span>    metaViewport = document.querySelector('meta[name=viewport]'<span style="color: #000000;">);
+</span><span style="color: #008080;">10</span>    <span style="color: #0000ff;">if</span> (metaViewport &amp;&amp; metaViewport.content.indexOf('user-scalable=no') !== -1<span style="color: #000000;">) {
+</span><span style="color: #008080;">11</span>     <span style="color: #0000ff;">return</span> <span style="color: #0000ff;">true</span><span style="color: #000000;">;
+</span><span style="color: #008080;">12</span> <span style="color: #000000;">   }
+</span><span style="color: #008080;">13</span>   } <span style="color: #0000ff;">else</span><span style="color: #000000;"> {
+</span><span style="color: #008080;">14</span>    <span style="color: #0000ff;">return</span> <span style="color: #0000ff;">true</span><span style="color: #000000;">;
+</span><span style="color: #008080;">15</span> <span style="color: #000000;">  }
+</span><span style="color: #008080;">16</span> <span style="color: #000000;"> }
+</span><span style="color: #008080;">17</span>  <span style="color: #0000ff;">if</span> (layer.style.msTouchAction === 'none'<span style="color: #000000;">) {
+</span><span style="color: #008080;">18</span>   <span style="color: #0000ff;">return</span> <span style="color: #0000ff;">true</span><span style="color: #000000;">;
+</span><span style="color: #008080;">19</span> <span style="color: #000000;"> }
+</span><span style="color: #008080;">20</span>  <span style="color: #0000ff;">return</span> <span style="color: #0000ff;">false</span><span style="color: #000000;">;
+</span><span style="color: #008080;">21</span> };</pre>
+</div>
+<p>这个方法用于判断是否需要用到fastclick，注释的意思不太明白，我们看看代码吧</p>
+<p>首先一句：</p>
+<div class="cnblogs_code">
+<pre><span style="color: #008080;">1</span> <span style="color: #0000ff;">if</span> (<span style="color: #0000ff;">typeof</span> window.ontouchstart === 'undefined'<span style="color: #000000;">) {
+</span><span style="color: #008080;">2</span>   <span style="color: #0000ff;">return</span> <span style="color: #0000ff;">true</span><span style="color: #000000;">;
+</span><span style="color: #008080;">3</span> }</pre>
+</div>
+<p>如果不支持touchstart事件的话，返回true<br>PS：现在的只管感受就是fastclick应该也是以touch事件模拟的，但是其没有点透问题</p>
+<p>后面还判断了android的一些问题，我这里就不关注了，意思应该就是支持touch才能支持吧，于是回到主干代码</p>
+<p>主干代码中，我们看到，如果浏览器不支持touch事件或者其它问题就直接跳出了</p>
+<p>然后里面有个deviceIsAndroid的属性，我们跟去看看（其实不用看也知道是判断是否是android设备）</p>
+<p>FastClick.prototype.deviceIsAndroid = navigator.userAgent.indexOf('Android') &gt; 0;</p>
+<h2>绑定事件</h2>
+<p>好了，这家伙开始绑定注册事件了，至此还未看出异样</p>
+<div class="cnblogs_code">
+<pre><span style="color: #008080;"> 1</span> <span style="color: #0000ff;">if</span> (<span style="color: #0000ff;">this</span><span style="color: #000000;">.deviceIsAndroid) {
+</span><span style="color: #008080;"> 2</span>  layer.addEventListener('mouseover', <span style="color: #0000ff;">this</span>.onMouse, <span style="color: #0000ff;">true</span><span style="color: #000000;">);
+</span><span style="color: #008080;"> 3</span>  layer.addEventListener('mousedown', <span style="color: #0000ff;">this</span>.onMouse, <span style="color: #0000ff;">true</span><span style="color: #000000;">);
+</span><span style="color: #008080;"> 4</span>  layer.addEventListener('mouseup', <span style="color: #0000ff;">this</span>.onMouse, <span style="color: #0000ff;">true</span><span style="color: #000000;">);
+</span><span style="color: #008080;"> 5</span> <span style="color: #000000;">}
+</span><span style="color: #008080;"> 6</span> layer.addEventListener('click', <span style="color: #0000ff;">this</span>.onClick, <span style="color: #0000ff;">true</span><span style="color: #000000;">);
+</span><span style="color: #008080;"> 7</span> layer.addEventListener('touchstart', <span style="color: #0000ff;">this</span>.onTouchStart, <span style="color: #0000ff;">false</span><span style="color: #000000;">);
+</span><span style="color: #008080;"> 8</span> layer.addEventListener('touchmove', <span style="color: #0000ff;">this</span>.onTouchMove, <span style="color: #0000ff;">false</span><span style="color: #000000;">);
+</span><span style="color: #008080;"> 9</span> layer.addEventListener('touchend', <span style="color: #0000ff;">this</span>.onTouchEnd, <span style="color: #0000ff;">false</span><span style="color: #000000;">);
+</span><span style="color: #008080;">10</span> layer.addEventListener('touchcancel', <span style="color: #0000ff;">this</span>.onTouchCancel, <span style="color: #0000ff;">false</span>);</pre>
+</div>
+<p>具体的事件函数在前面被重写了，我们暂时不管他，继续往后面看先（话说，这家伙绑定的事件够多的）</p>
+<h2>stopImmediatePropagation</h2>
+<p>完了多了一个属性：</p>
+<p>阻止当前事件的冒泡行为并且阻止当前事件所在元素上的所有相同类型事件的事件处理函数的继续执行.</p>
+<p>如果某个元素有多个相同类型事件的事件监听函数,则当该类型的事件触发时,多个事件监听函数将按照顺序依次执行.如果某个监听函数执行了 event.stopImmediatePropagation()方法,则除了该事件的冒泡行为被阻止之外(event.stopPropagation方法的作用),该元素绑定的其余相同类型事件的监听函数的执行也将被阻止.</p>
+<div class="cnblogs_code">
+<pre><span style="color: #008080;"> 1</span> <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">html</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 2</span>     <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">head</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 3</span>         <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">style</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 4</span> <span style="background-color: #f5f5f5; color: #800000;">            p </span><span style="background-color: #f5f5f5; color: #000000;">{</span><span style="background-color: #f5f5f5; color: #ff0000;"> height</span><span style="background-color: #f5f5f5; color: #000000;">:</span><span style="background-color: #f5f5f5; color: #0000ff;"> 30px</span><span style="background-color: #f5f5f5; color: #000000;">;</span><span style="background-color: #f5f5f5; color: #ff0000;"> width</span><span style="background-color: #f5f5f5; color: #000000;">:</span><span style="background-color: #f5f5f5; color: #0000ff;"> 150px</span><span style="background-color: #f5f5f5; color: #000000;">;</span><span style="background-color: #f5f5f5; color: #ff0000;"> background-color</span><span style="background-color: #f5f5f5; color: #000000;">:</span><span style="background-color: #f5f5f5; color: #0000ff;"> #ccf</span><span style="background-color: #f5f5f5; color: #000000;">;</span> <span style="background-color: #f5f5f5; color: #000000;">}</span>
+<span style="color: #008080;"> 5</span> <span style="background-color: #f5f5f5; color: #800000;">            div </span><span style="background-color: #f5f5f5; color: #000000;">{</span><span style="background-color: #f5f5f5; color: #ff0000;">height</span><span style="background-color: #f5f5f5; color: #000000;">:</span><span style="background-color: #f5f5f5; color: #0000ff;"> 30px</span><span style="background-color: #f5f5f5; color: #000000;">;</span><span style="background-color: #f5f5f5; color: #ff0000;"> width</span><span style="background-color: #f5f5f5; color: #000000;">:</span><span style="background-color: #f5f5f5; color: #0000ff;"> 150px</span><span style="background-color: #f5f5f5; color: #000000;">;</span><span style="background-color: #f5f5f5; color: #ff0000;"> background-color</span><span style="background-color: #f5f5f5; color: #000000;">:</span><span style="background-color: #f5f5f5; color: #0000ff;"> #cfc</span><span style="background-color: #f5f5f5; color: #000000;">;</span> <span style="background-color: #f5f5f5; color: #000000;">}</span>
+<span style="color: #008080;"> 6</span>         <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">style</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 7</span>     <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">head</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 8</span>     <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">body</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 9</span>         <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">div</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">10</span>             <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">p</span><span style="color: #0000ff;">&gt;</span>paragraph<span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">p</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">11</span>         <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">div</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">12</span>         <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">script</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">13</span> <span style="background-color: #f5f5f5; color: #000000;">            document.querySelector(</span><span style="background-color: #f5f5f5; color: #000000;">"</span><span style="background-color: #f5f5f5; color: #000000;">p</span><span style="background-color: #f5f5f5; color: #000000;">"</span><span style="background-color: #f5f5f5; color: #000000;">).addEventListener(</span><span style="background-color: #f5f5f5; color: #000000;">"</span><span style="background-color: #f5f5f5; color: #000000;">click</span><span style="background-color: #f5f5f5; color: #000000;">"</span><span style="background-color: #f5f5f5; color: #000000;">, </span><span style="background-color: #f5f5f5; color: #0000ff;">function</span><span style="background-color: #f5f5f5; color: #000000;">(event)
+</span><span style="color: #008080;">14</span> <span style="background-color: #f5f5f5; color: #000000;">            {
+</span><span style="color: #008080;">15</span> <span style="background-color: #f5f5f5; color: #000000;">                alert(</span><span style="background-color: #f5f5f5; color: #000000;">"</span><span style="background-color: #f5f5f5; color: #000000;">我是p元素上被绑定的第一个监听函数</span><span style="background-color: #f5f5f5; color: #000000;">"</span><span style="background-color: #f5f5f5; color: #000000;">);
+</span><span style="color: #008080;">16</span> <span style="background-color: #f5f5f5; color: #000000;">            }, </span><span style="background-color: #f5f5f5; color: #0000ff;">false</span><span style="background-color: #f5f5f5; color: #000000;">);
+</span><span style="color: #008080;">17</span> <span style="background-color: #f5f5f5; color: #000000;">            document.querySelector(</span><span style="background-color: #f5f5f5; color: #000000;">"</span><span style="background-color: #f5f5f5; color: #000000;">p</span><span style="background-color: #f5f5f5; color: #000000;">"</span><span style="background-color: #f5f5f5; color: #000000;">).addEventListener(</span><span style="background-color: #f5f5f5; color: #000000;">"</span><span style="background-color: #f5f5f5; color: #000000;">click</span><span style="background-color: #f5f5f5; color: #000000;">"</span><span style="background-color: #f5f5f5; color: #000000;">, </span><span style="background-color: #f5f5f5; color: #0000ff;">function</span><span style="background-color: #f5f5f5; color: #000000;">(event)
+</span><span style="color: #008080;">18</span> <span style="background-color: #f5f5f5; color: #000000;">            {
+</span><span style="color: #008080;">19</span> <span style="background-color: #f5f5f5; color: #000000;">                alert(</span><span style="background-color: #f5f5f5; color: #000000;">"</span><span style="background-color: #f5f5f5; color: #000000;">我是p元素上被绑定的第二个监听函数</span><span style="background-color: #f5f5f5; color: #000000;">"</span><span style="background-color: #f5f5f5; color: #000000;">);
+</span><span style="color: #008080;">20</span> <span style="background-color: #f5f5f5; color: #000000;">                event.stopImmediatePropagation();
+</span><span style="color: #008080;">21</span>                 <span style="background-color: #f5f5f5; color: #008000;">//</span><span style="background-color: #f5f5f5; color: #008000;">执行stopImmediatePropagation方法,阻止click事件冒泡,并且阻止p元素上绑定的其他click事件的事件监听函数的执行.</span>
+<span style="color: #008080;">22</span> <span style="background-color: #f5f5f5; color: #000000;">            }, </span><span style="background-color: #f5f5f5; color: #0000ff;">false</span><span style="background-color: #f5f5f5; color: #000000;">);
+</span><span style="color: #008080;">23</span> <span style="background-color: #f5f5f5; color: #000000;">            document.querySelector(</span><span style="background-color: #f5f5f5; color: #000000;">"</span><span style="background-color: #f5f5f5; color: #000000;">p</span><span style="background-color: #f5f5f5; color: #000000;">"</span><span style="background-color: #f5f5f5; color: #000000;">).addEventListener(</span><span style="background-color: #f5f5f5; color: #000000;">"</span><span style="background-color: #f5f5f5; color: #000000;">click</span><span style="background-color: #f5f5f5; color: #000000;">"</span><span style="background-color: #f5f5f5; color: #000000;">, </span><span style="background-color: #f5f5f5; color: #0000ff;">function</span><span style="background-color: #f5f5f5; color: #000000;">(event)
+</span><span style="color: #008080;">24</span> <span style="background-color: #f5f5f5; color: #000000;">            {
+</span><span style="color: #008080;">25</span> <span style="background-color: #f5f5f5; color: #000000;">                alert(</span><span style="background-color: #f5f5f5; color: #000000;">"</span><span style="background-color: #f5f5f5; color: #000000;">我是p元素上被绑定的第三个监听函数</span><span style="background-color: #f5f5f5; color: #000000;">"</span><span style="background-color: #f5f5f5; color: #000000;">);
+</span><span style="color: #008080;">26</span>                 <span style="background-color: #f5f5f5; color: #008000;">//</span><span style="background-color: #f5f5f5; color: #008000;">该监听函数排在上个函数后面,该函数不会被执行.</span>
+<span style="color: #008080;">27</span> <span style="background-color: #f5f5f5; color: #000000;">            }, </span><span style="background-color: #f5f5f5; color: #0000ff;">false</span><span style="background-color: #f5f5f5; color: #000000;">);
+</span><span style="color: #008080;">28</span> <span style="background-color: #f5f5f5; color: #000000;">            document.querySelector(</span><span style="background-color: #f5f5f5; color: #000000;">"</span><span style="background-color: #f5f5f5; color: #000000;">div</span><span style="background-color: #f5f5f5; color: #000000;">"</span><span style="background-color: #f5f5f5; color: #000000;">).addEventListener(</span><span style="background-color: #f5f5f5; color: #000000;">"</span><span style="background-color: #f5f5f5; color: #000000;">click</span><span style="background-color: #f5f5f5; color: #000000;">"</span><span style="background-color: #f5f5f5; color: #000000;">, </span><span style="background-color: #f5f5f5; color: #0000ff;">function</span><span style="background-color: #f5f5f5; color: #000000;">(event)
+</span><span style="color: #008080;">29</span> <span style="background-color: #f5f5f5; color: #000000;">            {
+</span><span style="color: #008080;">30</span> <span style="background-color: #f5f5f5; color: #000000;">                alert(</span><span style="background-color: #f5f5f5; color: #000000;">"</span><span style="background-color: #f5f5f5; color: #000000;">我是div元素,我是p元素的上层元素</span><span style="background-color: #f5f5f5; color: #000000;">"</span><span style="background-color: #f5f5f5; color: #000000;">);
+</span><span style="color: #008080;">31</span>                 <span style="background-color: #f5f5f5; color: #008000;">//</span><span style="background-color: #f5f5f5; color: #008000;">p元素的click事件没有向上冒泡,该函数不会被执行.</span>
+<span style="color: #008080;">32</span> <span style="background-color: #f5f5f5; color: #000000;">            }, </span><span style="background-color: #f5f5f5; color: #0000ff;">false</span><span style="background-color: #f5f5f5; color: #000000;">);
+</span><span style="color: #008080;">33</span>         <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">script</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">34</span>     <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">body</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">35</span> <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">html</span><span style="color: #0000ff;">&gt;</span></pre>
+</div>
+<div class="cnblogs_code">
+<pre><span style="color: #008080;"> 1</span> <span style="color: #0000ff;">if</span> (!<span style="color: #000000;">Event.prototype.stopImmediatePropagation) {
+</span><span style="color: #008080;"> 2</span>  layer.removeEventListener = <span style="color: #0000ff;">function</span><span style="color: #000000;">(type, callback, capture) {
+</span><span style="color: #008080;"> 3</span>   <span style="color: #0000ff;">var</span> rmv =<span style="color: #000000;"> Node.prototype.removeEventListener;
+</span><span style="color: #008080;"> 4</span>   <span style="color: #0000ff;">if</span> (type === 'click'<span style="color: #000000;">) {
+</span><span style="color: #008080;"> 5</span>    rmv.call(layer, type, callback.hijacked ||<span style="color: #000000;"> callback, capture);
+</span><span style="color: #008080;"> 6</span>   } <span style="color: #0000ff;">else</span><span style="color: #000000;"> {
+</span><span style="color: #008080;"> 7</span> <span style="color: #000000;">   rmv.call(layer, type, callback, capture);
+</span><span style="color: #008080;"> 8</span> <span style="color: #000000;">  }
+</span><span style="color: #008080;"> 9</span> <span style="color: #000000;"> };
+</span><span style="color: #008080;">10</span> 
+<span style="color: #008080;">11</span>  layer.addEventListener = <span style="color: #0000ff;">function</span><span style="color: #000000;">(type, callback, capture) {
+</span><span style="color: #008080;">12</span>   <span style="color: #0000ff;">var</span> adv =<span style="color: #000000;"> Node.prototype.addEventListener;
+</span><span style="color: #008080;">13</span>   <span style="color: #0000ff;">if</span> (type === 'click'<span style="color: #000000;">) {
+</span><span style="color: #008080;">14</span>    adv.call(layer, type, callback.hijacked || (callback.hijacked = <span style="color: #0000ff;">function</span><span style="color: #000000;">(event) {
+</span><span style="color: #008080;">15</span>     <span style="color: #0000ff;">if</span> (!<span style="color: #000000;">event.propagationStopped) {
+</span><span style="color: #008080;">16</span> <span style="color: #000000;">     callback(event);
+</span><span style="color: #008080;">17</span> <span style="color: #000000;">    }
+</span><span style="color: #008080;">18</span> <span style="color: #000000;">   }), capture);
+</span><span style="color: #008080;">19</span>   } <span style="color: #0000ff;">else</span><span style="color: #000000;"> {
+</span><span style="color: #008080;">20</span> <span style="color: #000000;">   adv.call(layer, type, callback, capture);
+</span><span style="color: #008080;">21</span> <span style="color: #000000;">  }
+</span><span style="color: #008080;">22</span> <span style="color: #000000;"> };
+</span><span style="color: #008080;">23</span> }</pre>
+</div>
+<p>然后这家伙重新定义了下注册与注销事件的方法，</p>
+<p>我们先看注册事件，其中用到了Node的addEventListener，这个Node是个什么呢？</p>
+<p>由此观之，Node是一个系统属性，代表我们的节点吧，所以这里重写了注销的事件</p>
+<p>这里，我们发现，其实他只对click进行了特殊处理</p>
+<div class="cnblogs_code">
+<pre><span style="color: #008080;">1</span> adv.call(layer, type, callback.hijacked || (callback.hijacked = <span style="color: #0000ff;">function</span><span style="color: #000000;">(event) {
+</span><span style="color: #008080;">2</span>  <span style="color: #0000ff;">if</span> (!<span style="color: #000000;">event.propagationStopped) {
+</span><span style="color: #008080;">3</span> <span style="color: #000000;">  callback(event);
+</span><span style="color: #008080;">4</span> <span style="color: #000000;"> }
+</span><span style="color: #008080;">5</span> }), capture);</pre>
+</div>
+<p>其中有个hijacked劫持是干神马的就暂时不知道了，估计是在中间是否改写的意思吧<br>然后这里重写写了下，hijacked估计是一个方法，就是为了阻止在一个dom上注册多次事件多次执行的情况而存在的吧</p>
+<p>注销和注册差不多我们就不管了，到此我们其实重写了我们传入dom的注册注销事件了，好像很厉害的样子，意思以后这个dom调用click事件用的是我们的，当然这只是我暂时的判断，具体还要往下读，而且我觉得现在的判断不靠谱，于是我们继续吧</p>
+<p>我们注销事件时候可以用addEventListener 或者 dom.onclick=function(){}，所以这里有了下面的代码：</p>
+<div class="cnblogs_code">
+<pre><span style="color: #008080;">1</span> <span style="color: #0000ff;">if</span> (<span style="color: #0000ff;">typeof</span> layer.onclick === 'function'<span style="color: #000000;">) {
+</span><span style="color: #008080;">2</span>  oldOnClick =<span style="color: #000000;"> layer.onclick;
+</span><span style="color: #008080;">3</span>  layer.addEventListener('click', <span style="color: #0000ff;">function</span><span style="color: #000000;">(event) {
+</span><span style="color: #008080;">4</span> <span style="color: #000000;">  oldOnClick(event);
+</span><span style="color: #008080;">5</span>  }, <span style="color: #0000ff;">false</span><span style="color: #000000;">);
+</span><span style="color: #008080;">6</span>  layer.onclick = <span style="color: #0000ff;">null</span><span style="color: #000000;">;
+</span><span style="color: #008080;">7</span> }</pre>
+</div>
+<p>此处，他的主干流程居然就完了，意思是他所有的逻辑就在这里了，不论入口还是出口应该就是事件注册了，于是我们写个代码来看看</p>
+<h2>测试入口</h2>
+<div class="cnblogs_code">
+<pre><span style="color: #008080;"> 1</span> &lt;input type="button" id="addEvent" value="addevent"&gt;
+<span style="color: #008080;"> 2</span> &lt;input type="button" id="addEvent1" value="addevent1"&gt;
+<span style="color: #008080;"> 3</span> 
+<span style="color: #008080;"> 4</span> $('#addEvent').click(<span style="color: #0000ff;">function</span><span style="color: #000000;"> () {
+</span><span style="color: #008080;"> 5</span>     <span style="color: #0000ff;">var</span> dom = $('#addEvent1')[0<span style="color: #000000;">]
+</span><span style="color: #008080;"> 6</span>     dom.addEventListener('click', <span style="color: #0000ff;">function</span><span style="color: #000000;"> () {
+</span><span style="color: #008080;"> 7</span>         alert(''<span style="color: #000000;">)
+</span><span style="color: #008080;"> 8</span>         <span style="color: #0000ff;">var</span> s = ''<span style="color: #000000;">;
+</span><span style="color: #008080;"> 9</span> <span style="color: #000000;">    })
+</span><span style="color: #008080;">10</span> });</pre>
+</div>
+<p>我们来这个断点看看我们点击后干了什么，我们现在点击按钮1会为按钮2注册事件：</p>
+<p>但是很遗憾，我们在电脑上不能测试，所以增加了我们读代码的困难，在手机上测试后，发现按钮2响应很快，但是这里有点看不出问题<br>最后alert了一个!Event.prototype.stopImmediatePropagation发现手机和电脑都是false，所以我们上面搞的东西暂时无用</p>
+<div class="cnblogs_code">
+<pre><span style="color: #008080;"> 1</span> FastClick.prototype.onClick = <span style="color: #0000ff;">function</span><span style="color: #000000;"> (event) {
+</span><span style="color: #008080;"> 2</span>     'use strict'<span style="color: #000000;">;
+</span><span style="color: #008080;"> 3</span>     <span style="color: #0000ff;">var</span><span style="color: #000000;"> permitted;
+</span><span style="color: #008080;"> 4</span>     alert('终于尼玛进来了'<span style="color: #000000;">);
+</span><span style="color: #008080;"> 5</span>     <span style="color: #0000ff;">if</span> (<span style="color: #0000ff;">this</span><span style="color: #000000;">.trackingClick) {
+</span><span style="color: #008080;"> 6</span>         <span style="color: #0000ff;">this</span>.targetElement = <span style="color: #0000ff;">null</span><span style="color: #000000;">;
+</span><span style="color: #008080;"> 7</span>         <span style="color: #0000ff;">this</span>.trackingClick = <span style="color: #0000ff;">false</span><span style="color: #000000;">;
+</span><span style="color: #008080;"> 8</span>         <span style="color: #0000ff;">return</span> <span style="color: #0000ff;">true</span><span style="color: #000000;">;
+</span><span style="color: #008080;"> 9</span> <span style="color: #000000;">    }
+</span><span style="color: #008080;">10</span>     <span style="color: #0000ff;">if</span> (event.target.type === 'submit' &amp;&amp; event.detail === 0<span style="color: #000000;">) {
+</span><span style="color: #008080;">11</span>         <span style="color: #0000ff;">return</span> <span style="color: #0000ff;">true</span><span style="color: #000000;">;
+</span><span style="color: #008080;">12</span> <span style="color: #000000;">    }
+</span><span style="color: #008080;">13</span>     permitted = <span style="color: #0000ff;">this</span><span style="color: #000000;">.onMouse(event);
+</span><span style="color: #008080;">14</span>     <span style="color: #0000ff;">if</span> (!<span style="color: #000000;">permitted) {
+</span><span style="color: #008080;">15</span>         <span style="color: #0000ff;">this</span>.targetElement = <span style="color: #0000ff;">null</span><span style="color: #000000;">;
+</span><span style="color: #008080;">16</span> <span style="color: #000000;">    }
+</span><span style="color: #008080;">17</span>     <span style="color: #0000ff;">return</span><span style="color: #000000;"> permitted;
+</span><span style="color: #008080;">18</span> };</pre>
+</div>
+<p>然后我们终于进来了，现在我们需要知道什么是trackingClick 了</p>
+<div class="cnblogs_code">
+<pre><span style="color: #008080;">1</span> <span style="color: #008000;">/*</span><span style="color: #008000;">*
+</span><span style="color: #008080;">2</span> <span style="color: #008000;">* Whether a click is currently being tracked.
+</span><span style="color: #008080;">3</span> <span style="color: #008000;">* @type boolean
+</span><span style="color: #008080;">4</span> <span style="color: #008000;">*/</span>
+<span style="color: #008080;">5</span> <span style="color: #0000ff;">this</span>.trackingClick = <span style="color: #0000ff;">false</span>;</pre>
+</div>
+<p>我们最初这个属性是false，但是到这里就设置为true了，就直接退出了，说明绑定事件终止，算了这个我们暂时不关注，我们干点其它的，<br>因为，我觉得重点还是应该在touch事件上</p>
+<p>PS：到这里，我们发现这个库应该不只是将click加快，而是所有的响应都加快了</p>
+<p>我在各个事件部分log出来东西，发现有click的地方都只执行了touchstart与touchend，于是至此，我觉得我的观点成立<br>他使用touch事件模拟量click，于是我们就只跟进这一块就好：</p>
+<div class="cnblogs_code">
+<pre><span style="color: #008080;"> 1</span> FastClick.prototype.onTouchStart = <span style="color: #0000ff;">function</span><span style="color: #000000;"> (event) {
+</span><span style="color: #008080;"> 2</span>     'use strict'<span style="color: #000000;">;
+</span><span style="color: #008080;"> 3</span>     <span style="color: #0000ff;">var</span><span style="color: #000000;"> targetElement, touch, selection;
+</span><span style="color: #008080;"> 4</span>     log('touchstart'<span style="color: #000000;">);
+</span><span style="color: #008080;"> 5</span>     <span style="color: #0000ff;">if</span> (event.targetTouches.length &gt; 1<span style="color: #000000;">) {
+</span><span style="color: #008080;"> 6</span>         <span style="color: #0000ff;">return</span> <span style="color: #0000ff;">true</span><span style="color: #000000;">;
+</span><span style="color: #008080;"> 7</span> <span style="color: #000000;">    }
+</span><span style="color: #008080;"> 8</span>     targetElement = <span style="color: #0000ff;">this</span><span style="color: #000000;">.getTargetElementFromEventTarget(event.target);
+</span><span style="color: #008080;"> 9</span>     touch = event.targetTouches[0<span style="color: #000000;">];
+</span><span style="color: #008080;">10</span>     <span style="color: #0000ff;">if</span> (<span style="color: #0000ff;">this</span><span style="color: #000000;">.deviceIsIOS) {
+</span><span style="color: #008080;">11</span>         selection =<span style="color: #000000;"> window.getSelection();
+</span><span style="color: #008080;">12</span>         <span style="color: #0000ff;">if</span> (selection.rangeCount &amp;&amp; !<span style="color: #000000;">selection.isCollapsed) {
+</span><span style="color: #008080;">13</span>             <span style="color: #0000ff;">return</span> <span style="color: #0000ff;">true</span><span style="color: #000000;">;
+</span><span style="color: #008080;">14</span> <span style="color: #000000;">        }
+</span><span style="color: #008080;">15</span>         <span style="color: #0000ff;">if</span> (!<span style="color: #0000ff;">this</span><span style="color: #000000;">.deviceIsIOS4) {
+</span><span style="color: #008080;">16</span>             <span style="color: #0000ff;">if</span> (touch.identifier === <span style="color: #0000ff;">this</span><span style="color: #000000;">.lastTouchIdentifier) {
+</span><span style="color: #008080;">17</span> <span style="color: #000000;">                event.preventDefault();
+</span><span style="color: #008080;">18</span>                 <span style="color: #0000ff;">return</span> <span style="color: #0000ff;">false</span><span style="color: #000000;">;
+</span><span style="color: #008080;">19</span> <span style="color: #000000;">            }
+</span><span style="color: #008080;">20</span>             <span style="color: #0000ff;">this</span>.lastTouchIdentifier =<span style="color: #000000;"> touch.identifier;
+</span><span style="color: #008080;">21</span>             <span style="color: #0000ff;">this</span><span style="color: #000000;">.updateScrollParent(targetElement);
+</span><span style="color: #008080;">22</span> <span style="color: #000000;">        }
+</span><span style="color: #008080;">23</span> <span style="color: #000000;">    }
+</span><span style="color: #008080;">24</span>     <span style="color: #0000ff;">this</span>.trackingClick = <span style="color: #0000ff;">true</span><span style="color: #000000;">;
+</span><span style="color: #008080;">25</span>     <span style="color: #0000ff;">this</span>.trackingClickStart =<span style="color: #000000;"> event.timeStamp;
+</span><span style="color: #008080;">26</span>     <span style="color: #0000ff;">this</span>.targetElement =<span style="color: #000000;"> targetElement;
+</span><span style="color: #008080;">27</span>     <span style="color: #0000ff;">this</span>.touchStartX =<span style="color: #000000;"> touch.pageX;
+</span><span style="color: #008080;">28</span>     <span style="color: #0000ff;">this</span>.touchStartY =<span style="color: #000000;"> touch.pageY;
+</span><span style="color: #008080;">29</span>     <span style="color: #0000ff;">if</span> ((event.timeStamp - <span style="color: #0000ff;">this</span>.lastClickTime) &lt; 200<span style="color: #000000;">) {
+</span><span style="color: #008080;">30</span> <span style="color: #000000;">        event.preventDefault();
+</span><span style="color: #008080;">31</span> <span style="color: #000000;">    }
+</span><span style="color: #008080;">32</span>     <span style="color: #0000ff;">return</span> <span style="color: #0000ff;">true</span><span style="color: #000000;">;
+</span><span style="color: #008080;">33</span> };</pre>
+</div>
+<p>其中用到了一个方法：</p>
+<div class="cnblogs_code">
+<pre><span style="color: #008080;">1</span> FastClick.prototype.getTargetElementFromEventTarget = <span style="color: #0000ff;">function</span><span style="color: #000000;"> (eventTarget) {
+</span><span style="color: #008080;">2</span>     'use strict'<span style="color: #000000;">;
+</span><span style="color: #008080;">3</span>     <span style="color: #0000ff;">if</span> (eventTarget.nodeType ===<span style="color: #000000;"> Node.TEXT_NODE) {
+</span><span style="color: #008080;">4</span>         <span style="color: #0000ff;">return</span><span style="color: #000000;"> eventTarget.parentNode;
+</span><span style="color: #008080;">5</span> <span style="color: #000000;">    }
+</span><span style="color: #008080;">6</span>     <span style="color: #0000ff;">return</span><span style="color: #000000;"> eventTarget;
+</span><span style="color: #008080;">7</span> };</pre>
+</div>
+<p>他是获取我们当前touchstart的元素</p>
+<p>然后将鼠标的信息记录了下来，他记录鼠标信息主要在后面touchend时候根据x、y判断是否为click<br>是ios情况下还搞了一些事情，我这里跳过去了<br>然后这里记录了一些事情就跳出去了，没有特别的事情，现在我们进入我们的出口touchend</p>
+<div class="cnblogs_code">
+<pre><span style="color: #008080;"> 1</span> FastClick.prototype.onTouchEnd = <span style="color: #0000ff;">function</span><span style="color: #000000;"> (event) {
+</span><span style="color: #008080;"> 2</span>     'use strict'<span style="color: #000000;">;
+</span><span style="color: #008080;"> 3</span>     <span style="color: #0000ff;">var</span> forElement, trackingClickStart, targetTagName, scrollParent, touch, targetElement = <span style="color: #0000ff;">this</span><span style="color: #000000;">.targetElement;
+</span><span style="color: #008080;"> 4</span>     log('touchend'<span style="color: #000000;">);
+</span><span style="color: #008080;"> 5</span>     <span style="color: #0000ff;">if</span> (!<span style="color: #0000ff;">this</span><span style="color: #000000;">.trackingClick) {
+</span><span style="color: #008080;"> 6</span>         <span style="color: #0000ff;">return</span> <span style="color: #0000ff;">true</span><span style="color: #000000;">;
+</span><span style="color: #008080;"> 7</span> <span style="color: #000000;">    }
+</span><span style="color: #008080;"> 8</span>     <span style="color: #0000ff;">if</span> ((event.timeStamp - <span style="color: #0000ff;">this</span>.lastClickTime) &lt; 200<span style="color: #000000;">) {
+</span><span style="color: #008080;"> 9</span>         <span style="color: #0000ff;">this</span>.cancelNextClick = <span style="color: #0000ff;">true</span><span style="color: #000000;">;
+</span><span style="color: #008080;">10</span>         <span style="color: #0000ff;">return</span> <span style="color: #0000ff;">true</span><span style="color: #000000;">;
+</span><span style="color: #008080;">11</span> <span style="color: #000000;">    }
+</span><span style="color: #008080;">12</span>     <span style="color: #0000ff;">this</span>.lastClickTime =<span style="color: #000000;"> event.timeStamp;
+</span><span style="color: #008080;">13</span>     trackingClickStart = <span style="color: #0000ff;">this</span><span style="color: #000000;">.trackingClickStart;
+</span><span style="color: #008080;">14</span>     <span style="color: #0000ff;">this</span>.trackingClick = <span style="color: #0000ff;">false</span><span style="color: #000000;">;
+</span><span style="color: #008080;">15</span>     <span style="color: #0000ff;">this</span>.trackingClickStart = 0<span style="color: #000000;">;
+</span><span style="color: #008080;">16</span>     <span style="color: #0000ff;">if</span> (<span style="color: #0000ff;">this</span><span style="color: #000000;">.deviceIsIOSWithBadTarget) {
+</span><span style="color: #008080;">17</span>         touch = event.changedTouches[0<span style="color: #000000;">];
+</span><span style="color: #008080;">18</span>         targetElement = document.elementFromPoint(touch.pageX - window.pageXOffset, touch.pageY - window.pageYOffset) ||<span style="color: #000000;"> targetElement;
+</span><span style="color: #008080;">19</span>         targetElement.fastClickScrollParent = <span style="color: #0000ff;">this</span><span style="color: #000000;">.targetElement.fastClickScrollParent;
+</span><span style="color: #008080;">20</span> <span style="color: #000000;">    }
+</span><span style="color: #008080;">21</span>     targetTagName =<span style="color: #000000;"> targetElement.tagName.toLowerCase();
+</span><span style="color: #008080;">22</span>     <span style="color: #0000ff;">if</span> (targetTagName === 'label'<span style="color: #000000;">) {
+</span><span style="color: #008080;">23</span>         forElement = <span style="color: #0000ff;">this</span><span style="color: #000000;">.findControl(targetElement);
+</span><span style="color: #008080;">24</span>         <span style="color: #0000ff;">if</span><span style="color: #000000;"> (forElement) {
+</span><span style="color: #008080;">25</span>             <span style="color: #0000ff;">this</span><span style="color: #000000;">.focus(targetElement);
+</span><span style="color: #008080;">26</span>             <span style="color: #0000ff;">if</span> (<span style="color: #0000ff;">this</span><span style="color: #000000;">.deviceIsAndroid) {
+</span><span style="color: #008080;">27</span>                 <span style="color: #0000ff;">return</span> <span style="color: #0000ff;">false</span><span style="color: #000000;">;
+</span><span style="color: #008080;">28</span> <span style="color: #000000;">            }
+</span><span style="color: #008080;">29</span>             targetElement =<span style="color: #000000;"> forElement;
+</span><span style="color: #008080;">30</span> <span style="color: #000000;">        }
+</span><span style="color: #008080;">31</span>     } <span style="color: #0000ff;">else</span> <span style="color: #0000ff;">if</span> (<span style="color: #0000ff;">this</span><span style="color: #000000;">.needsFocus(targetElement)) {
+</span><span style="color: #008080;">32</span>         <span style="color: #0000ff;">if</span> ((event.timeStamp - trackingClickStart) &gt; 100 || (<span style="color: #0000ff;">this</span>.deviceIsIOS &amp;&amp; window.top !== window &amp;&amp; targetTagName === 'input'<span style="color: #000000;">)) {
+</span><span style="color: #008080;">33</span>             <span style="color: #0000ff;">this</span>.targetElement = <span style="color: #0000ff;">null</span><span style="color: #000000;">;
+</span><span style="color: #008080;">34</span>             <span style="color: #0000ff;">return</span> <span style="color: #0000ff;">false</span><span style="color: #000000;">;
+</span><span style="color: #008080;">35</span> <span style="color: #000000;">        }
+</span><span style="color: #008080;">36</span>         <span style="color: #0000ff;">this</span><span style="color: #000000;">.focus(targetElement);
+</span><span style="color: #008080;">37</span>         <span style="color: #0000ff;">if</span> (!<span style="color: #0000ff;">this</span>.deviceIsIOS4 || targetTagName !== 'select'<span style="color: #000000;">) {
+</span><span style="color: #008080;">38</span>             <span style="color: #0000ff;">this</span>.targetElement = <span style="color: #0000ff;">null</span><span style="color: #000000;">;
+</span><span style="color: #008080;">39</span> <span style="color: #000000;">            event.preventDefault();
+</span><span style="color: #008080;">40</span> <span style="color: #000000;">        }
+</span><span style="color: #008080;">41</span>         <span style="color: #0000ff;">return</span> <span style="color: #0000ff;">false</span><span style="color: #000000;">;
+</span><span style="color: #008080;">42</span> <span style="color: #000000;">    }
+</span><span style="color: #008080;">43</span>     <span style="color: #0000ff;">if</span> (<span style="color: #0000ff;">this</span>.deviceIsIOS &amp;&amp; !<span style="color: #0000ff;">this</span><span style="color: #000000;">.deviceIsIOS4) {
+</span><span style="color: #008080;">44</span>         scrollParent =<span style="color: #000000;"> targetElement.fastClickScrollParent;
+</span><span style="color: #008080;">45</span>         <span style="color: #0000ff;">if</span> (scrollParent &amp;&amp; scrollParent.fastClickLastScrollTop !==<span style="color: #000000;"> scrollParent.scrollTop) {
+</span><span style="color: #008080;">46</span>             <span style="color: #0000ff;">return</span> <span style="color: #0000ff;">true</span><span style="color: #000000;">;
+</span><span style="color: #008080;">47</span> <span style="color: #000000;">        }
+</span><span style="color: #008080;">48</span> <span style="color: #000000;">    }
+</span><span style="color: #008080;">49</span>     <span style="color: #0000ff;">if</span> (!<span style="color: #0000ff;">this</span><span style="color: #000000;">.needsClick(targetElement)) {
+</span><span style="color: #008080;">50</span> <span style="color: #000000;">        event.preventDefault();
+</span><span style="color: #008080;">51</span>         <span style="color: #0000ff;">this</span><span style="color: #000000;">.sendClick(targetElement, event);
+</span><span style="color: #008080;">52</span> <span style="color: #000000;">    }
+</span><span style="color: #008080;">53</span>     <span style="color: #0000ff;">return</span> <span style="color: #0000ff;">false</span><span style="color: #000000;">;
+</span><span style="color: #008080;">54</span> };</pre>
+</div>
+<p>这个家伙洋洋洒洒干了许多事情</p>
+<p>这里纠正一个错误，他onclick那些东西现在也执行了......可能是我屏幕有变化（滑动）导致</p>
+<div class="cnblogs_code">
+<pre><span style="color: #008080;">1</span> <span style="color: #0000ff;">if</span> ((event.timeStamp - <span style="color: #0000ff;">this</span>.lastClickTime) &lt; 200<span style="color: #000000;">) {
+</span><span style="color: #008080;">2</span>  <span style="color: #0000ff;">this</span>.cancelNextClick = <span style="color: #0000ff;">true</span><span style="color: #000000;">;
+</span><span style="color: #008080;">3</span>  <span style="color: #0000ff;">return</span> <span style="color: #0000ff;">true</span><span style="color: #000000;">;
+</span><span style="color: #008080;">4</span> }</pre>
+</div>
+<p>这个代码很关键，我们首次点击会执行下面的逻辑，如果连续点击就直接完蛋，下面的逻辑丫的不执行了......<br>这个不执行了，那么这个劳什子又干了什么事情呢？<br>事实上下面就没逻辑了，意思是如果确实点击过快，两次点击只会执行一次，这个阀值为200ms，这个暂时看来是没有问题的</p>
+<p>好了，我们继续往下走，于是我意识到又到了一个关键点<br>因为我们用tap事件不能使input获得焦点，但是fastclick却能获得焦点，这里也许是一个关键，我们来看看几个与获取焦点有关的函数</p>
+<div class="cnblogs_code">
+<pre><span style="color: #008080;"> 1</span> FastClick.prototype.focus = <span style="color: #0000ff;">function</span><span style="color: #000000;"> (targetElement) {
+</span><span style="color: #008080;"> 2</span>     'use strict'<span style="color: #000000;">;
+</span><span style="color: #008080;"> 3</span>     <span style="color: #0000ff;">var</span><span style="color: #000000;"> length;
+</span><span style="color: #008080;"> 4</span>     <span style="color: #0000ff;">if</span> (<span style="color: #0000ff;">this</span>.deviceIsIOS &amp;&amp;<span style="color: #000000;"> targetElement.setSelectionRange) {
+</span><span style="color: #008080;"> 5</span>         length =<span style="color: #000000;"> targetElement.value.length;
+</span><span style="color: #008080;"> 6</span> <span style="color: #000000;">        targetElement.setSelectionRange(length, length);
+</span><span style="color: #008080;"> 7</span>     } <span style="color: #0000ff;">else</span><span style="color: #000000;"> {
+</span><span style="color: #008080;"> 8</span> <span style="color: #000000;">        targetElement.focus();
+</span><span style="color: #008080;"> 9</span> <span style="color: #000000;">    }
+</span><span style="color: #008080;">10</span> };</pre>
+</div>
+<p>setSelectionRange是我们的关键，也许他是这样获取焦点的......具体我还要下来测试，留待下次处理吧<br>然后下面如果时间间隔过长，代码就不认为操作的是同一dom结构了<br>最后迎来了本次的关键：sendClick，无论是touchend还是onMouse都会汇聚到这里</p>
+<div class="cnblogs_code">
+<pre><span style="color: #008080;"> 1</span> FastClick.prototype.sendClick = <span style="color: #0000ff;">function</span><span style="color: #000000;"> (targetElement, event) {
+</span><span style="color: #008080;"> 2</span>     'use strict'<span style="color: #000000;">;
+</span><span style="color: #008080;"> 3</span>     <span style="color: #0000ff;">var</span><span style="color: #000000;"> clickEvent, touch;
+</span><span style="color: #008080;"> 4</span>     <span style="color: #008000;">//</span><span style="color: #008000;"> On some Android devices activeElement needs to be blurred otherwise the synthetic click will have no effect (#24)</span>
+<span style="color: #008080;"> 5</span>     <span style="color: #0000ff;">if</span> (document.activeElement &amp;&amp; document.activeElement !==<span style="color: #000000;"> targetElement) {
+</span><span style="color: #008080;"> 6</span> <span style="color: #000000;">        document.activeElement.blur();
+</span><span style="color: #008080;"> 7</span> <span style="color: #000000;">    }
+</span><span style="color: #008080;"> 8</span>     touch = event.changedTouches[0<span style="color: #000000;">];
+</span><span style="color: #008080;"> 9</span>     <span style="color: #008000;">//</span><span style="color: #008000;"> Synthesise a click event, with an extra attribute so it can be tracked</span>
+<span style="color: #008080;">10</span>     clickEvent = document.createEvent('MouseEvents'<span style="color: #000000;">);
+</span><span style="color: #008080;">11</span>     clickEvent.initMouseEvent('click', <span style="color: #0000ff;">true</span>, <span style="color: #0000ff;">true</span>, window, 1, touch.screenX, touch.screenY, touch.clientX, touch.clientY, <span style="color: #0000ff;">false</span>, <span style="color: #0000ff;">false</span>, <span style="color: #0000ff;">false</span>, <span style="color: #0000ff;">false</span>, 0, <span style="color: #0000ff;">null</span><span style="color: #000000;">);
+</span><span style="color: #008080;">12</span>     clickEvent.forwardedTouchEvent = <span style="color: #0000ff;">true</span><span style="color: #000000;">;
+</span><span style="color: #008080;">13</span> <span style="color: #000000;">    targetElement.dispatchEvent(clickEvent);
+</span><span style="color: #008080;">14</span> };</pre>
+</div>
+<p>他创建了一个鼠标事件，然后dispatchEvent事件（这个与fireEvent类似）</p>
+<div class="cnblogs_code">
+<pre><span style="color: #008080;"> 1</span> <span style="color: #008000;">//</span><span style="color: #008000;">document上绑定自定义事件ondataavailable</span>
+<span style="color: #008080;"> 2</span> document.addEventListener('ondataavailable', <span style="color: #0000ff;">function</span><span style="color: #000000;"> (event) {
+</span><span style="color: #008080;"> 3</span> <span style="color: #000000;">alert(event.eventType);
+</span><span style="color: #008080;"> 4</span> }, <span style="color: #0000ff;">false</span><span style="color: #000000;">);
+</span><span style="color: #008080;"> 5</span> <span style="color: #0000ff;">var</span> obj = document.getElementById("obj"<span style="color: #000000;">);
+</span><span style="color: #008080;"> 6</span> <span style="color: #008000;">//</span><span style="color: #008000;">obj元素上绑定click事件</span>
+<span style="color: #008080;"> 7</span> obj.addEventListener('click', <span style="color: #0000ff;">function</span><span style="color: #000000;"> (event) {
+</span><span style="color: #008080;"> 8</span> <span style="color: #000000;">alert(event.eventType);
+</span><span style="color: #008080;"> 9</span> }, <span style="color: #0000ff;">false</span><span style="color: #000000;">);
+</span><span style="color: #008080;">10</span> <span style="color: #008000;">//</span><span style="color: #008000;">调用document对象的 createEvent 方法得到一个event的对象实例。</span>
+<span style="color: #008080;">11</span> <span style="color: #0000ff;">var</span> event = document.createEvent('HTMLEvents'<span style="color: #000000;">);
+</span><span style="color: #008080;">12</span> <span style="color: #008000;">//</span><span style="color: #008000;"> initEvent接受3个参数：</span>
+<span style="color: #008080;">13</span> <span style="color: #008000;">//</span><span style="color: #008000;"> 事件类型，是否冒泡，是否阻止浏览器的默认行为</span>
+<span style="color: #008080;">14</span> event.initEvent("ondataavailable", <span style="color: #0000ff;">true</span>, <span style="color: #0000ff;">true</span><span style="color: #000000;">);
+</span><span style="color: #008080;">15</span> event.eventType = 'message'<span style="color: #000000;">;
+</span><span style="color: #008080;">16</span> <span style="color: #008000;">//</span><span style="color: #008000;">触发document上绑定的自定义事件ondataavailable</span>
+<span style="color: #008080;">17</span> <span style="color: #000000;">document.dispatchEvent(event);
+</span><span style="color: #008080;">18</span> 
+<span style="color: #008080;">19</span> <span style="color: #0000ff;">var</span> event1 = document.createEvent('HTMLEvents'<span style="color: #000000;">);
+</span><span style="color: #008080;">20</span> event1.initEvent("click", <span style="color: #0000ff;">true</span>, <span style="color: #0000ff;">true</span><span style="color: #000000;">);
+</span><span style="color: #008080;">21</span> event1.eventType = 'message'<span style="color: #000000;">;
+</span><span style="color: #008080;">22</span> <span style="color: #008000;">//</span><span style="color: #008000;">触发obj元素上绑定click事件</span>
+<span style="color: #008080;">23</span> document.getElementById("test").onclick = <span style="color: #0000ff;">function</span><span style="color: #000000;"> () {
+</span><span style="color: #008080;">24</span> <span style="color: #000000;">obj.dispatchEvent(event1);
+</span><span style="color: #008080;">25</span> };</pre>
+</div>
+<p>至此，我们就知道了，我们为dom先绑定了鼠标事件，然后touchend时候触发了，而至于为什么本身注册的click未触发就要回到上面代码了</p>
+<p>解决&ldquo;点透&rdquo;（成果）</p>
+<p>有了这个思路，我们来试试我们抽象出来的代码：</p>
+<div class="cnblogs_code">
+<pre><span style="color: #008080;"> 1</span> <span style="color: #0000ff;">&lt;!</span><span style="color: #ff00ff;">DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 2</span> <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">html </span><span style="color: #ff0000;">xmlns</span><span style="color: #0000ff;">="http://www.w3.org/1999/xhtml"</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 3</span> <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">head</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 4</span>     <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">title</span><span style="color: #0000ff;">&gt;&lt;/</span><span style="color: #800000;">title</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 5</span>     <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">meta </span><span style="color: #ff0000;">name</span><span style="color: #0000ff;">="viewport"</span><span style="color: #ff0000;"> content</span><span style="color: #0000ff;">="width=device-width, initial-scale=1, maximum-scale=1"</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 6</span>     <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">style</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 7</span> <span style="background-color: #f5f5f5; color: #800000;">        #list </span><span style="background-color: #f5f5f5; color: #000000;">{</span><span style="background-color: #f5f5f5; color: #ff0000;"> display</span><span style="background-color: #f5f5f5; color: #000000;">:</span><span style="background-color: #f5f5f5; color: #0000ff;"> block</span><span style="background-color: #f5f5f5; color: #000000;">;</span><span style="background-color: #f5f5f5; color: #ff0000;"> position</span><span style="background-color: #f5f5f5; color: #000000;">:</span><span style="background-color: #f5f5f5; color: #0000ff;"> absolute</span><span style="background-color: #f5f5f5; color: #000000;">;</span><span style="background-color: #f5f5f5; color: #ff0000;"> top</span><span style="background-color: #f5f5f5; color: #000000;">:</span><span style="background-color: #f5f5f5; color: #0000ff;"> 100px</span><span style="background-color: #f5f5f5; color: #000000;">;</span><span style="background-color: #f5f5f5; color: #ff0000;"> left</span><span style="background-color: #f5f5f5; color: #000000;">:</span><span style="background-color: #f5f5f5; color: #0000ff;"> 10px</span><span style="background-color: #f5f5f5; color: #000000;">;</span><span style="background-color: #f5f5f5; color: #ff0000;"> width</span><span style="background-color: #f5f5f5; color: #000000;">:</span><span style="background-color: #f5f5f5; color: #0000ff;"> 200px</span><span style="background-color: #f5f5f5; color: #000000;">;</span><span style="background-color: #f5f5f5; color: #ff0000;"> height</span><span style="background-color: #f5f5f5; color: #000000;">:</span><span style="background-color: #f5f5f5; color: #0000ff;"> 100px</span><span style="background-color: #f5f5f5; color: #000000;">;</span> <span style="background-color: #f5f5f5; color: #000000;">}</span>
+<span style="color: #008080;"> 8</span> <span style="background-color: #f5f5f5; color: #800000;">        div </span><span style="background-color: #f5f5f5; color: #000000;">{</span><span style="background-color: #f5f5f5; color: #ff0000;"> display</span><span style="background-color: #f5f5f5; color: #000000;">:</span><span style="background-color: #f5f5f5; color: #0000ff;"> block</span><span style="background-color: #f5f5f5; color: #000000;">;</span><span style="background-color: #f5f5f5; color: #ff0000;"> border</span><span style="background-color: #f5f5f5; color: #000000;">:</span><span style="background-color: #f5f5f5; color: #0000ff;"> 1px solid black</span><span style="background-color: #f5f5f5; color: #000000;">;</span><span style="background-color: #f5f5f5; color: #ff0000;"> height</span><span style="background-color: #f5f5f5; color: #000000;">:</span><span style="background-color: #f5f5f5; color: #0000ff;"> 300px</span><span style="background-color: #f5f5f5; color: #000000;">;</span><span style="background-color: #f5f5f5; color: #ff0000;"> width</span><span style="background-color: #f5f5f5; color: #000000;">:</span><span style="background-color: #f5f5f5; color: #0000ff;"> 100%</span><span style="background-color: #f5f5f5; color: #000000;">;</span> <span style="background-color: #f5f5f5; color: #000000;">}</span>
+<span style="color: #008080;"> 9</span> <span style="background-color: #f5f5f5; color: #800000;">        #input </span><span style="background-color: #f5f5f5; color: #000000;">{</span><span style="background-color: #f5f5f5; color: #ff0000;"> width</span><span style="background-color: #f5f5f5; color: #000000;">:</span><span style="background-color: #f5f5f5; color: #0000ff;"> 80px</span><span style="background-color: #f5f5f5; color: #000000;">;</span><span style="background-color: #f5f5f5; color: #ff0000;"> height</span><span style="background-color: #f5f5f5; color: #000000;">:</span><span style="background-color: #f5f5f5; color: #0000ff;"> 200px</span><span style="background-color: #f5f5f5; color: #000000;">;</span><span style="background-color: #f5f5f5; color: #ff0000;"> display</span><span style="background-color: #f5f5f5; color: #000000;">:</span><span style="background-color: #f5f5f5; color: #0000ff;"> block</span><span style="background-color: #f5f5f5; color: #000000;">;</span> <span style="background-color: #f5f5f5; color: #000000;">}</span>
+<span style="color: #008080;">10</span>     <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">style</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">11</span> <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">head</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">12</span> <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">body</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">13</span>     <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">div </span><span style="color: #ff0000;">id</span><span style="color: #0000ff;">="list"</span><span style="color: #ff0000;"> style</span><span style="color: #0000ff;">="background: gray;"</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">14</span>     <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">div</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">15</span>     <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">div </span><span style="color: #ff0000;">id</span><span style="color: #0000ff;">="wrapper"</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">16</span>         <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">div </span><span style="color: #ff0000;">id</span><span style="color: #0000ff;">="d"</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">17</span>             <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">input </span><span style="color: #ff0000;">type</span><span style="color: #0000ff;">="text"</span><span style="color: #ff0000;"> id</span><span style="color: #0000ff;">="input"</span> <span style="color: #0000ff;">/&gt;</span>
+<span style="color: #008080;">18</span>         <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">div</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">19</span>     <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">div</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">20</span>     <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">script </span><span style="color: #ff0000;">type</span><span style="color: #0000ff;">="text/javascript"</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">21</span>         <span style="background-color: #f5f5f5; color: #0000ff;">var</span><span style="background-color: #f5f5f5; color: #000000;"> el </span><span style="background-color: #f5f5f5; color: #000000;">=</span> <span style="background-color: #f5f5f5; color: #0000ff;">null</span><span style="background-color: #f5f5f5; color: #000000;">;
+</span><span style="color: #008080;">22</span>         <span style="background-color: #f5f5f5; color: #0000ff;">function</span><span style="background-color: #f5f5f5; color: #000000;"> getEvent(el, e, type) {
+</span><span style="color: #008080;">23</span> <span style="background-color: #f5f5f5; color: #000000;">            e </span><span style="background-color: #f5f5f5; color: #000000;">=</span><span style="background-color: #f5f5f5; color: #000000;"> e.changedTouches[</span><span style="background-color: #f5f5f5; color: #000000;">0</span><span style="background-color: #f5f5f5; color: #000000;">];
+</span><span style="color: #008080;">24</span>             <span style="background-color: #f5f5f5; color: #0000ff;">var</span><span style="background-color: #f5f5f5; color: #000000;"> event </span><span style="background-color: #f5f5f5; color: #000000;">=</span><span style="background-color: #f5f5f5; color: #000000;"> document.createEvent(</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">MouseEvents</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">);
+</span><span style="color: #008080;">25</span> <span style="background-color: #f5f5f5; color: #000000;">            event.initMouseEvent(type, </span><span style="background-color: #f5f5f5; color: #0000ff;">true</span><span style="background-color: #f5f5f5; color: #000000;">, </span><span style="background-color: #f5f5f5; color: #0000ff;">true</span><span style="background-color: #f5f5f5; color: #000000;">, window, </span><span style="background-color: #f5f5f5; color: #000000;">1</span><span style="background-color: #f5f5f5; color: #000000;">, e.screenX, e.screenY, e.clientX, e.clientY, </span><span style="background-color: #f5f5f5; color: #0000ff;">false</span><span style="background-color: #f5f5f5; color: #000000;">, </span><span style="background-color: #f5f5f5; color: #0000ff;">false</span><span style="background-color: #f5f5f5; color: #000000;">, </span><span style="background-color: #f5f5f5; color: #0000ff;">false</span><span style="background-color: #f5f5f5; color: #000000;">, </span><span style="background-color: #f5f5f5; color: #0000ff;">false</span><span style="background-color: #f5f5f5; color: #000000;">, </span><span style="background-color: #f5f5f5; color: #000000;">0</span><span style="background-color: #f5f5f5; color: #000000;">, </span><span style="background-color: #f5f5f5; color: #0000ff;">null</span><span style="background-color: #f5f5f5; color: #000000;">);
+</span><span style="color: #008080;">26</span> <span style="background-color: #f5f5f5; color: #000000;">            event.forwardedTouchEvent </span><span style="background-color: #f5f5f5; color: #000000;">=</span> <span style="background-color: #f5f5f5; color: #0000ff;">true</span><span style="background-color: #f5f5f5; color: #000000;">;
+</span><span style="color: #008080;">27</span>             <span style="background-color: #f5f5f5; color: #0000ff;">return</span><span style="background-color: #f5f5f5; color: #000000;"> event;
+</span><span style="color: #008080;">28</span> <span style="background-color: #f5f5f5; color: #000000;">        }
+</span><span style="color: #008080;">29</span> <span style="background-color: #f5f5f5; color: #000000;">        list.addEventListener(</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">touchstart</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">, </span><span style="background-color: #f5f5f5; color: #0000ff;">function</span><span style="background-color: #f5f5f5; color: #000000;"> (e) {
+</span><span style="color: #008080;">30</span>             <span style="background-color: #f5f5f5; color: #0000ff;">var</span><span style="background-color: #f5f5f5; color: #000000;"> firstTouch </span><span style="background-color: #f5f5f5; color: #000000;">=</span><span style="background-color: #f5f5f5; color: #000000;"> e.touches[</span><span style="background-color: #f5f5f5; color: #000000;">0</span><span style="background-color: #f5f5f5; color: #000000;">]
+</span><span style="color: #008080;">31</span> <span style="background-color: #f5f5f5; color: #000000;">            el </span><span style="background-color: #f5f5f5; color: #000000;">=</span><span style="background-color: #f5f5f5; color: #000000;"> firstTouch.target;
+</span><span style="color: #008080;">32</span> <span style="background-color: #f5f5f5; color: #000000;">            t1 </span><span style="background-color: #f5f5f5; color: #000000;">=</span><span style="background-color: #f5f5f5; color: #000000;"> e.timeStamp;
+</span><span style="color: #008080;">33</span> <span style="background-color: #f5f5f5; color: #000000;">        })
+</span><span style="color: #008080;">34</span> <span style="background-color: #f5f5f5; color: #000000;">        list.addEventListener(</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">touchend</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">, </span><span style="background-color: #f5f5f5; color: #0000ff;">function</span><span style="background-color: #f5f5f5; color: #000000;"> (e) {
+</span><span style="color: #008080;">35</span> <span style="background-color: #f5f5f5; color: #000000;">            e.preventDefault();
+</span><span style="color: #008080;">36</span>             <span style="background-color: #f5f5f5; color: #0000ff;">var</span><span style="background-color: #f5f5f5; color: #000000;"> event </span><span style="background-color: #f5f5f5; color: #000000;">=</span><span style="background-color: #f5f5f5; color: #000000;"> getEvent(el, e, </span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">click</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">);
+</span><span style="color: #008080;">37</span> <span style="background-color: #f5f5f5; color: #000000;">            el.dispatchEvent(event);
+</span><span style="color: #008080;">38</span> <span style="background-color: #f5f5f5; color: #000000;">        })
+</span><span style="color: #008080;">39</span>         <span style="background-color: #f5f5f5; color: #0000ff;">var</span><span style="background-color: #f5f5f5; color: #000000;"> list </span><span style="background-color: #f5f5f5; color: #000000;">=</span><span style="background-color: #f5f5f5; color: #000000;"> document.getElementById(</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">list</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">);
+</span><span style="color: #008080;">40</span> <span style="background-color: #f5f5f5; color: #000000;">        list.addEventListener(</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">click</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">, </span><span style="background-color: #f5f5f5; color: #0000ff;">function</span><span style="background-color: #f5f5f5; color: #000000;"> (e) {
+</span><span style="color: #008080;">41</span> <span style="background-color: #f5f5f5; color: #000000;">            list.style.display </span><span style="background-color: #f5f5f5; color: #000000;">=</span> <span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">none</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">;
+</span><span style="color: #008080;">42</span> <span style="background-color: #f5f5f5; color: #000000;">            setTimeout(</span><span style="background-color: #f5f5f5; color: #0000ff;">function</span><span style="background-color: #f5f5f5; color: #000000;"> () {
+</span><span style="color: #008080;">43</span> <span style="background-color: #f5f5f5; color: #000000;">                list.style.display </span><span style="background-color: #f5f5f5; color: #000000;">=</span> <span style="background-color: #f5f5f5; color: #000000;">''</span><span style="background-color: #f5f5f5; color: #000000;">;
+</span><span style="color: #008080;">44</span> <span style="background-color: #f5f5f5; color: #000000;">            }, </span><span style="background-color: #f5f5f5; color: #000000;">1000</span><span style="background-color: #f5f5f5; color: #000000;">);
+</span><span style="color: #008080;">45</span> <span style="background-color: #f5f5f5; color: #000000;">        })
+</span><span style="color: #008080;">46</span>     <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">script</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">47</span> <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">body</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">48</span> <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">html</span><span style="color: #0000ff;">&gt;</span></pre>
+</div>
+<p>这样的话，便不会点透了，这是因为zepto touch事件全部绑定值document，所以 e.preventDefault();无用<br>结果我们这里是直接在dom上，e.preventDefault();<br>便起了作用不会触发浏览器默认事件，所以也不存在点透问题了，至此点透事件告一段落......</p>
+<h2>帮助理解的图</h2>
+<p>代码在公司写的，回家后不知道图上哪里了，各位将就看吧</p>
+<p><img src="41055968433700.png" alt=""></p>
+<p><img src="27743525721577.png" alt=""></p>
+<p><img src="1956216655665.png" alt=""></p>
+<p><img src="9592815383890.png" alt=""></p>
+<p><img src="47241055621732.png" alt=""></p>
+<h1>为什么zepto会点透/fastclick如何解决点透</h1>
+<p>我最开始就给老大说zepto处理tap事件不够好，搞了很多事情出来</p>
+<p>因为他事件是绑定到document上，先touchstart然后touchend，根据touchstart的event参数判断该dom是否注册了tap事件，有就触发</p>
+<p>于是问题来了，zepto的touchend这里有个event参数，我们event.preventDefault()，这里本来都是最上层了，这就代码压根没什么用</p>
+<p>但是fastclick处理办法不可谓不巧妙，这个库直接在touchend的时候就触发了dom上的click事件而替换了本来的触发时间</p>
+<p>意思是原来要350-400ms执行的代码突然就移到了50-100ms，然后这里虽然使用了touch事件但是touch事件是绑定到了具体dom而不是document上</p>
+<p>所以e.preventDefault是有效的，我们可以阻止冒泡，也可以阻止浏览器默认事件，这个才是fastclick的精华部分，不可谓不高啊！！！</p>
+<p>整个fastclick代码读来醍醐灌顶，今天收获很大，在此记录</p>
+<h1>后记</h1>
+<p>上面的说法有点问题，这修正一下：</p>
+<p><span>首先，我们回到原来的<span lang="EN-US">zepto</span>方案，看看他有什么问题：</span></p>
+<ol>
+<li><span lang="EN-US">&nbsp;</span><span>因为<span lang="EN-US">js</span>标准本不支持<span lang="EN-US">tap</span>事件，所以<span lang="EN-US">zepto tap</span>是<span lang="EN-US">touchstart</span>与<span lang="EN-US">touchend</span>模拟而出</span></li>
+<li><span lang="EN-US">&nbsp;zepto</span><span>在初始化时便给<span lang="EN-US">document</span>绑定<span lang="EN-US">touch</span>事件，在我们点击时根据<span lang="EN-US">event</span>参数获得当前元素，并会保存点下和离开时候的鼠标位置</span></li>
+<li><span lang="EN-US">&nbsp;</span><span>根据当前元素鼠标移动范围判断是否为类点击事件，如果是便触发已经注册好的<span lang="EN-US">tap</span>事件</span></li>
+
+</ol>
+<p><span lang="EN-US">&nbsp;</span></p>
+<p><span>然后<span lang="EN-US">fastclick</span>处理比较与<span lang="EN-US">zepto</span>基本一致，但是又有所不同</span></p>
+<ol>
+<li><span lang="EN-US">&nbsp;fastclick</span><span>是将事件绑定到你传的元素（一般是<span lang="EN-US">document.body</span>）</span></li>
+
+</ol>
+<p><span>② 在<span lang="EN-US">touchstart</span>和<span lang="EN-US">touchend</span>后（会手动获取当前点击<span lang="EN-US">el</span>），如果是类<span lang="EN-US">click</span>事件便手动触发了<span lang="EN-US">dom</span>元素的<span lang="EN-US">click</span>事件</span></p>
+<p><span>所以<span lang="EN-US">click</span>事件在<span lang="EN-US">touchend</span>便被触发，整个响应速度就起来了，触发实际与<span lang="EN-US">zepto tap</span>一样</span></p>
+<p><span lang="EN-US">&nbsp;</span></p>
+<p><span>好了，为什么基本相同的代码，<span lang="EN-US">zepto</span>会点透而<span lang="EN-US">fastclick</span>不会呢？</span></p>
+<p><span>原因是<span lang="EN-US">zepto</span>的代码里面有个<span lang="EN-US">settimeout</span>，而就算在这个代码里面执行<span lang="EN-US">e.preventDefault()</span>也不会有用</span></p>
+<p><span>这就是根本区别，因为<span lang="EN-US">settimeout</span>会将优先级较低</span></p>
+<p><span>有了定期器，当代码执行到<span lang="EN-US">setTimeout</span>的时候，<span lang="EN-US">&nbsp;</span>就会把这个代码放到<span lang="EN-US">JS</span>的引擎的最后面<span lang="EN-US">&nbsp;</span></span></p>
+<p><span>而我们代码会马上检测到<span lang="EN-US">e.preventDefault</span>，一旦加入<span lang="EN-US">settimeout</span>，<span lang="EN-US">e.preventDefault</span>便不会生效，这是<span lang="EN-US">zepto</span>点透的根本原因</span></p>
+<h1>结语</h1>
+<p>虽然，这次走了很多弯路，但是最后终于解决了问题</p>
+                </div>
+
+                <div class='span3 sidebar'>
+                    <h2>导航栏</h2>
+                    <ul class="nav nav-tabs nav-stacked">
+                             				<li><a href="http://songboriceboy.github.io/xxoo/html/ydkf/ctydqdkf01jhyp/index.html">【初探移动前端开发01】惊鸿一瞥</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/ydkf/ctydqdkf02ydsbdym/index.html">【初探移动前端开发02】移动设备的页面</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/ydkf/ctydqdkf03jQueryMobiles/index.html">【初探移动前端开发03】jQueryMobile（上）</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/ydkf/ctydqdkf04jQueryMobile(z)/index.html">【初探移动前端开发04】jQueryMobile(中)</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/ydkf/ctydqdkf05jQueryMobile(x)/index.html">【初探移动前端开发05】jQueryMobile(下)</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/ydkf/ctydqdkf05jQueryMobile(zhb)/index.html">【初探移动前端开发05】jQueryMobile(整合版)</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/ydkf/dyyyyqldyyybsxjdwbgnx/index.html">【单页应用】一起来单页应用吧，实现简单微博功能！（下）</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/ydkf/dyyyyqldyyybsxjdwbgnzj/index.html">【单页应用】一起来单页应用吧，实现简单微博功能！（总结）</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/ydkf/dfastclickymygcdjjtapdttsydddjxysd/index.html">【读fastclick源码有感】彻底解决tap“点透”，提升移动端点击响应速度</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/ydkf/fiphonerlcj(beta)/index.html">仿iphone日历插件(beta)</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/ydkf/ydzmlwmyqlyjlqrhjcsfazappb/index.html">又到周末了，我们一起来研究【浏览器如何检测是否安装app】吧</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/ydkf/tsscsbdjsdztouchsjdldk/index.html">提升手持设备点击速度之touch事件带来的坑！</a></li>
+    				                                         
+                    </ul>
+                </div>
+            </div>
+
+        </div>
+    </body>
+</html>

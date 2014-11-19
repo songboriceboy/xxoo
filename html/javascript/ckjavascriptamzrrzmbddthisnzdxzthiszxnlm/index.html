@@ -1,0 +1,567 @@
+﻿<!DOCTYPE html>
+
+<html lang="zh">
+    <head>
+        <meta charset="utf-8">
+        <meta name="description" content="android,ios" />
+        <meta name="keywords" content="android,ios" />
+
+        <title>叶小钗</title>
+        <style type='text/css'>
+            body {
+                background-color: #CCC;
+            }
+        </style>
+        <link rel="stylesheet" href="../../../css/bootstrap.css" />
+    </head>
+
+    <body>
+        <div class="container">
+
+            <h1>叶小钗</h1>
+
+            <div class='navbar navbar-inverse'>
+                <div class='navbar-inner nav-collapse' style="height: auto;">
+                    <ul class="nav">
+                              				<li><a href="http://songboriceboy.github.io/xxoo/html/blade/index.html">blade</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/css/index.html">css</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/HTML5&CSS3/index.html">HTML5&CSS3</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/index.html">javascript</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Javaxx/index.html">Java学习</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/nodejs/index.html">nodejs</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/requirejs/index.html">requirejs</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/index.html">Web前端</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/xxgw/index.html">学习感悟</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/gzdd/index.html">工作点滴</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/jkxx/index.html">接口学习</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/wfl/index.html">未分类</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/ydkf/index.html">移动开发</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/sjms/index.html">设计模式</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/mst/index.html">面试题</a></li>
+    				                      </ul>
+                </div>
+            </div>
+
+            <div id='content' class='row-fluid'>
+
+                <div class='span9 main'>
+				<div style="color:blue" align=center>【初窥javascript奥秘之让人捉摸不定的this】你知道现在this指向哪</div><br><h1>前言</h1>
+<p>之所以会有此篇文章当然还要从最近的一次面试说起，很抱歉居然又扯到面试上去看，其实不要说，平时不注意的东西，往往在面试时便会立马给你揪出来哪里有问题。</p>
+<p>比如我当时就小小的栽了个跟头，栽跟头不要紧，要紧的是我确实对js的一些问题没有了解透彻。</p>
+<p>俗话说的好，半灌水响叮当，我就那种一直认为自己js功底好的人，但真的拿出手来说，其实真的有点水了......此时再不好好学习一番，岂不是坐井观天，所以让我们开动吧！</p>
+<p><span style="color: #ff0000;">小弟最近的文章基本都是边写边发，若是各位发现什么问题，或者感觉废话太多，请包涵</span>。</p>
+<h1>闲扯作用域</h1>
+<p>你了解javascript的作用域吗？真的了解吗？那来试试这道题吧：</p>
+<div class="cnblogs_code">
+<pre><span style="color: #008080;">1</span> <span style="color: #000000;">if (!("a" in window)) {
+</span><span style="color: #008080;">2</span> <span style="color: #000000;">    var a = 1;
+</span><span style="color: #008080;">3</span> <span style="color: #000000;">} 
+</span><span style="color: #008080;">4</span> alert(a);</pre>
+</div>
+<p>好吧，拿出你的答案吧，吾已经露出了邪恶的笑容了，因为多数人看着这道题脑壳就有点昏（我会说我也有点昏吗？？？）<br>让我们一起来剥离她性感的外衣吧：</p>
+<p>第一步："a" in window这是什么意思？</p>
+<p>意思是a是window的属性吗？那我们来做个试验：</p>
+<p><img src="11151066302560.jpg" alt=""></p>
+<p><img src="49328185427145.jpg" alt=""></p>
+<p>我那个去，你会发现不管注释var a 还是不注释，a都是window的属性......于是上面答案呼之欲出！！！但我一团浆糊在我们脑袋中膨胀扩散......</p>
+<p>在js的变量作用域中有个原则：<span style="color: #ff0000;">所有变量声明都在范围作用域的顶部</span>！</p>
+<p>所以，之前我犯了一个愚蠢的错误，错的连我也吃惊，<strong><span style="color: #ff0000;">所以我把我自己喝大家都忽悠了，注意陷阱</span></strong>：</p>
+<p>其实刚刚上面的完整代码是这样的：</p>
+<div class="cnblogs_code">
+<pre>    <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">script </span><span style="color: #ff0000;">type</span><span style="color: #0000ff;">="text/javascript"</span><span style="color: #0000ff;">&gt;</span>
+<span style="background-color: #f5f5f5; color: #008000;">//</span><span style="background-color: #f5f5f5; color: #008000;">        var a;</span>
+        <span style="background-color: #f5f5f5; color: #0000ff;">var</span><span style="background-color: #f5f5f5; color: #000000;"> in_window </span><span style="background-color: #f5f5f5; color: #000000;">=</span> <span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">a</span><span style="background-color: #f5f5f5; color: #000000;">'</span> <span style="background-color: #f5f5f5; color: #0000ff;">in</span><span style="background-color: #f5f5f5; color: #000000;"> window;
+        alert(in_window);
+        </span><span style="background-color: #f5f5f5; color: #0000ff;">if</span><span style="background-color: #f5f5f5; color: #000000;"> (</span><span style="background-color: #f5f5f5; color: #000000;">!</span><span style="background-color: #f5f5f5; color: #000000;">(</span><span style="background-color: #f5f5f5; color: #000000;">"</span><span style="background-color: #f5f5f5; color: #000000;">a</span><span style="background-color: #f5f5f5; color: #000000;">"</span> <span style="background-color: #f5f5f5; color: #0000ff;">in</span><span style="background-color: #f5f5f5; color: #000000;"> window)) {
+            </span><span style="background-color: #f5f5f5; color: #0000ff;">var</span><span style="background-color: #f5f5f5; color: #000000;"> a </span><span style="background-color: #f5f5f5; color: #000000;">=</span> <span style="background-color: #f5f5f5; color: #000000;">1</span><span style="background-color: #f5f5f5; color: #000000;">;
+        } 
+        alert(a);
+    </span><span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">script</span><span style="color: #0000ff;">&gt;</span></pre>
+</div>
+<p>这样的话：in_window自然是true，这才是隐藏的真相！！！<br><img src="29255015680361.jpg" alt=""></p>
+<p>若是注释下面这些代码的话：</p>
+<p><img src="48685887667081.jpg" alt=""></p>
+<p>终于正确了，<span style="color: #ff0000;">刚刚因为自己的一个错误差点颠覆我最近学习的东西，太可怕了</span>！</p>
+<p>现在我们来看看&ldquo;所有变量申明都会在范围作用域的顶部&rdquo;是什么意思。</p>
+<p><img src="8660537374522.jpg" alt=""></p>
+<p>意思是在最下面定义的变量会自动提到上面去啦！！！所以我们定义变量时不如直接全部定义上去算啦。</p>
+<h3>回到本题：</h3>
+<div class="cnblogs_code">
+<pre><span style="color: #000000;">if (!("a" in window)) {
+    var a = 1;
+} 
+alert(a);</span></pre>
+</div>
+<p>其实他该是这个样子的。。。。</p>
+<div class="cnblogs_code">
+<pre><span style="color: #000000;">var a;
+if (!("a" in window)) {
+    a = 1;
+} 
+alert(a);</span></pre>
+</div>
+<p>他将if里面的申明也提前了，怎么样不服气吧，其实我也是有点不服气，我想再试试：</p>
+<div class="cnblogs_code">
+<pre><span style="color: #000000;">var s = '';
+if (false) {
+    var a = 1;
+}</span></pre>
+</div>
+<p>请注意，其中s没有任何意义，就是为了我方便设置断点：<br><img src="37880009254654.jpg" alt=""></p>
+<p><span style="color: #ff0000;">至此真相出现，无论如何a的申明都会提前包括以下几种情况：</span></p>
+<div class="cnblogs_code">
+<pre><span style="color: #000000;"><span style="font-family: Courier New; background-color: #f5f5f5;">var s = '';<br>while (false) {<br>&nbsp;&nbsp;&nbsp; var a = 1;<br>}</span></span></pre>
+</div>
+<h1>变形一</h1>
+<p>学而不思则罔，我们将题目做个简单变形看看：</p>
+<div class="cnblogs_code">
+<pre><span style="color: #000000;">if (!("a" in window)) {
+    a = 1;
+}
+alert(a);</span></pre>
+</div>
+<p>在if里面去掉了申明，这道题就该是&ldquo;1&rdquo;了，但是若是if里面的代码不被执行的话就会报错了哟；</p>
+<h1>变形2：碰上了函数</h1>
+<p>刚刚那个现在看来就相对简单了，现在我们看看如此如此这般这般又会如何（我承认我闲的蛋疼好了）？</p>
+<div class="cnblogs_code">
+<pre><span style="color: #000000;">if (!("a" in window)) {
+    var a = function () { window.a = 1; }
+}
+alert(a);</span></pre>
+</div>
+<p>这样一改真的很蛋疼啦，这里不管a被定义为什么，但他是函数表达式，函数表达式就和原来一样，所以不变，if里面不会被执行！</p>
+<p>那若是这个样子呢？</p>
+<div class="cnblogs_code">
+<pre><span style="color: #000000;">if (!("a" in window)) {
+    function a() { window.a = 1; }
+}
+alert(a);</span></pre>
+</div>
+<p>这个场景其实我也傻了，那么设置个断点看看：<br><img src="7625988720707.jpg" alt=""></p>
+<p>看来a并不在window中，所以会执行if中的代码；</p>
+<p>这里却又引出了另一个问题：<span style="color: #ff0000;"><strong>到底变量提前或者函数提前</strong></span>？</p>
+<div class="cnblogs_code">
+<pre><span style="color: #000000;">var a = '1';
+function a(){}
+alert(a);</span></pre>
+</div>
+<div class="cnblogs_code">
+<pre><span style="color: #000000;">function a() { }
+var a = '1';
+alert(a);</span></pre>
+</div>
+<p>这两种写法会导致最后输出有所不同吗？？？<br>答案是不会，他们的的结果都是1，<span style="color: #ff0000;">原因就是函数式申明更加被优先啦，所以无论怎么写函数式什么都在最前面</span>！！</p>
+<div class="cnblogs_code">
+<pre><span style="color: #000000;">function a() {return false; }
+if (a()) {
+    var a = '1';
+}
+s = '';
+alert(a);</span></pre>
+</div>
+<div class="cnblogs_code">
+<pre><span style="color: #000000;">function a() {return  true; }
+if (a()) {
+    var a = '1';
+}
+s = '';
+alert(a);</span></pre>
+</div>
+<p>我们前面说过，无论如何，if里面的申明会提前，那么我们这两道题可以改写一下：</p>
+<div class="cnblogs_code">
+<pre><span style="color: #000000;">var a = function () { return true };
+var a;
+if (a()) {
+    a = '1';
+}
+s = '';
+alert(a);</span></pre>
+</div>
+<p><img src="21401578962435.jpg" alt=""></p>
+<p><span style="color: #ff0000;">注意来</span>：这里的10行，虽说申明了变量a却没有给其赋值，所以a还是函数，这从这里也可以看出来：</p>
+<p><img src="38843469680878.jpg" alt=""></p>
+<p>所以上面两个答案就没问题了，一个打印函数，一个打印数字1；</p>
+<h1>变形三</h1>
+<div class="cnblogs_code">
+<pre><span style="color: #008080;">1</span> <span style="color: #000000;">var a = 1,
+</span><span style="color: #008080;">2</span> <span style="color: #000000;">b = function a(x) { x &amp;&amp; b(--x); }; 
+</span><span style="color: #008080;">3</span> alert(a);</pre>
+</div>
+<p>现在我不运行代码试试是否可以解析，答案是不可以。。。我解析不出来，还是运行算了吧，我太水了！<br><strong><span style="color: #ff0000;">这里涉及几个重要概念</span></strong>：</p>
+<div class="cnblogs_code">
+<pre><span style="color: #000000;">1 变量声明在进入执行上下文就完成了
+2 函数声明也是提前的，所有的函数声明都在执行代码之前都已经完成了声明，和变量声明一样
+3 函数声明会覆盖变量声明，但不会覆盖变量赋值，如我们上面看到的</span></pre>
+</div>
+<p>想要理清问题，我还是老老实实一步步做工作吧：</p>
+<p><img src="28443977434496.jpg" alt=""></p>
+<p>根据规则三，这个结果是没有问题的，再看看下面的</p>
+<p><img src="16408498956582.jpg" alt=""></p>
+<p>&nbsp;<img src="22812937387108.jpg" alt=""></p>
+<p>从这里可以看出，若是注释了var a，这里function a()压根与它没什么事情，我们可以直接将之忽略（<span style="color: #ff0000;">可能有误</span>）</p>
+<p>所以该题可以理解为：</p>
+<div class="cnblogs_code">
+<pre><span style="color: #000000;">var a = 1,
+b = function (x) { x &amp;&amp; b(--x); }; 
+alert(a);</span></pre>
+</div>
+<p>坑爹的我本来是想对js中的this做次研究的，没想到在作用域相关的东西上转了这么久，但是经过这次折腾我相信在这块地方我应该不会出问题了吧？？？</p>
+<h1>进入正题</h1>
+<p>通常情况下, this代表的是前面提到的Globle Object，也就是Browser环境时的window Object.</p>
+<p>当function作为某一对象的 method 时, this 代表这个 function 所属的 object</p>
+<p>其实这里有个原则&ldquo;<strong><span style="color: #ff0000;">javascript中的this永远指向其函数拥有者</span></strong>&rdquo;或者&ldquo;<span style="color: #ff0000;"><strong>this指针代表的是执行当前代码的对象的所有者</strong></span>&rdquo;</p>
+<p>说到javascript中的this就不能不提javascript中的函数，说到javascript中的函数就会涉及到闭包，我今天就以以下几个方面研究下javascript中的this：</p>
+<p>1 一般情况下的this</p>
+<p>2&nbsp;对象调用中的this</p>
+<p>3&nbsp;函数调用中的this</p>
+<p>4&nbsp;页面dom事件对象中的this</p>
+<p>5&nbsp;大杂烩</p>
+<h1>正常情况下的this</h1>
+<p>正常情况下的this就是windows，我会乱说？</p>
+<p><img src="19528758533321.jpg" alt=""></p>
+<div class="cnblogs_code">
+<pre><span style="color: #000000;">var a = 1;
+alert(window.a);</span></pre>
+</div>
+<p>申明a其实就在window上申明的，其实我各位说这些干嘛呢。。。。大家都知道呀，所以跳过算啦。</p>
+<h1>对象中的this</h1>
+<p>&nbsp;对象中的this情况相对复杂一点可能和我们后面的原型扯上关系，至于原因我们后面再说，先看看下面这个例子：</p>
+<div class="cnblogs_code">
+<pre><span style="color: #008080;">1</span> <span style="color: #0000ff;">var</span> person =<span style="color: #000000;"> {
+</span><span style="color: #008080;">2</span>     name: '叶小钗'<span style="color: #000000;">,
+</span><span style="color: #008080;">3</span>     getName: <span style="color: #0000ff;">function</span><span style="color: #000000;"> () {
+</span><span style="color: #008080;">4</span>         <span style="color: #0000ff;">var</span> scope = <span style="color: #0000ff;">this</span><span style="color: #000000;">;
+</span><span style="color: #008080;">5</span> <span style="color: #000000;">        alert(scope.name);
+</span><span style="color: #008080;">6</span>         <span style="color: #0000ff;">var</span> s = ''<span style="color: #008000;">//</span><span style="color: #008000;">无实际意义，用于设置断点</span>
+<span style="color: #008080;">7</span> <span style="color: #000000;">    }
+</span><span style="color: #008080;">8</span> <span style="color: #000000;">};
+</span><span style="color: #008080;">9</span> person.getName();</pre>
+</div>
+<p><img src="49622999112268.jpg" alt=""></p>
+<p>这个例子亦很平常，仿佛一切理所当然，当我拿出来说是想证明一件事情&ldquo;this指向其函数拥有者&rdquo;，这次拥有者为person所以打印叶小钗理所当然<br>我们简单做下变形：</p>
+<div class="cnblogs_code">
+<pre><span style="color: #008080;"> 1</span> <span style="color: #0000ff;">var</span> name = '素还真'<span style="color: #000000;">;
+</span><span style="color: #008080;"> 2</span> <span style="color: #0000ff;">function</span><span style="color: #000000;"> global_getName() {
+</span><span style="color: #008080;"> 3</span>     <span style="color: #0000ff;">var</span> scope = <span style="color: #0000ff;">this</span><span style="color: #000000;">;
+</span><span style="color: #008080;"> 4</span>     <span style="color: #0000ff;">return</span><span style="color: #000000;"> scope.name;
+</span><span style="color: #008080;"> 5</span>     <span style="color: #0000ff;">var</span> s = ''<span style="color: #008000;">//</span><span style="color: #008000;">无实际意义，用于设置断点</span>
+<span style="color: #008080;"> 6</span> <span style="color: #000000;">}
+</span><span style="color: #008080;"> 7</span> <span style="color: #0000ff;">var</span> person =<span style="color: #000000;"> {
+</span><span style="color: #008080;"> 8</span>     name: '叶小钗'<span style="color: #000000;">,
+</span><span style="color: #008080;"> 9</span>     getName: <span style="color: #0000ff;">function</span><span style="color: #000000;"> () {
+</span><span style="color: #008080;">10</span>         <span style="color: #0000ff;">var</span> scope = <span style="color: #0000ff;">this</span><span style="color: #000000;">;
+</span><span style="color: #008080;">11</span>         <span style="color: #0000ff;">return</span><span style="color: #000000;"> scope.name;
+</span><span style="color: #008080;">12</span>         <span style="color: #0000ff;">var</span> s = ''<span style="color: #008000;">//</span><span style="color: #008000;">无实际意义，用于设置断点</span>
+<span style="color: #008080;">13</span> <span style="color: #000000;">    }
+</span><span style="color: #008080;">14</span> <span style="color: #000000;">};
+</span><span style="color: #008080;">15</span> <span style="color: #0000ff;">var</span> s1 =<span style="color: #000000;"> global_getName();
+</span><span style="color: #008080;">16</span> <span style="color: #0000ff;">var</span> s2 =<span style="color: #000000;"> person.getName();
+</span><span style="color: #008080;">17</span> 
+<span style="color: #008080;">18</span> <span style="color: #0000ff;">var</span> s = '';</pre>
+</div>
+<p><img src="4986387913649.jpg" alt=""></p>
+<p>也没任何问题，好的我们再做一次变形：</p>
+<div class="cnblogs_code">
+<pre><span style="color: #0000ff;">var</span> name = '素还真'<span style="color: #000000;">;
+</span><span style="color: #0000ff;">function</span><span style="color: #000000;"> global_getName() {
+    </span><span style="color: #0000ff;">var</span> scope = <span style="color: #0000ff;">this</span><span style="color: #000000;">;
+    </span><span style="color: #0000ff;">return</span><span style="color: #000000;"> scope.name;
+    </span><span style="color: #0000ff;">var</span> s = ''<span style="color: #008000;">//</span><span style="color: #008000;">无实际意义，用于设置断点</span>
+<span style="color: #000000;">}
+</span><span style="color: #0000ff;">var</span> person =<span style="color: #000000;"> {
+    name: </span>'叶小钗'<span style="color: #000000;">,
+    getName: global_getName
+};
+</span><span style="color: #0000ff;">var</span> s1 =<span style="color: #000000;"> global_getName();
+</span><span style="color: #0000ff;">var</span> s2 =<span style="color: #000000;"> person.getName();
+
+</span><span style="color: #0000ff;">var</span> s = '';</pre>
+</div>
+<p>我们看到getName被指向了global_getName，那我们再调用person.getName会不会有所不同呢？<br>当然不会了！我发现我自己被自己感动了，完全在说一些没意义的东西，所以下面这种情况是不可能骗到大家的，我就不绕弯子了：</p>
+<div class="cnblogs_code">
+<pre><span style="color: #0000ff;">var</span> name = '素还真'<span style="color: #000000;">;
+</span><span style="color: #0000ff;">function</span><span style="color: #000000;"> global_getName() {
+    </span><span style="color: #0000ff;">var</span> scope = <span style="color: #0000ff;">this</span><span style="color: #000000;">;
+    </span><span style="color: #0000ff;">return</span><span style="color: #000000;"> scope.name;
+    </span><span style="color: #0000ff;">var</span> s = ''<span style="color: #008000;">//</span><span style="color: #008000;">无实际意义，用于设置断点</span>
+<span style="color: #000000;">}
+</span><span style="color: #0000ff;">var</span> person =<span style="color: #000000;"> {
+    name: </span>'叶小钗'<span style="color: #000000;">,
+    getName: global_getName
+};
+</span><span style="color: #0000ff;">var</span> hehe =<span style="color: #000000;"> {
+    name: </span>'笑吧'<span style="color: #000000;">,
+    getName: person.getName
+};
+
+</span><span style="color: #0000ff;">var</span> s1 = global_getName();<span style="color: #008000;">//</span><span style="color: #008000;">素还真</span>
+<span style="color: #0000ff;">var</span> s2 = person.getName();<span style="color: #008000;">//</span><span style="color: #008000;">叶小钗</span>
+<span style="color: #0000ff;">var</span> s3 = hehe.getName(); <span style="color: #008000;">//</span><span style="color: #008000;">笑吧</span></pre>
+</div>
+<h1>函数中的this</h1>
+<p>要说函数的话，我先说说javascript中函数调用有四种方式和函数中this的相关东东：</p>
+<div class="cnblogs_code">
+<pre>1<span style="color: #000000;"> 方法调用模式：作为对象属性调用obj.func()
+</span>2<span style="color: #000000;"> 函数调用模式：指向全局，直接调用 func()
+</span>3<span style="color: #000000;"> 构造器调用模式：new方式调用，会隐式创建一个新对象其隐藏链接至函数prototype成员
+</span>4 call/apply调用模式：动态改变this指向的怪咖</pre>
+</div>
+<div class="cnblogs_code">
+<pre><span style="color: #000000;">函数代码中this值的第一个特性（同时也是最主要的特性）就是：它并非静态的绑定在函数上。
+
+正如此前提到的，this的值是在进入执行上下文（Excution context）的阶段确定的，并且在函数代码中的话，其值每次都不尽相同。
+
+然而，一旦进入执行代码阶段，其值就不能改变了。如果要想给this赋一个新的值是不可能的，因为在那时this根本就不是变量了。</span></pre>
+</div>
+<p>对于函数中this的设定被认为是一个失误，但谁管他那么多呢。。。&nbsp;</p>
+<p>现在回到正文，请看以下例子：</p>
+<div class="cnblogs_code">
+<pre><span style="color: #008080;"> 1</span> <span style="color: #0000ff;">function</span><span style="color: #000000;"> func() {
+</span><span style="color: #008080;"> 2</span>     <span style="color: #0000ff;">var</span> scope = <span style="color: #0000ff;">this</span><span style="color: #000000;">;
+</span><span style="color: #008080;"> 3</span>     <span style="color: #0000ff;">function</span><span style="color: #000000;"> s_func() {
+</span><span style="color: #008080;"> 4</span>         <span style="color: #0000ff;">var</span> s_scope = <span style="color: #0000ff;">this</span><span style="color: #000000;">;
+</span><span style="color: #008080;"> 5</span>         <span style="color: #0000ff;">var</span> s1 =<span style="color: #000000;"> scope;
+</span><span style="color: #008080;"> 6</span>         <span style="color: #0000ff;">var</span> s2 =<span style="color: #000000;"> s_scope;
+</span><span style="color: #008080;"> 7</span>         <span style="color: #0000ff;">var</span> s = ''<span style="color: #000000;">;
+</span><span style="color: #008080;"> 8</span> <span style="color: #000000;">    }
+</span><span style="color: #008080;"> 9</span> <span style="color: #000000;">    s_func();
+</span><span style="color: #008080;">10</span> <span style="color: #000000;">}
+</span><span style="color: #008080;">11</span> <span style="color: #0000ff;">this</span>.func();</pre>
+</div>
+<p><img src="26513037283885.jpg" alt=""></p>
+<p>这里s1，s2都指向全局，这是为什么呢？我也不知道了，这里就去查询了下资料：</p>
+<p>&ldquo;&nbsp;<strong>函数上下文中<em>this</em></strong><strong>的值是函数调用者提供并且由当前调用表达式的形式而定的。如果在调用括号()</strong><strong>的左边有引用类型的值，那么<em>this</em></strong><strong>的值就会设置为该引用类型值的base</strong><strong>对象。 </strong><strong>所有其他情况下（非引用类型），<em>this</em></strong><strong>的值总是null</strong><strong>。然而，由于null</strong><strong>对于<em>this</em></strong><strong>来说没有任何意义，因此会隐式转换为全局对象。&ldquo;</strong></p>
+<p style="text-align: right;"><strong>&mdash;&mdash;<a id="cb_post_title_url" class="postTitle2" href="http://www.cnblogs.com/rush/archive/2012/07/31/2617429.html">Javascript this 的一些学习总结</a></strong></p>
+<p>&rdquo;当调用括号的左边不是引用类型而是其它类型，这个值自动设置为null，结果为全局对象。&ldquo;</p>
+<p style="text-align: right;">&mdash;&mdash;<a id="ctl01_lnkTitle" href="http://www.cnblogs.com/TomXu/archive/2012/01/17/2310479.html">深入理解JavaScript系列（13）：This? Yes,this!</a></p>
+<p>我们随便看一个变形：</p>
+<div class="cnblogs_code">
+<pre><span style="color: #008080;"> 1</span> <span style="color: #0000ff;">var</span> person =<span style="color: #000000;"> {
+</span><span style="color: #008080;"> 2</span>     name: '叶小钗'<span style="color: #000000;">,
+</span><span style="color: #008080;"> 3</span> <span style="color: #000000;">    func: func
+</span><span style="color: #008080;"> 4</span> <span style="color: #000000;">};
+</span><span style="color: #008080;"> 5</span> <span style="color: #0000ff;">function</span><span style="color: #000000;"> func() {
+</span><span style="color: #008080;"> 6</span>     <span style="color: #0000ff;">var</span> scope = <span style="color: #0000ff;">this</span><span style="color: #000000;">;
+</span><span style="color: #008080;"> 7</span>     <span style="color: #0000ff;">function</span><span style="color: #000000;"> s_func() {
+</span><span style="color: #008080;"> 8</span>         <span style="color: #0000ff;">var</span> s_scope = <span style="color: #0000ff;">this</span><span style="color: #000000;">;
+</span><span style="color: #008080;"> 9</span>         <span style="color: #0000ff;">var</span> obj =<span style="color: #000000;"> {};
+</span><span style="color: #008080;">10</span>         obj.s1 =<span style="color: #000000;"> scope;
+</span><span style="color: #008080;">11</span>         obj.s2 =<span style="color: #000000;"> s_scope;
+</span><span style="color: #008080;">12</span>         <span style="color: #0000ff;">return</span><span style="color: #000000;"> obj;
+</span><span style="color: #008080;">13</span> <span style="color: #000000;">    }
+</span><span style="color: #008080;">14</span>     <span style="color: #0000ff;">return</span><span style="color: #000000;"> s_func ();
+</span><span style="color: #008080;">15</span> <span style="color: #000000;">}
+</span><span style="color: #008080;">16</span> 
+<span style="color: #008080;">17</span> <span style="color: #0000ff;">var</span> o = <span style="color: #0000ff;">this</span><span style="color: #000000;">.func();
+</span><span style="color: #008080;">18</span> <span style="color: #0000ff;">var</span> o2 =<span style="color: #000000;"> person.func();
+</span><span style="color: #008080;">19</span> <span style="color: #0000ff;">var</span> s = '';</pre>
+</div>
+<p><img src="28609035611536.jpg" alt=""></p>
+<p>&nbsp;这个应该比较好理解这边就不说了。</p>
+<h1>构造函数</h1>
+<p>&nbsp;以上说那么多绕过去绕过来的大家一定累了吧，好吧，开心点，我们看看下面这个东西，我想你心情会好起来的！！！</p>
+<div class="cnblogs_code">
+<pre><span style="color: #008080;"> 1</span> <span style="color: #0000ff;">var</span> name = 'window_叶小钗'<span style="color: #000000;">;
+</span><span style="color: #008080;"> 2</span> <span style="color: #0000ff;">var</span> Person = <span style="color: #0000ff;">function</span><span style="color: #000000;"> (name) {
+</span><span style="color: #008080;"> 3</span>     <span style="color: #0000ff;">this</span>.name =<span style="color: #000000;"> name;
+</span><span style="color: #008080;"> 4</span> <span style="color: #000000;">};
+</span><span style="color: #008080;"> 5</span> 
+<span style="color: #008080;"> 6</span> Person('叶小钗'<span style="color: #000000;">);
+</span><span style="color: #008080;"> 7</span> <span style="color: #0000ff;">var</span> s1 =<span style="color: #000000;"> Person.name;
+</span><span style="color: #008080;"> 8</span> <span style="color: #0000ff;">var</span> o = <span style="color: #0000ff;">new</span><span style="color: #000000;"> Person();
+</span><span style="color: #008080;"> 9</span> 
+<span style="color: #008080;">10</span> <span style="color: #0000ff;">var</span> s = '';</pre>
+</div>
+<p>这是一段可怕的代码，Person('叶小钗')事实上改变不了任何事情，但从某种意义上来说Person也是对象，</p>
+<p>所以他确确实实是存在name这个值的：</p>
+<p><img src="10469035873783.jpg" alt=""></p>
+<div class="cnblogs_code">
+<pre><span style="color: #ff0000;">因为this.name是属于该对象的子对象的属性，若不实例化便休想染指</span></pre>
+</div>
+<p>这个样子写又会有所不同，而且又产生了诡异的一幕：</p>
+<div class="cnblogs_code">
+<pre><span style="color: #0000ff;">var</span> name = 'window_叶小钗'<span style="color: #000000;">;
+</span><span style="color: #0000ff;">var</span> Person = <span style="color: #0000ff;">function</span><span style="color: #000000;"> (name) {
+    </span><span style="color: #0000ff;">this</span>.name =<span style="color: #000000;"> name;
+};
+Person.name </span>=<span style="color: #000000;"> name;
+Person.name1 </span>=<span style="color: #000000;"> name;
+</span><span style="color: #0000ff;">var</span> o = <span style="color: #0000ff;">new</span> Person('叶小钗'<span style="color: #000000;">);
+</span><span style="color: #0000ff;">var</span> s1 =<span style="color: #000000;"> Person.name;
+</span><span style="color: #0000ff;">var</span> s2 =<span style="color: #000000;"> Person.name1;
+</span><span style="color: #0000ff;">var</span> s3 =<span style="color: #000000;"> o.name;
+</span><span style="color: #0000ff;">var</span> s = '';</pre>
+</div>
+<p><img src="50650619456784.jpg" alt=""></p>
+<p>我们发现，由于Person中定义了this.name，外面无论怎么赋值都无效啦！</p>
+<h1>关于动态指定this的call/apply</h1>
+<p>每个函数都有一个方法call可以动态指定this指向，第一个参数便是this指向，不传或者null更具前面说的便是window，第二个参数为参数：</p>
+<div class="cnblogs_code">
+<pre><span style="color: #008080;"> 1</span> <span style="color: #0000ff;">var</span> name = 'window_叶小钗'<span style="color: #000000;">;
+</span><span style="color: #008080;"> 2</span> <span style="color: #0000ff;">function</span><span style="color: #000000;"> getName() {
+</span><span style="color: #008080;"> 3</span>     <span style="color: #0000ff;">return</span> <span style="color: #0000ff;">this</span><span style="color: #000000;">.name;
+</span><span style="color: #008080;"> 4</span> <span style="color: #000000;">}
+</span><span style="color: #008080;"> 5</span> <span style="color: #0000ff;">var</span> person = { name: '叶小钗'<span style="color: #000000;"> };
+</span><span style="color: #008080;"> 6</span> <span style="color: #0000ff;">var</span> s1 =<span style="color: #000000;"> getName();
+</span><span style="color: #008080;"> 7</span> <span style="color: #0000ff;">var</span> s2 =<span style="color: #000000;"> getName.call();
+</span><span style="color: #008080;"> 8</span> <span style="color: #0000ff;">var</span> s3 = getName.call(<span style="color: #0000ff;">null</span><span style="color: #000000;">);
+</span><span style="color: #008080;"> 9</span> <span style="color: #0000ff;">var</span> s4 =<span style="color: #000000;"> getName.call(undefined);
+</span><span style="color: #008080;">10</span> <span style="color: #0000ff;">var</span> s5 =<span style="color: #000000;"> getName.call(person);
+</span><span style="color: #008080;">11</span> <span style="color: #0000ff;">var</span> s = '';</pre>
+</div>
+<p><img src="157463610237292.jpg" alt=""></p>
+<h1>dom事件中的this</h1>
+<div class="cnblogs_code">
+<pre>&lt;div id="wl" onclick="test_this(this)"&gt;<span style="color: #000000;">
+    点击我试试</span>&lt;/div&gt;
+&lt;script type="text/javascript"&gt;
+    <span style="color: #0000ff;">function</span><span style="color: #000000;"> test_this(el) {
+        </span><span style="color: #0000ff;">var</span> scope = <span style="color: #0000ff;">this</span><span style="color: #000000;">;
+        </span><span style="color: #0000ff;">var</span> s = ''<span style="color: #000000;">;
+    }
+</span>&lt;/script&gt;</pre>
+</div>
+<p><img src="46257128919425.jpg" alt=""></p>
+<p>我们看到el是dom对象，this指向的是window，那么换个写法看看：</p>
+<div class="cnblogs_code">
+<pre>&lt;div id="wl"&gt;<span style="color: #000000;">
+    点击我试试</span>&lt;/div&gt;
+&lt;script type="text/javascript"&gt;
+    <span style="color: #0000ff;">function</span><span style="color: #000000;"> test_this(e) {
+        </span><span style="color: #0000ff;">var</span> scope = <span style="color: #0000ff;">this</span><span style="color: #000000;">;
+        </span><span style="color: #0000ff;">var</span> s = ''<span style="color: #000000;">;
+    }
+    document.getElementById(</span>'wl').onclick =<span style="color: #000000;"> test_this;
+</span>&lt;/script&gt;</pre>
+</div>
+<p><img src="235836610378301.jpg" alt=""></p>
+<p>这个样子，this指向的是dom对象，我们再试试：</p>
+<div class="cnblogs_code">
+<pre>&lt;div id="wl"&gt;<span style="color: #000000;">
+    点击我试试</span>&lt;/div&gt;
+&lt;script type="text/javascript"&gt;
+    <span style="color: #0000ff;">function</span><span style="color: #000000;"> test_this(e) {
+        </span><span style="color: #0000ff;">var</span> scope = <span style="color: #0000ff;">this</span><span style="color: #000000;">;
+        </span><span style="color: #0000ff;">var</span> s = ''<span style="color: #000000;">;
+    }
+    document.getElementById(</span>'wl').addEventListener('click', test_this, <span style="color: #0000ff;">false</span><span style="color: #000000;">);
+</span>&lt;/script&gt;</pre>
+</div>
+<p>这样结果与上面相同。</p>
+<h1>检测学习成果的时间</h1>
+<p>现在，我感觉我对javascript中的this好像比较清楚了，是吗？？来大家一起来做两道题吧，大家记得独立做下哦：</p>
+<h3>作用域：</h3>
+<div class="cnblogs_code">
+<pre>a = 2<span style="color: #000000;">;
+</span><span style="color: #0000ff;">var</span> a = 1<span style="color: #000000;">;
+alert(a);</span></pre>
+</div>
+<div class="cnblogs_code">
+<pre>(<span style="color: #0000ff;">function</span><span style="color: #000000;"> () {
+    baz </span>= 5<span style="color: #000000;">;
+    </span><span style="color: #0000ff;">var</span> bar = 10<span style="color: #000000;">;
+})();
+alert(baz);</span></pre>
+</div>
+<h3>this：</h3>
+<p>&nbsp;<span style="color: #ff0000;">确实想不到合适的了，各位园友给推荐两个呗</span>。</p>
+<p>&nbsp;</p>
+<h1>结语</h1>
+<p>通过此次的研究学习，我感觉我对this的了解相对深入一点了，在后面工作中再注意总结一番，我相信我可以完全掌握this的特性！</p>
+<p><span style="color: #ff0000;">小弟现在还很水，又是边写边发文，若是有不对或是理解有误的地方还请各位大侠提出来哟</span>。</p>
+<p>&nbsp;</p>
+<p>&nbsp;参考资料：</p>
+<p><a id="cb_post_title_url" href="http://www.cnblogs.com/KevinYang/archive/2009/07/14/1522915.html">详解Javascript 中的this指针</a></p>
+<p><a id="ctl01_lnkTitle" href="http://www.cnblogs.com/TomXu/archive/2012/01/17/2310479.html">深入理解JavaScript系列（13）：This? Yes,this!</a></p>
+<p><a id="cb_post_title_url" class="postTitle2" href="http://www.cnblogs.com/rush/archive/2012/07/31/2617429.html">Javascript this 的一些学习总结</a></p>
+<p><strong>如果你觉得这篇文章还不错，请帮忙点击一下推荐，谢谢！</strong></p>
+<p><span style="color: #ff0000;">PS：小弟写了3个多小时，没有功劳也有苦劳，没有苦劳也有疲劳啊！！！若是各位觉得还能读，请猛击顶！！！他们说连续点会顶多次我不知道是不是呢？</span></p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+                </div>
+
+                <div class='span3 sidebar'>
+                    <h2>导航栏</h2>
+                    <ul class="nav nav-tabs nav-stacked">
+                             				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/javascriptzdyxhxzsdyjxyzyddf/index.html">javascript中的一些核心知识点以及需要注意的地方</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/[zd]webappdyhzlyzydqdyhdpyjlkkb/index.html">[置顶]【webapp的优化整理】要做移动前端优化的朋友进来看看吧</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/[zd]yddjrwtyjjavascriptsjjzxjsjydjr/index.html">[置顶]【移动端兼容问题研究】javascript事件机制详解（涉及移动兼容）</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/gruntzhb30fzxhsygruntdbqddm/index.html">【grunt整合版】30分钟学会使用grunt打包前端代码</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/gruntdyd30fzxhsygruntdbqddm/index.html">【grunt第一弹】30分钟学会使用grunt打包前端代码</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/gruntdsdgruntzqdsjxmzdyy/index.html">【grunt第三弹】grunt在前端实际项目中的应用</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/gruntded30fzxhsygruntdbqddm02/index.html">【grunt第二弹】30分钟学会使用grunt打包前端代码（02）</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/IScrollsrxxtpyddhadlqs/index.html">【IScroll深入学习】突破移动端黑暗的利器（上）</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/IScrollsrxxjjIScrollynzz/index.html">【IScroll深入学习】解决IScroll疑难杂症</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/iScrollymxx00mniScroll/index.html">【iScroll源码学习00】模拟iScroll</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/iScrollymxx01zbjd/index.html">【iScroll源码学习01】准备阶段</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/iScrollymxx02fjiScrollsghxsjd/index.html">【iScroll源码学习02】分解iScroll三个核心事件点</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/iScrollymxx03iScrollsjjzygdtdsx/index.html">【iScroll源码学习03】iScroll事件机制与滚动条的实现</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/iScrollymxx04flIScrollhx/index.html">【iScroll源码学习04】分离IScroll核心</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/javascriptpxdytyyjc/index.html">【javascript培训第一天】语言基础</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/javascriptpxdstcybl/index.html">【javascript培训第三天】查遗补漏</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/javascriptpxdetDOMyBOM/index.html">【javascript培训第二天】DOM与BOM</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/javascriptjzdsk01mkhbc/index.html">【javascript激增的思考01】模块化编程</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/javascriptjzdsk02mkhyMVC/index.html">【javascript激增的思考02】模块化与MVC</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/javascriptjzdsk03MVVMyKnockout/index.html">【javascript激增的思考03】MVVM与Knockout</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/javascriptjzdsk04MVCyBackbonejs(beta)/index.html">【javascript激增的思考04】MVC与Backbonejs(beta)</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/javascriptmxdxzlrwmyqltkdzb01/index.html">【javascript面向对象之路】让我们一起来坦克大战吧01</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/NodeJSxxbj04xwfbxt/index.html">【NodeJS学习笔记04】新闻发布系统</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/requireJSymxx01ljzgrequireJSdjg/index.html">【requireJS源码学习01】了解整个requireJS的结构</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/requireJSymxx02datamainjzdsx/index.html">【requireJS源码学习02】datamain加载的实现</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/requireJSymxx03xjrequireJSdjzlc/index.html">【requireJS源码学习03】细究requireJS的加载流程</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/UIcjkfygjdrlcjs/index.html">【UI插件】开发一个简单日历插件（上）</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/UIcjjddrlcjxxxMVCsx/index.html">【UI插件】简单的日历插件（下）——学习MVC思想</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/zeptoxxbj01hxff$()/index.html">【zepto学习笔记01】核心方法$()</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/zeptoxxbj01hxff$()b/index.html">【zepto学习笔记01】核心方法$()（补）</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/zeptoxxbj02lsd/index.html">【zepto学习笔记02】零碎点</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/zeptoxxbj03sjjz/index.html">【zepto学习笔记03】事件机制</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/ycmsztjavascriptzdjc/index.html">【一次面试】再谈javascript中的继承</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/ztbackbone01mxModel/index.html">【再探backbone01】模型Model</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/ztbackbone02jhCollection/index.html">【再探backbone02】集合Collection</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/ztbackbone03bkydyyysltgym/index.html">【再探backbone03】博客园单页应用实例（提供源码）</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/ztbackbone04dyyydjslycl/index.html">【再探backbone04】单页应用的基石路由处理</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/ctUnderscorezsmbyq/index.html">【初探Underscore】再说模版引擎</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/ckjavascriptamzAjaxjsxnszddAjax/index.html">【初窥javascript奥秘之Ajax】简述下你所知道的Ajax？</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/ckjavascriptamzsjmpnxnwmyqmdp/index.html">【初窥javascript奥秘之事件冒泡】那些年我们一起冒的泡</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/ckjavascriptamzsjjzldtygdj/index.html">【初窥javascript奥秘之事件机制】论“点透”与“鬼点击”</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/ckjavascriptamzrrzmbddthisnzdxzthiszxnlm/index.html">【初窥javascript奥秘之让人捉摸不定的this】你知道现在this指向哪里吗？？？</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/ckjavascriptamzbbydxbdhlqbcl/index.html">【初窥javascript奥秘之闭包】叶大侠病都好了，求不踩了：）</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/ckjavascriptamzmxdxfzyjc/index.html">【初窥javascript奥秘之面向对象】封装与继承</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/qdmdsjdjgjdnzdljm/index.html">【前端盲点】事件的几个阶段你真的了解么？？？</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/dyyyviewymodelxgsl/index.html">【单页应用】view与model相关梳理</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/dyyyyqldyyybsxjdwbgns/index.html">【单页应用】一起来单页应用吧，实现简单微博功能！（上）</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/dyyyqjkzqappyggxsm/index.html">【单页应用】全局控制器app应该干些什么？</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/dyyywmgrhclkjdcccjgx/index.html">【单页应用】我们该如何处理框架弹出层层级关系？</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/dyyyljMVC/index.html">【单页应用】理解MVC</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/dyyyztxjzviewzjygrhtx/index.html">【单页应用之通信机制】view之间应该如何通信</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/dyyyjkzHistoryxsHistorydgdyyydm/index.html">【单页应用巨坑之History】细数History带给单页应用的噩梦</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/xtszeptofindysyjiosdcjpknrnhtt/index.html">【小贴士】zeptofind元素以及ios弹出键盘可能让你很头疼</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/xtsgytransitionEndanimatedygyqgs/index.html">【小贴士】关于transitionEndanimate的一个有趣故事</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/xtsgzzdbbysjwtdzzmp/index.html">【小贴士】工作中的”闭包“与事件委托的”阻止冒泡“</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/xtstytjavascriptzdreplace/index.html">【小贴士】探一探javascript中的replace</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/xtsxnjpyfixeddgydddt/index.html">【小贴士】虚拟键盘与fixed带给移动端的痛！</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/ttjavascriptsjjzdcsxyl/index.html">【探讨】javascript事件机制底层实现原理</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/mkhbcljrequireJSsxygjddmkjzq/index.html">【模块化编程】理解requireJS实现一个简单的模块加载器</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/zyJavaScriptmfjmtsdqlxkjzbfgndcljz/index.html">【转】【译】JavaScript魔法揭秘探索当前流行框架中部分功能的处理机制</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/zxjavascriptgszl01javascriptcszds/index.html">【追寻javascript高手之路01】javascript参数知多少？</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/zxjavascriptgszl02blzyyzds/index.html">【追寻javascript高手之路02】变量、作用域知多少？</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/zxjavascriptgszl03javascriptdxdld/index.html">【追寻javascript高手之路03】javascript对象大乱斗</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/zxjavascriptgszl04ljprototype/index.html">【追寻javascript高手之路04】理解prototype</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/zxjavascriptgszl05ljsjl/index.html">【追寻javascript高手之路05】理解事件流</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/zgbj04zxzzsj(2)/index.html">【重构笔记04】重新组织数据(2)</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/zgbj05jhtjbds/index.html">【重构笔记05】简化条件表达式</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/zgbj06jhhsdy/index.html">【重构笔记06】简化函数调用</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/ycmshgttbxysjfl/index.html">一次面试回顾——探讨表现与数据分离</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/dhzwebappzdxz/index.html">动画在webapp中的现状</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/ysandriodlqhthdomclicksjqtsxwttj/index.html">原生andriod浏览器回退后dom（click）事件全体失效问题探究</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/scsbdjxysdsbsjytouchsjdnxs/index.html">手持设备点击响应速度，鼠标事件与touch事件的那些事</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/mnbjQueryzeptohxymfx/index.html">迷你版jQuery——zepto核心源码分析</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/dbsgzdlwmlyqxjdddomxzqb/index.html">都别说工资低了，我们来一起写简单的dom选择器吧！</a></li>
+    				                                         
+                    </ul>
+                </div>
+            </div>
+
+        </div>
+    </body>
+</html>

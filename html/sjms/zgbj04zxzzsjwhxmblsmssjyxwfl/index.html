@@ -1,0 +1,633 @@
+﻿<!DOCTYPE html>
+
+<html lang="zh">
+    <head>
+        <meta charset="utf-8">
+        <meta name="description" content="android,ios" />
+        <meta name="keywords" content="android,ios" />
+
+        <title>叶小钗</title>
+        <style type='text/css'>
+            body {
+                background-color: #CCC;
+            }
+        </style>
+        <link rel="stylesheet" href="../../../css/bootstrap.css" />
+    </head>
+
+    <body>
+        <div class="container">
+
+            <h1>叶小钗</h1>
+
+            <div class='navbar navbar-inverse'>
+                <div class='navbar-inner nav-collapse' style="height: auto;">
+                    <ul class="nav">
+                              				<li><a href="http://songboriceboy.github.io/xxoo/html/blade/index.html">blade</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/css/index.html">css</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/HTML5&CSS3/index.html">HTML5&CSS3</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/index.html">javascript</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Javaxx/index.html">Java学习</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/nodejs/index.html">nodejs</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/requirejs/index.html">requirejs</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/index.html">Web前端</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/xxgw/index.html">学习感悟</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/gzdd/index.html">工作点滴</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/jkxx/index.html">接口学习</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/wfl/index.html">未分类</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/ydkf/index.html">移动开发</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/sjms/index.html">设计模式</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/mst/index.html">面试题</a></li>
+    				                      </ul>
+                </div>
+            </div>
+
+            <div id='content' class='row-fluid'>
+
+                <div class='span9 main'>
+				<div style="color:blue" align=center>【重构笔记04】重新组织数据（我好像明白了什么是数据与行为分离）</div><br><h1>关于继承</h1>
+<p>因为在后续的章节中，我们经常会用到继承相关的知识，所以在这里在说一说javascript中的继承问题</p>
+<p>首先，我们来看一个后续会经常用到的方法，我们会用他来创建类</p>
+<div class="cnblogs_code">
+<pre><span style="color: #008080;"> 1</span> <span style="color: #0000ff;">var</span> base =<span style="color: #000000;"> {};
+</span><span style="color: #008080;"> 2</span> <span style="color: #0000ff;">var</span> slice =<span style="color: #000000;"> [].slice;
+</span><span style="color: #008080;"> 3</span> base.Class = <span style="color: #0000ff;">function</span><span style="color: #000000;"> (supClass, childAttr) {
+</span><span style="color: #008080;"> 4</span>     <span style="color: #008000;">//</span><span style="color: #008000;">若是第一个是类，便是继承；如果第一个是对象，第二个参数无意义，便是新建一个类</span>
+<span style="color: #008080;"> 5</span>     <span style="color: #0000ff;">if</span> (<span style="color: #0000ff;">typeof</span> supClass === 'object'<span style="color: #000000;">) {
+</span><span style="color: #008080;"> 6</span>         childAttr =<span style="color: #000000;"> supClass;
+</span><span style="color: #008080;"> 7</span>         supClass = <span style="color: #0000ff;">function</span><span style="color: #000000;"> () { };
+</span><span style="color: #008080;"> 8</span> <span style="color: #000000;">    }
+</span><span style="color: #008080;"> 9</span>     <span style="color: #008000;">//</span><span style="color: #008000;">新建临时类，最后作为新类返回，可能是继承可能是新类</span>
+<span style="color: #008080;">10</span>     <span style="color: #008000;">/*</span><span style="color: #008000;">**
+</span><span style="color: #008080;">11</span> <span style="color: #008000;">    这里非常关键，为整个方法的入口，一定得看到初始化后，这里会执行构造函数
+</span><span style="color: #008080;">12</span> <span style="color: #008000;">    **</span><span style="color: #008000;">*/</span>
+<span style="color: #008080;">13</span>     <span style="color: #0000ff;">var</span> newClass = <span style="color: #0000ff;">function</span><span style="color: #000000;"> () {
+</span><span style="color: #008080;">14</span>         <span style="color: #008000;">//</span><span style="color: #008000;">每个类都会使用该函数，作为第一步初始化，告诉类有哪些属性</span>
+<span style="color: #008080;">15</span>         <span style="color: #0000ff;">this</span>._propertys_ &amp;&amp; <span style="color: #0000ff;">this</span><span style="color: #000000;">._propertys_();
+</span><span style="color: #008080;">16</span>         <span style="color: #008000;">//</span><span style="color: #008000;">第二步初始化，相当于子类的构造函数，比较重要，初始化方法不一定会出现</span>
+<span style="color: #008080;">17</span>         <span style="color: #0000ff;">this</span>.init &amp;&amp; <span style="color: #0000ff;">this</span>.init.applay(<span style="color: #0000ff;">this</span><span style="color: #000000;">, arguments);
+</span><span style="color: #008080;">18</span> <span style="color: #000000;">    };
+</span><span style="color: #008080;">19</span>     <span style="color: #008000;">//</span><span style="color: #008000;">发生继承关系，可能为空类</span>
+<span style="color: #008080;">20</span>     newClass.prototype = <span style="color: #0000ff;">new</span><span style="color: #000000;"> supClass();
+</span><span style="color: #008080;">21</span> 
+<span style="color: #008080;">22</span>     <span style="color: #008000;">//</span><span style="color: #008000;">新建类必定会包含初始化函数，要么继承，如果没继承，这里也会新建</span>
+<span style="color: #008080;">23</span>     <span style="color: #0000ff;">var</span> supInit = newClass.prototype.init || <span style="color: #0000ff;">function</span><span style="color: #000000;"> () { };
+</span><span style="color: #008080;">24</span>     <span style="color: #008000;">//</span><span style="color: #008000;">传入的子对象可能包含他的初始化方法，如果有一定要使用，至于父类使用与否看子类心情</span>
+<span style="color: #008080;">25</span>     <span style="color: #0000ff;">var</span> childInit = childAttr.init || <span style="color: #0000ff;">function</span><span style="color: #000000;"> () { };
+</span><span style="color: #008080;">26</span>     <span style="color: #008000;">//</span><span style="color: #008000;">父类的properys方法便是指定会具有哪些属性，一定会执行</span>
+<span style="color: #008080;">27</span>     <span style="color: #0000ff;">var</span> _supAttr = newClass.prototype._propertys_ || <span style="color: #0000ff;">function</span><span style="color: #000000;"> () { };
+</span><span style="color: #008080;">28</span>     <span style="color: #008000;">//</span><span style="color: #008000;">子类的初始化也一定会触发，先执行父类再执行子类</span>
+<span style="color: #008080;">29</span>     <span style="color: #0000ff;">var</span> _childAttr = childAttr._propertys_ || <span style="color: #0000ff;">function</span><span style="color: #000000;"> () { };
+</span><span style="color: #008080;">30</span> 
+<span style="color: #008080;">31</span>     <span style="color: #008000;">//</span><span style="color: #008000;">为新建类（可能继承可能新建）初始化原型，上面的会重写，没有就不管他</span>
+<span style="color: #008080;">32</span>     <span style="color: #0000ff;">for</span> (<span style="color: #0000ff;">var</span> k <span style="color: #0000ff;">in</span><span style="color: #000000;"> childAttr) {
+</span><span style="color: #008080;">33</span>         childAttr.hasOwnProperty(k) &amp;&amp; (newClass.prototype[k] =<span style="color: #000000;"> childAttr[k]);
+</span><span style="color: #008080;">34</span> <span style="color: #000000;">    }
+</span><span style="color: #008080;">35</span> 
+<span style="color: #008080;">36</span>     <span style="color: #008000;">//</span><span style="color: #008000;">处理继承情况</span>
+<span style="color: #008080;">37</span>     <span style="color: #0000ff;">if</span> (arguments.length &amp;&amp; arguments[0].prototype &amp;&amp; arguments[0].prototype.init ===<span style="color: #000000;"> supInit) {
+</span><span style="color: #008080;">38</span>         <span style="color: #008000;">//</span><span style="color: #008000;">根据父类重写新建类构造时会用到的方法</span>
+<span style="color: #008080;">39</span>         newClass.prototype.init = <span style="color: #0000ff;">function</span><span style="color: #000000;"> () {
+</span><span style="color: #008080;">40</span>             <span style="color: #0000ff;">var</span> scope = <span style="color: #0000ff;">this</span><span style="color: #000000;">;
+</span><span style="color: #008080;">41</span>             <span style="color: #0000ff;">var</span> args = [<span style="color: #0000ff;">function</span><span style="color: #000000;"> () {
+</span><span style="color: #008080;">42</span>                 <span style="color: #008000;">//</span><span style="color: #008000;">第一个参数为父类的初始化函数，执行与否看子类心情</span>
+<span style="color: #008080;">43</span> <span style="color: #000000;">                supInit.apply(scope, arguments)
+</span><span style="color: #008080;">44</span> <span style="color: #000000;">            } ];
+</span><span style="color: #008080;">45</span> <span style="color: #000000;">            childInit.apply(scope, args.concat(slice.call(arguments)));
+</span><span style="color: #008080;">46</span> <span style="color: #000000;">        };
+</span><span style="color: #008080;">47</span> <span style="color: #000000;">    }
+</span><span style="color: #008080;">48</span>     <span style="color: #008000;">//</span><span style="color: #008000;">前面说到的，父类与子类的初始化方法一定会执行，先父后子</span>
+<span style="color: #008080;">49</span>     newClass.prototype._propertys_ = <span style="color: #0000ff;">function</span><span style="color: #000000;"> () {
+</span><span style="color: #008080;">50</span>         _supAttr.call(<span style="color: #0000ff;">this</span><span style="color: #000000;">);
+</span><span style="color: #008080;">51</span>         _childAttr.call(<span style="color: #0000ff;">this</span><span style="color: #000000;">);
+</span><span style="color: #008080;">52</span> <span style="color: #000000;">    };
+</span><span style="color: #008080;">53</span> 
+<span style="color: #008080;">54</span>     <span style="color: #008000;">//</span><span style="color: #008000;">成员属性也得继承</span>
+<span style="color: #008080;">55</span>     <span style="color: #0000ff;">for</span> (<span style="color: #0000ff;">var</span> k <span style="color: #0000ff;">in</span><span style="color: #000000;"> supClass) {
+</span><span style="color: #008080;">56</span>         supClass.hasOwnProperty(k) &amp;&amp; (newClass[k] =<span style="color: #000000;"> supClass[k]);
+</span><span style="color: #008080;">57</span> <span style="color: #000000;">    }
+</span><span style="color: #008080;">58</span>     <span style="color: #0000ff;">return</span><span style="color: #000000;"> newClass;
+</span><span style="color: #008080;">59</span> };</pre>
+</div>
+<p>现在，我们使用上述方法创建一个父类AbstractView，与两个实际的View来说明继承的重要<br>如果每个页面都重新加载页面的话，对我们来说毫无意义，说明继承问题还是要单页，于是我们实现一个简单的MVC模式</p>
+<h2>简单的MVC</h2>
+<p>首先是我们的Control</p>
+<div class="cnblogs_code">
+<pre><span style="color: #008080;"> 1</span> <span style="color: #0000ff;">var</span> Control =<span style="color: #000000;"> base.Class({
+</span><span style="color: #008080;"> 2</span>     _propertys_: <span style="color: #0000ff;">function</span><span style="color: #000000;"> () {
+</span><span style="color: #008080;"> 3</span>         <span style="color: #0000ff;">this</span>.body = $('body'<span style="color: #000000;">);
+</span><span style="color: #008080;"> 4</span>         <span style="color: #0000ff;">this</span>.isCreateViewPort = <span style="color: #0000ff;">false</span><span style="color: #000000;">;
+</span><span style="color: #008080;"> 5</span>         <span style="color: #0000ff;">this</span>.defaultView = 'Index'<span style="color: #000000;">;
+</span><span style="color: #008080;"> 6</span>         <span style="color: #0000ff;">this</span>.views =<span style="color: #000000;"> {};
+</span><span style="color: #008080;"> 7</span>         <span style="color: #0000ff;">this</span>.interface =<span style="color: #000000;"> {
+</span><span style="color: #008080;"> 8</span>             forward: bind(<span style="color: #0000ff;">this</span>, <span style="color: #0000ff;">this</span><span style="color: #000000;">.forward)
+</span><span style="color: #008080;"> 9</span> <span style="color: #000000;">        };
+</span><span style="color: #008080;">10</span> <span style="color: #000000;">    },
+</span><span style="color: #008080;">11</span>     init: <span style="color: #0000ff;">function</span><span style="color: #000000;"> () {
+</span><span style="color: #008080;">12</span>         <span style="color: #0000ff;">this</span>.loadView(<span style="color: #0000ff;">this</span>.defaultView, <span style="color: #0000ff;">this</span><span style="color: #000000;">.interface);
+</span><span style="color: #008080;">13</span> <span style="color: #000000;">    },
+</span><span style="color: #008080;">14</span>     createViewPort: <span style="color: #0000ff;">function</span><span style="color: #000000;"> () {
+</span><span style="color: #008080;">15</span>         <span style="color: #0000ff;">if</span> (<span style="color: #0000ff;">this</span>.isCreateViewPort) <span style="color: #0000ff;">return</span><span style="color: #000000;">;
+</span><span style="color: #008080;">16</span>         <span style="color: #0000ff;">this</span>.viewPort = $('&lt;div id="viewPort"&gt;&lt;/div&gt;'<span style="color: #000000;">);
+</span><span style="color: #008080;">17</span>         <span style="color: #0000ff;">this</span>.body.append(<span style="color: #0000ff;">this</span><span style="color: #000000;">.viewPort);
+</span><span style="color: #008080;">18</span>         <span style="color: #0000ff;">this</span>.isCreateViewPort = <span style="color: #0000ff;">true</span><span style="color: #000000;">;
+</span><span style="color: #008080;">19</span> <span style="color: #000000;">    },
+</span><span style="color: #008080;">20</span>     loadView: <span style="color: #0000ff;">function</span><span style="color: #000000;"> (viewName) {
+</span><span style="color: #008080;">21</span>         <span style="color: #0000ff;">this</span><span style="color: #000000;">.createViewPort();
+</span><span style="color: #008080;">22</span>         <span style="color: #0000ff;">var</span> v = <span style="color: #0000ff;">this</span><span style="color: #000000;">.views[viewName];
+</span><span style="color: #008080;">23</span>         <span style="color: #0000ff;">if</span> (!<span style="color: #000000;">v) {
+</span><span style="color: #008080;">24</span>             <span style="color: #0000ff;">var</span> View =<span style="color: #000000;"> window[viewName];
+</span><span style="color: #008080;">25</span>             v = <span style="color: #0000ff;">new</span> View(<span style="color: #0000ff;">this</span><span style="color: #000000;">.interface);
+</span><span style="color: #008080;">26</span>             <span style="color: #0000ff;">this</span><span style="color: #000000;">.viewPort.append(v.root);
+</span><span style="color: #008080;">27</span>             <span style="color: #0000ff;">var</span> events =<span style="color: #000000;"> v.getEvents();
+</span><span style="color: #008080;">28</span>             <span style="color: #0000ff;">this</span><span style="color: #000000;">._addEvent(v.root, events);
+</span><span style="color: #008080;">29</span>             <span style="color: #0000ff;">this</span>.views[viewName] =<span style="color: #000000;"> v;
+</span><span style="color: #008080;">30</span> <span style="color: #000000;">        }
+</span><span style="color: #008080;">31</span>         <span style="color: #0000ff;">for</span> (<span style="color: #0000ff;">var</span> k <span style="color: #0000ff;">in</span> <span style="color: #0000ff;">this</span><span style="color: #000000;">.views) {
+</span><span style="color: #008080;">32</span>             <span style="color: #0000ff;">this</span><span style="color: #000000;">.views[k].hide();
+</span><span style="color: #008080;">33</span> <span style="color: #000000;">        }
+</span><span style="color: #008080;">34</span> <span style="color: #000000;">        v.show();
+</span><span style="color: #008080;">35</span> <span style="color: #000000;">    },
+</span><span style="color: #008080;">36</span>     forward: <span style="color: #0000ff;">function</span><span style="color: #000000;"> (viewName) {
+</span><span style="color: #008080;">37</span>         <span style="color: #0000ff;">this</span><span style="color: #000000;">.loadView(viewName);
+</span><span style="color: #008080;">38</span> <span style="color: #000000;">    },
+</span><span style="color: #008080;">39</span>     _addEvent: <span style="color: #0000ff;">function</span><span style="color: #000000;"> (root, events) {
+</span><span style="color: #008080;">40</span>         root = root || <span style="color: #0000ff;">this</span><span style="color: #000000;">.body;
+</span><span style="color: #008080;">41</span>         <span style="color: #008000;">//</span><span style="color: #008000;">事件绑定</span>
+<span style="color: #008080;">42</span>         <span style="color: #0000ff;">for</span> (<span style="color: #0000ff;">var</span> k <span style="color: #0000ff;">in</span><span style="color: #000000;"> events) {
+</span><span style="color: #008080;">43</span>             <span style="color: #0000ff;">var</span> k_t = k.split(','<span style="color: #000000;">);
+</span><span style="color: #008080;">44</span>             root.find(k_t[0]).on(k_t[1], bind(<span style="color: #0000ff;">this</span><span style="color: #000000;">, events[k]));
+</span><span style="color: #008080;">45</span> <span style="color: #000000;">        }
+</span><span style="color: #008080;">46</span> <span style="color: #000000;">    }
+</span><span style="color: #008080;">47</span> });</pre>
+</div>
+<p>然后是我们的父级View</p>
+<div class="cnblogs_code">
+<pre><span style="color: #008080;"> 1</span> <span style="color: #0000ff;">var</span> AbstractView =<span style="color: #000000;"> base.Class({
+</span><span style="color: #008080;"> 2</span>     init: <span style="color: #0000ff;">function</span><span style="color: #000000;"> (interface) {
+</span><span style="color: #008080;"> 3</span>         <span style="color: #008000;">//</span><span style="color: #008000;">opts为0/false等情况不予考虑</span>
+<span style="color: #008080;"> 4</span>         <span style="color: #0000ff;">this</span>.interface =<span style="color: #000000;"> interface;
+</span><span style="color: #008080;"> 5</span>         <span style="color: #0000ff;">this</span>.root = $('&lt;div id="' + <span style="color: #0000ff;">this</span>.viewName + '"&gt;&lt;/div&gt;'<span style="color: #000000;">);
+</span><span style="color: #008080;"> 6</span> 
+<span style="color: #008080;"> 7</span> <span style="color: #000000;">    },
+</span><span style="color: #008080;"> 8</span>     onShow: <span style="color: #0000ff;">function</span><span style="color: #000000;"> () {
+</span><span style="color: #008080;"> 9</span>         console.log('onshow'<span style="color: #000000;">);
+</span><span style="color: #008080;">10</span> <span style="color: #000000;">    },
+</span><span style="color: #008080;">11</span>     show: <span style="color: #0000ff;">function</span><span style="color: #000000;"> () {
+</span><span style="color: #008080;">12</span>         <span style="color: #0000ff;">this</span><span style="color: #000000;">.onShow();
+</span><span style="color: #008080;">13</span>         <span style="color: #0000ff;">this</span><span style="color: #000000;">.root.show()
+</span><span style="color: #008080;">14</span> <span style="color: #000000;">    },
+</span><span style="color: #008080;">15</span>     onHide: <span style="color: #0000ff;">function</span><span style="color: #000000;"> () {
+</span><span style="color: #008080;">16</span> 
+<span style="color: #008080;">17</span>         console.log('onHide'<span style="color: #000000;">);
+</span><span style="color: #008080;">18</span> <span style="color: #000000;">    },
+</span><span style="color: #008080;">19</span>     hide: <span style="color: #0000ff;">function</span><span style="color: #000000;"> () {
+</span><span style="color: #008080;">20</span>         <span style="color: #0000ff;">this</span><span style="color: #000000;">.onHide();
+</span><span style="color: #008080;">21</span>         <span style="color: #0000ff;">this</span><span style="color: #000000;">.root.hide();
+</span><span style="color: #008080;">22</span> <span style="color: #000000;">    },
+</span><span style="color: #008080;">23</span>     forward: <span style="color: #0000ff;">function</span><span style="color: #000000;"> (viewName) {
+</span><span style="color: #008080;">24</span>         <span style="color: #0000ff;">this</span><span style="color: #000000;">.interface.forward(viewName);
+</span><span style="color: #008080;">25</span> <span style="color: #000000;">    }
+</span><span style="color: #008080;">26</span> });</pre>
+</div>
+<p>以下是两个子集View</p>
+<div class="cnblogs_code">
+<pre><span style="color: #008080;"> 1</span> <span style="color: #0000ff;">var</span> Index =<span style="color: #000000;"> base.Class(AbstractView, {
+</span><span style="color: #008080;"> 2</span>     _propertys_: <span style="color: #0000ff;">function</span><span style="color: #000000;"> () {
+</span><span style="color: #008080;"> 3</span>         <span style="color: #0000ff;">this</span>.viewName = 'index'<span style="color: #000000;">;
+</span><span style="color: #008080;"> 4</span> <span style="color: #000000;">    },
+</span><span style="color: #008080;"> 5</span>     init: <span style="color: #0000ff;">function</span><span style="color: #000000;"> (supInit, interface) {
+</span><span style="color: #008080;"> 6</span> <span style="color: #000000;">        supInit(interface);
+</span><span style="color: #008080;"> 7</span>         <span style="color: #0000ff;">this</span><span style="color: #000000;">.initDom();
+</span><span style="color: #008080;"> 8</span> <span style="color: #000000;">    },
+</span><span style="color: #008080;"> 9</span>     initDom: <span style="color: #0000ff;">function</span><span style="color: #000000;"> () {
+</span><span style="color: #008080;">10</span>         <span style="color: #008000;">//</span><span style="color: #008000;">index模板，此处我故意将id写成一样</span>
+<span style="color: #008080;">11</span>         <span style="color: #0000ff;">var</span> tmpt =<span style="color: #000000;"> [
+</span><span style="color: #008080;">12</span>             '我是index&lt;input type="button" id="goto" value="去列表页"&gt;'
+<span style="color: #008080;">13</span>         ].join(''<span style="color: #000000;">);
+</span><span style="color: #008080;">14</span>         <span style="color: #0000ff;">this</span><span style="color: #000000;">.root.html(tmpt);
+</span><span style="color: #008080;">15</span> <span style="color: #000000;">    },
+</span><span style="color: #008080;">16</span>     getEvents: <span style="color: #0000ff;">function</span><span style="color: #000000;"> () {
+</span><span style="color: #008080;">17</span>         <span style="color: #0000ff;">return</span><span style="color: #000000;"> {
+</span><span style="color: #008080;">18</span>             '#goto,click': <span style="color: #0000ff;">function</span><span style="color: #000000;"> (e) {
+</span><span style="color: #008080;">19</span>                 <span style="color: #0000ff;">this</span>.forward('List'<span style="color: #000000;">);
+</span><span style="color: #008080;">20</span> <span style="color: #000000;">            }
+</span><span style="color: #008080;">21</span> <span style="color: #000000;">        };
+</span><span style="color: #008080;">22</span> <span style="color: #000000;">    }
+</span><span style="color: #008080;">23</span> <span style="color: #000000;">});
+</span><span style="color: #008080;">24</span> 
+<span style="color: #008080;">25</span> <span style="color: #0000ff;">var</span> List =<span style="color: #000000;"> base.Class(AbstractView, {
+</span><span style="color: #008080;">26</span>     _propertys_: <span style="color: #0000ff;">function</span><span style="color: #000000;"> () {
+</span><span style="color: #008080;">27</span>         <span style="color: #0000ff;">this</span>.viewName = 'list'<span style="color: #000000;">;
+</span><span style="color: #008080;">28</span> <span style="color: #000000;">    },
+</span><span style="color: #008080;">29</span>     init: <span style="color: #0000ff;">function</span><span style="color: #000000;"> (supInit, interface) {
+</span><span style="color: #008080;">30</span> <span style="color: #000000;">        supInit(interface);
+</span><span style="color: #008080;">31</span>         <span style="color: #0000ff;">this</span><span style="color: #000000;">.initDom();
+</span><span style="color: #008080;">32</span> <span style="color: #000000;">    },
+</span><span style="color: #008080;">33</span>     initDom: <span style="color: #0000ff;">function</span><span style="color: #000000;"> () {
+</span><span style="color: #008080;">34</span>         <span style="color: #0000ff;">var</span> tmpt =<span style="color: #000000;"> [
+</span><span style="color: #008080;">35</span>             '我是list&lt;input type="button" id="goto" value="回首页"&gt;'
+<span style="color: #008080;">36</span>         ].join(''<span style="color: #000000;">);
+</span><span style="color: #008080;">37</span>         <span style="color: #0000ff;">this</span><span style="color: #000000;">.root.html(tmpt);
+</span><span style="color: #008080;">38</span> <span style="color: #000000;">    },
+</span><span style="color: #008080;">39</span>     getEvents: <span style="color: #0000ff;">function</span><span style="color: #000000;"> () {
+</span><span style="color: #008080;">40</span>         <span style="color: #0000ff;">return</span><span style="color: #000000;"> {
+</span><span style="color: #008080;">41</span>             '#goto,click': <span style="color: #0000ff;">function</span><span style="color: #000000;"> (e) {
+</span><span style="color: #008080;">42</span>                 <span style="color: #0000ff;">this</span>.forward('Index'<span style="color: #000000;">);
+</span><span style="color: #008080;">43</span> <span style="color: #000000;">            }
+</span><span style="color: #008080;">44</span> <span style="color: #000000;">        };
+</span><span style="color: #008080;">45</span> <span style="color: #000000;">    }
+</span><span style="color: #008080;">46</span> });</pre>
+</div>
+<p>然后我们调用后就有感觉了，请各位看demo</p>
+<h3>http://sandbox.runjs.cn/show/dg55tgdo</h3>
+<p>这个代码虽然简单，但是还是可以说明一些问题：<br>① 各个VIew独立（index与list），方便各个操作，control作为总驱动，提供各种全局接口<br>② 由于都是继承自AbstractView，比如我现在想在个view展示前执行一点逻辑判断的话，只需要在onload中</p>
+<div class="cnblogs_code">
+<pre><span style="color: #008080;">1</span> onShow: <span style="color: #0000ff;">function</span><span style="color: #000000;"> () {
+</span><span style="color: #008080;">2</span> console.log('onshow'<span style="color: #000000;">);
+</span><span style="color: #008080;">3</span> console.log(<span style="color: #0000ff;">this</span>.viewName + '显示前的一些逻辑'<span style="color: #000000;">);
+</span><span style="color: #008080;">4</span> }</pre>
+</div>
+<p>因为这个代码也没有什么特点，只不过简单模拟MVC了就不多说，在此希望能说清楚继承的优点，于是继续今天的话题吧<br>PS：今天后，后续代码中，一旦与类有关，全部使用上述代码了</p>
+<h1>自封装字段</h1>
+<p>我们有时直接访问一个字段，但与字段直接的耦合关系会逐步变的笨拙<br>这时为这个字段建立取值/设值的函数，并使用函数获取字段也许是一不错的选择</p>
+<div class="cnblogs_code">
+<pre><span style="color: #008080;"> 1</span> <span style="color: #0000ff;">var</span> _Class = <span style="color: #0000ff;">function</span><span style="color: #000000;"> () {
+</span><span style="color: #008080;"> 2</span>     <span style="color: #0000ff;">this</span><span style="color: #000000;">.low;
+</span><span style="color: #008080;"> 3</span>     <span style="color: #0000ff;">this</span><span style="color: #000000;">.high;
+</span><span style="color: #008080;"> 4</span> <span style="color: #000000;">};
+</span><span style="color: #008080;"> 5</span> _Class.prototype =<span style="color: #000000;"> {
+</span><span style="color: #008080;"> 6</span>     includes: <span style="color: #0000ff;">function</span><span style="color: #000000;"> (arg) {
+</span><span style="color: #008080;"> 7</span>         <span style="color: #0000ff;">return</span> arg &gt;= <span style="color: #0000ff;">this</span>.low &amp;&amp; arg &lt;= <span style="color: #0000ff;">this</span><span style="color: #000000;">.high;
+</span><span style="color: #008080;"> 8</span> <span style="color: #000000;">    }
+</span><span style="color: #008080;"> 9</span> <span style="color: #000000;">};
+</span><span style="color: #008080;">10</span> 
+<span style="color: #008080;">11</span> <span style="color: #008000;">//</span><span style="color: #008000;">变成这个样子</span>
+<span style="color: #008080;">12</span> <span style="color: #0000ff;">var</span> _Class = <span style="color: #0000ff;">function</span><span style="color: #000000;"> () {
+</span><span style="color: #008080;">13</span>     <span style="color: #0000ff;">this</span><span style="color: #000000;">.low;
+</span><span style="color: #008080;">14</span>     <span style="color: #0000ff;">this</span><span style="color: #000000;">.high;
+</span><span style="color: #008080;">15</span> <span style="color: #000000;">};
+</span><span style="color: #008080;">16</span> _Class.prototype =<span style="color: #000000;"> {
+</span><span style="color: #008080;">17</span>     includes: <span style="color: #0000ff;">function</span><span style="color: #000000;"> (arg) {
+</span><span style="color: #008080;">18</span>         <span style="color: #0000ff;">return</span> arg &gt;= <span style="color: #0000ff;">this</span>.getLow() &amp;&amp; arg &lt;= <span style="color: #0000ff;">this</span><span style="color: #000000;">.getHigh();
+</span><span style="color: #008080;">19</span> <span style="color: #000000;">    },
+</span><span style="color: #008080;">20</span>     getLow: <span style="color: #0000ff;">function</span><span style="color: #000000;"> () {
+</span><span style="color: #008080;">21</span>         <span style="color: #008000;">//</span><span style="color: #008000;">do something</span>
+<span style="color: #008080;">22</span>         <span style="color: #0000ff;">return</span> <span style="color: #0000ff;">this</span><span style="color: #000000;">.low;
+</span><span style="color: #008080;">23</span> <span style="color: #000000;">    },
+</span><span style="color: #008080;">24</span>     getHigh: <span style="color: #0000ff;">function</span><span style="color: #000000;"> () {
+</span><span style="color: #008080;">25</span>         <span style="color: #008000;">//</span><span style="color: #008000;">do something</span>
+<span style="color: #008080;">26</span>         <span style="color: #0000ff;">return</span> <span style="color: #0000ff;">this</span><span style="color: #000000;">.high;
+</span><span style="color: #008080;">27</span> <span style="color: #000000;">    }
+</span><span style="color: #008080;">28</span> };</pre>
+</div>
+<p>在字段访问方式上，有时我们认为将变量定义在类中，于是我们可以自由访问，但有时我们却会间接访问<br>间接访问带来的好处就是，子类可以复写函数改变获取数据的途径，并且数据的管理方式更加灵活（js中就比较玄了）<br>我们可以先使用直接获取方式，后面换为间接方式</p>
+<h3>怎么做？</h3>
+<p>① 为待封装字段建立取值/设置函数<br>② 找出该字段所有引用点，将他们替换为函数<br>③ 测试</p>
+<div class="cnblogs_code">
+<pre><span style="color: #008080;"> 1</span> <span style="color: #0000ff;">var</span> InitRange = <span style="color: #0000ff;">function</span><span style="color: #000000;"> (opts) {
+</span><span style="color: #008080;"> 2</span>     <span style="color: #0000ff;">this</span>.low =<span style="color: #000000;"> opts.low;
+</span><span style="color: #008080;"> 3</span>     <span style="color: #0000ff;">this</span>.high =<span style="color: #000000;"> opts.high;
+</span><span style="color: #008080;"> 4</span> <span style="color: #000000;">};
+</span><span style="color: #008080;"> 5</span> InitRange.prototype =<span style="color: #000000;"> {
+</span><span style="color: #008080;"> 6</span>     includes: <span style="color: #0000ff;">function</span><span style="color: #000000;"> (arg) {
+</span><span style="color: #008080;"> 7</span>         <span style="color: #0000ff;">return</span> arg &gt;= <span style="color: #0000ff;">this</span>.low &amp;&amp; arg &lt;= <span style="color: #0000ff;">this</span><span style="color: #000000;">.high;
+</span><span style="color: #008080;"> 8</span> <span style="color: #000000;">    },
+</span><span style="color: #008080;"> 9</span>     grow: <span style="color: #0000ff;">function</span><span style="color: #000000;"> (factor) {
+</span><span style="color: #008080;">10</span>         <span style="color: #0000ff;">this</span>.high = <span style="color: #0000ff;">this</span>.high *<span style="color: #000000;"> factor;
+</span><span style="color: #008080;">11</span> <span style="color: #000000;">    }
+</span><span style="color: #008080;">12</span> <span style="color: #000000;">};
+</span><span style="color: #008080;">13</span> <span style="color: #008000;">/*</span>
+<span style="color: #008080;">14</span> <span style="color: #008000;">------看我重构--------
+</span><span style="color: #008080;">15</span> <span style="color: #008000;">*/</span>
+<span style="color: #008080;">16</span> <span style="color: #0000ff;">var</span> InitRange = <span style="color: #0000ff;">function</span><span style="color: #000000;"> (opts) {
+</span><span style="color: #008080;">17</span>     <span style="color: #0000ff;">this</span>.low =<span style="color: #000000;"> opts.low;
+</span><span style="color: #008080;">18</span>     <span style="color: #0000ff;">this</span>.high =<span style="color: #000000;"> opts.high;
+</span><span style="color: #008080;">19</span> <span style="color: #000000;">};
+</span><span style="color: #008080;">20</span> InitRange.prototype =<span style="color: #000000;"> {
+</span><span style="color: #008080;">21</span>     includes: <span style="color: #0000ff;">function</span><span style="color: #000000;"> (arg) {
+</span><span style="color: #008080;">22</span>         <span style="color: #0000ff;">return</span> arg &gt;= <span style="color: #0000ff;">this</span>.getLow &amp;&amp; arg &lt;= <span style="color: #0000ff;">this</span><span style="color: #000000;">.getHigh;
+</span><span style="color: #008080;">23</span> <span style="color: #000000;">    },
+</span><span style="color: #008080;">24</span>     grow: <span style="color: #0000ff;">function</span><span style="color: #000000;"> (factor) {
+</span><span style="color: #008080;">25</span>         <span style="color: #0000ff;">this</span>.setHigh(<span style="color: #0000ff;">this</span>.getHigh() *<span style="color: #000000;"> factor)
+</span><span style="color: #008080;">26</span> <span style="color: #000000;">    },
+</span><span style="color: #008080;">27</span>     getLow: <span style="color: #0000ff;">function</span><span style="color: #000000;"> () {
+</span><span style="color: #008080;">28</span>         <span style="color: #0000ff;">return</span> <span style="color: #0000ff;">this</span><span style="color: #000000;">.low;
+</span><span style="color: #008080;">29</span> <span style="color: #000000;">    },
+</span><span style="color: #008080;">30</span>     getHigh: <span style="color: #0000ff;">function</span><span style="color: #000000;"> () {
+</span><span style="color: #008080;">31</span>         <span style="color: #0000ff;">return</span> <span style="color: #0000ff;">this</span><span style="color: #000000;">.high;
+</span><span style="color: #008080;">32</span> <span style="color: #000000;">    },
+</span><span style="color: #008080;">33</span>     setLow: <span style="color: #0000ff;">function</span><span style="color: #000000;"> (arg) {
+</span><span style="color: #008080;">34</span>         <span style="color: #0000ff;">this</span>.low =<span style="color: #000000;"> arg;
+</span><span style="color: #008080;">35</span> <span style="color: #000000;">    },
+</span><span style="color: #008080;">36</span>     setHigh: <span style="color: #0000ff;">function</span><span style="color: #000000;"> (arg) {
+</span><span style="color: #008080;">37</span>         <span style="color: #0000ff;">this</span>.high =<span style="color: #000000;"> arg;
+</span><span style="color: #008080;">38</span> <span style="color: #000000;">    }
+</span><span style="color: #008080;">39</span> };</pre>
+</div>
+<p>使用本重构时，我们需要注意&ldquo;在构造函数中使用设置函数&rdquo;的情况<br>一般来说，设值函数被认为应该在对象创建后再使用，所以初始化过程中的行为可能与设置函数的行为不同<br>这个时候就不要构造函数时候初始化了，这个时候如果我们使用了子类，优势就比较明显了</p>
+<h1>以对象取代数据值</h1>
+<p>我们有一个数据项，需要与其他数据和行为一起使用才有意义，那么将数据变为对象<br>刚开始开发时，我们的数据代码会比较简单，但随着开发的进度，我们会发现数据不是那么简单了......<br>比如开始我们使用一个字符串来表示电话号码，但是后面电话拥有格式化、区号等行为，那么就该对象化了</p>
+<p>来个例子说明一番，这里有一个订单的Order类</p>
+<div class="cnblogs_code">
+<pre><span style="color: #008080;"> 1</span> <span style="color: #0000ff;">var</span> Odrer = <span style="color: #0000ff;">function</span><span style="color: #000000;"> (opts) {
+</span><span style="color: #008080;"> 2</span>     <span style="color: #0000ff;">this</span>.customer =<span style="color: #000000;"> opts.customer
+</span><span style="color: #008080;"> 3</span> <span style="color: #000000;">};
+</span><span style="color: #008080;"> 4</span> Odrer.prototype =<span style="color: #000000;"> {
+</span><span style="color: #008080;"> 5</span>     getCustomer: <span style="color: #0000ff;">function</span><span style="color: #000000;"> () {
+</span><span style="color: #008080;"> 6</span>         <span style="color: #0000ff;">return</span> <span style="color: #0000ff;">this</span><span style="color: #000000;">.customer;
+</span><span style="color: #008080;"> 7</span> <span style="color: #000000;">    },
+</span><span style="color: #008080;"> 8</span>     setCustomer: <span style="color: #0000ff;">function</span><span style="color: #000000;"> (args) {
+</span><span style="color: #008080;"> 9</span>         <span style="color: #0000ff;">this</span>.customer =<span style="color: #000000;"> args;
+</span><span style="color: #008080;">10</span> <span style="color: #000000;">    }
+</span><span style="color: #008080;">11</span> <span style="color: #000000;">};
+</span><span style="color: #008080;">12</span> 
+<span style="color: #008080;">13</span> <span style="color: #008000;">//</span><span style="color: #008000;">使用的代码可能如下</span>
+<span style="color: #008080;">14</span> <span style="color: #0000ff;">function</span><span style="color: #000000;"> numberOfOrdersFor(orders, customer) {
+</span><span style="color: #008080;">15</span>     <span style="color: #0000ff;">var</span> result = 0<span style="color: #000000;">;
+</span><span style="color: #008080;">16</span>     <span style="color: #0000ff;">for</span> (<span style="color: #0000ff;">var</span> k <span style="color: #0000ff;">in</span><span style="color: #000000;"> orders) {
+</span><span style="color: #008080;">17</span>         <span style="color: #0000ff;">if</span> (orders[k] == customer) result++<span style="color: #000000;">;
+</span><span style="color: #008080;">18</span> <span style="color: #000000;">    }
+</span><span style="color: #008080;">19</span>     <span style="color: #0000ff;">return</span><span style="color: #000000;"> result;
+</span><span style="color: #008080;">20</span> <span style="color: #000000;">}
+</span><span style="color: #008080;">21</span> 
+<span style="color: #008080;">22</span> <span style="color: #0000ff;">var</span> Odrer = <span style="color: #0000ff;">function</span><span style="color: #000000;"> (opts) {
+</span><span style="color: #008080;">23</span>     <span style="color: #0000ff;">this</span>.customer =<span style="color: #000000;"> opts.customer
+</span><span style="color: #008080;">24</span> <span style="color: #000000;">};
+</span><span style="color: #008080;">25</span> Odrer.prototype =<span style="color: #000000;"> {
+</span><span style="color: #008080;">26</span>     getCustomer: <span style="color: #0000ff;">function</span><span style="color: #000000;"> () {
+</span><span style="color: #008080;">27</span>         <span style="color: #0000ff;">return</span> <span style="color: #0000ff;">this</span><span style="color: #000000;">.customer;
+</span><span style="color: #008080;">28</span> <span style="color: #000000;">    },
+</span><span style="color: #008080;">29</span>     setCustomer: <span style="color: #0000ff;">function</span><span style="color: #000000;"> (args) {
+</span><span style="color: #008080;">30</span>         <span style="color: #0000ff;">this</span>.customer =<span style="color: #000000;"> args;
+</span><span style="color: #008080;">31</span> <span style="color: #000000;">    }
+</span><span style="color: #008080;">32</span> <span style="color: #000000;">};
+</span><span style="color: #008080;">33</span> 
+<span style="color: #008080;">34</span> <span style="color: #008000;">//</span><span style="color: #008000;">使用的代码可能如下</span>
+<span style="color: #008080;">35</span> <span style="color: #0000ff;">function</span><span style="color: #000000;"> numberOfOrdersFor(orders, customer) {
+</span><span style="color: #008080;">36</span>     <span style="color: #0000ff;">var</span> result = 0<span style="color: #000000;">;
+</span><span style="color: #008080;">37</span>     <span style="color: #0000ff;">for</span> (<span style="color: #0000ff;">var</span> k <span style="color: #0000ff;">in</span><span style="color: #000000;"> orders) {
+</span><span style="color: #008080;">38</span>         <span style="color: #0000ff;">if</span> (orders[k].getCunstomer() == customer) result++<span style="color: #000000;">;
+</span><span style="color: #008080;">39</span> <span style="color: #000000;">    }
+</span><span style="color: #008080;">40</span>     <span style="color: #0000ff;">return</span><span style="color: #000000;"> result;
+</span><span style="color: #008080;">41</span> <span style="color: #000000;">}
+</span><span style="color: #008080;">42</span> 
+<span style="color: #008080;">43</span> <span style="color: #008000;">//</span><span style="color: #008000;">这里我们需要建立一个Customer的类</span>
+<span style="color: #008080;">44</span> <span style="color: #0000ff;">var</span> Customer = <span style="color: #0000ff;">function</span><span style="color: #000000;"> (name) {
+</span><span style="color: #008080;">45</span>     <span style="color: #0000ff;">this</span>.name =<span style="color: #000000;"> name
+</span><span style="color: #008080;">46</span> <span style="color: #000000;">};
+</span><span style="color: #008080;">47</span> Customer.prototype =<span style="color: #000000;"> {
+</span><span style="color: #008080;">48</span>     getName: <span style="color: #0000ff;">function</span><span style="color: #000000;"> () {
+</span><span style="color: #008080;">49</span>         <span style="color: #0000ff;">return</span> <span style="color: #0000ff;">this</span><span style="color: #000000;">.name;
+</span><span style="color: #008080;">50</span> <span style="color: #000000;">    }
+</span><span style="color: #008080;">51</span> <span style="color: #000000;">};
+</span><span style="color: #008080;">52</span> 
+<span style="color: #008080;">53</span> <span style="color: #008000;">//</span><span style="color: #008000;">第二步，我们将order中的customer字段类型修改一番（js其实不存在类型概念）</span>
+<span style="color: #008080;">54</span> <span style="color: #0000ff;">var</span> Odrer = <span style="color: #0000ff;">function</span><span style="color: #000000;"> (opts) {
+</span><span style="color: #008080;">55</span>     <span style="color: #0000ff;">this</span>.customer = <span style="color: #0000ff;">new</span><span style="color: #000000;"> Customer(opts.customer);
+</span><span style="color: #008080;">56</span> <span style="color: #000000;">};
+</span><span style="color: #008080;">57</span> Odrer.prototype =<span style="color: #000000;"> {
+</span><span style="color: #008080;">58</span>     getCustomer: <span style="color: #0000ff;">function</span><span style="color: #000000;"> () {
+</span><span style="color: #008080;">59</span>         <span style="color: #0000ff;">return</span> <span style="color: #0000ff;">this</span><span style="color: #000000;">.customer.getName();
+</span><span style="color: #008080;">60</span> <span style="color: #000000;">    },
+</span><span style="color: #008080;">61</span>     setCustomer: <span style="color: #0000ff;">function</span><span style="color: #000000;"> (args) {
+</span><span style="color: #008080;">62</span>         <span style="color: #0000ff;">this</span>.customer = <span style="color: #0000ff;">new</span><span style="color: #000000;"> Customer(args);
+</span><span style="color: #008080;">63</span> <span style="color: #000000;">    }
+</span><span style="color: #008080;">64</span> <span style="color: #000000;">};
+</span><span style="color: #008080;">65</span> 
+<span style="color: #008080;">66</span> <span style="color: #008000;">//</span><span style="color: #008000;">第四步就将用到的地方改了</span>
+<span style="color: #008080;">67</span> <span style="color: #0000ff;">function</span><span style="color: #000000;"> numberOfOrdersFor(orders, customer) {
+</span><span style="color: #008080;">68</span>     <span style="color: #0000ff;">var</span> result = 0<span style="color: #000000;">;
+</span><span style="color: #008080;">69</span>     <span style="color: #0000ff;">for</span> (<span style="color: #0000ff;">var</span> k <span style="color: #0000ff;">in</span><span style="color: #000000;"> orders) {
+</span><span style="color: #008080;">70</span>         <span style="color: #0000ff;">if</span> (orders[k].getCustomer() == customer) result++<span style="color: #000000;">;
+</span><span style="color: #008080;">71</span> <span style="color: #000000;">    }
+</span><span style="color: #008080;">72</span>     <span style="color: #0000ff;">return</span><span style="color: #000000;"> result;
+</span><span style="color: #008080;">73</span> }</pre>
+</div>
+<h1>值对象改为引用对象/引用对象改为值对象</h1>
+<p>我们从一个类衍生出许多彼此相等的实例时，我们会希望他只是一个对象</p>
+<p>在许多系统中，我们可以对对象做一个分类：引用对象和值对象<br>前者像客户、账户这样的东西，每个对象都代表真实世界中的一个实物，可以直接使用==来检测相等<br>后者就像日期、钱这样的东西，他完全由其所含数据值来定义，不在意副本的存在</p>
+<p>PS：周一搞了一个通宵的班，感觉今天状态不行啊。。。。。</p>
+<h1><span style="line-height: 1.5;">赋值被监视数据</span></h1>
+<p><span style="line-height: 1.5;">我们有一些数据在页面UI中，而领域函数也需要访问这些数据</span></p>
+<p><span style="line-height: 1.5;">那么将数据赋值到一个领域对象中，建立一个Observer模式，用以同步领域对象和UI对象的重复数据</span></p>
+<p><span style="line-height: 1.5;">一个分层良好的系统，应该将处理用户界面和处理业务代码分开！！！</span></p>
+<p><span style="line-height: 1.5;">因为我们可能需要使用不同的用户界面来表现相同的业务，这是绝对会发生的，如果同一界面承担两种责任，那么用户界面就复杂了</span></p>
+<p><span style="line-height: 1.5;">而且，与UI分离后，领域对象的维护和演化将会更加容易，我们甚至可以让不同的开发者负责不同部分的开发</span></p>
+<p><span style="line-height: 1.5;">尽管可以轻松将行为划分到不同部位，数据却不能如此。同一项数据可能既内嵌于UI中又保存于领域模型中</span></p>
+<p><span style="line-height: 1.5;">PS：以前端来说就是既在标签中，又在函数中（MVC很大程度就是解决这个问题）</span></p>
+<p><span style="line-height: 1.5;">如果遇到代码以两层方式开发，业务逻辑内嵌于用户界面中，就应该将行为分离出来了</span></p>
+<h3><span style="line-height: 1.5;">至此我终于知道原来自己说了一句行为与数据分离是什么意思了！！！</span></h3>
+<p><span style="line-height: 1.5;">主要工作就是函数的分离和搬迁，移动数据即是将数据移往对象，并且提供数据同步机制（感觉有点MVVM了）</span></p>
+<h3><span style="line-height: 1.5;">怎么做？</span></h3>
+<p><span style="line-height: 1.5;">① 修改现有类，使其成为领域类的Observer</span></p>
+<p><span style="line-height: 1.5;">如果没有领域类就创建一个/如果没有&ldquo;从展现类到领域类&rdquo;的关联，就将领域类保存于展现类的一个字段中</span></p>
+<p><span style="line-height: 1.5;">② 针对UI中的数据使用自封装字段处理</span></p>
+<p><span style="line-height: 1.5;">③ 在事件处理函数中调用设值函数，更新UI组件</span></p>
+<p><span style="line-height: 1.5;">在事件处理函数中放一个设值函数，利用他将UI组件更新为内存中的值，虽然只是拿他的值为他设定而已，但是这样的设值函数便是允许其中任何动作得以于日后被执行起来的意义所在</span></p>
+<p><span style="line-height: 1.5;">进行这个改变时，对于组件，不要使用取值函数，应该直接取用，因为我们后面会修改取值函数，让他从领域对象取值</span></p>
+<p><span style="line-height: 1.5;">④ 在领域类中定于数据及其相关访问函数</span></p>
+<p><span style="line-height: 1.5;">确保领域类中的设值函数能干触发观察者模式的通信机制</span></p>
+<p><span style="line-height: 1.5;">对于被观察的数据，在领域中使用与展现类所用的相同类型（一般是字符串）来保存</span></p>
+<p><span style="line-height: 1.5;">⑤ 修改展现类的访问函数，将他们的操作对象改为领域对象</span></p>
+<p><span style="line-height: 1.5;">⑥ 修改观察者的update方法，使其从相应的领域对象中将所需数据复制给UI</span></p>
+<p><span style="line-height: 1.5;">这个类容比较重要，于是我们来个例子吧：</span></p>
+<p>例子比较简单，当用户修改文本中的数字时，另外两个文本框中的文本框自动更新</p>
+<p>修改start则length改变，修改length则end改变</p>
+<p><img src="14424787885310.png" alt=""></p>
+<p><span style="line-height: 1.5;">首先，我们所有函数都写在一起：</span></p>
+<div class="cnblogs_code">
+<pre><span style="color: #008080;"> 1</span> <span style="color: #0000ff;">&lt;!</span><span style="color: #ff00ff;">DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 2</span> <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">html </span><span style="color: #ff0000;">xmlns</span><span style="color: #0000ff;">="http://www.w3.org/1999/xhtml"</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 3</span> <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">head</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 4</span>     <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">title</span><span style="color: #0000ff;">&gt;&lt;/</span><span style="color: #800000;">title</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 5</span> <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">head</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 6</span> <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">body</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 7</span>     start:<span style="color: #0000ff;">&lt;</span><span style="color: #800000;">input </span><span style="color: #ff0000;">type</span><span style="color: #0000ff;">="text"</span><span style="color: #ff0000;"> id</span><span style="color: #0000ff;">="start"</span><span style="color: #ff0000;"> value</span><span style="color: #0000ff;">="4"</span> <span style="color: #0000ff;">/&gt;&lt;</span><span style="color: #800000;">br </span><span style="color: #0000ff;">/&gt;</span>
+<span style="color: #008080;"> 8</span>     end:<span style="color: #0000ff;">&lt;</span><span style="color: #800000;">input </span><span style="color: #ff0000;">type</span><span style="color: #0000ff;">="text"</span><span style="color: #ff0000;"> id</span><span style="color: #0000ff;">="end"</span><span style="color: #ff0000;"> value</span><span style="color: #0000ff;">="12"</span><span style="color: #0000ff;">/&gt;&lt;</span><span style="color: #800000;">br </span><span style="color: #0000ff;">/&gt;</span>
+<span style="color: #008080;"> 9</span>     length:<span style="color: #0000ff;">&lt;</span><span style="color: #800000;">input </span><span style="color: #ff0000;">type</span><span style="color: #0000ff;">="text"</span><span style="color: #ff0000;"> id</span><span style="color: #0000ff;">="length"</span><span style="color: #ff0000;"> value</span><span style="color: #0000ff;">="8"</span> <span style="color: #0000ff;">/&gt;</span>
+<span style="color: #008080;">10</span> <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">body</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">11</span> <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">script </span><span style="color: #ff0000;">src</span><span style="color: #0000ff;">="../jquery-1.7.1.js"</span><span style="color: #ff0000;"> type</span><span style="color: #0000ff;">="text/javascript"</span><span style="color: #0000ff;">&gt;&lt;/</span><span style="color: #800000;">script</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">12</span> <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">script </span><span style="color: #ff0000;">type</span><span style="color: #0000ff;">="text/javascript"</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">13</span>     <span style="background-color: #f5f5f5; color: #0000ff;">var</span><span style="background-color: #f5f5f5; color: #000000;"> start </span><span style="background-color: #f5f5f5; color: #000000;">=</span><span style="background-color: #f5f5f5; color: #000000;"> $(</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">#start</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">);
+</span><span style="color: #008080;">14</span>     <span style="background-color: #f5f5f5; color: #0000ff;">var</span><span style="background-color: #f5f5f5; color: #000000;"> end </span><span style="background-color: #f5f5f5; color: #000000;">=</span><span style="background-color: #f5f5f5; color: #000000;"> $(</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">#end</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">);
+</span><span style="color: #008080;">15</span>     <span style="background-color: #f5f5f5; color: #0000ff;">var</span><span style="background-color: #f5f5f5; color: #000000;"> len </span><span style="background-color: #f5f5f5; color: #000000;">=</span><span style="background-color: #f5f5f5; color: #000000;"> $(</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">#length</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">);
+</span><span style="color: #008080;">16</span> 
+<span style="color: #008080;">17</span>     <span style="background-color: #f5f5f5; color: #008000;">//</span><span style="background-color: #f5f5f5; color: #008000;">为每个input绑定失去焦点事件</span>
+<span style="color: #008080;">18</span> <span style="background-color: #f5f5f5; color: #000000;">    start.blur(calculateLength);
+</span><span style="color: #008080;">19</span> <span style="background-color: #f5f5f5; color: #000000;">    end.blur(calculateLength);
+</span><span style="color: #008080;">20</span> <span style="background-color: #f5f5f5; color: #000000;">    len.blur(calculateEnd);
+</span><span style="color: #008080;">21</span> 
+<span style="color: #008080;">22</span>     <span style="background-color: #f5f5f5; color: #0000ff;">function</span><span style="background-color: #f5f5f5; color: #000000;"> calculateLength() {
+</span><span style="color: #008080;">23</span> <span style="background-color: #f5f5f5; color: #000000;">        len.val(parseInt(end.val()) </span><span style="background-color: #f5f5f5; color: #000000;">-</span><span style="background-color: #f5f5f5; color: #000000;"> parseInt(start.val()));
+</span><span style="color: #008080;">24</span> <span style="background-color: #f5f5f5; color: #000000;">    }
+</span><span style="color: #008080;">25</span>     <span style="background-color: #f5f5f5; color: #0000ff;">function</span><span style="background-color: #f5f5f5; color: #000000;"> calculateEnd() {
+</span><span style="color: #008080;">26</span> <span style="background-color: #f5f5f5; color: #000000;">        end.val(parseInt(len.val()) </span><span style="background-color: #f5f5f5; color: #000000;">+</span><span style="background-color: #f5f5f5; color: #000000;"> parseInt(start.val()));
+</span><span style="color: #008080;">27</span> <span style="background-color: #f5f5f5; color: #000000;">    }
+</span><span style="color: #008080;">28</span> <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">script</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">29</span> <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">html</span><span style="color: #0000ff;">&gt;</span></pre>
+</div>
+<p>这个代码其实没什么问题，但是我们现在要把与展现无关的逻辑从UI剔除（对前端来说有点难）</p>
+<p>说白了就是将calculate*类代码提出来，于是我们需要在页面外使用start等文本框的值，所以这些数据也会被复制，并且需要与UI保持同步</p>
+<p>这里我们先建立一个领域类，让他与我们的page产生关联，作为数据传输的枢纽，然后再将具体的运算放到其它地方</p>
+<div class="cnblogs_code">
+<pre><span style="color: #008080;">  1</span> <span style="color: #0000ff;">&lt;!</span><span style="color: #ff00ff;">DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">  2</span> <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">html </span><span style="color: #ff0000;">xmlns</span><span style="color: #0000ff;">="http://www.w3.org/1999/xhtml"</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">  3</span> <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">head</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">  4</span>     <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">title</span><span style="color: #0000ff;">&gt;&lt;/</span><span style="color: #800000;">title</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">  5</span> <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">head</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">  6</span> <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">body</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">  7</span>     start:<span style="color: #0000ff;">&lt;</span><span style="color: #800000;">input </span><span style="color: #ff0000;">type</span><span style="color: #0000ff;">="text"</span><span style="color: #ff0000;"> id</span><span style="color: #0000ff;">="start"</span><span style="color: #ff0000;"> value</span><span style="color: #0000ff;">="4"</span> <span style="color: #0000ff;">/&gt;&lt;</span><span style="color: #800000;">br </span><span style="color: #0000ff;">/&gt;</span>
+<span style="color: #008080;">  8</span>     end:<span style="color: #0000ff;">&lt;</span><span style="color: #800000;">input </span><span style="color: #ff0000;">type</span><span style="color: #0000ff;">="text"</span><span style="color: #ff0000;"> id</span><span style="color: #0000ff;">="end"</span><span style="color: #ff0000;"> value</span><span style="color: #0000ff;">="12"</span><span style="color: #0000ff;">/&gt;&lt;</span><span style="color: #800000;">br </span><span style="color: #0000ff;">/&gt;</span>
+<span style="color: #008080;">  9</span>     length:<span style="color: #0000ff;">&lt;</span><span style="color: #800000;">input </span><span style="color: #ff0000;">type</span><span style="color: #0000ff;">="text"</span><span style="color: #ff0000;"> id</span><span style="color: #0000ff;">="len"</span><span style="color: #ff0000;"> value</span><span style="color: #0000ff;">="8"</span> <span style="color: #0000ff;">/&gt;</span>
+<span style="color: #008080;"> 10</span>     <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">h3</span><span style="color: #0000ff;">&gt;</span>变形<span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">h3</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 11</span>     <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">div </span><span style="color: #ff0000;">id</span><span style="color: #0000ff;">="change"</span><span style="color: #0000ff;">&gt;&lt;/</span><span style="color: #800000;">div</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 12</span> <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">body</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 13</span> <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">script </span><span style="color: #ff0000;">src</span><span style="color: #0000ff;">="../jquery-1.7.1.js"</span><span style="color: #ff0000;"> type</span><span style="color: #0000ff;">="text/javascript"</span><span style="color: #0000ff;">&gt;&lt;/</span><span style="color: #800000;">script</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 14</span> <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">script </span><span style="color: #ff0000;">type</span><span style="color: #0000ff;">="text/javascript"</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 15</span>     <span style="background-color: #f5f5f5; color: #0000ff;">var</span><span style="background-color: #f5f5f5; color: #000000;"> slice </span><span style="background-color: #f5f5f5; color: #000000;">=</span><span style="background-color: #f5f5f5; color: #000000;"> [].slice;
+</span><span style="color: #008080;"> 16</span>     <span style="background-color: #f5f5f5; color: #0000ff;">var</span><span style="background-color: #f5f5f5; color: #000000;"> bind </span><span style="background-color: #f5f5f5; color: #000000;">=</span> <span style="background-color: #f5f5f5; color: #0000ff;">function</span><span style="background-color: #f5f5f5; color: #000000;"> (scope, fun, args) {
+</span><span style="color: #008080;"> 17</span> <span style="background-color: #f5f5f5; color: #000000;">        args </span><span style="background-color: #f5f5f5; color: #000000;">=</span><span style="background-color: #f5f5f5; color: #000000;"> args </span><span style="background-color: #f5f5f5; color: #000000;">||</span><span style="background-color: #f5f5f5; color: #000000;"> [];
+</span><span style="color: #008080;"> 18</span>         <span style="background-color: #f5f5f5; color: #0000ff;">return</span> <span style="background-color: #f5f5f5; color: #0000ff;">function</span><span style="background-color: #f5f5f5; color: #000000;"> () {
+</span><span style="color: #008080;"> 19</span> <span style="background-color: #f5f5f5; color: #000000;">            fun.apply(scope, args.concat(slice.call(arguments)));
+</span><span style="color: #008080;"> 20</span> <span style="background-color: #f5f5f5; color: #000000;">        };
+</span><span style="color: #008080;"> 21</span> <span style="background-color: #f5f5f5; color: #000000;">    };
+</span><span style="color: #008080;"> 22</span>     <span style="background-color: #f5f5f5; color: #0000ff;">var</span><span style="background-color: #f5f5f5; color: #000000;"> M </span><span style="background-color: #f5f5f5; color: #000000;">=</span> <span style="background-color: #f5f5f5; color: #0000ff;">function</span><span style="background-color: #f5f5f5; color: #000000;"> () {
+</span><span style="color: #008080;"> 23</span>         <span style="background-color: #f5f5f5; color: #0000ff;">this</span><span style="background-color: #f5f5f5; color: #000000;">.start </span><span style="background-color: #f5f5f5; color: #000000;">=</span> <span style="background-color: #f5f5f5; color: #000000;">0</span><span style="background-color: #f5f5f5; color: #000000;">;
+</span><span style="color: #008080;"> 24</span>         <span style="background-color: #f5f5f5; color: #0000ff;">this</span><span style="background-color: #f5f5f5; color: #000000;">.end </span><span style="background-color: #f5f5f5; color: #000000;">=</span> <span style="background-color: #f5f5f5; color: #000000;">0</span><span style="background-color: #f5f5f5; color: #000000;">;
+</span><span style="color: #008080;"> 25</span>         <span style="background-color: #f5f5f5; color: #0000ff;">this</span><span style="background-color: #f5f5f5; color: #000000;">.len </span><span style="background-color: #f5f5f5; color: #000000;">=</span> <span style="background-color: #f5f5f5; color: #000000;">0</span><span style="background-color: #f5f5f5; color: #000000;">;
+</span><span style="color: #008080;"> 26</span> <span style="background-color: #f5f5f5; color: #000000;">    };
+</span><span style="color: #008080;"> 27</span> <span style="background-color: #f5f5f5; color: #000000;">    M.prototype </span><span style="background-color: #f5f5f5; color: #000000;">=</span><span style="background-color: #f5f5f5; color: #000000;"> {
+</span><span style="color: #008080;"> 28</span> <span style="background-color: #f5f5f5; color: #000000;">        getStart: </span><span style="background-color: #f5f5f5; color: #0000ff;">function</span><span style="background-color: #f5f5f5; color: #000000;"> () {
+</span><span style="color: #008080;"> 29</span>             <span style="background-color: #f5f5f5; color: #0000ff;">return</span> <span style="background-color: #f5f5f5; color: #0000ff;">this</span><span style="background-color: #f5f5f5; color: #000000;">.start;
+</span><span style="color: #008080;"> 30</span> <span style="background-color: #f5f5f5; color: #000000;">        },
+</span><span style="color: #008080;"> 31</span> <span style="background-color: #f5f5f5; color: #000000;">        setStart: </span><span style="background-color: #f5f5f5; color: #0000ff;">function</span><span style="background-color: #f5f5f5; color: #000000;"> (args) {
+</span><span style="color: #008080;"> 32</span>             <span style="background-color: #f5f5f5; color: #0000ff;">this</span><span style="background-color: #f5f5f5; color: #000000;">.start </span><span style="background-color: #f5f5f5; color: #000000;">=</span><span style="background-color: #f5f5f5; color: #000000;"> args;
+</span><span style="color: #008080;"> 33</span> <span style="background-color: #f5f5f5; color: #000000;">        },
+</span><span style="color: #008080;"> 34</span> <span style="background-color: #f5f5f5; color: #000000;">        getEnd: </span><span style="background-color: #f5f5f5; color: #0000ff;">function</span><span style="background-color: #f5f5f5; color: #000000;"> () {
+</span><span style="color: #008080;"> 35</span>             <span style="background-color: #f5f5f5; color: #0000ff;">return</span> <span style="background-color: #f5f5f5; color: #0000ff;">this</span><span style="background-color: #f5f5f5; color: #000000;">.end;
+</span><span style="color: #008080;"> 36</span> <span style="background-color: #f5f5f5; color: #000000;">        },
+</span><span style="color: #008080;"> 37</span> <span style="background-color: #f5f5f5; color: #000000;">        setEnd: </span><span style="background-color: #f5f5f5; color: #0000ff;">function</span><span style="background-color: #f5f5f5; color: #000000;"> (args) {
+</span><span style="color: #008080;"> 38</span>             <span style="background-color: #f5f5f5; color: #0000ff;">this</span><span style="background-color: #f5f5f5; color: #000000;">.end </span><span style="background-color: #f5f5f5; color: #000000;">=</span><span style="background-color: #f5f5f5; color: #000000;"> args;
+</span><span style="color: #008080;"> 39</span> <span style="background-color: #f5f5f5; color: #000000;">        },
+</span><span style="color: #008080;"> 40</span> <span style="background-color: #f5f5f5; color: #000000;">        getLen: </span><span style="background-color: #f5f5f5; color: #0000ff;">function</span><span style="background-color: #f5f5f5; color: #000000;"> () {
+</span><span style="color: #008080;"> 41</span>             <span style="background-color: #f5f5f5; color: #0000ff;">return</span> <span style="background-color: #f5f5f5; color: #0000ff;">this</span><span style="background-color: #f5f5f5; color: #000000;">.len;
+</span><span style="color: #008080;"> 42</span> <span style="background-color: #f5f5f5; color: #000000;">        },
+</span><span style="color: #008080;"> 43</span> <span style="background-color: #f5f5f5; color: #000000;">        setLen: </span><span style="background-color: #f5f5f5; color: #0000ff;">function</span><span style="background-color: #f5f5f5; color: #000000;"> (args) {
+</span><span style="color: #008080;"> 44</span>             <span style="background-color: #f5f5f5; color: #0000ff;">this</span><span style="background-color: #f5f5f5; color: #000000;">.len </span><span style="background-color: #f5f5f5; color: #000000;">=</span><span style="background-color: #f5f5f5; color: #000000;"> args;
+</span><span style="color: #008080;"> 45</span> <span style="background-color: #f5f5f5; color: #000000;">        },
+</span><span style="color: #008080;"> 46</span> <span style="background-color: #f5f5f5; color: #000000;">        calculateLength: </span><span style="background-color: #f5f5f5; color: #0000ff;">function</span><span style="background-color: #f5f5f5; color: #000000;"> () {
+</span><span style="color: #008080;"> 47</span>             <span style="background-color: #f5f5f5; color: #008000;">//</span><span style="background-color: #f5f5f5; color: #008000;">此处可以加入其它逻辑</span>
+<span style="color: #008080;"> 48</span>             <span style="background-color: #f5f5f5; color: #0000ff;">var</span><span style="background-color: #f5f5f5; color: #000000;"> len </span><span style="background-color: #f5f5f5; color: #000000;">=</span><span style="background-color: #f5f5f5; color: #000000;"> parseInt(</span><span style="background-color: #f5f5f5; color: #0000ff;">this</span><span style="background-color: #f5f5f5; color: #000000;">.end) </span><span style="background-color: #f5f5f5; color: #000000;">-</span><span style="background-color: #f5f5f5; color: #000000;"> parseInt(</span><span style="background-color: #f5f5f5; color: #0000ff;">this</span><span style="background-color: #f5f5f5; color: #000000;">.start);
+</span><span style="color: #008080;"> 49</span>             <span style="background-color: #f5f5f5; color: #0000ff;">this</span><span style="background-color: #f5f5f5; color: #000000;">.setLen(len);
+</span><span style="color: #008080;"> 50</span> <span style="background-color: #f5f5f5; color: #000000;">        },
+</span><span style="color: #008080;"> 51</span> <span style="background-color: #f5f5f5; color: #000000;">        calculateEnd: </span><span style="background-color: #f5f5f5; color: #0000ff;">function</span><span style="background-color: #f5f5f5; color: #000000;"> (m) {
+</span><span style="color: #008080;"> 52</span>             <span style="background-color: #f5f5f5; color: #0000ff;">var</span><span style="background-color: #f5f5f5; color: #000000;"> end </span><span style="background-color: #f5f5f5; color: #000000;">=</span><span style="background-color: #f5f5f5; color: #000000;"> parseInt(</span><span style="background-color: #f5f5f5; color: #0000ff;">this</span><span style="background-color: #f5f5f5; color: #000000;">.len) </span><span style="background-color: #f5f5f5; color: #000000;">+</span><span style="background-color: #f5f5f5; color: #000000;"> parseInt(</span><span style="background-color: #f5f5f5; color: #0000ff;">this</span><span style="background-color: #f5f5f5; color: #000000;">.start)
+</span><span style="color: #008080;"> 53</span>             <span style="background-color: #f5f5f5; color: #0000ff;">this</span><span style="background-color: #f5f5f5; color: #000000;">.setEnd(end);
+</span><span style="color: #008080;"> 54</span> <span style="background-color: #f5f5f5; color: #000000;">        }
+</span><span style="color: #008080;"> 55</span> <span style="background-color: #f5f5f5; color: #000000;">    };
+</span><span style="color: #008080;"> 56</span> 
+<span style="color: #008080;"> 57</span> 
+<span style="color: #008080;"> 58</span> <span style="background-color: #f5f5f5; color: #0000ff;">var</span><span style="background-color: #f5f5f5; color: #000000;"> V </span><span style="background-color: #f5f5f5; color: #000000;">=</span> <span style="background-color: #f5f5f5; color: #0000ff;">function</span><span style="background-color: #f5f5f5; color: #000000;"> (s, e, l) {
+</span><span style="color: #008080;"> 59</span>     <span style="background-color: #f5f5f5; color: #0000ff;">this</span><span style="background-color: #f5f5f5; color: #000000;">.start </span><span style="background-color: #f5f5f5; color: #000000;">=</span><span style="background-color: #f5f5f5; color: #000000;"> s;
+</span><span style="color: #008080;"> 60</span>     <span style="background-color: #f5f5f5; color: #0000ff;">this</span><span style="background-color: #f5f5f5; color: #000000;">.end </span><span style="background-color: #f5f5f5; color: #000000;">=</span><span style="background-color: #f5f5f5; color: #000000;"> e;
+</span><span style="color: #008080;"> 61</span>     <span style="background-color: #f5f5f5; color: #0000ff;">this</span><span style="background-color: #f5f5f5; color: #000000;">.len </span><span style="background-color: #f5f5f5; color: #000000;">=</span><span style="background-color: #f5f5f5; color: #000000;"> l;
+</span><span style="color: #008080;"> 62</span>     <span style="background-color: #f5f5f5; color: #0000ff;">this</span><span style="background-color: #f5f5f5; color: #000000;">.m ;
+</span><span style="color: #008080;"> 63</span> <span style="background-color: #f5f5f5; color: #000000;">};
+</span><span style="color: #008080;"> 64</span> <span style="background-color: #f5f5f5; color: #000000;">V.prototype </span><span style="background-color: #f5f5f5; color: #000000;">=</span><span style="background-color: #f5f5f5; color: #000000;"> {
+</span><span style="color: #008080;"> 65</span> <span style="background-color: #f5f5f5; color: #000000;">    setM: </span><span style="background-color: #f5f5f5; color: #0000ff;">function</span><span style="background-color: #f5f5f5; color: #000000;"> (args) {
+</span><span style="color: #008080;"> 66</span>         <span style="background-color: #f5f5f5; color: #0000ff;">this</span><span style="background-color: #f5f5f5; color: #000000;">.m </span><span style="background-color: #f5f5f5; color: #000000;">=</span><span style="background-color: #f5f5f5; color: #000000;"> args;
+</span><span style="color: #008080;"> 67</span>         <span style="background-color: #f5f5f5; color: #0000ff;">this</span><span style="background-color: #f5f5f5; color: #000000;">.m.setStart(</span><span style="background-color: #f5f5f5; color: #0000ff;">this</span><span style="background-color: #f5f5f5; color: #000000;">.start.val());
+</span><span style="color: #008080;"> 68</span>         <span style="background-color: #f5f5f5; color: #0000ff;">this</span><span style="background-color: #f5f5f5; color: #000000;">.m.setEnd(</span><span style="background-color: #f5f5f5; color: #0000ff;">this</span><span style="background-color: #f5f5f5; color: #000000;">.end.val());
+</span><span style="color: #008080;"> 69</span>         <span style="background-color: #f5f5f5; color: #0000ff;">this</span><span style="background-color: #f5f5f5; color: #000000;">.m.setLen(</span><span style="background-color: #f5f5f5; color: #0000ff;">this</span><span style="background-color: #f5f5f5; color: #000000;">.len.val());
+</span><span style="color: #008080;"> 70</span> <span style="background-color: #f5f5f5; color: #000000;">    },
+</span><span style="color: #008080;"> 71</span> <span style="background-color: #f5f5f5; color: #000000;">    focusLost: </span><span style="background-color: #f5f5f5; color: #0000ff;">function</span><span style="background-color: #f5f5f5; color: #000000;"> () {
+</span><span style="color: #008080;"> 72</span>         <span style="background-color: #f5f5f5; color: #0000ff;">this</span><span style="background-color: #f5f5f5; color: #000000;">.start.blur(bind(</span><span style="background-color: #f5f5f5; color: #0000ff;">this</span><span style="background-color: #f5f5f5; color: #000000;">, </span><span style="background-color: #f5f5f5; color: #0000ff;">this</span><span style="background-color: #f5f5f5; color: #000000;">.start_blur));
+</span><span style="color: #008080;"> 73</span>         <span style="background-color: #f5f5f5; color: #0000ff;">this</span><span style="background-color: #f5f5f5; color: #000000;">.end.blur(bind(</span><span style="background-color: #f5f5f5; color: #0000ff;">this</span><span style="background-color: #f5f5f5; color: #000000;">, </span><span style="background-color: #f5f5f5; color: #0000ff;">this</span><span style="background-color: #f5f5f5; color: #000000;">.end_blur));
+</span><span style="color: #008080;"> 74</span>         <span style="background-color: #f5f5f5; color: #0000ff;">this</span><span style="background-color: #f5f5f5; color: #000000;">.len.blur(bind(</span><span style="background-color: #f5f5f5; color: #0000ff;">this</span><span style="background-color: #f5f5f5; color: #000000;">, </span><span style="background-color: #f5f5f5; color: #0000ff;">this</span><span style="background-color: #f5f5f5; color: #000000;">.len_blur));
+</span><span style="color: #008080;"> 75</span> 
+<span style="color: #008080;"> 76</span> <span style="background-color: #f5f5f5; color: #000000;">    },
+</span><span style="color: #008080;"> 77</span> <span style="background-color: #f5f5f5; color: #000000;">    start_blur: </span><span style="background-color: #f5f5f5; color: #0000ff;">function</span><span style="background-color: #f5f5f5; color: #000000;"> () {
+</span><span style="color: #008080;"> 78</span>         <span style="background-color: #f5f5f5; color: #0000ff;">this</span><span style="background-color: #f5f5f5; color: #000000;">.m.setStart(</span><span style="background-color: #f5f5f5; color: #0000ff;">this</span><span style="background-color: #f5f5f5; color: #000000;">.start.val());
+</span><span style="color: #008080;"> 79</span>         <span style="background-color: #f5f5f5; color: #0000ff;">this</span><span style="background-color: #f5f5f5; color: #000000;">.calculateLength();
+</span><span style="color: #008080;"> 80</span> <span style="background-color: #f5f5f5; color: #000000;">    },
+</span><span style="color: #008080;"> 81</span> <span style="background-color: #f5f5f5; color: #000000;">    end_blur: </span><span style="background-color: #f5f5f5; color: #0000ff;">function</span><span style="background-color: #f5f5f5; color: #000000;"> () {
+</span><span style="color: #008080;"> 82</span>         <span style="background-color: #f5f5f5; color: #0000ff;">this</span><span style="background-color: #f5f5f5; color: #000000;">.m.setEnd(</span><span style="background-color: #f5f5f5; color: #0000ff;">this</span><span style="background-color: #f5f5f5; color: #000000;">.end.val());
+</span><span style="color: #008080;"> 83</span>         <span style="background-color: #f5f5f5; color: #0000ff;">this</span><span style="background-color: #f5f5f5; color: #000000;">.calculateLength();
+</span><span style="color: #008080;"> 84</span> <span style="background-color: #f5f5f5; color: #000000;">    },
+</span><span style="color: #008080;"> 85</span> <span style="background-color: #f5f5f5; color: #000000;">    len_blur: </span><span style="background-color: #f5f5f5; color: #0000ff;">function</span><span style="background-color: #f5f5f5; color: #000000;"> () {
+</span><span style="color: #008080;"> 86</span>         <span style="background-color: #f5f5f5; color: #0000ff;">this</span><span style="background-color: #f5f5f5; color: #000000;">.m.setLen(</span><span style="background-color: #f5f5f5; color: #0000ff;">this</span><span style="background-color: #f5f5f5; color: #000000;">.len.val());
+</span><span style="color: #008080;"> 87</span>         <span style="background-color: #f5f5f5; color: #0000ff;">this</span><span style="background-color: #f5f5f5; color: #000000;">.calculateEnd();
+</span><span style="color: #008080;"> 88</span> <span style="background-color: #f5f5f5; color: #000000;">    },
+</span><span style="color: #008080;"> 89</span> <span style="background-color: #f5f5f5; color: #000000;">    calculateLength: </span><span style="background-color: #f5f5f5; color: #0000ff;">function</span><span style="background-color: #f5f5f5; color: #000000;"> () {
+</span><span style="color: #008080;"> 90</span>         <span style="background-color: #f5f5f5; color: #0000ff;">this</span><span style="background-color: #f5f5f5; color: #000000;">.m.calculateLength();
+</span><span style="color: #008080;"> 91</span>         <span style="background-color: #f5f5f5; color: #0000ff;">this</span><span style="background-color: #f5f5f5; color: #000000;">.update();
+</span><span style="color: #008080;"> 92</span> 
+<span style="color: #008080;"> 93</span> <span style="background-color: #f5f5f5; color: #000000;">    },
+</span><span style="color: #008080;"> 94</span> <span style="background-color: #f5f5f5; color: #000000;">    calculateEnd: </span><span style="background-color: #f5f5f5; color: #0000ff;">function</span><span style="background-color: #f5f5f5; color: #000000;"> () {
+</span><span style="color: #008080;"> 95</span>         <span style="background-color: #f5f5f5; color: #0000ff;">this</span><span style="background-color: #f5f5f5; color: #000000;">.m.calculateEnd();
+</span><span style="color: #008080;"> 96</span>         <span style="background-color: #f5f5f5; color: #0000ff;">this</span><span style="background-color: #f5f5f5; color: #000000;">.update();
+</span><span style="color: #008080;"> 97</span> 
+<span style="color: #008080;"> 98</span> <span style="background-color: #f5f5f5; color: #000000;">    },
+</span><span style="color: #008080;"> 99</span> <span style="background-color: #f5f5f5; color: #000000;">    update: </span><span style="background-color: #f5f5f5; color: #0000ff;">function</span><span style="background-color: #f5f5f5; color: #000000;"> () {
+</span><span style="color: #008080;">100</span>         <span style="background-color: #f5f5f5; color: #0000ff;">var</span><span style="background-color: #f5f5f5; color: #000000;"> s1 </span><span style="background-color: #f5f5f5; color: #000000;">=</span> <span style="background-color: #f5f5f5; color: #0000ff;">this</span><span style="background-color: #f5f5f5; color: #000000;">.m.getStart();
+</span><span style="color: #008080;">101</span>         <span style="background-color: #f5f5f5; color: #0000ff;">var</span><span style="background-color: #f5f5f5; color: #000000;"> s2 </span><span style="background-color: #f5f5f5; color: #000000;">=</span> <span style="background-color: #f5f5f5; color: #0000ff;">this</span><span style="background-color: #f5f5f5; color: #000000;">.m.getEnd();
+</span><span style="color: #008080;">102</span>         <span style="background-color: #f5f5f5; color: #0000ff;">var</span><span style="background-color: #f5f5f5; color: #000000;"> s3 </span><span style="background-color: #f5f5f5; color: #000000;">=</span> <span style="background-color: #f5f5f5; color: #0000ff;">this</span><span style="background-color: #f5f5f5; color: #000000;">.m.getLen();
+</span><span style="color: #008080;">103</span> 
+<span style="color: #008080;">104</span>         <span style="background-color: #f5f5f5; color: #0000ff;">this</span><span style="background-color: #f5f5f5; color: #000000;">.start.val(</span><span style="background-color: #f5f5f5; color: #0000ff;">this</span><span style="background-color: #f5f5f5; color: #000000;">.m.getStart());
+</span><span style="color: #008080;">105</span>         <span style="background-color: #f5f5f5; color: #0000ff;">this</span><span style="background-color: #f5f5f5; color: #000000;">.end.val(</span><span style="background-color: #f5f5f5; color: #0000ff;">this</span><span style="background-color: #f5f5f5; color: #000000;">.m.getEnd());
+</span><span style="color: #008080;">106</span>         <span style="background-color: #f5f5f5; color: #0000ff;">this</span><span style="background-color: #f5f5f5; color: #000000;">.len.val(</span><span style="background-color: #f5f5f5; color: #0000ff;">this</span><span style="background-color: #f5f5f5; color: #000000;">.m.getLen());
+</span><span style="color: #008080;">107</span> <span style="background-color: #f5f5f5; color: #000000;">    }
+</span><span style="color: #008080;">108</span> <span style="background-color: #f5f5f5; color: #000000;">};
+</span><span style="color: #008080;">109</span> 
+<span style="color: #008080;">110</span> <span style="background-color: #f5f5f5; color: #0000ff;">var</span><span style="background-color: #f5f5f5; color: #000000;"> v1 </span><span style="background-color: #f5f5f5; color: #000000;">=</span> <span style="background-color: #f5f5f5; color: #0000ff;">new</span><span style="background-color: #f5f5f5; color: #000000;"> V($(</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">#start</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">), $(</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">#end</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">), $(</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">#len</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">));
+</span><span style="color: #008080;">111</span> <span style="background-color: #f5f5f5; color: #0000ff;">var</span><span style="background-color: #f5f5f5; color: #000000;"> m1 </span><span style="background-color: #f5f5f5; color: #000000;">=</span> <span style="background-color: #f5f5f5; color: #0000ff;">new</span><span style="background-color: #f5f5f5; color: #000000;"> M();
+</span><span style="color: #008080;">112</span> <span style="background-color: #f5f5f5; color: #000000;">v1.setM(m1);
+</span><span style="color: #008080;">113</span> <span style="background-color: #f5f5f5; color: #000000;">v1.focusLost();
+</span><span style="color: #008080;">114</span> 
+<span style="color: #008080;">115</span> <span style="background-color: #f5f5f5; color: #008000;">//</span><span style="background-color: #f5f5f5; color: #008000;">这样做的好处就是我可以轻易变形</span>
+<span style="color: #008080;">116</span> <span style="background-color: #f5f5f5; color: #008000;">//</span><span style="background-color: #f5f5f5; color: #008000;">下面的重复代码我就不管了</span>
+<span style="color: #008080;">117</span> <span style="background-color: #f5f5f5; color: #0000ff;">var</span><span style="background-color: #f5f5f5; color: #000000;"> change </span><span style="background-color: #f5f5f5; color: #000000;">=</span><span style="background-color: #f5f5f5; color: #000000;"> $(</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">#change</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">);
+</span><span style="color: #008080;">118</span>     <span style="background-color: #f5f5f5; color: #0000ff;">var</span><span style="background-color: #f5f5f5; color: #000000;"> s1 </span><span style="background-color: #f5f5f5; color: #000000;">=</span><span style="background-color: #f5f5f5; color: #000000;"> $(</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">&lt;select id="s1"&gt;&lt;/select&gt;</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">);
+</span><span style="color: #008080;">119</span>     <span style="background-color: #f5f5f5; color: #0000ff;">var</span><span style="background-color: #f5f5f5; color: #000000;"> s2 </span><span style="background-color: #f5f5f5; color: #000000;">=</span><span style="background-color: #f5f5f5; color: #000000;"> $(</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">&lt;select id="s2"&gt;&lt;/select&gt;</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">);
+</span><span style="color: #008080;">120</span>     <span style="background-color: #f5f5f5; color: #0000ff;">var</span><span style="background-color: #f5f5f5; color: #000000;"> s3 </span><span style="background-color: #f5f5f5; color: #000000;">=</span><span style="background-color: #f5f5f5; color: #000000;"> $(</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">&lt;select id="s3"&gt;&lt;/select&gt;</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">);
+</span><span style="color: #008080;">121</span> <span style="background-color: #f5f5f5; color: #000000;">    change.append(s1);
+</span><span style="color: #008080;">122</span> <span style="background-color: #f5f5f5; color: #000000;">    change.append(s2);
+</span><span style="color: #008080;">123</span> <span style="background-color: #f5f5f5; color: #000000;">    change.append(s3);
+</span><span style="color: #008080;">124</span> 
+<span style="color: #008080;">125</span>     <span style="background-color: #f5f5f5; color: #0000ff;">for</span><span style="background-color: #f5f5f5; color: #000000;"> (</span><span style="background-color: #f5f5f5; color: #0000ff;">var</span><span style="background-color: #f5f5f5; color: #000000;"> i </span><span style="background-color: #f5f5f5; color: #000000;">=</span> <span style="background-color: #f5f5f5; color: #000000;">-</span><span style="background-color: #f5f5f5; color: #000000;">100</span><span style="background-color: #f5f5f5; color: #000000;">; i </span><span style="background-color: #f5f5f5; color: #000000;">&lt;</span> <span style="background-color: #f5f5f5; color: #000000;">100</span><span style="background-color: #f5f5f5; color: #000000;">; i</span><span style="background-color: #f5f5f5; color: #000000;">++</span><span style="background-color: #f5f5f5; color: #000000;">) {
+</span><span style="color: #008080;">126</span> <span style="background-color: #f5f5f5; color: #000000;">        s1.append($(</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">&lt;option&gt;</span><span style="background-color: #f5f5f5; color: #000000;">'</span> <span style="background-color: #f5f5f5; color: #000000;">+</span><span style="background-color: #f5f5f5; color: #000000;"> i </span><span style="background-color: #f5f5f5; color: #000000;">+</span> <span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">&lt;/option&gt;</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">));
+</span><span style="color: #008080;">127</span> <span style="background-color: #f5f5f5; color: #000000;">        s2.append($(</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">&lt;option&gt;</span><span style="background-color: #f5f5f5; color: #000000;">'</span> <span style="background-color: #f5f5f5; color: #000000;">+</span><span style="background-color: #f5f5f5; color: #000000;"> i </span><span style="background-color: #f5f5f5; color: #000000;">+</span> <span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">&lt;/option&gt;</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">));
+</span><span style="color: #008080;">128</span> <span style="background-color: #f5f5f5; color: #000000;">        s3.append($(</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">&lt;option&gt;</span><span style="background-color: #f5f5f5; color: #000000;">'</span> <span style="background-color: #f5f5f5; color: #000000;">+</span><span style="background-color: #f5f5f5; color: #000000;"> i </span><span style="background-color: #f5f5f5; color: #000000;">+</span> <span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">&lt;/option&gt;</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">));
+</span><span style="color: #008080;">129</span> <span style="background-color: #f5f5f5; color: #000000;">    }
+</span><span style="color: #008080;">130</span> 
+<span style="color: #008080;">131</span>     <span style="background-color: #f5f5f5; color: #0000ff;">var</span><span style="background-color: #f5f5f5; color: #000000;"> v2 </span><span style="background-color: #f5f5f5; color: #000000;">=</span> <span style="background-color: #f5f5f5; color: #0000ff;">new</span><span style="background-color: #f5f5f5; color: #000000;"> V($(</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">#s1</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">), $(</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">#s2</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">), $(</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">#s3</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">));
+</span><span style="color: #008080;">132</span>     <span style="background-color: #f5f5f5; color: #0000ff;">var</span><span style="background-color: #f5f5f5; color: #000000;"> m2 </span><span style="background-color: #f5f5f5; color: #000000;">=</span> <span style="background-color: #f5f5f5; color: #0000ff;">new</span><span style="background-color: #f5f5f5; color: #000000;"> M();
+</span><span style="color: #008080;">133</span> <span style="background-color: #f5f5f5; color: #000000;">    v2.setM(m2);
+</span><span style="color: #008080;">134</span> <span style="background-color: #f5f5f5; color: #000000;">    v2.focusLost();
+</span><span style="color: #008080;">135</span> <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">script</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">136</span> <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">html</span><span style="color: #0000ff;">&gt;</span></pre>
+</div>
+<h3><span style="line-height: 1.5; font-size: 1.17em;">demo地址：</span></h3>
+<p><span style="line-height: 1.5;"><a href="http://sandbox.runjs.cn/show/bjsc6zui">http://sandbox.runjs.cn/show/bjsc6zui</a></span></p>
+<h1><span style="line-height: 1.5;">结语</span></h1>
+<p><span style="line-height: 1.5;">今天暂时这样，我们后面继续</span></p>
+                </div>
+
+                <div class='span3 sidebar'>
+                    <h2>导航栏</h2>
+                    <ul class="nav nav-tabs nav-stacked">
+                             				<li><a href="http://songboriceboy.github.io/xxoo/html/sjms/MVCxxbj01ckam/index.html">【MVC学习笔记01】初窥奥秘</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/sjms/zgbj01dygalbqcj/index.html">【重构笔记01】第一个案例补齐插件</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/sjms/zgbj02zxzzhs/index.html">【重构笔记02】重新组织函数</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/sjms/zgbj03dxzjbqtx/index.html">【重构笔记03】对象之间搬迁特性</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/sjms/zgbj04zxzzsjwhxmblsmssjyxwfl/index.html">【重构笔记04】重新组织数据（我好像明白了什么是数据与行为分离）</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/sjms/ctBackbone/index.html">初探Backbone</a></li>
+    				                                         
+                    </ul>
+                </div>
+            </div>
+
+        </div>
+    </body>
+</html>

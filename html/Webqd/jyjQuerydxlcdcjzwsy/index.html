@@ -1,0 +1,839 @@
+﻿<!DOCTYPE html>
+
+<html lang="zh">
+    <head>
+        <meta charset="utf-8">
+        <meta name="description" content="android,ios" />
+        <meta name="keywords" content="android,ios" />
+
+        <title>叶小钗</title>
+        <style type='text/css'>
+            body {
+                background-color: #CCC;
+            }
+        </style>
+        <link rel="stylesheet" href="../../../css/bootstrap.css" />
+    </head>
+
+    <body>
+        <div class="container">
+
+            <h1>叶小钗</h1>
+
+            <div class='navbar navbar-inverse'>
+                <div class='navbar-inner nav-collapse' style="height: auto;">
+                    <ul class="nav">
+                              				<li><a href="http://songboriceboy.github.io/xxoo/html/blade/index.html">blade</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/css/index.html">css</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/HTML5&CSS3/index.html">HTML5&CSS3</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/index.html">javascript</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Javaxx/index.html">Java学习</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/nodejs/index.html">nodejs</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/requirejs/index.html">requirejs</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/index.html">Web前端</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/xxgw/index.html">学习感悟</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/gzdd/index.html">工作点滴</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/jkxx/index.html">接口学习</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/wfl/index.html">未分类</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/ydkf/index.html">移动开发</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/sjms/index.html">设计模式</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/mst/index.html">面试题</a></li>
+    				                      </ul>
+                </div>
+            </div>
+
+            <div id='content' class='row-fluid'>
+
+                <div class='span9 main'>
+				<div style="color:blue" align=center>基于jQuery的下拉菜单插件，诸位上眼！！！</div><br><h1>前言</h1>
+<hr>
+<p>很久没有写博客了，话说真的工作后才发现很多需要学的，有很多不足。</p>
+<p>加之最近工作没有什么沉淀，现在团队又面临解散，反正闲着也是闲着，就自己写了个插件，反正水平就这样，当时自我总结吧！</p>
+<h1>应用背景</h1>
+<hr>
+<p>在我们工作中，经常会遇到这种需求：</p>
+<p><img src="16392338715986.jpg" alt=""></p>
+<p><img src="50070046391469.jpg" alt=""></p>
+<p>① 鼠标点击某个文本框时出现下拉菜单</p>
+<p>② 常用的操作鼠标划上出现下拉菜单</p>
+<p>③ 按钮类应用</p>
+<p>我们会用到这种功能往往原因是因为地方小了，按钮多了，<span style="color: #ff0000;">这往往说明产品设计一般出问题了</span>。。。 但是，我辈屁民豪不关注产品（没资格插手），所以需要完成以上功能；</p>
+<p>其实总的来说，这些功能还是非常实用的。</p>
+<p>于是，为了应对以上场景，我工作中先是做了一个，然后又遇到了，然后又遇到了，所以最后就写了这么一个东西。</p>
+<h1>集中展示</h1>
+<hr>
+<p><img src="17289078479175.jpg" alt=""></p>
+<p>几个功能放到一起了，前端代码如下：</p>
+<div class="cnblogs_code" onclick="cnblogs_code_show('7f6c0b96-4e14-42fe-9084-d3befef7ad13')"><img id="code_img_closed_7f6c0b96-4e14-42fe-9084-d3befef7ad13" class="code_img_closed" src="43570758473519.gif" alt=""><img id="code_img_opened_7f6c0b96-4e14-42fe-9084-d3befef7ad13" class="code_img_opened" style="display: none;" onclick="cnblogs_code_hide('7f6c0b96-4e14-42fe-9084-d3befef7ad13',event)" src="16365178109279.gif" alt=""><span class="cnblogs_code_collapse">View Code </span>
+<div id="cnblogs_code_open_7f6c0b96-4e14-42fe-9084-d3befef7ad13" class="cnblogs_code_hide">
+<pre><span style="color: #008080;"> 1</span> <span style="color: #0000ff;">&lt;!</span><span style="color: #ff00ff;">DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 2</span> <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">html </span><span style="color: #ff0000;">xmlns</span><span style="color: #0000ff;">="http://www.w3.org/1999/xhtml"</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 3</span> <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">head</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 4</span>     <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">title</span><span style="color: #0000ff;">&gt;&lt;/</span><span style="color: #800000;">title</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 5</span>     <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">style </span><span style="color: #ff0000;">type</span><span style="color: #0000ff;">="text/css"</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 6</span> <span style="background-color: #f5f5f5; color: #800000;">body</span><span style="background-color: #f5f5f5; color: #000000;">{</span><span style="background-color: #f5f5f5; color: #ff0000;"> font</span><span style="background-color: #f5f5f5; color: #000000;">:</span><span style="background-color: #f5f5f5; color: #0000ff;"> 12px/1.231 tahoma,arial,宋体</span><span style="background-color: #f5f5f5; color: #000000;">;</span> <span style="background-color: #f5f5f5; color: #000000;">}</span>
+<span style="color: #008080;"> 7</span> <span style="background-color: #f5f5f5; color: #800000;">.drop_list_items , .drop_list_items ul </span><span style="background-color: #f5f5f5; color: #000000;">{</span><span style="background-color: #f5f5f5; color: #ff0000;"> display</span><span style="background-color: #f5f5f5; color: #000000;">:</span><span style="background-color: #f5f5f5; color: #0000ff;"> none</span><span style="background-color: #f5f5f5; color: #000000;">;</span><span style="background-color: #f5f5f5; color: #ff0000;"> position</span><span style="background-color: #f5f5f5; color: #000000;">:</span><span style="background-color: #f5f5f5; color: #0000ff;">absolute</span><span style="background-color: #f5f5f5; color: #000000;">;</span><span style="background-color: #f5f5f5; color: #ff0000;"> background-color</span><span style="background-color: #f5f5f5; color: #000000;">:</span><span style="background-color: #f5f5f5; color: #0000ff;"> #FFFFFF</span><span style="background-color: #f5f5f5; color: #000000;">;</span><span style="background-color: #f5f5f5; color: #ff0000;"> border</span><span style="background-color: #f5f5f5; color: #000000;">:</span><span style="background-color: #f5f5f5; color: #0000ff;"> 1px solid #D2D2D2</span><span style="background-color: #f5f5f5; color: #000000;">;</span><span style="background-color: #f5f5f5; color: #ff0000;"> padding</span><span style="background-color: #f5f5f5; color: #000000;">:</span><span style="background-color: #f5f5f5; color: #0000ff;"> 2px</span><span style="background-color: #f5f5f5; color: #000000;">;</span><span style="background-color: #f5f5f5; color: #ff0000;"> margin</span><span style="background-color: #f5f5f5; color: #000000;">:</span><span style="background-color: #f5f5f5; color: #0000ff;"> 0</span><span style="background-color: #f5f5f5; color: #000000;">;</span> <span style="background-color: #f5f5f5; color: #000000;">}</span>
+<span style="color: #008080;"> 8</span> <span style="background-color: #f5f5f5; color: #800000;">.drop_list_items li </span><span style="background-color: #f5f5f5; color: #000000;">{</span><span style="background-color: #f5f5f5; color: #ff0000;"> margin</span><span style="background-color: #f5f5f5; color: #000000;">:</span><span style="background-color: #f5f5f5; color: #0000ff;"> 0</span><span style="background-color: #f5f5f5; color: #000000;">;</span><span style="background-color: #f5f5f5; color: #ff0000;"> padding</span><span style="background-color: #f5f5f5; color: #000000;">:</span><span style="background-color: #f5f5f5; color: #0000ff;"> 4px</span><span style="background-color: #f5f5f5; color: #000000;">;</span><span style="background-color: #f5f5f5; color: #ff0000;"> list-style</span><span style="background-color: #f5f5f5; color: #000000;">:</span><span style="background-color: #f5f5f5; color: #0000ff;"> none</span><span style="background-color: #f5f5f5; color: #000000;">;</span><span style="background-color: #f5f5f5; color: #ff0000;"> cursor</span><span style="background-color: #f5f5f5; color: #000000;">:</span><span style="background-color: #f5f5f5; color: #0000ff;"> pointer</span><span style="background-color: #f5f5f5; color: #000000;">;</span> <span style="background-color: #f5f5f5; color: #000000;">}</span>
+<span style="color: #008080;"> 9</span> <span style="background-color: #f5f5f5; color: #800000;">.drop_list_items li:hover </span><span style="background-color: #f5f5f5; color: #000000;">{</span><span style="background-color: #f5f5f5; color: #ff0000;"> background-color</span><span style="background-color: #f5f5f5; color: #000000;">:</span><span style="background-color: #f5f5f5; color: #0000ff;"> #3399FF</span><span style="background-color: #f5f5f5; color: #000000;">;</span> <span style="background-color: #f5f5f5; color: #000000;">}</span>
+<span style="color: #008080;">10</span> <span style="background-color: #f5f5f5; color: #800000;">.drop_list_items li.parent_drop_list </span><span style="background-color: #f5f5f5; color: #000000;">{</span><span style="background-color: #f5f5f5; color: #ff0000;"> padding</span><span style="background-color: #f5f5f5; color: #000000;">:</span><span style="background-color: #f5f5f5; color: #0000ff;"> 4px</span><span style="background-color: #f5f5f5; color: #000000;">;</span><span style="background-color: #f5f5f5; color: #ff0000;"> list-style</span><span style="background-color: #f5f5f5; color: #000000;">:</span><span style="background-color: #f5f5f5; color: #0000ff;"> none</span><span style="background-color: #f5f5f5; color: #000000;">;</span> <span style="background-color: #f5f5f5; color: #000000;">}</span>
+<span style="color: #008080;">11</span> <span style="background-color: #f5f5f5; color: #800000;">.drop_list_items li.cur_active </span><span style="background-color: #f5f5f5; color: #000000;">{</span><span style="background-color: #f5f5f5; color: #ff0000;"> background-color</span><span style="background-color: #f5f5f5; color: #000000;">:</span><span style="background-color: #f5f5f5; color: #0000ff;"> #3399FF</span><span style="background-color: #f5f5f5; color: #000000;">;</span> <span style="background-color: #f5f5f5; color: #000000;">}</span>
+<span style="color: #008080;">12</span> <span style="background-color: #f5f5f5; color: #800000;">.z800 </span><span style="background-color: #f5f5f5; color: #000000;">{</span><span style="background-color: #f5f5f5; color: #ff0000;"> z-index</span><span style="background-color: #f5f5f5; color: #000000;">:</span><span style="background-color: #f5f5f5; color: #0000ff;"> 800</span><span style="background-color: #f5f5f5; color: #000000;">;</span> <span style="background-color: #f5f5f5; color: #000000;">}</span>     
+<span style="color: #008080;">13</span>     <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">style</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">14</span>     <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">script </span><span style="color: #ff0000;">type</span><span style="color: #0000ff;">="text/javascript"</span><span style="color: #ff0000;"> src</span><span style="color: #0000ff;">="http://www.cnblogs.com/jquery-1.7.1.min.js"</span><span style="color: #0000ff;">&gt;&lt;/</span><span style="color: #800000;">script</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">15</span>     <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">script </span><span style="color: #ff0000;">src</span><span style="color: #0000ff;">="DropList.js"</span><span style="color: #ff0000;"> type</span><span style="color: #0000ff;">="text/javascript"</span><span style="color: #0000ff;">&gt;&lt;/</span><span style="color: #800000;">script</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">16</span>     <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">script </span><span style="color: #ff0000;">type</span><span style="color: #0000ff;">="text/javascript"</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">17</span> 
+<span style="color: #008080;">18</span>         <span style="background-color: #f5f5f5; color: #008000;">//</span><span style="background-color: #f5f5f5; color: #008000;">方案一</span>
+<span style="color: #008080;">19</span> <span style="background-color: #f5f5f5; color: #000000;">        $(document).ready(</span><span style="background-color: #f5f5f5; color: #0000ff;">function</span><span style="background-color: #f5f5f5; color: #000000;"> () {
+</span><span style="color: #008080;">20</span>             <span style="background-color: #f5f5f5; color: #0000ff;">new</span><span style="background-color: #f5f5f5; color: #000000;"> DropList({
+</span><span style="color: #008080;">21</span> <span style="background-color: #f5f5f5; color: #000000;">                id: </span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">click_btn_drop</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">,
+</span><span style="color: #008080;">22</span> <span style="background-color: #f5f5f5; color: #000000;">                dropItems: [
+</span><span style="color: #008080;">23</span> <span style="background-color: #f5f5f5; color: #000000;">                                [</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">短信选定用户</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">, </span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">select</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">],
+</span><span style="color: #008080;">24</span> <span style="background-color: #f5f5f5; color: #000000;">                                [</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">短信全部用户</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">, </span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">all</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">],
+</span><span style="color: #008080;">25</span> <span style="background-color: #f5f5f5; color: #000000;">                                [</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">短信未发送用户用户</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">, </span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">all_else</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">]
+</span><span style="color: #008080;">26</span> <span style="background-color: #f5f5f5; color: #000000;">                            ],
+</span><span style="color: #008080;">27</span> <span style="background-color: #f5f5f5; color: #000000;">                func: </span><span style="background-color: #f5f5f5; color: #0000ff;">function</span><span style="background-color: #f5f5f5; color: #000000;"> (e, scope, listEl) {
+</span><span style="color: #008080;">28</span>                     <span style="background-color: #f5f5f5; color: #0000ff;">var</span><span style="background-color: #f5f5f5; color: #000000;"> el </span><span style="background-color: #f5f5f5; color: #000000;">=</span><span style="background-color: #f5f5f5; color: #000000;"> $(</span><span style="background-color: #f5f5f5; color: #0000ff;">this</span><span style="background-color: #f5f5f5; color: #000000;">);
+</span><span style="color: #008080;">29</span> <span style="background-color: #f5f5f5; color: #000000;">                    alert(el.html());
+</span><span style="color: #008080;">30</span> <span style="background-color: #f5f5f5; color: #000000;">                    scope.closeList();
+</span><span style="color: #008080;">31</span>                     <span style="background-color: #f5f5f5; color: #0000ff;">var</span><span style="background-color: #f5f5f5; color: #000000;"> s </span><span style="background-color: #f5f5f5; color: #000000;">=</span> <span style="background-color: #f5f5f5; color: #000000;">''</span><span style="background-color: #f5f5f5; color: #000000;">;
+</span><span style="color: #008080;">32</span> <span style="background-color: #f5f5f5; color: #000000;">                }
+</span><span style="color: #008080;">33</span> <span style="background-color: #f5f5f5; color: #000000;">            });
+</span><span style="color: #008080;">34</span> 
+<span style="color: #008080;">35</span>             <span style="background-color: #f5f5f5; color: #0000ff;">new</span><span style="background-color: #f5f5f5; color: #000000;"> DropList({
+</span><span style="color: #008080;">36</span> <span style="background-color: #f5f5f5; color: #000000;">                id: </span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">div1</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">,
+</span><span style="color: #008080;">37</span> <span style="background-color: #f5f5f5; color: #000000;">                open: </span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">1</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">,
+</span><span style="color: #008080;">38</span> <span style="background-color: #f5f5f5; color: #000000;">                close: </span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">1</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">,
+</span><span style="color: #008080;">39</span> <span style="background-color: #f5f5f5; color: #000000;">                dropItems: [
+</span><span style="color: #008080;">40</span> <span style="background-color: #f5f5f5; color: #000000;">                    [</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">昵称</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">],
+</span><span style="color: #008080;">41</span> <span style="background-color: #f5f5f5; color: #000000;">                    [</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">姓名</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">],
+</span><span style="color: #008080;">42</span> <span style="background-color: #f5f5f5; color: #000000;">                    [</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">性别</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">],
+</span><span style="color: #008080;">43</span> <span style="background-color: #f5f5f5; color: #000000;">                    [</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">联系方式</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">]
+</span><span style="color: #008080;">44</span> <span style="background-color: #f5f5f5; color: #000000;">                ],
+</span><span style="color: #008080;">45</span> <span style="background-color: #f5f5f5; color: #000000;">                func: </span><span style="background-color: #f5f5f5; color: #0000ff;">function</span><span style="background-color: #f5f5f5; color: #000000;"> (e, scope, listEl, toggleEl) {
+</span><span style="color: #008080;">46</span>                     <span style="background-color: #f5f5f5; color: #0000ff;">var</span><span style="background-color: #f5f5f5; color: #000000;"> el </span><span style="background-color: #f5f5f5; color: #000000;">=</span><span style="background-color: #f5f5f5; color: #000000;"> $(</span><span style="background-color: #f5f5f5; color: #0000ff;">this</span><span style="background-color: #f5f5f5; color: #000000;">);
+</span><span style="color: #008080;">47</span> <span style="background-color: #f5f5f5; color: #000000;">                    scope.closeList();
+</span><span style="color: #008080;">48</span> <span style="background-color: #f5f5f5; color: #000000;">                    toggleEl.val(el.html());
+</span><span style="color: #008080;">49</span> <span style="background-color: #f5f5f5; color: #000000;">                }
+</span><span style="color: #008080;">50</span> <span style="background-color: #f5f5f5; color: #000000;">            });
+</span><span style="color: #008080;">51</span> 
+<span style="color: #008080;">52</span>             <span style="background-color: #f5f5f5; color: #0000ff;">new</span><span style="background-color: #f5f5f5; color: #000000;"> DropList({
+</span><span style="color: #008080;">53</span> <span style="background-color: #f5f5f5; color: #000000;">                id: </span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">click_text_drop</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">,
+</span><span style="color: #008080;">54</span> <span style="background-color: #f5f5f5; color: #000000;">                dropItems: [
+</span><span style="color: #008080;">55</span> <span style="background-color: #f5f5f5; color: #000000;">                    [</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">昵称</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">],
+</span><span style="color: #008080;">56</span> <span style="background-color: #f5f5f5; color: #000000;">                    [</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">姓名</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">],
+</span><span style="color: #008080;">57</span> <span style="background-color: #f5f5f5; color: #000000;">                    [</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">性别</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">],
+</span><span style="color: #008080;">58</span> <span style="background-color: #f5f5f5; color: #000000;">                    [</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">联系方式</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">]
+</span><span style="color: #008080;">59</span> <span style="background-color: #f5f5f5; color: #000000;">                ],
+</span><span style="color: #008080;">60</span> <span style="background-color: #f5f5f5; color: #000000;">                func: </span><span style="background-color: #f5f5f5; color: #0000ff;">function</span><span style="background-color: #f5f5f5; color: #000000;"> (e, scope, listEl, toggleEl) {
+</span><span style="color: #008080;">61</span>                     <span style="background-color: #f5f5f5; color: #0000ff;">var</span><span style="background-color: #f5f5f5; color: #000000;"> el </span><span style="background-color: #f5f5f5; color: #000000;">=</span><span style="background-color: #f5f5f5; color: #000000;"> $(</span><span style="background-color: #f5f5f5; color: #0000ff;">this</span><span style="background-color: #f5f5f5; color: #000000;">);
+</span><span style="color: #008080;">62</span> <span style="background-color: #f5f5f5; color: #000000;">                    scope.closeList();
+</span><span style="color: #008080;">63</span> <span style="background-color: #f5f5f5; color: #000000;">                    toggleEl.val(el.html());
+</span><span style="color: #008080;">64</span> <span style="background-color: #f5f5f5; color: #000000;">                }
+</span><span style="color: #008080;">65</span> <span style="background-color: #f5f5f5; color: #000000;">            });
+</span><span style="color: #008080;">66</span> 
+<span style="color: #008080;">67</span> <span style="background-color: #f5f5f5; color: #000000;">        });
+</span><span style="color: #008080;">68</span>     <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">script</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">69</span> <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">head</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">70</span> <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">body</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">71</span> 
+<span style="color: #008080;">72</span> 
+<span style="color: #008080;">73</span> <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">div </span><span style="color: #ff0000;">id</span><span style="color: #0000ff;">="click_btn_drop"</span><span style="color: #ff0000;">  style</span><span style="color: #0000ff;">=" width:140px;"</span> <span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">74</span> <span style="color: #000000;">点击按钮出现下拉菜单
+</span><span style="color: #008080;">75</span> <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">div</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">76</span> <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">br </span><span style="color: #0000ff;">/&gt;</span>
+<span style="color: #008080;">77</span> <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">br </span><span style="color: #0000ff;">/&gt;</span>
+<span style="color: #008080;">78</span>  
+<span style="color: #008080;">79</span> 
+<span style="color: #008080;">80</span> <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">input </span><span style="color: #ff0000;">id</span><span style="color: #0000ff;">="click_text_drop"</span><span style="color: #ff0000;">  type</span><span style="color: #0000ff;">="text"</span> <span style="color: #0000ff;">/&gt;</span>
+<span style="color: #008080;">81</span> <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">br </span><span style="color: #0000ff;">/&gt;</span>
+<span style="color: #008080;">82</span> <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">br </span><span style="color: #0000ff;">/&gt;</span>
+<span style="color: #008080;">83</span>   <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">div </span><span style="color: #ff0000;">id</span><span style="color: #0000ff;">="div1"</span><span style="color: #ff0000;">  style</span><span style="color: #0000ff;">=" width:140px;"</span> <span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">84</span> <span style="color: #000000;">鼠标滑动
+</span><span style="color: #008080;">85</span> <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">div</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">86</span> 
+<span style="color: #008080;">87</span> <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">body</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">88</span> <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">html</span><span style="color: #0000ff;">&gt;</span></pre>
+</div>
+</div>
+<p>&nbsp;</p>
+<p>js代码：</p>
+<div class="cnblogs_code" onclick="cnblogs_code_show('bc9ab305-4863-488c-85f7-75154a6f0a1c')"><img id="code_img_closed_bc9ab305-4863-488c-85f7-75154a6f0a1c" class="code_img_closed" src="43570758473519.gif" alt=""><img id="code_img_opened_bc9ab305-4863-488c-85f7-75154a6f0a1c" class="code_img_opened" style="display: none;" onclick="cnblogs_code_hide('bc9ab305-4863-488c-85f7-75154a6f0a1c',event)" src="16365178109279.gif" alt=""><span class="cnblogs_code_collapse">View Code </span>
+<div id="cnblogs_code_open_bc9ab305-4863-488c-85f7-75154a6f0a1c" class="cnblogs_code_hide">
+<pre><span style="color: #0000ff;">var</span> DropList = <span style="color: #0000ff;">function</span><span style="color: #000000;"> (opts) {
+    </span><span style="color: #0000ff;">if</span> (!<span style="color: #000000;">opts.id) {
+        alert(</span>'请指定触发展开事件的元素id'<span style="color: #000000;">);
+        </span><span style="color: #0000ff;">return</span> <span style="color: #0000ff;">false</span><span style="color: #000000;">;
+    }
+    </span><span style="color: #008000;">//</span><span style="color: #008000;">触发展开元素id</span>
+    <span style="color: #0000ff;">this</span>.toggleId =<span style="color: #000000;"> opts.id;
+    </span><span style="color: #0000ff;">this</span>.toggleEl = opts.id ? $('#' + opts.id) : $('body'<span style="color: #000000;">);
+    </span><span style="color: #0000ff;">this</span>.key = opts.id ? opts.id + '_list' : <span style="color: #0000ff;">new</span><span style="color: #000000;"> Date().getTime();
+    </span><span style="color: #0000ff;">this</span>.open = opts.open || 'click'; <span style="color: #008000;">//</span><span style="color: #008000;">展开菜单方式 mousein</span>
+    <span style="color: #0000ff;">this</span>.close = opts.close || 'click'; <span style="color: #008000;">//</span><span style="color: #008000;">关闭菜单方式 mouseleave</span>
+
+    <span style="color: #008000;">//</span><span style="color: #008000;">this.initShow = false; //判断是否初始化出现菜单绑定事件</span>
+
+    <span style="color: #008000;">/*</span><span style="color: #008000;">下拉菜单数据，可能出现多级菜单数据格式：
+    [['v', 'k', []], ['v', {}, []], 
+    ['v', 'k', [['v', 'k', []], ['v', 'k', []]]
+    ]
+    </span><span style="color: #008000;">*/</span>
+    <span style="color: #0000ff;">this</span>.dropItems = opts.dropItems || <span style="color: #0000ff;">null</span><span style="color: #000000;">;
+    </span><span style="color: #0000ff;">this</span>.loadData = opts.loadData; <span style="color: #008000;">//</span><span style="color: #008000;">用于异步加载下拉菜单数据//具有层级关系</span>
+    <span style="color: #0000ff;">this</span>.listEl = <span style="color: #0000ff;">null</span><span style="color: #000000;">;
+    </span><span style="color: #0000ff;">this</span>.func = opts.func || <span style="color: #0000ff;">null</span>; <span style="color: #008000;">//</span><span style="color: #008000;">点击时的事件处理</span>
+    <span style="color: #008000;">//</span><span style="color: #008000;">同步方式加载</span>
+    <span style="color: #0000ff;">if</span> (<span style="color: #0000ff;">this</span><span style="color: #000000;">.dropItems) {
+        </span><span style="color: #0000ff;">this</span><span style="color: #000000;">.initDropItems();
+        </span><span style="color: #0000ff;">this</span><span style="color: #000000;">.eventBind();
+    } </span><span style="color: #0000ff;">else</span><span style="color: #000000;"> {
+
+    }
+};
+
+DropList.prototype.closeList </span>=<span style="color: #000000;"> {};
+
+DropList.prototype.dropItemLoad </span>= <span style="color: #0000ff;">function</span><span style="color: #000000;"> (data, el) {
+    </span><span style="color: #0000ff;">for</span> (<span style="color: #0000ff;">var</span> i <span style="color: #0000ff;">in</span><span style="color: #000000;"> data) {
+        </span><span style="color: #0000ff;">var</span> item =<span style="color: #000000;"> data[i];
+        </span><span style="color: #0000ff;">var</span> tmp = $('&lt;li&gt;&lt;/li&gt;'<span style="color: #000000;">);
+        el.append(tmp); </span><span style="color: #008000;">//</span><span style="color: #008000;">标签已装载</span>
+        <span style="color: #0000ff;">if</span> (item[0<span style="color: #000000;">]) {
+            tmp.html(item[</span>0<span style="color: #000000;">]);
+        }
+        </span><span style="color: #0000ff;">if</span> (item[1] || <span style="color: #0000ff;">typeof</span> item[1] == 'number'<span style="color: #000000;">) {
+            </span><span style="color: #0000ff;">if</span> (<span style="color: #0000ff;">typeof</span> item[1] == 'string' || <span style="color: #0000ff;">typeof</span> item[1] == 'number'<span style="color: #000000;">) {
+                tmp.attr(</span>'id', item[1<span style="color: #000000;">]);
+            } </span><span style="color: #0000ff;">else</span><span style="color: #000000;"> {
+                </span><span style="color: #0000ff;">for</span> (_k <span style="color: #0000ff;">in</span> item[1<span style="color: #000000;">]) {
+                    tmp.attr(_k, item[</span>1<span style="color: #000000;">][_k]);
+                }
+            }
+        }
+        </span><span style="color: #0000ff;">if</span> (item[2] &amp;&amp; item[2]['length']) {<span style="color: #008000;">//</span><span style="color: #008000;">此处需要递归</span>
+            <span style="color: #0000ff;">var</span> child = $('&lt;ul &gt;&lt;/ul&gt;'<span style="color: #000000;">)
+            tmp.append(child);
+            tmp.addClass(</span>'parent_drop_list'<span style="color: #000000;">);
+            </span><span style="color: #0000ff;">this</span>.dropItemLoad(item[2<span style="color: #000000;">], child);
+        }
+    }
+};
+
+</span><span style="color: #008000;">//</span><span style="color: #008000;">['v', 'k', []]</span>
+DropList.prototype.initDropItems = <span style="color: #0000ff;">function</span><span style="color: #000000;"> () {
+    </span><span style="color: #0000ff;">var</span> scope = <span style="color: #0000ff;">this</span><span style="color: #000000;">;
+    </span><span style="color: #0000ff;">var</span> dropItems =<span style="color: #000000;"> scope.dropItems;
+    </span><span style="color: #0000ff;">var</span> listEl = $('&lt;ul class="drop_list_items" id="' + scope.key + '"&gt;&lt;/ul&gt;'<span style="color: #000000;">);
+    $(</span>'body'<span style="color: #000000;">).append(listEl);
+    scope.dropItemLoad(dropItems, listEl);
+    scope.listEl </span>=<span style="color: #000000;"> listEl;
+};
+
+DropList.prototype.closeList </span>= <span style="color: #0000ff;">function</span><span style="color: #000000;"> () {
+    </span><span style="color: #0000ff;">var</span> listEl = <span style="color: #0000ff;">this</span><span style="color: #000000;">.listEl;
+    listEl.find(</span>'li').removeClass('cur_active'<span style="color: #000000;">);
+    listEl.find(</span>'ul'<span style="color: #000000;">).hide();
+    listEl.hide();
+};
+
+DropList.prototype.eventBind </span>= <span style="color: #0000ff;">function</span><span style="color: #000000;"> () {
+    </span><span style="color: #0000ff;">var</span> scope = <span style="color: #0000ff;">this</span><span style="color: #000000;">;
+    </span><span style="color: #0000ff;">var</span> listEl =<span style="color: #000000;"> scope.listEl;
+    </span><span style="color: #0000ff;">var</span> toggleEl =<span style="color: #000000;"> scope.toggleEl;
+    </span><span style="color: #0000ff;">var</span> open =<span style="color: #000000;"> scope.open;
+    </span><span style="color: #0000ff;">var</span> close =<span style="color: #000000;"> scope.close;
+    </span><span style="color: #0000ff;">var</span> func =<span style="color: #000000;"> scope.func;
+
+
+    </span><span style="color: #0000ff;">var</span> obj_len = <span style="color: #0000ff;">function</span><span style="color: #000000;"> (o) {
+        </span><span style="color: #0000ff;">var</span> len = 0<span style="color: #000000;">;
+        </span><span style="color: #0000ff;">for</span> (<span style="color: #0000ff;">var</span> k <span style="color: #0000ff;">in</span><span style="color: #000000;"> o) {
+            len</span>++<span style="color: #000000;">;
+        }
+        </span><span style="color: #0000ff;">return</span><span style="color: #000000;"> len;
+    };
+
+    </span><span style="color: #0000ff;">var</span> func_cls = <span style="color: #0000ff;">function</span><span style="color: #000000;"> () {
+        </span><span style="color: #0000ff;">if</span> (close == 'click'<span style="color: #000000;">) {
+            $(document).click(</span><span style="color: #0000ff;">function</span><span style="color: #000000;"> (e) {
+                </span><span style="color: #0000ff;">var</span> el =<span style="color: #000000;"> $(e.target);
+                </span><span style="color: #0000ff;">var</span> is_el = <span style="color: #0000ff;">false</span><span style="color: #000000;">;
+                </span><span style="color: #008000;">//</span><span style="color: #008000;">判断父元素是否为</span>
+                <span style="color: #0000ff;">while</span> (el.attr('id') !=<span style="color: #000000;"> scope.key) {
+                    </span><span style="color: #0000ff;">if</span> (el.is("ul") || el.is('li'<span style="color: #000000;">)) {
+                        is_el </span>= <span style="color: #0000ff;">true</span><span style="color: #000000;">;
+                        el </span>=<span style="color: #000000;"> el.parent();
+                    } </span><span style="color: #0000ff;">else</span><span style="color: #000000;"> {
+                        </span><span style="color: #0000ff;">break</span><span style="color: #000000;">;
+                    }
+                }
+                </span><span style="color: #0000ff;">if</span> (el.attr('id') ==<span style="color: #000000;"> scope.toggleId) {
+                    is_el </span>= <span style="color: #0000ff;">true</span><span style="color: #000000;">;
+                }
+                </span><span style="color: #0000ff;">if</span> (!<span style="color: #000000;">is_el) {
+                    scope.closeList();
+                    </span><span style="color: #0000ff;">if</span><span style="color: #000000;"> (scope.closeList[scope.toggleId])
+                        </span><span style="color: #0000ff;">delete</span><span style="color: #000000;"> scope.closeList[scope.toggleId];
+                    </span><span style="color: #0000ff;">if</span> (obj_len(scope.closeList) == 0<span style="color: #000000;">)
+                        $(document).unbind(</span>'click'<span style="color: #000000;">);
+                    </span><span style="color: #0000ff;">var</span> s = ''<span style="color: #000000;">;
+                }
+            });
+        } </span><span style="color: #0000ff;">else</span><span style="color: #000000;"> {
+            listEl.mouseleave(</span><span style="color: #0000ff;">function</span><span style="color: #000000;"> (e) {
+                scope.closeList();
+                </span><span style="color: #0000ff;">if</span><span style="color: #000000;"> (scope.closeList[scope.toggleId])
+                    </span><span style="color: #0000ff;">delete</span><span style="color: #000000;"> scope.closeList[scope.toggleId];
+                listEl.unbind(</span>'mouseleave'<span style="color: #000000;">);
+            });
+        }
+    };
+
+    </span><span style="color: #008000;">//</span><span style="color: #008000;">确认弹出层位置</span>
+    <span style="color: #0000ff;">var</span> func_init_pos = <span style="color: #0000ff;">function</span><span style="color: #000000;"> (el) {
+        </span><span style="color: #0000ff;">var</span> offset =<span style="color: #000000;"> el.offset();
+        </span><span style="color: #0000ff;">var</span> h =<span style="color: #000000;"> el.height();
+        </span><span style="color: #0000ff;">var</span> p_top = el.css('padding-top'<span style="color: #000000;">);
+        </span><span style="color: #0000ff;">var</span> p_bottom = el.css('padding-bottom'<span style="color: #000000;">);
+        listEl.css(</span>'min-width', (parseInt(el.css('width')) + parseInt(el.css('padding-left')) + parseInt(el.css('padding-right')) - 6) + 'px'<span style="color: #000000;">)
+        listEl.css(</span>'left', parseInt(offset.left) + 'px'<span style="color: #000000;">);
+        listEl.css(</span>'top', (parseInt(offset.top) + parseInt(h) + parseInt(p_top) + parseInt(p_bottom)) + 'px'<span style="color: #000000;">);
+    };
+
+    </span><span style="color: #0000ff;">if</span> (open == 'click'<span style="color: #000000;">) {
+        toggleEl.unbind(</span>'click').click(<span style="color: #0000ff;">function</span><span style="color: #000000;"> (e) {
+            </span><span style="color: #0000ff;">var</span> el = $(<span style="color: #0000ff;">this</span><span style="color: #000000;">);
+            </span><span style="color: #0000ff;">var</span> drop_list_items = $('.drop_list_items'<span style="color: #000000;">);
+            func_init_pos(el);
+            drop_list_items.removeClass(</span>'z800'<span style="color: #000000;">);
+            listEl.addClass(</span>'z800'<span style="color: #000000;">);
+            listEl.show();
+            func_cls();
+            scope.closeList[scope.toggleId] </span>= 1<span style="color: #000000;">;
+            </span><span style="color: #008000;">//</span><span style="color: #008000;">e.stopPropagation(); //阻止冒泡</span>
+<span style="color: #000000;">        });
+    } </span><span style="color: #0000ff;">else</span><span style="color: #000000;"> {
+        toggleEl.unbind(</span>'mouseenter').mouseenter(<span style="color: #0000ff;">function</span><span style="color: #000000;"> (e) {
+            </span><span style="color: #0000ff;">var</span> el = $(<span style="color: #0000ff;">this</span><span style="color: #000000;">);
+            </span><span style="color: #0000ff;">var</span> drop_list_items = $('.drop_list_items'<span style="color: #000000;">);
+            func_init_pos(el);
+            drop_list_items.removeClass(</span>'z800'<span style="color: #000000;">);
+            listEl.addClass(</span>'z800'<span style="color: #000000;">);
+            listEl.show();
+            func_cls();
+            </span><span style="color: #008000;">//</span><span style="color: #008000;">e.stopPropagation(); //阻止冒泡</span>
+<span style="color: #000000;">        });
+    }
+
+    listEl.delegate(</span>'li', 'mouseenter', <span style="color: #0000ff;">function</span><span style="color: #000000;"> (e) {
+        </span><span style="color: #0000ff;">var</span> el = $(<span style="color: #0000ff;">this</span><span style="color: #000000;">);
+        listEl.find(</span>'li').removeClass('cur_active'<span style="color: #000000;">);
+        listEl.find(</span>'ul'<span style="color: #000000;">).hide();
+        el.addClass(</span>'cur_active'<span style="color: #000000;">);
+        el.children().show();
+
+        el </span>=<span style="color: #000000;"> el.parent();
+        </span><span style="color: #0000ff;">while</span> (el.attr('id') !=<span style="color: #000000;"> scope.key) {
+            </span><span style="color: #0000ff;">if</span> (el.is("li"<span style="color: #000000;">)) {
+                el.addClass(</span>'cur_active'<span style="color: #000000;">);
+            }
+            </span><span style="color: #0000ff;">if</span> (el.is('ul'<span style="color: #000000;">)) {
+                el.show();
+            }
+            el </span>=<span style="color: #000000;"> el.parent();
+        }
+        e.stopPropagation();
+    });
+
+    </span><span style="color: #0000ff;">if</span> (func &amp;&amp; <span style="color: #0000ff;">typeof</span> func == 'function'<span style="color: #000000;">) {
+        listEl.delegate(</span>'li', 'click', <span style="color: #0000ff;">function</span><span style="color: #000000;"> (e) {
+            func.call(</span><span style="color: #0000ff;">this</span><span style="color: #000000;">, e, scope, listEl, toggleEl);
+            e.stopPropagation();
+        });
+    }
+};
+
+
+</span><span style="color: #0000ff;">function</span><span style="color: #000000;"> initNewDrop(opts) {
+    </span><span style="color: #0000ff;">new</span><span style="color: #000000;"> DropList(opts);
+}</span></pre>
+</div>
+</div>
+<p>&nbsp;</p>
+<h1>难点&amp;后续</h1>
+<hr>
+<p>做的过程中还是遇到了几个问题的，比如：</p>
+<p>① 菜单展开后如何关闭</p>
+<p>② 多级菜单如何处理</p>
+<p>不完善的级联效果<img src="332829810188742.jpg" alt=""></p>
+<p>③ 事件如何回调</p>
+<p>最后做出了这个比较简陋的东东。。。。</p>
+<p>但是做完后也发现了一些问题：</p>
+<p><img src="1047987413700.jpg" alt=""><img src="24571176758943.jpg" alt=""></p>
+<p>① 像这种菜单在最左最下出现时没有解决；</p>
+<p>② 然后菜单项过多时候也没有出现像select的滚动条；</p>
+<p>③ 由于个人水平，整个代码的质量亦有问题；</p>
+<p>④ 开始也考虑了异步数据加载的问题，但是着实有点难便放弃了，功能代码有一点，有兴趣的同学可以看看：</p>
+<div class="cnblogs_code" onclick="cnblogs_code_show('b6d7a232-895b-48c2-839a-4171ab1252de')"><img id="code_img_closed_b6d7a232-895b-48c2-839a-4171ab1252de" class="code_img_closed" src="43570758473519.gif" alt=""><img id="code_img_opened_b6d7a232-895b-48c2-839a-4171ab1252de" class="code_img_opened" style="display: none;" onclick="cnblogs_code_hide('b6d7a232-895b-48c2-839a-4171ab1252de',event)" src="16365178109279.gif" alt=""><span class="cnblogs_code_collapse">View Code </span>
+<div id="cnblogs_code_open_b6d7a232-895b-48c2-839a-4171ab1252de" class="cnblogs_code_hide">
+<pre><span style="color: #008080;">  1</span> <span style="color: #0000ff;">&lt;!</span><span style="color: #ff00ff;">DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">  2</span> <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">html </span><span style="color: #ff0000;">xmlns</span><span style="color: #0000ff;">="http://www.w3.org/1999/xhtml"</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">  3</span> <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">head</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">  4</span>     <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">title</span><span style="color: #0000ff;">&gt;&lt;/</span><span style="color: #800000;">title</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">  5</span>     <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">style </span><span style="color: #ff0000;">type</span><span style="color: #0000ff;">="text/css"</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">  6</span> <span style="background-color: #f5f5f5; color: #800000;">        *
+</span><span style="color: #008080;">  7</span>         <span style="background-color: #f5f5f5; color: #000000;">{</span>
+<span style="color: #008080;">  8</span> <span style="background-color: #f5f5f5; color: #ff0000;">          margin</span><span style="background-color: #f5f5f5; color: #000000;">:</span><span style="background-color: #f5f5f5; color: #0000ff;">0</span><span style="background-color: #f5f5f5; color: #000000;">;</span>   
+<span style="color: #008080;">  9</span>         <span style="background-color: #f5f5f5; color: #000000;">}</span>
+<span style="color: #008080;"> 10</span> <span style="background-color: #f5f5f5; color: #800000;">        body
+</span><span style="color: #008080;"> 11</span>         <span style="background-color: #f5f5f5; color: #000000;">{</span>
+<span style="color: #008080;"> 12</span> <span style="background-color: #f5f5f5; color: #ff0000;">            font</span><span style="background-color: #f5f5f5; color: #000000;">:</span><span style="background-color: #f5f5f5; color: #0000ff;"> 12px/1.231 tahoma,arial,宋体</span><span style="background-color: #f5f5f5; color: #000000;">;</span>
+<span style="color: #008080;"> 13</span>         <span style="background-color: #f5f5f5; color: #000000;">}</span>
+<span style="color: #008080;"> 14</span> <span style="background-color: #f5f5f5; color: #800000;">        div
+</span><span style="color: #008080;"> 15</span>         <span style="background-color: #f5f5f5; color: #000000;">{</span>
+<span style="color: #008080;"> 16</span> <span style="background-color: #f5f5f5; color: #ff0000;">          width</span><span style="background-color: #f5f5f5; color: #000000;">:</span><span style="background-color: #f5f5f5; color: #0000ff;">160px</span><span style="background-color: #f5f5f5; color: #000000;">;</span>
+<span style="color: #008080;"> 17</span> <span style="background-color: #f5f5f5; color: #ff0000;">          margin</span><span style="background-color: #f5f5f5; color: #000000;">:</span><span style="background-color: #f5f5f5; color: #0000ff;">5px</span><span style="background-color: #f5f5f5; color: #000000;">;</span>
+<span style="color: #008080;"> 18</span>         <span style="background-color: #f5f5f5; color: #000000;">}</span>
+<span style="color: #008080;"> 19</span>    
+<span style="color: #008080;"> 20</span> <span style="background-color: #f5f5f5; color: #800000;">        .drop_btn ul
+</span><span style="color: #008080;"> 21</span>         <span style="background-color: #f5f5f5; color: #000000;">{</span>
+<span style="color: #008080;"> 22</span> <span style="background-color: #f5f5f5; color: #ff0000;">            position</span><span style="background-color: #f5f5f5; color: #000000;">:</span><span style="background-color: #f5f5f5; color: #0000ff;">absolute</span><span style="background-color: #f5f5f5; color: #000000;">;</span>
+<span style="color: #008080;"> 23</span> <span style="background-color: #f5f5f5; color: #ff0000;">            background-color</span><span style="background-color: #f5f5f5; color: #000000;">:</span><span style="background-color: #f5f5f5; color: #0000ff;"> #FFFFFF</span><span style="background-color: #f5f5f5; color: #000000;">;</span>
+<span style="color: #008080;"> 24</span> <span style="background-color: #f5f5f5; color: #ff0000;">            border</span><span style="background-color: #f5f5f5; color: #000000;">:</span><span style="background-color: #f5f5f5; color: #0000ff;"> 1px solid #D2D2D2</span><span style="background-color: #f5f5f5; color: #000000;">;</span>
+<span style="color: #008080;"> 25</span> <span style="background-color: #f5f5f5; color: #ff0000;">            padding</span><span style="background-color: #f5f5f5; color: #000000;">:</span><span style="background-color: #f5f5f5; color: #0000ff;"> 2px</span><span style="background-color: #f5f5f5; color: #000000;">;</span>
+<span style="color: #008080;"> 26</span> <span style="background-color: #f5f5f5; color: #ff0000;">            line-height</span><span style="background-color: #f5f5f5; color: #000000;">:</span><span style="background-color: #f5f5f5; color: #0000ff;"> 18px</span><span style="background-color: #f5f5f5; color: #000000;">;</span>
+<span style="color: #008080;"> 27</span> <span style="background-color: #f5f5f5; color: #ff0000;">            display</span><span style="background-color: #f5f5f5; color: #000000;">:</span><span style="background-color: #f5f5f5; color: #0000ff;"> none</span><span style="background-color: #f5f5f5; color: #000000;">;</span>
+<span style="color: #008080;"> 28</span> <span style="background-color: #f5f5f5; color: #ff0000;">            top</span><span style="background-color: #f5f5f5; color: #000000;">:</span><span style="background-color: #f5f5f5; color: #0000ff;"> 25px</span><span style="background-color: #f5f5f5; color: #000000;">;</span>
+<span style="color: #008080;"> 29</span> <span style="background-color: #f5f5f5; color: #ff0000;">            z-index</span><span style="background-color: #f5f5f5; color: #000000;">:</span><span style="background-color: #f5f5f5; color: #0000ff;"> 500</span><span style="background-color: #f5f5f5; color: #000000;">;</span>
+<span style="color: #008080;"> 30</span>             
+<span style="color: #008080;"> 31</span>         <span style="background-color: #f5f5f5; color: #000000;">}</span>
+<span style="color: #008080;"> 32</span>         
+<span style="color: #008080;"> 33</span> <span style="background-color: #f5f5f5; color: #800000;">        .drop_btn li
+</span><span style="color: #008080;"> 34</span>         <span style="background-color: #f5f5f5; color: #000000;">{</span>
+<span style="color: #008080;"> 35</span> <span style="background-color: #f5f5f5; color: #ff0000;">            list-style</span><span style="background-color: #f5f5f5; color: #000000;">:</span><span style="background-color: #f5f5f5; color: #0000ff;"> none</span><span style="background-color: #f5f5f5; color: #000000;">;</span>
+<span style="color: #008080;"> 36</span>         <span style="background-color: #f5f5f5; color: #000000;">}</span>
+<span style="color: #008080;"> 37</span> <span style="background-color: #f5f5f5; color: #800000;">        .drop_btn_toggle
+</span><span style="color: #008080;"> 38</span>         <span style="background-color: #f5f5f5; color: #000000;">{</span>
+<span style="color: #008080;"> 39</span> <span style="background-color: #f5f5f5; color: #ff0000;">            background</span><span style="background-color: #f5f5f5; color: #000000;">:</span><span style="background-color: #f5f5f5; color: #0000ff;"> url("http://shz.qq.com/statics/images/button.png") repeat-x scroll 0 0 #E5E5E5</span><span style="background-color: #f5f5f5; color: #000000;">;</span>
+<span style="color: #008080;"> 40</span> <span style="background-color: #f5f5f5; color: #ff0000;">            border</span><span style="background-color: #f5f5f5; color: #000000;">:</span><span style="background-color: #f5f5f5; color: #0000ff;"> 1px solid #999999</span><span style="background-color: #f5f5f5; color: #000000;">;</span>
+<span style="color: #008080;"> 41</span> <span style="background-color: #f5f5f5; color: #ff0000;">            box-shadow</span><span style="background-color: #f5f5f5; color: #000000;">:</span><span style="background-color: #f5f5f5; color: #0000ff;"> 0 1px 0 #E5E5E5</span><span style="background-color: #f5f5f5; color: #000000;">;</span>
+<span style="color: #008080;"> 42</span> <span style="background-color: #f5f5f5; color: #ff0000;">            border-radius</span><span style="background-color: #f5f5f5; color: #000000;">:</span><span style="background-color: #f5f5f5; color: #0000ff;"> 3px</span><span style="background-color: #f5f5f5; color: #000000;">;</span>
+<span style="color: #008080;"> 43</span> <span style="background-color: #f5f5f5; color: #ff0000;">            cursor</span><span style="background-color: #f5f5f5; color: #000000;">:</span><span style="background-color: #f5f5f5; color: #0000ff;"> pointer</span><span style="background-color: #f5f5f5; color: #000000;">;</span>
+<span style="color: #008080;"> 44</span> <span style="background-color: #f5f5f5; color: #ff0000;">            height</span><span style="background-color: #f5f5f5; color: #000000;">:</span><span style="background-color: #f5f5f5; color: #0000ff;"> 28px</span><span style="background-color: #f5f5f5; color: #000000;">;</span>
+<span style="color: #008080;"> 45</span> <span style="background-color: #f5f5f5; color: #ff0000;">            line-height</span><span style="background-color: #f5f5f5; color: #000000;">:</span><span style="background-color: #f5f5f5; color: #0000ff;"> 28px</span><span style="background-color: #f5f5f5; color: #000000;">;</span>
+<span style="color: #008080;"> 46</span> <span style="background-color: #f5f5f5; color: #ff0000;">            *height</span><span style="background-color: #f5f5f5; color: #000000;">:</span><span style="background-color: #f5f5f5; color: #0000ff;"> 18px</span><span style="background-color: #f5f5f5; color: #000000;">;</span>
+<span style="color: #008080;"> 47</span> <span style="background-color: #f5f5f5; color: #ff0000;">            *line-height</span><span style="background-color: #f5f5f5; color: #000000;">:</span><span style="background-color: #f5f5f5; color: #0000ff;"> 18px</span><span style="background-color: #f5f5f5; color: #000000;">;</span>
+<span style="color: #008080;"> 48</span> <span style="background-color: #f5f5f5; color: #ff0000;">            padding</span><span style="background-color: #f5f5f5; color: #000000;">:</span><span style="background-color: #f5f5f5; color: #0000ff;"> 3px 6px</span><span style="background-color: #f5f5f5; color: #000000;">;</span>
+<span style="color: #008080;"> 49</span> <span style="background-color: #f5f5f5; color: #ff0000;">            vertical-align</span><span style="background-color: #f5f5f5; color: #000000;">:</span><span style="background-color: #f5f5f5; color: #0000ff;"> middle</span><span style="background-color: #f5f5f5; color: #000000;">;</span>
+<span style="color: #008080;"> 50</span> <span style="background-color: #f5f5f5; color: #ff0000;">            zoom</span><span style="background-color: #f5f5f5; color: #000000;">:</span><span style="background-color: #f5f5f5; color: #0000ff;">1</span><span style="background-color: #f5f5f5; color: #000000;">;</span>
+<span style="color: #008080;"> 51</span>         <span style="background-color: #f5f5f5; color: #000000;">}</span>
+<span style="color: #008080;"> 52</span> <span style="background-color: #f5f5f5; color: #800000;">        .drop_btn_open .drop_btn_toggle
+</span><span style="color: #008080;"> 53</span>         <span style="background-color: #f5f5f5; color: #000000;">{</span>
+<span style="color: #008080;"> 54</span> <span style="background-color: #f5f5f5; color: #ff0000;">            background</span><span style="background-color: #f5f5f5; color: #000000;">:</span><span style="background-color: #f5f5f5; color: #0000ff;"> url("http://shz.qq.com/statics/images/button_selected.png") repeat-x scroll 0 0 #B4B4B4</span><span style="background-color: #f5f5f5; color: #000000;">;</span>
+<span style="color: #008080;"> 55</span> <span style="background-color: #f5f5f5; color: #ff0000;">            border-color</span><span style="background-color: #f5f5f5; color: #000000;">:</span><span style="background-color: #f5f5f5; color: #0000ff;"> #CCCCCC #B1B1B1 #AFAFAF #BEBEBE</span><span style="background-color: #f5f5f5; color: #000000;">;</span>
+<span style="color: #008080;"> 56</span> <span style="background-color: #f5f5f5; color: #ff0000;">            color</span><span style="background-color: #f5f5f5; color: #000000;">:</span><span style="background-color: #f5f5f5; color: #0000ff;"> #515151</span><span style="background-color: #f5f5f5; color: #000000;">;</span>
+<span style="color: #008080;"> 57</span>         <span style="background-color: #f5f5f5; color: #000000;">}</span>
+<span style="color: #008080;"> 58</span> <span style="background-color: #f5f5f5; color: #800000;">        .drop_btn_toggle .icon
+</span><span style="color: #008080;"> 59</span>         <span style="background-color: #f5f5f5; color: #000000;">{</span>
+<span style="color: #008080;"> 60</span> <span style="background-color: #f5f5f5; color: #ff0000;">            border-left</span><span style="background-color: #f5f5f5; color: #000000;">:</span><span style="background-color: #f5f5f5; color: #0000ff;"> 4px dashed transparent</span><span style="background-color: #f5f5f5; color: #000000;">;</span>
+<span style="color: #008080;"> 61</span> <span style="background-color: #f5f5f5; color: #ff0000;">            border-right</span><span style="background-color: #f5f5f5; color: #000000;">:</span><span style="background-color: #f5f5f5; color: #0000ff;"> 4px dashed transparent</span><span style="background-color: #f5f5f5; color: #000000;">;</span>
+<span style="color: #008080;"> 62</span> <span style="background-color: #f5f5f5; color: #ff0000;">            border-top</span><span style="background-color: #f5f5f5; color: #000000;">:</span><span style="background-color: #f5f5f5; color: #0000ff;"> 4px solid</span><span style="background-color: #f5f5f5; color: #000000;">;</span>
+<span style="color: #008080;"> 63</span> <span style="background-color: #f5f5f5; color: #ff0000;">            display</span><span style="background-color: #f5f5f5; color: #000000;">:</span><span style="background-color: #f5f5f5; color: #0000ff;"> inline-block</span><span style="background-color: #f5f5f5; color: #000000;">;</span>
+<span style="color: #008080;"> 64</span> <span style="background-color: #f5f5f5; color: #ff0000;">            width</span><span style="background-color: #f5f5f5; color: #000000;">:</span><span style="background-color: #f5f5f5; color: #0000ff;"> 0</span><span style="background-color: #f5f5f5; color: #000000;">;</span>
+<span style="color: #008080;"> 65</span> <span style="background-color: #f5f5f5; color: #ff0000;">            height</span><span style="background-color: #f5f5f5; color: #000000;">:</span><span style="background-color: #f5f5f5; color: #0000ff;"> 0</span><span style="background-color: #f5f5f5; color: #000000;">;</span>
+<span style="color: #008080;"> 66</span> <span style="background-color: #f5f5f5; color: #ff0000;">            margin</span><span style="background-color: #f5f5f5; color: #000000;">:</span><span style="background-color: #f5f5f5; color: #0000ff;"> 11px 0 0 4px</span><span style="background-color: #f5f5f5; color: #000000;">;</span>
+<span style="color: #008080;"> 67</span> <span style="background-color: #f5f5f5; color: #ff0000;">            *margin</span><span style="background-color: #f5f5f5; color: #000000;">:</span><span style="background-color: #f5f5f5; color: #0000ff;"> 6px 0 0 4px</span><span style="background-color: #f5f5f5; color: #000000;">;</span>
+<span style="color: #008080;"> 68</span> <span style="background-color: #f5f5f5; color: #ff0000;">            overflow</span><span style="background-color: #f5f5f5; color: #000000;">:</span><span style="background-color: #f5f5f5; color: #0000ff;"> hidden</span><span style="background-color: #f5f5f5; color: #000000;">;</span>
+<span style="color: #008080;"> 69</span> <span style="background-color: #f5f5f5; color: #ff0000;">            vertical-align</span><span style="background-color: #f5f5f5; color: #000000;">:</span><span style="background-color: #f5f5f5; color: #0000ff;"> top</span><span style="background-color: #f5f5f5; color: #000000;">;</span>
+<span style="color: #008080;"> 70</span>         <span style="background-color: #f5f5f5; color: #000000;">}</span>
+<span style="color: #008080;"> 71</span>         
+<span style="color: #008080;"> 72</span> <span style="background-color: #f5f5f5; color: #800000;">        div.drop_btn_open ul
+</span><span style="color: #008080;"> 73</span>         <span style="background-color: #f5f5f5; color: #000000;">{</span>
+<span style="color: #008080;"> 74</span> <span style="background-color: #f5f5f5; color: #ff0000;">            display</span><span style="background-color: #f5f5f5; color: #000000;">:</span><span style="background-color: #f5f5f5; color: #0000ff;"> block</span><span style="background-color: #f5f5f5; color: #000000;">;</span>
+<span style="color: #008080;"> 75</span>         <span style="background-color: #f5f5f5; color: #000000;">}</span>
+<span style="color: #008080;"> 76</span> <span style="background-color: #f5f5f5; color: #800000;">        .drop_btn li
+</span><span style="color: #008080;"> 77</span>         <span style="background-color: #f5f5f5; color: #000000;">{</span>
+<span style="color: #008080;"> 78</span> <span style="background-color: #f5f5f5; color: #ff0000;">            padding</span><span style="background-color: #f5f5f5; color: #000000;">:</span><span style="background-color: #f5f5f5; color: #0000ff;"> 2px</span><span style="background-color: #f5f5f5; color: #000000;">;</span>
+<span style="color: #008080;"> 79</span> <span style="background-color: #f5f5f5; color: #ff0000;">            cursor</span><span style="background-color: #f5f5f5; color: #000000;">:</span><span style="background-color: #f5f5f5; color: #0000ff;"> pointer</span><span style="background-color: #f5f5f5; color: #000000;">;</span>
+<span style="color: #008080;"> 80</span>         <span style="background-color: #f5f5f5; color: #000000;">}</span>
+<span style="color: #008080;"> 81</span> <span style="background-color: #f5f5f5; color: #800000;">        .drop_btn li:hover
+</span><span style="color: #008080;"> 82</span>         <span style="background-color: #f5f5f5; color: #000000;">{</span>
+<span style="color: #008080;"> 83</span> <span style="background-color: #f5f5f5; color: #ff0000;">            background-color</span><span style="background-color: #f5f5f5; color: #000000;">:</span><span style="background-color: #f5f5f5; color: #0000ff;"> #3399FF</span><span style="background-color: #f5f5f5; color: #000000;">;</span>
+<span style="color: #008080;"> 84</span>         <span style="background-color: #f5f5f5; color: #000000;">}</span>
+<span style="color: #008080;"> 85</span>     <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">style</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 86</span>     <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">script </span><span style="color: #ff0000;">type</span><span style="color: #0000ff;">="text/javascript"</span><span style="color: #ff0000;"> src</span><span style="color: #0000ff;">="http://www.cnblogs.com/jquery-1.7.1.min.js"</span><span style="color: #0000ff;">&gt;&lt;/</span><span style="color: #800000;">script</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 87</span>     <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">script </span><span style="color: #ff0000;">src</span><span style="color: #0000ff;">="DropList.js"</span><span style="color: #ff0000;"> type</span><span style="color: #0000ff;">="text/javascript"</span><span style="color: #0000ff;">&gt;&lt;/</span><span style="color: #800000;">script</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 88</span>     <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">script </span><span style="color: #ff0000;">type</span><span style="color: #0000ff;">="text/javascript"</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 89</span> 
+<span style="color: #008080;"> 90</span>         <span style="background-color: #f5f5f5; color: #008000;">//</span><span style="background-color: #f5f5f5; color: #008000;">方案一</span>
+<span style="color: #008080;"> 91</span> <span style="background-color: #f5f5f5; color: #000000;">        $(document).ready(</span><span style="background-color: #f5f5f5; color: #0000ff;">function</span><span style="background-color: #f5f5f5; color: #000000;"> () {
+</span><span style="color: #008080;"> 92</span>             <span style="background-color: #f5f5f5; color: #0000ff;">var</span><span style="background-color: #f5f5f5; color: #000000;"> click </span><span style="background-color: #f5f5f5; color: #000000;">=</span> <span style="background-color: #f5f5f5; color: #0000ff;">new</span><span style="background-color: #f5f5f5; color: #000000;"> DropList({
+</span><span style="color: #008080;"> 93</span> <span style="background-color: #f5f5f5; color: #000000;">                id: </span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">click_btn_drop</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">,
+</span><span style="color: #008080;"> 94</span> <span style="background-color: #f5f5f5; color: #000000;">                toggleText: </span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">给用户发送短信</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">,
+</span><span style="color: #008080;"> 95</span> <span style="background-color: #f5f5f5; color: #000000;">                openType: </span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">move</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">,
+</span><span style="color: #008080;"> 96</span> <span style="background-color: #f5f5f5; color: #000000;">                drop_items: [
+</span><span style="color: #008080;"> 97</span> <span style="background-color: #f5f5f5; color: #000000;">                    { id: </span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">select</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">, text: </span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">短信选定用户</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;"> },
+</span><span style="color: #008080;"> 98</span> <span style="background-color: #f5f5f5; color: #000000;">                    { id: </span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">all</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">, text: </span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">短信全部用户</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;"> },
+</span><span style="color: #008080;"> 99</span> <span style="background-color: #f5f5f5; color: #000000;">                    { id: </span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">all_else</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">, text: </span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">短信未发送用户用户</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;"> }
+</span><span style="color: #008080;">100</span> <span style="background-color: #f5f5f5; color: #000000;">                ],
+</span><span style="color: #008080;">101</span> <span style="background-color: #f5f5f5; color: #000000;">                func: </span><span style="background-color: #f5f5f5; color: #0000ff;">function</span><span style="background-color: #f5f5f5; color: #000000;"> (e, container) {
+</span><span style="color: #008080;">102</span>                     <span style="background-color: #f5f5f5; color: #0000ff;">var</span><span style="background-color: #f5f5f5; color: #000000;"> el </span><span style="background-color: #f5f5f5; color: #000000;">=</span><span style="background-color: #f5f5f5; color: #000000;"> $(</span><span style="background-color: #f5f5f5; color: #0000ff;">this</span><span style="background-color: #f5f5f5; color: #000000;">);
+</span><span style="color: #008080;">103</span> <span style="background-color: #f5f5f5; color: #000000;">                    alert(el.html())
+</span><span style="color: #008080;">104</span>                     <span style="background-color: #f5f5f5; color: #0000ff;">var</span><span style="background-color: #f5f5f5; color: #000000;"> s </span><span style="background-color: #f5f5f5; color: #000000;">=</span> <span style="background-color: #f5f5f5; color: #000000;">''</span><span style="background-color: #f5f5f5; color: #000000;">;
+</span><span style="color: #008080;">105</span> <span style="background-color: #f5f5f5; color: #000000;">                }
+</span><span style="color: #008080;">106</span> <span style="background-color: #f5f5f5; color: #000000;">            });
+</span><span style="color: #008080;">107</span> 
+<span style="color: #008080;">108</span>             <span style="background-color: #f5f5f5; color: #0000ff;">var</span><span style="background-color: #f5f5f5; color: #000000;"> move </span><span style="background-color: #f5f5f5; color: #000000;">=</span> <span style="background-color: #f5f5f5; color: #0000ff;">new</span><span style="background-color: #f5f5f5; color: #000000;"> DropList({
+</span><span style="color: #008080;">109</span> <span style="background-color: #f5f5f5; color: #000000;">                id: </span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">move_btn_drop</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">,
+</span><span style="color: #008080;">110</span> <span style="background-color: #f5f5f5; color: #000000;">                toggleText: </span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">给用户发送短信</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">,
+</span><span style="color: #008080;">111</span>               
+<span style="color: #008080;">112</span> <span style="background-color: #f5f5f5; color: #000000;">                loadData: </span><span style="background-color: #f5f5f5; color: #0000ff;">function</span><span style="background-color: #f5f5f5; color: #000000;"> (callBack) {
+</span><span style="color: #008080;">113</span>                     <span style="background-color: #f5f5f5; color: #0000ff;">var</span><span style="background-color: #f5f5f5; color: #000000;"> scope </span><span style="background-color: #f5f5f5; color: #000000;">=</span> <span style="background-color: #f5f5f5; color: #0000ff;">this</span><span style="background-color: #f5f5f5; color: #000000;">;
+</span><span style="color: #008080;">114</span> <span style="background-color: #f5f5f5; color: #000000;">                    $.get(</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">Handler.ashx</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">, </span><span style="background-color: #f5f5f5; color: #0000ff;">function</span><span style="background-color: #f5f5f5; color: #000000;"> (data) {
+</span><span style="color: #008080;">115</span>                         <span style="background-color: #f5f5f5; color: #0000ff;">if</span><span style="background-color: #f5f5f5; color: #000000;"> (data </span><span style="background-color: #f5f5f5; color: #000000;">&amp;&amp;</span> <span style="background-color: #f5f5f5; color: #0000ff;">typeof</span><span style="background-color: #f5f5f5; color: #000000;"> data </span><span style="background-color: #f5f5f5; color: #000000;">==</span> <span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">string</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">) {
+</span><span style="color: #008080;">116</span> <span style="background-color: #f5f5f5; color: #000000;">                            data </span><span style="background-color: #f5f5f5; color: #000000;">=</span><span style="background-color: #f5f5f5; color: #000000;"> eval(</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">(</span><span style="background-color: #f5f5f5; color: #000000;">'</span> <span style="background-color: #f5f5f5; color: #000000;">+</span><span style="background-color: #f5f5f5; color: #000000;"> data </span><span style="background-color: #f5f5f5; color: #000000;">+</span> <span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">)</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">);
+</span><span style="color: #008080;">117</span> <span style="background-color: #f5f5f5; color: #000000;">                        }
+</span><span style="color: #008080;">118</span> <span style="background-color: #f5f5f5; color: #000000;">                        data </span><span style="background-color: #f5f5f5; color: #000000;">=</span><span style="background-color: #f5f5f5; color: #000000;"> data.data;
+</span><span style="color: #008080;">119</span>                         <span style="background-color: #f5f5f5; color: #0000ff;">var</span><span style="background-color: #f5f5f5; color: #000000;"> param </span><span style="background-color: #f5f5f5; color: #000000;">=</span><span style="background-color: #f5f5f5; color: #000000;"> [];
+</span><span style="color: #008080;">120</span> <span style="background-color: #f5f5f5; color: #000000;">                        param.push({ text: </span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">报名人数：</span><span style="background-color: #f5f5f5; color: #000000;">'</span> <span style="background-color: #f5f5f5; color: #000000;">+</span><span style="background-color: #f5f5f5; color: #000000;"> data.reg_num });
+</span><span style="color: #008080;">121</span>                         <span style="background-color: #f5f5f5; color: #0000ff;">var</span><span style="background-color: #f5f5f5; color: #000000;"> type </span><span style="background-color: #f5f5f5; color: #000000;">=</span><span style="background-color: #f5f5f5; color: #000000;"> data.notice;
+</span><span style="color: #008080;">122</span>                         <span style="background-color: #f5f5f5; color: #0000ff;">if</span><span style="background-color: #f5f5f5; color: #000000;"> (type </span><span style="background-color: #f5f5f5; color: #000000;">==</span> <span style="background-color: #f5f5f5; color: #000000;">0</span><span style="background-color: #f5f5f5; color: #000000;">) {
+</span><span style="color: #008080;">123</span> <span style="background-color: #f5f5f5; color: #000000;">                            msg </span><span style="background-color: #f5f5f5; color: #000000;">=</span> <span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">不发送短信</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">;
+</span><span style="color: #008080;">124</span> <span style="background-color: #f5f5f5; color: #000000;">                        } </span><span style="background-color: #f5f5f5; color: #0000ff;">else</span> <span style="background-color: #f5f5f5; color: #0000ff;">if</span><span style="background-color: #f5f5f5; color: #000000;"> (type </span><span style="background-color: #f5f5f5; color: #000000;">==</span> <span style="background-color: #f5f5f5; color: #000000;">1</span><span style="background-color: #f5f5f5; color: #000000;">) {
+</span><span style="color: #008080;">125</span> <span style="background-color: #f5f5f5; color: #000000;">                            msg </span><span style="background-color: #f5f5f5; color: #000000;">=</span> <span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">自动短信</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">;
+</span><span style="color: #008080;">126</span> <span style="background-color: #f5f5f5; color: #000000;">                        } </span><span style="background-color: #f5f5f5; color: #0000ff;">else</span> <span style="background-color: #f5f5f5; color: #0000ff;">if</span><span style="background-color: #f5f5f5; color: #000000;"> (type </span><span style="background-color: #f5f5f5; color: #000000;">==</span> <span style="background-color: #f5f5f5; color: #000000;">3</span><span style="background-color: #f5f5f5; color: #000000;">) {
+</span><span style="color: #008080;">127</span> <span style="background-color: #f5f5f5; color: #000000;">                            msg </span><span style="background-color: #f5f5f5; color: #000000;">=</span> <span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">手动短信</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">;
+</span><span style="color: #008080;">128</span> <span style="background-color: #f5f5f5; color: #000000;">                        }
+</span><span style="color: #008080;">129</span> <span style="background-color: #f5f5f5; color: #000000;">                        param.push({ text: </span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">短信类型：</span><span style="background-color: #f5f5f5; color: #000000;">'</span> <span style="background-color: #f5f5f5; color: #000000;">+</span><span style="background-color: #f5f5f5; color: #000000;"> msg });
+</span><span style="color: #008080;">130</span> <span style="background-color: #f5f5f5; color: #000000;">                        param.push({ text: </span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">&lt;a href="#"&gt;自动短信条数：</span><span style="background-color: #f5f5f5; color: #000000;">'</span> <span style="background-color: #f5f5f5; color: #000000;">+</span><span style="background-color: #f5f5f5; color: #000000;"> data.sms_auto_count </span><span style="background-color: #f5f5f5; color: #000000;">+</span> <span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">&lt;/a&gt;</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">});
+</span><span style="color: #008080;">131</span> <span style="background-color: #f5f5f5; color: #000000;">                        param.push({ text: </span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">&lt;a href="http://www.baidu.com/" target="_blank"&gt;手动短信条数：</span><span style="background-color: #f5f5f5; color: #000000;">'</span> <span style="background-color: #f5f5f5; color: #000000;">+</span><span style="background-color: #f5f5f5; color: #000000;"> data.sms_manual_count });
+</span><span style="color: #008080;">132</span> 
+<span style="color: #008080;">133</span> <span style="background-color: #f5f5f5; color: #000000;">                        scope.drop_items </span><span style="background-color: #f5f5f5; color: #000000;">=</span><span style="background-color: #f5f5f5; color: #000000;"> param;
+</span><span style="color: #008080;">134</span> <span style="background-color: #f5f5f5; color: #000000;">                        callBack();
+</span><span style="color: #008080;">135</span> 
+<span style="color: #008080;">136</span>                         <span style="background-color: #f5f5f5; color: #0000ff;">var</span><span style="background-color: #f5f5f5; color: #000000;"> s </span><span style="background-color: #f5f5f5; color: #000000;">=</span> <span style="background-color: #f5f5f5; color: #000000;">''</span><span style="background-color: #f5f5f5; color: #000000;">;
+</span><span style="color: #008080;">137</span> 
+<span style="color: #008080;">138</span> <span style="background-color: #f5f5f5; color: #000000;">                    });
+</span><span style="color: #008080;">139</span> <span style="background-color: #f5f5f5; color: #000000;">                }
+</span><span style="color: #008080;">140</span> <span style="background-color: #f5f5f5; color: #000000;">            });
+</span><span style="color: #008080;">141</span> 
+<span style="color: #008080;">142</span>             <span style="background-color: #f5f5f5; color: #0000ff;">var</span><span style="background-color: #f5f5f5; color: #000000;"> text </span><span style="background-color: #f5f5f5; color: #000000;">=</span> <span style="background-color: #f5f5f5; color: #0000ff;">new</span><span style="background-color: #f5f5f5; color: #000000;"> DropList({
+</span><span style="color: #008080;">143</span> <span style="background-color: #f5f5f5; color: #000000;">                id: </span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">click_text_drop</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">,
+</span><span style="color: #008080;">144</span> <span style="background-color: #f5f5f5; color: #000000;">                toggleType: </span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">text</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">,
+</span><span style="color: #008080;">145</span> <span style="background-color: #f5f5f5; color: #000000;">                drop_items: [
+</span><span style="color: #008080;">146</span> <span style="background-color: #f5f5f5; color: #000000;">                    { text: </span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">昵称</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;"> },
+</span><span style="color: #008080;">147</span> <span style="background-color: #f5f5f5; color: #000000;">                    { text: </span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">姓名</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;"> },
+</span><span style="color: #008080;">148</span> <span style="background-color: #f5f5f5; color: #000000;">                    { text: </span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">性别</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;"> },
+</span><span style="color: #008080;">149</span> <span style="background-color: #f5f5f5; color: #000000;">                    { text: </span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">联系方式</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;"> }
+</span><span style="color: #008080;">150</span> <span style="background-color: #f5f5f5; color: #000000;">                ],
+</span><span style="color: #008080;">151</span> <span style="background-color: #f5f5f5; color: #000000;">                func: </span><span style="background-color: #f5f5f5; color: #0000ff;">function</span><span style="background-color: #f5f5f5; color: #000000;"> (e, container, toggleEl) {
+</span><span style="color: #008080;">152</span>                     <span style="background-color: #f5f5f5; color: #0000ff;">var</span><span style="background-color: #f5f5f5; color: #000000;"> el </span><span style="background-color: #f5f5f5; color: #000000;">=</span><span style="background-color: #f5f5f5; color: #000000;"> $(</span><span style="background-color: #f5f5f5; color: #0000ff;">this</span><span style="background-color: #f5f5f5; color: #000000;">);
+</span><span style="color: #008080;">153</span> <span style="background-color: #f5f5f5; color: #000000;">                    toggleEl.val(el.html());
+</span><span style="color: #008080;">154</span> <span style="background-color: #f5f5f5; color: #000000;">                }
+</span><span style="color: #008080;">155</span> <span style="background-color: #f5f5f5; color: #000000;">            });
+</span><span style="color: #008080;">156</span> 
+<span style="color: #008080;">157</span> <span style="background-color: #f5f5f5; color: #000000;">        });
+</span><span style="color: #008080;">158</span>     <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">script</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">159</span> <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">head</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">160</span> <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">body</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">161</span> 
+<span style="color: #008080;">162</span> <span style="color: #000000;">点击按钮出现下拉菜单
+</span><span style="color: #008080;">163</span> <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">div </span><span style="color: #ff0000;">id</span><span style="color: #0000ff;">="click_btn_drop"</span><span style="color: #ff0000;"> class</span><span style="color: #0000ff;">="drop_btn"</span><span style="color: #0000ff;">&gt;&lt;/</span><span style="color: #800000;">div</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">164</span> <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">br </span><span style="color: #0000ff;">/&gt;</span>
+<span style="color: #008080;">165</span> <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">br </span><span style="color: #0000ff;">/&gt;</span>
+<span style="color: #008080;">166</span> 
+<span style="color: #008080;">167</span> <span style="color: #000000;">滑动按钮出现下拉菜单
+</span><span style="color: #008080;">168</span> <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">div </span><span style="color: #ff0000;">id</span><span style="color: #0000ff;">="move_btn_drop"</span><span style="color: #ff0000;"> class</span><span style="color: #0000ff;">="drop_btn"</span><span style="color: #0000ff;">&gt;&lt;/</span><span style="color: #800000;">div</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">169</span> <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">br </span><span style="color: #0000ff;">/&gt;</span>
+<span style="color: #008080;">170</span> <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">br </span><span style="color: #0000ff;">/&gt;</span>
+<span style="color: #008080;">171</span> 
+<span style="color: #008080;">172</span> <span style="color: #000000;">点击文本出现下拉菜单
+</span><span style="color: #008080;">173</span> <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">div </span><span style="color: #ff0000;">id</span><span style="color: #0000ff;">="click_text_drop"</span><span style="color: #ff0000;"> class</span><span style="color: #0000ff;">="drop_btn"</span><span style="color: #0000ff;">&gt;&lt;/</span><span style="color: #800000;">div</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">174</span> <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">br </span><span style="color: #0000ff;">/&gt;</span>
+<span style="color: #008080;">175</span> <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">br </span><span style="color: #0000ff;">/&gt;</span>
+<span style="color: #008080;">176</span> 
+<span style="color: #008080;">177</span> <span style="color: #008000;">&lt;!--</span><span style="color: #008000;">&lt;div class="drop_btn"&gt;
+</span><span style="color: #008080;">178</span> <span style="color: #008000;">    &lt;a class="drop_btn_toggle"&gt;&lt;span&gt;给用户发短信&lt;i class="icon"&gt;&lt;/i&gt;&lt;/span&gt;&lt;/a&gt;
+</span><span style="color: #008080;">179</span> <span style="color: #008000;">    &lt;ul class="drop_items"&gt;
+</span><span style="color: #008080;">180</span> <span style="color: #008000;">        &lt;li&gt;短信选中用户&lt;/li&gt;
+</span><span style="color: #008080;">181</span> <span style="color: #008000;">        &lt;li&gt;短信全部用户&lt;/li&gt;
+</span><span style="color: #008080;">182</span> <span style="color: #008000;">        &lt;li&gt;短信未发送用户&lt;/li&gt;
+</span><span style="color: #008080;">183</span> <span style="color: #008000;">    &lt;/ul&gt;
+</span><span style="color: #008080;">184</span> <span style="color: #008000;">&lt;/div&gt;</span><span style="color: #008000;">--&gt;</span>
+<span style="color: #008080;">185</span> 
+<span style="color: #008080;">186</span> <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">body</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">187</span> <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">html</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">188</span> 
+<span style="color: #008080;">189</span> /// <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">reference </span><span style="color: #ff0000;">path</span><span style="color: #0000ff;">="http://www.cnblogs.com/jquery-1.7.1.min.js"</span> <span style="color: #0000ff;">/&gt;</span>
+<span style="color: #008080;">190</span> 
+<span style="color: #008080;">191</span> 
+<span style="color: #008080;">192</span> <span style="color: #000000;">var DropList = function (opts) {
+</span><span style="color: #008080;">193</span> <span style="color: #000000;">    this.id = opts.id || '';
+</span><span style="color: #008080;">194</span> <span style="color: #000000;">    //组件容器
+</span><span style="color: #008080;">195</span> <span style="color: #000000;">    this.container = $('#' + this.id);
+</span><span style="color: #008080;">196</span> <span style="color: #000000;">    //确定点击/滑动元素为按钮或者文本框(button/text)
+</span><span style="color: #008080;">197</span> <span style="color: #000000;">    this.toggleType = opts.toggleType || 'button';
+</span><span style="color: #008080;">198</span> <span style="color: #000000;">    this.toggleText = opts.toggleText || '请点击我';
+</span><span style="color: #008080;">199</span> <span style="color: #000000;">    //展开方式（点击/滑动）
+</span><span style="color: #008080;">200</span> <span style="color: #000000;">    this.openType = opts.openType || 'click';
+</span><span style="color: #008080;">201</span> <span style="color: #000000;">    this.drop_items = opts.drop_items || [];
+</span><span style="color: #008080;">202</span> <span style="color: #000000;">    this.loadData = opts.loadData;
+</span><span style="color: #008080;">203</span> <span style="color: #000000;">    this.func = opts.func;
+</span><span style="color: #008080;">204</span> 
+<span style="color: #008080;">205</span> <span style="color: #000000;">    if (this.drop_items &amp;&amp; this.drop_items[0]) {
+</span><span style="color: #008080;">206</span> <span style="color: #000000;">        this.init();
+</span><span style="color: #008080;">207</span> <span style="color: #000000;">        this.eventBind();
+</span><span style="color: #008080;">208</span> <span style="color: #000000;">    } else {
+</span><span style="color: #008080;">209</span> <span style="color: #000000;">        if (this.loadData &amp;&amp; typeof this.loadData == 'function') {
+</span><span style="color: #008080;">210</span> <span style="color: #000000;">            this.asyncLoad();
+</span><span style="color: #008080;">211</span> <span style="color: #000000;">        }
+</span><span style="color: #008080;">212</span> <span style="color: #000000;">    }
+</span><span style="color: #008080;">213</span> <span style="color: #000000;">};
+</span><span style="color: #008080;">214</span> 
+<span style="color: #008080;">215</span> <span style="color: #000000;">DropList.prototype.initBtn = function () {
+</span><span style="color: #008080;">216</span> <span style="color: #000000;">    var scope = this;
+</span><span style="color: #008080;">217</span> <span style="color: #000000;">    var container = scope.container;
+</span><span style="color: #008080;">218</span> <span style="color: #000000;">    var openType = scope.openType;
+</span><span style="color: #008080;">219</span> <span style="color: #000000;">    var toggleType = scope.toggleType;
+</span><span style="color: #008080;">220</span> <span style="color: #000000;">    var toggleText = scope.toggleText;
+</span><span style="color: #008080;">221</span> <span style="color: #000000;">    var toggleEl = '';
+</span><span style="color: #008080;">222</span> <span style="color: #000000;">    if (toggleType == 'button') {
+</span><span style="color: #008080;">223</span>         toggleEl = '<span style="color: #0000ff;">&lt;</span><span style="color: #800000;">a </span><span style="color: #ff0000;">class</span><span style="color: #0000ff;">="drop_btn_toggle"</span><span style="color: #0000ff;">&gt;&lt;</span><span style="color: #800000;">span</span><span style="color: #0000ff;">&gt;</span>' + toggleText + '<span style="color: #0000ff;">&lt;</span><span style="color: #800000;">i </span><span style="color: #ff0000;">class</span><span style="color: #0000ff;">="icon"</span><span style="color: #0000ff;">&gt;&lt;/</span><span style="color: #800000;">i</span><span style="color: #0000ff;">&gt;&lt;/</span><span style="color: #800000;">span</span><span style="color: #0000ff;">&gt;&lt;/</span><span style="color: #800000;">a</span><span style="color: #0000ff;">&gt;</span><span style="color: #000000;">';
+</span><span style="color: #008080;">224</span> <span style="color: #000000;">    } else {
+</span><span style="color: #008080;">225</span>         toggleEl = '<span style="color: #0000ff;">&lt;</span><span style="color: #800000;">input </span><span style="color: #ff0000;">class</span><span style="color: #0000ff;">="drop_text_toggle"</span><span style="color: #ff0000;"> type</span><span style="color: #0000ff;">="text"</span> <span style="color: #0000ff;">/&gt;</span><span style="color: #000000;">';
+</span><span style="color: #008080;">226</span> <span style="color: #000000;">    }
+</span><span style="color: #008080;">227</span> <span style="color: #000000;">    //获得点击元素用以添加事件
+</span><span style="color: #008080;">228</span> <span style="color: #000000;">    scope.toggleEl = $(toggleEl);
+</span><span style="color: #008080;">229</span> <span style="color: #000000;">    container.append(scope.toggleEl);
+</span><span style="color: #008080;">230</span> <span style="color: #000000;">};
+</span><span style="color: #008080;">231</span> 
+<span style="color: #008080;">232</span> <span style="color: #000000;">DropList.prototype.initDropItems = function () {
+</span><span style="color: #008080;">233</span> <span style="color: #000000;">    var scope = this;
+</span><span style="color: #008080;">234</span> <span style="color: #000000;">    var container = scope.container;
+</span><span style="color: #008080;">235</span> <span style="color: #000000;">    //组装下拉元素
+</span><span style="color: #008080;">236</span> <span style="color: #000000;">    var drop_items = scope.drop_items;
+</span><span style="color: #008080;">237</span>     var item_container = $('<span style="color: #0000ff;">&lt;</span><span style="color: #800000;">ul </span><span style="color: #ff0000;">class</span><span style="color: #0000ff;">="drop_items"</span><span style="color: #0000ff;">&gt;&lt;/</span><span style="color: #800000;">ul</span><span style="color: #0000ff;">&gt;</span><span style="color: #000000;">');
+</span><span style="color: #008080;">238</span> <span style="color: #000000;">    container.append(item_container);
+</span><span style="color: #008080;">239</span> <span style="color: #000000;">    for (var i in drop_items) {
+</span><span style="color: #008080;">240</span> <span style="color: #000000;">        var item = drop_items[i];
+</span><span style="color: #008080;">241</span>         var tmp = $('<span style="color: #0000ff;">&lt;</span><span style="color: #800000;">li</span><span style="color: #0000ff;">&gt;&lt;/</span><span style="color: #800000;">li</span><span style="color: #0000ff;">&gt;</span><span style="color: #000000;">');
+</span><span style="color: #008080;">242</span> <span style="color: #000000;">        if (item.id) {
+</span><span style="color: #008080;">243</span> <span style="color: #000000;">            tmp.attr('id', item.id);
+</span><span style="color: #008080;">244</span> <span style="color: #000000;">        }
+</span><span style="color: #008080;">245</span> <span style="color: #000000;">        if (item.text) {
+</span><span style="color: #008080;">246</span> <span style="color: #000000;">            tmp.html(item.text);
+</span><span style="color: #008080;">247</span> <span style="color: #000000;">        }
+</span><span style="color: #008080;">248</span> <span style="color: #000000;">        item_container.append(tmp);
+</span><span style="color: #008080;">249</span> <span style="color: #000000;">    }
+</span><span style="color: #008080;">250</span> <span style="color: #000000;">    //活动下拉菜单
+</span><span style="color: #008080;">251</span> <span style="color: #000000;">    scope.item_container = item_container;
+</span><span style="color: #008080;">252</span> <span style="color: #000000;">};
+</span><span style="color: #008080;">253</span> <span style="color: #000000;">DropList.prototype.init = function () {
+</span><span style="color: #008080;">254</span> <span style="color: #000000;">    //组装触发元素
+</span><span style="color: #008080;">255</span> <span style="color: #000000;">    var scope = this;
+</span><span style="color: #008080;">256</span> <span style="color: #000000;">    scope.initBtn();
+</span><span style="color: #008080;">257</span> <span style="color: #000000;">    scope.initDropItems();
+</span><span style="color: #008080;">258</span> <span style="color: #000000;">};
+</span><span style="color: #008080;">259</span> 
+<span style="color: #008080;">260</span> <span style="color: #000000;">DropList.prototype.eventBind = function () {
+</span><span style="color: #008080;">261</span> <span style="color: #000000;">    var scope = this;
+</span><span style="color: #008080;">262</span> <span style="color: #000000;">    var container = scope.container; //父容器
+</span><span style="color: #008080;">263</span> <span style="color: #000000;">    var toggleType = scope.toggleType; //触发方式
+</span><span style="color: #008080;">264</span> <span style="color: #000000;">    var toggleEl = scope.toggleEl; //点击元素
+</span><span style="color: #008080;">265</span> <span style="color: #000000;">    var item_container = scope.item_container; //下拉菜单
+</span><span style="color: #008080;">266</span> <span style="color: #000000;">    var openType = scope.openType;
+</span><span style="color: #008080;">267</span> <span style="color: #000000;">    var func = scope.func;
+</span><span style="color: #008080;">268</span> 
+<span style="color: #008080;">269</span> <span style="color: #000000;">    if (openType == 'click') {
+</span><span style="color: #008080;">270</span> <span style="color: #000000;">        toggleEl.click(function (e) {
+</span><span style="color: #008080;">271</span> <span style="color: #000000;">            container.addClass('drop_btn_open');
+</span><span style="color: #008080;">272</span> 
+<span style="color: #008080;">273</span> <span style="color: #000000;">            var el = $(this);
+</span><span style="color: #008080;">274</span> <span style="color: #000000;">            var offset = el.offset();
+</span><span style="color: #008080;">275</span> <span style="color: #000000;">            var s = el.height();
+</span><span style="color: #008080;">276</span> <span style="color: #000000;">            s = el.css('height');
+</span><span style="color: #008080;">277</span> <span style="color: #000000;">            var p_top = el.css('padding-top');
+</span><span style="color: #008080;">278</span> <span style="color: #000000;">            var p_bottom = el.css('padding-bottom');
+</span><span style="color: #008080;">279</span> <span style="color: #000000;">            item_container.css('min-width', el.css('width'))
+</span><span style="color: #008080;">280</span> <span style="color: #000000;">            item_container.css('left', parseInt(offset.left) + 'px');
+</span><span style="color: #008080;">281</span> <span style="color: #000000;">            item_container.css('top', (parseInt(offset.top) + parseInt(s) + parseInt(p_top) + parseInt(p_bottom)) + 'px');
+</span><span style="color: #008080;">282</span> 
+<span style="color: #008080;">283</span> 
+<span style="color: #008080;">284</span> <span style="color: #000000;">            //菜单出现后便阻止冒泡
+</span><span style="color: #008080;">285</span> <span style="color: #000000;">            e.stopPropagation();
+</span><span style="color: #008080;">286</span> <span style="color: #000000;">            $(document).unbind('click').click(function (ee) {
+</span><span style="color: #008080;">287</span> <span style="color: #000000;">                if (container.hasClass('drop_btn_open')) {
+</span><span style="color: #008080;">288</span> <span style="color: #000000;">                    $('.drop_btn').removeClass('drop_btn_open');
+</span><span style="color: #008080;">289</span> <span style="color: #000000;">                }
+</span><span style="color: #008080;">290</span> <span style="color: #000000;">                $(document).unbind('click');
+</span><span style="color: #008080;">291</span> <span style="color: #000000;">            });
+</span><span style="color: #008080;">292</span> <span style="color: #000000;">        });
+</span><span style="color: #008080;">293</span> <span style="color: #000000;">    } else {
+</span><span style="color: #008080;">294</span> <span style="color: #000000;">        toggleEl.mousemove(function () {
+</span><span style="color: #008080;">295</span> <span style="color: #000000;">            container.addClass('drop_btn_open');
+</span><span style="color: #008080;">296</span> 
+<span style="color: #008080;">297</span> <span style="color: #000000;">            var el = $(this);
+</span><span style="color: #008080;">298</span> <span style="color: #000000;">            var offset = el.offset();
+</span><span style="color: #008080;">299</span> <span style="color: #000000;">            var s = el.height();
+</span><span style="color: #008080;">300</span> <span style="color: #000000;">            s = el.css('height');
+</span><span style="color: #008080;">301</span> <span style="color: #000000;">            var p_top = el.css('padding-top');
+</span><span style="color: #008080;">302</span> <span style="color: #000000;">            var p_bottom = el.css('padding-bottom');
+</span><span style="color: #008080;">303</span> <span style="color: #000000;">            item_container.css('min-width', el.css('width'))
+</span><span style="color: #008080;">304</span> <span style="color: #000000;">            item_container.css('left', parseInt(offset.left) + 'px');
+</span><span style="color: #008080;">305</span> <span style="color: #000000;">            item_container.css('top', (parseInt(offset.top) + parseInt(s) + parseInt(p_top) + parseInt(p_bottom)) + 'px');
+</span><span style="color: #008080;">306</span> 
+<span style="color: #008080;">307</span> <span style="color: #000000;">            $(document).unbind('click').click(function (ee) {
+</span><span style="color: #008080;">308</span> <span style="color: #000000;">                if (container.hasClass('drop_btn_open')) {
+</span><span style="color: #008080;">309</span> <span style="color: #000000;">                    $('.drop_btn').removeClass('drop_btn_open');
+</span><span style="color: #008080;">310</span> <span style="color: #000000;">                }
+</span><span style="color: #008080;">311</span> <span style="color: #000000;">                $(document).unbind('click');
+</span><span style="color: #008080;">312</span> <span style="color: #000000;">            });
+</span><span style="color: #008080;">313</span> <span style="color: #000000;">        });
+</span><span style="color: #008080;">314</span> <span style="color: #000000;">    }
+</span><span style="color: #008080;">315</span> 
+<span style="color: #008080;">316</span> <span style="color: #000000;">    //    $("table").delegate("td", "hover", function () {
+</span><span style="color: #008080;">317</span> <span style="color: #000000;">    //        $(this).toggleClass("hover");
+</span><span style="color: #008080;">318</span> <span style="color: #000000;">    //    });
+</span><span style="color: #008080;">319</span> <span style="color: #000000;">    //处理选项处理事件
+</span><span style="color: #008080;">320</span> <span style="color: #000000;">    if (func &amp;&amp; typeof func == 'function') {
+</span><span style="color: #008080;">321</span> <span style="color: #000000;">        item_container.delegate('li', 'click', function (e) {
+</span><span style="color: #008080;">322</span> <span style="color: #000000;">            func.call(this, e, container, toggleEl);
+</span><span style="color: #008080;">323</span> <span style="color: #000000;">        });
+</span><span style="color: #008080;">324</span> <span style="color: #000000;">    }
+</span><span style="color: #008080;">325</span> <span style="color: #000000;">};
+</span><span style="color: #008080;">326</span> 
+<span style="color: #008080;">327</span> <span style="color: #000000;">DropList.prototype.asyncLoad = function () {
+</span><span style="color: #008080;">328</span> <span style="color: #000000;">    var scope = this;
+</span><span style="color: #008080;">329</span> <span style="color: #000000;">    scope.initBtn();
+</span><span style="color: #008080;">330</span> <span style="color: #000000;">    scope.asyncBtnEventBind();
+</span><span style="color: #008080;">331</span> 
+<span style="color: #008080;">332</span> <span style="color: #000000;">    //    scope.initDropItems();
+</span><span style="color: #008080;">333</span> <span style="color: #000000;">};
+</span><span style="color: #008080;">334</span> 
+<span style="color: #008080;">335</span> <span style="color: #000000;">DropList.prototype.asyncBtnEventBind = function () {
+</span><span style="color: #008080;">336</span> <span style="color: #000000;">    var scope = this;
+</span><span style="color: #008080;">337</span> <span style="color: #000000;">    var container = scope.container; //父容器
+</span><span style="color: #008080;">338</span> <span style="color: #000000;">    var toggleType = scope.toggleType; //触发方式
+</span><span style="color: #008080;">339</span> <span style="color: #000000;">    var toggleEl = scope.toggleEl; //点击元素
+</span><span style="color: #008080;">340</span> <span style="color: #000000;">    var loadData = scope.loadData;
+</span><span style="color: #008080;">341</span> <span style="color: #000000;">    var openType = scope.openType;
+</span><span style="color: #008080;">342</span> 
+<span style="color: #008080;">343</span> <span style="color: #000000;">    //处理点击事件
+</span><span style="color: #008080;">344</span> <span style="color: #000000;">    if (openType == 'click') {
+</span><span style="color: #008080;">345</span> <span style="color: #000000;">        toggleEl.click(function (e) {
+</span><span style="color: #008080;">346</span> <span style="color: #000000;">            container.addClass('drop_btn_open');
+</span><span style="color: #008080;">347</span> 
+<span style="color: #008080;">348</span> <span style="color: #000000;">            var el = $(this);
+</span><span style="color: #008080;">349</span>             
+<span style="color: #008080;">350</span> 
+<span style="color: #008080;">351</span> <span style="color: #000000;">            //若是没有下拉菜单便添加数据
+</span><span style="color: #008080;">352</span> <span style="color: #000000;">            if (!scope.item_container) {
+</span><span style="color: #008080;">353</span> <span style="color: #000000;">                //加载异步数据
+</span><span style="color: #008080;">354</span> <span style="color: #000000;">                if (loadData &amp;&amp; typeof loadData == 'function') {
+</span><span style="color: #008080;">355</span> <span style="color: #000000;">                    loadData.call(scope, function () {
+</span><span style="color: #008080;">356</span> <span style="color: #000000;">                        scope.initDropItems();
+</span><span style="color: #008080;">357</span> <span style="color: #000000;">                        scope.asyncDropEventBind(el);
+</span><span style="color: #008080;">358</span> <span style="color: #000000;">                    });
+</span><span style="color: #008080;">359</span> <span style="color: #000000;">                }
+</span><span style="color: #008080;">360</span> <span style="color: #000000;">            }
+</span><span style="color: #008080;">361</span> 
+<span style="color: #008080;">362</span> <span style="color: #000000;">            //菜单出现后便阻止冒泡
+</span><span style="color: #008080;">363</span> <span style="color: #000000;">            e.stopPropagation();
+</span><span style="color: #008080;">364</span> <span style="color: #000000;">            $(document).unbind('click').click(function (ee) {
+</span><span style="color: #008080;">365</span> <span style="color: #000000;">                if (container.hasClass('drop_btn_open')) {
+</span><span style="color: #008080;">366</span> <span style="color: #000000;">                    $('.drop_btn').removeClass('drop_btn_open');
+</span><span style="color: #008080;">367</span> <span style="color: #000000;">                }
+</span><span style="color: #008080;">368</span> <span style="color: #000000;">                $(document).unbind('click');
+</span><span style="color: #008080;">369</span> <span style="color: #000000;">            });
+</span><span style="color: #008080;">370</span> <span style="color: #000000;">        });
+</span><span style="color: #008080;">371</span> <span style="color: #000000;">    } else {
+</span><span style="color: #008080;">372</span> <span style="color: #000000;">        toggleEl.mousemove(function () {
+</span><span style="color: #008080;">373</span> <span style="color: #000000;">            if (container.hasClass('drop_btn_open')) {
+</span><span style="color: #008080;">374</span> <span style="color: #000000;">                $('.drop_btn').removeClass('drop_btn_open');
+</span><span style="color: #008080;">375</span> <span style="color: #000000;">            }
+</span><span style="color: #008080;">376</span> <span style="color: #000000;">            $(document).unbind('click');
+</span><span style="color: #008080;">377</span> <span style="color: #000000;">        });
+</span><span style="color: #008080;">378</span> <span style="color: #000000;">    }
+</span><span style="color: #008080;">379</span> <span style="color: #000000;">};
+</span><span style="color: #008080;">380</span> 
+<span style="color: #008080;">381</span> <span style="color: #000000;">DropList.prototype.asyncDropEventBind = function (el) {
+</span><span style="color: #008080;">382</span> <span style="color: #000000;">    var scope = this;
+</span><span style="color: #008080;">383</span> <span style="color: #000000;">    var item_container = scope.item_container; //下拉菜单
+</span><span style="color: #008080;">384</span> 
+<span style="color: #008080;">385</span> <span style="color: #000000;">    var offset = el.offset();
+</span><span style="color: #008080;">386</span> <span style="color: #000000;">    var s = el.height();
+</span><span style="color: #008080;">387</span> <span style="color: #000000;">    s = el.css('height');
+</span><span style="color: #008080;">388</span> <span style="color: #000000;">    var p_top = el.css('padding-top');
+</span><span style="color: #008080;">389</span> <span style="color: #000000;">    var p_bottom = el.css('padding-bottom');
+</span><span style="color: #008080;">390</span> <span style="color: #000000;">    item_container.css('min-width', el.css('width'))
+</span><span style="color: #008080;">391</span> <span style="color: #000000;">    item_container.css('left', parseInt(offset.left) + 'px');
+</span><span style="color: #008080;">392</span> <span style="color: #000000;">    item_container.css('top', (parseInt(offset.top) + parseInt(s) + parseInt(p_top) + parseInt(p_bottom)) + 'px');
+</span><span style="color: #008080;">393</span> 
+<span style="color: #008080;">394</span> <span style="color: #000000;">    var func = scope.func;
+</span><span style="color: #008080;">395</span> 
+<span style="color: #008080;">396</span> <span style="color: #000000;">    //    $("table").delegate("td", "hover", function () {
+</span><span style="color: #008080;">397</span> <span style="color: #000000;">    //        $(this).toggleClass("hover");
+</span><span style="color: #008080;">398</span> <span style="color: #000000;">    //    });
+</span><span style="color: #008080;">399</span> <span style="color: #000000;">    //处理选项处理事件
+</span><span style="color: #008080;">400</span> <span style="color: #000000;">    if (func &amp;&amp; typeof func == 'function') {
+</span><span style="color: #008080;">401</span> <span style="color: #000000;">        item_container.delegate('li', 'click', function (e) {
+</span><span style="color: #008080;">402</span> <span style="color: #000000;">            func.call(this, e, container, toggleEl);
+</span><span style="color: #008080;">403</span> <span style="color: #000000;">        });
+</span><span style="color: #008080;">404</span> <span style="color: #000000;">    }
+</span><span style="color: #008080;">405</span> };</pre>
+</div>
+</div>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>所以先贴出来和各位看看，后续小生再行优化，希望能把这个功能做好！</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+                </div>
+
+                <div class='span3 sidebar'>
+                    <h2>导航栏</h2>
+                    <ul class="nav nav-tabs nav-stacked">
+                             				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/Fiddlerznqddsq/index.html">Fiddler真乃前端大杀器！！！</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/Requirejs/index.html">Requirejs</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/RequireJSyBackbonejdzh/index.html">RequireJS与Backbone简单整合</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/RequireJSxxbj/index.html">RequireJS学习笔记</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/Webqdyhctxdpzyyqdgsgpng/index.html">Web前端优化初探，小弟抛砖引玉，期待高手共破难关！</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/Webqdlqjrctxsqwpzyyqdgsgpng/index.html">Web前端浏览器兼容初探，小生浅文抛砖引玉，期待高手攻破难关！</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/jqueryfdataListxnyhmbybysxtgxn10bys/index.html">【jquery仿dataList——性能优化】模板预编译思想提高性能10倍以上！！！</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/jqueryfdataListyyzmfigoogledzhtdpxzdhfp/index.html">【jquery仿dataList】应用之——模仿igoogle【定制化、拖动排序，最大化、分屏】</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/jqueryfdatalistdygwtqzszmxxsjlkzDIVdjjbf/index.html">【jquery仿datalist的一个问题，求助】——设置每行显示几列，块状DIV的解决办法</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/jquerymfnetkjcbGridViewmxsxjqjdyy/index.html">【jquery模仿net控件】初步GridView模型实现，及其简单应用</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/jquerymfnetkjjdfykj10fsgridviewsycs/index.html">【jquery模仿net控件】简单分页控件10，附上gridview使用测试</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/jquerymfnetkjjdddatalistkjgxjqjdyy/index.html">【jquery模仿net控件】简单的datalist控件更新，及其简单应用</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/jquerymfnetkjjdddropdownlistydatalist/index.html">【jquery模仿net控件】简单的dropdownlist与datalist</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/jquerybnetkjdropdownlistfymhydjzdzzpz/index.html">【jquery版net控件—dropdownlist】附源码，欢迎大家指点、指正、拍砖！！！</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/positionykyhfzddccyslsbdws/index.html">【position也可以很复杂】当弹出层遇上了鼠标定位（上）</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/positionykyhfzddccyslsbdwx/index.html">【position也可以很复杂】当弹出层遇上了鼠标定位（下）</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/SEOzmlwljnmtsbwmlyqkkSEOb/index.html">【SEO】周末了，为了纪念明天上班，我们来一起看看SEO吧</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/webqdyhqdwyhyrzrz/index.html">【web前端优化】前端无优化，庸人自扰之！</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/webqdyhzreflowjsymdhl/index.html">【web前端优化之reflow】减少页面的回流</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/webqdyhztpycjzctzwbsxwbk/index.html">【web前端优化之图片延迟加载初探】中午不睡，下午崩溃</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/webqdyhztpmhdqxkwQQkjrhxsxp/index.html">【web前端优化之图片模糊到清晰】看我QQ空间如何显示相片</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/webqdpxzqhddphsywmsxdDatalistsmwtb/index.html">【web前端培训之前后端的配合（上）】以我们熟悉的Datalist说明问题吧</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/webqdpxzqhddphzjxzrdgs/index.html">【web前端培训之前后端的配合（中）】继续昨日的故事</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/dyyygybkydbfgqym/index.html">【单页应用】关于博客园的补发（高清有码）。。。</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/xtsstringifysBUGlocalstoragesxxmSafarialertksfycjzym10pxbp/index.html">【小贴士】【stringify神BUG】【localstorage失效】【消灭Safarialert框】【是否延迟加载】【页面10px白屏】</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/dalhdmsthhdsdmstjsh/index.html">【答阿里寒冬面试题】呵呵，大神的面试题就是好！</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/ycsjmstdldgwxxdgjxxdff/index.html">一次上机面试题带来的感悟【学习的感觉、学习的方法】</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/ydmstdldqdyhsxxxdp/index.html">一道面试题带来的前端优化——实现星星点评</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/zysyzjjhfzwebqdbfxlgxmndjjfa/index.html">只言碎语总结，今后发展web前端，并分享两个项目难点解决方案。</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/gwjlytbllbnwmljxwwdbdyzb/index.html">各位加了一天班累了吧？那我们来继续未完的表单验证吧</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/gwzmwlytllbwmyqlzldmstbjstbdy/index.html">各位周末玩了一天累了吧，我们一起来做两道面试题吧（据说淘宝的哟）！</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/jyjQuerydxlcdcjzwsy/index.html">基于jQuery的下拉菜单插件，诸位上眼！！！</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/jyjQuerydxlcdcd02zwsy/index.html">基于jQuery的下拉菜单菜单【02】，诸位上眼！！！</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/gzzpddyxdxdccktfybwjsc/index.html">工作中碰到的一些东西【弹出窗口】【拖放】【异步文件上传】</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/gzlygxqgwydllbnwmyqlbdyzyfb/index.html">工作了一个星期各位一定累了吧，那我们一起来表单验证一番吧！</a></li>
+    				                                         
+                    </ul>
+                </div>
+            </div>
+
+        </div>
+    </body>
+</html>

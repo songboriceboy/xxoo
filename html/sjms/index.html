@@ -1,0 +1,234 @@
+﻿<!DOCTYPE html>
+
+<html lang="zh">
+    <head>
+        <meta charset="utf-8">
+        <meta name="description" content="android,ios" />
+        <meta name="keywords" content="android,ios" />
+
+        <title>叶小钗</title>
+        <style type='text/css'>
+            body {
+                background-color: #CCC;
+            }
+        </style>
+        <link rel="stylesheet" href="../../css/bootstrap.css" />
+    </head>
+
+    <body>
+        <div class="container">
+
+            <h1>叶小钗</h1>
+
+            <div class='navbar navbar-inverse'>
+                <div class='navbar-inner nav-collapse' style="height: auto;">
+                    <ul class="nav">
+                              				<li><a href="http://songboriceboy.github.io/xxoo/html/blade/index.html">blade</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/css/index.html">css</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/HTML5&CSS3/index.html">HTML5&CSS3</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/index.html">javascript</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Javaxx/index.html">Java学习</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/nodejs/index.html">nodejs</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/requirejs/index.html">requirejs</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/index.html">Web前端</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/xxgw/index.html">学习感悟</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/gzdd/index.html">工作点滴</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/jkxx/index.html">接口学习</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/wfl/index.html">未分类</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/ydkf/index.html">移动开发</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/sjms/index.html">设计模式</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/mst/index.html">面试题</a></li>
+    				                      </ul>
+                </div>
+            </div>
+
+            <div id='content' class='row-fluid'>
+
+                <div class='span9 main'>
+				<div style="color:blue" align=center>【MVC学习笔记01】初窥奥秘</div><br><h1>前言</h1>
+<p>最近工作落实了，是我非常喜欢的无线前端，会接触很多新东西啦，需要努力才行。因为会用到backbone，所以要学习MVC啦。</p>
+<p>MVC（模型-视图-控制器），这种模式最早被用于构建桌面程序和服务器端的应用程序。</p>
+<p>最近几年由于前后端数据的转移，前端所占的业务逻辑越来越重，于是这种模式便出现在了我们前端的javascript中了，比如Backbone 然后MVP与MVVM也先后在前端出现，并且各自拥有其拥戴者。</p>
+<h1>初探MVC</h1>
+<p>MVC是一种架构设计模式，他通过关注点分离改进程序组织，从而达到优化程序的目的。</p>
+<p>MVC强制将业务数据（model）与用户界面（view）分离，controller用以管理用户输入以及一些逻辑。 MVC其实也是经过了一些发展的：</p>
+<p>model代表特定于领域的数据，他完全不知道什么是view或者controller，但是当model发生改变时，他会通知他的view（观察者）</p>
+<p>view描述的是model的当前状态，观察者模式用于让view了解model什么时候发生了变化</p>
+<p>presentation由view关注，但不只是单个view和controller，屏幕上每个部分或者元素都需要做到view-controller对应</p>
+<p>controller在view-controller对中的作用是处理用户交互（点击、滑动等动作），为view做决定。</p>
+<p>由此我们可以察觉，发布/订阅（publish/subscribe）（观察者模式）好像和我们的MVC有一定渊源，于是我们来简单的看一下观察者模式。</p>
+<h1>Publish/Subscribe（发布/订阅）模式</h1>
+<p>在javascript中，我们一般使用Publish/Subscribe（发布/订阅）模式。</p>
+<p><img src="17328796139206.png" alt=""></p>
+<p>Publish/Subscribe模式使用了一个主题/事件通道，这个通道介于希望接收到通知（订阅者）的对象和激活事件的对象（发布者）之间。</p>
+<p>该事件系统允许代码定义应用程序的特定事件，事件可传递参数，参数包含订阅者需要的值，这样避免了订阅者与发布者之间产生依赖。</p>
+<p>他允许任何订阅者执行适当的事件处理程序来注册和接收发布者发出的通知。</p>
+<p>我们这里假设我们已经实现了publish、subscribe、unsubscribe方法，这里来实现一个简单的mail处理程序：</p>
+<div class="cnblogs_code">
+<pre><span style="color: #008080;"> 1</span> <span style="color: #008000;">//</span><span style="color: #008000;">接收消息数量</span>
+<span style="color: #008080;"> 2</span> <span style="color: #0000ff;">var</span> mailCounter = 0<span style="color: #000000;">;
+</span><span style="color: #008080;"> 3</span> <span style="color: #008000;">//</span><span style="color: #008000;">初始化订阅、名称是inbox/newMessage</span>
+<span style="color: #008080;"> 4</span> 
+<span style="color: #008080;"> 5</span> <span style="color: #008000;">//</span><span style="color: #008000;">呈现消息预览</span>
+<span style="color: #008080;"> 6</span> <span style="color: #0000ff;">var</span> subscriber1 = subscribe('inbox/newMessage', <span style="color: #0000ff;">function</span><span style="color: #000000;"> (topic, data) {
+</span><span style="color: #008080;"> 7</span>     alert('a new message:'<span style="color: #000000;">, topic);
+</span><span style="color: #008080;"> 8</span>     <span style="color: #008000;">//</span><span style="color: #008000;">使用从目标subject传递过来的data，呈现消息</span>
+<span style="color: #008080;"> 9</span>     $('#sender'<span style="color: #000000;">).html(data.sender);
+</span><span style="color: #008080;">10</span>     $('#content'<span style="color: #000000;">).html(data.body);
+</span><span style="color: #008080;">11</span> <span style="color: #000000;">});
+</span><span style="color: #008080;">12</span> 
+<span style="color: #008080;">13</span> <span style="color: #008000;">//</span><span style="color: #008000;">另外一个订阅者，使用同样的data，但是干了不同的事情（更新接收消息数量）</span>
+<span style="color: #008080;">14</span> <span style="color: #0000ff;">var</span> subscriber2 = subscribe('inbox/newMessage', <span style="color: #0000ff;">function</span><span style="color: #000000;"> (topic, data) {
+</span><span style="color: #008080;">15</span>     $('#newMessageCounter').html(mailCounter++<span style="color: #000000;">);
+</span><span style="color: #008080;">16</span> <span style="color: #000000;">});
+</span><span style="color: #008080;">17</span> 
+<span style="color: #008080;">18</span> <span style="color: #008000;">//</span><span style="color: #008000;">发布消息啦！</span>
+<span style="color: #008080;">19</span> publish('inbox/newMessage'<span style="color: #000000;">, [{
+</span><span style="color: #008080;">20</span>     sender: '叶小钗'<span style="color: #000000;">,
+</span><span style="color: #008080;">21</span>     body: '一起来看霹雳布袋戏吧！！！'
+<span style="color: #008080;">22</span> <span style="color: #000000;">}]);
+</span><span style="color: #008080;">23</span> 
+<span style="color: #008080;">24</span> <span style="color: #008000;">//</span><span style="color: #008000;">可以取消订阅</span>
+<span style="color: #008080;">25</span> <span style="color: #008000;">//</span><span style="color: #008000;">        unsubscribe(subscriber1);</span>
+<span style="color: #008080;">26</span> <span style="color: #008000;">//</span><span style="color: #008000;">        unsubscribe(subscriber2);</span></pre>
+</div>
+<p>这段代码的中心是促进松散耦合，通过订阅另一个对象的特定任务或活动，当任务/活动发生时获得通知，而不是单个对象直接调用其他对象的方法。</p>
+<p>我们使用Publish/Subscribe模式的好处就是分解应用程序，松散耦合的块，改进代码管理。</p>
+<p>这种模式其实也有一个问题，就相当于领导发命令下面的士兵不一定能完成任务，他缺少一个跟踪机制，订阅者和发布者之间会相互无视。</p>
+<p>Publish/Subscribe非常适用与javascript生态系统，因为ECMAScript是由事件驱动的，在浏览器下尤其如此，DOM将事件作为脚本编程的主要交互API，所以在代码实现中，无论ECMAscript还是dom都不会提供核心对象或方法来创建自定义事件系统（DOM3除外）。</p>
+<p>但是很多类库帮我们实现了Publish/Subscribe系统（jquery） $('dom').trigger('channel', data);</p>
+<h2>javascript实现Publish/Subscribe</h2>
+<div class="cnblogs_code">
+<pre><span style="color: #008080;"> 1</span> <span style="color: #0000ff;">var</span> pubsub =<span style="color: #000000;"> {};
+</span><span style="color: #008080;"> 2</span> (<span style="color: #0000ff;">function</span><span style="color: #000000;"> (q) {
+</span><span style="color: #008080;"> 3</span>     <span style="color: #0000ff;">var</span> topics =<span style="color: #000000;"> {},
+</span><span style="color: #008080;"> 4</span>             subUid = -1<span style="color: #000000;">;
+</span><span style="color: #008080;"> 5</span>     <span style="color: #008000;">//</span><span style="color: #008000;">发布或者广播事件</span>
+<span style="color: #008080;"> 6</span>     q.publish = <span style="color: #0000ff;">function</span><span style="color: #000000;"> (topic, args) {
+</span><span style="color: #008080;"> 7</span>         <span style="color: #0000ff;">if</span> (!<span style="color: #000000;">topics[topic]) {
+</span><span style="color: #008080;"> 8</span>             <span style="color: #0000ff;">return</span> <span style="color: #0000ff;">false</span><span style="color: #000000;">;
+</span><span style="color: #008080;"> 9</span> <span style="color: #000000;">        }
+</span><span style="color: #008080;">10</span>         <span style="color: #0000ff;">var</span> subscribers =<span style="color: #000000;"> topics[topic],
+</span><span style="color: #008080;">11</span>                 len = subscribers ? subscribers.length : 0<span style="color: #000000;">;
+</span><span style="color: #008080;">12</span>         <span style="color: #0000ff;">while</span> (len--<span style="color: #000000;">) {
+</span><span style="color: #008080;">13</span> <span style="color: #000000;">            subscribers[len].func(topic, args);
+</span><span style="color: #008080;">14</span> <span style="color: #000000;">        }
+</span><span style="color: #008080;">15</span>         <span style="color: #0000ff;">return</span> <span style="color: #0000ff;">false</span><span style="color: #000000;">;
+</span><span style="color: #008080;">16</span> <span style="color: #000000;">    };
+</span><span style="color: #008080;">17</span> 
+<span style="color: #008080;">18</span>     <span style="color: #008000;">//</span><span style="color: #008000;">通过特定的名称和回调函数订阅事件，topic/event触发时执行事件</span>
+<span style="color: #008080;">19</span>     q.subscribe = <span style="color: #0000ff;">function</span><span style="color: #000000;"> (topic, func) {
+</span><span style="color: #008080;">20</span>         <span style="color: #0000ff;">if</span> (!<span style="color: #000000;">topics[topic]) {
+</span><span style="color: #008080;">21</span>             topics[topic] =<span style="color: #000000;"> [];
+</span><span style="color: #008080;">22</span> <span style="color: #000000;">        }
+</span><span style="color: #008080;">23</span>         <span style="color: #0000ff;">var</span> token = (++<span style="color: #000000;">subUid).toString();
+</span><span style="color: #008080;">24</span> <span style="color: #000000;">        topics[topic].push({
+</span><span style="color: #008080;">25</span> <span style="color: #000000;">            token: token,
+</span><span style="color: #008080;">26</span> <span style="color: #000000;">            func: func
+</span><span style="color: #008080;">27</span> <span style="color: #000000;">        });
+</span><span style="color: #008080;">28</span>         <span style="color: #0000ff;">return</span><span style="color: #000000;"> token;
+</span><span style="color: #008080;">29</span> <span style="color: #000000;">    };
+</span><span style="color: #008080;">30</span> 
+<span style="color: #008080;">31</span>     q.unsubscribe = <span style="color: #0000ff;">function</span><span style="color: #000000;"> (token) {
+</span><span style="color: #008080;">32</span>         <span style="color: #0000ff;">for</span> (<span style="color: #0000ff;">var</span> m <span style="color: #0000ff;">in</span><span style="color: #000000;"> topics) {
+</span><span style="color: #008080;">33</span>             <span style="color: #0000ff;">if</span><span style="color: #000000;"> (topics[m]) {
+</span><span style="color: #008080;">34</span>                 <span style="color: #0000ff;">for</span> (<span style="color: #0000ff;">var</span> i = 0, len = topics[m].length; i &lt; len; i++<span style="color: #000000;">) {
+</span><span style="color: #008080;">35</span>                     <span style="color: #0000ff;">if</span> (topics[m][i].token ===<span style="color: #000000;"> token) {
+</span><span style="color: #008080;">36</span>                         topics[m].splice(i, 1<span style="color: #000000;">);
+</span><span style="color: #008080;">37</span>                         <span style="color: #0000ff;">return</span><span style="color: #000000;"> token;
+</span><span style="color: #008080;">38</span> <span style="color: #000000;">                    }
+</span><span style="color: #008080;">39</span> <span style="color: #000000;">                }
+</span><span style="color: #008080;">40</span> <span style="color: #000000;">            }
+</span><span style="color: #008080;">41</span> <span style="color: #000000;">        }
+</span><span style="color: #008080;">42</span>         <span style="color: #0000ff;">return</span> <span style="color: #0000ff;">this</span><span style="color: #000000;">;
+</span><span style="color: #008080;">43</span> <span style="color: #000000;">    };
+</span><span style="color: #008080;">44</span> <span style="color: #000000;">})(pubsub);
+</span><span style="color: #008080;">45</span> 
+<span style="color: #008080;">46</span> <span style="color: #008000;">//</span><span style="color: #008000;">简单的消息处理程序</span>
+<span style="color: #008080;">47</span> 
+<span style="color: #008080;">48</span> <span style="color: #008000;">//</span><span style="color: #008000;">记录所有通过订阅者接收到的主题和数据</span>
+<span style="color: #008080;">49</span> <span style="color: #0000ff;">var</span> messageLogger = <span style="color: #0000ff;">function</span><span style="color: #000000;"> (topics, data) {
+</span><span style="color: #008080;">50</span>     <span style="color: #008000;">//</span><span style="color: #008000;">do something</span>
+<span style="color: #008080;">51</span>     console.log(topics + ' ' +<span style="color: #000000;"> data);
+</span><span style="color: #008080;">52</span> <span style="color: #000000;">};
+</span><span style="color: #008080;">53</span> 
+<span style="color: #008080;">54</span> <span style="color: #008000;">//</span><span style="color: #008000;">订阅者监听订阅的topic，一旦该topic广播一个通知，订阅者就调用回调函数</span>
+<span style="color: #008080;">55</span> <span style="color: #0000ff;">var</span> subscription = pubsub.subscribe('inbox/newMessage'<span style="color: #000000;">, messageLogger);
+</span><span style="color: #008080;">56</span> 
+<span style="color: #008080;">57</span> <span style="color: #008000;">//</span><span style="color: #008000;">发布者发布消息</span>
+<span style="color: #008080;">58</span> pubsub.publish('inbox/newMessage', '刀狂剑痴叶小钗'<span style="color: #000000;">);
+</span><span style="color: #008080;">59</span> 
+<span style="color: #008080;">60</span> pubsub.publish('inbox/newMessage'<span style="color: #000000;">, {
+</span><span style="color: #008080;">61</span>     id: '叶小钗'<span style="color: #000000;">,
+</span><span style="color: #008080;">62</span>     name: '刀狂剑痴'
+<span style="color: #008080;">63</span> });</pre>
+</div>
+<p>因为，这个不是今天的重点，我们暂时写到这吧，回过头继续看我们的MVC。</p>
+<h1>再探MVC</h1>
+<p>MVC由三个核心组件组成。</p>
+<p><strong>model </strong></p>
+<p>model管理应用程序的数据，model不涉及用户界面，也不涉及表示层，他是应用程序可能需要的特殊形式的数据。</p>
+<p>当model改变时，他会通知他的观察者（view），view就会做出相应的改变达到同步的效果。</p>
+<p>假如我们有一个javascript图片库应用程序，在图片库中，一个图片就是一个model，他便是一个独特的数据。</p>
+<p>这个model可以包含标题，图像源等信息 { src: '1.jpg', title: '叶小钗', viewed: false }</p>
+<p><strong>View</strong></p>
+<p>视图是model的可视化表示，表示当前状态的筛选视图，一个视图通常检测一个model（模型），并在model更改时进行通知，使view本身能够更新。</p>
+<p>View通常是&ldquo;愚钝&rdquo;的，因为他对应用程序中的View与Controller了解非常有限。</p>
+<p>用户一般与View发生交互，包括读取编辑model，我们通过操作view来编辑器元数据，更新model的实际任务是在controller上进行的。</p>
+<p>我们下面来看一个例子：</p>
+<p>我们在view内定义一个render方法，他负责使用javascript模板引擎渲染model的内容，并产生更新操作（还是图片相关的操作），然后model将render回调作为一个订阅者加进去，以便model改变时触发view更新</p>
+<div class="cnblogs_code">
+<pre><span style="color: #008080;"> 1</span> <span style="color: #0000ff;">var</span> bulidPhotoView = <span style="color: #0000ff;">function</span><span style="color: #000000;"> (photoModel, photoController) {
+</span><span style="color: #008080;"> 2</span>     <span style="color: #0000ff;">var</span> base = $('&lt;div/&gt;'<span style="color: #000000;">),
+</span><span style="color: #008080;"> 3</span>     photoEl = $('&lt;div/&gt;'<span style="color: #000000;">);
+</span><span style="color: #008080;"> 4</span> <span style="color: #000000;">    base.append(photoEl);
+</span><span style="color: #008080;"> 5</span>     <span style="color: #0000ff;">var</span> render = <span style="color: #0000ff;">function</span><span style="color: #000000;"> () {
+</span><span style="color: #008080;"> 6</span>         <span style="color: #008000;">//</span><span style="color: #008000;">__template模板方法并不存在其功能为获取id标志的html模板与model生成实体html</span>
+<span style="color: #008080;"> 7</span>         photoEl.html(__template('id'<span style="color: #000000;">, photoModel));
+</span><span style="color: #008080;"> 8</span> <span style="color: #000000;">    };
+</span><span style="color: #008080;"> 9</span> <span style="color: #000000;">    photoModel.addSubscriber(render);
+</span><span style="color: #008080;">10</span>     photoEl.delegate('click', <span style="color: #0000ff;">function</span><span style="color: #000000;"> () {
+</span><span style="color: #008080;">11</span>         photoController.handleEvent('click'<span style="color: #000000;">, photoModel);
+</span><span style="color: #008080;">12</span> <span style="color: #000000;">    });
+</span><span style="color: #008080;">13</span>     <span style="color: #0000ff;">var</span> show = <span style="color: #0000ff;">function</span><span style="color: #000000;"> () {
+</span><span style="color: #008080;">14</span> <span style="color: #000000;">        photoEl.show();
+</span><span style="color: #008080;">15</span> <span style="color: #000000;">    };
+</span><span style="color: #008080;">16</span>     <span style="color: #0000ff;">var</span> hide = <span style="color: #0000ff;">function</span><span style="color: #000000;"> () {
+</span><span style="color: #008080;">17</span> <span style="color: #000000;">        photoEl.hide();
+</span><span style="color: #008080;">18</span> <span style="color: #000000;">    };
+</span><span style="color: #008080;">19</span>     <span style="color: #0000ff;">return</span><span style="color: #000000;"> { showView: show, hideView: hide };
+</span><span style="color: #008080;">20</span> }</pre>
+</div>
+<p><strong>Controller </strong></p>
+<p>controller是model与view之间的中介，当用户操作view时，controller负责更新model。</p>
+<p>View将委托给controller进行操作，当view觉得合适时，view也会委托controller处理model的事件。</p>
+<p>这里有点绕，因为我们javascript中的MVC与经典的有点不一样。</p>
+<p>比如backbone的框架，他包含Model模型和View视图，但是他其实并不包含Controller，其视图和路由行为与controller有点类似，但是他们都不是controller。</p>
+<h2>【阶段总结】</h2>
+<p>MVC关注分离，他有利于简化应用程序功能的模块化，从而带来了这些好处：</p>
+<p>① 整体维护变得简单，数据是否改变，什么时候改变我们可以追踪，不论是model或者controller最终都会体现在view上</p>
+<p>② 解耦model与view</p>
+<p>③ model与controller代码的重复被消除了。</p>
+<h1>结语</h1>
+<p>我们今天一起学习了MVC，我对这块的理解还很浅，因为最近会用到backbone，所以感觉自己应该对这块知识有所掌握。</p>
+<p>接下来我们一起来学习下吧，希望这次学习后对MVC的理解能够加深一点。</p>
+<p>&nbsp;</p>
+                </div>
+
+                <div class='span3 sidebar'>
+                    <h2>导航栏</h2>
+                    <ul class="nav nav-tabs nav-stacked">
+                             				<li><a href="http://songboriceboy.github.io/xxoo/html/sjms/MVCxxbj01ckam/index.html">【MVC学习笔记01】初窥奥秘</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/sjms/zgbj01dygalbqcj/index.html">【重构笔记01】第一个案例补齐插件</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/sjms/zgbj02zxzzhs/index.html">【重构笔记02】重新组织函数</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/sjms/zgbj03dxzjbqtx/index.html">【重构笔记03】对象之间搬迁特性</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/sjms/zgbj04zxzzsjwhxmblsmssjyxwfl/index.html">【重构笔记04】重新组织数据（我好像明白了什么是数据与行为分离）</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/sjms/ctBackbone/index.html">初探Backbone</a></li>
+    				                                         
+                    </ul>
+                </div>
+            </div>
+
+        </div>
+    </body>
+</html>

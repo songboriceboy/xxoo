@@ -1,0 +1,562 @@
+﻿<!DOCTYPE html>
+
+<html lang="zh">
+    <head>
+        <meta charset="utf-8">
+        <meta name="description" content="android,ios" />
+        <meta name="keywords" content="android,ios" />
+
+        <title>叶小钗</title>
+        <style type='text/css'>
+            body {
+                background-color: #CCC;
+            }
+        </style>
+        <link rel="stylesheet" href="../../../css/bootstrap.css" />
+    </head>
+
+    <body>
+        <div class="container">
+
+            <h1>叶小钗</h1>
+
+            <div class='navbar navbar-inverse'>
+                <div class='navbar-inner nav-collapse' style="height: auto;">
+                    <ul class="nav">
+                              				<li><a href="http://songboriceboy.github.io/xxoo/html/blade/index.html">blade</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/css/index.html">css</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/HTML5&CSS3/index.html">HTML5&CSS3</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/index.html">javascript</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Javaxx/index.html">Java学习</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/nodejs/index.html">nodejs</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/requirejs/index.html">requirejs</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/index.html">Web前端</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/xxgw/index.html">学习感悟</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/gzdd/index.html">工作点滴</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/jkxx/index.html">接口学习</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/wfl/index.html">未分类</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/ydkf/index.html">移动开发</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/sjms/index.html">设计模式</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/mst/index.html">面试题</a></li>
+    				                      </ul>
+                </div>
+            </div>
+
+            <div id='content' class='row-fluid'>
+
+                <div class='span9 main'>
+				<div style="color:blue" align=center>【重构笔记02】重新组织函数</div><br><h1>前言</h1>
+<p>重构过程中，还是有一定标准可循的，每个重构手法有如下五个部分：</p>
+<p>首先是名称（name），建造一个重构词汇表，名称是非常重要的 然后是一个简短概要，介绍重构手法适用的场景，以及他干的事情，这样我们可以快速找到所需重构方法</p>
+<p>然后，介绍为什么需要这个重构，或者什么情况下适用这个重构做法，简明扼要的介绍如何一步步重构</p>
+<p>最后，以一个十分简单的例子说明此重构如何运作</p>
+<p>所以今天我们进入重构的学习吧！</p>
+<h1>提炼函数</h1>
+<p>我们重构是，重头戏就是处理函数，以js而言，函数重要性更是终于&ldquo;类&rdquo;的概念。</p>
+<p>如何恰当的包装代码，如何减少过长的代码，这是我们多数时刻需要思考的。</p>
+<p>但是要消除函数过长是不易的，一个函数过长说明这个函数所完成的业务很复杂，而且可能关联性很高，要将这样的代码拆分，就不止是重构的事情了</p>
+<p>在此提炼函数变得十分考验一个人的水平，如何将一段代码从原先函数提取出来，如何将一个单数调用替换为函数本体，这些都不简单</p>
+<p>最后改完，时常发现提炼的某些函数实际意义不大，我们还得考虑如何回溯原来的函数</p>
+<h2>难在何处</h2>
+<p>提炼函数不易，难在处理局部变量，临时变量尤其突出</p>
+<p>处理一个函数时，我们可以先使用查询取代变量的方法取代临时变量</p>
+<p>如果一个临时变量多次使用，可以使用分解临时变量的方法将它变得容易替换</p>
+<p>但是，多数时候临时变量确实混乱，难以替换，这时候我们可以使用以函数对象取代函数的方法，这样的代价就会引入新类</p>
+<p>参数带来的问题比临时变量少一点，前提是不在函数内为他赋值（不对参数赋值，对js来说就是一个传说，因为我们队参数赋值可以保证程序更健壮），但是移除对象赋值，也许能带给你不一样的感受</p>
+<p>说了这么多，我们来好好审视下，我们的一些手段吧！！！</p>
+<p>光说无码不行，我们先上一个例子，我们现在将这段代码放到一个独立的函数中，注意函数名需要解释函数用途哦</p>
+<div class="cnblogs_code">
+<pre><span style="color: #008080;"> 1</span> <span style="color: #0000ff;">var</span> log = <span style="color: #0000ff;">function</span><span style="color: #000000;"> (msg) { console.log(msg); };
+</span><span style="color: #008080;"> 2</span> 
+<span style="color: #008080;"> 3</span> <span style="color: #0000ff;">var</span> printOwing = <span style="color: #0000ff;">function</span><span style="color: #000000;"> (amount) {
+</span><span style="color: #008080;"> 4</span> <span style="color: #000000;">    printBanner();
+</span><span style="color: #008080;"> 5</span>     log('name:' +<span style="color: #000000;"> _name);
+</span><span style="color: #008080;"> 6</span>     log('amount:' +<span style="color: #000000;"> _amount);
+</span><span style="color: #008080;"> 7</span> <span style="color: #000000;">};
+</span><span style="color: #008080;"> 8</span> 
+<span style="color: #008080;"> 9</span> <span style="color: #0000ff;">var</span> printOwing = <span style="color: #0000ff;">function</span><span style="color: #000000;"> (amount) {
+</span><span style="color: #008080;">10</span> <span style="color: #000000;">    printBanner();
+</span><span style="color: #008080;">11</span> <span style="color: #000000;">    printDetails(amount)
+</span><span style="color: #008080;">12</span> <span style="color: #000000;">};
+</span><span style="color: #008080;">13</span> 
+<span style="color: #008080;">14</span> <span style="color: #0000ff;">var</span> printDetails = <span style="color: #0000ff;">function</span><span style="color: #000000;"> (amount) {
+</span><span style="color: #008080;">15</span>     log('name:' +<span style="color: #000000;"> _name);
+</span><span style="color: #008080;">16</span>     log('amount:' +<span style="color: #000000;"> _amount)
+</span><span style="color: #008080;">17</span> };</pre>
+</div>
+<p>这是比较常见的重构手法，当我们看到一个过长的函数或者一段需要注释才能看懂的代码时，这段代码可能就需要放进独立的函数了</p>
+<p>如果每个函数的粒度都很小，那么函数被复用的机会就大，这样高层函数看上去就像被函数名注释似的，这样函数复写也相对简单</p>
+<h2>如何做？</h2>
+<p>① 创造一个新函数，根据这个函数的意图来对它命名（以它&ldquo;做神马&rdquo;来命名，而不是以它"怎么做"命名）</p>
+<p>PS：即使我们要提炼的代码非常简单，哪怕只是一个消息或者一个函数调用，只要新函数能更好的表示代码意图，就可以提炼，否则就不要动他了</p>
+<p>② 将提炼的代码拷贝到新建函数中</p>
+<p>③ 检查提炼的代码，看看其中是否引用了&ldquo;作用域限于原函数&rdquo;的变量（局部变量、原函数参数）</p>
+<p>④ 检查是否包含&ldquo;仅用于被提炼代码段&rdquo;的临时变量，如果有，在目标函数中将之声明为局部变量</p>
+<p>⑤ 检查被提炼代码段，看看是否有任何局部变量的值被他改变，如果一个临时变量的值被修改了，看看是否可以将提炼的代码变为一个查询，将结果给相关变量</p>
+<p>如果这样不好做，或者被修改的变量不止一个，拷贝的方式可能就不适用了，这个时候可能还需要用到（分解临时变量/以查询替换变量）等手段了</p>
+<p>⑥ 将被提炼代码段中需要被读取的局部变量，当参数传给目标函数</p>
+<p>⑦ 处理结束后检查测试之，便结束！</p>
+<p>好了，我们再来几个例子</p>
+<h3>无局部变量</h3>
+<div class="cnblogs_code">
+<pre><span style="color: #008080;"> 1</span> <span style="color: #0000ff;">var</span> log = <span style="color: #0000ff;">function</span><span style="color: #000000;"> (msg) { console.log(msg); };
+</span><span style="color: #008080;"> 2</span> <span style="color: #0000ff;">var</span> printOwing = <span style="color: #0000ff;">function</span><span style="color: #000000;"> (amount) {
+</span><span style="color: #008080;"> 3</span>     <span style="color: #008000;">//</span><span style="color: #008000;">var productList = [];//这个数据你懂的</span>
+<span style="color: #008080;"> 4</span>     <span style="color: #0000ff;">var</span> outstanding = 0<span style="color: #000000;">;
+</span><span style="color: #008080;"> 5</span>     log('*****************'<span style="color: #000000;">);
+</span><span style="color: #008080;"> 6</span>     log('****Cunstomer Owes*****'<span style="color: #000000;">);
+</span><span style="color: #008080;"> 7</span>     log('*****************'<span style="color: #000000;">);
+</span><span style="color: #008080;"> 8</span> 
+<span style="color: #008080;"> 9</span>     <span style="color: #0000ff;">for</span> (<span style="color: #0000ff;">var</span> k <span style="color: #0000ff;">in</span><span style="color: #000000;"> productList) {
+</span><span style="color: #008080;">10</span>         outstanding +=<span style="color: #000000;"> productList[k].getAmount();
+</span><span style="color: #008080;">11</span> <span style="color: #000000;">    }
+</span><span style="color: #008080;">12</span> 
+<span style="color: #008080;">13</span>     log('name:' +<span style="color: #000000;"> _name);
+</span><span style="color: #008080;">14</span>     log('amount:' +<span style="color: #000000;"> outstanding);
+</span><span style="color: #008080;">15</span> };</pre>
+</div>
+<p>这个重构比较简单</p>
+<div class="cnblogs_code">
+<pre><span style="color: #008080;"> 1</span> <span style="color: #0000ff;">var</span> printOwing = <span style="color: #0000ff;">function</span><span style="color: #000000;"> (amount) {
+</span><span style="color: #008080;"> 2</span>     <span style="color: #008000;">//</span><span style="color: #008000;">var productList = [];//这个数据你懂的</span>
+<span style="color: #008080;"> 3</span>     <span style="color: #0000ff;">var</span> outstanding = 0<span style="color: #000000;">;
+</span><span style="color: #008080;"> 4</span> <span style="color: #000000;">    printBanner();
+</span><span style="color: #008080;"> 5</span> 
+<span style="color: #008080;"> 6</span>     <span style="color: #0000ff;">for</span> (<span style="color: #0000ff;">var</span> k <span style="color: #0000ff;">in</span><span style="color: #000000;"> productList) {
+</span><span style="color: #008080;"> 7</span>         outstanding +=<span style="color: #000000;"> productList[k].getAmount();
+</span><span style="color: #008080;"> 8</span> <span style="color: #000000;">    }
+</span><span style="color: #008080;"> 9</span> 
+<span style="color: #008080;">10</span>     log('name:' +<span style="color: #000000;"> _name);
+</span><span style="color: #008080;">11</span>     log('amount:' +<span style="color: #000000;"> outstanding);
+</span><span style="color: #008080;">12</span> <span style="color: #000000;">};
+</span><span style="color: #008080;">13</span> 
+<span style="color: #008080;">14</span> <span style="color: #0000ff;">var</span> printBanner = <span style="color: #0000ff;">function</span><span style="color: #000000;"> () {
+</span><span style="color: #008080;">15</span>     log('*****************'<span style="color: #000000;">);
+</span><span style="color: #008080;">16</span>     log('****Cunstomer Owes*****'<span style="color: #000000;">);
+</span><span style="color: #008080;">17</span>     log('*****************'<span style="color: #000000;">);
+</span><span style="color: #008080;">18</span> };</pre>
+</div>
+<p>但是没有局部变量只是一个传说，比如上处最后log的内容，于是来一个（简单的）</p>
+<p>&nbsp;</p>
+<div class="cnblogs_code">
+<pre><span style="color: #008080;"> 1</span> <span style="color: #0000ff;">var</span> printOwing = <span style="color: #0000ff;">function</span><span style="color: #000000;"> (amount) {
+</span><span style="color: #008080;"> 2</span>     <span style="color: #008000;">//</span><span style="color: #008000;">var productList = [];//这个数据你懂的</span>
+<span style="color: #008080;"> 3</span>     <span style="color: #0000ff;">var</span> outstanding = 0<span style="color: #000000;">;
+</span><span style="color: #008080;"> 4</span> <span style="color: #000000;">    printBanner();
+</span><span style="color: #008080;"> 5</span> 
+<span style="color: #008080;"> 6</span>     <span style="color: #0000ff;">for</span> (<span style="color: #0000ff;">var</span> k <span style="color: #0000ff;">in</span><span style="color: #000000;"> productList) {
+</span><span style="color: #008080;"> 7</span>         outstanding +=<span style="color: #000000;"> productList[k].getAmount();
+</span><span style="color: #008080;"> 8</span> <span style="color: #000000;">    }
+</span><span style="color: #008080;"> 9</span> 
+<span style="color: #008080;">10</span> <span style="color: #000000;">    printDetails(outstanding);
+</span><span style="color: #008080;">11</span> <span style="color: #000000;">};
+</span><span style="color: #008080;">12</span> 
+<span style="color: #008080;">13</span> <span style="color: #0000ff;">var</span> printBanner = <span style="color: #0000ff;">function</span><span style="color: #000000;"> () {
+</span><span style="color: #008080;">14</span>     log('*****************'<span style="color: #000000;">);
+</span><span style="color: #008080;">15</span>     log('****Cunstomer Owes*****'<span style="color: #000000;">);
+</span><span style="color: #008080;">16</span>     log('*****************'<span style="color: #000000;">);
+</span><span style="color: #008080;">17</span> <span style="color: #000000;">};
+</span><span style="color: #008080;">18</span> 
+<span style="color: #008080;">19</span> <span style="color: #0000ff;">var</span> printDetails = <span style="color: #0000ff;">function</span><span style="color: #000000;"> (outstanding) {
+</span><span style="color: #008080;">20</span>     log('name:' +<span style="color: #000000;"> _name);
+</span><span style="color: #008080;">21</span>     log('amount:' +<span style="color: #000000;"> outstanding);
+</span><span style="color: #008080;">22</span> }</pre>
+</div>
+<p>PS：此处的_name，在js里面应该是this._name</p>
+<p>这个也相对比较简单，如果局部变量是个对象，而被提炼代码调用了会对该对象造成修改的函数，也可以这样做，只不过需要将这个对象作为参数传递给目标函数，只有在被提炼函数会对变量赋值时，有所不同，下面我们就会看到这个情况。</p>
+<h3>局部变量赋值</h3>
+<p>这个情况较复杂，这里我们看看临时变量被修改的两种情况，</p>
+<p>比较简单的情况是这个变量只在被提炼代码段中使用，这样源代码中的这个变量就可以被消除，</p>
+<p>另一种情况就是源代码中改了，提炼处代码也改了， 这个时候如果是之前改的就不用管了，之后会发生变化需要返回这个值。</p>
+<p>这里我们将上述代码计算的代码提炼出来：</p>
+<div class="cnblogs_code">
+<pre><span style="color: #008080;"> 1</span> <span style="color: #0000ff;">var</span> log = <span style="color: #0000ff;">function</span><span style="color: #000000;"> (msg) { console.log(msg); };
+</span><span style="color: #008080;"> 2</span> <span style="color: #0000ff;">var</span> printOwing = <span style="color: #0000ff;">function</span><span style="color: #000000;"> (amount) {
+</span><span style="color: #008080;"> 3</span>     <span style="color: #008000;">//</span><span style="color: #008000;">var productList = [];//这个数据你懂的</span>
+<span style="color: #008080;"> 4</span> <span style="color: #000000;">    printBanner();
+</span><span style="color: #008080;"> 5</span> <span style="color: #000000;">    printDetails(getOutStanding());
+</span><span style="color: #008080;"> 6</span> <span style="color: #000000;">};
+</span><span style="color: #008080;"> 7</span> 
+<span style="color: #008080;"> 8</span> <span style="color: #0000ff;">var</span> printBanner = <span style="color: #0000ff;">function</span><span style="color: #000000;"> () {
+</span><span style="color: #008080;"> 9</span>     log('*****************'<span style="color: #000000;">);
+</span><span style="color: #008080;">10</span>     log('****Cunstomer Owes*****'<span style="color: #000000;">);
+</span><span style="color: #008080;">11</span>     log('*****************'<span style="color: #000000;">);
+</span><span style="color: #008080;">12</span> <span style="color: #000000;">};
+</span><span style="color: #008080;">13</span> 
+<span style="color: #008080;">14</span> <span style="color: #0000ff;">var</span> printDetails = <span style="color: #0000ff;">function</span><span style="color: #000000;"> (outstanding) {
+</span><span style="color: #008080;">15</span>     log('name:' +<span style="color: #000000;"> _name);
+</span><span style="color: #008080;">16</span>     log('amount:' +<span style="color: #000000;"> outstanding);
+</span><span style="color: #008080;">17</span> <span style="color: #000000;">};
+</span><span style="color: #008080;">18</span> 
+<span style="color: #008080;">19</span> <span style="color: #0000ff;">var</span> getOutStanding = <span style="color: #0000ff;">function</span><span style="color: #000000;"> () {
+</span><span style="color: #008080;">20</span>     <span style="color: #0000ff;">var</span> result = 0<span style="color: #000000;">;
+</span><span style="color: #008080;">21</span>     <span style="color: #0000ff;">for</span> (<span style="color: #0000ff;">var</span> k <span style="color: #0000ff;">in</span><span style="color: #000000;"> productList) {
+</span><span style="color: #008080;">22</span>         result +=<span style="color: #000000;"> productList[k].getAmount();
+</span><span style="color: #008080;">23</span> <span style="color: #000000;">    }
+</span><span style="color: #008080;">24</span>     <span style="color: #0000ff;">return</span><span style="color: #000000;"> result;
+</span><span style="color: #008080;">25</span> };</pre>
+</div>
+<p>这个例子中outstanding变量只是单纯被初始化一个明确的值，但如果其他地方做过处理，就必须作为参数传入</p>
+<div class="cnblogs_code">
+<pre><span style="color: #008080;"> 1</span> <span style="color: #0000ff;">var</span> log = <span style="color: #0000ff;">function</span><span style="color: #000000;"> (msg) { console.log(msg); };
+</span><span style="color: #008080;"> 2</span> <span style="color: #0000ff;">var</span> printOwing = <span style="color: #0000ff;">function</span><span style="color: #000000;"> (amount) {
+</span><span style="color: #008080;"> 3</span>     <span style="color: #008000;">//</span><span style="color: #008000;">var productList = [];//这个数据你懂的</span>
+<span style="color: #008080;"> 4</span>     <span style="color: #0000ff;">var</span> outstanding = amount * 2<span style="color: #000000;">;
+</span><span style="color: #008080;"> 5</span>     outstanding =<span style="color: #000000;"> getOutStanding(outstanding)
+</span><span style="color: #008080;"> 6</span> <span style="color: #000000;">    printBanner();
+</span><span style="color: #008080;"> 7</span> <span style="color: #000000;">    printDetails(getOutStanding());
+</span><span style="color: #008080;"> 8</span> <span style="color: #000000;">};
+</span><span style="color: #008080;"> 9</span> 
+<span style="color: #008080;">10</span> <span style="color: #0000ff;">var</span> printBanner = <span style="color: #0000ff;">function</span><span style="color: #000000;"> () {
+</span><span style="color: #008080;">11</span>     log('*****************'<span style="color: #000000;">);
+</span><span style="color: #008080;">12</span>     log('****Cunstomer Owes*****'<span style="color: #000000;">);
+</span><span style="color: #008080;">13</span>     log('*****************'<span style="color: #000000;">);
+</span><span style="color: #008080;">14</span> <span style="color: #000000;">};
+</span><span style="color: #008080;">15</span> 
+<span style="color: #008080;">16</span> <span style="color: #0000ff;">var</span> printDetails = <span style="color: #0000ff;">function</span><span style="color: #000000;"> (outstanding) {
+</span><span style="color: #008080;">17</span>     log('name:' +<span style="color: #000000;"> _name);
+</span><span style="color: #008080;">18</span>     log('amount:' +<span style="color: #000000;"> outstanding);
+</span><span style="color: #008080;">19</span> <span style="color: #000000;">};
+</span><span style="color: #008080;">20</span> 
+<span style="color: #008080;">21</span> <span style="color: #0000ff;">var</span> getOutStanding = <span style="color: #0000ff;">function</span><span style="color: #000000;"> (result) {
+</span><span style="color: #008080;">22</span>     result = result || 0;<span style="color: #008000;">//</span><span style="color: #008000;">注意这种写法如果result为0可能导致我们程序BUG，所以数字要注意</span>
+<span style="color: #008080;">23</span>     <span style="color: #0000ff;">for</span> (<span style="color: #0000ff;">var</span> k <span style="color: #0000ff;">in</span><span style="color: #000000;"> productList) {
+</span><span style="color: #008080;">24</span>         result +=<span style="color: #000000;"> productList[k].getAmount();
+</span><span style="color: #008080;">25</span> <span style="color: #000000;">    }
+</span><span style="color: #008080;">26</span>     <span style="color: #0000ff;">return</span><span style="color: #000000;"> result;
+</span><span style="color: #008080;">27</span> };</pre>
+</div>
+<p>如果其中改变的变量不止一个，就返回对象变量吧，这个东西就暂时说到这里了，后面看实例吧。</p>
+<h1>内联函数</h1>
+<p>该方法用于消除函数，先来个代码看看</p>
+<div class="cnblogs_code">
+<pre><span style="color: #008080;"> 1</span> <span style="color: #0000ff;">var</span> getRating = <span style="color: #0000ff;">function</span><span style="color: #000000;"> () {
+</span><span style="color: #008080;"> 2</span>     <span style="color: #0000ff;">return</span> moreThanFive() ? 2 : 1<span style="color: #000000;">;
+</span><span style="color: #008080;"> 3</span> <span style="color: #000000;">};
+</span><span style="color: #008080;"> 4</span> 
+<span style="color: #008080;"> 5</span> <span style="color: #0000ff;">var</span> moreThanFive = <span style="color: #0000ff;">function</span><span style="color: #000000;"> () {
+</span><span style="color: #008080;"> 6</span>     <span style="color: #0000ff;">return</span> num &gt; 5<span style="color: #000000;">;
+</span><span style="color: #008080;"> 7</span> <span style="color: #000000;">}
+</span><span style="color: #008080;"> 8</span> 
+<span style="color: #008080;"> 9</span> <span style="color: #0000ff;">var</span> getRating = <span style="color: #0000ff;">function</span><span style="color: #000000;"> () {
+</span><span style="color: #008080;">10</span>     <span style="color: #0000ff;">return</span> num &gt; 5 ? 2 : 1<span style="color: #000000;">;
+</span><span style="color: #008080;">11</span> };</pre>
+</div>
+<p>本来我们常以简单的函数表现动作意图，这样会使代码更为清晰，但有时候会遇到某些函数，内部代码很简单，这种情况就应该去掉这个函数</p>
+<p>PS：这个界限不是很好把握，另一种情况是手上有一群组织不合理的函数，我们可以将它组织到一个大函数中，再从新提炼成小函数，这种情况更多见。</p>
+<p>如果我们使用了太多中间层，使得系统所有的函数都是对另一个函数的委托，这个时候，函数会让我们晕头转向，这个时候可以去掉中间层</p>
+<h2>如何做？</h2>
+<p>① 检查函数，确定其不具有多态（如果有继承关系就不要搞他了）</p>
+<p>② 找出函数所有调用点</p>
+<p>③ 复制为函数本体</p>
+<p>④ 检查，删除函数本身</p>
+<p>内联函数比较复杂，递归调用，多返回点，</p>
+<h1>内联临时变量</h1>
+<p>你有一个临时变量，只被一个简单的表达式赋值一次，而他影响了其它重构手法，那么将所有对该变量的引用动作，替换为对它赋值的那个表达式自身</p>
+<div class="cnblogs_code">
+<pre><span style="color: #008080;">1</span> <span style="color: #0000ff;">var</span> basePrice =<span style="color: #000000;"> anOrder.basePrice();
+</span><span style="color: #008080;">2</span> <span style="color: #0000ff;">return</span> basePrice &gt; 100<span style="color: #000000;">;
+</span><span style="color: #008080;">3</span> 
+<span style="color: #008080;">4</span> <span style="color: #0000ff;">return</span> anOrder.basePrice() &gt; 100</pre>
+</div>
+<h1>以查询取代临时变量</h1>
+<p>这个方法比较实用，程序以一个临时变量保存某一个表达式的结果时，那么将这个表达式提炼到一个独立的函数中</p>
+<p>将这个临时变量的变量的所有引用点替换为新函数的调用，这样的话，新函数就可以被其它函数使用了</p>
+<div class="cnblogs_code">
+<pre><span style="color: #008080;"> 1</span> <span style="color: #0000ff;">function</span><span style="color: #000000;"> amount() {
+</span><span style="color: #008080;"> 2</span>     <span style="color: #0000ff;">var</span> basePrice = _quantity *<span style="color: #000000;"> _itemPrice;
+</span><span style="color: #008080;"> 3</span>     <span style="color: #0000ff;">if</span> (basePrice &gt; 1000) <span style="color: #0000ff;">return</span> basePrice * 0.95<span style="color: #000000;">;
+</span><span style="color: #008080;"> 4</span>     <span style="color: #0000ff;">else</span> <span style="color: #0000ff;">return</span> basePrice * 0.98<span style="color: #000000;">;
+</span><span style="color: #008080;"> 5</span> <span style="color: #000000;">}
+</span><span style="color: #008080;"> 6</span> 
+<span style="color: #008080;"> 7</span> 
+<span style="color: #008080;"> 8</span> <span style="color: #0000ff;">function</span><span style="color: #000000;"> amount() {
+</span><span style="color: #008080;"> 9</span>     <span style="color: #0000ff;">if</span> (basePrice() &gt; 1000) <span style="color: #0000ff;">return</span> basePrice() * 0.95<span style="color: #000000;">;
+</span><span style="color: #008080;">10</span>     <span style="color: #0000ff;">else</span> <span style="color: #0000ff;">return</span> basePrice() * 0.98<span style="color: #000000;">;
+</span><span style="color: #008080;">11</span> <span style="color: #000000;">}
+</span><span style="color: #008080;">12</span> 
+<span style="color: #008080;">13</span> <span style="color: #0000ff;">function</span><span style="color: #000000;"> basePrice() {
+</span><span style="color: #008080;">14</span>     <span style="color: #0000ff;">return</span> _quantity *<span style="color: #000000;"> _itemPrice;
+</span><span style="color: #008080;">15</span> }</pre>
+</div>
+<p>这样做的好处是，消除临时变量，因为临时变量是暂时的，只能存在所属函数，所以为了能够访问到变量，有可能我们会写出更长的函数，</p>
+<p>如果把临时变量替换为一个查询，那么同一个类中的所有函数都可以获得这个数据，类的结构会更加清晰</p>
+<p>查询替换变量一般会在提炼函数时候用到，该方法要用好还是不易的</p>
+<h2>怎么做？</h2>
+<p>① 找出只被赋值一次的临时变量（多次赋值需要分解临时变量了），注意这在js中可能不易</p>
+<p>② 提炼临时变量等号右边到独立函数</p>
+<p>③ 测试</p>
+<p>我们常常使用临时变量保存循环中的信息，这个情况下就把整个循环提炼出来，</p>
+<p>PS：这个时候我们可能会关心性能问题，据说这个性能不会对我们的程序有多大的影响</p>
+<p>&nbsp;</p>
+<div class="cnblogs_code">
+<pre><span style="color: #008080;"> 1</span> <span style="color: #0000ff;">function</span><span style="color: #000000;"> getPrice() {
+</span><span style="color: #008080;"> 2</span>     <span style="color: #0000ff;">var</span> basePrice = _quantity *<span style="color: #000000;"> _itemPrice;
+</span><span style="color: #008080;"> 3</span>     <span style="color: #0000ff;">var</span><span style="color: #000000;"> discountFactor;
+</span><span style="color: #008080;"> 4</span>     <span style="color: #0000ff;">if</span> (basePrice &gt; 1000<span style="color: #000000;">)
+</span><span style="color: #008080;"> 5</span>         discountFactor = 0.95<span style="color: #000000;">;
+</span><span style="color: #008080;"> 6</span>     <span style="color: #0000ff;">else</span>
+<span style="color: #008080;"> 7</span>         discountFactor = 0.98<span style="color: #000000;">;
+</span><span style="color: #008080;"> 8</span> <span style="color: #000000;">}
+</span><span style="color: #008080;"> 9</span> <span style="color: #000000;">此时我们想替换两个临时变量
+</span><span style="color: #008080;">10</span> <span style="color: #0000ff;">function</span><span style="color: #000000;"> getPrice() {
+</span><span style="color: #008080;">11</span>     <span style="color: #0000ff;">return</span> basePrice() *<span style="color: #000000;"> discountFactor();
+</span><span style="color: #008080;">12</span> <span style="color: #000000;">}
+</span><span style="color: #008080;">13</span> 
+<span style="color: #008080;">14</span> <span style="color: #0000ff;">function</span><span style="color: #000000;"> basePrice() {
+</span><span style="color: #008080;">15</span>     <span style="color: #0000ff;">return</span> _quantity *<span style="color: #000000;"> _itemPrice;
+</span><span style="color: #008080;">16</span> <span style="color: #000000;">}
+</span><span style="color: #008080;">17</span> 
+<span style="color: #008080;">18</span> <span style="color: #0000ff;">function</span><span style="color: #000000;"> discountFactor() {
+</span><span style="color: #008080;">19</span>     <span style="color: #0000ff;">return</span> basePrice() &gt; 1000 ? 0.95 : 0.98
+<span style="color: #008080;">20</span> }</pre>
+</div>
+<h1>引入解释性变量</h1>
+<p>如果我有一个复杂表达式，将该表达式（或者一部分）的结果放进一个临时变量，将此临时变量名用来解释表达式用途</p>
+<div class="cnblogs_code">
+<pre><span style="color: #008080;"> 1</span> <span style="color: #0000ff;">if</span>(platform.toLocaleUpperCase().indexOf('MAC') &gt; -1 &amp;&amp; location.href.toLocaleUpperCase().indexOf('IE') &gt; -1 &amp;&amp;<span style="color: #000000;"> ......){
+</span><span style="color: #008080;"> 2</span> <span style="color: #008000;">//</span><span style="color: #008000;">do someting</span>
+<span style="color: #008080;"> 3</span> <span style="color: #000000;">}
+</span><span style="color: #008080;"> 4</span> 
+<span style="color: #008080;"> 5</span> <span style="color: #000000;">这种很长的条件判断很难读，这个时候临时变量反而能帮助你阅读
+</span><span style="color: #008080;"> 6</span> <span style="color: #0000ff;">var</span> isMac = platform.toLocaleUpperCase().indexOf('MAC') &gt; -1<span style="color: #000000;">;
+</span><span style="color: #008080;"> 7</span> <span style="color: #0000ff;">var</span> isIE = location.href.toLocaleUpperCase().indexOf('IE') &gt; -1;<span style="color: #008000;">//</span><span style="color: #008000;">这个代码有问题，不必关注</span>
+<span style="color: #008080;"> 8</span> 
+<span style="color: #008080;"> 9</span> <span style="color: #0000ff;">if</span>(isMac &amp;&amp; isIE &amp;&amp;<span style="color: #000000;"> ......){
+</span><span style="color: #008080;">10</span> <span style="color: #008000;">//</span><span style="color: #008000;">do someting</span>
+<span style="color: #008080;">11</span> }</pre>
+</div>
+<p>但有个问题是，原作者并不推荐增加临时变量，所以，一般我们就会提炼为函数了，这样也增加重用性</p>
+<h1>分解临时变量</h1>
+<p>我们的程序有某个临时变量被赋值超过一次，他既不是循环变量又不被用于收集计算结果，那么针对每次赋值新建一个对应的临时变量</p>
+<div class="cnblogs_code">
+<pre><span style="color: #008080;">1</span> <span style="color: #0000ff;">var</span> temp = 2 * (_height +<span style="color: #000000;"> _width);
+</span><span style="color: #008080;">2</span> temp = _height *<span style="color: #000000;"> _width;
+</span><span style="color: #008080;">3</span> 
+<span style="color: #008080;">4</span> <span style="color: #0000ff;">var</span> perimeter = 2 * (_height +<span style="color: #000000;"> _width);
+</span><span style="color: #008080;">5</span> <span style="color: #0000ff;">var</span> area = _height * _width;</pre>
+</div>
+<p>这样做的好处，其实就是为了避免一个变量被无意义多次使用</p>
+<p>除了循环变量或者用于收集结果的临时变量应该被多次使用，还有一些临时变量用于保存冗长的结果会被稍后使用</p>
+<p>如果一个变量被赋值超过一次，那么他就担任了过多的职责了 其实这样做的好处，是为了我们方便提炼函数，或者以查询替换变量的操作</p>
+<div class="cnblogs_code">
+<pre><span style="color: #008080;"> 1</span> <span style="color: #0000ff;">function</span><span style="color: #000000;"> getDistanceTravelled(time) {
+</span><span style="color: #008080;"> 2</span>     <span style="color: #0000ff;">var</span><span style="color: #000000;"> result;
+</span><span style="color: #008080;"> 3</span>     <span style="color: #0000ff;">var</span> acc = _primaryForce /<span style="color: #000000;"> _mass;
+</span><span style="color: #008080;"> 4</span>     <span style="color: #0000ff;">var</span> primaryTime =<span style="color: #000000;"> Math.min(time, _delay);
+</span><span style="color: #008080;"> 5</span> 
+<span style="color: #008080;"> 6</span>     result = 0.5 * acc * primaryTime *<span style="color: #000000;"> primaryTime;
+</span><span style="color: #008080;"> 7</span>     <span style="color: #0000ff;">var</span> secondaryTime = time -<span style="color: #000000;"> _delay;
+</span><span style="color: #008080;"> 8</span> 
+<span style="color: #008080;"> 9</span>     <span style="color: #0000ff;">if</span> (secondaryTime &gt; 0<span style="color: #000000;">) {
+</span><span style="color: #008080;">10</span>         <span style="color: #0000ff;">var</span> primaryVel = acc *<span style="color: #000000;"> _delay;
+</span><span style="color: #008080;">11</span>         acc = (_primaryForce + _secondaryForce) /<span style="color: #000000;"> _mass;
+</span><span style="color: #008080;">12</span>         result += primaryVel * secondaryTime + 0.5 * acc * secondaryTime *<span style="color: #000000;"> secondaryTime;
+</span><span style="color: #008080;">13</span> <span style="color: #000000;">    }
+</span><span style="color: #008080;">14</span>     <span style="color: #0000ff;">return</span><span style="color: #000000;"> result;
+</span><span style="color: #008080;">15</span> }</pre>
+</div>
+<p><span style="font: 14px/normal 微软雅黑; color: #000000; text-transform: none; text-indent: 0px; letter-spacing: normal; word-spacing: 0px; float: none; display: inline !important; white-space: normal; orphans: 2; widows: 2; font-size-adjust: none; font-stretch: normal; -webkit-text-size-adjust: auto; -webkit-text-stroke-width: 0px;">按照作者的话来说，这真是丑陋的代码啊，我反正抄都抄了很久</span></p>
+<p><img src="22636955850821.png" alt=""></p>
+<p>这个是一个物理中的一个神马公式我给忘了</p>
+<p>见图，acc被两次赋值，第一次是为了保存第一次力造成的初始速度，</p>
+<p>第二次保存两个力共同作用造成的加速度，这里我们使用final替换第二次的结果</p>
+<div class="cnblogs_code">
+<pre><span style="color: #008080;"> 1</span> <span style="color: #0000ff;">function</span><span style="color: #000000;"> getDistanceTravelled(time) {
+</span><span style="color: #008080;"> 2</span>     <span style="color: #0000ff;">var</span><span style="color: #000000;"> result;
+</span><span style="color: #008080;"> 3</span>     <span style="color: #0000ff;">var</span> acc = _primaryForce /<span style="color: #000000;"> _mass;
+</span><span style="color: #008080;"> 4</span>     <span style="color: #0000ff;">var</span> primaryTime =<span style="color: #000000;"> Math.min(time, _delay);
+</span><span style="color: #008080;"> 5</span> 
+<span style="color: #008080;"> 6</span>     result = 0.5 * acc * primaryTime *<span style="color: #000000;"> primaryTime;
+</span><span style="color: #008080;"> 7</span>     <span style="color: #0000ff;">var</span> secondaryTime = time -<span style="color: #000000;"> _delay;
+</span><span style="color: #008080;"> 8</span> 
+<span style="color: #008080;"> 9</span>     <span style="color: #0000ff;">if</span> (secondaryTime &gt; 0<span style="color: #000000;">) {
+</span><span style="color: #008080;">10</span>         <span style="color: #0000ff;">var</span> primaryVel = acc *<span style="color: #000000;"> _delay;
+</span><span style="color: #008080;">11</span>         <span style="color: #0000ff;">var</span> final = (_primaryForce + _secondaryForce) /<span style="color: #000000;"> _mass;
+</span><span style="color: #008080;">12</span>         result += primaryVel * secondaryTime + 0.5 * final * secondaryTime *<span style="color: #000000;"> secondaryTime;
+</span><span style="color: #008080;">13</span> <span style="color: #000000;">    }
+</span><span style="color: #008080;">14</span>     <span style="color: #0000ff;">return</span><span style="color: #000000;"> result;
+</span><span style="color: #008080;">15</span> }</pre>
+</div>
+<p>然后我们再使用下其它手段试试： ①提炼函数，②以查询取代变量</p>
+<p>PS：我知道了力/质量=重力加速度</p>
+<div class="cnblogs_code">
+<pre><span style="color: #0000ff;">function</span><span style="color: #000000;"> getDistanceTravelled(time) {
+    </span><span style="color: #0000ff;">var</span> result = 0.5 *<span style="color: #000000;"> accelerationOfGravity(_primaryForce, _mass) 
+</span>*<span style="color: #000000;"> primaryTime(time, _delay);
+    </span><span style="color: #0000ff;">if</span> (secondaryTime() &gt; 0<span style="color: #000000;">) {
+        result </span>+= primaryVel(_primaryForce, _mass) *<span style="color: #000000;"> secondaryTime() 
+</span>+ 0.5 * final(_primaryForce, _secondaryForce, _mass) * secondaryTime() *<span style="color: #000000;"> secondaryTime();
+    }
+    </span><span style="color: #0000ff;">return</span><span style="color: #000000;"> result;
+}
+
+</span><span style="color: #0000ff;">function</span><span style="color: #000000;"> accelerationOfGravity(force, mass) {
+    </span><span style="color: #0000ff;">return</span> force /<span style="color: #000000;"> mass;
+}
+</span><span style="color: #0000ff;">function</span><span style="color: #000000;"> primaryTime(time, _delay) {
+    </span><span style="color: #0000ff;">return</span> Math.min(time, _delay) *<span style="color: #000000;"> Math.min(time, _delay);
+}
+</span><span style="color: #0000ff;">function</span><span style="color: #000000;"> secondaryTime() {
+    </span><span style="color: #0000ff;">return</span> time -<span style="color: #000000;"> _delay;
+}
+</span><span style="color: #0000ff;">function</span><span style="color: #000000;"> primaryVel(_primaryForce, _mass) {
+    </span><span style="color: #0000ff;">return</span> accelerationOfGravity(_primaryForce, _mass) *<span style="color: #000000;"> _delay;
+}
+</span><span style="color: #0000ff;">function</span><span style="color: #000000;"> final(_primaryForce, _secondaryForce, _mass) {
+    </span><span style="color: #0000ff;">return</span> (_primaryForce + _secondaryForce) /<span style="color: #000000;"> _mass;
+}</span></pre>
+</div>
+<p>下面是我完成不理解程序情况下胡乱意淫改的，不必在意</p>
+<h1>移除参数赋值</h1>
+<p>代码对一个参数赋值，那么以一个临时变量取代该参数位置（这对js不知道好使不）</p>
+<div class="cnblogs_code">
+<pre><span style="color: #008080;">1</span> <span style="color: #0000ff;">function</span><span style="color: #000000;"> discount(inputVal, quantity, yearToDate) {
+</span><span style="color: #008080;">2</span>     <span style="color: #0000ff;">if</span> (inputVal &gt; 50) inputVal -= 2<span style="color: #000000;">;
+</span><span style="color: #008080;">3</span> <span style="color: #000000;">}
+</span><span style="color: #008080;">4</span> <span style="color: #008000;">//</span><span style="color: #008000;">修改后</span>
+<span style="color: #008080;">5</span> <span style="color: #0000ff;">function</span><span style="color: #000000;"> discount(inputVal, quantity, yearToDate) {
+</span><span style="color: #008080;">6</span>     <span style="color: #0000ff;">var</span> result =<span style="color: #000000;"> inputVal;
+</span><span style="color: #008080;">7</span>     <span style="color: #0000ff;">if</span> (inputVal &gt; 50) result -= 2<span style="color: #000000;">;
+</span><span style="color: #008080;">8</span> }</pre>
+</div>
+<p>这样做的目的主要为了消除按值传递与按引用传递带来的问题，这里我们来深入纠结一番</p>
+<p>&nbsp;</p>
+<div class="cnblogs_code">
+<pre><span style="color: #008080;"> 1</span> <span style="color: #0000ff;">function</span><span style="color: #000000;"> discount(inputVal, quantity, yearToDate) {
+</span><span style="color: #008080;"> 2</span>     <span style="color: #0000ff;">if</span> (inputVal &gt; 50) inputVal -= 2<span style="color: #000000;">;
+</span><span style="color: #008080;"> 3</span> <span style="color: #000000;">}
+</span><span style="color: #008080;"> 4</span> <span style="color: #008000;">//</span><span style="color: #008000;">修改后</span>
+<span style="color: #008080;"> 5</span> <span style="color: #0000ff;">function</span><span style="color: #000000;"> discount(inputVal, quantity, yearToDate) {
+</span><span style="color: #008080;"> 6</span>     <span style="color: #0000ff;">var</span> result =<span style="color: #000000;"> inputVal;
+</span><span style="color: #008080;"> 7</span>     <span style="color: #0000ff;">if</span> (inputVal &gt; 50) result -= 2<span style="color: #000000;">;
+</span><span style="color: #008080;"> 8</span> <span style="color: #000000;">}
+</span><span style="color: #008080;"> 9</span> 
+<span style="color: #008080;">10</span> <span style="color: #000000;">这样做的目的主要为了消除按值传递与按引用传递带来的问题，这里我们来深入纠结一番
+</span><span style="color: #008080;">11</span> <span style="color: #0000ff;">var</span> value = 1<span style="color: #000000;">;
+</span><span style="color: #008080;">12</span> <span style="color: #0000ff;">function</span><span style="color: #000000;"> demoVal(p) {
+</span><span style="color: #008080;">13</span>     p++<span style="color: #000000;">;
+</span><span style="color: #008080;">14</span> <span style="color: #000000;">}
+</span><span style="color: #008080;">15</span> <span style="color: #000000;">console.log(value);
+</span><span style="color: #008080;">16</span> <span style="color: #000000;">demoVal(value);
+</span><span style="color: #008080;">17</span> <span style="color: #000000;">console.log(value);
+</span><span style="color: #008080;">18</span> 
+<span style="color: #008080;">19</span> 
+<span style="color: #008080;">20</span> <span style="color: #0000ff;">var</span> obj =<span style="color: #000000;"> {
+</span><span style="color: #008080;">21</span> name: 'yexiaochai'<span style="color: #000000;">,
+</span><span style="color: #008080;">22</span> age: 20
+<span style="color: #008080;">23</span> <span style="color: #000000;">};
+</span><span style="color: #008080;">24</span> <span style="color: #0000ff;">function</span><span style="color: #000000;"> demoRefer(obj) {
+</span><span style="color: #008080;">25</span>     obj.age++<span style="color: #000000;">;
+</span><span style="color: #008080;">26</span> <span style="color: #000000;">}
+</span><span style="color: #008080;">27</span> <span style="color: #000000;">console.log(obj);
+</span><span style="color: #008080;">28</span> <span style="color: #000000;">demoRefer(obj);
+</span><span style="color: #008080;">29</span> console.log(obj);</pre>
+</div>
+<p><img src="24812769212826.png" alt=""></p>
+<p>所以你懂的，函数内部操作，有时无意就会改变传入参数</p>
+<h1>以函数对象取代函数</h1>
+<p>我们有一个大型函数，其中对局部变量的使用使你无法采用提炼函数方法，将这个函数放进一个单独对象中，如此一来局部变量就成了对象内的字段</p>
+<p>然后你可以在同一个对象中将这个大型函数分解为多个小型函数 函数分解难度较高，将变量替换为查询可以减小他的难度，如果也不行的话，就将函数对象化吧</p>
+<p>这里来一个相当简化的代码：</p>
+<div class="cnblogs_code">
+<pre><span style="color: #008080;"> 1</span> <span style="color: #0000ff;">function</span><span style="color: #000000;"> gamma(inputVal, quantity, yearToDate) {
+</span><span style="color: #008080;"> 2</span>     <span style="color: #0000ff;">var</span> v1 = (inputVal * quantity) +<span style="color: #000000;"> delta();
+</span><span style="color: #008080;"> 3</span>     <span style="color: #0000ff;">var</span> v2 = (inputVal * yearToDate) + 100<span style="color: #000000;">;
+</span><span style="color: #008080;"> 4</span> 
+<span style="color: #008080;"> 5</span>     <span style="color: #0000ff;">if</span> (yearToDate - v1 &gt; 100) v2 -= 20<span style="color: #000000;">;
+</span><span style="color: #008080;"> 6</span>     <span style="color: #0000ff;">var</span> v3 = v2 * 7<span style="color: #000000;">;
+</span><span style="color: #008080;"> 7</span> 
+<span style="color: #008080;"> 8</span>     <span style="color: #008000;">//</span><span style="color: #008000;">......</span>
+<span style="color: #008080;"> 9</span>     <span style="color: #0000ff;">return</span> v3 - 2 *<span style="color: #000000;"> v1;
+</span><span style="color: #008080;">10</span> }</pre>
+</div>
+<p>为了说明这个问题，作者写了一段莫名其妙的代码，我一看，确实莫名其妙......</p>
+<div class="cnblogs_code">
+<pre><span style="color: #008080;"> 1</span> <span style="color: #0000ff;">function</span> delta() {<span style="color: #0000ff;">return</span> 10<span style="color: #000000;">; }
+</span><span style="color: #008080;"> 2</span> <span style="color: #0000ff;">function</span><span style="color: #000000;"> gamma(inputVal, quantity, yearToDate) {
+</span><span style="color: #008080;"> 3</span>     <span style="color: #0000ff;">var</span> v1 = (inputVal * quantity) +<span style="color: #000000;"> delta();
+</span><span style="color: #008080;"> 4</span>     <span style="color: #0000ff;">var</span> v2 = (inputVal * yearToDate) + 100<span style="color: #000000;">;
+</span><span style="color: #008080;"> 5</span> 
+<span style="color: #008080;"> 6</span>     <span style="color: #0000ff;">if</span> (yearToDate - v1 &gt; 100) v2 -= 20<span style="color: #000000;">;
+</span><span style="color: #008080;"> 7</span>     <span style="color: #0000ff;">var</span> v3 = v2 * 7<span style="color: #000000;">;
+</span><span style="color: #008080;"> 8</span> 
+<span style="color: #008080;"> 9</span>     <span style="color: #008000;">//</span><span style="color: #008000;">......</span>
+<span style="color: #008080;">10</span>     <span style="color: #0000ff;">return</span> v3 - 2 *<span style="color: #000000;"> v1;
+</span><span style="color: #008080;">11</span> <span style="color: #000000;">}
+</span><span style="color: #008080;">12</span> 
+<span style="color: #008080;">13</span> <span style="color: #0000ff;">var</span> Gamma = <span style="color: #0000ff;">function</span><span style="color: #000000;"> (opts) {
+</span><span style="color: #008080;">14</span>     <span style="color: #0000ff;">this</span>.inputVal =<span style="color: #000000;"> opts.inputVal;
+</span><span style="color: #008080;">15</span>     <span style="color: #0000ff;">this</span>.quantity =<span style="color: #000000;"> opts.quantity;
+</span><span style="color: #008080;">16</span>     <span style="color: #0000ff;">this</span>.yearToDate =<span style="color: #000000;"> opts.yearToDate;
+</span><span style="color: #008080;">17</span>     <span style="color: #0000ff;">this</span><span style="color: #000000;">.v1;
+</span><span style="color: #008080;">18</span>     <span style="color: #0000ff;">this</span><span style="color: #000000;">.v2;
+</span><span style="color: #008080;">19</span>     <span style="color: #0000ff;">this</span><span style="color: #000000;">.v3;
+</span><span style="color: #008080;">20</span> <span style="color: #000000;">};
+</span><span style="color: #008080;">21</span> Gamma.prototype =<span style="color: #000000;"> {
+</span><span style="color: #008080;">22</span>     computer: <span style="color: #0000ff;">function</span><span style="color: #000000;"> () {
+</span><span style="color: #008080;">23</span>         <span style="color: #0000ff;">this</span><span style="color: #000000;">.alter1();
+</span><span style="color: #008080;">24</span>         <span style="color: #0000ff;">this</span><span style="color: #000000;">.alter2();
+</span><span style="color: #008080;">25</span>         <span style="color: #0000ff;">if</span> (<span style="color: #0000ff;">this</span>.yearToDate - <span style="color: #0000ff;">this</span>.v1 &gt; 100) <span style="color: #0000ff;">this</span>.v2 -= 20<span style="color: #000000;">;
+</span><span style="color: #008080;">26</span>         <span style="color: #0000ff;">this</span>.v3 = <span style="color: #0000ff;">this</span>.v2 * 7<span style="color: #000000;">;
+</span><span style="color: #008080;">27</span> 
+<span style="color: #008080;">28</span>         <span style="color: #008000;">//</span><span style="color: #008000;">......</span>
+<span style="color: #008080;">29</span>         <span style="color: #0000ff;">return</span> <span style="color: #0000ff;">this</span>.v3 - 2 * <span style="color: #0000ff;">this</span><span style="color: #000000;">.v1;
+</span><span style="color: #008080;">30</span> <span style="color: #000000;">    },
+</span><span style="color: #008080;">31</span>     alter1: <span style="color: #0000ff;">function</span><span style="color: #000000;"> () {
+</span><span style="color: #008080;">32</span>         <span style="color: #0000ff;">this</span>.v1 = (<span style="color: #0000ff;">this</span>.inputVal * <span style="color: #0000ff;">this</span>.quantity) +<span style="color: #000000;"> delta();
+</span><span style="color: #008080;">33</span> <span style="color: #000000;">    },
+</span><span style="color: #008080;">34</span>     alter2: <span style="color: #0000ff;">function</span><span style="color: #000000;"> () {
+</span><span style="color: #008080;">35</span>         <span style="color: #0000ff;">this</span>.v2 = (<span style="color: #0000ff;">this</span>.inputVal * <span style="color: #0000ff;">this</span>.yearToDate) + 100<span style="color: #000000;">;
+</span><span style="color: #008080;">36</span> <span style="color: #000000;">    }
+</span><span style="color: #008080;">37</span>     <span style="color: #008000;">//</span><span style="color: #008000;">....</span>
+<span style="color: #008080;">38</span> 
+<span style="color: #008080;">39</span> <span style="color: #000000;">};
+</span><span style="color: #008080;">40</span> 
+<span style="color: #008080;">41</span> <span style="color: #008000;">//</span><span style="color: #008000;">demo</span>
+<span style="color: #008080;">42</span> console.log(gamma(5, 6, 7));<span style="color: #008000;">//</span><span style="color: #008000;">865</span>
+<span style="color: #008080;">43</span> 
+<span style="color: #008080;">44</span> <span style="color: #0000ff;">var</span> d = <span style="color: #0000ff;">new</span><span style="color: #000000;"> Gamma({
+</span><span style="color: #008080;">45</span> inputVal: 5<span style="color: #000000;">, 
+</span><span style="color: #008080;">46</span> quantity: 6<span style="color: #000000;">, 
+</span><span style="color: #008080;">47</span> yearToDate: 7<span style="color: #000000;">});
+</span><span style="color: #008080;">48</span> console.log(d.computer());<span style="color: #008000;">//</span><span style="color: #008000;">865</span></pre>
+</div>
+<h1>替换算法</h1>
+<p>替换算法其实是最难的，在你不熟悉代码业务与逻辑时，你去改的话，兄弟你们就坑吧！！！ 来个简单的例子结束今天的任务</p>
+<div class="cnblogs_code">
+<pre><span style="color: #008080;"> 1</span> <span style="color: #0000ff;">function</span><span style="color: #000000;"> find(data) {
+</span><span style="color: #008080;"> 2</span>     <span style="color: #0000ff;">if</span> (data == 1) <span style="color: #0000ff;">return</span> '周日'<span style="color: #000000;">;
+</span><span style="color: #008080;"> 3</span>     <span style="color: #0000ff;">if</span> (data == 2) <span style="color: #0000ff;">return</span> '周一'<span style="color: #000000;">;
+</span><span style="color: #008080;"> 4</span> 
+<span style="color: #008080;"> 5</span>     <span style="color: #008000;">//</span><span style="color: #008000;">...</span>
+<span style="color: #008080;"> 6</span>     <span style="color: #0000ff;">return</span> <span style="color: #0000ff;">null</span><span style="color: #000000;">;
+</span><span style="color: #008080;"> 7</span> <span style="color: #000000;">}
+</span><span style="color: #008080;"> 8</span> 
+<span style="color: #008080;"> 9</span> <span style="color: #0000ff;">function</span><span style="color: #000000;"> find(data) {
+</span><span style="color: #008080;">10</span>             
+
+<span style="color: #008080;">11</span>     <span style="color: #0000ff;">return</span> ['周日', '周一', <span style="color: #008000;">/*</span><span style="color: #008000;">......</span><span style="color: #008000;">*/</span><span style="color: #000000;">][data];
+</span><span style="color: #008080;">12</span> }</pre>
+</div>
+<p>&nbsp;</p>
+<p>OK，进入任务结束，高高兴兴打游戏了！</p>
+                </div>
+
+                <div class='span3 sidebar'>
+                    <h2>导航栏</h2>
+                    <ul class="nav nav-tabs nav-stacked">
+                             				<li><a href="http://songboriceboy.github.io/xxoo/html/sjms/MVCxxbj01ckam/index.html">【MVC学习笔记01】初窥奥秘</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/sjms/zgbj01dygalbqcj/index.html">【重构笔记01】第一个案例补齐插件</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/sjms/zgbj02zxzzhs/index.html">【重构笔记02】重新组织函数</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/sjms/zgbj03dxzjbqtx/index.html">【重构笔记03】对象之间搬迁特性</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/sjms/zgbj04zxzzsjwhxmblsmssjyxwfl/index.html">【重构笔记04】重新组织数据（我好像明白了什么是数据与行为分离）</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/sjms/ctBackbone/index.html">初探Backbone</a></li>
+    				                                         
+                    </ul>
+                </div>
+            </div>
+
+        </div>
+    </body>
+</html>

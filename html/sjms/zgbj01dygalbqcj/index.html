@@ -1,0 +1,1563 @@
+﻿<!DOCTYPE html>
+
+<html lang="zh">
+    <head>
+        <meta charset="utf-8">
+        <meta name="description" content="android,ios" />
+        <meta name="keywords" content="android,ios" />
+
+        <title>叶小钗</title>
+        <style type='text/css'>
+            body {
+                background-color: #CCC;
+            }
+        </style>
+        <link rel="stylesheet" href="../../../css/bootstrap.css" />
+    </head>
+
+    <body>
+        <div class="container">
+
+            <h1>叶小钗</h1>
+
+            <div class='navbar navbar-inverse'>
+                <div class='navbar-inner nav-collapse' style="height: auto;">
+                    <ul class="nav">
+                              				<li><a href="http://songboriceboy.github.io/xxoo/html/blade/index.html">blade</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/css/index.html">css</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/HTML5&CSS3/index.html">HTML5&CSS3</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/index.html">javascript</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Javaxx/index.html">Java学习</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/nodejs/index.html">nodejs</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/requirejs/index.html">requirejs</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/index.html">Web前端</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/xxgw/index.html">学习感悟</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/gzdd/index.html">工作点滴</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/jkxx/index.html">接口学习</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/wfl/index.html">未分类</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/ydkf/index.html">移动开发</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/sjms/index.html">设计模式</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/mst/index.html">面试题</a></li>
+    				                      </ul>
+                </div>
+            </div>
+
+            <div id='content' class='row-fluid'>
+
+                <div class='span9 main'>
+				<div style="color:blue" align=center>【重构笔记01】第一个案例补齐插件</div><br><h1><span>前言</span></h1>
+<p><span>上</span><span>一次写的日历插件基本完成，中间我和团队一个高手交流了一下，其实就是他code review我的代码了，最后我发现我之前虽然能完成交待下来的任务但是代码却不好看。</span></p>
+<p><span>这个不好看，是由于各种原因就这样了，于是当时就想说重构下吧，但是任务一来就给放下了。</span></p>
+<p><span>现在想来，就算真的要重构，但是也不一定知道如何重构，无论最近学习jquery代码还是其他其实都是为了在思想上有所提升而不一定是代码上</span></p>
+<p><span>如何然自己的代码更优雅</span></p>
+<p><span>如何让自己的程序可扩展性高</span></p>
+<p><span>如何让自己的代码更可用</span></p>
+<p><span>这些都是接下来需要解决的问题，学习一事如逆水行舟啊！所以我这里搞了一本《重构》一书，准备在好好学习一番。</span></p>
+<h1><span>关于插件</span></h1>
+<p><span>这个说是插件其实代码还是比较糟糕的，写到后面也没怎么思考了，这里暂且搞出来各位看看，等后面点《重构》学习结束了做一次重构吧！</span></p>
+<p><span>由于是公司已经再用的代码，我这里就只贴js代码，CSS就不搞出来了，有兴趣的同学就自己看看吧，我这里截个图各位觉得有用就看看代码吧：</span></p>
+<h3><span>简单列表应用</span></h3>
+<p><span><span><img src="15197179344661.png" alt="">&nbsp; <span><img src="1750536372812.png" alt=""></span></span></span></p>
+<h3><span>触发change事件</span></h3>
+<p><span>这个东西就是第一列的变化第二个会跟着变，第二个变了第三个也会变，然后点击确定后会回调一个函数，并获得所选值。</span></p>
+<p><img src="1116336292902.png" alt=""></p>
+<h3><span>不可选项</span></h3>
+<p><span>这个中当滑动到无效（灰色）的选项时，会重置为最近一个可选项</span></p>
+<p><span><span><img src="8624016938409.png" alt=""></span></span></p>
+<h3><span>源代码</span></h3>
+<div class="cnblogs_code" onclick="cnblogs_code_show('7db6dbb2-96db-48ed-ba2a-39e9c0edd80f')"><img id="code_img_closed_7db6dbb2-96db-48ed-ba2a-39e9c0edd80f" class="code_img_closed" src="43570758473519.gif" alt=""><img id="code_img_opened_7db6dbb2-96db-48ed-ba2a-39e9c0edd80f" class="code_img_opened" style="display: none;" onclick="cnblogs_code_hide('7db6dbb2-96db-48ed-ba2a-39e9c0edd80f',event)" src="16365178109279.gif" alt="">
+<div id="cnblogs_code_open_7db6dbb2-96db-48ed-ba2a-39e9c0edd80f" class="cnblogs_code_hide">
+<pre><span style="color: #008080;">  1</span> <span style="color: #0000ff;">var</span> ScrollList = <span style="color: #0000ff;">function</span><span style="color: #000000;"> (opts) {
+</span><span style="color: #008080;">  2</span> 
+<span style="color: #008080;">  3</span>         <span style="color: #008000;">//</span><span style="color: #008000;">兼容性方案处理，以及后期资源清理</span>
+<span style="color: #008080;">  4</span>         <span style="color: #0000ff;">var</span> isTouch = 'ontouchstart' <span style="color: #0000ff;">in</span><span style="color: #000000;"> document.documentElement;
+</span><span style="color: #008080;">  5</span>                 isTouch = <span style="color: #0000ff;">true</span><span style="color: #000000;">;
+</span><span style="color: #008080;">  6</span>         <span style="color: #0000ff;">this</span>.start = isTouch ? 'touchstart' : 'mousedown'<span style="color: #000000;">;
+</span><span style="color: #008080;">  7</span>         <span style="color: #0000ff;">this</span>.move = isTouch ? 'touchmove' : 'mousemove'<span style="color: #000000;">;
+</span><span style="color: #008080;">  8</span>         <span style="color: #0000ff;">this</span>.end = isTouch ? 'touchend' : 'mouseup'<span style="color: #000000;">;
+</span><span style="color: #008080;">  9</span>         <span style="color: #0000ff;">this</span><span style="color: #000000;">.startFn;
+</span><span style="color: #008080;"> 10</span>         <span style="color: #0000ff;">this</span><span style="color: #000000;">.moveFn;
+</span><span style="color: #008080;"> 11</span>         <span style="color: #0000ff;">this</span><span style="color: #000000;">.endFn;
+</span><span style="color: #008080;"> 12</span> 
+<span style="color: #008080;"> 13</span>         opts = opts ||<span style="color: #000000;"> {};
+</span><span style="color: #008080;"> 14</span> 
+<span style="color: #008080;"> 15</span>         <span style="color: #008000;">//</span><span style="color: #008000;">数据源</span>
+<span style="color: #008080;"> 16</span>         <span style="color: #0000ff;">this</span>.data = opts.data ||<span style="color: #000000;"> [];
+</span><span style="color: #008080;"> 17</span>         <span style="color: #0000ff;">this</span>.dataK = {}; <span style="color: #008000;">//</span><span style="color: #008000;">以id作为检索键值</span>
+<span style="color: #008080;"> 18</span> 
+<span style="color: #008080;"> 19</span>         <span style="color: #0000ff;">this</span><span style="color: #000000;">.initBaseDom(opts);
+</span><span style="color: #008080;"> 20</span> 
+<span style="color: #008080;"> 21</span>         <span style="color: #0000ff;">this</span>._changed = opts.changed || <span style="color: #0000ff;">null</span><span style="color: #000000;">;
+</span><span style="color: #008080;"> 22</span>         <span style="color: #008000;">//</span><span style="color: #008000;">当选情况下会有一个初始值</span>
+<span style="color: #008080;"> 23</span>         <span style="color: #0000ff;">this</span>.selectedIndex = parseInt(<span style="color: #0000ff;">this</span>.disItemNum / 2); <span style="color: #008000;">//</span><span style="color: #008000;">暂时不考虑多选的情况</span>
+<span style="color: #008080;"> 24</span>         <span style="color: #0000ff;">if</span> (<span style="color: #0000ff;">this</span>.type == 'list'<span style="color: #000000;">) {
+</span><span style="color: #008080;"> 25</span>             <span style="color: #0000ff;">this</span>.selectedIndex = -1<span style="color: #000000;">;
+</span><span style="color: #008080;"> 26</span> <span style="color: #000000;">        }
+</span><span style="color: #008080;"> 27</span>         <span style="color: #0000ff;">this</span>.selectedIndex = opts.index != undefined ? opts.index : <span style="color: #0000ff;">this</span><span style="color: #000000;">.selectedIndex;
+</span><span style="color: #008080;"> 28</span> 
+<span style="color: #008080;"> 29</span>         <span style="color: #008000;">//</span><span style="color: #008000;">如果数组长度有问题的话</span>
+<span style="color: #008080;"> 30</span>         <span style="color: #0000ff;">this</span>.selectedIndex = <span style="color: #0000ff;">this</span>.selectedIndex &gt; <span style="color: #0000ff;">this</span>.data.length ? 0 : <span style="color: #0000ff;">this</span><span style="color: #000000;">.selectedIndex;
+</span><span style="color: #008080;"> 31</span> 
+<span style="color: #008080;"> 32</span>         <span style="color: #0000ff;">var</span> isFind = <span style="color: #0000ff;">false</span>, index = <span style="color: #0000ff;">this</span><span style="color: #000000;">.selectedIndex;
+</span><span style="color: #008080;"> 33</span>         <span style="color: #0000ff;">if</span> (<span style="color: #0000ff;">this</span>.data[index] &amp;&amp; (<span style="color: #0000ff;">typeof</span> <span style="color: #0000ff;">this</span>.data[index].disabled == 'undefined' || <span style="color: #0000ff;">this</span>.data[index].disabled == <span style="color: #0000ff;">false</span><span style="color: #000000;">)) {
+</span><span style="color: #008080;"> 34</span>             <span style="color: #0000ff;">for</span> (i = index, len = <span style="color: #0000ff;">this</span>.data.length; i &lt; len; i++<span style="color: #000000;">) {
+</span><span style="color: #008080;"> 35</span>                 <span style="color: #0000ff;">if</span> (<span style="color: #0000ff;">typeof</span> <span style="color: #0000ff;">this</span>.data[i].disabled == 'undefined' || <span style="color: #0000ff;">this</span>.data[i].disabled == <span style="color: #0000ff;">true</span><span style="color: #000000;">) {
+</span><span style="color: #008080;"> 36</span>                     index =<span style="color: #000000;"> i;
+</span><span style="color: #008080;"> 37</span>                     isFind = <span style="color: #0000ff;">true</span><span style="color: #000000;">;
+</span><span style="color: #008080;"> 38</span>                     <span style="color: #0000ff;">break</span><span style="color: #000000;">;
+</span><span style="color: #008080;"> 39</span> <span style="color: #000000;">                }
+</span><span style="color: #008080;"> 40</span> <span style="color: #000000;">            }
+</span><span style="color: #008080;"> 41</span>             <span style="color: #0000ff;">if</span> (isFind == <span style="color: #0000ff;">false</span><span style="color: #000000;">) {
+</span><span style="color: #008080;"> 42</span>                 <span style="color: #0000ff;">for</span> (i = index; i != 0; i--<span style="color: #000000;">) {
+</span><span style="color: #008080;"> 43</span>                     <span style="color: #0000ff;">if</span> (<span style="color: #0000ff;">typeof</span> <span style="color: #0000ff;">this</span>.data[i].disabled == 'undefined' || <span style="color: #0000ff;">this</span>.data[i].disabled == <span style="color: #0000ff;">true</span><span style="color: #000000;">) {
+</span><span style="color: #008080;"> 44</span>                         index =<span style="color: #000000;"> i;
+</span><span style="color: #008080;"> 45</span>                         isFind = <span style="color: #0000ff;">true</span><span style="color: #000000;">;
+</span><span style="color: #008080;"> 46</span>                         <span style="color: #0000ff;">break</span><span style="color: #000000;">;
+</span><span style="color: #008080;"> 47</span> <span style="color: #000000;">                    }
+</span><span style="color: #008080;"> 48</span> <span style="color: #000000;">                }
+</span><span style="color: #008080;"> 49</span> <span style="color: #000000;">            }
+</span><span style="color: #008080;"> 50</span>             <span style="color: #0000ff;">if</span> (isFind) <span style="color: #0000ff;">this</span>.selectedIndex =<span style="color: #000000;"> index;
+</span><span style="color: #008080;"> 51</span> <span style="color: #000000;">        }
+</span><span style="color: #008080;"> 52</span> 
+<span style="color: #008080;"> 53</span>         <span style="color: #0000ff;">this</span>.animateParam = opts.animateParam || [50, 40, 30, 25, 20, 15, 10, 8, 6, 4, 2]; <span style="color: #008000;">//</span><span style="color: #008000;">动画参数</span>
+<span style="color: #008080;"> 54</span>         <span style="color: #0000ff;">this</span>.animateParam = opts.animateParam || [10, 8, 6, 5, 4, 3, 2, 1, 0, 0, 0]; <span style="color: #008000;">//</span><span style="color: #008000;">动画参数</span>
+<span style="color: #008080;"> 55</span> 
+<span style="color: #008080;"> 56</span>         <span style="color: #0000ff;">this</span><span style="color: #000000;">.setBaseParam();
+</span><span style="color: #008080;"> 57</span>         <span style="color: #0000ff;">this</span><span style="color: #000000;">.init();
+</span><span style="color: #008080;"> 58</span> <span style="color: #000000;">    };
+</span><span style="color: #008080;"> 59</span>     ScrollList.prototype =<span style="color: #000000;"> {
+</span><span style="color: #008080;"> 60</span> <span style="color: #000000;">        constructor: ScrollList,
+</span><span style="color: #008080;"> 61</span>         init: <span style="color: #0000ff;">function</span><span style="color: #000000;"> () {
+</span><span style="color: #008080;"> 62</span>             <span style="color: #0000ff;">this</span><span style="color: #000000;">.initItem();
+</span><span style="color: #008080;"> 63</span>             <span style="color: #0000ff;">this</span>.wrapper.append(<span style="color: #0000ff;">this</span><span style="color: #000000;">.body);
+</span><span style="color: #008080;"> 64</span>             <span style="color: #0000ff;">this</span><span style="color: #000000;">.initEventParam();
+</span><span style="color: #008080;"> 65</span>             <span style="color: #0000ff;">this</span><span style="color: #000000;">.bindEvent();
+</span><span style="color: #008080;"> 66</span>             <span style="color: #0000ff;">this</span>.setIndex(<span style="color: #0000ff;">this</span>.selectedIndex, <span style="color: #0000ff;">true</span><span style="color: #000000;">);
+</span><span style="color: #008080;"> 67</span> <span style="color: #000000;">        },
+</span><span style="color: #008080;"> 68</span>         <span style="color: #008000;">//</span><span style="color: #008000;">基本参数设置</span>
+<span style="color: #008080;"> 69</span>         setBaseParam: <span style="color: #0000ff;">function</span><span style="color: #000000;"> () {
+</span><span style="color: #008080;"> 70</span>             <span style="color: #008000;">/*</span>
+<span style="color: #008080;"> 71</span> <span style="color: #008000;">            定位实际需要用到的信息
+</span><span style="color: #008080;"> 72</span> <span style="color: #008000;">            暂时不考虑水平移动吧
+</span><span style="color: #008080;"> 73</span>             <span style="color: #008000;">*/</span>
+<span style="color: #008080;"> 74</span>             <span style="color: #0000ff;">this</span>.setHeight = 0; <span style="color: #008000;">//</span><span style="color: #008000;">被设置的高度</span>
+<span style="color: #008080;"> 75</span>             <span style="color: #0000ff;">this</span>.itemHeight = 0; <span style="color: #008000;">//</span><span style="color: #008000;">单个item高度</span>
+<span style="color: #008080;"> 76</span>             <span style="color: #0000ff;">this</span>.dragHeight = 0; <span style="color: #008000;">//</span><span style="color: #008000;">拖动元素高度</span>
+<span style="color: #008080;"> 77</span>             <span style="color: #0000ff;">this</span>.dragTop = 0; <span style="color: #008000;">//</span><span style="color: #008000;">拖动元素top</span>
+<span style="color: #008080;"> 78</span>             <span style="color: #0000ff;">this</span>.timeGap = 0; <span style="color: #008000;">//</span><span style="color: #008000;">时间间隔</span>
+<span style="color: #008080;"> 79</span>             <span style="color: #0000ff;">this</span>.touchTime = 0; <span style="color: #008000;">//</span><span style="color: #008000;">开始时间</span>
+<span style="color: #008080;"> 80</span>             <span style="color: #0000ff;">this</span>.moveAble = <span style="color: #0000ff;">false</span>; <span style="color: #008000;">//</span><span style="color: #008000;">是否正在移动</span>
+<span style="color: #008080;"> 81</span>             <span style="color: #0000ff;">this</span>.moveState = 'up'; <span style="color: #008000;">//</span><span style="color: #008000;">移动状态，up right down left</span>
+<span style="color: #008080;"> 82</span>             <span style="color: #0000ff;">this</span>.oTop = 0; <span style="color: #008000;">//</span><span style="color: #008000;">拖动前的top值</span>
+<span style="color: #008080;"> 83</span>             <span style="color: #0000ff;">this</span>.curTop = 0; <span style="color: #008000;">//</span><span style="color: #008000;">当前容器top</span>
+<span style="color: #008080;"> 84</span>             <span style="color: #0000ff;">this</span>.mouseY = 0; <span style="color: #008000;">//</span><span style="color: #008000;">鼠标第一次点下时相对父容器的位置</span>
+<span style="color: #008080;"> 85</span>             <span style="color: #0000ff;">this</span>.cooling = <span style="color: #0000ff;">false</span>; <span style="color: #008000;">//</span><span style="color: #008000;">是否处于冷却时间</span>
+<span style="color: #008080;"> 86</span> <span style="color: #000000;">        },
+</span><span style="color: #008080;"> 87</span>         initBaseDom: <span style="color: #0000ff;">function</span><span style="color: #000000;"> (opts) {
+</span><span style="color: #008080;"> 88</span>             <span style="color: #008000;">//</span><span style="color: #008000;">容器元素</span>
+<span style="color: #008080;"> 89</span>             <span style="color: #0000ff;">this</span>.wrapper = opts.wrapper ||<span style="color: #000000;"> $(document);
+</span><span style="color: #008080;"> 90</span>             <span style="color: #0000ff;">this</span>.type = opts.type || 'list'; <span style="color: #008000;">//</span><span style="color: #008000;">list, radio</span>
+<span style="color: #008080;"> 91</span> 
+<span style="color: #008080;"> 92</span>             <span style="color: #008000;">//</span><span style="color: #008000;">显示的项目，由此确定显示区域的高度，所以height无用</span>
+<span style="color: #008080;"> 93</span>             <span style="color: #0000ff;">this</span>.disItemNum = 5<span style="color: #000000;">;
+</span><span style="color: #008080;"> 94</span> 
+<span style="color: #008080;"> 95</span>             <span style="color: #0000ff;">var</span> id = opts.id || 'id_' + <span style="color: #0000ff;">new</span><span style="color: #000000;"> Date().getTime();
+</span><span style="color: #008080;"> 96</span>             <span style="color: #0000ff;">var</span> className = opts.className || 'cui-roller-bd'<span style="color: #000000;">;
+</span><span style="color: #008080;"> 97</span> 
+<span style="color: #008080;"> 98</span>             <span style="color: #0000ff;">var</span><span style="color: #000000;"> scrollClass;
+</span><span style="color: #008080;"> 99</span>             <span style="color: #008000;">//</span><span style="color: #008000;">单选的情况需要确定显示选择项</span>
+<span style="color: #008080;">100</span>             <span style="color: #0000ff;">if</span> (<span style="color: #0000ff;">this</span>.type == 'list'<span style="color: #000000;">) {
+</span><span style="color: #008080;">101</span>                 scrollClass = 'cui-select-view'<span style="color: #000000;">;
+</span><span style="color: #008080;">102</span> <span style="color: #000000;">            }
+</span><span style="color: #008080;">103</span>             <span style="color: #0000ff;">else</span> <span style="color: #0000ff;">if</span> (<span style="color: #0000ff;">this</span>.type == 'radio'<span style="color: #000000;">) {
+</span><span style="color: #008080;">104</span>                 scrollClass = 'ul-list'<span style="color: #000000;">;
+</span><span style="color: #008080;">105</span>                 <span style="color: #0000ff;">this</span>.disItemNum = 3<span style="color: #000000;">;
+</span><span style="color: #008080;">106</span> <span style="color: #000000;">            }
+</span><span style="color: #008080;">107</span>             <span style="color: #0000ff;">this</span>.disItemNum = opts.disItemNum || <span style="color: #0000ff;">this</span><span style="color: #000000;">.disItemNum;
+</span><span style="color: #008080;">108</span>             <span style="color: #0000ff;">this</span>.disItemNum = <span style="color: #0000ff;">this</span>.disItemNum % 2 == 0 ? <span style="color: #0000ff;">this</span>.disItemNum + 1 : <span style="color: #0000ff;">this</span>.disItemNum; <span style="color: #008000;">//</span><span style="color: #008000;">必须是奇数</span>
+<span style="color: #008080;">109</span> 
+<span style="color: #008080;">110</span>             scrollClass = opts.scrollClass ||<span style="color: #000000;"> scrollClass;
+</span><span style="color: #008080;">111</span>             <span style="color: #0000ff;">this</span>.scrollClass =<span style="color: #000000;"> scrollClass;
+</span><span style="color: #008080;">112</span> 
+<span style="color: #008080;">113</span>             <span style="color: #008000;">//</span><span style="color: #008000;">这里使用height不还有待商榷，因为class含有样式</span>
+<span style="color: #008080;">114</span> 
+<span style="color: #008080;">115</span>             <span style="color: #0000ff;">this</span>.body =<span style="color: #000000;"> $([
+</span><span style="color: #008080;">116</span>                     '&lt;div class="' + className + '" style="overflow: hidden; position: relative; " id="' + id + '" &gt;'<span style="color: #000000;">,
+</span><span style="color: #008080;">117</span>                     '&lt;/div&gt;'
+<span style="color: #008080;">118</span>                     ].join(''<span style="color: #000000;">));
+</span><span style="color: #008080;">119</span>             <span style="color: #008000;">//</span><span style="color: #008000;">真正拖动的元素（现在是ul）</span>
+<span style="color: #008080;">120</span>             <span style="color: #0000ff;">this</span>.dragEl =<span style="color: #000000;"> $([
+</span><span style="color: #008080;">121</span>                     '&lt;ul class="' + scrollClass + '" style="position: absolute; width: 100%;"&gt;'<span style="color: #000000;">,
+</span><span style="color: #008080;">122</span>                     '&lt;/ul&gt;'
+<span style="color: #008080;">123</span>                     ].join(''<span style="color: #000000;">));
+</span><span style="color: #008080;">124</span>             <span style="color: #0000ff;">this</span>.body.append(<span style="color: #0000ff;">this</span><span style="color: #000000;">.dragEl);
+</span><span style="color: #008080;">125</span>             <span style="color: #008000;">//</span><span style="color: #008000;">单选情况需要加入蒙版</span>
+<span style="color: #008080;">126</span>             <span style="color: #008000;">//</span><span style="color: #008000;">            if (this.type == 'radio' &amp;&amp; this.disItemNum != 1) {</span>
+<span style="color: #008080;">127</span>             <span style="color: #008000;">//</span><span style="color: #008000;">                this.body.append($([</span>
+<span style="color: #008080;">128</span>             <span style="color: #008000;">//</span><span style="color: #008000;">                        '&lt;div class="cui-mask"&gt;&lt;/div&gt;',</span>
+<span style="color: #008080;">129</span>             <span style="color: #008000;">//</span><span style="color: #008000;">                        '&lt;div class="cui-lines"&gt;&amp;nbsp;&lt;/div&gt;'</span>
+<span style="color: #008080;">130</span>             <span style="color: #008000;">//</span><span style="color: #008000;">                        ].join('')));</span>
+<span style="color: #008080;">131</span>             <span style="color: #008000;">//</span><span style="color: #008000;">            }</span>
+<span style="color: #008080;">132</span> <span style="color: #000000;">        },
+</span><span style="color: #008080;">133</span>         <span style="color: #008000;">//</span><span style="color: #008000;">增加数据</span>
+<span style="color: #008080;">134</span>         initItem: <span style="color: #0000ff;">function</span><span style="color: #000000;"> () {
+</span><span style="color: #008080;">135</span>             <span style="color: #0000ff;">var</span><span style="color: #000000;"> _tmp, _data, i, k, val;
+</span><span style="color: #008080;">136</span>             <span style="color: #0000ff;">this</span>.size = <span style="color: #0000ff;">this</span>.data.length; <span style="color: #008000;">//</span><span style="color: #008000;">当前容量</span>
+<span style="color: #008080;">137</span>             <span style="color: #0000ff;">for</span> (<span style="color: #0000ff;">var</span> i <span style="color: #0000ff;">in</span> <span style="color: #0000ff;">this</span><span style="color: #000000;">.data) {
+</span><span style="color: #008080;">138</span>                 _data = <span style="color: #0000ff;">this</span><span style="color: #000000;">.data[i];
+</span><span style="color: #008080;">139</span>                 _data.index =<span style="color: #000000;"> i;
+</span><span style="color: #008080;">140</span> 
+<span style="color: #008080;">141</span>                 <span style="color: #0000ff;">if</span> (<span style="color: #0000ff;">typeof</span> _data.key == 'undefined') _data.key =<span style="color: #000000;"> _data.id;
+</span><span style="color: #008080;">142</span>                 <span style="color: #0000ff;">if</span> (<span style="color: #0000ff;">typeof</span> _data.val == 'undefined') _data.val =<span style="color: #000000;"> _data.name;
+</span><span style="color: #008080;">143</span> 
+<span style="color: #008080;">144</span> 
+<span style="color: #008080;">145</span>                 val = _data.val ||<span style="color: #000000;"> _data.key;
+</span><span style="color: #008080;">146</span>                 <span style="color: #0000ff;">this</span>.dataK[_data.key] =<span style="color: #000000;"> _data;
+</span><span style="color: #008080;">147</span>                 _tmp = $('&lt;li&gt;' + val + '&lt;/li&gt;'<span style="color: #000000;">);
+</span><span style="color: #008080;">148</span>                 _tmp.attr('data-index'<span style="color: #000000;">, i);
+</span><span style="color: #008080;">149</span>                 <span style="color: #0000ff;">if</span> (<span style="color: #0000ff;">typeof</span> _data.disabled != 'undefined' &amp;&amp; _data.disabled == <span style="color: #0000ff;">false</span><span style="color: #000000;">) {
+</span><span style="color: #008080;">150</span>                     _tmp.css('color', 'gray'<span style="color: #000000;">);
+</span><span style="color: #008080;">151</span> <span style="color: #000000;">                }
+</span><span style="color: #008080;">152</span> 
+<span style="color: #008080;">153</span>                 <span style="color: #0000ff;">this</span><span style="color: #000000;">.dragEl.append(_tmp);
+</span><span style="color: #008080;">154</span> <span style="color: #000000;">            }
+</span><span style="color: #008080;">155</span> 
+<span style="color: #008080;">156</span> <span style="color: #000000;">        },
+</span><span style="color: #008080;">157</span>         <span style="color: #008000;">//</span><span style="color: #008000;">初始化事件需要用到的参数信息</span>
+<span style="color: #008080;">158</span>         initEventParam: <span style="color: #0000ff;">function</span><span style="color: #000000;"> () {
+</span><span style="color: #008080;">159</span>             <span style="color: #008000;">//</span><span style="color: #008000;">如果没有数据的话就在这里断了吧</span>
+<span style="color: #008080;">160</span>             <span style="color: #0000ff;">if</span> (<span style="color: #0000ff;">this</span>.data.constructor != Array || <span style="color: #0000ff;">this</span>.data.length == 0) <span style="color: #0000ff;">return</span> <span style="color: #0000ff;">false</span><span style="color: #000000;">;
+</span><span style="color: #008080;">161</span>             <span style="color: #0000ff;">var</span> offset = <span style="color: #0000ff;">this</span><span style="color: #000000;">.dragEl.offset();
+</span><span style="color: #008080;">162</span>             <span style="color: #0000ff;">var</span> li = <span style="color: #0000ff;">this</span>.dragEl.find('li').eq(0<span style="color: #000000;">);
+</span><span style="color: #008080;">163</span>             <span style="color: #0000ff;">var</span> itemOffset =<span style="color: #000000;"> li.offset();
+</span><span style="color: #008080;">164</span>             <span style="color: #008000;">//</span><span style="color: #008000;">暂时不考虑边框与外边距问题</span>
+<span style="color: #008080;">165</span>             <span style="color: #0000ff;">this</span>.itemHeight =<span style="color: #000000;"> itemOffset.height;
+</span><span style="color: #008080;">166</span>             <span style="color: #0000ff;">this</span>.setHeight = <span style="color: #0000ff;">this</span>.itemHeight * <span style="color: #0000ff;">this</span><span style="color: #000000;">.disItemNum;
+</span><span style="color: #008080;">167</span>             <span style="color: #0000ff;">this</span>.body.css('height', <span style="color: #0000ff;">this</span><span style="color: #000000;">.setHeight);
+</span><span style="color: #008080;">168</span>             <span style="color: #0000ff;">this</span>.dragTop =<span style="color: #000000;"> offset.top;
+</span><span style="color: #008080;">169</span>             <span style="color: #0000ff;">this</span>.dragHeight = <span style="color: #0000ff;">this</span>.itemHeight * <span style="color: #0000ff;">this</span><span style="color: #000000;">.size;
+</span><span style="color: #008080;">170</span>             <span style="color: #0000ff;">var</span> s = ''<span style="color: #000000;">;
+</span><span style="color: #008080;">171</span> <span style="color: #000000;">        },
+</span><span style="color: #008080;">172</span>         bindEvent: <span style="color: #0000ff;">function</span><span style="color: #000000;"> () {
+</span><span style="color: #008080;">173</span>             <span style="color: #0000ff;">var</span> scope = <span style="color: #0000ff;">this</span><span style="color: #000000;">;
+</span><span style="color: #008080;">174</span>             <span style="color: #0000ff;">this</span>.startFn = <span style="color: #0000ff;">function</span><span style="color: #000000;"> (e) {
+</span><span style="color: #008080;">175</span> <span style="color: #000000;">                scope.touchStart.call(scope, e);
+</span><span style="color: #008080;">176</span> <span style="color: #000000;">            };
+</span><span style="color: #008080;">177</span>             <span style="color: #0000ff;">this</span>.moveFn = <span style="color: #0000ff;">function</span><span style="color: #000000;"> (e) {
+</span><span style="color: #008080;">178</span> <span style="color: #000000;">                scope.touchMove.call(scope, e);
+</span><span style="color: #008080;">179</span> <span style="color: #000000;">            };
+</span><span style="color: #008080;">180</span>             <span style="color: #0000ff;">this</span>.endFn = <span style="color: #0000ff;">function</span><span style="color: #000000;"> (e) {
+</span><span style="color: #008080;">181</span> <span style="color: #000000;">                scope.touchEnd.call(scope, e);
+</span><span style="color: #008080;">182</span> <span style="color: #000000;">            };
+</span><span style="color: #008080;">183</span> 
+<span style="color: #008080;">184</span>             <span style="color: #0000ff;">this</span>.dragEl[0].addEventListener(<span style="color: #0000ff;">this</span>.start, <span style="color: #0000ff;">this</span>.startFn, <span style="color: #0000ff;">false</span><span style="color: #000000;">);
+</span><span style="color: #008080;">185</span>             <span style="color: #0000ff;">this</span>.dragEl[0].addEventListener(<span style="color: #0000ff;">this</span>.move, <span style="color: #0000ff;">this</span>.moveFn, <span style="color: #0000ff;">false</span><span style="color: #000000;">);
+</span><span style="color: #008080;">186</span>             <span style="color: #0000ff;">this</span>.dragEl[0].addEventListener(<span style="color: #0000ff;">this</span>.end, <span style="color: #0000ff;">this</span>.endFn, <span style="color: #0000ff;">false</span><span style="color: #000000;">);
+</span><span style="color: #008080;">187</span> <span style="color: #000000;">        },
+</span><span style="color: #008080;">188</span>         removeEvent: <span style="color: #0000ff;">function</span><span style="color: #000000;"> () {
+</span><span style="color: #008080;">189</span>             <span style="color: #0000ff;">this</span>.dragEl[0].removeEventListener(<span style="color: #0000ff;">this</span>.start, <span style="color: #0000ff;">this</span><span style="color: #000000;">.startFn);
+</span><span style="color: #008080;">190</span>             <span style="color: #0000ff;">this</span>.dragEl[0].removeEventListener(<span style="color: #0000ff;">this</span>.move, <span style="color: #0000ff;">this</span><span style="color: #000000;">.moveFn);
+</span><span style="color: #008080;">191</span>             <span style="color: #0000ff;">this</span>.dragEl[0].removeEventListener(<span style="color: #0000ff;">this</span>.end, <span style="color: #0000ff;">this</span><span style="color: #000000;">.endFn);
+</span><span style="color: #008080;">192</span> <span style="color: #000000;">        },
+</span><span style="color: #008080;">193</span>         touchStart: <span style="color: #0000ff;">function</span><span style="color: #000000;"> (e) {
+</span><span style="color: #008080;">194</span>             <span style="color: #0000ff;">var</span> scope = <span style="color: #0000ff;">this</span><span style="color: #000000;">;
+</span><span style="color: #008080;">195</span>             <span style="color: #008000;">//</span><span style="color: #008000;">冷却时间不能开始</span>
+<span style="color: #008080;">196</span>             <span style="color: #0000ff;">if</span> (<span style="color: #0000ff;">this</span><span style="color: #000000;">.cooling) {
+</span><span style="color: #008080;">197</span>                 setTimeout(<span style="color: #0000ff;">function</span><span style="color: #000000;"> () {
+</span><span style="color: #008080;">198</span>                     scope.cooling = <span style="color: #0000ff;">false</span><span style="color: #000000;">;
+</span><span style="color: #008080;">199</span>                 }, 500<span style="color: #000000;">);
+</span><span style="color: #008080;">200</span>                 <span style="color: #0000ff;">return</span> <span style="color: #0000ff;">false</span><span style="color: #000000;">;
+</span><span style="color: #008080;">201</span> <span style="color: #000000;">            }
+</span><span style="color: #008080;">202</span>             <span style="color: #008000;">//</span><span style="color: #008000;">需要判断是否是拉取元素，此处需要递归验证，这里暂时不管</span>
+<span style="color: #008080;">203</span>             <span style="color: #008000;">//</span><span style="color: #008000;">！！！！！！！！此处不严谨</span>
+<span style="color: #008080;">204</span>             <span style="color: #0000ff;">var</span> el =<span style="color: #000000;"> $(e.target).parent(), pos;
+</span><span style="color: #008080;">205</span>             <span style="color: #0000ff;">if</span> (el.hasClass(<span style="color: #0000ff;">this</span><span style="color: #000000;">.scrollClass)) {
+</span><span style="color: #008080;">206</span>                 <span style="color: #0000ff;">this</span>.touchTime =<span style="color: #000000;"> e.timeStamp;
+</span><span style="color: #008080;">207</span>                 <span style="color: #008000;">//</span><span style="color: #008000;">获取鼠标信息</span>
+<span style="color: #008080;">208</span>                 pos = <span style="color: #0000ff;">this</span>.getMousePos((e.changedTouches &amp;&amp; e.changedTouches[0]) ||<span style="color: #000000;"> e);
+</span><span style="color: #008080;">209</span>                 <span style="color: #008000;">//</span><span style="color: #008000;">注意，此处是相对位置，注意该处还与动画有关，所以高度必须动态计算</span>
+<span style="color: #008080;">210</span>                 <span style="color: #008000;">//</span><span style="color: #008000;">可以设置一个冷却时间参数，但想想还是算了</span>
+<span style="color: #008080;">211</span>                 <span style="color: #008000;">//</span><span style="color: #008000;">最后还是使用了冷却时间</span>
+<span style="color: #008080;">212</span>                 <span style="color: #008000;">//</span><span style="color: #008000;">最后的最后我还是决定使用动态样式获取算了</span>
+<span style="color: #008080;">213</span>                 <span style="color: #0000ff;">var</span> top = parseFloat(<span style="color: #0000ff;">this</span>.dragEl.css('top')) || 0<span style="color: #000000;">;
+</span><span style="color: #008080;">214</span>                 <span style="color: #0000ff;">this</span>.mouseY = pos.top -<span style="color: #000000;"> top;
+</span><span style="color: #008080;">215</span>                 <span style="color: #008000;">//</span><span style="color: #008000;">                        this.mouseY = pos.top - this.curTop;</span>
+<span style="color: #008080;">216</span>                 <span style="color: #0000ff;">this</span>.moveAble = <span style="color: #0000ff;">true</span><span style="color: #000000;">;
+</span><span style="color: #008080;">217</span> <span style="color: #000000;">            }
+</span><span style="color: #008080;">218</span> <span style="color: #000000;">        },
+</span><span style="color: #008080;">219</span>         touchMove: <span style="color: #0000ff;">function</span><span style="color: #000000;"> (e) {
+</span><span style="color: #008080;">220</span>             <span style="color: #0000ff;">if</span> (!<span style="color: #0000ff;">this</span>.moveAble) <span style="color: #0000ff;">return</span> <span style="color: #0000ff;">false</span><span style="color: #000000;">;
+</span><span style="color: #008080;">221</span>             <span style="color: #0000ff;">var</span> pos = <span style="color: #0000ff;">this</span>.getMousePos((e.changedTouches &amp;&amp; e.changedTouches[0]) ||<span style="color: #000000;"> e);
+</span><span style="color: #008080;">222</span>             <span style="color: #008000;">//</span><span style="color: #008000;">先获取相对容器的位置，在将两个鼠标位置相减</span>
+<span style="color: #008080;">223</span>             <span style="color: #0000ff;">this</span>.curTop = pos.top - <span style="color: #0000ff;">this</span><span style="color: #000000;">.mouseY;
+</span><span style="color: #008080;">224</span>             <span style="color: #0000ff;">this</span>.dragEl.css('top', <span style="color: #0000ff;">this</span>.curTop + 'px'<span style="color: #000000;">);
+</span><span style="color: #008080;">225</span> <span style="color: #000000;">            e.preventDefault();
+</span><span style="color: #008080;">226</span> <span style="color: #000000;">        },
+</span><span style="color: #008080;">227</span>         touchEnd: <span style="color: #0000ff;">function</span><span style="color: #000000;"> (e) {
+</span><span style="color: #008080;">228</span>             <span style="color: #0000ff;">if</span> (!<span style="color: #0000ff;">this</span>.moveAble) <span style="color: #0000ff;">return</span> <span style="color: #0000ff;">false</span><span style="color: #000000;">;
+</span><span style="color: #008080;">229</span>             <span style="color: #0000ff;">this</span>.cooling = <span style="color: #0000ff;">true</span>; <span style="color: #008000;">//</span><span style="color: #008000;">开启冷却时间</span>
+<span style="color: #008080;">230</span> 
+<span style="color: #008080;">231</span>             <span style="color: #008000;">//</span><span style="color: #008000;">时间间隔</span>
+<span style="color: #008080;">232</span>             <span style="color: #0000ff;">var</span> scope = <span style="color: #0000ff;">this</span><span style="color: #000000;">;
+</span><span style="color: #008080;">233</span>             <span style="color: #0000ff;">this</span>.timeGap = e.timeStamp - <span style="color: #0000ff;">this</span><span style="color: #000000;">.touchTime;
+</span><span style="color: #008080;">234</span>             <span style="color: #0000ff;">var</span> flag = <span style="color: #0000ff;">this</span>.oTop &lt;= <span style="color: #0000ff;">this</span>.curTop ? 1 : -1; <span style="color: #008000;">//</span><span style="color: #008000;">判断是向上还是向下滚动</span>
+<span style="color: #008080;">235</span>             <span style="color: #0000ff;">var</span> flag2 = <span style="color: #0000ff;">this</span>.curTop &gt; 0 ? 1 : -1; <span style="color: #008000;">//</span><span style="color: #008000;">这个会影响后面的计算结果</span>
+<span style="color: #008080;">236</span>             <span style="color: #0000ff;">this</span>.moveState = flag &gt; 0 ? 'up' : 'down'<span style="color: #000000;">;
+</span><span style="color: #008080;">237</span>             <span style="color: #0000ff;">var</span> ih = parseFloat(<span style="color: #0000ff;">this</span><span style="color: #000000;">.itemHeight);
+</span><span style="color: #008080;">238</span>             <span style="color: #0000ff;">var</span> ih1 = ih / 2<span style="color: #000000;">;
+</span><span style="color: #008080;">239</span> 
+<span style="color: #008080;">240</span>             <span style="color: #0000ff;">var</span> top = Math.abs(<span style="color: #0000ff;">this</span><span style="color: #000000;">.curTop);
+</span><span style="color: #008080;">241</span>             <span style="color: #0000ff;">var</span> mod = top %<span style="color: #000000;"> ih;
+</span><span style="color: #008080;">242</span>             top = (parseInt(top / ih) * ih + (mod &gt; ih1 ? ih : 0)) *<span style="color: #000000;"> flag2;
+</span><span style="color: #008080;">243</span>             <span style="color: #0000ff;">var</span> step = parseInt(<span style="color: #0000ff;">this</span>.timeGap / 10 - 10<span style="color: #000000;">);
+</span><span style="color: #008080;">244</span> 
+<span style="color: #008080;">245</span>             step = step &gt; 0 ? step : 0<span style="color: #000000;">;
+</span><span style="color: #008080;">246</span>             <span style="color: #0000ff;">var</span> speed = <span style="color: #0000ff;">this</span>.animateParam[step] || 0<span style="color: #000000;">;
+</span><span style="color: #008080;">247</span>             <span style="color: #0000ff;">var</span> increment = speed * ih *<span style="color: #000000;"> flag;
+</span><span style="color: #008080;">248</span>             top +=<span style="color: #000000;"> increment;
+</span><span style="color: #008080;">249</span> 
+<span style="color: #008080;">250</span>             <span style="color: #008000;">//</span><span style="color: #008000;">！！！此处动画可能导致数据不同步，后期改造需要加入冷却时间</span>
+<span style="color: #008080;">251</span>             <span style="color: #0000ff;">if</span> (<span style="color: #0000ff;">this</span>.oTop != <span style="color: #0000ff;">this</span>.curTop &amp;&amp; <span style="color: #0000ff;">this</span>.curTop !=<span style="color: #000000;"> top) {
+</span><span style="color: #008080;">252</span>                 <span style="color: #0000ff;">this</span><span style="color: #000000;">.dragEl.animate({
+</span><span style="color: #008080;">253</span>                     top: top + 'px'
+<span style="color: #008080;">254</span>                 }, 100 + (speed * 20), 'ease-out', <span style="color: #0000ff;">function</span><span style="color: #000000;"> () {
+</span><span style="color: #008080;">255</span>                     <span style="color: #008000;">//</span><span style="color: #008000;">                                scope.curTop = top;</span>
+<span style="color: #008080;">256</span> <span style="color: #000000;">                    scope.reset.call(scope, top);
+</span><span style="color: #008080;">257</span> <span style="color: #000000;">                });
+</span><span style="color: #008080;">258</span>             } <span style="color: #0000ff;">else</span><span style="color: #000000;"> {
+</span><span style="color: #008080;">259</span>                 <span style="color: #0000ff;">var</span> item = <span style="color: #0000ff;">this</span>.dragEl.find('li'<span style="color: #000000;">);
+</span><span style="color: #008080;">260</span>                 <span style="color: #0000ff;">var</span> el =<span style="color: #000000;"> $(e.target);
+</span><span style="color: #008080;">261</span>                 item.removeClass('current'<span style="color: #000000;">);
+</span><span style="color: #008080;">262</span>                 el.addClass('current'<span style="color: #000000;">);
+</span><span style="color: #008080;">263</span> 
+<span style="color: #008080;">264</span>                 <span style="color: #008000;">//</span><span style="color: #008000;">这个由于使用了边距等东西，使用位置定位有点不靠谱了</span>
+<span style="color: #008080;">265</span>                 <span style="color: #0000ff;">this</span>.selectedIndex = el.attr('data-index'<span style="color: #000000;">);
+</span><span style="color: #008080;">266</span>                 <span style="color: #008000;">//</span><span style="color: #008000;">单选多选列表触发的事件，反正都会触发</span>
+<span style="color: #008080;">267</span>                 <span style="color: #0000ff;">this</span>.type == 'list' &amp;&amp; <span style="color: #0000ff;">this</span><span style="color: #000000;">.onTouchEnd();
+</span><span style="color: #008080;">268</span>                 <span style="color: #0000ff;">this</span>.cooling = <span style="color: #0000ff;">false</span>; <span style="color: #008000;">//</span><span style="color: #008000;">关闭冷却时间</span>
+<span style="color: #008080;">269</span> <span style="color: #000000;">            }
+</span><span style="color: #008080;">270</span>             <span style="color: #0000ff;">this</span>.moveAble = <span style="color: #0000ff;">false</span><span style="color: #000000;">;
+</span><span style="color: #008080;">271</span> <span style="color: #000000;">            e.preventDefault();
+</span><span style="color: #008080;">272</span> 
+<span style="color: #008080;">273</span> <span style="color: #000000;">        },
+</span><span style="color: #008080;">274</span>         <span style="color: #008000;">//</span><span style="color: #008000;">超出限制后位置还原</span>
+<span style="color: #008080;">275</span>         reset: <span style="color: #0000ff;">function</span><span style="color: #000000;"> (top) {
+</span><span style="color: #008080;">276</span>             <span style="color: #0000ff;">var</span> scope = <span style="color: #0000ff;">this</span><span style="color: #000000;">;
+</span><span style="color: #008080;">277</span>             <span style="color: #0000ff;">var</span> num = parseInt(scope.type == 'list' ? 0 : scope.disItemNum / 2<span style="color: #000000;">);
+</span><span style="color: #008080;">278</span>             <span style="color: #0000ff;">var</span> _top = top, t = <span style="color: #0000ff;">false</span><span style="color: #000000;">;
+</span><span style="color: #008080;">279</span> 
+<span style="color: #008080;">280</span>             <span style="color: #0000ff;">var</span> sHeight = scope.type == 'list' ? 0 : parseFloat(scope.itemHeight) *<span style="color: #000000;"> num;
+</span><span style="color: #008080;">281</span>             <span style="color: #0000ff;">var</span> eHeight = scope.type == 'list' ? scope.setHeight : parseFloat(scope.itemHeight) * (num + 1<span style="color: #000000;">);
+</span><span style="color: #008080;">282</span>             <span style="color: #0000ff;">var</span> h = <span style="color: #0000ff;">this</span><span style="color: #000000;">.dragHeight;
+</span><span style="color: #008080;">283</span> 
+<span style="color: #008080;">284</span>             <span style="color: #0000ff;">if</span> (top &gt;= 0<span style="color: #000000;">) {
+</span><span style="color: #008080;">285</span>                 <span style="color: #0000ff;">if</span> (top &gt;<span style="color: #000000;"> sHeight) {
+</span><span style="color: #008080;">286</span>                     _top =<span style="color: #000000;"> sHeight;
+</span><span style="color: #008080;">287</span>                     t = <span style="color: #0000ff;">true</span><span style="color: #000000;">;
+</span><span style="color: #008080;">288</span>                 } <span style="color: #0000ff;">else</span><span style="color: #000000;"> {
+</span><span style="color: #008080;">289</span>                     <span style="color: #008000;">//</span><span style="color: #008000;">出现该情况说明项目太少，达不到一半</span>
+<span style="color: #008080;">290</span>                     <span style="color: #0000ff;">if</span> (h &lt;=<span style="color: #000000;"> sHeight) {
+</span><span style="color: #008080;">291</span>                         _top = sHeight - scope.itemHeight * (<span style="color: #0000ff;">this</span>.size - 1<span style="color: #000000;">);
+</span><span style="color: #008080;">292</span>                         t = <span style="color: #0000ff;">true</span><span style="color: #000000;">;
+</span><span style="color: #008080;">293</span> <span style="color: #000000;">                    }
+</span><span style="color: #008080;">294</span> <span style="color: #000000;">                }
+</span><span style="color: #008080;">295</span> <span style="color: #000000;">            }
+</span><span style="color: #008080;">296</span>             <span style="color: #0000ff;">if</span> (top &lt; 0 &amp;&amp; (top + scope.dragHeight &lt;=<span style="color: #000000;"> eHeight)) {
+</span><span style="color: #008080;">297</span>                 t = <span style="color: #0000ff;">true</span><span style="color: #000000;">;
+</span><span style="color: #008080;">298</span>                 _top = (scope.dragHeight - eHeight) * (-1<span style="color: #000000;">);
+</span><span style="color: #008080;">299</span> <span style="color: #000000;">            }
+</span><span style="color: #008080;">300</span>             <span style="color: #0000ff;">if</span> (top ==<span style="color: #000000;"> _top) {
+</span><span style="color: #008080;">301</span>                 t = <span style="color: #0000ff;">false</span><span style="color: #000000;">;
+</span><span style="color: #008080;">302</span> <span style="color: #000000;">            }
+</span><span style="color: #008080;">303</span>             <span style="color: #0000ff;">if</span><span style="color: #000000;"> (t) {
+</span><span style="color: #008080;">304</span> <span style="color: #000000;">                scope.dragEl.animate({
+</span><span style="color: #008080;">305</span>                     top: _top + 'px'
+<span style="color: #008080;">306</span>                 }, 50, 'ease-in-out', <span style="color: #0000ff;">function</span><span style="color: #000000;"> () {
+</span><span style="color: #008080;">307</span>                     scope.oTop =<span style="color: #000000;"> _top;
+</span><span style="color: #008080;">308</span>                     scope.curTop =<span style="color: #000000;"> _top;
+</span><span style="color: #008080;">309</span>                     scope.cooling = <span style="color: #0000ff;">false</span>; <span style="color: #008000;">//</span><span style="color: #008000;">关闭冷却时间</span>
+<span style="color: #008080;">310</span>                     <span style="color: #008000;">//</span><span style="color: #008000;">单选时候的change事件</span>
+<span style="color: #008080;">311</span>                     scope.type == 'radio' &amp;&amp;<span style="color: #000000;"> scope.onTouchEnd();
+</span><span style="color: #008080;">312</span> <span style="color: #000000;">                });
+</span><span style="color: #008080;">313</span>             } <span style="color: #0000ff;">else</span><span style="color: #000000;"> {
+</span><span style="color: #008080;">314</span>                 scope.oTop =<span style="color: #000000;"> top;
+</span><span style="color: #008080;">315</span>                 scope.curTop =<span style="color: #000000;"> top;
+</span><span style="color: #008080;">316</span>                 <span style="color: #008000;">//</span><span style="color: #008000;">单选时候的change事件</span>
+<span style="color: #008080;">317</span>                 scope.type == 'radio' &amp;&amp;<span style="color: #000000;"> scope.onTouchEnd();
+</span><span style="color: #008080;">318</span> <span style="color: #000000;">            }
+</span><span style="color: #008080;">319</span>             scope.cooling = <span style="color: #0000ff;">false</span>; <span style="color: #008000;">//</span><span style="color: #008000;">关闭冷却时间</span>
+<span style="color: #008080;">320</span> <span style="color: #000000;">        },
+</span><span style="color: #008080;">321</span>         onTouchEnd: <span style="color: #0000ff;">function</span><span style="color: #000000;"> (scope) {
+</span><span style="color: #008080;">322</span>             scope = scope || <span style="color: #0000ff;">this</span><span style="color: #000000;">;
+</span><span style="color: #008080;">323</span> 
+<span style="color: #008080;">324</span>             <span style="color: #0000ff;">var</span><span style="color: #000000;"> secItem, i, len, index, isFind;
+</span><span style="color: #008080;">325</span>             <span style="color: #0000ff;">var</span> changed = <span style="color: #0000ff;">this</span><span style="color: #000000;">._changed;
+</span><span style="color: #008080;">326</span>             <span style="color: #0000ff;">var</span> num = parseInt(<span style="color: #0000ff;">this</span>.type == 'list' ? 0 : <span style="color: #0000ff;">this</span>.disItemNum / 2<span style="color: #000000;">);
+</span><span style="color: #008080;">327</span>             len = <span style="color: #0000ff;">this</span><span style="color: #000000;">.data.length;
+</span><span style="color: #008080;">328</span>             <span style="color: #0000ff;">if</span> (<span style="color: #0000ff;">this</span>.type == 'radio'<span style="color: #000000;">) {
+</span><span style="color: #008080;">329</span>                 i = parseInt((<span style="color: #0000ff;">this</span>.curTop - <span style="color: #0000ff;">this</span>.itemHeight * num) / parseFloat(<span style="color: #0000ff;">this</span><span style="color: #000000;">.itemHeight));
+</span><span style="color: #008080;">330</span>                 <span style="color: #0000ff;">this</span>.selectedIndex =<span style="color: #000000;"> Math.abs(i);
+</span><span style="color: #008080;">331</span>                 secItem = <span style="color: #0000ff;">this</span>.data[<span style="color: #0000ff;">this</span><span style="color: #000000;">.selectedIndex];
+</span><span style="color: #008080;">332</span>             } <span style="color: #0000ff;">else</span><span style="color: #000000;"> {
+</span><span style="color: #008080;">333</span>                 secItem = <span style="color: #0000ff;">this</span>.data[<span style="color: #0000ff;">this</span><span style="color: #000000;">.selectedIndex];
+</span><span style="color: #008080;">334</span> <span style="color: #000000;">            }
+</span><span style="color: #008080;">335</span> 
+<span style="color: #008080;">336</span>             <span style="color: #008000;">//</span><span style="color: #008000;">默认不去找</span>
+<span style="color: #008080;">337</span>             isFind = <span style="color: #0000ff;">false</span>; <span style="color: #008000;">//</span><span style="color: #008000;">检测是否找到可选项</span>
+<span style="color: #008080;">338</span>             <span style="color: #008000;">//</span><span style="color: #008000;">检测是否当前项不可选，若是不可选，需要还原到最近一个可选项</span>
+<span style="color: #008080;">339</span>             <span style="color: #0000ff;">if</span> (<span style="color: #0000ff;">typeof</span> secItem.disabled != 'undefined' &amp;&amp; secItem.disabled == <span style="color: #0000ff;">false</span><span style="color: #000000;">) {
+</span><span style="color: #008080;">340</span>                 index = <span style="color: #0000ff;">this</span><span style="color: #000000;">.selectedIndex;
+</span><span style="color: #008080;">341</span>                 <span style="color: #008000;">//</span><span style="color: #008000;">先向上计算</span>
+<span style="color: #008080;">342</span>                 <span style="color: #0000ff;">if</span> (<span style="color: #0000ff;">this</span>.moveState == 'up'<span style="color: #000000;">) {
+</span><span style="color: #008080;">343</span>                     <span style="color: #0000ff;">for</span> (i = index; i != 0; i--<span style="color: #000000;">) {
+</span><span style="color: #008080;">344</span>                         <span style="color: #0000ff;">if</span> (<span style="color: #0000ff;">typeof</span> <span style="color: #0000ff;">this</span>.data[i].disabled == 'undefined' || <span style="color: #0000ff;">this</span>.data[i].disabled == <span style="color: #0000ff;">true</span><span style="color: #000000;">) {
+</span><span style="color: #008080;">345</span>                             index =<span style="color: #000000;"> i;
+</span><span style="color: #008080;">346</span>                             isFind = <span style="color: #0000ff;">true</span><span style="color: #000000;">;
+</span><span style="color: #008080;">347</span>                             <span style="color: #0000ff;">break</span><span style="color: #000000;">;
+</span><span style="color: #008080;">348</span> <span style="color: #000000;">                        }
+</span><span style="color: #008080;">349</span> <span style="color: #000000;">                    }
+</span><span style="color: #008080;">350</span>                     <span style="color: #0000ff;">if</span> (isFind == <span style="color: #0000ff;">false</span><span style="color: #000000;">) {
+</span><span style="color: #008080;">351</span>                         <span style="color: #0000ff;">for</span> (i = index; i &lt; len; i++<span style="color: #000000;">) {
+</span><span style="color: #008080;">352</span>                             <span style="color: #0000ff;">if</span> (<span style="color: #0000ff;">typeof</span> <span style="color: #0000ff;">this</span>.data[i].disabled == 'undefined' || <span style="color: #0000ff;">this</span>.data[i].disabled == <span style="color: #0000ff;">true</span><span style="color: #000000;">) {
+</span><span style="color: #008080;">353</span>                                 index =<span style="color: #000000;"> i;
+</span><span style="color: #008080;">354</span>                                 isFind = <span style="color: #0000ff;">true</span><span style="color: #000000;">;
+</span><span style="color: #008080;">355</span>                                 <span style="color: #0000ff;">break</span><span style="color: #000000;">;
+</span><span style="color: #008080;">356</span> <span style="color: #000000;">                            }
+</span><span style="color: #008080;">357</span> <span style="color: #000000;">                        }
+</span><span style="color: #008080;">358</span> <span style="color: #000000;">                    }
+</span><span style="color: #008080;">359</span>                 } <span style="color: #0000ff;">else</span><span style="color: #000000;"> {
+</span><span style="color: #008080;">360</span>                     <span style="color: #0000ff;">for</span> (i = index; i &lt; len; i++<span style="color: #000000;">) {
+</span><span style="color: #008080;">361</span>                         <span style="color: #0000ff;">if</span> (<span style="color: #0000ff;">typeof</span> <span style="color: #0000ff;">this</span>.data[i].disabled == 'undefined' || <span style="color: #0000ff;">this</span>.data[i].disabled == <span style="color: #0000ff;">true</span><span style="color: #000000;">) {
+</span><span style="color: #008080;">362</span>                             index =<span style="color: #000000;"> i;
+</span><span style="color: #008080;">363</span>                             isFind = <span style="color: #0000ff;">true</span><span style="color: #000000;">;
+</span><span style="color: #008080;">364</span>                             <span style="color: #0000ff;">break</span><span style="color: #000000;">;
+</span><span style="color: #008080;">365</span> <span style="color: #000000;">                        }
+</span><span style="color: #008080;">366</span> <span style="color: #000000;">                    }
+</span><span style="color: #008080;">367</span>                     <span style="color: #0000ff;">if</span> (isFind == <span style="color: #0000ff;">false</span><span style="color: #000000;">) {
+</span><span style="color: #008080;">368</span>                         <span style="color: #0000ff;">for</span> (i = index; i != 0; i--<span style="color: #000000;">) {
+</span><span style="color: #008080;">369</span>                             <span style="color: #0000ff;">if</span> (<span style="color: #0000ff;">typeof</span> <span style="color: #0000ff;">this</span>.data[i].disabled == 'undefined' || <span style="color: #0000ff;">this</span>.data[i].disabled == <span style="color: #0000ff;">true</span><span style="color: #000000;">) {
+</span><span style="color: #008080;">370</span>                                 index =<span style="color: #000000;"> i;
+</span><span style="color: #008080;">371</span>                                 isFind = <span style="color: #0000ff;">true</span><span style="color: #000000;">;
+</span><span style="color: #008080;">372</span>                                 <span style="color: #0000ff;">break</span><span style="color: #000000;">;
+</span><span style="color: #008080;">373</span> <span style="color: #000000;">                            }
+</span><span style="color: #008080;">374</span> <span style="color: #000000;">                        }
+</span><span style="color: #008080;">375</span> <span style="color: #000000;">                    }
+</span><span style="color: #008080;">376</span> <span style="color: #000000;">                }
+</span><span style="color: #008080;">377</span> <span style="color: #000000;">            }
+</span><span style="color: #008080;">378</span> 
+<span style="color: #008080;">379</span>             <span style="color: #008000;">//</span><span style="color: #008000;">会有还原的逻辑</span>
+<span style="color: #008080;">380</span>             <span style="color: #0000ff;">if</span><span style="color: #000000;"> (isFind) {
+</span><span style="color: #008080;">381</span>                 <span style="color: #0000ff;">this</span>.selectedIndex =<span style="color: #000000;"> index;
+</span><span style="color: #008080;">382</span>                 <span style="color: #0000ff;">this</span><span style="color: #000000;">.setIndex(index);
+</span><span style="color: #008080;">383</span>             } <span style="color: #0000ff;">else</span><span style="color: #000000;"> {
+</span><span style="color: #008080;">384</span>                 <span style="color: #0000ff;">var</span> changed = <span style="color: #0000ff;">this</span><span style="color: #000000;">._changed;
+</span><span style="color: #008080;">385</span>                 <span style="color: #0000ff;">if</span> (changed &amp;&amp; <span style="color: #0000ff;">typeof</span> changed == 'function'<span style="color: #000000;">) {
+</span><span style="color: #008080;">386</span> <span style="color: #000000;">                    changed.call(scope, secItem);
+</span><span style="color: #008080;">387</span> <span style="color: #000000;">                }
+</span><span style="color: #008080;">388</span> <span style="color: #000000;">            }
+</span><span style="color: #008080;">389</span> <span style="color: #000000;">        },
+</span><span style="color: #008080;">390</span>         <span style="color: #008000;">//</span><span style="color: #008000;">数据重新加载</span>
+<span style="color: #008080;">391</span>         reload: <span style="color: #0000ff;">function</span><span style="color: #000000;"> (data) {
+</span><span style="color: #008080;">392</span> 
+<span style="color: #008080;">393</span>             <span style="color: #0000ff;">this</span>.data =<span style="color: #000000;"> data;
+</span><span style="color: #008080;">394</span>             <span style="color: #0000ff;">this</span>.dragEl.html(''<span style="color: #000000;">);
+</span><span style="color: #008080;">395</span>             <span style="color: #0000ff;">if</span> (data.constructor == Array &amp;&amp; data.length &gt; 0<span style="color: #000000;">) {
+</span><span style="color: #008080;">396</span>                 <span style="color: #0000ff;">this</span>.selectedIndex = parseInt(<span style="color: #0000ff;">this</span>.disItemNum / 2); <span style="color: #008000;">//</span><span style="color: #008000;">暂时不考虑多选的情况</span>
+<span style="color: #008080;">397</span>                 <span style="color: #0000ff;">this</span>.selectedIndex = <span style="color: #0000ff;">this</span>.selectedIndex &gt; <span style="color: #0000ff;">this</span>.data.length ? <span style="color: #0000ff;">this</span>.data.length - 1 : <span style="color: #0000ff;">this</span><span style="color: #000000;">.selectedIndex;
+</span><span style="color: #008080;">398</span>                 <span style="color: #0000ff;">this</span><span style="color: #000000;">.initItem();
+</span><span style="color: #008080;">399</span>                 <span style="color: #0000ff;">this</span><span style="color: #000000;">.initEventParam();
+</span><span style="color: #008080;">400</span>                 <span style="color: #0000ff;">this</span>.cooling = <span style="color: #0000ff;">false</span><span style="color: #000000;">;
+</span><span style="color: #008080;">401</span>                 <span style="color: #0000ff;">this</span>.setIndex(<span style="color: #0000ff;">this</span>.selectedIndex, <span style="color: #0000ff;">true</span><span style="color: #000000;">);
+</span><span style="color: #008080;">402</span> <span style="color: #000000;">            }
+</span><span style="color: #008080;">403</span> <span style="color: #000000;">        },
+</span><span style="color: #008080;">404</span>         setKey: <span style="color: #0000ff;">function</span><span style="color: #000000;"> (k) {
+</span><span style="color: #008080;">405</span>             <span style="color: #0000ff;">if</span> (k == undefined || k == <span style="color: #0000ff;">null</span>) <span style="color: #0000ff;">return</span> <span style="color: #0000ff;">false</span><span style="color: #000000;">;
+</span><span style="color: #008080;">406</span>             <span style="color: #0000ff;">var</span> i = <span style="color: #0000ff;">this</span>.dataK[k] &amp;&amp; <span style="color: #0000ff;">this</span><span style="color: #000000;">.dataK[k].index;
+</span><span style="color: #008080;">407</span>             <span style="color: #0000ff;">this</span><span style="color: #000000;">.setIndex(i);
+</span><span style="color: #008080;">408</span> <span style="color: #000000;">        },
+</span><span style="color: #008080;">409</span>         setIndex: <span style="color: #0000ff;">function</span><span style="color: #000000;"> (i, init) {
+</span><span style="color: #008080;">410</span>             <span style="color: #0000ff;">if</span> (i == undefined || i &lt; 0) <span style="color: #0000ff;">return</span> <span style="color: #0000ff;">false</span><span style="color: #000000;">;
+</span><span style="color: #008080;">411</span>             <span style="color: #0000ff;">var</span> scope = <span style="color: #0000ff;">this</span><span style="color: #000000;">;
+</span><span style="color: #008080;">412</span>             <span style="color: #008000;">//</span><span style="color: #008000;">                    this.cooling = true; //关闭冷却时间</span>
+<span style="color: #008080;">413</span>             <span style="color: #0000ff;">var</span> num = parseInt(scope.disItemNum / 2<span style="color: #000000;">);
+</span><span style="color: #008080;">414</span> 
+<span style="color: #008080;">415</span>             <span style="color: #0000ff;">if</span> (scope.type == 'list'<span style="color: #000000;">) {
+</span><span style="color: #008080;">416</span>                 num = i == 0 ? 0 : 1<span style="color: #000000;">;
+</span><span style="color: #008080;">417</span> <span style="color: #000000;">            }
+</span><span style="color: #008080;">418</span> 
+<span style="color: #008080;">419</span>             <span style="color: #0000ff;">var</span> i =<span style="color: #000000;"> parseInt(i), top;
+</span><span style="color: #008080;">420</span>             <span style="color: #0000ff;">if</span> (i &lt; 0) <span style="color: #0000ff;">return</span> <span style="color: #0000ff;">false</span><span style="color: #000000;">;
+</span><span style="color: #008080;">421</span>             <span style="color: #0000ff;">if</span> (i &gt;= <span style="color: #0000ff;">this</span>.data.length) i = <span style="color: #0000ff;">this</span>.data.length - 1<span style="color: #000000;">;
+</span><span style="color: #008080;">422</span>             <span style="color: #0000ff;">this</span>.selectedIndex =<span style="color: #000000;"> i;
+</span><span style="color: #008080;">423</span>             top = (i * <span style="color: #0000ff;">this</span>.itemHeight * (-1) + <span style="color: #0000ff;">this</span>.itemHeight *<span style="color: #000000;"> num);
+</span><span style="color: #008080;">424</span> 
+<span style="color: #008080;">425</span>             <span style="color: #008000;">//</span><span style="color: #008000;">防止设置失败</span>
+<span style="color: #008080;">426</span>             scope.oTop =<span style="color: #000000;"> top;
+</span><span style="color: #008080;">427</span>             scope.curTop =<span style="color: #000000;"> top;
+</span><span style="color: #008080;">428</span>             scope.cooling = <span style="color: #0000ff;">false</span>; <span style="color: #008000;">//</span><span style="color: #008000;">关闭冷却时间</span>
+<span style="color: #008080;">429</span>             <span style="color: #008000;">//</span><span style="color: #008000;">            scope.dragEl.css('top', top + 'px');</span>
+<span style="color: #008080;">430</span> 
+<span style="color: #008080;">431</span>             scope.dragEl.animate({ 'top': top + 'px' }, 50, 'ease-in-out'<span style="color: #000000;">);
+</span><span style="color: #008080;">432</span> 
+<span style="color: #008080;">433</span> 
+<span style="color: #008080;">434</span>             <span style="color: #0000ff;">if</span> (scope.type == 'list'<span style="color: #000000;">) {
+</span><span style="color: #008080;">435</span>                 <span style="color: #0000ff;">var</span> item = scope.dragEl.find('li'<span style="color: #000000;">);
+</span><span style="color: #008080;">436</span>                 item.removeClass('current'<span style="color: #000000;">);
+</span><span style="color: #008080;">437</span>                 item.eq(i).addClass('current'<span style="color: #000000;">);
+</span><span style="color: #008080;">438</span> <span style="color: #000000;">            }
+</span><span style="color: #008080;">439</span>             <span style="color: #008000;">//</span><span style="color: #008000;">初始化dom选项时不触发事件</span>
+<span style="color: #008080;">440</span>             <span style="color: #0000ff;">if</span> (!<span style="color: #000000;">init) {
+</span><span style="color: #008080;">441</span>                 <span style="color: #008000;">//</span><span style="color: #008000;">单选时候的change事件</span>
+<span style="color: #008080;">442</span> <span style="color: #000000;">                scope.onTouchEnd();
+</span><span style="color: #008080;">443</span> <span style="color: #000000;">            }
+</span><span style="color: #008080;">444</span> <span style="color: #000000;">        },
+</span><span style="color: #008080;">445</span>         getSelected: <span style="color: #0000ff;">function</span><span style="color: #000000;"> () {
+</span><span style="color: #008080;">446</span>             <span style="color: #0000ff;">return</span> <span style="color: #0000ff;">this</span>.data[<span style="color: #0000ff;">this</span><span style="color: #000000;">.selectedIndex];
+</span><span style="color: #008080;">447</span> <span style="color: #000000;">        },
+</span><span style="color: #008080;">448</span>         getByKey: <span style="color: #0000ff;">function</span><span style="color: #000000;"> (k) {
+</span><span style="color: #008080;">449</span>             <span style="color: #0000ff;">var</span> i = <span style="color: #0000ff;">this</span>.dataK[k] &amp;&amp; <span style="color: #0000ff;">this</span><span style="color: #000000;">.dataK[k].index;
+</span><span style="color: #008080;">450</span>             <span style="color: #0000ff;">if</span> (i != <span style="color: #0000ff;">null</span> &amp;&amp; i !=<span style="color: #000000;"> undefined)
+</span><span style="color: #008080;">451</span>                 <span style="color: #0000ff;">return</span> <span style="color: #0000ff;">this</span><span style="color: #000000;">.data[i];
+</span><span style="color: #008080;">452</span>             <span style="color: #0000ff;">return</span> <span style="color: #0000ff;">null</span><span style="color: #000000;">;
+</span><span style="color: #008080;">453</span> <span style="color: #000000;">        },
+</span><span style="color: #008080;">454</span>         <span style="color: #008000;">//</span><span style="color: #008000;">获取鼠标信息</span>
+<span style="color: #008080;">455</span>         getMousePos: <span style="color: #0000ff;">function</span><span style="color: #000000;"> (event) {
+</span><span style="color: #008080;">456</span>             <span style="color: #0000ff;">var</span><span style="color: #000000;"> top, left;
+</span><span style="color: #008080;">457</span>             top =<span style="color: #000000;"> Math.max(document.body.scrollTop, document.documentElement.scrollTop);
+</span><span style="color: #008080;">458</span>             left =<span style="color: #000000;"> Math.max(document.body.scrollLeft, document.documentElement.scrollLeft);
+</span><span style="color: #008080;">459</span>             <span style="color: #0000ff;">return</span><span style="color: #000000;"> {
+</span><span style="color: #008080;">460</span>                 top: top +<span style="color: #000000;"> event.clientY,
+</span><span style="color: #008080;">461</span>                 left: left +<span style="color: #000000;"> event.clientX
+</span><span style="color: #008080;">462</span> <span style="color: #000000;">            };
+</span><span style="color: #008080;">463</span> <span style="color: #000000;">        }
+</span><span style="color: #008080;">464</span> <span style="color: #000000;">    };
+</span><span style="color: #008080;">465</span>     <span style="color: #0000ff;">return</span> ScrollList;</pre>
+</div>
+<span class="cnblogs_code_collapse">View Code </span></div>
+<h3><span style="color: #ff0000;"><strong>请使用手机/或者使用chrome开启touch功能查看，最新js代码已处理兼容性问题</strong></span></h3>
+<h3><span><a href="3338929725136.jpg"><span>3338929725136.jpg</span></a></span></h3>
+<p><iframe style="line-height: 1.5;" src="3338929725136.jpg" width="1067" height="295"></iframe></p>
+<h3>总结</h3>
+<p><span>代码没来得及重构，各位将就下吧，接下来进入我们的重构学习！</span></p>
+<h1>重构第一步</h1>
+<h2>简单程序</h2>
+<h3>原来作者使用java写的，我这里用js实现可能有所不同，如果有问题请提出</h3>
+<p>首先我们跟着学习第一个例子，实例据说比较简单，是一个影片出租店用的程序，计算每一个顾客的消费金额并打印详情。</p>
+<p>操作者告诉程序，影片分为三类：普通片/儿童片/租期多长，程序便根据租赁时间和影片类型计算费用，并且为常客计算积分</p>
+<p>PS：然后作者画了个图，我们不去管他</p>
+<h3>Movie（影片）</h3>
+<div class="cnblogs_code">
+<pre><span style="color: #008080;"> 1</span> <span style="color: #008000;">//</span><span style="color: #008000;">影片，单纯的数据类</span>
+<span style="color: #008080;"> 2</span> <span style="color: #0000ff;">var</span> Movie = <span style="color: #0000ff;">function</span><span style="color: #000000;"> (title, priceCode) {
+</span><span style="color: #008080;"> 3</span>     <span style="color: #0000ff;">this</span>._title =<span style="color: #000000;"> title;
+</span><span style="color: #008080;"> 4</span>     <span style="color: #0000ff;">this</span>._priceCode =<span style="color: #000000;"> priceCode;
+</span><span style="color: #008080;"> 5</span> 
+<span style="color: #008080;"> 6</span> <span style="color: #000000;">};
+</span><span style="color: #008080;"> 7</span> Movie.CHILDRENS = 2<span style="color: #000000;">;
+</span><span style="color: #008080;"> 8</span> Movie.REGULAR = 0<span style="color: #000000;">;
+</span><span style="color: #008080;"> 9</span> Movie.NEW_RELEASE = 1<span style="color: #000000;">;
+</span><span style="color: #008080;">10</span> 
+<span style="color: #008080;">11</span> Movie.prototype =<span style="color: #000000;"> {
+</span><span style="color: #008080;">12</span> <span style="color: #000000;">    constructor: Movie,
+</span><span style="color: #008080;">13</span>     getPriceCode: <span style="color: #0000ff;">function</span><span style="color: #000000;"> () {
+</span><span style="color: #008080;">14</span>         <span style="color: #0000ff;">return</span> <span style="color: #0000ff;">this</span><span style="color: #000000;">._priceCode;
+</span><span style="color: #008080;">15</span> <span style="color: #000000;">    },
+</span><span style="color: #008080;">16</span>     setPriceCode: <span style="color: #0000ff;">function</span><span style="color: #000000;"> (arg) {
+</span><span style="color: #008080;">17</span>         <span style="color: #0000ff;">this</span>._priceCode =<span style="color: #000000;"> arg;
+</span><span style="color: #008080;">18</span> <span style="color: #000000;">    },
+</span><span style="color: #008080;">19</span>     getTitle: <span style="color: #0000ff;">function</span><span style="color: #000000;"> () {
+</span><span style="color: #008080;">20</span>         <span style="color: #0000ff;">return</span> <span style="color: #0000ff;">this</span><span style="color: #000000;">._title;
+</span><span style="color: #008080;">21</span> <span style="color: #000000;">    }
+</span><span style="color: #008080;">22</span> };</pre>
+</div>
+<h3>租赁</h3>
+<div class="cnblogs_code">
+<pre><span style="color: #008080;"> 1</span> <span style="color: #008000;">//</span><span style="color: #008000;">租赁</span>
+<span style="color: #008080;"> 2</span> <span style="color: #0000ff;">var</span> Rental = <span style="color: #0000ff;">function</span><span style="color: #000000;"> (movie, daysRented) {
+</span><span style="color: #008080;"> 3</span>     <span style="color: #0000ff;">this</span>._movie =<span style="color: #000000;"> movie;
+</span><span style="color: #008080;"> 4</span>     <span style="color: #0000ff;">this</span>._daysRented =<span style="color: #000000;"> daysRented;
+</span><span style="color: #008080;"> 5</span> <span style="color: #000000;">};
+</span><span style="color: #008080;"> 6</span> 
+<span style="color: #008080;"> 7</span> Rental.prototype =<span style="color: #000000;"> {
+</span><span style="color: #008080;"> 8</span> <span style="color: #000000;">    constructor: Rental,
+</span><span style="color: #008080;"> 9</span>     getDaysRented: <span style="color: #0000ff;">function</span><span style="color: #000000;"> () {
+</span><span style="color: #008080;">10</span>         <span style="color: #0000ff;">return</span> <span style="color: #0000ff;">this</span><span style="color: #000000;">._daysRented;
+</span><span style="color: #008080;">11</span> <span style="color: #000000;">    },
+</span><span style="color: #008080;">12</span>     getMovie: <span style="color: #0000ff;">function</span><span style="color: #000000;"> () {
+</span><span style="color: #008080;">13</span>         <span style="color: #0000ff;">return</span> <span style="color: #0000ff;">this</span><span style="color: #000000;">._movie;
+</span><span style="color: #008080;">14</span> <span style="color: #000000;">    }
+</span><span style="color: #008080;">15</span> };</pre>
+</div>
+<h3>顾客</h3>
+<p>PS：这里用到了<code>Vector</code>，但是我们用数组代替吧</p>
+<div class="cnblogs_code">
+<pre><span style="color: #008080;"> 1</span> <span style="color: #0000ff;">var</span> Customer = <span style="color: #0000ff;">function</span><span style="color: #000000;"> (name) {
+</span><span style="color: #008080;"> 2</span>     <span style="color: #0000ff;">this</span>._name =<span style="color: #000000;"> name;
+</span><span style="color: #008080;"> 3</span>     <span style="color: #0000ff;">this</span>._rentals =<span style="color: #000000;"> [];
+</span><span style="color: #008080;"> 4</span> <span style="color: #000000;">};
+</span><span style="color: #008080;"> 5</span> Customer.prototype =<span style="color: #000000;"> {
+</span><span style="color: #008080;"> 6</span> <span style="color: #000000;">    constructor: Customer,
+</span><span style="color: #008080;"> 7</span>     addRental: <span style="color: #0000ff;">function</span><span style="color: #000000;"> (arg) {
+</span><span style="color: #008080;"> 8</span>         <span style="color: #008000;">//</span><span style="color: #008000;">加入的是一个rental实例</span>
+<span style="color: #008080;"> 9</span>         <span style="color: #0000ff;">this</span><span style="color: #000000;">._rentals.push(arg);
+</span><span style="color: #008080;">10</span> 
+<span style="color: #008080;">11</span> <span style="color: #000000;">    },
+</span><span style="color: #008080;">12</span>     getName: <span style="color: #0000ff;">function</span><span style="color: #000000;"> () {
+</span><span style="color: #008080;">13</span>         <span style="color: #0000ff;">return</span> <span style="color: #0000ff;">this</span><span style="color: #000000;">._name;
+</span><span style="color: #008080;">14</span> <span style="color: #000000;">    },
+</span><span style="color: #008080;">15</span>     <span style="color: #008000;">//</span><span style="color: #008000;">生成详细订单的函数，并拥有交互代码</span>
+<span style="color: #008080;">16</span>     statement: <span style="color: #0000ff;">function</span><span style="color: #000000;"> () {
+</span><span style="color: #008080;">17</span>         <span style="color: #0000ff;">var</span> totalAmount = 0<span style="color: #000000;">,
+</span><span style="color: #008080;">18</span>         <span style="color: #008000;">//</span><span style="color: #008000;">积分</span>
+<span style="color: #008080;">19</span>             frequentRenterPoints = 0<span style="color: #000000;">,
+</span><span style="color: #008080;">20</span>         <span style="color: #008000;">//</span><span style="color: #008000;">原文为枚举类型</span>
+<span style="color: #008080;">21</span>             rentals = <span style="color: #0000ff;">this</span><span style="color: #000000;">._rentals,
+</span><span style="color: #008080;">22</span>             result = 'rental record for ' + <span style="color: #0000ff;">this</span>.getName() + '\n'<span style="color: #000000;">;
+</span><span style="color: #008080;">23</span> 
+<span style="color: #008080;">24</span>         <span style="color: #0000ff;">var</span><span style="color: #000000;"> i,
+</span><span style="color: #008080;">25</span>             thisAmount = 0<span style="color: #000000;">,
+</span><span style="color: #008080;">26</span>             each = <span style="color: #0000ff;">null</span><span style="color: #000000;">,
+</span><span style="color: #008080;">27</span> 
+<span style="color: #008080;">28</span>             len =<span style="color: #000000;"> rentals.length;
+</span><span style="color: #008080;">29</span> 
+<span style="color: #008080;">30</span>         <span style="color: #008000;">//</span><span style="color: #008000;">PS：尼玛两年不搞java了，这里居然有点读不懂了。。。</span>
+<span style="color: #008080;">31</span>         <span style="color: #008000;">//</span><span style="color: #008000;">这里大概是要遍历rentals的意思，所以代码我给变了点</span>
+<span style="color: #008080;">32</span>         <span style="color: #0000ff;">for</span> (i = 0; i &lt; len; i++<span style="color: #000000;">) {
+</span><span style="color: #008080;">33</span>             thisAmount = 0<span style="color: #000000;">;
+</span><span style="color: #008080;">34</span>             each =<span style="color: #000000;"> rentals[i];
+</span><span style="color: #008080;">35</span>             <span style="color: #0000ff;">switch</span><span style="color: #000000;"> (each.getMovie().getPriceCode()) {
+</span><span style="color: #008080;">36</span>                 <span style="color: #0000ff;">case</span><span style="color: #000000;"> Movie.REGULAR:
+</span><span style="color: #008080;">37</span>                     thisAmount += 2<span style="color: #000000;">;
+</span><span style="color: #008080;">38</span>                     <span style="color: #0000ff;">if</span> (each.getDaysRented() &gt; 2) thisAmount += (each.getDaysRented() - 2) * 1.5<span style="color: #000000;">;
+</span><span style="color: #008080;">39</span>                     <span style="color: #0000ff;">break</span><span style="color: #000000;">;
+</span><span style="color: #008080;">40</span>                 <span style="color: #0000ff;">case</span><span style="color: #000000;"> Movie.NEW_RELEASE:
+</span><span style="color: #008080;">41</span>                     thisAmount += each.getDaysRented() * 3<span style="color: #000000;">;
+</span><span style="color: #008080;">42</span>                     <span style="color: #0000ff;">break</span><span style="color: #000000;">;
+</span><span style="color: #008080;">43</span>                 <span style="color: #0000ff;">case</span><span style="color: #000000;"> Movie.CHILDRENS:
+</span><span style="color: #008080;">44</span>                     thisAmount += 1.5<span style="color: #000000;">;
+</span><span style="color: #008080;">45</span>                     <span style="color: #0000ff;">if</span> (each.getDaysRented() &gt; 3) thisAmount += (each.getDaysRented() - 3) * 1.5<span style="color: #000000;">;
+</span><span style="color: #008080;">46</span>                     <span style="color: #0000ff;">break</span><span style="color: #000000;">;
+</span><span style="color: #008080;">47</span> <span style="color: #000000;">            }
+</span><span style="color: #008080;">48</span>             frequentRenterPoints++<span style="color: #000000;">;
+</span><span style="color: #008080;">49</span>             <span style="color: #0000ff;">if</span> ((each.getMovie().getPriceCode() == Movie.NEW_RELEASE) &amp;&amp; each.getDaysRented() &gt; 1) frequentRenterPoints++<span style="color: #000000;">;
+</span><span style="color: #008080;">50</span> 
+<span style="color: #008080;">51</span>             result += each.getMovie().getTitle() + '：' + thisAmount + '\n'<span style="color: #000000;">;
+</span><span style="color: #008080;">52</span>             totalAmount +=<span style="color: #000000;"> thisAmount;
+</span><span style="color: #008080;">53</span> <span style="color: #000000;">        }
+</span><span style="color: #008080;">54</span>         result += 'amount owed is ' + thisAmount + '\n'<span style="color: #000000;">;
+</span><span style="color: #008080;">55</span>         result += 'you earned ' +<span style="color: #000000;"> frequentRenterPoints;
+</span><span style="color: #008080;">56</span>         <span style="color: #0000ff;">return</span><span style="color: #000000;"> result;
+</span><span style="color: #008080;">57</span> <span style="color: #000000;">    }
+</span><span style="color: #008080;">58</span> };</pre>
+</div>
+<h3>先试试程序吧</h3>
+<div class="cnblogs_code">
+<pre><span style="color: #008080;"> 1</span> <span style="color: #008000;">//</span><span style="color: #008000;">此处先做一个例子试试吧</span>
+<span style="color: #008080;"> 2</span> <span style="color: #0000ff;">var</span> m1 = <span style="color: #0000ff;">new</span> Movie('刀戟戡魔录', 0<span style="color: #000000;">);
+</span><span style="color: #008080;"> 3</span> <span style="color: #0000ff;">var</span> m2 = <span style="color: #0000ff;">new</span> Movie('霹雳神州', 1<span style="color: #000000;">);
+</span><span style="color: #008080;"> 4</span> <span style="color: #0000ff;">var</span> m3 = <span style="color: #0000ff;">new</span> Movie('开疆记', 2<span style="color: #000000;">);
+</span><span style="color: #008080;"> 5</span> 
+<span style="color: #008080;"> 6</span> <span style="color: #0000ff;">var</span> r1 = <span style="color: #0000ff;">new</span> Rental(m1, 1<span style="color: #000000;">);
+</span><span style="color: #008080;"> 7</span> <span style="color: #0000ff;">var</span> r2 = <span style="color: #0000ff;">new</span> Rental(m2, 2<span style="color: #000000;">);
+</span><span style="color: #008080;"> 8</span> <span style="color: #0000ff;">var</span> r3 = <span style="color: #0000ff;">new</span> Rental(m3, 3<span style="color: #000000;">);
+</span><span style="color: #008080;"> 9</span> 
+<span style="color: #008080;">10</span> <span style="color: #0000ff;">var</span> y = <span style="color: #0000ff;">new</span> Customer('叶小钗'<span style="color: #000000;">);
+</span><span style="color: #008080;">11</span> 
+<span style="color: #008080;">12</span> <span style="color: #000000;">y.addRental(r1);
+</span><span style="color: #008080;">13</span> <span style="color: #000000;">y.addRental(r2);
+</span><span style="color: #008080;">14</span> <span style="color: #000000;">y.addRental(r3);
+</span><span style="color: #008080;">15</span> 
+<span style="color: #008080;">16</span> alert(y.statement());</pre>
+</div>
+<p><img src="432727677605.png" alt=""></p>
+<h3>程序总结</h3>
+<p>PS：这里完全就算调用作者的话了，老夫到此除了认识到对java忘得差不多了，没有其他感受......</p>
+<p>该程序具有以下特点：</p>
+<p>① 不符合面向对象精神</p>
+<p>② statement过长（这个我是真的感觉很长，我打了很久字）</p>
+<p>③ 扩展性差</p>
+<p>以上如果用户希望对系统做一点修改，比如希望用html输出，我们就发现statement整个就是一个2B了，于是我们一般会复杂粘贴一番（赶时间的情况至少我会这么做）</p>
+<p>这样一来也许多了一个htmlStatement的函数，但是大量重复的代码，我是不能接受的，以下是一个因素：</p>
+<p>如果计费标准发生变化了我们就需要修改代码！而且是维护两端代码（读到这，老夫感受很深啊），所以这里还可能带来潜在威胁哦！</p>
+<p>于是现在来了第二个变化：</p>
+<p>用户希望改变影片分类规则，但又不知道怎么改，他设想了几种方案，这些方案都会影响计算方式，那么又应该如何呢？？</p>
+<p>PS：尼玛这简直是我们工作真正的写照啊！老板/产品 想要一个方案，但是又不知道想要神马！于是我们一般说的是这个不能实现（其实我们知道是可以实现的）</p>
+<h3>综上，你知道为什么要重构了吗？</h3>
+<p>至于你知不知道，反正我知道了。。。。。。</p>
+<h1>分解重组</h1>
+<h3>测试</h3>
+<p>开始之前，作者大力强调了一下测试与建立单元测试的重要性，而且第四章会讲，我这里先不纠结啦:)</p>
+<h3>分解重组statement</h3>
+<p>第一步，我们需要将长得离谱的statement干掉，代码越小越简单，代码越小越少BUG</p>
+<p>于是我们首先要找出代码的逻辑泥团，并运用<strong>extract method</strong>，至于本例，逻辑泥团就是switch语句，我们将它提炼成单独的函数</p>
+<p>我们提炼一个函数时，我们要知道自己可能出什么错，提炼不好就可能引入BUG</p>
+<p>PS：这种情况也经常在工作中出现，我改一个BUG，结果由于新的代码引起其它BUG！！！</p>
+<h2>提炼函数</h2>
+<p>找出在代码中的局部变量，这里是each与thisAmount，前者未变，后者会变</p>
+<div class="cnblogs_code">
+<pre><span style="color: #800000;">任何不会改变的变量都可以被当成参数传入新的函数，至于需要改变的变量就需要格外小心</span></pre>
+</div>
+<div class="cnblogs_code">
+<pre><span style="color: #800000;">如果只有一个变量会被修改，我们可以将它作为返回值</span></pre>
+</div>
+<p>thisAmount是个临时变量，每次循环都会被初始化为0 ，并且在switch以前不会被修改，所以我们可以将它作为返回值使用</p>
+<h3>重构的代码</h3>
+<div class="cnblogs_code">
+<pre><span style="color: #008080;"> 1</span> statement: <span style="color: #0000ff;">function</span><span style="color: #000000;"> () {
+</span><span style="color: #008080;"> 2</span>     <span style="color: #0000ff;">var</span> totalAmount = 0<span style="color: #000000;">,
+</span><span style="color: #008080;"> 3</span>     <span style="color: #008000;">//</span><span style="color: #008000;">积分</span>
+<span style="color: #008080;"> 4</span>         frequentRenterPoints = 0<span style="color: #000000;">,
+</span><span style="color: #008080;"> 5</span>     <span style="color: #008000;">//</span><span style="color: #008000;">原文为枚举类型</span>
+<span style="color: #008080;"> 6</span>         rentals = <span style="color: #0000ff;">this</span><span style="color: #000000;">._rentals,
+</span><span style="color: #008080;"> 7</span>         result = 'rental record for ' + <span style="color: #0000ff;">this</span>.getName() + '\n'<span style="color: #000000;">;
+</span><span style="color: #008080;"> 8</span> 
+<span style="color: #008080;"> 9</span>     <span style="color: #0000ff;">var</span><span style="color: #000000;"> i,
+</span><span style="color: #008080;">10</span>         thisAmount = 0<span style="color: #000000;">,
+</span><span style="color: #008080;">11</span>         each = <span style="color: #0000ff;">null</span><span style="color: #000000;">,
+</span><span style="color: #008080;">12</span> 
+<span style="color: #008080;">13</span>         len =<span style="color: #000000;"> rentals.length;
+</span><span style="color: #008080;">14</span> 
+<span style="color: #008080;">15</span>     <span style="color: #008000;">//</span><span style="color: #008000;">PS：尼玛两年不搞java了，这里居然有点读不懂了。。。</span>
+<span style="color: #008080;">16</span>     <span style="color: #008000;">//</span><span style="color: #008000;">这里大概是要遍历rentals的意思，所以代码我给变了点</span>
+<span style="color: #008080;">17</span>     <span style="color: #0000ff;">for</span> (i = 0; i &lt; len; i++<span style="color: #000000;">) {
+</span><span style="color: #008080;">18</span>         thisAmount = 0<span style="color: #000000;">;
+</span><span style="color: #008080;">19</span>         each =<span style="color: #000000;"> rentals[i];
+</span><span style="color: #008080;">20</span>         <strong><span style="color: #ff0000;">thisAmount = this._amountFor(each);
+</span></strong><span style="color: #008080;">21</span>         frequentRenterPoints++<span style="color: #000000;">;
+</span><span style="color: #008080;">22</span>         <span style="color: #0000ff;">if</span> ((each.getMovie().getPriceCode() == Movie.NEW_RELEASE) &amp;&amp; each.getDaysRented() &gt; 1) frequentRenterPoints++<span style="color: #000000;">;
+</span><span style="color: #008080;">23</span> 
+<span style="color: #008080;">24</span>         result += each.getMovie().getTitle() + '：' + thisAmount + '\n'<span style="color: #000000;">;
+</span><span style="color: #008080;">25</span>         totalAmount +=<span style="color: #000000;"> thisAmount;
+</span><span style="color: #008080;">26</span> <span style="color: #000000;">    }
+</span><span style="color: #008080;">27</span>     result += 'amount owed is ' + thisAmount + '\n'<span style="color: #000000;">;
+</span><span style="color: #008080;">28</span>     result += 'you earned ' +<span style="color: #000000;"> frequentRenterPoints;
+</span><span style="color: #008080;">29</span>     <span style="color: #0000ff;">return</span><span style="color: #000000;"> result;
+</span><span style="color: #008080;">30</span> <span style="color: #000000;">},
+</span><span style="color: #008080;">31</span> _amountFor: <span style="color: #0000ff;">function</span><span style="color: #000000;"> (each) {
+</span><span style="color: #008080;">32</span>     <span style="color: #ff0000;"><strong>var thisAmount = 0;
+</strong></span><span style="color: #008080;">33</span>     <span style="color: #0000ff;">switch</span><span style="color: #000000;"> (each.getMovie().getPriceCode()) {
+</span><span style="color: #008080;">34</span>         <span style="color: #0000ff;">case</span><span style="color: #000000;"> Movie.REGULAR:
+</span><span style="color: #008080;">35</span>             thisAmount += 2<span style="color: #000000;">;
+</span><span style="color: #008080;">36</span>             <span style="color: #0000ff;">if</span> (each.getDaysRented() &gt; 2) thisAmount += (each.getDaysRented() - 2) * 1.5<span style="color: #000000;">;
+</span><span style="color: #008080;">37</span>             <span style="color: #0000ff;">break</span><span style="color: #000000;">;
+</span><span style="color: #008080;">38</span>         <span style="color: #0000ff;">case</span><span style="color: #000000;"> Movie.NEW_RELEASE:
+</span><span style="color: #008080;">39</span>             thisAmount += each.getDaysRented() * 3<span style="color: #000000;">;
+</span><span style="color: #008080;">40</span>             <span style="color: #0000ff;">break</span><span style="color: #000000;">;
+</span><span style="color: #008080;">41</span>         <span style="color: #0000ff;">case</span><span style="color: #000000;"> Movie.CHILDRENS:
+</span><span style="color: #008080;">42</span>             thisAmount += 1.5<span style="color: #000000;">;
+</span><span style="color: #008080;">43</span>             <span style="color: #0000ff;">if</span> (each.getDaysRented() &gt; 3) thisAmount += (each.getDaysRented() - 3) * 1.5<span style="color: #000000;">;
+</span><span style="color: #008080;">44</span>             <span style="color: #0000ff;">break</span><span style="color: #000000;">;
+</span><span style="color: #008080;">45</span> <span style="color: #000000;">    }
+</span><span style="color: #008080;">46</span>     <span style="color: #ff0000;"><strong>return thisAmount;
+</strong></span><span style="color: #008080;">47</span> }</pre>
+</div>
+<p>这里虽说只是做了一点改变，但是明显代码质量有所提升，然后内部的变量名也可以改变，比如：</p>
+<p>① each =&gt; rental</p>
+<p>② thisAmount =&gt; result</p>
+<div class="cnblogs_code" onclick="cnblogs_code_show('b70783ea-6f1a-4550-9ae1-451b8b41de6e')"><img id="code_img_closed_b70783ea-6f1a-4550-9ae1-451b8b41de6e" class="code_img_closed" src="43570758473519.gif" alt=""><img id="code_img_opened_b70783ea-6f1a-4550-9ae1-451b8b41de6e" class="code_img_opened" style="display: none;" onclick="cnblogs_code_hide('b70783ea-6f1a-4550-9ae1-451b8b41de6e',event)" src="16365178109279.gif" alt="">
+<div id="cnblogs_code_open_b70783ea-6f1a-4550-9ae1-451b8b41de6e" class="cnblogs_code_hide">
+<pre>_amountFor: <span style="color: #0000ff;">function</span><span style="color: #000000;"> (rental) {
+    </span><span style="color: #0000ff;">var</span> result = 0<span style="color: #000000;">;
+    </span><span style="color: #0000ff;">switch</span><span style="color: #000000;"> (rental.getMovie().getPriceCode()) {
+        </span><span style="color: #0000ff;">case</span><span style="color: #000000;"> Movie.REGULAR:
+            result </span>+= 2<span style="color: #000000;">;
+            </span><span style="color: #0000ff;">if</span> (rental.getDaysRented() &gt; 2) result += (rental.getDaysRented() - 2) * 1.5<span style="color: #000000;">;
+            </span><span style="color: #0000ff;">break</span><span style="color: #000000;">;
+        </span><span style="color: #0000ff;">case</span><span style="color: #000000;"> Movie.NEW_RELEASE:
+            result </span>+= rental.getDaysRented() * 3<span style="color: #000000;">;
+            </span><span style="color: #0000ff;">break</span><span style="color: #000000;">;
+        </span><span style="color: #0000ff;">case</span><span style="color: #000000;"> Movie.CHILDRENS:
+            result </span>+= 1.5<span style="color: #000000;">;
+            </span><span style="color: #0000ff;">if</span> (rental.getDaysRented() &gt; 3) result += (rental.getDaysRented() - 3) * 1.5<span style="color: #000000;">;
+            </span><span style="color: #0000ff;">break</span><span style="color: #000000;">;
+    }
+    </span><span style="color: #0000ff;">return</span><span style="color: #000000;"> result;
+}</span></pre>
+</div>
+<span class="cnblogs_code_collapse">View Code </span></div>
+<h2>搬移&ldquo;计算&rdquo;代码</h2>
+<p>观察amountFor时，我们发现此处具有rental的信息，却没有customer的信息，所以这里有一个问题：</p>
+<div class="cnblogs_code">
+<pre><span style="color: #800000;">绝大多数情况，函数应该放在他使用的数据的所属对象内</span></pre>
+</div>
+<p>所以amountFor其实应该放到rental中去，为了适应变化，就得去掉参数，并且我们这里讲函数名一并更改了</p>
+<p>这里贴出完整的代码，各位自己看看</p>
+<div class="cnblogs_code" onclick="cnblogs_code_show('260d7f32-48bb-4a3c-a7d0-28c64856dcb3')"><img id="code_img_closed_260d7f32-48bb-4a3c-a7d0-28c64856dcb3" class="code_img_closed" src="43570758473519.gif" alt=""><img id="code_img_opened_260d7f32-48bb-4a3c-a7d0-28c64856dcb3" class="code_img_opened" style="display: none;" onclick="cnblogs_code_hide('260d7f32-48bb-4a3c-a7d0-28c64856dcb3',event)" src="16365178109279.gif" alt="">
+<div id="cnblogs_code_open_260d7f32-48bb-4a3c-a7d0-28c64856dcb3" class="cnblogs_code_hide">
+<pre><span style="color: #800000;">var Movie = function (title, priceCode) </span>{<span style="color: #ff0000;">
+    this._title = title;
+    this._priceCode = priceCode;
+
+</span>}<span style="color: #800000;">;
+Movie.CHILDRENS = 2;
+Movie.REGULAR = 0;
+Movie.NEW_RELEASE = 1;
+
+Movie.prototype = </span>{<span style="color: #ff0000;">
+    constructor</span>:<span style="color: #0000ff;"> Movie,
+    getPriceCode: function () {
+        return this._priceCode</span>;
+    }<span style="color: #800000;">,
+    setPriceCode: function (arg) </span>{<span style="color: #ff0000;">
+        this._priceCode = arg;
+    </span>}<span style="color: #800000;">,
+    getTitle: function () </span>{<span style="color: #ff0000;">
+        return this._title;
+    </span>}<span style="color: #800000;">
+};
+
+//租赁
+var Rental = function (movie, daysRented) </span>{<span style="color: #ff0000;">
+    this._movie = movie;
+    this._daysRented = daysRented;
+</span>}<span style="color: #800000;">;
+
+Rental.prototype = </span>{<span style="color: #ff0000;">
+    constructor</span>:<span style="color: #0000ff;"> Rental,
+    getDaysRented: function () {
+        return this._daysRented</span>;
+    }<span style="color: #800000;">,
+    getMovie: function () </span>{<span style="color: #ff0000;">
+        return this._movie;
+    </span>}<span style="color: #800000;">,
+    getChange: function () </span>{<span style="color: #ff0000;">
+        var result = 0;
+        switch (this.getMovie().getPriceCode()) {
+            case Movie.REGULAR</span>:<span style="color: #0000ff;">
+                result += 2</span>;<span style="color: #ff0000;">
+                if (this.getDaysRented() &gt; 2) result += (this.getDaysRented() - 2) * 1.5;
+                break;
+            case Movie.NEW_RELEASE</span>:<span style="color: #0000ff;">
+                result += this.getDaysRented() * 3</span>;<span style="color: #ff0000;">
+                break;
+            case Movie.CHILDRENS</span>:<span style="color: #0000ff;">
+                result += 1.5</span>;<span style="color: #ff0000;">
+                if (this.getDaysRented() &gt; 3) result += (this.getDaysRented() - 3) * 1.5;
+                break;
+        </span>}<span style="color: #800000;">
+        return result;
+    }
+};
+
+//顾客
+var Customer = function (name) </span>{<span style="color: #ff0000;">
+    this._name = name;
+    this._rentals = [];
+</span>}<span style="color: #800000;">;
+Customer.prototype = </span>{<span style="color: #ff0000;">
+    constructor</span>:<span style="color: #0000ff;"> Customer,
+    addRental: function (arg) {
+        //加入的是一个rental实例
+        this._rentals.push(arg)</span>;
+
+    }<span style="color: #800000;">,
+    getName: function () </span>{<span style="color: #ff0000;">
+        return this._name;
+    </span>}<span style="color: #800000;">,
+    //生成详细订单的函数，并拥有交互代码
+    statement: function () </span>{<span style="color: #ff0000;">
+        var totalAmount = 0,
+        //积分
+        frequentRenterPoints = 0,
+        //原文为枚举类型
+        rentals = this._rentals,
+        result = 'rental record for ' + this.getName() + '\n';
+
+        var i,
+        thisAmount = 0,
+        each = null,
+
+        len = rentals.length;
+
+        //PS：尼玛两年不搞java了，这里居然有点读不懂了。。。
+        //这里大概是要遍历rentals的意思，所以代码我给变了点
+        for (i = 0; i &lt; len; i++) {
+            thisAmount = 0;
+            each = rentals[i];
+            thisAmount = this._amountFor(each);
+            frequentRenterPoints++;
+            if ((each.getMovie().getPriceCode() == Movie.NEW_RELEASE) &amp;&amp; each.getDaysRented() &gt; 1) frequentRenterPoints++;
+
+            result += each.getMovie().getTitle() + '：' + thisAmount + '\n';
+            totalAmount += thisAmount;
+        </span>}<span style="color: #800000;">
+        result += 'amount owed is ' + thisAmount + '\n';
+        result += 'you earned ' + frequentRenterPoints;
+        return result;
+    },
+    _amountFor: function (rental) </span>{<span style="color: #ff0000;">
+        return rental.getChange();
+    </span>}<span style="color: #800000;">
+};
+
+//此处先做一个例子试试吧
+var m1 = new Movie('刀戟戡魔录', 0);
+var m2 = new Movie('霹雳神州', 1);
+var m3 = new Movie('开疆记', 2);
+
+var r1 = new Rental(m1, 1);
+var r2 = new Rental(m2, 2);
+var r3 = new Rental(m3, 3);
+
+var y = new Customer('叶小钗');
+
+y.addRental(r1);
+y.addRental(r2);
+y.addRental(r3);
+
+alert(y.statement());</span></pre>
+</div>
+<span class="cnblogs_code_collapse">View Code </span></div>
+<div class="cnblogs_code">
+<pre><span style="color: #008080;"> 1</span> Rental.prototype =<span style="color: #000000;"> {
+</span><span style="color: #008080;"> 2</span> <span style="color: #000000;">    constructor: Rental,
+</span><span style="color: #008080;"> 3</span>     getDaysRented: <span style="color: #0000ff;">function</span><span style="color: #000000;"> () {
+</span><span style="color: #008080;"> 4</span>         <span style="color: #0000ff;">return</span> <span style="color: #0000ff;">this</span><span style="color: #000000;">._daysRented;
+</span><span style="color: #008080;"> 5</span> <span style="color: #000000;">    },
+</span><span style="color: #008080;"> 6</span>     getMovie: <span style="color: #0000ff;">function</span><span style="color: #000000;"> () {
+</span><span style="color: #008080;"> 7</span>         <span style="color: #0000ff;">return</span> <span style="color: #0000ff;">this</span><span style="color: #000000;">._movie;
+</span><span style="color: #008080;"> 8</span> <span style="color: #000000;">    },
+</span><span style="color: #008080;"> 9</span>     <span style="color: #ff0000;">getChange: function () {
+10         var result = 0;
+11         switch (this.getMovie().getPriceCode()) {
+12             case Movie.REGULAR:
+13                 result += 2;
+14                 if (this.getDaysRented() &gt; 2) result += (this.getDaysRented() - 2) * 1.5;
+15                 break;
+16             case Movie.NEW_RELEASE:
+17                 result += this.getDaysRented() * 3;
+18                 break;
+19             case Movie.CHILDRENS:
+20                 result += 1.5;
+21                 if (this.getDaysRented() &gt; 3) result += (this.getDaysRented() - 3) * 1.5;
+22                 break;
+23         }
+24         return result;
+25     }
+</span><span style="color: #008080;">26</span> <span style="color: #000000;">};
+</span><span style="color: #008080;">27</span> 
+<span style="color: #008080;">28</span> <span style="color: #008000;">//</span><span style="color: #008000;">顾客</span>
+<span style="color: #008080;">29</span> <span style="color: #0000ff;">var</span> Customer = <span style="color: #0000ff;">function</span><span style="color: #000000;"> (name) {
+</span><span style="color: #008080;">30</span>     <span style="color: #0000ff;">this</span>._name =<span style="color: #000000;"> name;
+</span><span style="color: #008080;">31</span>     <span style="color: #0000ff;">this</span>._rentals =<span style="color: #000000;"> [];
+</span><span style="color: #008080;">32</span> <span style="color: #000000;">};
+</span><span style="color: #008080;">33</span> Customer.prototype =<span style="color: #000000;"> {
+</span><span style="color: #008080;">34</span> <span style="color: #000000;">    constructor: Customer,
+</span><span style="color: #008080;">35</span>     addRental: <span style="color: #0000ff;">function</span><span style="color: #000000;"> (arg) {
+</span><span style="color: #008080;">36</span>         <span style="color: #008000;">//</span><span style="color: #008000;">加入的是一个rental实例</span>
+<span style="color: #008080;">37</span>         <span style="color: #0000ff;">this</span><span style="color: #000000;">._rentals.push(arg);
+</span><span style="color: #008080;">38</span> 
+<span style="color: #008080;">39</span> <span style="color: #000000;">    },
+</span><span style="color: #008080;">40</span>     getName: <span style="color: #0000ff;">function</span><span style="color: #000000;"> () {
+</span><span style="color: #008080;">41</span>         <span style="color: #0000ff;">return</span> <span style="color: #0000ff;">this</span><span style="color: #000000;">._name;
+</span><span style="color: #008080;">42</span> <span style="color: #000000;">    },
+</span><span style="color: #008080;">43</span>     <span style="color: #008000;">//</span><span style="color: #008000;">生成详细订单的函数，并拥有交互代码</span>
+<span style="color: #008080;">44</span>     statement: <span style="color: #0000ff;">function</span><span style="color: #000000;"> () {
+</span><span style="color: #008080;">45</span>         <span style="color: #0000ff;">var</span> totalAmount = 0<span style="color: #000000;">,
+</span><span style="color: #008080;">46</span>         <span style="color: #008000;">//</span><span style="color: #008000;">积分</span>
+<span style="color: #008080;">47</span>         frequentRenterPoints = 0<span style="color: #000000;">,
+</span><span style="color: #008080;">48</span>         <span style="color: #008000;">//</span><span style="color: #008000;">原文为枚举类型</span>
+<span style="color: #008080;">49</span>         rentals = <span style="color: #0000ff;">this</span><span style="color: #000000;">._rentals,
+</span><span style="color: #008080;">50</span>         result = 'rental record for ' + <span style="color: #0000ff;">this</span>.getName() + '\n'<span style="color: #000000;">;
+</span><span style="color: #008080;">51</span> 
+<span style="color: #008080;">52</span>         <span style="color: #0000ff;">var</span><span style="color: #000000;"> i,
+</span><span style="color: #008080;">53</span>         thisAmount = 0<span style="color: #000000;">,
+</span><span style="color: #008080;">54</span>         each = <span style="color: #0000ff;">null</span><span style="color: #000000;">,
+</span><span style="color: #008080;">55</span> 
+<span style="color: #008080;">56</span>         len =<span style="color: #000000;"> rentals.length;
+</span><span style="color: #008080;">57</span> 
+<span style="color: #008080;">58</span>         <span style="color: #008000;">//</span><span style="color: #008000;">PS：尼玛两年不搞java了，这里居然有点读不懂了。。。</span>
+<span style="color: #008080;">59</span>         <span style="color: #008000;">//</span><span style="color: #008000;">这里大概是要遍历rentals的意思，所以代码我给变了点</span>
+<span style="color: #008080;">60</span>         <span style="color: #0000ff;">for</span> (i = 0; i &lt; len; i++<span style="color: #000000;">) {
+</span><span style="color: #008080;">61</span>             thisAmount = 0<span style="color: #000000;">;
+</span><span style="color: #008080;">62</span>             each =<span style="color: #000000;"> rentals[i];
+</span><span style="color: #008080;">63</span>             <span style="color: #ff0000;">thisAmount = each.getChange();
+</span><span style="color: #008080;">64</span>             frequentRenterPoints++<span style="color: #000000;">;
+</span><span style="color: #008080;">65</span>             <span style="color: #0000ff;">if</span> ((each.getMovie().getPriceCode() == Movie.NEW_RELEASE) &amp;&amp; each.getDaysRented() &gt; 1) frequentRenterPoints++<span style="color: #000000;">;
+</span><span style="color: #008080;">66</span> 
+<span style="color: #008080;">67</span>             result += each.getMovie().getTitle() + '：' + thisAmount + '\n'<span style="color: #000000;">;
+</span><span style="color: #008080;">68</span>             totalAmount +=<span style="color: #000000;"> thisAmount;
+</span><span style="color: #008080;">69</span> <span style="color: #000000;">        }
+</span><span style="color: #008080;">70</span>         result += 'amount owed is ' + thisAmount + '\n'<span style="color: #000000;">;
+</span><span style="color: #008080;">71</span>         result += 'you earned ' +<span style="color: #000000;"> frequentRenterPoints;
+</span><span style="color: #008080;">72</span>         <span style="color: #0000ff;">return</span><span style="color: #000000;"> result;
+</span><span style="color: #008080;">73</span> <span style="color: #000000;">    }
+</span><span style="color: #008080;">74</span> };</pre>
+</div>
+<h3>去除多余变量</h3>
+<p>于是，现在statement中就有一些多余的变量了：this.Amount，因为他完全等于each.getCharge()</p>
+<p>于是乎，去掉吧：</p>
+<div class="cnblogs_code">
+<pre><span style="color: #008080;"> 1</span> statement: <span style="color: #0000ff;">function</span><span style="color: #000000;"> () {
+</span><span style="color: #008080;"> 2</span>     <span style="color: #0000ff;">var</span> totalAmount = 0<span style="color: #000000;">,
+</span><span style="color: #008080;"> 3</span>     <span style="color: #008000;">//</span><span style="color: #008000;">积分</span>
+<span style="color: #008080;"> 4</span>     frequentRenterPoints = 0<span style="color: #000000;">,
+</span><span style="color: #008080;"> 5</span>     <span style="color: #008000;">//</span><span style="color: #008000;">原文为枚举类型</span>
+<span style="color: #008080;"> 6</span>     rentals = <span style="color: #0000ff;">this</span><span style="color: #000000;">._rentals,
+</span><span style="color: #008080;"> 7</span>     result = 'rental record for ' + <span style="color: #0000ff;">this</span>.getName() + '\n'<span style="color: #000000;">;
+</span><span style="color: #008080;"> 8</span> 
+<span style="color: #008080;"> 9</span>     <span style="color: #0000ff;">var</span><span style="color: #000000;"> i,
+</span><span style="color: #008080;">10</span>     each = <span style="color: #0000ff;">null</span><span style="color: #000000;">,
+</span><span style="color: #008080;">11</span>     len =<span style="color: #000000;"> rentals.length;
+</span><span style="color: #008080;">12</span>     <span style="color: #008000;">//</span><span style="color: #008000;">PS：尼玛两年不搞java了，这里居然有点读不懂了。。。</span>
+<span style="color: #008080;">13</span>     <span style="color: #008000;">//</span><span style="color: #008000;">这里大概是要遍历rentals的意思，所以代码我给变了点</span>
+<span style="color: #008080;">14</span>     <span style="color: #0000ff;">for</span> (i = 0; i &lt; len; i++<span style="color: #000000;">) {
+</span><span style="color: #008080;">15</span>         each =<span style="color: #000000;"> rentals[i];
+</span><span style="color: #008080;">16</span>         frequentRenterPoints++<span style="color: #000000;">;
+</span><span style="color: #008080;">17</span>         <span style="color: #0000ff;">if</span> ((each.getMovie().getPriceCode() == Movie.NEW_RELEASE) &amp;&amp; each.getDaysRented() &gt; 1) frequentRenterPoints++<span style="color: #000000;">;
+</span><span style="color: #008080;">18</span> 
+<span style="color: #008080;">19</span>         result += each.getMovie().getTitle() + '：' + <span style="color: #ff0000;">each.getChange()</span> + '\n'<span style="color: #000000;">;
+</span><span style="color: #008080;">20</span>         totalAmount +=<span style="color: #000000;"><span style="color: #ff0000;"> each.getChange()</span>;
+</span><span style="color: #008080;">21</span> <span style="color: #000000;">    }
+</span><span style="color: #008080;">22</span>     result += 'amount owed is ' + <span style="color: #ff0000;">totalAmount</span> + '\n'<span style="color: #000000;">;
+</span><span style="color: #008080;">23</span>     result += 'you earned ' +<span style="color: #000000;"> frequentRenterPoints;
+</span><span style="color: #008080;">24</span>     <span style="color: #0000ff;">return</span><span style="color: #000000;"> result;
+</span><span style="color: #008080;">25</span> }</pre>
+</div>
+<h2>提炼&ldquo;常客积分&rdquo;计算</h2>
+<p>下面开始对常客积分计算进行处理，积分的计算因为种类而有所不同，看来有理由把积分计算的责任放入rental</p>
+<div class="cnblogs_code" onclick="cnblogs_code_show('c6170ec6-07e3-440c-951c-cf394ed71335')"><img id="code_img_closed_c6170ec6-07e3-440c-951c-cf394ed71335" class="code_img_closed" src="43570758473519.gif" alt=""><img id="code_img_opened_c6170ec6-07e3-440c-951c-cf394ed71335" class="code_img_opened" style="display: none;" onclick="cnblogs_code_hide('c6170ec6-07e3-440c-951c-cf394ed71335',event)" src="16365178109279.gif" alt="">
+<div id="cnblogs_code_open_c6170ec6-07e3-440c-951c-cf394ed71335" class="cnblogs_code_hide">
+<pre><span style="color: #0000ff;">var</span> Movie = <span style="color: #0000ff;">function</span><span style="color: #000000;"> (title, priceCode) {
+    </span><span style="color: #0000ff;">this</span>._title =<span style="color: #000000;"> title;
+    </span><span style="color: #0000ff;">this</span>._priceCode =<span style="color: #000000;"> priceCode;
+
+};
+Movie.CHILDRENS </span>= 2<span style="color: #000000;">;
+Movie.REGULAR </span>= 0<span style="color: #000000;">;
+Movie.NEW_RELEASE </span>= 1<span style="color: #000000;">;
+
+Movie.prototype </span>=<span style="color: #000000;"> {
+    constructor: Movie,
+    getPriceCode: </span><span style="color: #0000ff;">function</span><span style="color: #000000;"> () {
+        </span><span style="color: #0000ff;">return</span> <span style="color: #0000ff;">this</span><span style="color: #000000;">._priceCode;
+    },
+    setPriceCode: </span><span style="color: #0000ff;">function</span><span style="color: #000000;"> (arg) {
+        </span><span style="color: #0000ff;">this</span>._priceCode =<span style="color: #000000;"> arg;
+    },
+    getTitle: </span><span style="color: #0000ff;">function</span><span style="color: #000000;"> () {
+        </span><span style="color: #0000ff;">return</span> <span style="color: #0000ff;">this</span><span style="color: #000000;">._title;
+    }
+};
+
+</span><span style="color: #008000;">//</span><span style="color: #008000;">租赁</span>
+<span style="color: #0000ff;">var</span> Rental = <span style="color: #0000ff;">function</span><span style="color: #000000;"> (movie, daysRented) {
+    </span><span style="color: #0000ff;">this</span>._movie =<span style="color: #000000;"> movie;
+    </span><span style="color: #0000ff;">this</span>._daysRented =<span style="color: #000000;"> daysRented;
+};
+
+Rental.prototype </span>=<span style="color: #000000;"> {
+    constructor: Rental,
+    getDaysRented: </span><span style="color: #0000ff;">function</span><span style="color: #000000;"> () {
+        </span><span style="color: #0000ff;">return</span> <span style="color: #0000ff;">this</span><span style="color: #000000;">._daysRented;
+    },
+    getMovie: </span><span style="color: #0000ff;">function</span><span style="color: #000000;"> () {
+        </span><span style="color: #0000ff;">return</span> <span style="color: #0000ff;">this</span><span style="color: #000000;">._movie;
+    },
+    getChange: </span><span style="color: #0000ff;">function</span><span style="color: #000000;"> () {
+        </span><span style="color: #0000ff;">var</span> result = 0<span style="color: #000000;">;
+        </span><span style="color: #0000ff;">switch</span> (<span style="color: #0000ff;">this</span><span style="color: #000000;">.getMovie().getPriceCode()) {
+            </span><span style="color: #0000ff;">case</span><span style="color: #000000;"> Movie.REGULAR:
+                result </span>+= 2<span style="color: #000000;">;
+                </span><span style="color: #0000ff;">if</span> (<span style="color: #0000ff;">this</span>.getDaysRented() &gt; 2) result += (<span style="color: #0000ff;">this</span>.getDaysRented() - 2) * 1.5<span style="color: #000000;">;
+                </span><span style="color: #0000ff;">break</span><span style="color: #000000;">;
+            </span><span style="color: #0000ff;">case</span><span style="color: #000000;"> Movie.NEW_RELEASE:
+                result </span>+= <span style="color: #0000ff;">this</span>.getDaysRented() * 3<span style="color: #000000;">;
+                </span><span style="color: #0000ff;">break</span><span style="color: #000000;">;
+            </span><span style="color: #0000ff;">case</span><span style="color: #000000;"> Movie.CHILDRENS:
+                result </span>+= 1.5<span style="color: #000000;">;
+                </span><span style="color: #0000ff;">if</span> (<span style="color: #0000ff;">this</span>.getDaysRented() &gt; 3) result += (<span style="color: #0000ff;">this</span>.getDaysRented() - 3) * 1.5<span style="color: #000000;">;
+                </span><span style="color: #0000ff;">break</span><span style="color: #000000;">;
+        }
+        </span><span style="color: #0000ff;">return</span><span style="color: #000000;"> result;
+    },
+    getFrequentRenterPoints: </span><span style="color: #0000ff;">function</span><span style="color: #000000;"> () {
+        </span><span style="color: #0000ff;">if</span> ((<span style="color: #0000ff;">this</span>.getMovie().getPriceCode() == Movie.NEW_RELEASE) &amp;&amp; <span style="color: #0000ff;">this</span>.getDaysRented() &gt; 1) <span style="color: #0000ff;">return</span> 2<span style="color: #000000;">;
+        </span><span style="color: #0000ff;">else</span> <span style="color: #0000ff;">return</span> 1<span style="color: #000000;">;
+    }
+};
+
+</span><span style="color: #008000;">//</span><span style="color: #008000;">顾客</span>
+<span style="color: #0000ff;">var</span> Customer = <span style="color: #0000ff;">function</span><span style="color: #000000;"> (name) {
+    </span><span style="color: #0000ff;">this</span>._name =<span style="color: #000000;"> name;
+    </span><span style="color: #0000ff;">this</span>._rentals =<span style="color: #000000;"> [];
+};
+Customer.prototype </span>=<span style="color: #000000;"> {
+    constructor: Customer,
+    addRental: </span><span style="color: #0000ff;">function</span><span style="color: #000000;"> (arg) {
+        </span><span style="color: #008000;">//</span><span style="color: #008000;">加入的是一个rental实例</span>
+        <span style="color: #0000ff;">this</span><span style="color: #000000;">._rentals.push(arg);
+
+    },
+    getName: </span><span style="color: #0000ff;">function</span><span style="color: #000000;"> () {
+        </span><span style="color: #0000ff;">return</span> <span style="color: #0000ff;">this</span><span style="color: #000000;">._name;
+    },
+    </span><span style="color: #008000;">//</span><span style="color: #008000;">生成详细订单的函数，并拥有交互代码</span>
+    statement: <span style="color: #0000ff;">function</span><span style="color: #000000;"> () {
+        </span><span style="color: #0000ff;">var</span> totalAmount = 0<span style="color: #000000;">,
+        </span><span style="color: #008000;">//</span><span style="color: #008000;">积分</span>
+    frequentRenterPoints = 0<span style="color: #000000;">,
+        </span><span style="color: #008000;">//</span><span style="color: #008000;">原文为枚举类型</span>
+    rentals = <span style="color: #0000ff;">this</span><span style="color: #000000;">._rentals,
+    result </span>= 'rental record for ' + <span style="color: #0000ff;">this</span>.getName() + '\n'<span style="color: #000000;">;
+
+        </span><span style="color: #0000ff;">var</span><span style="color: #000000;"> i,
+    each </span>= <span style="color: #0000ff;">null</span><span style="color: #000000;">,
+    len </span>=<span style="color: #000000;"> rentals.length;
+        </span><span style="color: #008000;">//</span><span style="color: #008000;">PS：尼玛两年不搞java了，这里居然有点读不懂了。。。</span>
+        <span style="color: #008000;">//</span><span style="color: #008000;">这里大概是要遍历rentals的意思，所以代码我给变了点</span>
+        <span style="color: #0000ff;">for</span> (i = 0; i &lt; len; i++<span style="color: #000000;">) {
+            each </span>=<span style="color: #000000;"> rentals[i];
+            </span><span style="color: #008000;">/*</span><span style="color: #008000;">
+            重构掉的
+            frequentRenterPoints++;
+            if ((each.getMovie().getPriceCode() == Movie.NEW_RELEASE) &amp;&amp; each.getDaysRented() &gt; 1) frequentRenterPoints++;
+            </span><span style="color: #008000;">*/</span><span style="color: #000000;">
+            frequentRenterPoints </span>+=<span style="color: #000000;"> each.getFrequentRenterPoints();
+
+            result </span>+= each.getMovie().getTitle() + '：' + each.getChange() + '\n'<span style="color: #000000;">;
+            totalAmount </span>+=<span style="color: #000000;"> each.getChange();
+        }
+        result </span>+= 'amount owed is ' + each.getChange() + '\n'<span style="color: #000000;">;
+        result </span>+= 'you earned ' +<span style="color: #000000;"> frequentRenterPoints;
+        </span><span style="color: #0000ff;">return</span><span style="color: #000000;"> result;
+    }
+};
+
+</span><span style="color: #008000;">//</span><span style="color: #008000;">此处先做一个例子试试吧</span>
+<span style="color: #0000ff;">var</span> m1 = <span style="color: #0000ff;">new</span> Movie('刀戟戡魔录', 0<span style="color: #000000;">);
+</span><span style="color: #0000ff;">var</span> m2 = <span style="color: #0000ff;">new</span> Movie('霹雳神州', 1<span style="color: #000000;">);
+</span><span style="color: #0000ff;">var</span> m3 = <span style="color: #0000ff;">new</span> Movie('开疆记', 2<span style="color: #000000;">);
+
+</span><span style="color: #0000ff;">var</span> r1 = <span style="color: #0000ff;">new</span> Rental(m1, 1<span style="color: #000000;">);
+</span><span style="color: #0000ff;">var</span> r2 = <span style="color: #0000ff;">new</span> Rental(m2, 2<span style="color: #000000;">);
+</span><span style="color: #0000ff;">var</span> r3 = <span style="color: #0000ff;">new</span> Rental(m3, 3<span style="color: #000000;">);
+
+</span><span style="color: #0000ff;">var</span> y = <span style="color: #0000ff;">new</span> Customer('叶小钗'<span style="color: #000000;">);
+
+y.addRental(r1);
+y.addRental(r2);
+y.addRental(r3);
+
+alert(y.statement());</span></pre>
+</div>
+<span class="cnblogs_code_collapse">View Code </span></div>
+<p><span style="color: #ff0000;">PS：由于篇幅较长，我就不像上面一一标注改变啦</span></p>
+<p>下面再去除一点临时变量：totalAmount</p>
+<p>PS：但是，这里会多一次循环，到底哪个好，我也不知道了，多一个循环应该方便后面扩展吧，感觉作者要消灭所有临时变量啦</p>
+<h3>去除totalAmount/frequentRenterPoints</h3>
+<div class="cnblogs_code">
+<pre><span style="color: #008080;"> 1</span> <span style="color: #0000ff;">var</span> Customer = <span style="color: #0000ff;">function</span><span style="color: #000000;"> (name) {
+</span><span style="color: #008080;"> 2</span>     <span style="color: #0000ff;">this</span>._name =<span style="color: #000000;"> name;
+</span><span style="color: #008080;"> 3</span>     <span style="color: #0000ff;">this</span>._rentals =<span style="color: #000000;"> [];
+</span><span style="color: #008080;"> 4</span> <span style="color: #000000;">};
+</span><span style="color: #008080;"> 5</span> Customer.prototype =<span style="color: #000000;"> {
+</span><span style="color: #008080;"> 6</span> <span style="color: #000000;">    constructor: Customer,
+</span><span style="color: #008080;"> 7</span>     addRental: <span style="color: #0000ff;">function</span><span style="color: #000000;"> (arg) {
+</span><span style="color: #008080;"> 8</span>         <span style="color: #008000;">//</span><span style="color: #008000;">加入的是一个rental实例</span>
+<span style="color: #008080;"> 9</span>         <span style="color: #0000ff;">this</span><span style="color: #000000;">._rentals.push(arg);
+</span><span style="color: #008080;">10</span> 
+<span style="color: #008080;">11</span> <span style="color: #000000;">    },
+</span><span style="color: #008080;">12</span>     getName: <span style="color: #0000ff;">function</span><span style="color: #000000;"> () {
+</span><span style="color: #008080;">13</span>         <span style="color: #0000ff;">return</span> <span style="color: #0000ff;">this</span><span style="color: #000000;">._name;
+</span><span style="color: #008080;">14</span> <span style="color: #000000;">    },
+</span><span style="color: #008080;">15</span>     <span style="color: #008000;">//</span><span style="color: #008000;">生成详细订单的函数，并拥有交互代码</span>
+<span style="color: #008080;">16</span>     statement: <span style="color: #0000ff;">function</span><span style="color: #000000;"> () {
+</span><span style="color: #008080;">17</span>         <span style="color: #0000ff;">var</span> each = <span style="color: #0000ff;">null</span>, result = ''<span style="color: #000000;">;
+</span><span style="color: #008080;">18</span>         <span style="color: #0000ff;">for</span> (<span style="color: #0000ff;">var</span> i = 0, len = <span style="color: #0000ff;">this</span>._rentals.length; i &lt; len; i++<span style="color: #000000;">) {
+</span><span style="color: #008080;">19</span>             each = <span style="color: #0000ff;">this</span><span style="color: #000000;">._rentals[i];
+</span><span style="color: #008080;">20</span>             result += each.getMovie().getTitle() + '：' + each.getChange() + '\n'<span style="color: #000000;">;
+</span><span style="color: #008080;">21</span> <span style="color: #000000;">        }
+</span><span style="color: #008080;">22</span>         result += 'amount owed is ' + <span style="color: #0000ff;">this</span>.getTotal() + '\n'<span style="color: #000000;">;
+</span><span style="color: #008080;">23</span>         result += 'you earned ' + <span style="color: #0000ff;">this</span><span style="color: #000000;">.getTotalFrequentRenterPoints();
+</span><span style="color: #008080;">24</span>         <span style="color: #0000ff;">return</span><span style="color: #000000;"> result;
+</span><span style="color: #008080;">25</span> <span style="color: #000000;">    },
+</span><span style="color: #008080;">26</span>     getTotal: <span style="color: #0000ff;">function</span><span style="color: #000000;"> () {
+</span><span style="color: #008080;">27</span>         <span style="color: #0000ff;">var</span> result = 0, each = <span style="color: #0000ff;">null</span><span style="color: #000000;">;
+</span><span style="color: #008080;">28</span>         <span style="color: #0000ff;">for</span> (<span style="color: #0000ff;">var</span> i = 0, len = <span style="color: #0000ff;">this</span>._rentals.length; i &lt; len; i++<span style="color: #000000;">) {
+</span><span style="color: #008080;">29</span>             each = <span style="color: #0000ff;">this</span><span style="color: #000000;">._rentals[i];
+</span><span style="color: #008080;">30</span>             result +=<span style="color: #000000;"> each.getChange();
+</span><span style="color: #008080;">31</span> <span style="color: #000000;">        }
+</span><span style="color: #008080;">32</span>         <span style="color: #0000ff;">return</span><span style="color: #000000;"> result;
+</span><span style="color: #008080;">33</span> <span style="color: #000000;">    },
+</span><span style="color: #008080;">34</span>     getTotalFrequentRenterPoints: <span style="color: #0000ff;">function</span><span style="color: #000000;"> () {
+</span><span style="color: #008080;">35</span>         <span style="color: #0000ff;">var</span> result = 0, each = <span style="color: #0000ff;">null</span><span style="color: #000000;">;
+</span><span style="color: #008080;">36</span>         <span style="color: #0000ff;">for</span> (<span style="color: #0000ff;">var</span> i = 0, len = <span style="color: #0000ff;">this</span>._rentals.length; i &lt; len; i++<span style="color: #000000;">) {
+</span><span style="color: #008080;">37</span>             each = <span style="color: #0000ff;">this</span><span style="color: #000000;">._rentals[i];
+</span><span style="color: #008080;">38</span>             result +=<span style="color: #000000;"> each.getFrequentRenterPoints();
+</span><span style="color: #008080;">39</span> <span style="color: #000000;">        }
+</span><span style="color: #008080;">40</span>         <span style="color: #0000ff;">return</span><span style="color: #000000;"> result;
+</span><span style="color: #008080;">41</span> <span style="color: #000000;">    }
+</span><span style="color: #008080;">42</span> };</pre>
+</div>
+<h3>请各位仔细看，到这里我们的程序已经变话了许多了！！！你还记得最初的statement吗？</h3>
+<h2>阶段总结</h2>
+<p>可以看到，我们这次重构没有减少代码，反而加了很多代码！而且还可能多了些循环呢！所以这次重构的结果是：</p>
+<p>① 代码易读性提高</p>
+<p>② 分离了statement</p>
+<p>③ 代码增多</p>
+<p>④ 性能降低</p>
+<p>在此看来，可能因为1,2我们便不做重构了，但是</p>
+<div class="cnblogs_code">
+<pre><span style="color: #800000;">不能因为：
+① 重构增加了代码量
+② 重构降低了性能
+而不做重构，因为重构完成前，这些只是你的一厢情愿</span></pre>
+</div>
+<h3>添加htmlStatement</h3>
+<div class="cnblogs_code">
+<pre><span style="color: #008080;"> 1</span> htmlStatement: <span style="color: #0000ff;">function</span><span style="color: #000000;"> () {
+</span><span style="color: #008080;"> 2</span>     <span style="color: #0000ff;">var</span> each = <span style="color: #0000ff;">null</span><span style="color: #000000;">,
+</span><span style="color: #008080;"> 3</span>     result = '&lt;h1&gt;rental record for ' + <span style="color: #0000ff;">this</span>.getName() + '&lt;/h1&gt;'<span style="color: #000000;">;
+</span><span style="color: #008080;"> 4</span>     <span style="color: #0000ff;">for</span> (<span style="color: #0000ff;">var</span> i = 0, len = <span style="color: #0000ff;">this</span>._rentals.length; i &lt; len; i++<span style="color: #000000;">) {
+</span><span style="color: #008080;"> 5</span>         each = <span style="color: #0000ff;">this</span><span style="color: #000000;">._rentals[i];
+</span><span style="color: #008080;"> 6</span>         result += each.getMovie().getTitle() + '：' + each.getChange() + '&lt;br/&gt;'<span style="color: #000000;">;
+</span><span style="color: #008080;"> 7</span> <span style="color: #000000;">    }
+</span><span style="color: #008080;"> 8</span>     result += 'amount owed is ' + <span style="color: #0000ff;">this</span>.getTotal() + '&lt;br/&gt;'<span style="color: #000000;">;
+</span><span style="color: #008080;"> 9</span>     result += 'you earned ' + <span style="color: #0000ff;">this</span><span style="color: #000000;">.getTotalFrequentRenterPoints();
+</span><span style="color: #008080;">10</span>     <span style="color: #0000ff;">return</span><span style="color: #000000;"> result;
+</span><span style="color: #008080;">11</span> },</pre>
+</div>
+<p><img src="45272687922229.png" alt=""></p>
+<h1>多态与if</h1>
+<p>好了，用户提出新需求了，需要修改分类规则。</p>
+<p>这里我们又重新回到了我们的switch语句，我其实一般不使用switch语句，作者说最好不要在另一个对象属性继承上运用switch语句，要用也要在自己的数据上，而我基本不用。。。。。。</p>
+<p>所以第一步，我们是将getCharge放入Movie中</p>
+<h2>getCharge搬家</h2>
+<p>PS：我怕好像将getCharge写错了。。。。。。</p>
+<div class="cnblogs_code" onclick="cnblogs_code_show('7633ad35-bd0c-4337-93d7-0e9aef6a4cd0')"><img id="code_img_closed_7633ad35-bd0c-4337-93d7-0e9aef6a4cd0" class="code_img_closed" src="43570758473519.gif" alt=""><img id="code_img_opened_7633ad35-bd0c-4337-93d7-0e9aef6a4cd0" class="code_img_opened" style="display: none;" onclick="cnblogs_code_hide('7633ad35-bd0c-4337-93d7-0e9aef6a4cd0',event)" src="16365178109279.gif" alt="">
+<div id="cnblogs_code_open_7633ad35-bd0c-4337-93d7-0e9aef6a4cd0" class="cnblogs_code_hide">
+<pre><span style="color: #008080;">  1</span> <span style="color: #0000ff;">var</span> Movie = <span style="color: #0000ff;">function</span><span style="color: #000000;"> (title, priceCode) {
+</span><span style="color: #008080;">  2</span>     <span style="color: #0000ff;">this</span>._title =<span style="color: #000000;"> title;
+</span><span style="color: #008080;">  3</span>     <span style="color: #0000ff;">this</span>._priceCode =<span style="color: #000000;"> priceCode;
+</span><span style="color: #008080;">  4</span> 
+<span style="color: #008080;">  5</span> <span style="color: #000000;">};
+</span><span style="color: #008080;">  6</span> Movie.CHILDRENS = 2<span style="color: #000000;">;
+</span><span style="color: #008080;">  7</span> Movie.REGULAR = 0<span style="color: #000000;">;
+</span><span style="color: #008080;">  8</span> Movie.NEW_RELEASE = 1<span style="color: #000000;">;
+</span><span style="color: #008080;">  9</span> 
+<span style="color: #008080;"> 10</span> Movie.prototype =<span style="color: #000000;"> {
+</span><span style="color: #008080;"> 11</span> <span style="color: #000000;">    constructor: Movie,
+</span><span style="color: #008080;"> 12</span>     getPriceCode: <span style="color: #0000ff;">function</span><span style="color: #000000;"> () {
+</span><span style="color: #008080;"> 13</span>         <span style="color: #0000ff;">return</span> <span style="color: #0000ff;">this</span><span style="color: #000000;">._priceCode;
+</span><span style="color: #008080;"> 14</span> <span style="color: #000000;">    },
+</span><span style="color: #008080;"> 15</span>     setPriceCode: <span style="color: #0000ff;">function</span><span style="color: #000000;"> (arg) {
+</span><span style="color: #008080;"> 16</span>         <span style="color: #0000ff;">this</span>._priceCode =<span style="color: #000000;"> arg;
+</span><span style="color: #008080;"> 17</span> <span style="color: #000000;">    },
+</span><span style="color: #008080;"> 18</span>     getTitle: <span style="color: #0000ff;">function</span><span style="color: #000000;"> () {
+</span><span style="color: #008080;"> 19</span>         <span style="color: #0000ff;">return</span> <span style="color: #0000ff;">this</span><span style="color: #000000;">._title;
+</span><span style="color: #008080;"> 20</span> <span style="color: #000000;">    },
+</span><span style="color: #008080;"> 21</span>     getCharge: <span style="color: #0000ff;">function</span><span style="color: #000000;"> (daysRented) {
+</span><span style="color: #008080;"> 22</span>         <span style="color: #0000ff;">var</span> result = 0<span style="color: #000000;">;
+</span><span style="color: #008080;"> 23</span>         <span style="color: #0000ff;">switch</span> (<span style="color: #0000ff;">this</span><span style="color: #000000;">.getPriceCode()) {
+</span><span style="color: #008080;"> 24</span>             <span style="color: #0000ff;">case</span><span style="color: #000000;"> Movie.REGULAR:
+</span><span style="color: #008080;"> 25</span>                 result += 2<span style="color: #000000;">;
+</span><span style="color: #008080;"> 26</span>                 <span style="color: #0000ff;">if</span> (daysRented &gt; 2) result += (daysRented - 2) * 1.5<span style="color: #000000;">;
+</span><span style="color: #008080;"> 27</span>                 <span style="color: #0000ff;">break</span><span style="color: #000000;">;
+</span><span style="color: #008080;"> 28</span>             <span style="color: #0000ff;">case</span><span style="color: #000000;"> Movie.NEW_RELEASE:
+</span><span style="color: #008080;"> 29</span>                 result += daysRented * 3<span style="color: #000000;">;
+</span><span style="color: #008080;"> 30</span>                 <span style="color: #0000ff;">break</span><span style="color: #000000;">;
+</span><span style="color: #008080;"> 31</span>             <span style="color: #0000ff;">case</span><span style="color: #000000;"> Movie.CHILDRENS:
+</span><span style="color: #008080;"> 32</span>                 result += 1.5<span style="color: #000000;">;
+</span><span style="color: #008080;"> 33</span>                 <span style="color: #0000ff;">if</span> (daysRented &gt; 3) result += (daysRented - 3) * 1.5<span style="color: #000000;">;
+</span><span style="color: #008080;"> 34</span>                 <span style="color: #0000ff;">break</span><span style="color: #000000;">;
+</span><span style="color: #008080;"> 35</span> <span style="color: #000000;">        }
+</span><span style="color: #008080;"> 36</span>         <span style="color: #0000ff;">return</span><span style="color: #000000;"> result;
+</span><span style="color: #008080;"> 37</span> <span style="color: #000000;">    }
+</span><span style="color: #008080;"> 38</span> <span style="color: #000000;">};
+</span><span style="color: #008080;"> 39</span> 
+<span style="color: #008080;"> 40</span> <span style="color: #008000;">//</span><span style="color: #008000;">租赁</span>
+<span style="color: #008080;"> 41</span> <span style="color: #0000ff;">var</span> Rental = <span style="color: #0000ff;">function</span><span style="color: #000000;"> (movie, daysRented) {
+</span><span style="color: #008080;"> 42</span>     <span style="color: #0000ff;">this</span>._movie =<span style="color: #000000;"> movie;
+</span><span style="color: #008080;"> 43</span>     <span style="color: #0000ff;">this</span>._daysRented =<span style="color: #000000;"> daysRented;
+</span><span style="color: #008080;"> 44</span> <span style="color: #000000;">};
+</span><span style="color: #008080;"> 45</span> 
+<span style="color: #008080;"> 46</span> Rental.prototype =<span style="color: #000000;"> {
+</span><span style="color: #008080;"> 47</span> <span style="color: #000000;">    constructor: Rental,
+</span><span style="color: #008080;"> 48</span>     getDaysRented: <span style="color: #0000ff;">function</span><span style="color: #000000;"> () {
+</span><span style="color: #008080;"> 49</span>         <span style="color: #0000ff;">return</span> <span style="color: #0000ff;">this</span><span style="color: #000000;">._daysRented;
+</span><span style="color: #008080;"> 50</span> <span style="color: #000000;">    },
+</span><span style="color: #008080;"> 51</span>     getMovie: <span style="color: #0000ff;">function</span><span style="color: #000000;"> () {
+</span><span style="color: #008080;"> 52</span>         <span style="color: #0000ff;">return</span> <span style="color: #0000ff;">this</span><span style="color: #000000;">._movie;
+</span><span style="color: #008080;"> 53</span> <span style="color: #000000;">    },
+</span><span style="color: #008080;"> 54</span>     getCharge: <span style="color: #0000ff;">function</span><span style="color: #000000;"> () {
+</span><span style="color: #008080;"> 55</span>         <span style="color: #0000ff;">return</span> <span style="color: #0000ff;">this</span>.getMovie().getCharge(<span style="color: #0000ff;">this</span><span style="color: #000000;">.getDaysRented());
+</span><span style="color: #008080;"> 56</span> <span style="color: #000000;">    },
+</span><span style="color: #008080;"> 57</span>     getFrequentRenterPoints: <span style="color: #0000ff;">function</span><span style="color: #000000;"> () {
+</span><span style="color: #008080;"> 58</span>         <span style="color: #0000ff;">if</span> ((<span style="color: #0000ff;">this</span>.getMovie().getPriceCode() == Movie.NEW_RELEASE) &amp;&amp; <span style="color: #0000ff;">this</span>.getDaysRented() &gt; 1) <span style="color: #0000ff;">return</span> 2<span style="color: #000000;">;
+</span><span style="color: #008080;"> 59</span>         <span style="color: #0000ff;">else</span> <span style="color: #0000ff;">return</span> 1<span style="color: #000000;">;
+</span><span style="color: #008080;"> 60</span> <span style="color: #000000;">    }
+</span><span style="color: #008080;"> 61</span> <span style="color: #000000;">};
+</span><span style="color: #008080;"> 62</span> 
+<span style="color: #008080;"> 63</span> <span style="color: #008000;">//</span><span style="color: #008000;">顾客</span>
+<span style="color: #008080;"> 64</span> <span style="color: #0000ff;">var</span> Customer = <span style="color: #0000ff;">function</span><span style="color: #000000;"> (name) {
+</span><span style="color: #008080;"> 65</span>     <span style="color: #0000ff;">this</span>._name =<span style="color: #000000;"> name;
+</span><span style="color: #008080;"> 66</span>     <span style="color: #0000ff;">this</span>._rentals =<span style="color: #000000;"> [];
+</span><span style="color: #008080;"> 67</span> <span style="color: #000000;">};
+</span><span style="color: #008080;"> 68</span> Customer.prototype =<span style="color: #000000;"> {
+</span><span style="color: #008080;"> 69</span> <span style="color: #000000;">    constructor: Customer,
+</span><span style="color: #008080;"> 70</span>     addRental: <span style="color: #0000ff;">function</span><span style="color: #000000;"> (arg) {
+</span><span style="color: #008080;"> 71</span>         <span style="color: #008000;">//</span><span style="color: #008000;">加入的是一个rental实例</span>
+<span style="color: #008080;"> 72</span>         <span style="color: #0000ff;">this</span><span style="color: #000000;">._rentals.push(arg);
+</span><span style="color: #008080;"> 73</span> 
+<span style="color: #008080;"> 74</span> <span style="color: #000000;">    },
+</span><span style="color: #008080;"> 75</span>     getName: <span style="color: #0000ff;">function</span><span style="color: #000000;"> () {
+</span><span style="color: #008080;"> 76</span>         <span style="color: #0000ff;">return</span> <span style="color: #0000ff;">this</span><span style="color: #000000;">._name;
+</span><span style="color: #008080;"> 77</span> <span style="color: #000000;">    },
+</span><span style="color: #008080;"> 78</span>     <span style="color: #008000;">//</span><span style="color: #008000;">生成详细订单的函数，并拥有交互代码</span>
+<span style="color: #008080;"> 79</span>     statement: <span style="color: #0000ff;">function</span><span style="color: #000000;"> () {
+</span><span style="color: #008080;"> 80</span>         <span style="color: #0000ff;">var</span> each = <span style="color: #0000ff;">null</span><span style="color: #000000;">,
+</span><span style="color: #008080;"> 81</span>         result = 'rental record for ' + <span style="color: #0000ff;">this</span>.getName() + '\n'<span style="color: #000000;">;
+</span><span style="color: #008080;"> 82</span>         <span style="color: #0000ff;">for</span> (<span style="color: #0000ff;">var</span> i = 0, len = <span style="color: #0000ff;">this</span>._rentals.length; i &lt; len; i++<span style="color: #000000;">) {
+</span><span style="color: #008080;"> 83</span>             each = <span style="color: #0000ff;">this</span><span style="color: #000000;">._rentals[i];
+</span><span style="color: #008080;"> 84</span>             result += each.getMovie().getTitle() + '：' + each.getCharge() + '\n'<span style="color: #000000;">;
+</span><span style="color: #008080;"> 85</span> <span style="color: #000000;">        }
+</span><span style="color: #008080;"> 86</span>         result += 'amount owed is ' + <span style="color: #0000ff;">this</span>.getTotal() + '\n'<span style="color: #000000;">;
+</span><span style="color: #008080;"> 87</span>         result += 'you earned ' + <span style="color: #0000ff;">this</span><span style="color: #000000;">.getTotalFrequentRenterPoints();
+</span><span style="color: #008080;"> 88</span>         <span style="color: #0000ff;">return</span><span style="color: #000000;"> result;
+</span><span style="color: #008080;"> 89</span> <span style="color: #000000;">    },
+</span><span style="color: #008080;"> 90</span> htmlStatement: <span style="color: #0000ff;">function</span><span style="color: #000000;"> () {
+</span><span style="color: #008080;"> 91</span>     <span style="color: #0000ff;">var</span> each = <span style="color: #0000ff;">null</span><span style="color: #000000;">,
+</span><span style="color: #008080;"> 92</span>     result = '&lt;h1&gt;rental record for ' + <span style="color: #0000ff;">this</span>.getName() + '&lt;/h1&gt;'<span style="color: #000000;">;
+</span><span style="color: #008080;"> 93</span>     <span style="color: #0000ff;">for</span> (<span style="color: #0000ff;">var</span> i = 0, len = <span style="color: #0000ff;">this</span>._rentals.length; i &lt; len; i++<span style="color: #000000;">) {
+</span><span style="color: #008080;"> 94</span>         each = <span style="color: #0000ff;">this</span><span style="color: #000000;">._rentals[i];
+</span><span style="color: #008080;"> 95</span>         result += each.getMovie().getTitle() + '：' + each.getCharge() + '&lt;br/&gt;'<span style="color: #000000;">;
+</span><span style="color: #008080;"> 96</span> <span style="color: #000000;">    }
+</span><span style="color: #008080;"> 97</span>     result += 'amount owed is ' + <span style="color: #0000ff;">this</span>.getTotal() + '&lt;br/&gt;'<span style="color: #000000;">;
+</span><span style="color: #008080;"> 98</span>     result += 'you earned ' + <span style="color: #0000ff;">this</span><span style="color: #000000;">.getTotalFrequentRenterPoints();
+</span><span style="color: #008080;"> 99</span>     <span style="color: #0000ff;">return</span><span style="color: #000000;"> result;
+</span><span style="color: #008080;">100</span> <span style="color: #000000;">},
+</span><span style="color: #008080;">101</span>     getTotal: <span style="color: #0000ff;">function</span><span style="color: #000000;"> () {
+</span><span style="color: #008080;">102</span>         <span style="color: #0000ff;">var</span> result = 0, each = <span style="color: #0000ff;">null</span><span style="color: #000000;">;
+</span><span style="color: #008080;">103</span>         <span style="color: #0000ff;">for</span> (<span style="color: #0000ff;">var</span> i = 0, len = <span style="color: #0000ff;">this</span>._rentals.length; i &lt; len; i++<span style="color: #000000;">) {
+</span><span style="color: #008080;">104</span>             each = <span style="color: #0000ff;">this</span><span style="color: #000000;">._rentals[i];
+</span><span style="color: #008080;">105</span>             result +=<span style="color: #000000;"> each.getCharge();
+</span><span style="color: #008080;">106</span> <span style="color: #000000;">        }
+</span><span style="color: #008080;">107</span>         <span style="color: #0000ff;">return</span><span style="color: #000000;"> result;
+</span><span style="color: #008080;">108</span> <span style="color: #000000;">    },
+</span><span style="color: #008080;">109</span>     getTotalFrequentRenterPoints: <span style="color: #0000ff;">function</span><span style="color: #000000;"> () {
+</span><span style="color: #008080;">110</span>         <span style="color: #0000ff;">var</span> result = 0, each = <span style="color: #0000ff;">null</span><span style="color: #000000;">;
+</span><span style="color: #008080;">111</span>         <span style="color: #0000ff;">for</span> (<span style="color: #0000ff;">var</span> i = 0, len = <span style="color: #0000ff;">this</span>._rentals.length; i &lt; len; i++<span style="color: #000000;">) {
+</span><span style="color: #008080;">112</span>             each = <span style="color: #0000ff;">this</span><span style="color: #000000;">._rentals[i];
+</span><span style="color: #008080;">113</span>             result +=<span style="color: #000000;"> each.getFrequentRenterPoints();
+</span><span style="color: #008080;">114</span> <span style="color: #000000;">        }
+</span><span style="color: #008080;">115</span>         <span style="color: #0000ff;">return</span><span style="color: #000000;"> result;
+</span><span style="color: #008080;">116</span> <span style="color: #000000;">    }
+</span><span style="color: #008080;">117</span> };</pre>
+</div>
+<span class="cnblogs_code_collapse">View Code </span></div>
+<h3>Movie</h3>
+<div class="cnblogs_code">
+<pre><span style="color: #008080;"> 1</span>     getCharge: <span style="color: #0000ff;">function</span><span style="color: #000000;"> (daysRented) {
+</span><span style="color: #008080;"> 2</span>         <span style="color: #0000ff;">var</span> result = 0<span style="color: #000000;">;
+</span><span style="color: #008080;"> 3</span>         <span style="color: #0000ff;">switch</span> (<span style="color: #0000ff;">this</span><span style="color: #000000;">.getPriceCode()) {
+</span><span style="color: #008080;"> 4</span>             <span style="color: #0000ff;">case</span><span style="color: #000000;"> Movie.REGULAR:
+</span><span style="color: #008080;"> 5</span>                 result += 2<span style="color: #000000;">;
+</span><span style="color: #008080;"> 6</span>                 <span style="color: #0000ff;">if</span> (daysRented &gt; 2) result += (daysRented - 2) * 1.5<span style="color: #000000;">;
+</span><span style="color: #008080;"> 7</span>                 <span style="color: #0000ff;">break</span><span style="color: #000000;">;
+</span><span style="color: #008080;"> 8</span>             <span style="color: #0000ff;">case</span><span style="color: #000000;"> Movie.NEW_RELEASE:
+</span><span style="color: #008080;"> 9</span>                 result += daysRented * 3<span style="color: #000000;">;
+</span><span style="color: #008080;">10</span>                 <span style="color: #0000ff;">break</span><span style="color: #000000;">;
+</span><span style="color: #008080;">11</span>             <span style="color: #0000ff;">case</span><span style="color: #000000;"> Movie.CHILDRENS:
+</span><span style="color: #008080;">12</span>                 result += 1.5<span style="color: #000000;">;
+</span><span style="color: #008080;">13</span>                 <span style="color: #0000ff;">if</span> (daysRented &gt; 3) result += (daysRented - 3) * 1.5<span style="color: #000000;">;
+</span><span style="color: #008080;">14</span>                 <span style="color: #0000ff;">break</span><span style="color: #000000;">;
+</span><span style="color: #008080;">15</span> <span style="color: #000000;">        }
+</span><span style="color: #008080;">16</span>         <span style="color: #0000ff;">return</span><span style="color: #000000;"> result;
+</span><span style="color: #008080;">17</span>     }</pre>
+</div>
+<h3>Rental</h3>
+<div class="cnblogs_code">
+<pre><span style="color: #008080;">1</span>     getCharge: <span style="color: #0000ff;">function</span><span style="color: #000000;"> () {
+</span><span style="color: #008080;">2</span>         <span style="color: #0000ff;">return</span> <span style="color: #0000ff;">this</span>.getMovie().getCharge(<span style="color: #0000ff;">this</span><span style="color: #000000;">.getDaysRented());
+</span><span style="color: #008080;">3</span>     },</pre>
+</div>
+<p>getFrequentRenterPoints采用同样方法处理</p>
+<div class="cnblogs_code" onclick="cnblogs_code_show('4ec20e31-dc4c-4c9f-939d-8f56c7b69824')"><img id="code_img_closed_4ec20e31-dc4c-4c9f-939d-8f56c7b69824" class="code_img_closed" src="43570758473519.gif" alt=""><img id="code_img_opened_4ec20e31-dc4c-4c9f-939d-8f56c7b69824" class="code_img_opened" style="display: none;" onclick="cnblogs_code_hide('4ec20e31-dc4c-4c9f-939d-8f56c7b69824',event)" src="16365178109279.gif" alt="">
+<div id="cnblogs_code_open_4ec20e31-dc4c-4c9f-939d-8f56c7b69824" class="cnblogs_code_hide">
+<pre><span style="color: #0000ff;">&lt;!</span><span style="color: #ff00ff;">DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"</span><span style="color: #0000ff;">&gt;</span>
+
+<span style="color: #0000ff;">&lt;</span><span style="color: #800000;">html </span><span style="color: #ff0000;">xmlns</span><span style="color: #0000ff;">="http://www.w3.org/1999/xhtml"</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #0000ff;">&lt;</span><span style="color: #800000;">head</span><span style="color: #0000ff;">&gt;</span>
+    <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">title</span><span style="color: #0000ff;">&gt;&lt;/</span><span style="color: #800000;">title</span><span style="color: #0000ff;">&gt;</span>
+    <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">script </span><span style="color: #ff0000;">type</span><span style="color: #0000ff;">="text/javascript"</span><span style="color: #0000ff;">&gt;</span>
+<span style="background-color: #f5f5f5; color: #008000;">//</span><span style="background-color: #f5f5f5; color: #008000;">影片，单纯的数据类</span>
+<span style="background-color: #f5f5f5; color: #0000ff;">var</span><span style="background-color: #f5f5f5; color: #000000;"> Movie </span><span style="background-color: #f5f5f5; color: #000000;">=</span> <span style="background-color: #f5f5f5; color: #0000ff;">function</span><span style="background-color: #f5f5f5; color: #000000;"> (title, priceCode) {
+    </span><span style="background-color: #f5f5f5; color: #0000ff;">this</span><span style="background-color: #f5f5f5; color: #000000;">._title </span><span style="background-color: #f5f5f5; color: #000000;">=</span><span style="background-color: #f5f5f5; color: #000000;"> title;
+    </span><span style="background-color: #f5f5f5; color: #0000ff;">this</span><span style="background-color: #f5f5f5; color: #000000;">._priceCode </span><span style="background-color: #f5f5f5; color: #000000;">=</span><span style="background-color: #f5f5f5; color: #000000;"> priceCode;
+
+};
+Movie.CHILDRENS </span><span style="background-color: #f5f5f5; color: #000000;">=</span> <span style="background-color: #f5f5f5; color: #000000;">2</span><span style="background-color: #f5f5f5; color: #000000;">;
+Movie.REGULAR </span><span style="background-color: #f5f5f5; color: #000000;">=</span> <span style="background-color: #f5f5f5; color: #000000;">0</span><span style="background-color: #f5f5f5; color: #000000;">;
+Movie.NEW_RELEASE </span><span style="background-color: #f5f5f5; color: #000000;">=</span> <span style="background-color: #f5f5f5; color: #000000;">1</span><span style="background-color: #f5f5f5; color: #000000;">;
+
+Movie.prototype </span><span style="background-color: #f5f5f5; color: #000000;">=</span><span style="background-color: #f5f5f5; color: #000000;"> {
+    constructor: Movie,
+    getPriceCode: </span><span style="background-color: #f5f5f5; color: #0000ff;">function</span><span style="background-color: #f5f5f5; color: #000000;"> () {
+        </span><span style="background-color: #f5f5f5; color: #0000ff;">return</span> <span style="background-color: #f5f5f5; color: #0000ff;">this</span><span style="background-color: #f5f5f5; color: #000000;">._priceCode;
+    },
+    setPriceCode: </span><span style="background-color: #f5f5f5; color: #0000ff;">function</span><span style="background-color: #f5f5f5; color: #000000;"> (arg) {
+        </span><span style="background-color: #f5f5f5; color: #0000ff;">this</span><span style="background-color: #f5f5f5; color: #000000;">._priceCode </span><span style="background-color: #f5f5f5; color: #000000;">=</span><span style="background-color: #f5f5f5; color: #000000;"> arg;
+    },
+    getTitle: </span><span style="background-color: #f5f5f5; color: #0000ff;">function</span><span style="background-color: #f5f5f5; color: #000000;"> () {
+        </span><span style="background-color: #f5f5f5; color: #0000ff;">return</span> <span style="background-color: #f5f5f5; color: #0000ff;">this</span><span style="background-color: #f5f5f5; color: #000000;">._title;
+    },
+    getCharge: </span><span style="background-color: #f5f5f5; color: #0000ff;">function</span><span style="background-color: #f5f5f5; color: #000000;"> (daysRented) {
+        </span><span style="background-color: #f5f5f5; color: #0000ff;">var</span><span style="background-color: #f5f5f5; color: #000000;"> result </span><span style="background-color: #f5f5f5; color: #000000;">=</span> <span style="background-color: #f5f5f5; color: #000000;">0</span><span style="background-color: #f5f5f5; color: #000000;">;
+        </span><span style="background-color: #f5f5f5; color: #0000ff;">switch</span><span style="background-color: #f5f5f5; color: #000000;"> (</span><span style="background-color: #f5f5f5; color: #0000ff;">this</span><span style="background-color: #f5f5f5; color: #000000;">.getPriceCode()) {
+            </span><span style="background-color: #f5f5f5; color: #0000ff;">case</span><span style="background-color: #f5f5f5; color: #000000;"> Movie.REGULAR:
+                result </span><span style="background-color: #f5f5f5; color: #000000;">+=</span> <span style="background-color: #f5f5f5; color: #000000;">2</span><span style="background-color: #f5f5f5; color: #000000;">;
+                </span><span style="background-color: #f5f5f5; color: #0000ff;">if</span><span style="background-color: #f5f5f5; color: #000000;"> (daysRented </span><span style="background-color: #f5f5f5; color: #000000;">&gt;</span> <span style="background-color: #f5f5f5; color: #000000;">2</span><span style="background-color: #f5f5f5; color: #000000;">) result </span><span style="background-color: #f5f5f5; color: #000000;">+=</span><span style="background-color: #f5f5f5; color: #000000;"> (daysRented </span><span style="background-color: #f5f5f5; color: #000000;">-</span> <span style="background-color: #f5f5f5; color: #000000;">2</span><span style="background-color: #f5f5f5; color: #000000;">) </span><span style="background-color: #f5f5f5; color: #000000;">*</span> <span style="background-color: #f5f5f5; color: #000000;">1.5</span><span style="background-color: #f5f5f5; color: #000000;">;
+                </span><span style="background-color: #f5f5f5; color: #0000ff;">break</span><span style="background-color: #f5f5f5; color: #000000;">;
+            </span><span style="background-color: #f5f5f5; color: #0000ff;">case</span><span style="background-color: #f5f5f5; color: #000000;"> Movie.NEW_RELEASE:
+                result </span><span style="background-color: #f5f5f5; color: #000000;">+=</span><span style="background-color: #f5f5f5; color: #000000;"> daysRented </span><span style="background-color: #f5f5f5; color: #000000;">*</span> <span style="background-color: #f5f5f5; color: #000000;">3</span><span style="background-color: #f5f5f5; color: #000000;">;
+                </span><span style="background-color: #f5f5f5; color: #0000ff;">break</span><span style="background-color: #f5f5f5; color: #000000;">;
+            </span><span style="background-color: #f5f5f5; color: #0000ff;">case</span><span style="background-color: #f5f5f5; color: #000000;"> Movie.CHILDRENS:
+                result </span><span style="background-color: #f5f5f5; color: #000000;">+=</span> <span style="background-color: #f5f5f5; color: #000000;">1.5</span><span style="background-color: #f5f5f5; color: #000000;">;
+                </span><span style="background-color: #f5f5f5; color: #0000ff;">if</span><span style="background-color: #f5f5f5; color: #000000;"> (daysRented </span><span style="background-color: #f5f5f5; color: #000000;">&gt;</span> <span style="background-color: #f5f5f5; color: #000000;">3</span><span style="background-color: #f5f5f5; color: #000000;">) result </span><span style="background-color: #f5f5f5; color: #000000;">+=</span><span style="background-color: #f5f5f5; color: #000000;"> (daysRented </span><span style="background-color: #f5f5f5; color: #000000;">-</span> <span style="background-color: #f5f5f5; color: #000000;">3</span><span style="background-color: #f5f5f5; color: #000000;">) </span><span style="background-color: #f5f5f5; color: #000000;">*</span> <span style="background-color: #f5f5f5; color: #000000;">1.5</span><span style="background-color: #f5f5f5; color: #000000;">;
+                </span><span style="background-color: #f5f5f5; color: #0000ff;">break</span><span style="background-color: #f5f5f5; color: #000000;">;
+        }
+        </span><span style="background-color: #f5f5f5; color: #0000ff;">return</span><span style="background-color: #f5f5f5; color: #000000;"> result;
+    },
+    getFrequentRenterPoints: </span><span style="background-color: #f5f5f5; color: #0000ff;">function</span><span style="background-color: #f5f5f5; color: #000000;"> (daysRented) {
+        </span><span style="background-color: #f5f5f5; color: #0000ff;">if</span><span style="background-color: #f5f5f5; color: #000000;"> ((</span><span style="background-color: #f5f5f5; color: #0000ff;">this</span><span style="background-color: #f5f5f5; color: #000000;">.getPriceCode() </span><span style="background-color: #f5f5f5; color: #000000;">==</span><span style="background-color: #f5f5f5; color: #000000;"> Movie.NEW_RELEASE) </span><span style="background-color: #f5f5f5; color: #000000;">&amp;&amp;</span><span style="background-color: #f5f5f5; color: #000000;"> daysRented </span><span style="background-color: #f5f5f5; color: #000000;">&gt;</span> <span style="background-color: #f5f5f5; color: #000000;">1</span><span style="background-color: #f5f5f5; color: #000000;">) </span><span style="background-color: #f5f5f5; color: #0000ff;">return</span> <span style="background-color: #f5f5f5; color: #000000;">2</span><span style="background-color: #f5f5f5; color: #000000;">;
+        </span><span style="background-color: #f5f5f5; color: #0000ff;">else</span> <span style="background-color: #f5f5f5; color: #0000ff;">return</span> <span style="background-color: #f5f5f5; color: #000000;">1</span><span style="background-color: #f5f5f5; color: #000000;">;
+    }
+};
+
+</span><span style="background-color: #f5f5f5; color: #008000;">//</span><span style="background-color: #f5f5f5; color: #008000;">租赁</span>
+<span style="background-color: #f5f5f5; color: #0000ff;">var</span><span style="background-color: #f5f5f5; color: #000000;"> Rental </span><span style="background-color: #f5f5f5; color: #000000;">=</span> <span style="background-color: #f5f5f5; color: #0000ff;">function</span><span style="background-color: #f5f5f5; color: #000000;"> (movie, daysRented) {
+    </span><span style="background-color: #f5f5f5; color: #0000ff;">this</span><span style="background-color: #f5f5f5; color: #000000;">._movie </span><span style="background-color: #f5f5f5; color: #000000;">=</span><span style="background-color: #f5f5f5; color: #000000;"> movie;
+    </span><span style="background-color: #f5f5f5; color: #0000ff;">this</span><span style="background-color: #f5f5f5; color: #000000;">._daysRented </span><span style="background-color: #f5f5f5; color: #000000;">=</span><span style="background-color: #f5f5f5; color: #000000;"> daysRented;
+};
+
+Rental.prototype </span><span style="background-color: #f5f5f5; color: #000000;">=</span><span style="background-color: #f5f5f5; color: #000000;"> {
+    constructor: Rental,
+    getDaysRented: </span><span style="background-color: #f5f5f5; color: #0000ff;">function</span><span style="background-color: #f5f5f5; color: #000000;"> () {
+        </span><span style="background-color: #f5f5f5; color: #0000ff;">return</span> <span style="background-color: #f5f5f5; color: #0000ff;">this</span><span style="background-color: #f5f5f5; color: #000000;">._daysRented;
+    },
+    getMovie: </span><span style="background-color: #f5f5f5; color: #0000ff;">function</span><span style="background-color: #f5f5f5; color: #000000;"> () {
+        </span><span style="background-color: #f5f5f5; color: #0000ff;">return</span> <span style="background-color: #f5f5f5; color: #0000ff;">this</span><span style="background-color: #f5f5f5; color: #000000;">._movie;
+    },
+    getCharge: </span><span style="background-color: #f5f5f5; color: #0000ff;">function</span><span style="background-color: #f5f5f5; color: #000000;"> () {
+        </span><span style="background-color: #f5f5f5; color: #0000ff;">return</span> <span style="background-color: #f5f5f5; color: #0000ff;">this</span><span style="background-color: #f5f5f5; color: #000000;">.getMovie().getCharge(</span><span style="background-color: #f5f5f5; color: #0000ff;">this</span><span style="background-color: #f5f5f5; color: #000000;">.getDaysRented());
+    },
+    getFrequentRenterPoints: </span><span style="background-color: #f5f5f5; color: #0000ff;">function</span><span style="background-color: #f5f5f5; color: #000000;"> () {
+        </span><span style="background-color: #f5f5f5; color: #0000ff;">return</span> <span style="background-color: #f5f5f5; color: #0000ff;">this</span><span style="background-color: #f5f5f5; color: #000000;">.getMovie().getFrequentRenterPoints(</span><span style="background-color: #f5f5f5; color: #0000ff;">this</span><span style="background-color: #f5f5f5; color: #000000;">.getDaysRented());
+    }
+};
+
+</span><span style="background-color: #f5f5f5; color: #008000;">//</span><span style="background-color: #f5f5f5; color: #008000;">顾客</span>
+<span style="background-color: #f5f5f5; color: #0000ff;">var</span><span style="background-color: #f5f5f5; color: #000000;"> Customer </span><span style="background-color: #f5f5f5; color: #000000;">=</span> <span style="background-color: #f5f5f5; color: #0000ff;">function</span><span style="background-color: #f5f5f5; color: #000000;"> (name) {
+    </span><span style="background-color: #f5f5f5; color: #0000ff;">this</span><span style="background-color: #f5f5f5; color: #000000;">._name </span><span style="background-color: #f5f5f5; color: #000000;">=</span><span style="background-color: #f5f5f5; color: #000000;"> name;
+    </span><span style="background-color: #f5f5f5; color: #0000ff;">this</span><span style="background-color: #f5f5f5; color: #000000;">._rentals </span><span style="background-color: #f5f5f5; color: #000000;">=</span><span style="background-color: #f5f5f5; color: #000000;"> [];
+};
+Customer.prototype </span><span style="background-color: #f5f5f5; color: #000000;">=</span><span style="background-color: #f5f5f5; color: #000000;"> {
+    constructor: Customer,
+    addRental: </span><span style="background-color: #f5f5f5; color: #0000ff;">function</span><span style="background-color: #f5f5f5; color: #000000;"> (arg) {
+        </span><span style="background-color: #f5f5f5; color: #008000;">//</span><span style="background-color: #f5f5f5; color: #008000;">加入的是一个rental实例</span>
+        <span style="background-color: #f5f5f5; color: #0000ff;">this</span><span style="background-color: #f5f5f5; color: #000000;">._rentals.push(arg);
+
+    },
+    getName: </span><span style="background-color: #f5f5f5; color: #0000ff;">function</span><span style="background-color: #f5f5f5; color: #000000;"> () {
+        </span><span style="background-color: #f5f5f5; color: #0000ff;">return</span> <span style="background-color: #f5f5f5; color: #0000ff;">this</span><span style="background-color: #f5f5f5; color: #000000;">._name;
+    },
+    </span><span style="background-color: #f5f5f5; color: #008000;">//</span><span style="background-color: #f5f5f5; color: #008000;">生成详细订单的函数，并拥有交互代码</span>
+<span style="background-color: #f5f5f5; color: #000000;">    statement: </span><span style="background-color: #f5f5f5; color: #0000ff;">function</span><span style="background-color: #f5f5f5; color: #000000;"> () {
+        </span><span style="background-color: #f5f5f5; color: #0000ff;">var</span><span style="background-color: #f5f5f5; color: #000000;"> each </span><span style="background-color: #f5f5f5; color: #000000;">=</span> <span style="background-color: #f5f5f5; color: #0000ff;">null</span><span style="background-color: #f5f5f5; color: #000000;">,
+        result </span><span style="background-color: #f5f5f5; color: #000000;">=</span> <span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">rental record for </span><span style="background-color: #f5f5f5; color: #000000;">'</span> <span style="background-color: #f5f5f5; color: #000000;">+</span> <span style="background-color: #f5f5f5; color: #0000ff;">this</span><span style="background-color: #f5f5f5; color: #000000;">.getName() </span><span style="background-color: #f5f5f5; color: #000000;">+</span> <span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">\n</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">;
+        </span><span style="background-color: #f5f5f5; color: #0000ff;">for</span><span style="background-color: #f5f5f5; color: #000000;"> (</span><span style="background-color: #f5f5f5; color: #0000ff;">var</span><span style="background-color: #f5f5f5; color: #000000;"> i </span><span style="background-color: #f5f5f5; color: #000000;">=</span> <span style="background-color: #f5f5f5; color: #000000;">0</span><span style="background-color: #f5f5f5; color: #000000;">, len </span><span style="background-color: #f5f5f5; color: #000000;">=</span> <span style="background-color: #f5f5f5; color: #0000ff;">this</span><span style="background-color: #f5f5f5; color: #000000;">._rentals.length; i </span><span style="background-color: #f5f5f5; color: #000000;">&lt;</span><span style="background-color: #f5f5f5; color: #000000;"> len; i</span><span style="background-color: #f5f5f5; color: #000000;">++</span><span style="background-color: #f5f5f5; color: #000000;">) {
+            each </span><span style="background-color: #f5f5f5; color: #000000;">=</span> <span style="background-color: #f5f5f5; color: #0000ff;">this</span><span style="background-color: #f5f5f5; color: #000000;">._rentals[i];
+            result </span><span style="background-color: #f5f5f5; color: #000000;">+=</span><span style="background-color: #f5f5f5; color: #000000;"> each.getMovie().getTitle() </span><span style="background-color: #f5f5f5; color: #000000;">+</span> <span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">：</span><span style="background-color: #f5f5f5; color: #000000;">'</span> <span style="background-color: #f5f5f5; color: #000000;">+</span><span style="background-color: #f5f5f5; color: #000000;"> each.getCharge() </span><span style="background-color: #f5f5f5; color: #000000;">+</span> <span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">\n</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">;
+        }
+        result </span><span style="background-color: #f5f5f5; color: #000000;">+=</span> <span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">amount owed is </span><span style="background-color: #f5f5f5; color: #000000;">'</span> <span style="background-color: #f5f5f5; color: #000000;">+</span> <span style="background-color: #f5f5f5; color: #0000ff;">this</span><span style="background-color: #f5f5f5; color: #000000;">.getTotal() </span><span style="background-color: #f5f5f5; color: #000000;">+</span> <span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">\n</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">;
+        result </span><span style="background-color: #f5f5f5; color: #000000;">+=</span> <span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">you earned </span><span style="background-color: #f5f5f5; color: #000000;">'</span> <span style="background-color: #f5f5f5; color: #000000;">+</span> <span style="background-color: #f5f5f5; color: #0000ff;">this</span><span style="background-color: #f5f5f5; color: #000000;">.getTotalFrequentRenterPoints();
+        </span><span style="background-color: #f5f5f5; color: #0000ff;">return</span><span style="background-color: #f5f5f5; color: #000000;"> result;
+    },
+htmlStatement: </span><span style="background-color: #f5f5f5; color: #0000ff;">function</span><span style="background-color: #f5f5f5; color: #000000;"> () {
+    </span><span style="background-color: #f5f5f5; color: #0000ff;">var</span><span style="background-color: #f5f5f5; color: #000000;"> each </span><span style="background-color: #f5f5f5; color: #000000;">=</span> <span style="background-color: #f5f5f5; color: #0000ff;">null</span><span style="background-color: #f5f5f5; color: #000000;">,
+    result </span><span style="background-color: #f5f5f5; color: #000000;">=</span> <span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">&lt;h1&gt;rental record for </span><span style="background-color: #f5f5f5; color: #000000;">'</span> <span style="background-color: #f5f5f5; color: #000000;">+</span> <span style="background-color: #f5f5f5; color: #0000ff;">this</span><span style="background-color: #f5f5f5; color: #000000;">.getName() </span><span style="background-color: #f5f5f5; color: #000000;">+</span> <span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">&lt;/h1&gt;</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">;
+    </span><span style="background-color: #f5f5f5; color: #0000ff;">for</span><span style="background-color: #f5f5f5; color: #000000;"> (</span><span style="background-color: #f5f5f5; color: #0000ff;">var</span><span style="background-color: #f5f5f5; color: #000000;"> i </span><span style="background-color: #f5f5f5; color: #000000;">=</span> <span style="background-color: #f5f5f5; color: #000000;">0</span><span style="background-color: #f5f5f5; color: #000000;">, len </span><span style="background-color: #f5f5f5; color: #000000;">=</span> <span style="background-color: #f5f5f5; color: #0000ff;">this</span><span style="background-color: #f5f5f5; color: #000000;">._rentals.length; i </span><span style="background-color: #f5f5f5; color: #000000;">&lt;</span><span style="background-color: #f5f5f5; color: #000000;"> len; i</span><span style="background-color: #f5f5f5; color: #000000;">++</span><span style="background-color: #f5f5f5; color: #000000;">) {
+        each </span><span style="background-color: #f5f5f5; color: #000000;">=</span> <span style="background-color: #f5f5f5; color: #0000ff;">this</span><span style="background-color: #f5f5f5; color: #000000;">._rentals[i];
+        result </span><span style="background-color: #f5f5f5; color: #000000;">+=</span><span style="background-color: #f5f5f5; color: #000000;"> each.getMovie().getTitle() </span><span style="background-color: #f5f5f5; color: #000000;">+</span> <span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">：</span><span style="background-color: #f5f5f5; color: #000000;">'</span> <span style="background-color: #f5f5f5; color: #000000;">+</span><span style="background-color: #f5f5f5; color: #000000;"> each.getCharge() </span><span style="background-color: #f5f5f5; color: #000000;">+</span> <span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">&lt;br/&gt;</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">;
+    }
+    result </span><span style="background-color: #f5f5f5; color: #000000;">+=</span> <span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">amount owed is </span><span style="background-color: #f5f5f5; color: #000000;">'</span> <span style="background-color: #f5f5f5; color: #000000;">+</span> <span style="background-color: #f5f5f5; color: #0000ff;">this</span><span style="background-color: #f5f5f5; color: #000000;">.getTotal() </span><span style="background-color: #f5f5f5; color: #000000;">+</span> <span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">&lt;br/&gt;</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">;
+    result </span><span style="background-color: #f5f5f5; color: #000000;">+=</span> <span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">you earned </span><span style="background-color: #f5f5f5; color: #000000;">'</span> <span style="background-color: #f5f5f5; color: #000000;">+</span> <span style="background-color: #f5f5f5; color: #0000ff;">this</span><span style="background-color: #f5f5f5; color: #000000;">.getTotalFrequentRenterPoints();
+    </span><span style="background-color: #f5f5f5; color: #0000ff;">return</span><span style="background-color: #f5f5f5; color: #000000;"> result;
+},
+    getTotal: </span><span style="background-color: #f5f5f5; color: #0000ff;">function</span><span style="background-color: #f5f5f5; color: #000000;"> () {
+        </span><span style="background-color: #f5f5f5; color: #0000ff;">var</span><span style="background-color: #f5f5f5; color: #000000;"> result </span><span style="background-color: #f5f5f5; color: #000000;">=</span> <span style="background-color: #f5f5f5; color: #000000;">0</span><span style="background-color: #f5f5f5; color: #000000;">, each </span><span style="background-color: #f5f5f5; color: #000000;">=</span> <span style="background-color: #f5f5f5; color: #0000ff;">null</span><span style="background-color: #f5f5f5; color: #000000;">;
+        </span><span style="background-color: #f5f5f5; color: #0000ff;">for</span><span style="background-color: #f5f5f5; color: #000000;"> (</span><span style="background-color: #f5f5f5; color: #0000ff;">var</span><span style="background-color: #f5f5f5; color: #000000;"> i </span><span style="background-color: #f5f5f5; color: #000000;">=</span> <span style="background-color: #f5f5f5; color: #000000;">0</span><span style="background-color: #f5f5f5; color: #000000;">, len </span><span style="background-color: #f5f5f5; color: #000000;">=</span> <span style="background-color: #f5f5f5; color: #0000ff;">this</span><span style="background-color: #f5f5f5; color: #000000;">._rentals.length; i </span><span style="background-color: #f5f5f5; color: #000000;">&lt;</span><span style="background-color: #f5f5f5; color: #000000;"> len; i</span><span style="background-color: #f5f5f5; color: #000000;">++</span><span style="background-color: #f5f5f5; color: #000000;">) {
+            each </span><span style="background-color: #f5f5f5; color: #000000;">=</span> <span style="background-color: #f5f5f5; color: #0000ff;">this</span><span style="background-color: #f5f5f5; color: #000000;">._rentals[i];
+            result </span><span style="background-color: #f5f5f5; color: #000000;">+=</span><span style="background-color: #f5f5f5; color: #000000;"> each.getCharge();
+        }
+        </span><span style="background-color: #f5f5f5; color: #0000ff;">return</span><span style="background-color: #f5f5f5; color: #000000;"> result;
+    },
+    getTotalFrequentRenterPoints: </span><span style="background-color: #f5f5f5; color: #0000ff;">function</span><span style="background-color: #f5f5f5; color: #000000;"> () {
+        </span><span style="background-color: #f5f5f5; color: #0000ff;">var</span><span style="background-color: #f5f5f5; color: #000000;"> result </span><span style="background-color: #f5f5f5; color: #000000;">=</span> <span style="background-color: #f5f5f5; color: #000000;">0</span><span style="background-color: #f5f5f5; color: #000000;">, each </span><span style="background-color: #f5f5f5; color: #000000;">=</span> <span style="background-color: #f5f5f5; color: #0000ff;">null</span><span style="background-color: #f5f5f5; color: #000000;">;
+        </span><span style="background-color: #f5f5f5; color: #0000ff;">for</span><span style="background-color: #f5f5f5; color: #000000;"> (</span><span style="background-color: #f5f5f5; color: #0000ff;">var</span><span style="background-color: #f5f5f5; color: #000000;"> i </span><span style="background-color: #f5f5f5; color: #000000;">=</span> <span style="background-color: #f5f5f5; color: #000000;">0</span><span style="background-color: #f5f5f5; color: #000000;">, len </span><span style="background-color: #f5f5f5; color: #000000;">=</span> <span style="background-color: #f5f5f5; color: #0000ff;">this</span><span style="background-color: #f5f5f5; color: #000000;">._rentals.length; i </span><span style="background-color: #f5f5f5; color: #000000;">&lt;</span><span style="background-color: #f5f5f5; color: #000000;"> len; i</span><span style="background-color: #f5f5f5; color: #000000;">++</span><span style="background-color: #f5f5f5; color: #000000;">) {
+            each </span><span style="background-color: #f5f5f5; color: #000000;">=</span> <span style="background-color: #f5f5f5; color: #0000ff;">this</span><span style="background-color: #f5f5f5; color: #000000;">._rentals[i];
+            result </span><span style="background-color: #f5f5f5; color: #000000;">+=</span><span style="background-color: #f5f5f5; color: #000000;"> each.getFrequentRenterPoints();
+        }
+        </span><span style="background-color: #f5f5f5; color: #0000ff;">return</span><span style="background-color: #f5f5f5; color: #000000;"> result;
+    }
+};
+
+</span><span style="background-color: #f5f5f5; color: #008000;">//</span><span style="background-color: #f5f5f5; color: #008000;">此处先做一个例子试试吧</span>
+<span style="background-color: #f5f5f5; color: #0000ff;">var</span><span style="background-color: #f5f5f5; color: #000000;"> m1 </span><span style="background-color: #f5f5f5; color: #000000;">=</span> <span style="background-color: #f5f5f5; color: #0000ff;">new</span><span style="background-color: #f5f5f5; color: #000000;"> Movie(</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">刀戟戡魔录</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">, </span><span style="background-color: #f5f5f5; color: #000000;">0</span><span style="background-color: #f5f5f5; color: #000000;">);
+</span><span style="background-color: #f5f5f5; color: #0000ff;">var</span><span style="background-color: #f5f5f5; color: #000000;"> m2 </span><span style="background-color: #f5f5f5; color: #000000;">=</span> <span style="background-color: #f5f5f5; color: #0000ff;">new</span><span style="background-color: #f5f5f5; color: #000000;"> Movie(</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">霹雳神州</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">, </span><span style="background-color: #f5f5f5; color: #000000;">1</span><span style="background-color: #f5f5f5; color: #000000;">);
+</span><span style="background-color: #f5f5f5; color: #0000ff;">var</span><span style="background-color: #f5f5f5; color: #000000;"> m3 </span><span style="background-color: #f5f5f5; color: #000000;">=</span> <span style="background-color: #f5f5f5; color: #0000ff;">new</span><span style="background-color: #f5f5f5; color: #000000;"> Movie(</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">开疆记</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">, </span><span style="background-color: #f5f5f5; color: #000000;">2</span><span style="background-color: #f5f5f5; color: #000000;">);
+
+</span><span style="background-color: #f5f5f5; color: #0000ff;">var</span><span style="background-color: #f5f5f5; color: #000000;"> r1 </span><span style="background-color: #f5f5f5; color: #000000;">=</span> <span style="background-color: #f5f5f5; color: #0000ff;">new</span><span style="background-color: #f5f5f5; color: #000000;"> Rental(m1, </span><span style="background-color: #f5f5f5; color: #000000;">1</span><span style="background-color: #f5f5f5; color: #000000;">);
+</span><span style="background-color: #f5f5f5; color: #0000ff;">var</span><span style="background-color: #f5f5f5; color: #000000;"> r2 </span><span style="background-color: #f5f5f5; color: #000000;">=</span> <span style="background-color: #f5f5f5; color: #0000ff;">new</span><span style="background-color: #f5f5f5; color: #000000;"> Rental(m2, </span><span style="background-color: #f5f5f5; color: #000000;">2</span><span style="background-color: #f5f5f5; color: #000000;">);
+</span><span style="background-color: #f5f5f5; color: #0000ff;">var</span><span style="background-color: #f5f5f5; color: #000000;"> r3 </span><span style="background-color: #f5f5f5; color: #000000;">=</span> <span style="background-color: #f5f5f5; color: #0000ff;">new</span><span style="background-color: #f5f5f5; color: #000000;"> Rental(m3, </span><span style="background-color: #f5f5f5; color: #000000;">3</span><span style="background-color: #f5f5f5; color: #000000;">);
+
+</span><span style="background-color: #f5f5f5; color: #0000ff;">var</span><span style="background-color: #f5f5f5; color: #000000;"> y </span><span style="background-color: #f5f5f5; color: #000000;">=</span> <span style="background-color: #f5f5f5; color: #0000ff;">new</span><span style="background-color: #f5f5f5; color: #000000;"> Customer(</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">叶小钗</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">);
+
+y.addRental(r1);
+y.addRental(r2);
+y.addRental(r3);
+window.onload </span><span style="background-color: #f5f5f5; color: #000000;">=</span> <span style="background-color: #f5f5f5; color: #0000ff;">function</span><span style="background-color: #f5f5f5; color: #000000;"> () {
+    document.getElementById(</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">d</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">).innerHTML </span><span style="background-color: #f5f5f5; color: #000000;">=</span><span style="background-color: #f5f5f5; color: #000000;"> y.htmlStatement();
+};
+    </span><span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">script</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">head</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #0000ff;">&lt;</span><span style="color: #800000;">body</span><span style="color: #0000ff;">&gt;</span>
+ <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">div </span><span style="color: #ff0000;">id</span><span style="color: #0000ff;">="d"</span><span style="color: #0000ff;">&gt;&lt;/</span><span style="color: #800000;">div</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">body</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">html</span><span style="color: #0000ff;">&gt;</span></pre>
+</div>
+<span class="cnblogs_code_collapse">View Code </span></div>
+<p>PS：这里搞完了，我没有发现和多态有太多关系的东西啦。。。。。。于是，继续往下看吧</p>
+<h2>继承</h2>
+<p>PS：这里要用到继承，我们应该使用前面博客的方法，但是现在就随便搞下吧</p>
+<p>我们为Movie建立三个子类</p>
+<p>ChildrenMovie RegularMovie NewReleseaMovie</p>
+<p>PS：作者这里使用了抽象类神马的，我思考下这里怎么写......</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<h1>结语</h1>
+<p>好了，今天的学习暂时到此，下次我们就真的开始系统学习重构知识了。</p>
+                </div>
+
+                <div class='span3 sidebar'>
+                    <h2>导航栏</h2>
+                    <ul class="nav nav-tabs nav-stacked">
+                             				<li><a href="http://songboriceboy.github.io/xxoo/html/sjms/MVCxxbj01ckam/index.html">【MVC学习笔记01】初窥奥秘</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/sjms/zgbj01dygalbqcj/index.html">【重构笔记01】第一个案例补齐插件</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/sjms/zgbj02zxzzhs/index.html">【重构笔记02】重新组织函数</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/sjms/zgbj03dxzjbqtx/index.html">【重构笔记03】对象之间搬迁特性</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/sjms/zgbj04zxzzsjwhxmblsmssjyxwfl/index.html">【重构笔记04】重新组织数据（我好像明白了什么是数据与行为分离）</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/sjms/ctBackbone/index.html">初探Backbone</a></li>
+    				                                         
+                    </ul>
+                </div>
+            </div>
+
+        </div>
+    </body>
+</html>

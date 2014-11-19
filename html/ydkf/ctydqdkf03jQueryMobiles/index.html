@@ -1,0 +1,451 @@
+﻿<!DOCTYPE html>
+
+<html lang="zh">
+    <head>
+        <meta charset="utf-8">
+        <meta name="description" content="android,ios" />
+        <meta name="keywords" content="android,ios" />
+
+        <title>叶小钗</title>
+        <style type='text/css'>
+            body {
+                background-color: #CCC;
+            }
+        </style>
+        <link rel="stylesheet" href="../../../css/bootstrap.css" />
+    </head>
+
+    <body>
+        <div class="container">
+
+            <h1>叶小钗</h1>
+
+            <div class='navbar navbar-inverse'>
+                <div class='navbar-inner nav-collapse' style="height: auto;">
+                    <ul class="nav">
+                              				<li><a href="http://songboriceboy.github.io/xxoo/html/blade/index.html">blade</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/css/index.html">css</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/HTML5&CSS3/index.html">HTML5&CSS3</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/index.html">javascript</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Javaxx/index.html">Java学习</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/nodejs/index.html">nodejs</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/requirejs/index.html">requirejs</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/index.html">Web前端</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/xxgw/index.html">学习感悟</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/gzdd/index.html">工作点滴</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/jkxx/index.html">接口学习</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/wfl/index.html">未分类</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/ydkf/index.html">移动开发</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/sjms/index.html">设计模式</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/mst/index.html">面试题</a></li>
+    				                      </ul>
+                </div>
+            </div>
+
+            <div id='content' class='row-fluid'>
+
+                <div class='span9 main'>
+				<div style="color:blue" align=center>【初探移动前端开发03】jQueryMobile（上）</div><br><h1>前言</h1>
+<p>到目前为止，我打了几天酱油了，这几天落实了工作，并且看了一部电视连续剧（陈道明-手机），我很少看连续剧了，但是手机质量很高啊，各位可以看看。</p>
+<p>我们今天先学习一下jquery mobile的基础知识，然后逐步进入移动开发吧。</p>
+<p>我们这里再来看看响应式布局，我们是一个页面可以在不同的设备上使用，其实这在某些方面上是不太合适的。</p>
+<p>因为我们移动端的事件不太一致，可能鼠标操作很方便的，用手就不行了，所以为移动端出单独的网页还是很有必要的。</p>
+<p><span style="color: #ff0000;"><strong>文中测试链接请使用手机打开</strong></span>。</p>
+<h1>什么是jQuery Mobile？</h1>
+<p>jquery mobile是jquery在移动设备上的版本，他是基于jquery、HTML5、CSS3构建的，他提供了一个丰富的交互性强的接口用以兼容不同移动平台。</p>
+<p>于是我们去下载一番：</p>
+<p><img src="45368029691847.png" alt=""></p>
+<p>我这里就直接下载的这个压缩文件了，完了我们看看他有些什么东西，我们这个还是要依赖jquery的，所以还是准备一个吧。</p>
+<p>这个东东是个好东西哦，他还有配套的样式呢，依赖他我们可以开发一套不错的手机应用呢。</p>
+<h1>自定义属性</h1>
+<p>在jquery mobile中，是使用自定义属性驱动页面的（data-....），比如：</p>
+<p><strong><em>data-role</em> </strong></p>
+<p>定义元素在页面中的角色，该属性允许定义不同的组件元素及页面视图：data-role="page"</p>
+<p><em><strong>data-title</strong></em></p>
+<p>定义jquery mobile视图页面标题</p>
+<p><em><strong>data-transition</strong></em></p>
+<p>定义视图切换的动画效果</p>
+<p><em><strong>data-rel</strong></em></p>
+<p>定义具有浮动效果的视图</p>
+<p><em><strong>data-theme</strong></em></p>
+<p>指定元素或者组件内主题样式风格</p>
+<p><em><strong>data-icon</strong></em></p>
+<p>在元素内增加小图标</p>
+<p><em><strong>data-iconpos</strong></em></p>
+<p>定义小图标位置</p>
+<p><em><strong>data-inline</strong></em></p>
+<p>指定按钮根据内容自适应其长度</p>
+<p><em><strong>data-type</strong></em></p>
+<p>定义分组按钮水平或者垂直方向排布</p>
+<p><em><strong>data-rel</strong></em></p>
+<p>定义具有特定功能的元素，例如data-rel="back"返回按钮</p>
+<p><em><strong>data-add-back-btn</strong></em></p>
+<p>指定视图页面自动在页眉左侧添加返回按钮</p>
+<p><strong><em>data-back-btn-text</em></strong></p>
+<p>指定由石头页面自动创建的返回按钮的文本内容，该属性的使用通常都需要和data-add-back-btn配合</p>
+<p><em><strong>data-position</strong></em></p>
+<p>该属性是实现在滑动屏幕时工具栏的显示和隐藏状态</p>
+<p><em><strong>data-fullscreen</strong></em></p>
+<p>用于指定全屏视图页面</p>
+<p><em><strong>data-native-menu</strong></em></p>
+<p>指定下拉选择功能采用平台内置的选择器</p>
+<p><em><strong>data-placeholder</strong></em></p>
+<p>设置下拉选择功能的占位符</p>
+<p><em><strong>data-inset</strong></em></p>
+<p>实现内嵌列表功能</p>
+<p><em><strong>data-split-theme</strong></em></p>
+<p>设置列表右侧图标的主题样式风格</p>
+<p><em><strong>data-filter</strong></em></p>
+<p>开启列表过滤功能</p>
+<p>搞了这么多自定义属性，我们也不知道什么是什么，所以不如来试一试吧。</p>
+<h1>页面与视图</h1>
+<p>页面与视图作为移动web应用程序最重要的用户界面之一，他主要承担整个web应用程序的界面呈现工作。</p>
+<p>jquery mobile提供一套自定义元素属性用于搭建各种页面和视图。</p>
+<div class="cnblogs_code">
+<pre><span style="color: #008080;"> 1</span> <span style="color: #0000ff;">&lt;!</span><span style="color: #ff00ff;">DOCTYPE html</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 2</span> <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">html </span><span style="color: #ff0000;">xmlns</span><span style="color: #0000ff;">="http://www.w3.org/1999/xhtml"</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 3</span> <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">head</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 4</span>     <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">title</span><span style="color: #0000ff;">&gt;&lt;/</span><span style="color: #800000;">title</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 5</span>     <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">meta </span><span style="color: #ff0000;">name</span><span style="color: #0000ff;">="viewport"</span><span style="color: #ff0000;"> content</span><span style="color: #0000ff;">="width=device-width, initial-scale=1"</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 6</span>     <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">link </span><span style="color: #ff0000;">href</span><span style="color: #0000ff;">="jquery.mobile-1.3.1.css"</span><span style="color: #ff0000;"> rel</span><span style="color: #0000ff;">="stylesheet"</span><span style="color: #ff0000;"> type</span><span style="color: #0000ff;">="text/css"</span> <span style="color: #0000ff;">/&gt;</span>
+<span style="color: #008080;"> 7</span>     <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">script </span><span style="color: #ff0000;">src</span><span style="color: #0000ff;">="jquery-1.7.1.js"</span><span style="color: #ff0000;"> type</span><span style="color: #0000ff;">="text/javascript"</span><span style="color: #0000ff;">&gt;&lt;/</span><span style="color: #800000;">script</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 8</span>     <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">script </span><span style="color: #ff0000;">src</span><span style="color: #0000ff;">="jquery.mobile-1.3.1.js"</span><span style="color: #ff0000;"> type</span><span style="color: #0000ff;">="text/javascript"</span><span style="color: #0000ff;">&gt;&lt;/</span><span style="color: #800000;">script</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 9</span> <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">head</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">10</span> <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">body</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">11</span>     <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">div </span><span style="color: #ff0000;">data-role</span><span style="color: #0000ff;">="page"</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">12</span>         <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">div </span><span style="color: #ff0000;">data-role</span><span style="color: #0000ff;">="header"</span><span style="color: #0000ff;">&gt;</span><span style="color: #000000;">页头
+</span><span style="color: #008080;">13</span>         <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">div</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">14</span>         <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">div </span><span style="color: #ff0000;">data-role</span><span style="color: #0000ff;">="content"</span><span style="color: #0000ff;">&gt;</span><span style="color: #000000;">内容
+</span><span style="color: #008080;">15</span>         <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">div</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">16</span>         <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">div </span><span style="color: #ff0000;">data-role</span><span style="color: #0000ff;">="footer"</span><span style="color: #0000ff;">&gt;</span><span style="color: #000000;">页脚
+</span><span style="color: #008080;">17</span>         <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">div</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">18</span>     <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">div</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">19</span> <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">body</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">20</span> <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">html</span><span style="color: #0000ff;">&gt;</span></pre>
+</div>
+<p><a href="http://sandbox.runjs.cn/show/itndsvbq">http://sandbox.runjs.cn/show/itndsvbq</a></p>
+<p><img src="11727239317676.jpg" alt=""></p>
+<p>不要说还是有点感觉的。。。</p>
+<p>我们在实例中使用div元素作为视图页面的布局元素但是我们这里改为html的元素更加好：</p>
+<div class="cnblogs_code">
+<pre><span style="color: #008080;"> 1</span> <span style="color: #0000ff;">&lt;!</span><span style="color: #ff00ff;">DOCTYPE html</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 2</span> <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">html </span><span style="color: #ff0000;">xmlns</span><span style="color: #0000ff;">="http://www.w3.org/1999/xhtml"</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 3</span> <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">head</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 4</span>     <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">title</span><span style="color: #0000ff;">&gt;&lt;/</span><span style="color: #800000;">title</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 5</span>     <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">meta </span><span style="color: #ff0000;">name</span><span style="color: #0000ff;">="viewport"</span><span style="color: #ff0000;"> content</span><span style="color: #0000ff;">="width=device-width, initial-scale=1"</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 6</span>     <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">link </span><span style="color: #ff0000;">id</span><span style="color: #0000ff;">="jquerymobile_120"</span><span style="color: #ff0000;"> rel</span><span style="color: #0000ff;">="stylesheet"</span><span style="color: #ff0000;"> type</span><span style="color: #0000ff;">="text/css"</span><span style="color: #ff0000;"> class</span><span style="color: #0000ff;">="library"</span><span style="color: #ff0000;"> <br>href</span><span style="color: #0000ff;">="/js/sandbox/jquery-mobile/jquery.mobile-1.2.0/jquery.mobile-1.2.0.css"</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 7</span>     <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">script </span><span style="color: #ff0000;">id</span><span style="color: #0000ff;">="jquery_182"</span><span style="color: #ff0000;"> type</span><span style="color: #0000ff;">="text/javascript"</span><span style="color: #ff0000;"> class</span><span style="color: #0000ff;">="library"</span><span style="color: #ff0000;"> <br>src</span><span style="color: #0000ff;">="/js/sandbox/jquery/jquery-1.8.2.min.js"</span><span style="color: #0000ff;">&gt;&lt;/</span><span style="color: #800000;">script</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 8</span>     <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">script </span><span style="color: #ff0000;">id</span><span style="color: #0000ff;">="jquerymobile_120"</span><span style="color: #ff0000;"> type</span><span style="color: #0000ff;">="text/javascript"</span><span style="color: #ff0000;"> class</span><span style="color: #0000ff;">="library"</span><span style="color: #ff0000;"> <br>src</span><span style="color: #0000ff;">="/js/sandbox/jquery-mobile/jquery.mobile-1.2.0/jquery.mobile-1.2.0.min.js"</span><span style="color: #0000ff;">&gt;&lt;/</span><span style="color: #800000;">script</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 9</span> <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">head</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">10</span> <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">body</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">11</span>     <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">section </span><span style="color: #ff0000;">data-role</span><span style="color: #0000ff;">="page"</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">12</span>         <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">header </span><span style="color: #ff0000;">data-role</span><span style="color: #0000ff;">="header"</span><span style="color: #0000ff;">&gt;</span><span style="color: #000000;">页头
+</span><span style="color: #008080;">13</span>         <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">header</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">14</span>         <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">article </span><span style="color: #ff0000;">data-role</span><span style="color: #0000ff;">="content"</span><span style="color: #0000ff;">&gt;</span><span style="color: #000000;">内容
+</span><span style="color: #008080;">15</span>         <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">article</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">16</span>         <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">footer </span><span style="color: #ff0000;">data-role</span><span style="color: #0000ff;">="footer"</span><span style="color: #0000ff;">&gt;</span><span style="color: #000000;">页脚
+</span><span style="color: #008080;">17</span>         <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">footer</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">18</span>     <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">section</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">19</span> <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">body</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">20</span> <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">html</span><span style="color: #0000ff;">&gt;</span></pre>
+</div>
+<h2>多视图web页面</h2>
+<p>前面只有一个视图，我们现在来看看多视图页面怎么处理：</p>
+<div class="cnblogs_code">
+<pre><span style="color: #008080;"> 1</span> <span style="color: #0000ff;">&lt;!</span><span style="color: #ff00ff;">DOCTYPE html</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 2</span> <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">html </span><span style="color: #ff0000;">xmlns</span><span style="color: #0000ff;">="http://www.w3.org/1999/xhtml"</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 3</span> <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">head</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 4</span>     <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">title</span><span style="color: #0000ff;">&gt;&lt;/</span><span style="color: #800000;">title</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 5</span>     <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">meta </span><span style="color: #ff0000;">name</span><span style="color: #0000ff;">="viewport"</span><span style="color: #ff0000;"> content</span><span style="color: #0000ff;">="width=device-width, initial-scale=1"</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 6</span>     <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">link </span><span style="color: #ff0000;">id</span><span style="color: #0000ff;">="jquerymobile_120"</span><span style="color: #ff0000;"> rel</span><span style="color: #0000ff;">="stylesheet"</span><span style="color: #ff0000;"> type</span><span style="color: #0000ff;">="text/css"</span><span style="color: #ff0000;"> class</span><span style="color: #0000ff;">="library"</span> 
+<span style="color: #008080;"> 7</span> <span style="color: #ff0000;">    href</span><span style="color: #0000ff;">="/js/sandbox/jquery-mobile/jquery.mobile-1.2.0/jquery.mobile-1.2.0.css"</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 8</span>     <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">script </span><span style="color: #ff0000;">id</span><span style="color: #0000ff;">="jquery_182"</span><span style="color: #ff0000;"> type</span><span style="color: #0000ff;">="text/javascript"</span><span style="color: #ff0000;"> class</span><span style="color: #0000ff;">="library"</span> 
+<span style="color: #008080;"> 9</span> <span style="color: #ff0000;">    src</span><span style="color: #0000ff;">="/js/sandbox/jquery/jquery-1.8.2.min.js"</span><span style="color: #0000ff;">&gt;&lt;/</span><span style="color: #800000;">script</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">10</span>     <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">script </span><span style="color: #ff0000;">id</span><span style="color: #0000ff;">="jquerymobile_120"</span><span style="color: #ff0000;"> type</span><span style="color: #0000ff;">="text/javascript"</span><span style="color: #ff0000;"> class</span><span style="color: #0000ff;">="library"</span> 
+<span style="color: #008080;">11</span> <span style="color: #ff0000;">    src</span><span style="color: #0000ff;">="/js/sandbox/jquery-mobile/jquery.mobile-1.2.0/jquery.mobile-1.2.0.min.js"</span><span style="color: #0000ff;">&gt;&lt;/</span><span style="color: #800000;">script</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">12</span> <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">head</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">13</span> <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">body</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">14</span>     <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">section </span><span style="color: #ff0000;">data-role</span><span style="color: #0000ff;">="page"</span><span style="color: #ff0000;"> id</span><span style="color: #0000ff;">="v1"</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">15</span>         <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">header </span><span style="color: #ff0000;">data-role</span><span style="color: #0000ff;">="header"</span><span style="color: #0000ff;">&gt;</span><span style="color: #000000;">视图一
+</span><span style="color: #008080;">16</span>         <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">header</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">17</span>         <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">article </span><span style="color: #ff0000;">data-role</span><span style="color: #0000ff;">="content"</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">18</span>             <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">a </span><span style="color: #ff0000;">href</span><span style="color: #0000ff;">="#v2"</span><span style="color: #0000ff;">&gt;</span>去视图二<span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">a</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">19</span>         <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">article</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">20</span>         <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">footer </span><span style="color: #ff0000;">data-role</span><span style="color: #0000ff;">="footer"</span><span style="color: #0000ff;">&gt;</span><span style="color: #000000;">页脚
+</span><span style="color: #008080;">21</span>         <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">footer</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">22</span>     <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">section</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">23</span>      <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">section </span><span style="color: #ff0000;">data-role</span><span style="color: #0000ff;">="page"</span><span style="color: #ff0000;"> id</span><span style="color: #0000ff;">="v2"</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">24</span>         <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">header </span><span style="color: #ff0000;">data-role</span><span style="color: #0000ff;">="header"</span><span style="color: #0000ff;">&gt;</span><span style="color: #000000;">视图二
+</span><span style="color: #008080;">25</span>         <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">header</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">26</span>         <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">article </span><span style="color: #ff0000;">data-role</span><span style="color: #0000ff;">="content"</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">27</span>             <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">a </span><span style="color: #ff0000;">href</span><span style="color: #0000ff;">="#v1"</span><span style="color: #0000ff;">&gt;</span>去视图1<span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">a</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">28</span>         <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">article</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">29</span>         <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">footer </span><span style="color: #ff0000;">data-role</span><span style="color: #0000ff;">="footer"</span><span style="color: #0000ff;">&gt;</span><span style="color: #000000;">页脚
+</span><span style="color: #008080;">30</span>         <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">footer</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">31</span>     <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">section</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">32</span> <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">body</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">33</span> <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">html</span><span style="color: #0000ff;">&gt;</span></pre>
+</div>
+<p><a href="http://sandbox.runjs.cn/show/l4vejd6v">http://sandbox.runjs.cn/show/l4vejd6v</a></p>
+<p><img src="70630410088411.jpg" alt=""></p>
+<p>我们点击超链接可以在视图一与视图二切换，你会发现还有一点点动画效果呢！！！</p>
+<p>PS：<span style="color: #ff0000;">在此若是设置了data-title将改变手机上title的标题</span></p>
+<h2>动画</h2>
+<p>我们可以设置6钟动画效果：</p>
+<div class="cnblogs_code">
+<pre><span style="color: #800000;">① Slide 从右到左切换
+② Slideup 从下到上切换
+③ Slidedown 从上到下切换
+④ Pop弹出框方式打开
+⑤ Fade 渐变褪色方式
+⑥ Flip飞入飞出方式</span></pre>
+</div>
+<p>这里我就不截图了，我私下试试去。</p>
+<div class="cnblogs_code">
+<pre><span style="color: #0000ff;">&lt;</span><span style="color: #800000;">a </span><span style="color: #ff0000;">href</span><span style="color: #0000ff;">="#v1"</span><span style="color: #ff0000;"> data-transition</span><span style="color: #0000ff;">="pop"</span><span style="color: #0000ff;">&gt;</span>去视图1<span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">a</span><span style="color: #0000ff;">&gt;</span></pre>
+</div>
+<p>效果感觉不错哦！！！</p>
+<h2>dialog对话框</h2>
+<p>只要在标签的data-rel设置了dialog属性，视图就具有dialog浮动层效果。</p>
+<div class="cnblogs_code">
+<pre><span style="color: #0000ff;">&lt;</span><span style="color: #800000;">a </span><span style="color: #ff0000;">href</span><span style="color: #0000ff;">="#v2"</span><span style="color: #ff0000;"> data-rel</span><span style="color: #0000ff;">="dialog"</span><span style="color: #0000ff;">&gt;</span>去视图二<span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">a</span><span style="color: #0000ff;">&gt;</span></pre>
+</div>
+<p><img src="10690319882508.jpg" alt=""></p>
+<p>这里有点表现不佳，我们暂时不管他。</p>
+<h2>页面主题</h2>
+<div class="cnblogs_code">
+<pre><span style="color: #0000ff;">&lt;</span><span style="color: #800000;">section </span><span style="color: #ff0000;">data-role</span><span style="color: #0000ff;">="page"</span><span style="color: #ff0000;"> id</span><span style="color: #0000ff;">="v1"</span><span style="color: #ff0000;"> data-theme</span><span style="color: #0000ff;">="a"</span><span style="color: #0000ff;">&gt;</span></pre>
+</div>
+<p>关于自定义属性的东西暂时写到这里，我们来看看我们比较重要的按钮。</p>
+<h1>按钮</h1>
+<p>按钮在移动web应用程序中式非常重要的用户界面组件，主要用作为用户提供各种操作入口和视图交互功能，我们的jquery mobile提供了很多不错的按钮。</p>
+<div class="cnblogs_code">
+<pre><span style="color: #008080;"> 1</span> <span style="color: #0000ff;">&lt;!</span><span style="color: #ff00ff;">DOCTYPE html</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 2</span> <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">html </span><span style="color: #ff0000;">xmlns</span><span style="color: #0000ff;">="http://www.w3.org/1999/xhtml"</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 3</span> <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">head</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 4</span>     <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">title</span><span style="color: #0000ff;">&gt;&lt;/</span><span style="color: #800000;">title</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 5</span>     <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">meta </span><span style="color: #ff0000;">name</span><span style="color: #0000ff;">="viewport"</span><span style="color: #ff0000;"> content</span><span style="color: #0000ff;">="width=device-width, initial-scale=1"</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 6</span>     <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">link </span><span style="color: #ff0000;">id</span><span style="color: #0000ff;">="jquerymobile_120"</span><span style="color: #ff0000;"> rel</span><span style="color: #0000ff;">="stylesheet"</span><span style="color: #ff0000;"> type</span><span style="color: #0000ff;">="text/css"</span><span style="color: #ff0000;"> class</span><span style="color: #0000ff;">="library"</span> 
+<span style="color: #008080;"> 7</span> <span style="color: #ff0000;">    href</span><span style="color: #0000ff;">="/js/sandbox/jquery-mobile/jquery.mobile-1.2.0/jquery.mobile-1.2.0.css"</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 8</span>     <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">script </span><span style="color: #ff0000;">id</span><span style="color: #0000ff;">="jquery_182"</span><span style="color: #ff0000;"> type</span><span style="color: #0000ff;">="text/javascript"</span><span style="color: #ff0000;"> class</span><span style="color: #0000ff;">="library"</span> 
+<span style="color: #008080;"> 9</span> <span style="color: #ff0000;">    src</span><span style="color: #0000ff;">="/js/sandbox/jquery/jquery-1.8.2.min.js"</span><span style="color: #0000ff;">&gt;&lt;/</span><span style="color: #800000;">script</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">10</span>     <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">script </span><span style="color: #ff0000;">id</span><span style="color: #0000ff;">="jquerymobile_120"</span><span style="color: #ff0000;"> type</span><span style="color: #0000ff;">="text/javascript"</span><span style="color: #ff0000;"> class</span><span style="color: #0000ff;">="library"</span> 
+<span style="color: #008080;">11</span> <span style="color: #ff0000;">    src</span><span style="color: #0000ff;">="/js/sandbox/jquery-mobile/jquery.mobile-1.2.0/jquery.mobile-1.2.0.min.js"</span><span style="color: #0000ff;">&gt;&lt;/</span><span style="color: #800000;">script</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">12</span> <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">head</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">13</span> <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">body</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">14</span>   <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">div </span><span style="color: #ff0000;">data-role</span><span style="color: #0000ff;">="button"</span><span style="color: #0000ff;">&gt;</span>我是按钮<span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">div</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">15</span> <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">body</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">16</span> <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">html</span><span style="color: #0000ff;">&gt;</span></pre>
+</div>
+<p><img src="37174449433315.png" alt=""></p>
+<p>于是我们的按钮就出现啦，在页面上独占一行。</p>
+<p>input 中button、submit等也都变成了这个样式了</p>
+<h2>小图标</h2>
+<p>jquery mobile提供了一套小图标：</p>
+<p><img src="44160427742292.png" alt=""></p>
+<p>图标太多，我这里简单列两个：</p>
+<p>delete：删除，data-icon="delete"</p>
+<p>plus：加号，data-icon="plus"</p>
+<p>PS:设置data-iconpos="notext"便可以只要图标不要文字</p>
+<div class="cnblogs_code">
+<pre><span style="color: #008080;">1</span>   <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">div </span><span style="color: #ff0000;">data-role</span><span style="color: #0000ff;">="button"</span><span style="color: #ff0000;"> data-icon</span><span style="color: #0000ff;">="delete"</span><span style="color: #0000ff;">&gt;</span>删除<span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">div</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">2</span>   <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">div </span><span style="color: #ff0000;">data-role</span><span style="color: #0000ff;">="button"</span><span style="color: #ff0000;"> data-icon</span><span style="color: #0000ff;">="delete"</span><span style="color: #ff0000;"> data-iconpos</span><span style="color: #0000ff;">="notext"</span><span style="color: #0000ff;">&gt;</span>删除<span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">div</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">3</span>   <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">div </span><span style="color: #ff0000;">data-role</span><span style="color: #0000ff;">="button"</span><span style="color: #ff0000;"> data-icon</span><span style="color: #0000ff;">="delete"</span><span style="color: #ff0000;"> data-iconpos</span><span style="color: #0000ff;">="right"</span><span style="color: #0000ff;">&gt;</span>删除<span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">div</span><span style="color: #0000ff;">&gt;</span></pre>
+</div>
+<p><a href="http://sandbox.runjs.cn/show/xd9axexu">http://sandbox.runjs.cn/show/xd9axexu</a></p>
+<p><img src="22050466446639.jpg" alt=""></p>
+<p>若是系统提供的图标不能满足条件的话，便可以自定义图标</p>
+<div class="cnblogs_code">
+<pre><span style="color: #800000;">data-icon="myapp-email"
+myapp-email就是自定义图标的名称（需要上传）
+css中对应的样式是.ui-icon-myapp-email
+自定义图标大小是18*18，建议png-8</span></pre>
+</div>
+<h2>按钮分组</h2>
+<div class="cnblogs_code">
+<pre><span style="color: #008080;"> 1</span> <span style="color: #0000ff;">&lt;!</span><span style="color: #ff00ff;">DOCTYPE html</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 2</span> <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">html </span><span style="color: #ff0000;">xmlns</span><span style="color: #0000ff;">="http://www.w3.org/1999/xhtml"</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 3</span> <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">head</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 4</span>     <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">title</span><span style="color: #0000ff;">&gt;&lt;/</span><span style="color: #800000;">title</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 5</span>     <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">meta </span><span style="color: #ff0000;">name</span><span style="color: #0000ff;">="viewport"</span><span style="color: #ff0000;"> content</span><span style="color: #0000ff;">="width=device-width, initial-scale=1"</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 6</span>     <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">link </span><span style="color: #ff0000;">id</span><span style="color: #0000ff;">="jquerymobile_120"</span><span style="color: #ff0000;"> rel</span><span style="color: #0000ff;">="stylesheet"</span><span style="color: #ff0000;"> type</span><span style="color: #0000ff;">="text/css"</span><span style="color: #ff0000;"> class</span><span style="color: #0000ff;">="library"</span> 
+<span style="color: #008080;"> 7</span> <span style="color: #ff0000;">    href</span><span style="color: #0000ff;">="/js/sandbox/jquery-mobile/jquery.mobile-1.2.0/jquery.mobile-1.2.0.css"</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 8</span>     <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">script </span><span style="color: #ff0000;">id</span><span style="color: #0000ff;">="jquery_182"</span><span style="color: #ff0000;"> type</span><span style="color: #0000ff;">="text/javascript"</span><span style="color: #ff0000;"> class</span><span style="color: #0000ff;">="library"</span> 
+<span style="color: #008080;"> 9</span> <span style="color: #ff0000;">    src</span><span style="color: #0000ff;">="/js/sandbox/jquery/jquery-1.8.2.min.js"</span><span style="color: #0000ff;">&gt;&lt;/</span><span style="color: #800000;">script</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">10</span>     <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">script </span><span style="color: #ff0000;">id</span><span style="color: #0000ff;">="jquerymobile_120"</span><span style="color: #ff0000;"> type</span><span style="color: #0000ff;">="text/javascript"</span><span style="color: #ff0000;"> class</span><span style="color: #0000ff;">="library"</span> 
+<span style="color: #008080;">11</span> <span style="color: #ff0000;">    src</span><span style="color: #0000ff;">="/js/sandbox/jquery-mobile/jquery.mobile-1.2.0/jquery.mobile-1.2.0.min.js"</span><span style="color: #0000ff;">&gt;&lt;/</span><span style="color: #800000;">script</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">12</span> <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">head</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">13</span> <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">body</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">14</span>     <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">div </span><span style="color: #ff0000;">data-role</span><span style="color: #0000ff;">="controlgroup"</span><span style="color: #ff0000;"> data-type</span><span style="color: #0000ff;">="horizontal"</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">15</span>         <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">div </span><span style="color: #ff0000;">data-role</span><span style="color: #0000ff;">="button"</span><span style="color: #ff0000;"> data-icon</span><span style="color: #0000ff;">="plus"</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">16</span>             添加<span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">div</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">17</span>         <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">div </span><span style="color: #ff0000;">data-role</span><span style="color: #0000ff;">="button"</span><span style="color: #ff0000;"> data-icon</span><span style="color: #0000ff;">="delete"</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">18</span>             删除<span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">div</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">19</span>         <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">div </span><span style="color: #ff0000;">data-role</span><span style="color: #0000ff;">="button"</span><span style="color: #ff0000;"> data-icon</span><span style="color: #0000ff;">="refresh"</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">20</span>             修改<span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">div</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">21</span>     <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">div</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">22</span>     <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">div </span><span style="color: #ff0000;">data-role</span><span style="color: #0000ff;">="controlgroup"</span><span style="color: #ff0000;"> data-type</span><span style="color: #0000ff;">="horizontal"</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">23</span>         <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">div </span><span style="color: #ff0000;">data-role</span><span style="color: #0000ff;">="button"</span><span style="color: #ff0000;"> data-icon</span><span style="color: #0000ff;">="plus"</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">24</span>             添加<span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">div</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">25</span>         <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">div </span><span style="color: #ff0000;">data-role</span><span style="color: #0000ff;">="button"</span><span style="color: #ff0000;"> data-icon</span><span style="color: #0000ff;">="delete"</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">26</span>             删除<span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">div</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">27</span>         <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">div </span><span style="color: #ff0000;">data-role</span><span style="color: #0000ff;">="button"</span><span style="color: #ff0000;"> data-icon</span><span style="color: #0000ff;">="refresh"</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">28</span>             修改<span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">div</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">29</span>     <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">div</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">30</span> <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">body</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">31</span> <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">html</span><span style="color: #0000ff;">&gt;</span></pre>
+</div>
+<p><a href="http://sandbox.runjs.cn/show/u7cydmrv">http://sandbox.runjs.cn/show/u7cydmrv</a></p>
+<p><img src="33094596080876.png" alt=""></p>
+<p>感觉还不错的说，这里还可以为各个按钮设置主题，看起来就更加有分别了。</p>
+<h1>Bar 工具栏</h1>
+<p>工具栏也是一重要组件，我们这里结合前面的按钮来完成一完整的工具栏。</p>
+<p>jquery mobile提供两组工具栏：</p>
+<div class="cnblogs_code">
+<pre><span style="color: #800000;">Headers bar
+充当视图页面的标题作用，在一般情况下header bar位于页面的顶部，一般包含2按钮</span></pre>
+</div>
+<div class="cnblogs_code">
+<pre><span style="color: #800000;">Footer bar
+这个工具栏一般位于尾部，就是与header bar对应的东东</span></pre>
+</div>
+<p>初体验：</p>
+<div class="cnblogs_code">
+<pre><span style="color: #008080;"> 1</span> <span style="color: #0000ff;">&lt;!</span><span style="color: #ff00ff;">DOCTYPE html</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 2</span> <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">html </span><span style="color: #ff0000;">xmlns</span><span style="color: #0000ff;">="http://www.w3.org/1999/xhtml"</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 3</span> <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">head</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 4</span>     <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">title</span><span style="color: #0000ff;">&gt;&lt;/</span><span style="color: #800000;">title</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 5</span>     <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">meta </span><span style="color: #ff0000;">name</span><span style="color: #0000ff;">="viewport"</span><span style="color: #ff0000;"> content</span><span style="color: #0000ff;">="width=device-width, initial-scale=1"</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 6</span>     <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">link </span><span style="color: #ff0000;">id</span><span style="color: #0000ff;">="jquerymobile_120"</span><span style="color: #ff0000;"> rel</span><span style="color: #0000ff;">="stylesheet"</span><span style="color: #ff0000;"> type</span><span style="color: #0000ff;">="text/css"</span><span style="color: #ff0000;"> class</span><span style="color: #0000ff;">="library"</span> 
+<span style="color: #008080;"> 7</span> <span style="color: #ff0000;">    href</span><span style="color: #0000ff;">="/js/sandbox/jquery-mobile/jquery.mobile-1.2.0/jquery.mobile-1.2.0.css"</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 8</span>     <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">script </span><span style="color: #ff0000;">id</span><span style="color: #0000ff;">="jquery_182"</span><span style="color: #ff0000;"> type</span><span style="color: #0000ff;">="text/javascript"</span><span style="color: #ff0000;"> class</span><span style="color: #0000ff;">="library"</span> 
+<span style="color: #008080;"> 9</span> <span style="color: #ff0000;">    src</span><span style="color: #0000ff;">="/js/sandbox/jquery/jquery-1.8.2.min.js"</span><span style="color: #0000ff;">&gt;&lt;/</span><span style="color: #800000;">script</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">10</span>     <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">script </span><span style="color: #ff0000;">id</span><span style="color: #0000ff;">="jquerymobile_120"</span><span style="color: #ff0000;"> type</span><span style="color: #0000ff;">="text/javascript"</span><span style="color: #ff0000;"> class</span><span style="color: #0000ff;">="library"</span> 
+<span style="color: #008080;">11</span> <span style="color: #ff0000;">    src</span><span style="color: #0000ff;">="/js/sandbox/jquery-mobile/jquery.mobile-1.2.0/jquery.mobile-1.2.0.min.js"</span><span style="color: #0000ff;">&gt;&lt;/</span><span style="color: #800000;">script</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">12</span> <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">head</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">13</span> <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">body</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">14</span> <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">div </span><span style="color: #ff0000;">data-role</span><span style="color: #0000ff;">="page"</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">15</span>   <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">header </span><span style="color: #ff0000;">data-role</span><span style="color: #0000ff;">="header"</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">16</span>     <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">h1</span><span style="color: #0000ff;">&gt;</span>header bar<span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">h1</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">17</span>   <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">header</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">18</span>   <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">div</span><span style="color: #0000ff;">&gt;</span>内容区域<span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">div</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">19</span>   <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">footer </span><span style="color: #ff0000;">data-role</span><span style="color: #0000ff;">="footer"</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">20</span>     <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">h2</span><span style="color: #0000ff;">&gt;</span>footer bar<span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">h2</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">21</span>   <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">footer</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">22</span> <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">div</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">23</span> <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">body</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">24</span> <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">html</span><span style="color: #0000ff;">&gt;</span></pre>
+</div>
+<p><img src="29545929092939.png" alt=""></p>
+<p>我们在此基础上改下：</p>
+<div class="cnblogs_code">
+<pre><span style="color: #008080;"> 1</span> <span style="color: #0000ff;">&lt;!</span><span style="color: #ff00ff;">DOCTYPE html</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 2</span> <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">html </span><span style="color: #ff0000;">xmlns</span><span style="color: #0000ff;">="http://www.w3.org/1999/xhtml"</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 3</span> <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">head</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 4</span>     <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">title</span><span style="color: #0000ff;">&gt;&lt;/</span><span style="color: #800000;">title</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 5</span>     <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">meta </span><span style="color: #ff0000;">name</span><span style="color: #0000ff;">="viewport"</span><span style="color: #ff0000;"> content</span><span style="color: #0000ff;">="width=device-width, initial-scale=1"</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 6</span>     <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">link </span><span style="color: #ff0000;">id</span><span style="color: #0000ff;">="jquerymobile_120"</span><span style="color: #ff0000;"> rel</span><span style="color: #0000ff;">="stylesheet"</span><span style="color: #ff0000;"> type</span><span style="color: #0000ff;">="text/css"</span><span style="color: #ff0000;"> class</span><span style="color: #0000ff;">="library"</span> 
+<span style="color: #008080;"> 7</span> <span style="color: #ff0000;">    href</span><span style="color: #0000ff;">="/js/sandbox/jquery-mobile/jquery.mobile-1.2.0/jquery.mobile-1.2.0.css"</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 8</span>     <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">script </span><span style="color: #ff0000;">id</span><span style="color: #0000ff;">="jquery_182"</span><span style="color: #ff0000;"> type</span><span style="color: #0000ff;">="text/javascript"</span><span style="color: #ff0000;"> class</span><span style="color: #0000ff;">="library"</span> 
+<span style="color: #008080;"> 9</span> <span style="color: #ff0000;">    src</span><span style="color: #0000ff;">="/js/sandbox/jquery/jquery-1.8.2.min.js"</span><span style="color: #0000ff;">&gt;&lt;/</span><span style="color: #800000;">script</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">10</span>     <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">script </span><span style="color: #ff0000;">id</span><span style="color: #0000ff;">="jquerymobile_120"</span><span style="color: #ff0000;"> type</span><span style="color: #0000ff;">="text/javascript"</span><span style="color: #ff0000;"> class</span><span style="color: #0000ff;">="library"</span> 
+<span style="color: #008080;">11</span> <span style="color: #ff0000;">    src</span><span style="color: #0000ff;">="/js/sandbox/jquery-mobile/jquery.mobile-1.2.0/jquery.mobile-1.2.0.min.js"</span><span style="color: #0000ff;">&gt;&lt;/</span><span style="color: #800000;">script</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">12</span> <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">head</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">13</span> <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">body</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">14</span> <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">div </span><span style="color: #ff0000;">data-role</span><span style="color: #0000ff;">="page"</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">15</span>   <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">header </span><span style="color: #ff0000;">data-role</span><span style="color: #0000ff;">="header"</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">16</span>     <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">h1</span><span style="color: #0000ff;">&gt;</span>header bar<span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">h1</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">17</span>   <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">header</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">18</span>   <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">div</span><span style="color: #0000ff;">&gt;</span>内容区域<span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">div</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">19</span>   <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">footer </span><span style="color: #ff0000;">data-role</span><span style="color: #0000ff;">="footer"</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">20</span>     <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">div </span><span style="color: #ff0000;">data-role</span><span style="color: #0000ff;">="controlgroup"</span><span style="color: #ff0000;"> data-type</span><span style="color: #0000ff;">="horizontal"</span> <span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">21</span>         <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">div </span><span style="color: #ff0000;">data-role</span><span style="color: #0000ff;">="button"</span><span style="color: #ff0000;"> data-icon</span><span style="color: #0000ff;">="plus"</span><span style="color: #ff0000;"> data-theme</span><span style="color: #0000ff;">="a"</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">22</span>             添加<span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">div</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">23</span>         <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">div </span><span style="color: #ff0000;">data-role</span><span style="color: #0000ff;">="button"</span><span style="color: #ff0000;"> data-icon</span><span style="color: #0000ff;">="delete"</span><span style="color: #ff0000;"> data-theme</span><span style="color: #0000ff;">="b"</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">24</span>             删除<span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">div</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">25</span>         <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">div </span><span style="color: #ff0000;">data-role</span><span style="color: #0000ff;">="button"</span><span style="color: #ff0000;"> data-icon</span><span style="color: #0000ff;">="refresh"</span><span style="color: #ff0000;"> data-theme</span><span style="color: #0000ff;">="c"</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">26</span>             修改<span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">div</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">27</span>     <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">div</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">28</span>   <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">footer</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">29</span> <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">div</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">30</span> <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">body</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">31</span> <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">html</span><span style="color: #0000ff;">&gt;</span></pre>
+</div>
+<p><a href="http://sandbox.runjs.cn/show/icqp5f8v">http://sandbox.runjs.cn/show/icqp5f8v</a></p>
+<p><img src="30379646298567.jpg" alt=""></p>
+<h2>导航工具条</h2>
+<p>navbar是非常有用的，他提供不同数量的按钮组合，一般位于header或者footer中</p>
+<div class="cnblogs_code">
+<pre><span style="color: #008080;"> 1</span> <span style="color: #0000ff;">&lt;!</span><span style="color: #ff00ff;">DOCTYPE html</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 2</span> <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">html </span><span style="color: #ff0000;">xmlns</span><span style="color: #0000ff;">="http://www.w3.org/1999/xhtml"</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 3</span> <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">head</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 4</span>     <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">title</span><span style="color: #0000ff;">&gt;&lt;/</span><span style="color: #800000;">title</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 5</span>     <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">meta </span><span style="color: #ff0000;">name</span><span style="color: #0000ff;">="viewport"</span><span style="color: #ff0000;"> content</span><span style="color: #0000ff;">="width=device-width, initial-scale=1"</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 6</span>     <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">link </span><span style="color: #ff0000;">id</span><span style="color: #0000ff;">="jquerymobile_120"</span><span style="color: #ff0000;"> rel</span><span style="color: #0000ff;">="stylesheet"</span><span style="color: #ff0000;"> type</span><span style="color: #0000ff;">="text/css"</span><span style="color: #ff0000;"> class</span><span style="color: #0000ff;">="library"</span> 
+<span style="color: #008080;"> 7</span> <span style="color: #ff0000;">    href</span><span style="color: #0000ff;">="/js/sandbox/jquery-mobile/jquery.mobile-1.2.0/jquery.mobile-1.2.0.css"</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 8</span>     <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">script </span><span style="color: #ff0000;">id</span><span style="color: #0000ff;">="jquery_182"</span><span style="color: #ff0000;"> type</span><span style="color: #0000ff;">="text/javascript"</span><span style="color: #ff0000;"> class</span><span style="color: #0000ff;">="library"</span> 
+<span style="color: #008080;"> 9</span> <span style="color: #ff0000;">    src</span><span style="color: #0000ff;">="/js/sandbox/jquery/jquery-1.8.2.min.js"</span><span style="color: #0000ff;">&gt;&lt;/</span><span style="color: #800000;">script</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">10</span>     <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">script </span><span style="color: #ff0000;">id</span><span style="color: #0000ff;">="jquerymobile_120"</span><span style="color: #ff0000;"> type</span><span style="color: #0000ff;">="text/javascript"</span><span style="color: #ff0000;"> class</span><span style="color: #0000ff;">="library"</span> 
+<span style="color: #008080;">11</span> <span style="color: #ff0000;">    src</span><span style="color: #0000ff;">="/js/sandbox/jquery-mobile/jquery.mobile-1.2.0/jquery.mobile-1.2.0.min.js"</span><span style="color: #0000ff;">&gt;&lt;/</span><span style="color: #800000;">script</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">12</span> <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">head</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">13</span> <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">body</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">14</span> <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">div </span><span style="color: #ff0000;">data-role</span><span style="color: #0000ff;">="page"</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">15</span>   <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">header </span><span style="color: #ff0000;">data-role</span><span style="color: #0000ff;">="header"</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">16</span>     <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">h1</span><span style="color: #0000ff;">&gt;</span>header bar<span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">h1</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">17</span>   <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">header</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">18</span>   <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">div</span><span style="color: #0000ff;">&gt;</span>内容区域<span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">div</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">19</span>   <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">footer </span><span style="color: #ff0000;">data-role</span><span style="color: #0000ff;">="footer"</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">20</span>     <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">nav </span><span style="color: #ff0000;">data-role</span><span style="color: #0000ff;">="navbar"</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">21</span>         <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">ul</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">22</span>             <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">li</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">23</span>                 <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">a </span><span style="color: #ff0000;">href</span><span style="color: #0000ff;">="#"</span><span style="color: #ff0000;"> class</span><span style="color: #0000ff;">="ul-btn-active"</span><span style="color: #ff0000;"> data-icon</span><span style="color: #0000ff;">="home"</span><span style="color: #0000ff;">&gt;</span>主页<span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">a</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">24</span>             <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">li</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">25</span>             <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">li</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">26</span>                 <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">a </span><span style="color: #ff0000;">href</span><span style="color: #0000ff;">="#"</span><span style="color: #ff0000;">  data-icon</span><span style="color: #0000ff;">="search"</span><span style="color: #0000ff;">&gt;</span>查找<span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">a</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">27</span>             <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">li</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">28</span>             <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">li</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">29</span>                 <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">a </span><span style="color: #ff0000;">href</span><span style="color: #0000ff;">="#"</span><span style="color: #ff0000;">  data-icon</span><span style="color: #0000ff;">="info"</span><span style="color: #0000ff;">&gt;</span>信息<span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">a</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">30</span>             <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">li</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">31</span>         <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">ul</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">32</span>     <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">nav</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">33</span>   <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">footer</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">34</span> <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">div</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">35</span> 
+<span style="color: #008080;">36</span> <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">body</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">37</span> <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">html</span><span style="color: #0000ff;">&gt;</span></pre>
+</div>
+<p><a href="http://sandbox.runjs.cn/show/pwbcm0mo">http://sandbox.runjs.cn/show/pwbcm0mo</a></p>
+<p><img src="3588306809510.jpg" alt=""></p>
+<p>各位感觉还行吧。。。</p>
+<h2>fixed工具栏</h2>
+<p>这个家伙提供后，我们在轻触屏幕或者滑动屏幕时，header和footer都会出现或者消失</p>
+<div class="cnblogs_code">
+<pre><span style="color: #0000ff;">&lt;</span><span style="color: #800000;">header </span><span style="color: #ff0000;">data-role</span><span style="color: #0000ff;">="header"</span><span style="color: #ff0000;"> data-position</span><span style="color: #0000ff;">="fixed"</span><span style="color: #0000ff;">&gt;</span></pre>
+</div>
+<h1>结语</h1>
+<p>我们今天暂时学到这里，明天再继续吧。</p>
+                </div>
+
+                <div class='span3 sidebar'>
+                    <h2>导航栏</h2>
+                    <ul class="nav nav-tabs nav-stacked">
+                             				<li><a href="http://songboriceboy.github.io/xxoo/html/ydkf/ctydqdkf01jhyp/index.html">【初探移动前端开发01】惊鸿一瞥</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/ydkf/ctydqdkf02ydsbdym/index.html">【初探移动前端开发02】移动设备的页面</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/ydkf/ctydqdkf03jQueryMobiles/index.html">【初探移动前端开发03】jQueryMobile（上）</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/ydkf/ctydqdkf04jQueryMobile(z)/index.html">【初探移动前端开发04】jQueryMobile(中)</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/ydkf/ctydqdkf05jQueryMobile(x)/index.html">【初探移动前端开发05】jQueryMobile(下)</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/ydkf/ctydqdkf05jQueryMobile(zhb)/index.html">【初探移动前端开发05】jQueryMobile(整合版)</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/ydkf/dyyyyqldyyybsxjdwbgnx/index.html">【单页应用】一起来单页应用吧，实现简单微博功能！（下）</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/ydkf/dyyyyqldyyybsxjdwbgnzj/index.html">【单页应用】一起来单页应用吧，实现简单微博功能！（总结）</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/ydkf/dfastclickymygcdjjtapdttsydddjxysd/index.html">【读fastclick源码有感】彻底解决tap“点透”，提升移动端点击响应速度</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/ydkf/fiphonerlcj(beta)/index.html">仿iphone日历插件(beta)</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/ydkf/ydzmlwmyqlyjlqrhjcsfazappb/index.html">又到周末了，我们一起来研究【浏览器如何检测是否安装app】吧</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/ydkf/tsscsbdjsdztouchsjdldk/index.html">提升手持设备点击速度之touch事件带来的坑！</a></li>
+    				                                         
+                    </ul>
+                </div>
+            </div>
+
+        </div>
+    </body>
+</html>

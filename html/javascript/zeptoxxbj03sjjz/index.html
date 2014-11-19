@@ -1,0 +1,519 @@
+﻿<!DOCTYPE html>
+
+<html lang="zh">
+    <head>
+        <meta charset="utf-8">
+        <meta name="description" content="android,ios" />
+        <meta name="keywords" content="android,ios" />
+
+        <title>叶小钗</title>
+        <style type='text/css'>
+            body {
+                background-color: #CCC;
+            }
+        </style>
+        <link rel="stylesheet" href="../../../css/bootstrap.css" />
+    </head>
+
+    <body>
+        <div class="container">
+
+            <h1>叶小钗</h1>
+
+            <div class='navbar navbar-inverse'>
+                <div class='navbar-inner nav-collapse' style="height: auto;">
+                    <ul class="nav">
+                              				<li><a href="http://songboriceboy.github.io/xxoo/html/blade/index.html">blade</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/css/index.html">css</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/HTML5&CSS3/index.html">HTML5&CSS3</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/index.html">javascript</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Javaxx/index.html">Java学习</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/nodejs/index.html">nodejs</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/requirejs/index.html">requirejs</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/index.html">Web前端</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/xxgw/index.html">学习感悟</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/gzdd/index.html">工作点滴</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/jkxx/index.html">接口学习</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/wfl/index.html">未分类</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/ydkf/index.html">移动开发</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/sjms/index.html">设计模式</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/mst/index.html">面试题</a></li>
+    				                      </ul>
+                </div>
+            </div>
+
+            <div id='content' class='row-fluid'>
+
+                <div class='span9 main'>
+				<div style="color:blue" align=center>【zepto学习笔记03】事件机制</div><br><h1>前言</h1>
+<p>我们今天直接进入事件相关的学习，因为近期可能会改到里面的代码<br>就zepto来说，我认为最重要的就是选择器与事件相关了，随着浏览器升级，选择器简单了，而事件相关仍然是核心，今天我们就来学习学习</p>
+<p>zepto事件处理部分篇幅不大，不到400行，前面篇幅也很小，所以真的很适合移动开发</p>
+<h1>变量定义</h1>
+<div class="cnblogs_code">
+<pre><span style="color: #008080;">1</span> <span style="color: #0000ff;">var</span> $$ =<span style="color: #000000;"> $.zepto.qsa,
+</span><span style="color: #008080;">2</span> handlers = {}, _zid = 1<span style="color: #000000;">,
+</span><span style="color: #008080;">3</span> specialEvents =<span style="color: #000000;"> {},
+</span><span style="color: #008080;">4</span> hover =<span style="color: #000000;"> {
+</span><span style="color: #008080;">5</span>     mouseenter: 'mouseover'<span style="color: #000000;">,
+</span><span style="color: #008080;">6</span>     mouseleave: 'mouseout'
+<span style="color: #008080;">7</span> }</pre>
+</div>
+<p>事件部分首先定义了几个变量，$$为zepto选择器的方法，暂时不管他（据观察，好像也没有地方用到了，所以无意义）<br>handlers为一个对象，与_zid息息相关，暂时不知道干什么的（据猜测两个应该是保存函数句柄，为removeEvent做准备）</p>
+<p>hover应该会同时触发两个事件才会触发，我们这里先不管，继续往下看</p>
+<p>这里提供一个zid飞方法，该方法用于保证-zid的唯一性</p>
+<div class="cnblogs_code">
+<pre><span style="color: #008080;">1</span> <span style="color: #0000ff;">function</span><span style="color: #000000;"> zid(element) {
+</span><span style="color: #008080;">2</span>     <span style="color: #0000ff;">return</span> element._zid || (element._zid = _zid++<span style="color: #000000;">)
+</span><span style="color: #008080;">3</span> }</pre>
+</div>
+<p>算了，我们这里还是用一个实际点的方法跟进来吧，首先说一个关键的</p>
+<h1>$.Event(type, [properties])</h1>
+<p>这个方法比较关键，他可以创建一个dom事件，我们可以使用他来扩展新的事件对象，默认情况事件是可以冒泡的，可以设置<br>这个事件可以通过trigger触发<br><span style="color: #ff0000;"><strong>PS：trigger与Event是关键，各位一定要搞懂</strong></span></p>
+<div class="cnblogs_code">
+<pre><span style="color: #008080;"> 1</span> specialEvents =<span style="color: #000000;"> {}
+</span><span style="color: #008080;"> 2</span> specialEvents.click = specialEvents.mousedown = specialEvents.mouseup = specialEvents.mousemove = 'MouseEvents'
+<span style="color: #008080;"> 3</span> 
+<span style="color: #008080;"> 4</span> <span style="color: #008000;">//</span><span style="color: #008000;">根据参数创建一个event对象</span>
+<span style="color: #008080;"> 5</span> $.Event = <span style="color: #0000ff;">function</span><span style="color: #000000;"> (type, props) {
+</span><span style="color: #008080;"> 6</span>     <span style="color: #008000;">//</span><span style="color: #008000;">当type是个对象时</span>
+<span style="color: #008080;"> 7</span>     <span style="color: #0000ff;">if</span> (<span style="color: #0000ff;">typeof</span> type != 'string') props = type, type =<span style="color: #000000;"> props.type
+</span><span style="color: #008080;"> 8</span>     <span style="color: #008000;">//</span><span style="color: #008000;">创建一个event对象，如果是click,mouseover,mouseout时，创建的是MouseEvent,bubbles为是否冒泡</span>
+<span style="color: #008080;"> 9</span>     <span style="color: #0000ff;">var</span> event = document.createEvent(specialEvents[type] || 'Events'<span style="color: #000000;">),
+</span><span style="color: #008080;">10</span>     bubbles = <span style="color: #0000ff;">true</span>
+<span style="color: #008080;">11</span>     <span style="color: #008000;">//</span><span style="color: #008000;">确保bubbles的值为true或false,并将props参数的属性扩展到新创建的event对象上</span>
+<span style="color: #008080;">12</span>     <span style="color: #0000ff;">if</span> (props) <span style="color: #0000ff;">for</span> (<span style="color: #0000ff;">var</span> name <span style="color: #0000ff;">in</span> props) (name == 'bubbles') ? (bubbles = !!props[name]) : (event[name] =<span style="color: #000000;"> props[name])
+</span><span style="color: #008080;">13</span>     <span style="color: #008000;">//</span><span style="color: #008000;">初始化event对象，type为事件类型，如click，bubbles为是否冒泡，第三个参数表示是否可以用preventDefault方法来取消默认操作</span>
+<span style="color: #008080;">14</span>     event.initEvent(type, bubbles, <span style="color: #0000ff;">true</span>, <span style="color: #0000ff;">null</span>, <span style="color: #0000ff;">null</span>, <span style="color: #0000ff;">null</span>, <span style="color: #0000ff;">null</span>, <span style="color: #0000ff;">null</span>, <span style="color: #0000ff;">null</span>, <span style="color: #0000ff;">null</span>, <span style="color: #0000ff;">null</span>, <span style="color: #0000ff;">null</span>, <span style="color: #0000ff;">null</span>, <span style="color: #0000ff;">null</span>, <span style="color: #0000ff;">null</span><span style="color: #000000;">)
+</span><span style="color: #008080;">15</span>     <span style="color: #008000;">//</span><span style="color: #008000;">添加isDefaultPrevented方法，event.defaultPrevented返回一个布尔值,表明当前事件的默认动作是否被取消,也就是是否执行了 event.preventDefault()方法.</span>
+<span style="color: #008080;">16</span>     event.isDefaultPrevented = <span style="color: #0000ff;">function</span><span style="color: #000000;"> () {
+</span><span style="color: #008080;">17</span>         <span style="color: #0000ff;">return</span> <span style="color: #0000ff;">this</span><span style="color: #000000;">.defaultPrevented
+</span><span style="color: #008080;">18</span> <span style="color: #000000;">    }
+</span><span style="color: #008080;">19</span>     <span style="color: #0000ff;">return</span><span style="color: #000000;"> event
+</span><span style="color: #008080;">20</span> }</pre>
+</div>
+<p>这个方法的第二个参数我一般没看到出现，有时候我们可能会直接传入一个事件对象作为参数，所以我们这个时候第二个参数要保存第一个对象参数<br>并将type获得，type还是必须是一个字符串</p>
+<p>然后此处创建了一个事件对象：</p>
+<div class="cnblogs_code">
+<pre><span style="color: #0000ff;">var</span> event = document.createEvent(specialEvents[type] || 'Events'),</pre>
+</div>
+<h2>createEvent</h2>
+<p>Event对象的属性提供了有关事件的细节（比如事件发生到什么元素上），并且Event对象可以控制事件传播<br>PS：IE这个家伙我已经不愿意去关注他了，标准事件模型中，Event对象会传递给句柄函数，但是IE会保存到window.event 中</p>
+<p>Event具有以下属性：</p>
+<h3>event.bubbles</h3>
+<p>事件冒泡类型，是冒泡则为true，非冒泡就是false</p>
+<p>事件传播分为三个阶段：<br>① 捕获阶段，事件由dom对象沿着文档树向下传播给目标节点，如果目标元素（或者parent）注册了事件，那么在事件传播过程中会执行<br>② 此阶段发生在目标节点自身，直接注册到目标上的适合事件会运行（比如本来要触发click，如果注册了mousedown也会运行）<br>③ 冒泡阶段，此阶段事件从目标元素向上传播到冒泡元素或者document</p>
+<p>所以我们在我们的回调函数中打印event.bubbles，如果是true的话，就说明是冒泡执行的事件</p>
+<h3>cancelable</h3>
+<p>该属性与我们的preventDefault有很大关联，事实上，preventDefault就是将该属性设置为false（也许吧......）</p>
+<h3>event.currentTarget</h3>
+<p>该属性返回监听事件的节点，即当前处理该事件的元素，在冒泡或捕获阶段，该元素比较有用<br>比如我们将事件绑定到了div上，但是我们是点击里面的span而触发了div上面的事件，这个div就是currentTarget了</p>
+<h3>eventPhase </h3>
+<p>eventPhase 属性返回事件传播的当前阶段。它的值是下面的三个常量之一，它们分别表示捕获阶段、正常事件派发和起泡阶段</p>
+<h3>event.targettarget </h3>
+<p>事件属性可返回事件的目标节点（触发该事件的节点），如生成事件的元素、文档或窗口。</p>
+<p>以上面的例子为例，此时的target就是我们的span了</p>
+<h3>event.timeStamp</h3>
+<p>该属性，返回事件生成的日期</p>
+<h3>event.type</h3>
+<p>type 事件属性返回发生的事件的类型，即当前 Event 对象表示的事件的名称。<br>它与注册的事件句柄同名，或者是事件句柄属性删除前缀 "on" 比如 "submit"、"load" 或 "click"。</p>
+<p>这里比较关键了，如果我们想注册自己的事件，比如tap，就可以这么干了，好了继续我们的话题</p>
+<h3>event.stopPropagation()</h3>
+<p>该方法将停止事件的传播，阻止它被分派到其他 Document 节点。在事件传播的任何阶段都可以调用它。注意，虽然该方法不能阻止同一个 Document 节点上的其他事件句柄被调用，但是它可以阻止把事件分派到其他节点。</p>
+<h3>event.preventDefault()</h3>
+<p>该方法将通知 Web 浏览器不要执行与事件关联的默认动作（如果存在这样的动作）。例如，如果 type 属性是 "submit"，在事件传播的任意阶段可以调用任意的事件句柄，通过调用该方法，可以阻止提交表单。注意，如果 Event 对象的 cancelable 属性是 fasle，那么就没有默认动作，或者不能阻止默认动作。无论哪种情况，调用该方法都没有作用。<br>比如，我们点击一个input时候在手机上会弹出键盘，我们如果使用e.preventDefault()；就不会弹出</p>
+<p>event.initEvent(eventType,canBubble,cancelable)<br>initEvent() 方法初始化新事件对象的属性。该方法必须在dispatchEvent调用前执行才有效</p>
+<p>PS：其实不止initEvent方法，还有initMouseEvent方法，这个方法还会提供鼠标坐标</p>
+<div class="cnblogs_code">
+<pre><span style="color: #008000;">/*</span><span style="color: #008000;">
+typeArg - 指定事件类型。
+canBubbleArg - 指定该事件是否可以 bubble。
+cancelableArg - 指定是否可以阻止事件的默认操作。
+viewArg - 指定 Event 的 AbstractView。
+detailArg - 指定 Event 的鼠标单击量。
+screenXArg - 指定 Event 的屏幕 x 坐标
+screenYArg - 指定 Event 的屏幕 y 坐标
+clientXArg - 指定 Event 的客户机 x 坐标
+clientYArg - 指定 Event 的客户机 y 坐标
+ctrlKeyArg - 指定是否在 Event 期间按下 control 键。
+altKeyArg - 指定是否在 Event 期间按下 alt 键。
+shiftKeyArg - 指定是否在 Event 期间按下 shift 键。
+metaKeyArg - 指定是否在 Event 期间按下 meta 键。
+buttonArg - 指定 Event 的鼠标按键。
+relatedTargetArg - 指定 Event 的相关 EventTarget。
+</span><span style="color: #008000;">*/</span><span style="color: #000000;">
+clickEvent.initMouseEvent(</span>'click', <span style="color: #0000ff;">true</span>, <span style="color: #0000ff;">true</span>, window, 1, touch.screenX, touch.screenY, touch.clientX, touch.clientY, <span style="color: #0000ff;">false</span>, <span style="color: #0000ff;">false</span>, <span style="color: #0000ff;">false</span>, <span style="color: #0000ff;">false</span>, 0, <span style="color: #0000ff;">null</span>);</pre>
+</div>
+<p>这个方法的应用我们后面点会涉及，这里暂时就不管他了，这里回到我们的Event方法</p>
+<p>他这里根据传入参数（type），创建了一个Event对象，此处的props如果是对象，那么就将赋给新建的Event对象<br>然后使用initEvent初始化了我们Event参数的属性，并且添加了isDefaultPrevented方法，该方法可以知道当前事件的默认动作是否取消<br>然后将这个对象返回<br>既然都到了这里，我们来自定义一个鼠标事件吧</p>
+<h2>自定义鼠标事件</h2>
+<p>我们知道在移动端的click事件响应很慢，所以我们这里自己来实现一个fastclick的事件来替换本身的click</p>
+<p><a href="46483658186383.jpg">46483658186383.jpg</a></p>
+<p><strong><span style="color: #ff0000;">请使用手机测试点击相应速度</span></strong></p>
+<p><iframe src="46483658186383.jpg" width="80%" height="200"></iframe></p>
+<div class="cnblogs_code">
+<pre><span style="color: #008080;"> 1</span> <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">html </span><span style="color: #ff0000;">xmlns</span><span style="color: #0000ff;">="http://www.w3.org/1999/xhtml"</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 2</span> <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">head</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 3</span>     <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">title</span><span style="color: #0000ff;">&gt;&lt;/</span><span style="color: #800000;">title</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 4</span>      <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">meta </span><span style="color: #ff0000;">name</span><span style="color: #0000ff;">="viewport"</span><span style="color: #ff0000;"> content</span><span style="color: #0000ff;">="width=device-width,initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no"</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 5</span>     <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">script </span><span style="color: #ff0000;">id</span><span style="color: #0000ff;">="others_zepto_10rc1"</span><span style="color: #ff0000;"> type</span><span style="color: #0000ff;">="text/javascript"</span><span style="color: #ff0000;"> class</span><span style="color: #0000ff;">="library"</span><span style="color: #ff0000;"> src</span><span style="color: #0000ff;">="/js/sandbox/other/zepto.min.js"</span><span style="color: #0000ff;">&gt;&lt;/</span><span style="color: #800000;">script</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 6</span>     <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">script </span><span style="color: #ff0000;">src</span><span style="color: #0000ff;">="../../zepto.js"</span><span style="color: #ff0000;"> type</span><span style="color: #0000ff;">="text/javascript"</span><span style="color: #0000ff;">&gt;&lt;/</span><span style="color: #800000;">script</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 7</span> <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">head</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 8</span> <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">body</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 9</span>     <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">input </span><span style="color: #ff0000;">type</span><span style="color: #0000ff;">="button"</span><span style="color: #ff0000;"> value</span><span style="color: #0000ff;">="我是普通点击事件"</span><span style="color: #ff0000;"> id</span><span style="color: #0000ff;">="click"</span> <span style="color: #0000ff;">/&gt;</span>
+<span style="color: #008080;">10</span>     <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">input </span><span style="color: #ff0000;">type</span><span style="color: #0000ff;">="button"</span><span style="color: #ff0000;"> value</span><span style="color: #0000ff;">="我是快速点击事件"</span><span style="color: #ff0000;"> id</span><span style="color: #0000ff;">="fastclick"</span> <span style="color: #0000ff;">/&gt;</span>
+<span style="color: #008080;">11</span> <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">body</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">12</span> <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">script </span><span style="color: #ff0000;">type</span><span style="color: #0000ff;">="text/javascript"</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">13</span>     <span style="background-color: #f5f5f5; color: #0000ff;">var</span><span style="background-color: #f5f5f5; color: #000000;"> c </span><span style="background-color: #f5f5f5; color: #000000;">=</span><span style="background-color: #f5f5f5; color: #000000;"> $(</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">#click</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">);
+</span><span style="color: #008080;">14</span>     <span style="background-color: #f5f5f5; color: #0000ff;">var</span><span style="background-color: #f5f5f5; color: #000000;"> fc </span><span style="background-color: #f5f5f5; color: #000000;">=</span><span style="background-color: #f5f5f5; color: #000000;"> $(</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">#fastclick</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">);
+</span><span style="color: #008080;">15</span>     <span style="background-color: #f5f5f5; color: #0000ff;">var</span><span style="background-color: #f5f5f5; color: #000000;"> t </span><span style="background-color: #f5f5f5; color: #000000;">=</span> <span style="background-color: #f5f5f5; color: #0000ff;">new</span><span style="background-color: #f5f5f5; color: #000000;"> Date().getTime()
+</span><span style="color: #008080;">16</span> <span style="background-color: #f5f5f5; color: #000000;">    $(document).bind(</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">touchstart</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">, </span><span style="background-color: #f5f5f5; color: #0000ff;">function</span><span style="background-color: #f5f5f5; color: #000000;"> (e) {
+</span><span style="color: #008080;">17</span> <span style="background-color: #f5f5f5; color: #000000;">        t </span><span style="background-color: #f5f5f5; color: #000000;">=</span><span style="background-color: #f5f5f5; color: #000000;"> e.timeStamp;
+</span><span style="color: #008080;">18</span> <span style="background-color: #f5f5f5; color: #000000;">    });
+</span><span style="color: #008080;">19</span> <span style="background-color: #f5f5f5; color: #000000;">    $(document).bind(</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">touchend</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">, </span><span style="background-color: #f5f5f5; color: #0000ff;">function</span><span style="background-color: #f5f5f5; color: #000000;"> (e) {
+</span><span style="color: #008080;">20</span>         <span style="background-color: #f5f5f5; color: #0000ff;">var</span><span style="background-color: #f5f5f5; color: #000000;"> event </span><span style="background-color: #f5f5f5; color: #000000;">=</span><span style="background-color: #f5f5f5; color: #000000;"> $.Event(</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">fastclick</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">);
+</span><span style="color: #008080;">21</span>         <span style="background-color: #f5f5f5; color: #008000;">//</span><span style="background-color: #f5f5f5; color: #008000;">这里为了方便而已，其实该e.target</span>
+<span style="color: #008080;">22</span> <span style="background-color: #f5f5f5; color: #000000;">        fc[</span><span style="background-color: #f5f5f5; color: #000000;">0</span><span style="background-color: #f5f5f5; color: #000000;">].dispatchEvent(event);
+</span><span style="color: #008080;">23</span> <span style="background-color: #f5f5f5; color: #000000;">    });
+</span><span style="color: #008080;">24</span> <span style="background-color: #f5f5f5; color: #000000;">    c.bind(</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">click</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">, </span><span style="background-color: #f5f5f5; color: #0000ff;">function</span><span style="background-color: #f5f5f5; color: #000000;"> (e) {
+</span><span style="color: #008080;">25</span> <span style="background-color: #f5f5f5; color: #000000;">        $(</span><span style="background-color: #f5f5f5; color: #0000ff;">this</span><span style="background-color: #f5f5f5; color: #000000;">).val(</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">我是普通点击事件</span><span style="background-color: #f5f5f5; color: #000000;">'</span> <span style="background-color: #f5f5f5; color: #000000;">+</span> <span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">(</span><span style="background-color: #f5f5f5; color: #000000;">'</span> <span style="background-color: #f5f5f5; color: #000000;">+</span><span style="background-color: #f5f5f5; color: #000000;"> (e.timeStamp </span><span style="background-color: #f5f5f5; color: #000000;">-</span><span style="background-color: #f5f5f5; color: #000000;"> t) </span><span style="background-color: #f5f5f5; color: #000000;">+</span> <span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">)</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">)
+</span><span style="color: #008080;">26</span> <span style="background-color: #f5f5f5; color: #000000;">    });
+</span><span style="color: #008080;">27</span> <span style="background-color: #f5f5f5; color: #000000;">    fc.bind(</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">fastclick</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">, </span><span style="background-color: #f5f5f5; color: #0000ff;">function</span><span style="background-color: #f5f5f5; color: #000000;"> (e) {
+</span><span style="color: #008080;">28</span> <span style="background-color: #f5f5f5; color: #000000;">        $(</span><span style="background-color: #f5f5f5; color: #0000ff;">this</span><span style="background-color: #f5f5f5; color: #000000;">).val(</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">我是快速点击事件</span><span style="background-color: #f5f5f5; color: #000000;">'</span> <span style="background-color: #f5f5f5; color: #000000;">+</span> <span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">(</span><span style="background-color: #f5f5f5; color: #000000;">'</span> <span style="background-color: #f5f5f5; color: #000000;">+</span><span style="background-color: #f5f5f5; color: #000000;"> (e.timeStamp </span><span style="background-color: #f5f5f5; color: #000000;">-</span><span style="background-color: #f5f5f5; color: #000000;"> t) </span><span style="background-color: #f5f5f5; color: #000000;">+</span> <span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">)</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">)
+</span><span style="color: #008080;">29</span> <span style="background-color: #f5f5f5; color: #000000;">    })
+</span><span style="color: #008080;">30</span> <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">script</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">31</span> <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">html</span><span style="color: #0000ff;">&gt;</span></pre>
+</div>
+<p>我们这里为第二个按钮定义了一个fastclick事件，然后在touchend时候触发了该dom的事件<br>大家点击时候自己就可以看到响应的速度（请使用手机测试）<br>PS：这里各位一定要对dispatchEvent了解哦</p>
+<p>好了，我们继续回到我们的代码</p>
+<h1>trigger/triggerHandler(event, [data]) &nbsp;</h1>
+<p>这个trigger和dispatchEvent有莫大的关系，通过他我们可以触发一个事件，比如上面自定义事件可以通过他触发，我们看看他的源码</p>
+<div class="cnblogs_code">
+<pre><span style="color: #008080;"> 1</span> $.fn.trigger = <span style="color: #0000ff;">function</span><span style="color: #000000;"> (event, data) {
+</span><span style="color: #008080;"> 2</span>     <span style="color: #0000ff;">if</span> (<span style="color: #0000ff;">typeof</span> event == 'string' || $.isPlainObject(event)) event =<span style="color: #000000;"> $.Event(event)
+</span><span style="color: #008080;"> 3</span> <span style="color: #000000;">    fix(event)
+</span><span style="color: #008080;"> 4</span>     event.data =<span style="color: #000000;"> data
+</span><span style="color: #008080;"> 5</span>     <span style="color: #0000ff;">return</span> <span style="color: #0000ff;">this</span>.each(<span style="color: #0000ff;">function</span><span style="color: #000000;"> () {
+</span><span style="color: #008080;"> 6</span>         <span style="color: #008000;">//</span><span style="color: #008000;"> items in the collection might not be DOM elements</span>
+<span style="color: #008080;"> 7</span>         <span style="color: #008000;">//</span><span style="color: #008000;"> (todo: possibly support events on plain old objects)</span>
+<span style="color: #008080;"> 8</span>         <span style="color: #0000ff;">if</span> ('dispatchEvent' <span style="color: #0000ff;">in</span> <span style="color: #0000ff;">this</span>) <span style="color: #0000ff;">this</span><span style="color: #000000;">.dispatchEvent(event)
+</span><span style="color: #008080;"> 9</span> <span style="color: #000000;">    })
+</span><span style="color: #008080;">10</span> }</pre>
+</div>
+<p>他这里有个fix方法用于修复event对象，</p>
+<div class="cnblogs_code">
+<pre><span style="color: #008080;"> 1</span> <span style="color: #0000ff;">function</span><span style="color: #000000;"> fix(event) {
+</span><span style="color: #008080;"> 2</span>     <span style="color: #0000ff;">if</span> (!('defaultPrevented' <span style="color: #0000ff;">in</span><span style="color: #000000;"> event)) {
+</span><span style="color: #008080;"> 3</span>         event.defaultPrevented = <span style="color: #0000ff;">false</span> <span style="color: #008000;">//</span><span style="color: #008000;">初始值false</span>
+<span style="color: #008080;"> 4</span>         <span style="color: #0000ff;">var</span> prevent = event.preventDefault <span style="color: #008000;">//</span><span style="color: #008000;"> 引用默认preventDefault</span>
+<span style="color: #008080;"> 5</span>         event.preventDefault = <span style="color: #0000ff;">function</span> () { <span style="color: #008000;">//</span><span style="color: #008000;">重写preventDefault</span>
+<span style="color: #008080;"> 6</span>             <span style="color: #0000ff;">this</span>.defaultPrevented = <span style="color: #0000ff;">true</span>
+<span style="color: #008080;"> 7</span>             prevent.call(<span style="color: #0000ff;">this</span><span style="color: #000000;">)
+</span><span style="color: #008080;"> 8</span> <span style="color: #000000;">        }
+</span><span style="color: #008080;"> 9</span> <span style="color: #000000;">    }
+</span><span style="color: #008080;">10</span> }</pre>
+</div>
+<p>修复后，他就遍历我们包装的dom集合，然后依次触发该事件</p>
+<h2>triggerHandler</h2>
+<p>下面有一个triggerHandler事件与他相似，但是不会冒泡</p>
+<div class="cnblogs_code">
+<pre><span style="color: #008080;"> 1</span> <span style="color: #008000;">//</span><span style="color: #008000;">触发元素上绑定的指定类型的事件，但是不冒泡</span>
+<span style="color: #008080;"> 2</span> $.fn.triggerHandler = <span style="color: #0000ff;">function</span><span style="color: #000000;"> (event, data) {
+</span><span style="color: #008080;"> 3</span>     <span style="color: #0000ff;">var</span><span style="color: #000000;"> e, result
+</span><span style="color: #008080;"> 4</span>     <span style="color: #0000ff;">this</span>.each(<span style="color: #0000ff;">function</span><span style="color: #000000;"> (i, element) {
+</span><span style="color: #008080;"> 5</span>         e = createProxy(<span style="color: #0000ff;">typeof</span> event == 'string' ?<span style="color: #000000;"> $.Event(event) : event)
+</span><span style="color: #008080;"> 6</span>         e.data =<span style="color: #000000;"> data
+</span><span style="color: #008080;"> 7</span>         e.target =<span style="color: #000000;"> element
+</span><span style="color: #008080;"> 8</span>         <span style="color: #008000;">//</span><span style="color: #008000;">遍历元素上绑定的指定类型的事件处理函数集，按顺序执行，如果执行过stopImmediatePropagation，</span>
+<span style="color: #008080;"> 9</span>         <span style="color: #008000;">//</span><span style="color: #008000;">那么e.isImmediatePropagationStopped()就会返回true,再外层函数返回false</span>
+<span style="color: #008080;">10</span>         <span style="color: #008000;">//</span><span style="color: #008000;">注意each里的回调函数指定返回false时，会跳出循环，这样就达到的停止执行回面函数的目的</span>
+<span style="color: #008080;">11</span>         $.each(findHandlers(element, event.type || event), <span style="color: #0000ff;">function</span><span style="color: #000000;"> (i, handler) {
+</span><span style="color: #008080;">12</span>             result =<span style="color: #000000;"> handler.proxy(e)
+</span><span style="color: #008080;">13</span>             <span style="color: #0000ff;">if</span> (e.isImmediatePropagationStopped()) <span style="color: #0000ff;">return</span> <span style="color: #0000ff;">false</span>
+<span style="color: #008080;">14</span> <span style="color: #000000;">        })
+</span><span style="color: #008080;">15</span> <span style="color: #000000;">    })
+</span><span style="color: #008080;">16</span>     <span style="color: #0000ff;">return</span><span style="color: #000000;"> result
+</span><span style="color: #008080;">17</span> }</pre>
+</div>
+<p>这里有个findHandlers方法，我们来看看</p>
+<div class="cnblogs_code">
+<pre><span style="color: #008080;"> 1</span> <span style="color: #008000;">//</span><span style="color: #008000;">查找绑定在元素上的指定类型的事件处理函数集合</span>
+<span style="color: #008080;"> 2</span> <span style="color: #0000ff;">function</span><span style="color: #000000;"> findHandlers(element, event, fn, selector) {
+</span><span style="color: #008080;"> 3</span>     event =<span style="color: #000000;"> parse(event)
+</span><span style="color: #008080;"> 4</span>     <span style="color: #0000ff;">if</span> (event.ns) <span style="color: #0000ff;">var</span> matcher =<span style="color: #000000;"> matcherFor(event.ns)
+</span><span style="color: #008080;"> 5</span>     <span style="color: #0000ff;">return</span> (handlers[zid(element)] || []).filter(<span style="color: #0000ff;">function</span><span style="color: #000000;"> (handler) {
+</span><span style="color: #008080;"> 6</span>         <span style="color: #0000ff;">return</span> handler &amp;&amp; (!event.e || handler.e == event.e) <span style="color: #008000;">//</span><span style="color: #008000;">判断事件类型是否相同</span>
+<span style="color: #008080;"> 7</span>     &amp;&amp;
+<span style="color: #008080;"> 8</span>     (!event.ns || matcher.test(handler.ns)) <span style="color: #008000;">//</span><span style="color: #008000;">判断事件命名空间是否相同</span>
+<span style="color: #008080;"> 9</span>         <span style="color: #008000;">//</span><span style="color: #008000;">注意函数是引用类型的数据zid(handler.fn)的作用是返回handler.fn的标示符，如果没有，则给它添加一个，</span>
+<span style="color: #008080;">10</span>         <span style="color: #008000;">//</span><span style="color: #008000;">这样如果fn和handler.fn引用的是同一个函数，那么fn上应该也可相同的标示符，</span>
+<span style="color: #008080;">11</span>         <span style="color: #008000;">//</span><span style="color: #008000;">这里就是通过这一点来判断两个变量是否引用的同一个函数</span>
+<span style="color: #008080;">12</span>     &amp;&amp;
+<span style="color: #008080;">13</span>     (!fn || zid(handler.fn) === zid(fn)) &amp;&amp; (!selector || handler.sel ==<span style="color: #000000;"> selector)
+</span><span style="color: #008080;">14</span> <span style="color: #000000;">    })
+</span><span style="color: #008080;">15</span> }</pre>
+</div>
+<p>我们前面说了，handlers应该保存的是我们的事件句柄集合，而我们可以东莞zid获取dom的唯一标识_zid<br>PS：zepto将该属性保存至dom上，是因为dom属性不会变化可以帮助remove时候找到事件句柄</p>
+<p>其中使用了filter方法过来已有的集合，只取出与传入的事件（event）对象相同的事件（命名空间那些高级东西我们暂时不管吧）</p>
+<p>然后下面使用了proxy方法，我们来看看</p>
+<div class="cnblogs_code">
+<pre><span style="color: #008080;"> 1</span> <span style="color: #008000;">//</span><span style="color: #008000;">设置代理</span>
+<span style="color: #008080;"> 2</span> $.proxy = <span style="color: #0000ff;">function</span><span style="color: #000000;"> (fn, context) {
+</span><span style="color: #008080;"> 3</span>     <span style="color: #0000ff;">if</span><span style="color: #000000;"> ($.isFunction(fn)) {
+</span><span style="color: #008080;"> 4</span>         <span style="color: #008000;">//</span><span style="color: #008000;">如果fn是函数，则申明一个新的函数并用context作为上下文调用fn</span>
+<span style="color: #008080;"> 5</span>         <span style="color: #0000ff;">var</span> proxyFn = <span style="color: #0000ff;">function</span><span style="color: #000000;"> () {
+</span><span style="color: #008080;"> 6</span>             <span style="color: #0000ff;">return</span><span style="color: #000000;"> fn.apply(context, arguments)
+</span><span style="color: #008080;"> 7</span> <span style="color: #000000;">        }
+</span><span style="color: #008080;"> 8</span>         <span style="color: #008000;">//</span><span style="color: #008000;">引用fn标示符</span>
+<span style="color: #008080;"> 9</span>         proxyFn._zid =<span style="color: #000000;"> zid(fn)
+</span><span style="color: #008080;">10</span>         <span style="color: #0000ff;">return</span><span style="color: #000000;"> proxyFn
+</span><span style="color: #008080;">11</span>     } <span style="color: #0000ff;">else</span> <span style="color: #0000ff;">if</span> (<span style="color: #0000ff;">typeof</span> context == 'string'<span style="color: #000000;">) {
+</span><span style="color: #008080;">12</span>         <span style="color: #0000ff;">return</span><span style="color: #000000;"> $.proxy(fn[context], fn)
+</span><span style="color: #008080;">13</span>     } <span style="color: #0000ff;">else</span><span style="color: #000000;"> {
+</span><span style="color: #008080;">14</span>         <span style="color: #0000ff;">throw</span> <span style="color: #0000ff;">new</span> TypeError("expected function"<span style="color: #000000;">)
+</span><span style="color: #008080;">15</span> <span style="color: #000000;">    }
+</span><span style="color: #008080;">16</span> }</pre>
+</div>
+<p>PS：我这里差点被坑了，我差点看成$.proxy方法了，其实不是的，这个handler.proxy是注册事件时候搞的一个东西，我们后面点说注册</p>
+<div class="cnblogs_code">
+<pre><span style="color: #008080;">1</span> handler.proxy = <span style="color: #0000ff;">function</span><span style="color: #000000;"> (e) {
+</span><span style="color: #008080;">2</span>     <span style="color: #0000ff;">var</span> result =<span style="color: #000000;"> callback.apply(element, [e].concat(e.data))
+</span><span style="color: #008080;">3</span>     <span style="color: #008000;">//</span><span style="color: #008000;">当事件处理函数返回false时，阻止默认操作和冒泡</span>
+<span style="color: #008080;">4</span>     <span style="color: #0000ff;">if</span> (result === <span style="color: #0000ff;">false</span><span style="color: #000000;">) e.preventDefault(), e.stopPropagation()
+</span><span style="color: #008080;">5</span>     <span style="color: #0000ff;">return</span><span style="color: #000000;"> result
+</span><span style="color: #008080;">6</span> }</pre>
+</div>
+<p>嗯，由于这两的触发与注册事件相关，我们放到后面点再说，而且我发现triggerHandler没地方用的感觉......</p>
+<h1>$.proxy(fn, context)&nbsp;</h1>
+<p>接受一个函数，然后返回一个新函数，并且这个新函数始终保持了特定的上下文语境，新函数中this指向context参数。另外一种形式，原始的function是context对像的方法。</p>
+<div class="cnblogs_code">
+<pre><span style="color: #008080;"> 1</span> <span style="color: #008000;">//</span><span style="color: #008000;">设置代理</span>
+<span style="color: #008080;"> 2</span> $.proxy = <span style="color: #0000ff;">function</span><span style="color: #000000;"> (fn, context) {
+</span><span style="color: #008080;"> 3</span>     <span style="color: #0000ff;">if</span><span style="color: #000000;"> ($.isFunction(fn)) {
+</span><span style="color: #008080;"> 4</span>         <span style="color: #008000;">//</span><span style="color: #008000;">如果fn是函数，则申明一个新的函数并用context作为上下文调用fn</span>
+<span style="color: #008080;"> 5</span>         <span style="color: #0000ff;">var</span> proxyFn = <span style="color: #0000ff;">function</span><span style="color: #000000;"> () {
+</span><span style="color: #008080;"> 6</span>             <span style="color: #0000ff;">return</span><span style="color: #000000;"> fn.apply(context, arguments)
+</span><span style="color: #008080;"> 7</span> <span style="color: #000000;">        }
+</span><span style="color: #008080;"> 8</span>         <span style="color: #008000;">//</span><span style="color: #008000;">引用fn标示符</span>
+<span style="color: #008080;"> 9</span>         proxyFn._zid =<span style="color: #000000;"> zid(fn)
+</span><span style="color: #008080;">10</span>         <span style="color: #0000ff;">return</span><span style="color: #000000;"> proxyFn
+</span><span style="color: #008080;">11</span>     } <span style="color: #0000ff;">else</span> <span style="color: #0000ff;">if</span> (<span style="color: #0000ff;">typeof</span> context == 'string'<span style="color: #000000;">) {
+</span><span style="color: #008080;">12</span>         <span style="color: #0000ff;">return</span><span style="color: #000000;"> $.proxy(fn[context], fn)
+</span><span style="color: #008080;">13</span>     } <span style="color: #0000ff;">else</span><span style="color: #000000;"> {
+</span><span style="color: #008080;">14</span>         <span style="color: #0000ff;">throw</span> <span style="color: #0000ff;">new</span> TypeError("expected function"<span style="color: #000000;">)
+</span><span style="color: #008080;">15</span> <span style="color: #000000;">    }
+</span><span style="color: #008080;">16</span> }</pre>
+</div>
+<p>代理其实就是通过apply或者call改变javascript上下文作用域而已，我们不关注了，接下来就来到我们关键的地方了</p>
+<h1>事件注册</h1>
+<p>我们有很多方法可以为dom注册事件，而zepto为我们准备了统一的出口</p>
+<p>bind/one/delegate/live/on 都可以绑定事件，但是他们最终都是调用了add方法</p>
+<p>其中live私下是调用delegate，而且我们推荐使用on所以我们这里主要关注on吧，反正统一接口是add</p>
+<div class="cnblogs_code">
+<pre><span style="color: #008080;">1</span> $.fn.on = <span style="color: #0000ff;">function</span><span style="color: #000000;"> (event, selector, callback) {
+</span><span style="color: #008080;">2</span>     <span style="color: #0000ff;">return</span> !selector || $.isFunction(selector) ? <span style="color: #0000ff;">this</span>.bind(event, selector || callback) : <span style="color: #0000ff;">this</span><span style="color: #000000;">.delegate(selector, event, callback)
+</span><span style="color: #008080;">3</span> <span style="color: #000000;">}
+</span><span style="color: #008080;">4</span> 
+<span style="color: #008080;">5</span> $.fn.bind = <span style="color: #0000ff;">function</span><span style="color: #000000;"> (event, callback) {
+</span><span style="color: #008080;">6</span>     <span style="color: #0000ff;">return</span> <span style="color: #0000ff;">this</span>.each(<span style="color: #0000ff;">function</span><span style="color: #000000;"> () {
+</span><span style="color: #008080;">7</span>         add(<span style="color: #0000ff;">this</span><span style="color: #000000;">, event, callback)
+</span><span style="color: #008080;">8</span> <span style="color: #000000;">    })
+</span><span style="color: #008080;">9</span> }</pre>
+</div>
+<div class="cnblogs_code">
+<pre><span style="color: #008080;"> 1</span> <span style="color: #008000;">//</span><span style="color: #008000;">给元素绑定监听事件,可同时绑定多个事件类型，如['click','mouseover','mouseout'],也可以是'click mouseover mouseout'</span>
+<span style="color: #008080;"> 2</span> <span style="color: #0000ff;">function</span><span style="color: #000000;"> add(element, events, fn, selector, getDelegate, capture) {
+</span><span style="color: #008080;"> 3</span>     <span style="color: #0000ff;">var</span> id =<span style="color: #000000;"> zid(element),
+</span><span style="color: #008080;"> 4</span>       set = (handlers[id] || (handlers[id] = [])) <span style="color: #008000;">//</span><span style="color: #008000;">元素上已经绑定的所有事件处理函数</span>
+<span style="color: #008080;"> 5</span>     eachEvent(events, fn, <span style="color: #0000ff;">function</span><span style="color: #000000;"> (event, fn) {
+</span><span style="color: #008080;"> 6</span>         <span style="color: #0000ff;">var</span> handler =<span style="color: #000000;"> parse(event)
+</span><span style="color: #008080;"> 7</span>         <span style="color: #008000;">//</span><span style="color: #008000;">保存fn,下面为了处理mouseenter, mouseleave时，对fn进行了修改</span>
+<span style="color: #008080;"> 8</span>         handler.fn =<span style="color: #000000;"> fn
+</span><span style="color: #008080;"> 9</span>         handler.sel =<span style="color: #000000;"> selector
+</span><span style="color: #008080;">10</span>         <span style="color: #008000;">//</span><span style="color: #008000;"> 模仿 mouseenter, mouseleave</span>
+<span style="color: #008080;">11</span>         <span style="color: #0000ff;">if</span> (handler.e <span style="color: #0000ff;">in</span> hover) fn = <span style="color: #0000ff;">function</span><span style="color: #000000;"> (e) {
+</span><span style="color: #008080;">12</span>             <span style="color: #008000;">/*</span> 
+<span style="color: #008080;">13</span> <span style="color: #008000;">            relatedTarget为事件相关对象，只有在mouseover和mouseout事件时才有值
+</span><span style="color: #008080;">14</span> <span style="color: #008000;">            mouseover时表示的是鼠标移出的那个对象，mouseout时表示的是鼠标移入的那个对象
+</span><span style="color: #008080;">15</span> <span style="color: #008000;">            当related不存在，表示事件不是mouseover或者mouseout,mouseover时!$.contains(this, related)当相关对象不在事件对象内
+</span><span style="color: #008080;">16</span> <span style="color: #008000;">            且related !== this相关对象不是事件对象时，表示鼠标已经从事件对象外部移入到了对象本身，这个时间是要执行处理函数的
+</span><span style="color: #008080;">17</span> <span style="color: #008000;">            当鼠标从事件对象上移入到子节点的时候related就等于this了，且!$.contains(this, related)也不成立，这个时间是不需要执行处理函数的
+</span><span style="color: #008080;">18</span>             <span style="color: #008000;">*/</span>
+<span style="color: #008080;">19</span>             <span style="color: #0000ff;">var</span> related =<span style="color: #000000;"> e.relatedTarget
+</span><span style="color: #008080;">20</span>             <span style="color: #0000ff;">if</span> (!related || (related !== <span style="color: #0000ff;">this</span> &amp;&amp; !$.contains(<span style="color: #0000ff;">this</span>, related))) <span style="color: #0000ff;">return</span> handler.fn.apply(<span style="color: #0000ff;">this</span><span style="color: #000000;">, arguments)
+</span><span style="color: #008080;">21</span> <span style="color: #000000;">        }
+</span><span style="color: #008080;">22</span>         <span style="color: #008000;">//</span><span style="color: #008000;">事件委托</span>
+<span style="color: #008080;">23</span>         handler.del = getDelegate &amp;&amp;<span style="color: #000000;"> getDelegate(fn, event)
+</span><span style="color: #008080;">24</span>         <span style="color: #0000ff;">var</span> callback = handler.del ||<span style="color: #000000;"> fn
+</span><span style="color: #008080;">25</span>         handler.proxy = <span style="color: #0000ff;">function</span><span style="color: #000000;"> (e) {
+</span><span style="color: #008080;">26</span>             <span style="color: #0000ff;">var</span> result =<span style="color: #000000;"> callback.apply(element, [e].concat(e.data))
+</span><span style="color: #008080;">27</span>             <span style="color: #008000;">//</span><span style="color: #008000;">当事件处理函数返回false时，阻止默认操作和冒泡</span>
+<span style="color: #008080;">28</span>             <span style="color: #0000ff;">if</span> (result === <span style="color: #0000ff;">false</span><span style="color: #000000;">) e.preventDefault(), e.stopPropagation()
+</span><span style="color: #008080;">29</span>             <span style="color: #0000ff;">return</span><span style="color: #000000;"> result
+</span><span style="color: #008080;">30</span> <span style="color: #000000;">        }
+</span><span style="color: #008080;">31</span>         <span style="color: #008000;">//</span><span style="color: #008000;">设置处理函数的在函数集中的位置</span>
+<span style="color: #008080;">32</span>         handler.i =<span style="color: #000000;"> set.length
+</span><span style="color: #008080;">33</span>         <span style="color: #008000;">//</span><span style="color: #008000;">将函数存入函数集中</span>
+<span style="color: #008080;">34</span> <span style="color: #000000;">        set.push(handler)
+</span><span style="color: #008080;">35</span> <span style="color: #000000;">        element.addEventListener(realEvent(handler.e), handler.proxy, eventCapture(handler, capture))
+</span><span style="color: #008080;">36</span> <span style="color: #000000;">    })
+</span><span style="color: #008080;">37</span> }</pre>
+</div>
+<p>我们这里来详细看看我们的add方法</p>
+<p>① 首先根据活动唯一的id（根据zid与dom而来）<br>这里有个地方要注意，因为我们对统一dom可以注册多个事件，而他们的zid是相同的哦<br>② 取出元素上已经绑定的事件，第一次肯定是空数组<br>③ 第一个参数为dom，第二个为事件名称，第三个为回调函数，后面的我们暂时不关注<br>④ 使用eachEvent方法，该方法会遍历事件</p>
+<div class="cnblogs_code">
+<pre><span style="color: #008080;">1</span> <span style="color: #0000ff;">function</span><span style="color: #000000;"> eachEvent(events, fn, iterator) {
+</span><span style="color: #008080;">2</span>     <span style="color: #0000ff;">if</span> ($.type(events) != "string"<span style="color: #000000;">) $.each(events, iterator)
+</span><span style="color: #008080;">3</span>     <span style="color: #0000ff;">else</span> events.split(/\s/).forEach(<span style="color: #0000ff;">function</span><span style="color: #000000;"> (type) {
+</span><span style="color: #008080;">4</span> <span style="color: #000000;">        iterator(type, fn)
+</span><span style="color: #008080;">5</span> <span style="color: #000000;">    })
+</span><span style="color: #008080;">6</span> }</pre>
+</div>
+<p>该方法具有三个参数，第一个参数为事件名（可以传入多个事件比如："click mousemove"）<br>第二个参数是本身的回调函数，会在第三个参数（回调函数中作为参数传入）<br>PS：总之他就是个遍历处理函数，你的typeName与回调函数会传进去<br>⑤ 使用parse解析事件类型</p>
+<div class="cnblogs_code">
+<pre><span style="color: #008080;">1</span> <span style="color: #008000;">//</span><span style="color: #008000;">解析事件类型，返回一个包含事件名称和事件命名空间的对象</span>
+<span style="color: #008080;">2</span> <span style="color: #0000ff;">function</span><span style="color: #000000;"> parse(event) {
+</span><span style="color: #008080;">3</span>     <span style="color: #0000ff;">var</span> parts = ('' + event).split('.'<span style="color: #000000;">)
+</span><span style="color: #008080;">4</span>     <span style="color: #0000ff;">return</span><span style="color: #000000;"> {
+</span><span style="color: #008080;">5</span>         e: parts[0<span style="color: #000000;">],
+</span><span style="color: #008080;">6</span>         ns: parts.slice(1).sort().join(' '<span style="color: #000000;">)
+</span><span style="color: #008080;">7</span> <span style="color: #000000;">    }
+</span><span style="color: #008080;">8</span> }</pre>
+</div>
+<p>PS：为什么会有这个方法呢，因为我们使用backbone绑定事件时候是这个样子的click.delegateEvents......</p>
+<p>完了将回调函数与选择器（如果有的话）赋予handler，这里多的我们暂时不管<br>⑥ i表示当前函数在dom函数集中的位置，然后将他压入set，因为set为引用，所以原来handlers[id]的值也变了<br>⑦ 调用addEventListener绑定事件<br>element.addEventListener(realEvent(handler.e), handler.proxy, eventCapture(handler, capture))</p>
+<p>至此事件绑定就结束了，我们顺便看看remove，因为所有的注销事件都是通过remove</p>
+<h1>注销事件</h1>
+<div class="cnblogs_code">
+<pre><span style="color: #008080;"> 1</span> $.fn.off = <span style="color: #0000ff;">function</span><span style="color: #000000;"> (event, selector, callback) {
+</span><span style="color: #008080;"> 2</span>     <span style="color: #0000ff;">return</span> !selector || $.isFunction(selector) ? <span style="color: #0000ff;">this</span>.unbind(event, selector || callback) : <span style="color: #0000ff;">this</span><span style="color: #000000;">.undelegate(selector, event, callback)
+</span><span style="color: #008080;"> 3</span> <span style="color: #000000;">}
+</span><span style="color: #008080;"> 4</span> 
+<span style="color: #008080;"> 5</span> $.fn.unbind = <span style="color: #0000ff;">function</span><span style="color: #000000;"> (event, callback) {
+</span><span style="color: #008080;"> 6</span>     <span style="color: #0000ff;">return</span> <span style="color: #0000ff;">this</span>.each(<span style="color: #0000ff;">function</span><span style="color: #000000;"> () {
+</span><span style="color: #008080;"> 7</span>         remove(<span style="color: #0000ff;">this</span><span style="color: #000000;">, event, callback)
+</span><span style="color: #008080;"> 8</span> <span style="color: #000000;">    })
+</span><span style="color: #008080;"> 9</span> <span style="color: #000000;">}
+</span><span style="color: #008080;">10</span> 
+<span style="color: #008080;">11</span> <span style="color: #0000ff;">function</span><span style="color: #000000;"> remove(element, events, fn, selector, capture) {
+</span><span style="color: #008080;">12</span>     <span style="color: #0000ff;">var</span> id =<span style="color: #000000;"> zid(element)
+</span><span style="color: #008080;">13</span>     eachEvent(events || '', fn, <span style="color: #0000ff;">function</span><span style="color: #000000;"> (event, fn) {
+</span><span style="color: #008080;">14</span>         findHandlers(element, event, fn, selector).forEach(<span style="color: #0000ff;">function</span><span style="color: #000000;"> (handler) {
+</span><span style="color: #008080;">15</span>             <span style="color: #0000ff;">delete</span><span style="color: #000000;"> handlers[id][handler.i]
+</span><span style="color: #008080;">16</span> <span style="color: #000000;">            element.removeEventListener(realEvent(handler.e), handler.proxy, eventCapture(handler, capture))
+</span><span style="color: #008080;">17</span> <span style="color: #000000;">        })
+</span><span style="color: #008080;">18</span> <span style="color: #000000;">    })
+</span><span style="color: #008080;">19</span> }</pre>
+</div>
+<p>我们直接对准remove开炮<br>① 首先根据dom获取唯一id<br>② 调用eachEvent方法依次处理<br>③ 根据findHandler找到当前type的事件类型集合<br>④ 删除数据句柄，然后移除dom事件</p>
+<p>这个比较简单，我们就不详说了</p>
+<h1><span style="line-height: 1.5;">简单写法</span></h1>
+<p>我们经常这样绑定事件:<br>el.click(function () {})<br>那么这样是如何绑定事件的呢？答案在此</p>
+<div class="cnblogs_code">
+<pre><span style="color: #008080;"> 1</span> ('focusin focusout load resize scroll unload click dblclick ' +
+<span style="color: #008080;"> 2</span>     'mousedown mouseup mousemove mouseover mouseout mouseenter mouseleave ' +
+<span style="color: #008080;"> 3</span>     'change select keydown keypress keyup error').split(' ').forEach(<span style="color: #0000ff;">function</span><span style="color: #000000;"> (event) {
+</span><span style="color: #008080;"> 4</span>         $.fn[event] = <span style="color: #0000ff;">function</span><span style="color: #000000;"> (callback) {
+</span><span style="color: #008080;"> 5</span>             <span style="color: #0000ff;">return</span> callback ?
+<span style="color: #008080;"> 6</span>             <span style="color: #008000;">//</span><span style="color: #008000;">如果有callback回调，则认为它是绑定</span>
+<span style="color: #008080;"> 7</span>       <span style="color: #0000ff;">this</span><span style="color: #000000;">.bind(event, callback) :
+</span><span style="color: #008080;"> 8</span>             <span style="color: #008000;">//</span><span style="color: #008000;">如果没有callback回调，则让它主动触发</span>
+<span style="color: #008080;"> 9</span>       <span style="color: #0000ff;">this</span><span style="color: #000000;">.trigger(event)
+</span><span style="color: #008080;">10</span> <span style="color: #000000;">        }
+</span><span style="color: #008080;">11</span>     })</pre>
+</div>
+<p>以click来说相当于</p>
+<div class="cnblogs_code">
+<pre><span style="color: #008080;">1</span> $.fn.click = <span style="color: #0000ff;">function</span><span style="color: #000000;"> (fn) {
+</span><span style="color: #008080;">2</span> <span style="color: #0000ff;">this</span>.bind('click'<span style="color: #000000;">, callback)
+</span><span style="color: #008080;">3</span> }</pre>
+</div>
+<p>所以才绑定事件的啦......</p>
+<h1>结语</h1>
+<p>好了，今天暂时到这里，至此我们将zepto的核心就看的差不多了，剩下的我们再花一点时间说说就好了</p>
+                </div>
+
+                <div class='span3 sidebar'>
+                    <h2>导航栏</h2>
+                    <ul class="nav nav-tabs nav-stacked">
+                             				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/javascriptzdyxhxzsdyjxyzyddf/index.html">javascript中的一些核心知识点以及需要注意的地方</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/[zd]webappdyhzlyzydqdyhdpyjlkkb/index.html">[置顶]【webapp的优化整理】要做移动前端优化的朋友进来看看吧</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/[zd]yddjrwtyjjavascriptsjjzxjsjydjr/index.html">[置顶]【移动端兼容问题研究】javascript事件机制详解（涉及移动兼容）</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/gruntzhb30fzxhsygruntdbqddm/index.html">【grunt整合版】30分钟学会使用grunt打包前端代码</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/gruntdyd30fzxhsygruntdbqddm/index.html">【grunt第一弹】30分钟学会使用grunt打包前端代码</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/gruntdsdgruntzqdsjxmzdyy/index.html">【grunt第三弹】grunt在前端实际项目中的应用</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/gruntded30fzxhsygruntdbqddm02/index.html">【grunt第二弹】30分钟学会使用grunt打包前端代码（02）</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/IScrollsrxxtpyddhadlqs/index.html">【IScroll深入学习】突破移动端黑暗的利器（上）</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/IScrollsrxxjjIScrollynzz/index.html">【IScroll深入学习】解决IScroll疑难杂症</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/iScrollymxx00mniScroll/index.html">【iScroll源码学习00】模拟iScroll</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/iScrollymxx01zbjd/index.html">【iScroll源码学习01】准备阶段</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/iScrollymxx02fjiScrollsghxsjd/index.html">【iScroll源码学习02】分解iScroll三个核心事件点</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/iScrollymxx03iScrollsjjzygdtdsx/index.html">【iScroll源码学习03】iScroll事件机制与滚动条的实现</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/iScrollymxx04flIScrollhx/index.html">【iScroll源码学习04】分离IScroll核心</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/javascriptpxdytyyjc/index.html">【javascript培训第一天】语言基础</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/javascriptpxdstcybl/index.html">【javascript培训第三天】查遗补漏</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/javascriptpxdetDOMyBOM/index.html">【javascript培训第二天】DOM与BOM</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/javascriptjzdsk01mkhbc/index.html">【javascript激增的思考01】模块化编程</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/javascriptjzdsk02mkhyMVC/index.html">【javascript激增的思考02】模块化与MVC</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/javascriptjzdsk03MVVMyKnockout/index.html">【javascript激增的思考03】MVVM与Knockout</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/javascriptjzdsk04MVCyBackbonejs(beta)/index.html">【javascript激增的思考04】MVC与Backbonejs(beta)</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/javascriptmxdxzlrwmyqltkdzb01/index.html">【javascript面向对象之路】让我们一起来坦克大战吧01</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/NodeJSxxbj04xwfbxt/index.html">【NodeJS学习笔记04】新闻发布系统</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/requireJSymxx01ljzgrequireJSdjg/index.html">【requireJS源码学习01】了解整个requireJS的结构</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/requireJSymxx02datamainjzdsx/index.html">【requireJS源码学习02】datamain加载的实现</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/requireJSymxx03xjrequireJSdjzlc/index.html">【requireJS源码学习03】细究requireJS的加载流程</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/UIcjkfygjdrlcjs/index.html">【UI插件】开发一个简单日历插件（上）</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/UIcjjddrlcjxxxMVCsx/index.html">【UI插件】简单的日历插件（下）——学习MVC思想</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/zeptoxxbj01hxff$()/index.html">【zepto学习笔记01】核心方法$()</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/zeptoxxbj01hxff$()b/index.html">【zepto学习笔记01】核心方法$()（补）</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/zeptoxxbj02lsd/index.html">【zepto学习笔记02】零碎点</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/zeptoxxbj03sjjz/index.html">【zepto学习笔记03】事件机制</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/ycmsztjavascriptzdjc/index.html">【一次面试】再谈javascript中的继承</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/ztbackbone01mxModel/index.html">【再探backbone01】模型Model</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/ztbackbone02jhCollection/index.html">【再探backbone02】集合Collection</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/ztbackbone03bkydyyysltgym/index.html">【再探backbone03】博客园单页应用实例（提供源码）</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/ztbackbone04dyyydjslycl/index.html">【再探backbone04】单页应用的基石路由处理</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/ctUnderscorezsmbyq/index.html">【初探Underscore】再说模版引擎</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/ckjavascriptamzAjaxjsxnszddAjax/index.html">【初窥javascript奥秘之Ajax】简述下你所知道的Ajax？</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/ckjavascriptamzsjmpnxnwmyqmdp/index.html">【初窥javascript奥秘之事件冒泡】那些年我们一起冒的泡</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/ckjavascriptamzsjjzldtygdj/index.html">【初窥javascript奥秘之事件机制】论“点透”与“鬼点击”</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/ckjavascriptamzrrzmbddthisnzdxzthiszxnlm/index.html">【初窥javascript奥秘之让人捉摸不定的this】你知道现在this指向哪里吗？？？</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/ckjavascriptamzbbydxbdhlqbcl/index.html">【初窥javascript奥秘之闭包】叶大侠病都好了，求不踩了：）</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/ckjavascriptamzmxdxfzyjc/index.html">【初窥javascript奥秘之面向对象】封装与继承</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/qdmdsjdjgjdnzdljm/index.html">【前端盲点】事件的几个阶段你真的了解么？？？</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/dyyyviewymodelxgsl/index.html">【单页应用】view与model相关梳理</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/dyyyyqldyyybsxjdwbgns/index.html">【单页应用】一起来单页应用吧，实现简单微博功能！（上）</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/dyyyqjkzqappyggxsm/index.html">【单页应用】全局控制器app应该干些什么？</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/dyyywmgrhclkjdcccjgx/index.html">【单页应用】我们该如何处理框架弹出层层级关系？</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/dyyyljMVC/index.html">【单页应用】理解MVC</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/dyyyztxjzviewzjygrhtx/index.html">【单页应用之通信机制】view之间应该如何通信</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/dyyyjkzHistoryxsHistorydgdyyydm/index.html">【单页应用巨坑之History】细数History带给单页应用的噩梦</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/xtszeptofindysyjiosdcjpknrnhtt/index.html">【小贴士】zeptofind元素以及ios弹出键盘可能让你很头疼</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/xtsgytransitionEndanimatedygyqgs/index.html">【小贴士】关于transitionEndanimate的一个有趣故事</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/xtsgzzdbbysjwtdzzmp/index.html">【小贴士】工作中的”闭包“与事件委托的”阻止冒泡“</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/xtstytjavascriptzdreplace/index.html">【小贴士】探一探javascript中的replace</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/xtsxnjpyfixeddgydddt/index.html">【小贴士】虚拟键盘与fixed带给移动端的痛！</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/ttjavascriptsjjzdcsxyl/index.html">【探讨】javascript事件机制底层实现原理</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/mkhbcljrequireJSsxygjddmkjzq/index.html">【模块化编程】理解requireJS实现一个简单的模块加载器</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/zyJavaScriptmfjmtsdqlxkjzbfgndcljz/index.html">【转】【译】JavaScript魔法揭秘探索当前流行框架中部分功能的处理机制</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/zxjavascriptgszl01javascriptcszds/index.html">【追寻javascript高手之路01】javascript参数知多少？</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/zxjavascriptgszl02blzyyzds/index.html">【追寻javascript高手之路02】变量、作用域知多少？</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/zxjavascriptgszl03javascriptdxdld/index.html">【追寻javascript高手之路03】javascript对象大乱斗</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/zxjavascriptgszl04ljprototype/index.html">【追寻javascript高手之路04】理解prototype</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/zxjavascriptgszl05ljsjl/index.html">【追寻javascript高手之路05】理解事件流</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/zgbj04zxzzsj(2)/index.html">【重构笔记04】重新组织数据(2)</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/zgbj05jhtjbds/index.html">【重构笔记05】简化条件表达式</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/zgbj06jhhsdy/index.html">【重构笔记06】简化函数调用</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/ycmshgttbxysjfl/index.html">一次面试回顾——探讨表现与数据分离</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/dhzwebappzdxz/index.html">动画在webapp中的现状</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/ysandriodlqhthdomclicksjqtsxwttj/index.html">原生andriod浏览器回退后dom（click）事件全体失效问题探究</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/scsbdjxysdsbsjytouchsjdnxs/index.html">手持设备点击响应速度，鼠标事件与touch事件的那些事</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/mnbjQueryzeptohxymfx/index.html">迷你版jQuery——zepto核心源码分析</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/dbsgzdlwmlyqxjdddomxzqb/index.html">都别说工资低了，我们来一起写简单的dom选择器吧！</a></li>
+    				                                         
+                    </ul>
+                </div>
+            </div>
+
+        </div>
+    </body>
+</html>

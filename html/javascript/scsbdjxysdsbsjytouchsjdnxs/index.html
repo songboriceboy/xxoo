@@ -1,0 +1,820 @@
+﻿<!DOCTYPE html>
+
+<html lang="zh">
+    <head>
+        <meta charset="utf-8">
+        <meta name="description" content="android,ios" />
+        <meta name="keywords" content="android,ios" />
+
+        <title>叶小钗</title>
+        <style type='text/css'>
+            body {
+                background-color: #CCC;
+            }
+        </style>
+        <link rel="stylesheet" href="../../../css/bootstrap.css" />
+    </head>
+
+    <body>
+        <div class="container">
+
+            <h1>叶小钗</h1>
+
+            <div class='navbar navbar-inverse'>
+                <div class='navbar-inner nav-collapse' style="height: auto;">
+                    <ul class="nav">
+                              				<li><a href="http://songboriceboy.github.io/xxoo/html/blade/index.html">blade</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/css/index.html">css</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/HTML5&CSS3/index.html">HTML5&CSS3</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/index.html">javascript</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Javaxx/index.html">Java学习</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/nodejs/index.html">nodejs</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/requirejs/index.html">requirejs</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/index.html">Web前端</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/xxgw/index.html">学习感悟</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/gzdd/index.html">工作点滴</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/jkxx/index.html">接口学习</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/wfl/index.html">未分类</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/ydkf/index.html">移动开发</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/sjms/index.html">设计模式</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/mst/index.html">面试题</a></li>
+    				                      </ul>
+                </div>
+            </div>
+
+            <div id='content' class='row-fluid'>
+
+                <div class='span9 main'>
+				<div style="color:blue" align=center>手持设备点击响应速度，鼠标事件与touch事件的那些事</div><br><h1>前言</h1>
+<p>现在一直在做移动端的开发，这次将单页应用的网页内嵌入了app，于是老大反映了一个问题：<br><span style="color: #ff0000;"><strong>app应用点击响应慢！</strong></span><br>我开始不以为然，于是拿着网页版的试了试，好像确实有一定延迟，于是开始了研究，最后选择了touch取代鼠标事件</p>
+<p>但是，touch事件取代mouse事件，还是有一定问题的，据说网上问题很多，因为两者之间还是有一定差异<br>而且如果完全使用touch事件，对自动化测试的同事来说，他们的系统根本不支持touch事件，再者我们平时网页开发也不方便<br>所以，了解鼠标事件与touch事件的区别，探讨鼠标事件与touch事件的兼容也是有必要的，于是我们开始今天的学习吧<br>PS：这里使用zepto框架，懒得自己搞了......</p>
+<h1>事件差异</h1>
+<h2>鼠标事件</h2>
+<p>首先，我们来看看鼠标事件相关吧：</p>
+<div class="cnblogs_code">
+<pre><span style="color: #008080;"> 1</span> <span style="color: #0000ff;">var</span><span style="color: #000000;"> startTime;
+</span><span style="color: #008080;"> 2</span> <span style="color: #0000ff;">var</span> log = <span style="color: #0000ff;">function</span><span style="color: #000000;"> (msg) {
+</span><span style="color: #008080;"> 3</span>     console.log(<span style="color: #0000ff;">new</span> Date().getTime() -<span style="color: #000000;"> startTime);
+</span><span style="color: #008080;"> 4</span> <span style="color: #000000;">    console.log(msg);
+</span><span style="color: #008080;"> 5</span> <span style="color: #000000;">};
+</span><span style="color: #008080;"> 6</span> <span style="color: #0000ff;">var</span> mouseDown = <span style="color: #0000ff;">function</span><span style="color: #000000;"> () {
+</span><span style="color: #008080;"> 7</span>     startTime = <span style="color: #0000ff;">new</span><span style="color: #000000;"> Date().getTime();
+</span><span style="color: #008080;"> 8</span>     log('mouseDown'<span style="color: #000000;">);
+</span><span style="color: #008080;"> 9</span> <span style="color: #000000;">};
+</span><span style="color: #008080;">10</span> <span style="color: #0000ff;">var</span> mouseClick = <span style="color: #0000ff;">function</span><span style="color: #000000;"> () {
+</span><span style="color: #008080;">11</span>     log('mouseClick'<span style="color: #000000;">);
+</span><span style="color: #008080;">12</span> <span style="color: #000000;">};
+</span><span style="color: #008080;">13</span> <span style="color: #0000ff;">var</span> mouseUp = <span style="color: #0000ff;">function</span><span style="color: #000000;"> () {
+</span><span style="color: #008080;">14</span>     log('mouseUp'<span style="color: #000000;">);
+</span><span style="color: #008080;">15</span> <span style="color: #000000;">};
+</span><span style="color: #008080;">16</span>  
+<span style="color: #008080;">17</span> document.addEventListener('mousedown'<span style="color: #000000;">, mouseDown);
+</span><span style="color: #008080;">18</span> document.addEventListener('click'<span style="color: #000000;">, mouseClick);
+</span><span style="color: #008080;">19</span> document.addEventListener('mouseup', mouseUp);</pre>
+</div>
+<p><img alt="" src="37856027051774.png"></p>
+<p>从这里看到了，鼠标顺序是有mousedown -&gt; click -&gt; mouseup 的顺序，其时间差也出来了</p>
+<h2>touch事件</h2>
+<p>然后我们看看touch事件</p>
+<h3>没有click</h3>
+<p>touch包含三个事件，touchstart、touchmove、touchend，并没有click事件，所以click事件需要自己模拟，这个我们后面来看看</p>
+<div class="cnblogs_code">
+<pre><span style="color: #008080;"> 1</span> <span style="color: #0000ff;">var</span><span style="color: #000000;"> startTime;
+</span><span style="color: #008080;"> 2</span> <span style="color: #0000ff;">var</span> log = <span style="color: #0000ff;">function</span><span style="color: #000000;"> (msg) {
+</span><span style="color: #008080;"> 3</span>     console.log(<span style="color: #0000ff;">new</span> Date().getTime() -<span style="color: #000000;"> startTime);
+</span><span style="color: #008080;"> 4</span> <span style="color: #000000;">    console.log(msg);
+</span><span style="color: #008080;"> 5</span> <span style="color: #000000;">};
+</span><span style="color: #008080;"> 6</span> <span style="color: #0000ff;">var</span> touchStart = <span style="color: #0000ff;">function</span><span style="color: #000000;"> () {
+</span><span style="color: #008080;"> 7</span>     startTime = <span style="color: #0000ff;">new</span><span style="color: #000000;"> Date().getTime();
+</span><span style="color: #008080;"> 8</span>     log('touchStart'<span style="color: #000000;">);
+</span><span style="color: #008080;"> 9</span> <span style="color: #000000;">};
+</span><span style="color: #008080;">10</span> 
+<span style="color: #008080;">11</span> <span style="color: #0000ff;">var</span> touchEnd = <span style="color: #0000ff;">function</span><span style="color: #000000;"> () {
+</span><span style="color: #008080;">12</span>     log('touchEnd'<span style="color: #000000;">);
+</span><span style="color: #008080;">13</span> <span style="color: #000000;">};
+</span><span style="color: #008080;">14</span> 
+<span style="color: #008080;">15</span> document.addEventListener('touchstart'<span style="color: #000000;">, touchStart);
+</span><span style="color: #008080;">16</span> document.addEventListener('touchend', touchEnd);</pre>
+</div>
+<p><span style="color: #ff0000;">在chrome开启touch事件的情况下，可以看到这个结果</span></p>
+<p><img src="25111276444225.png" alt=""></p>
+<h2>混合事件</h2>
+<p>现在我们在手机上同时触发两者事件看看区别，这里代码做一定修改</p>
+<div class="cnblogs_code">
+<pre><span style="color: #008080;"> 1</span> <span style="color: #0000ff;">&lt;!</span><span style="color: #ff00ff;">DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 2</span> <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">html </span><span style="color: #ff0000;">xmlns</span><span style="color: #0000ff;">="http://www.w3.org/1999/xhtml"</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 3</span> <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">head</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 4</span>     <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">title</span><span style="color: #0000ff;">&gt;&lt;/</span><span style="color: #800000;">title</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 5</span>     <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">script </span><span style="color: #ff0000;">id</span><span style="color: #0000ff;">="others_zepto_10rc1"</span><span style="color: #ff0000;"> type</span><span style="color: #0000ff;">="text/javascript"</span><span style="color: #ff0000;"> class</span><span style="color: #0000ff;">="library"</span><span style="color: #ff0000;"> src</span><span style="color: #0000ff;">="http://sandbox.runjs.cn/js/sandbox/other/zepto.min.js"</span><span style="color: #0000ff;">&gt;&lt;/</span><span style="color: #800000;">script</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 6</span> <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">head</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 7</span> <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">body</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 8</span>     <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">div </span><span style="color: #ff0000;">id</span><span style="color: #0000ff;">="d"</span><span style="color: #ff0000;"> style</span><span style="color: #0000ff;">="width: 100px; height: 100px; border: 1px solid black;"</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 9</span>     <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">div</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">10</span> <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">body</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">11</span> <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">script </span><span style="color: #ff0000;">type</span><span style="color: #0000ff;">="text/javascript"</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">12</span>     <span style="background-color: #f5f5f5; color: #0000ff;">var</span><span style="background-color: #f5f5f5; color: #000000;"> startTime;
+</span><span style="color: #008080;">13</span>     <span style="background-color: #f5f5f5; color: #0000ff;">var</span><span style="background-color: #f5f5f5; color: #000000;"> log </span><span style="background-color: #f5f5f5; color: #000000;">=</span> <span style="background-color: #f5f5f5; color: #0000ff;">function</span><span style="background-color: #f5f5f5; color: #000000;"> (msg) {
+</span><span style="color: #008080;">14</span>         <span style="background-color: #f5f5f5; color: #0000ff;">var</span><span style="background-color: #f5f5f5; color: #000000;"> div </span><span style="background-color: #f5f5f5; color: #000000;">=</span><span style="background-color: #f5f5f5; color: #000000;"> $(</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">&lt;div&gt;&lt;/div&gt;</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">);
+</span><span style="color: #008080;">15</span> <span style="background-color: #f5f5f5; color: #000000;">        div.html((</span><span style="background-color: #f5f5f5; color: #0000ff;">new</span><span style="background-color: #f5f5f5; color: #000000;"> Date().getTime()) </span><span style="background-color: #f5f5f5; color: #000000;">+</span> <span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">: </span><span style="background-color: #f5f5f5; color: #000000;">'</span> <span style="background-color: #f5f5f5; color: #000000;">+</span><span style="background-color: #f5f5f5; color: #000000;"> (</span><span style="background-color: #f5f5f5; color: #0000ff;">new</span><span style="background-color: #f5f5f5; color: #000000;"> Date().getTime() </span><span style="background-color: #f5f5f5; color: #000000;">-</span><span style="background-color: #f5f5f5; color: #000000;"> startTime) </span><span style="background-color: #f5f5f5; color: #000000;">+</span> <span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">: </span><span style="background-color: #f5f5f5; color: #000000;">'</span> <span style="background-color: #f5f5f5; color: #000000;">+</span><span style="background-color: #f5f5f5; color: #000000;"> msg)
+</span><span style="color: #008080;">16</span> <span style="background-color: #f5f5f5; color: #000000;">        $(</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">body</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">).append(div);
+</span><span style="color: #008080;">17</span> 
+<span style="color: #008080;">18</span> <span style="background-color: #f5f5f5; color: #000000;">    };
+</span><span style="color: #008080;">19</span>     <span style="background-color: #f5f5f5; color: #0000ff;">var</span><span style="background-color: #f5f5f5; color: #000000;"> touchStart </span><span style="background-color: #f5f5f5; color: #000000;">=</span> <span style="background-color: #f5f5f5; color: #0000ff;">function</span><span style="background-color: #f5f5f5; color: #000000;"> () {
+</span><span style="color: #008080;">20</span> <span style="background-color: #f5f5f5; color: #000000;">        startTime </span><span style="background-color: #f5f5f5; color: #000000;">=</span> <span style="background-color: #f5f5f5; color: #0000ff;">new</span><span style="background-color: #f5f5f5; color: #000000;"> Date().getTime();
+</span><span style="color: #008080;">21</span> <span style="background-color: #f5f5f5; color: #000000;">        log(</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">touchStart</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">);
+</span><span style="color: #008080;">22</span> <span style="background-color: #f5f5f5; color: #000000;">    };
+</span><span style="color: #008080;">23</span>     <span style="background-color: #f5f5f5; color: #0000ff;">var</span><span style="background-color: #f5f5f5; color: #000000;"> touchEnd </span><span style="background-color: #f5f5f5; color: #000000;">=</span> <span style="background-color: #f5f5f5; color: #0000ff;">function</span><span style="background-color: #f5f5f5; color: #000000;"> () {
+</span><span style="color: #008080;">24</span> <span style="background-color: #f5f5f5; color: #000000;">        log(</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">touchEnd</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">);
+</span><span style="color: #008080;">25</span> 
+<span style="color: #008080;">26</span> <span style="background-color: #f5f5f5; color: #000000;">    };
+</span><span style="color: #008080;">27</span>     <span style="background-color: #f5f5f5; color: #0000ff;">var</span><span style="background-color: #f5f5f5; color: #000000;"> mouseDown </span><span style="background-color: #f5f5f5; color: #000000;">=</span> <span style="background-color: #f5f5f5; color: #0000ff;">function</span><span style="background-color: #f5f5f5; color: #000000;"> () {
+</span><span style="color: #008080;">28</span> <span style="background-color: #f5f5f5; color: #000000;">        log(</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">mouseDown</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">);
+</span><span style="color: #008080;">29</span> <span style="background-color: #f5f5f5; color: #000000;">    };
+</span><span style="color: #008080;">30</span>     <span style="background-color: #f5f5f5; color: #0000ff;">var</span><span style="background-color: #f5f5f5; color: #000000;"> mouseClick </span><span style="background-color: #f5f5f5; color: #000000;">=</span> <span style="background-color: #f5f5f5; color: #0000ff;">function</span><span style="background-color: #f5f5f5; color: #000000;"> () {
+</span><span style="color: #008080;">31</span> <span style="background-color: #f5f5f5; color: #000000;">        log(</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">mouseClick</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">);
+</span><span style="color: #008080;">32</span> <span style="background-color: #f5f5f5; color: #000000;">    };
+</span><span style="color: #008080;">33</span>     <span style="background-color: #f5f5f5; color: #0000ff;">var</span><span style="background-color: #f5f5f5; color: #000000;"> mouseUp </span><span style="background-color: #f5f5f5; color: #000000;">=</span> <span style="background-color: #f5f5f5; color: #0000ff;">function</span><span style="background-color: #f5f5f5; color: #000000;"> () {
+</span><span style="color: #008080;">34</span> <span style="background-color: #f5f5f5; color: #000000;">        log(</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">mouseUp</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">);
+</span><span style="color: #008080;">35</span> 
+<span style="color: #008080;">36</span> <span style="background-color: #f5f5f5; color: #000000;">    };
+</span><span style="color: #008080;">37</span>     <span style="background-color: #f5f5f5; color: #0000ff;">var</span><span style="background-color: #f5f5f5; color: #000000;"> d </span><span style="background-color: #f5f5f5; color: #000000;">=</span><span style="background-color: #f5f5f5; color: #000000;"> $(</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">#d</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">);
+</span><span style="color: #008080;">38</span> <span style="background-color: #f5f5f5; color: #000000;">    d.bind(</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">mousedown</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">, mouseDown);
+</span><span style="color: #008080;">39</span> <span style="background-color: #f5f5f5; color: #000000;">    d.bind(</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">click</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">, mouseClick);
+</span><span style="color: #008080;">40</span> <span style="background-color: #f5f5f5; color: #000000;">    d.bind(</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">mouseup</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">, mouseUp);
+</span><span style="color: #008080;">41</span> <span style="background-color: #f5f5f5; color: #000000;">    d.bind(</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">touchstart</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">, touchStart);
+</span><span style="color: #008080;">42</span> <span style="background-color: #f5f5f5; color: #000000;">    d.bind(</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">touchend</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">, touchEnd);
+</span><span style="color: #008080;">43</span> <span style="background-color: #f5f5f5; color: #000000;"></span><span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">script</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">44</span> <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">html</span><span style="color: #0000ff;">&gt;</span></pre>
+</div>
+<h3>测试地址</h3>
+<p><a href="http://sandbox.runjs.cn/show/ey54cgqf">http://sandbox.runjs.cn/show/ey54cgqf</a></p>
+<p>此处手机与电脑有非常大的区别！！！</p>
+<p><img src="45410427210419.png" alt=""></p>
+<p><img src="20762068768344.png" alt=""></p>
+<h2>结论</h2>
+<h3>不要同时给document绑定鼠标与touch事件</h3>
+<div class="cnblogs_code">
+<pre>document.addEventListener('mousedown'<span style="color: #000000;">, mouseDown);
+document.addEventListener(</span>'click'<span style="color: #000000;">, mouseClick);
+document.addEventListener(</span>'mouseup'<span style="color: #000000;">, mouseUp);
+document.addEventListener(</span>'touchstart'<span style="color: #000000;">, touchStart);
+document.addEventListener(</span>'touchend', touchEnd);</pre>
+</div>
+<p>这个样子，在手机上不会触发click事件，click事件要绑定到具体元素</p>
+<p>PS：<span style="color: #ff0000;">此处的原因我就不去研究了，如果您知道为什么，请留言</span></p>
+<h3>手机上mousedown本来响应就慢</h3>
+<p>经过测试，电脑上touch与click事件的差距不大，但是手机上，当我们手触碰屏幕时，要过300ms左右才会触发mousedown事件</p>
+<p>所以click事件在手机上响应就是慢一拍</p>
+<h3>数据说明</h3>
+<p><img src="285871810232493.png" alt=""></p>
+<p>可以看到，在手机上使用click事件其实对用户体验并不好，所以我们可能会逐步使用touch事件</p>
+<h2>参数差异</h2>
+<p>现在，我们来看看鼠标与touch事件的参数差异</p>
+<div class="cnblogs_code">
+<pre><span style="color: #008080;"> 1</span> <span style="color: #0000ff;">var</span><span style="color: #000000;"> startTime;
+</span><span style="color: #008080;"> 2</span> <span style="color: #0000ff;">var</span> log = <span style="color: #0000ff;">function</span><span style="color: #000000;"> (msg, e) {
+</span><span style="color: #008080;"> 3</span> <span style="color: #000000;">    console.log(e);
+</span><span style="color: #008080;"> 4</span>     <span style="color: #0000ff;">var</span> div = $('&lt;div&gt;&lt;/div&gt;'<span style="color: #000000;">);
+</span><span style="color: #008080;"> 5</span>     div.html((<span style="color: #0000ff;">new</span> Date().getTime()) + ': ' + (<span style="color: #0000ff;">new</span> Date().getTime() - startTime) + ': ' +<span style="color: #000000;"> msg)
+</span><span style="color: #008080;"> 6</span>     $('body'<span style="color: #000000;">).append(div);
+</span><span style="color: #008080;"> 7</span> 
+<span style="color: #008080;"> 8</span> <span style="color: #000000;">};
+</span><span style="color: #008080;"> 9</span> <span style="color: #0000ff;">var</span> touchStart = <span style="color: #0000ff;">function</span><span style="color: #000000;"> (e) {
+</span><span style="color: #008080;">10</span>     startTime = <span style="color: #0000ff;">new</span><span style="color: #000000;"> Date().getTime();
+</span><span style="color: #008080;">11</span>     log('touchStart'<span style="color: #000000;">, e);
+</span><span style="color: #008080;">12</span> <span style="color: #000000;">};
+</span><span style="color: #008080;">13</span> <span style="color: #0000ff;">var</span> touchEnd = <span style="color: #0000ff;">function</span><span style="color: #000000;"> (e) {
+</span><span style="color: #008080;">14</span>     log('touchEnd'<span style="color: #000000;">, e);
+</span><span style="color: #008080;">15</span> 
+<span style="color: #008080;">16</span> <span style="color: #000000;">};
+</span><span style="color: #008080;">17</span> <span style="color: #0000ff;">var</span> mouseDown = <span style="color: #0000ff;">function</span><span style="color: #000000;"> (e) {
+</span><span style="color: #008080;">18</span>     log('mouseDown'<span style="color: #000000;">, e);
+</span><span style="color: #008080;">19</span> <span style="color: #000000;">};
+</span><span style="color: #008080;">20</span> <span style="color: #0000ff;">var</span> mouseClick = <span style="color: #0000ff;">function</span><span style="color: #000000;"> (e) {
+</span><span style="color: #008080;">21</span>     log('mouseClick'<span style="color: #000000;">, e);
+</span><span style="color: #008080;">22</span> <span style="color: #000000;">};
+</span><span style="color: #008080;">23</span> <span style="color: #0000ff;">var</span> mouseUp = <span style="color: #0000ff;">function</span><span style="color: #000000;"> (e) {
+</span><span style="color: #008080;">24</span>     log('mouseUp'<span style="color: #000000;">, e);
+</span><span style="color: #008080;">25</span> 
+<span style="color: #008080;">26</span> <span style="color: #000000;">};
+</span><span style="color: #008080;">27</span> <span style="color: #0000ff;">var</span> d = $('#d'<span style="color: #000000;">);
+</span><span style="color: #008080;">28</span> d.bind('mousedown'<span style="color: #000000;">, mouseDown);
+</span><span style="color: #008080;">29</span> d.bind('click'<span style="color: #000000;">, mouseClick);
+</span><span style="color: #008080;">30</span> d.bind('mouseup'<span style="color: #000000;">, mouseUp);
+</span><span style="color: #008080;">31</span> d.bind('touchstart'<span style="color: #000000;">, touchStart);
+</span><span style="color: #008080;">32</span> d.bind('touchend', touchEnd);</pre>
+</div>
+<h2>事件参数（touchstart/mouseup）</h2>
+<p><img src="50860278351784.png" alt=""><img src="4222796140838.png" alt=""></p>
+<p>我们来看几个关键的地方：</p>
+<h3><span>changedTouches/<span>touches/targetTouches </span></span></h3>
+<p>touches：为屏幕上所有手指的信息</p>
+<p>PS：因为手机屏幕支持多点触屏，所以这里的参数就与手机有所不同</p>
+<p>targetTouches：手指在目标区域的手指信息</p>
+<p>changedTouches：最近一次触发该事件的手指信息</p>
+<p>比如两个手指同时触发事件，2个手指都在区域内，则容量为2，如果是先后离开的的话，就会先触发一次再触发一次，这里的length就是1，只统计最新的</p>
+<p>PS：一般changedTouches的length都是1</p>
+<div class="cnblogs_code">
+<pre><span style="color: #800000;">touchend时，touches与targetTouches信息会被删除，changedTouches保存的最后一次的信息，最好用于计算手指信息</span></pre>
+</div>
+<p>这里要使用哪个数据各位自己看着办吧，我也不是十分清晰（我这里还是使用changedTouches吧）</p>
+<h3>参数信息(changedTouches[0])</h3>
+<p>几个重要通用点：</p>
+<p>① clientX：在显示区的坐标</p>
+<p>② pageX：鼠标在页面上的位置</p>
+<p>③ <span>screenX：鼠标在显示屏上的坐标（我是双屏所以x很大）</span></p>
+<p><span>④ target：当前元素</span></p>
+<p>几个重要不同点：</p>
+<p>① <span>layerX：这个是相对距离，这个</span>不同，所以不要用这个东西了</p>
+<p>② ......</p>
+<p>这个有必要说明下，比如我们改下代码：</p>
+<div class="cnblogs_code" onclick="cnblogs_code_show('11de2e75-1f3f-4d70-9c76-5e446d3e9d4a')"><img src="43570758473519.gif" class="code_img_closed" id="code_img_closed_11de2e75-1f3f-4d70-9c76-5e446d3e9d4a"><img src="16365178109279.gif" class="code_img_opened" id="code_img_opened_11de2e75-1f3f-4d70-9c76-5e446d3e9d4a" onclick="cnblogs_code_hide('11de2e75-1f3f-4d70-9c76-5e446d3e9d4a',event)" style="display: none;">
+<div id="cnblogs_code_open_11de2e75-1f3f-4d70-9c76-5e446d3e9d4a" class="cnblogs_code_hide">
+<pre><span style="color: #008080;"> 1</span> <span style="color: #0000ff;">&lt;!</span><span style="color: #ff00ff;">DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 2</span> <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">html </span><span style="color: #ff0000;">xmlns</span><span style="color: #0000ff;">="http://www.w3.org/1999/xhtml"</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 3</span> <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">head</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 4</span>     <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">title</span><span style="color: #0000ff;">&gt;&lt;/</span><span style="color: #800000;">title</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 5</span>      <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">script </span><span style="color: #ff0000;">id</span><span style="color: #0000ff;">="others_zepto_10rc1"</span><span style="color: #ff0000;"> type</span><span style="color: #0000ff;">="text/javascript"</span><span style="color: #ff0000;"> class</span><span style="color: #0000ff;">="library"</span><span style="color: #ff0000;"> src</span><span style="color: #0000ff;">="http://sandbox.runjs.cn/js/sandbox/other/zepto.min.js"</span><span style="color: #0000ff;">&gt;&lt;/</span><span style="color: #800000;">script</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 6</span>     
+<span style="color: #008080;"> 7</span> <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">head</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 8</span> <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">body</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 9</span> <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">div </span><span style="color: #ff0000;">style</span><span style="color: #0000ff;">=" position: relative; width: 500px; height: 300px; border: 1px solid black;"</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">10</span> <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">div </span><span style="color: #ff0000;">id</span><span style="color: #0000ff;">="d"</span><span style="color: #ff0000;"> style</span><span style="color: #0000ff;">=" position: absolute; top: 50px; left: 50px; width: 100px; height: 100px; border: 1px solid black;"</span> <span style="color: #0000ff;">&gt;&lt;/</span><span style="color: #800000;">div</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">11</span> <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">div</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">12</span> <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">body</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">13</span> 
+<span style="color: #008080;">14</span> <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">script </span><span style="color: #ff0000;">type</span><span style="color: #0000ff;">="text/javascript"</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">15</span> <span style="background-color: #f5f5f5; color: #000000;"></span><span style="background-color: #f5f5f5; color: #0000ff;">var</span><span style="background-color: #f5f5f5; color: #000000;"> startTime;
+</span><span style="color: #008080;">16</span> <span style="background-color: #f5f5f5; color: #000000;"></span><span style="background-color: #f5f5f5; color: #0000ff;">var</span><span style="background-color: #f5f5f5; color: #000000;"> log </span><span style="background-color: #f5f5f5; color: #000000;">=</span> <span style="background-color: #f5f5f5; color: #0000ff;">function</span><span style="background-color: #f5f5f5; color: #000000;"> (msg, e) {
+</span><span style="color: #008080;">17</span> <span style="background-color: #f5f5f5; color: #000000;">    console.log(e);
+</span><span style="color: #008080;">18</span>     <span style="background-color: #f5f5f5; color: #0000ff;">var</span><span style="background-color: #f5f5f5; color: #000000;"> div </span><span style="background-color: #f5f5f5; color: #000000;">=</span><span style="background-color: #f5f5f5; color: #000000;"> $(</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">&lt;div&gt;&lt;/div&gt;</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">);
+</span><span style="color: #008080;">19</span> <span style="background-color: #f5f5f5; color: #000000;">    div.html((</span><span style="background-color: #f5f5f5; color: #0000ff;">new</span><span style="background-color: #f5f5f5; color: #000000;"> Date().getTime()) </span><span style="background-color: #f5f5f5; color: #000000;">+</span> <span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">: </span><span style="background-color: #f5f5f5; color: #000000;">'</span> <span style="background-color: #f5f5f5; color: #000000;">+</span><span style="background-color: #f5f5f5; color: #000000;"> (</span><span style="background-color: #f5f5f5; color: #0000ff;">new</span><span style="background-color: #f5f5f5; color: #000000;"> Date().getTime() </span><span style="background-color: #f5f5f5; color: #000000;">-</span><span style="background-color: #f5f5f5; color: #000000;"> startTime) </span><span style="background-color: #f5f5f5; color: #000000;">+</span> <span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">: </span><span style="background-color: #f5f5f5; color: #000000;">'</span> <span style="background-color: #f5f5f5; color: #000000;">+</span><span style="background-color: #f5f5f5; color: #000000;"> msg)
+</span><span style="color: #008080;">20</span> <span style="background-color: #f5f5f5; color: #000000;">    $(</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">body</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">).append(div);
+</span><span style="color: #008080;">21</span> 
+<span style="color: #008080;">22</span> <span style="background-color: #f5f5f5; color: #000000;">};
+</span><span style="color: #008080;">23</span> <span style="background-color: #f5f5f5; color: #000000;"></span><span style="background-color: #f5f5f5; color: #0000ff;">var</span><span style="background-color: #f5f5f5; color: #000000;"> touchStart </span><span style="background-color: #f5f5f5; color: #000000;">=</span> <span style="background-color: #f5f5f5; color: #0000ff;">function</span><span style="background-color: #f5f5f5; color: #000000;"> (e) {
+</span><span style="color: #008080;">24</span> <span style="background-color: #f5f5f5; color: #000000;">    startTime </span><span style="background-color: #f5f5f5; color: #000000;">=</span> <span style="background-color: #f5f5f5; color: #0000ff;">new</span><span style="background-color: #f5f5f5; color: #000000;"> Date().getTime();
+</span><span style="color: #008080;">25</span> <span style="background-color: #f5f5f5; color: #000000;">    log(</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">touchStart</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">, e);
+</span><span style="color: #008080;">26</span> <span style="background-color: #f5f5f5; color: #000000;">};
+</span><span style="color: #008080;">27</span> <span style="background-color: #f5f5f5; color: #000000;"></span><span style="background-color: #f5f5f5; color: #0000ff;">var</span><span style="background-color: #f5f5f5; color: #000000;"> touchEnd </span><span style="background-color: #f5f5f5; color: #000000;">=</span> <span style="background-color: #f5f5f5; color: #0000ff;">function</span><span style="background-color: #f5f5f5; color: #000000;"> (e) {
+</span><span style="color: #008080;">28</span> <span style="background-color: #f5f5f5; color: #000000;">    log(</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">touchEnd</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">, e);
+</span><span style="color: #008080;">29</span> 
+<span style="color: #008080;">30</span> <span style="background-color: #f5f5f5; color: #000000;">};
+</span><span style="color: #008080;">31</span> <span style="background-color: #f5f5f5; color: #000000;"></span><span style="background-color: #f5f5f5; color: #0000ff;">var</span><span style="background-color: #f5f5f5; color: #000000;"> mouseDown </span><span style="background-color: #f5f5f5; color: #000000;">=</span> <span style="background-color: #f5f5f5; color: #0000ff;">function</span><span style="background-color: #f5f5f5; color: #000000;"> (e) {
+</span><span style="color: #008080;">32</span> <span style="background-color: #f5f5f5; color: #000000;">    log(</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">mouseDown</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">, e);
+</span><span style="color: #008080;">33</span> <span style="background-color: #f5f5f5; color: #000000;">};
+</span><span style="color: #008080;">34</span> <span style="background-color: #f5f5f5; color: #000000;"></span><span style="background-color: #f5f5f5; color: #0000ff;">var</span><span style="background-color: #f5f5f5; color: #000000;"> mouseClick </span><span style="background-color: #f5f5f5; color: #000000;">=</span> <span style="background-color: #f5f5f5; color: #0000ff;">function</span><span style="background-color: #f5f5f5; color: #000000;"> (e) {
+</span><span style="color: #008080;">35</span> <span style="background-color: #f5f5f5; color: #000000;">    log(</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">mouseClick</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">, e);
+</span><span style="color: #008080;">36</span> <span style="background-color: #f5f5f5; color: #000000;">};
+</span><span style="color: #008080;">37</span> <span style="background-color: #f5f5f5; color: #000000;"></span><span style="background-color: #f5f5f5; color: #0000ff;">var</span><span style="background-color: #f5f5f5; color: #000000;"> mouseUp </span><span style="background-color: #f5f5f5; color: #000000;">=</span> <span style="background-color: #f5f5f5; color: #0000ff;">function</span><span style="background-color: #f5f5f5; color: #000000;"> (e) {
+</span><span style="color: #008080;">38</span> <span style="background-color: #f5f5f5; color: #000000;">    log(</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">mouseUp</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">, e);
+</span><span style="color: #008080;">39</span> 
+<span style="color: #008080;">40</span> <span style="background-color: #f5f5f5; color: #000000;">};
+</span><span style="color: #008080;">41</span> <span style="background-color: #f5f5f5; color: #000000;"></span><span style="background-color: #f5f5f5; color: #0000ff;">var</span><span style="background-color: #f5f5f5; color: #000000;"> d </span><span style="background-color: #f5f5f5; color: #000000;">=</span><span style="background-color: #f5f5f5; color: #000000;"> $(</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">#d</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">);
+</span><span style="color: #008080;">42</span> <span style="background-color: #f5f5f5; color: #000000;">d.bind(</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">mousedown</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">, mouseDown);
+</span><span style="color: #008080;">43</span> <span style="background-color: #f5f5f5; color: #000000;">d.bind(</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">click</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">, mouseClick);
+</span><span style="color: #008080;">44</span> <span style="background-color: #f5f5f5; color: #000000;">d.bind(</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">mouseup</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">, mouseUp);
+</span><span style="color: #008080;">45</span> <span style="background-color: #f5f5f5; color: #000000;">d.bind(</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">touchstart</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">, touchStart);
+</span><span style="color: #008080;">46</span> <span style="background-color: #f5f5f5; color: #000000;">d.bind(</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">touchend</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">, touchEnd);
+</span><span style="color: #008080;">47</span> 
+<span style="color: #008080;">48</span>     <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">script</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">49</span> <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">html</span><span style="color: #0000ff;">&gt;</span></pre>
+</div>
+<span class="cnblogs_code_collapse">View Code </span></div>
+<h3>测试地址</h3>
+<p><a href="http://sandbox.runjs.cn/show/7tyo48bf">http://sandbox.runjs.cn/show/7tyo48bf</a></p>
+<p>各位自己运行看看差异吧</p>
+<h1>简单扩展touch事件</h1>
+<p>touch没有click事件，于是有zepto搞了个tap事件，我们这里先来简单模拟一下，再看源码怎么干的</p>
+<div class="cnblogs_code">
+<pre><span style="color: #008080;"> 1</span> <span style="color: #0000ff;">var</span> mouseData =<span style="color: #000000;"> {
+</span><span style="color: #008080;"> 2</span>     sTime: 0<span style="color: #000000;">,
+</span><span style="color: #008080;"> 3</span>     eTime: 0<span style="color: #000000;">,
+</span><span style="color: #008080;"> 4</span>     sX: 0<span style="color: #000000;">,
+</span><span style="color: #008080;"> 5</span>     eX: 0<span style="color: #000000;">,
+</span><span style="color: #008080;"> 6</span>     sY: 0<span style="color: #000000;">,
+</span><span style="color: #008080;"> 7</span>     eY: 0
+<span style="color: #008080;"> 8</span> <span style="color: #000000;">};
+</span><span style="color: #008080;"> 9</span> <span style="color: #0000ff;">var</span> log = <span style="color: #0000ff;">function</span><span style="color: #000000;"> (msg) {
+</span><span style="color: #008080;">10</span> <span style="color: #000000;">    console.log(msg);
+</span><span style="color: #008080;">11</span> <span style="color: #000000;">};
+</span><span style="color: #008080;">12</span> <span style="color: #0000ff;">var</span> touchStart = <span style="color: #0000ff;">function</span><span style="color: #000000;"> (e) {
+</span><span style="color: #008080;">13</span>     <span style="color: #0000ff;">var</span> pos = e.changedTouches[0<span style="color: #000000;">];
+</span><span style="color: #008080;">14</span>     mouseData.sTime = <span style="color: #0000ff;">new</span><span style="color: #000000;"> Date().getTime();
+</span><span style="color: #008080;">15</span>     mouseData.sX =<span style="color: #000000;"> pos.pageX;
+</span><span style="color: #008080;">16</span>     mouseData.sY =<span style="color: #000000;"> pos.pageY;
+</span><span style="color: #008080;">17</span> <span style="color: #000000;">};
+</span><span style="color: #008080;">18</span> <span style="color: #0000ff;">var</span> touchMove = <span style="color: #0000ff;">function</span><span style="color: #000000;"> (e) {
+</span><span style="color: #008080;">19</span>     <span style="color: #008000;">//</span><span style="color: #008000;">        var pos = e.changedTouches[0];</span>
+<span style="color: #008080;">20</span> <span style="color: #008000;"></span>    <span style="color: #008000;">//</span><span style="color: #008000;">        mouseData.eTime = new Date().getTime();</span>
+<span style="color: #008080;">21</span> <span style="color: #008000;"></span>    <span style="color: #008000;">//</span><span style="color: #008000;">        mouseData.eX = pos.pageX;</span>
+<span style="color: #008080;">22</span> <span style="color: #008000;"></span>    <span style="color: #008000;">//</span><span style="color: #008000;">        mouseData.eY = pos.pageY;</span>
+<span style="color: #008080;">23</span> <span style="color: #008000;"></span><span style="color: #000000;">    e.preventDefault();
+</span><span style="color: #008080;">24</span>     <span style="color: #0000ff;">return</span> <span style="color: #0000ff;">false</span><span style="color: #000000;">;
+</span><span style="color: #008080;">25</span> <span style="color: #000000;">};
+</span><span style="color: #008080;">26</span> <span style="color: #0000ff;">var</span> touchEnd = <span style="color: #0000ff;">function</span><span style="color: #000000;"> (e) {
+</span><span style="color: #008080;">27</span>     <span style="color: #0000ff;">var</span> pos = e.changedTouches[0<span style="color: #000000;">];
+</span><span style="color: #008080;">28</span>     mouseData.eTime = <span style="color: #0000ff;">new</span><span style="color: #000000;"> Date().getTime();
+</span><span style="color: #008080;">29</span>     mouseData.eX =<span style="color: #000000;"> pos.pageX;
+</span><span style="color: #008080;">30</span>     mouseData.eY =<span style="color: #000000;"> pos.pageY;
+</span><span style="color: #008080;">31</span>     <span style="color: #0000ff;">var</span> data =<span style="color: #000000;"> onTouchEnd();
+</span><span style="color: #008080;">32</span> <span style="color: #000000;">    log(data);
+</span><span style="color: #008080;">33</span>     <span style="color: #0000ff;">var</span> d = $('body'<span style="color: #000000;">);
+</span><span style="color: #008080;">34</span>     d.append($('&lt;div&gt;间隔：' + data.timeLag + ', 方向：' + data.dir + '&lt;/div&gt;'<span style="color: #000000;">));
+</span><span style="color: #008080;">35</span> <span style="color: #000000;">};
+</span><span style="color: #008080;">36</span> <span style="color: #0000ff;">var</span> onTouchEnd = <span style="color: #0000ff;">function</span><span style="color: #000000;"> () {
+</span><span style="color: #008080;">37</span>     <span style="color: #008000;">//</span><span style="color: #008000;">时间间隔</span>
+<span style="color: #008080;">38</span> <span style="color: #008000;"></span>    <span style="color: #0000ff;">var</span> timeLag = mouseData.eTime -<span style="color: #000000;"> mouseData.sTime;
+</span><span style="color: #008080;">39</span>     <span style="color: #008000;">//</span><span style="color: #008000;">移动状态，默认乱移动</span>
+<span style="color: #008080;">40</span> <span style="color: #008000;"></span>    <span style="color: #0000ff;">var</span> dir = 'move'<span style="color: #000000;">;
+</span><span style="color: #008080;">41</span>     <span style="color: #0000ff;">if</span> (mouseData.sX ==<span style="color: #000000;"> mouseData.eX) {
+</span><span style="color: #008080;">42</span>         <span style="color: #0000ff;">if</span> (mouseData.eY - mouseData.sY &gt; 0) dir = 'down'<span style="color: #000000;">;
+</span><span style="color: #008080;">43</span>         <span style="color: #0000ff;">if</span> (mouseData.eY - mouseData.sY &lt; 0) dir = 'up'<span style="color: #000000;">;
+</span><span style="color: #008080;">44</span>         <span style="color: #0000ff;">if</span> (mouseData.eY - mouseData.sY == 0) dir = 'tap'<span style="color: #000000;">;
+</span><span style="color: #008080;">45</span> <span style="color: #000000;">    }
+</span><span style="color: #008080;">46</span>     <span style="color: #0000ff;">if</span> (mouseData.sY ==<span style="color: #000000;"> mouseData.eY) {
+</span><span style="color: #008080;">47</span>         <span style="color: #0000ff;">if</span> (mouseData.eX - mouseData.sX &gt; 0) dir = 'right'<span style="color: #000000;">;
+</span><span style="color: #008080;">48</span>         <span style="color: #0000ff;">if</span> (mouseData.eX - mouseData.sX &lt; 0) dir = 'left'<span style="color: #000000;">;
+</span><span style="color: #008080;">49</span>         <span style="color: #0000ff;">if</span> (mouseData.eX - mouseData.sX == 0) dir = 'tap'<span style="color: #000000;">;
+</span><span style="color: #008080;">50</span> <span style="color: #000000;">    }
+</span><span style="color: #008080;">51</span>     <span style="color: #0000ff;">return</span><span style="color: #000000;"> {
+</span><span style="color: #008080;">52</span> <span style="color: #000000;">        timeLag: timeLag,
+</span><span style="color: #008080;">53</span> <span style="color: #000000;">        dir: dir
+</span><span style="color: #008080;">54</span> <span style="color: #000000;">    };
+</span><span style="color: #008080;">55</span> <span style="color: #000000;">};
+</span><span style="color: #008080;">56</span> 
+<span style="color: #008080;">57</span> <span style="color: #0000ff;">var</span> touchEvents = <span style="color: #0000ff;">function</span><span style="color: #000000;"> (el, func) {
+</span><span style="color: #008080;">58</span>     el = el ||<span style="color: #000000;"> document;
+</span><span style="color: #008080;">59</span>     func = func || <span style="color: #0000ff;">function</span><span style="color: #000000;"> () { };
+</span><span style="color: #008080;">60</span>     el.addEventListener('touchstart'<span style="color: #000000;">, touchStart);
+</span><span style="color: #008080;">61</span>     el.addEventListener('touchmove'<span style="color: #000000;">, touchMove);
+</span><span style="color: #008080;">62</span>     el.addEventListener('touchend'<span style="color: #000000;">, touchEnd);
+</span><span style="color: #008080;">63</span> <span style="color: #000000;">};
+</span><span style="color: #008080;">64</span> <span style="color: #0000ff;">var</span> d = $('body'<span style="color: #000000;">);
+</span><span style="color: #008080;">65</span> touchEvents(d[0]);</pre>
+</div>
+<h3>测试地址</h3>
+<p><a href="http://sandbox.runjs.cn/show/2n9nqssv">http://sandbox.runjs.cn/show/2n9nqssv</a></p>
+<p><img src="49827806439600.png" alt=""></p>
+<p>这里就可以看到一次touch事件是tap还是up等属性，当然很多时候我们需要设置x方向或者y方向不可拖动，这样就更好呈现</p>
+<p>时间间隔长短可以让我们判断自己的拖动是长拖动还是短拖动，长拖动也许用户希望动画慢点，短拖动也许动画就快了</p>
+<h2>touch事件代码汇总</h2>
+<div class="cnblogs_code">
+<pre><span style="color: #008080;">  1</span> <span style="color: #0000ff;">var</span> log = <span style="color: #0000ff;">function</span><span style="color: #000000;"> (msg) {
+</span><span style="color: #008080;">  2</span> <span style="color: #000000;">    console.log(msg);
+</span><span style="color: #008080;">  3</span> <span style="color: #000000;">};
+</span><span style="color: #008080;">  4</span> <span style="color: #0000ff;">var</span> d = $('body'<span style="color: #000000;">);
+</span><span style="color: #008080;">  5</span> 
+<span style="color: #008080;">  6</span> <span style="color: #0000ff;">var</span> touchEvents = <span style="color: #0000ff;">function</span><span style="color: #000000;"> (el, type, func) {
+</span><span style="color: #008080;">  7</span>     <span style="color: #0000ff;">this</span>.<span style="color: #0000ff;">long</span> = 400; <span style="color: #008000;">//</span><span style="color: #008000;">用于设置长点击阀值</span>
+<span style="color: #008080;">  8</span> <span style="color: #008000;"></span>    <span style="color: #0000ff;">this</span>.el = el ||<span style="color: #000000;"> document;
+</span><span style="color: #008080;">  9</span>     <span style="color: #0000ff;">this</span>.func = func || <span style="color: #0000ff;">function</span><span style="color: #000000;"> () { };
+</span><span style="color: #008080;"> 10</span>     <span style="color: #0000ff;">this</span>.type = type || 'tap'<span style="color: #000000;">;
+</span><span style="color: #008080;"> 11</span>     <span style="color: #0000ff;">this</span>.mouseData =<span style="color: #000000;"> {
+</span><span style="color: #008080;"> 12</span>         sTime: 0<span style="color: #000000;">,
+</span><span style="color: #008080;"> 13</span>         eTime: 0<span style="color: #000000;">,
+</span><span style="color: #008080;"> 14</span>         sX: 0<span style="color: #000000;">,
+</span><span style="color: #008080;"> 15</span>         eX: 0<span style="color: #000000;">,
+</span><span style="color: #008080;"> 16</span>         sY: 0<span style="color: #000000;">,
+</span><span style="color: #008080;"> 17</span>         eY: 0
+<span style="color: #008080;"> 18</span> <span style="color: #000000;">    };
+</span><span style="color: #008080;"> 19</span>     <span style="color: #0000ff;">this</span><span style="color: #000000;">.addEvent();
+</span><span style="color: #008080;"> 20</span> 
+<span style="color: #008080;"> 21</span> <span style="color: #000000;">};
+</span><span style="color: #008080;"> 22</span> touchEvents.prototype =<span style="color: #000000;"> {
+</span><span style="color: #008080;"> 23</span> <span style="color: #000000;">    constructor: touchEvents,
+</span><span style="color: #008080;"> 24</span>     addEvent: <span style="color: #0000ff;">function</span><span style="color: #000000;"> () {
+</span><span style="color: #008080;"> 25</span>         <span style="color: #0000ff;">var</span> scope = <span style="color: #0000ff;">this</span><span style="color: #000000;">;
+</span><span style="color: #008080;"> 26</span>         <span style="color: #0000ff;">this</span>.startFn = <span style="color: #0000ff;">function</span><span style="color: #000000;"> (e) {
+</span><span style="color: #008080;"> 27</span> <span style="color: #000000;">            scope.touchStart.call(scope, e);
+</span><span style="color: #008080;"> 28</span> <span style="color: #000000;">        };
+</span><span style="color: #008080;"> 29</span>         <span style="color: #0000ff;">this</span>.moveFn = <span style="color: #0000ff;">function</span><span style="color: #000000;"> (e) {
+</span><span style="color: #008080;"> 30</span> <span style="color: #000000;">            scope.touchMove.call(scope, e);
+</span><span style="color: #008080;"> 31</span> <span style="color: #000000;">        };
+</span><span style="color: #008080;"> 32</span>         <span style="color: #0000ff;">this</span>.endFn = <span style="color: #0000ff;">function</span><span style="color: #000000;"> (e) {
+</span><span style="color: #008080;"> 33</span> <span style="color: #000000;">            scope.touchEnd.call(scope, e);
+</span><span style="color: #008080;"> 34</span> <span style="color: #000000;">        };
+</span><span style="color: #008080;"> 35</span>         <span style="color: #0000ff;">this</span>.el.addEventListener('touchstart', <span style="color: #0000ff;">this</span><span style="color: #000000;">.startFn);
+</span><span style="color: #008080;"> 36</span>         <span style="color: #008000;">//</span><span style="color: #008000;">此处可以换成这样</span>
+<span style="color: #008080;"> 37</span> <span style="color: #008000;"></span>        <span style="color: #008000;">//</span><span style="color: #008000;">            document.addEventListener('touchmove', this.touchMove);</span>
+<span style="color: #008080;"> 38</span> <span style="color: #008000;"></span>        <span style="color: #0000ff;">this</span>.el.addEventListener('touchmove', <span style="color: #0000ff;">this</span><span style="color: #000000;">.moveFn);
+</span><span style="color: #008080;"> 39</span>         <span style="color: #0000ff;">this</span>.el.addEventListener('touchend', <span style="color: #0000ff;">this</span><span style="color: #000000;">.endFn);
+</span><span style="color: #008080;"> 40</span> <span style="color: #000000;">    },
+</span><span style="color: #008080;"> 41</span>     removeEvent: <span style="color: #0000ff;">function</span><span style="color: #000000;"> () {
+</span><span style="color: #008080;"> 42</span>         <span style="color: #0000ff;">this</span>.el.removeEventListener('touchstart', <span style="color: #0000ff;">this</span><span style="color: #000000;">.touchStart);
+</span><span style="color: #008080;"> 43</span>         <span style="color: #0000ff;">this</span>.el.removeEventListener('touchmove', <span style="color: #0000ff;">this</span><span style="color: #000000;">.touchMove);
+</span><span style="color: #008080;"> 44</span>         <span style="color: #0000ff;">this</span>.el.removeEventListener('touchend', <span style="color: #0000ff;">this</span><span style="color: #000000;">.touchEnd);
+</span><span style="color: #008080;"> 45</span> <span style="color: #000000;">    },
+</span><span style="color: #008080;"> 46</span>     touchStart: <span style="color: #0000ff;">function</span><span style="color: #000000;"> (e) {
+</span><span style="color: #008080;"> 47</span>         <span style="color: #0000ff;">var</span> pos = e.changedTouches[0<span style="color: #000000;">];
+</span><span style="color: #008080;"> 48</span>         <span style="color: #0000ff;">this</span>.mouseData.sTime = <span style="color: #0000ff;">new</span><span style="color: #000000;"> Date().getTime();
+</span><span style="color: #008080;"> 49</span>         <span style="color: #0000ff;">this</span>.mouseData.sX =<span style="color: #000000;"> pos.pageX;
+</span><span style="color: #008080;"> 50</span>         <span style="color: #0000ff;">this</span>.mouseData.sY =<span style="color: #000000;"> pos.pageY;
+</span><span style="color: #008080;"> 51</span> <span style="color: #000000;">    },
+</span><span style="color: #008080;"> 52</span>     touchMove: <span style="color: #0000ff;">function</span><span style="color: #000000;"> (e) {
+</span><span style="color: #008080;"> 53</span> <span style="color: #000000;">        e.preventDefault();
+</span><span style="color: #008080;"> 54</span>         <span style="color: #0000ff;">return</span> <span style="color: #0000ff;">false</span><span style="color: #000000;">;
+</span><span style="color: #008080;"> 55</span> <span style="color: #000000;">    },
+</span><span style="color: #008080;"> 56</span>     touchEnd: <span style="color: #0000ff;">function</span><span style="color: #000000;"> (e) {
+</span><span style="color: #008080;"> 57</span>         <span style="color: #0000ff;">var</span> pos = e.changedTouches[0<span style="color: #000000;">];
+</span><span style="color: #008080;"> 58</span>         <span style="color: #0000ff;">this</span>.mouseData.eTime = <span style="color: #0000ff;">new</span><span style="color: #000000;"> Date().getTime();
+</span><span style="color: #008080;"> 59</span>         <span style="color: #0000ff;">this</span>.mouseData.eX =<span style="color: #000000;"> pos.pageX;
+</span><span style="color: #008080;"> 60</span>         <span style="color: #0000ff;">this</span>.mouseData.eY =<span style="color: #000000;"> pos.pageY;
+</span><span style="color: #008080;"> 61</span>         <span style="color: #0000ff;">this</span><span style="color: #000000;">.onTouchEnd();
+</span><span style="color: #008080;"> 62</span> <span style="color: #000000;">    },
+</span><span style="color: #008080;"> 63</span>     onTouchEnd: <span style="color: #0000ff;">function</span><span style="color: #000000;"> () {
+</span><span style="color: #008080;"> 64</span>         <span style="color: #0000ff;">if</span> (<span style="color: #0000ff;">this</span>.type == <span style="color: #0000ff;">this</span><span style="color: #000000;">._getDir()) {
+</span><span style="color: #008080;"> 65</span> 
+<span style="color: #008080;"> 66</span> <span style="color: #000000;">        }
+</span><span style="color: #008080;"> 67</span> <span style="color: #000000;">    },
+</span><span style="color: #008080;"> 68</span>     _getDir: <span style="color: #0000ff;">function</span><span style="color: #000000;"> () {
+</span><span style="color: #008080;"> 69</span>         <span style="color: #008000;">//</span><span style="color: #008000;">时间间隔，间隔小于100都认为是快速，大于400的认为是慢速</span>
+<span style="color: #008080;"> 70</span> <span style="color: #008000;"></span>        <span style="color: #0000ff;">var</span> timeLag = <span style="color: #0000ff;">this</span>.mouseData.eTime - <span style="color: #0000ff;">this</span><span style="color: #000000;">.mouseData.sTime;
+</span><span style="color: #008080;"> 71</span>         <span style="color: #0000ff;">var</span> dir = 'swipe'<span style="color: #000000;">;
+</span><span style="color: #008080;"> 72</span>         <span style="color: #0000ff;">if</span> (timeLag &gt; <span style="color: #0000ff;">this</span>.<span style="color: #0000ff;">long</span>) dir = 'longSwipe'<span style="color: #000000;">;
+</span><span style="color: #008080;"> 73</span>         <span style="color: #0000ff;">if</span> (<span style="color: #0000ff;">this</span>.mouseData.sX == <span style="color: #0000ff;">this</span>.mouseData.eX &amp;&amp; <span style="color: #0000ff;">this</span>.mouseData.sY == <span style="color: #0000ff;">this</span><span style="color: #000000;">.mouseData.eY) {
+</span><span style="color: #008080;"> 74</span>             dir = 'tap'<span style="color: #000000;">;
+</span><span style="color: #008080;"> 75</span>             <span style="color: #0000ff;">if</span> (timeLag &gt; <span style="color: #0000ff;">this</span>.<span style="color: #0000ff;">long</span>) dir = 'longTap'<span style="color: #000000;">;
+</span><span style="color: #008080;"> 76</span>         } <span style="color: #0000ff;">else</span><span style="color: #000000;"> {
+</span><span style="color: #008080;"> 77</span>             <span style="color: #0000ff;">if</span> (Math.abs(<span style="color: #0000ff;">this</span>.mouseData.eY - <span style="color: #0000ff;">this</span>.mouseData.sY) &gt; Math.abs(<span style="color: #0000ff;">this</span>.mouseData.eX - <span style="color: #0000ff;">this</span><span style="color: #000000;">.mouseData.sX)) {
+</span><span style="color: #008080;"> 78</span>                 dir = <span style="color: #0000ff;">this</span><span style="color: #000000;">._getUDDir(dir);
+</span><span style="color: #008080;"> 79</span>             } <span style="color: #0000ff;">else</span><span style="color: #000000;"> {
+</span><span style="color: #008080;"> 80</span>                 dir = 'swipe'<span style="color: #000000;">;
+</span><span style="color: #008080;"> 81</span>                 dir = <span style="color: #0000ff;">this</span><span style="color: #000000;">._getLRDir(dir);
+</span><span style="color: #008080;"> 82</span> <span style="color: #000000;">            }
+</span><span style="color: #008080;"> 83</span> <span style="color: #000000;">        }
+</span><span style="color: #008080;"> 84</span> <span style="color: #000000;">        log(dir);
+</span><span style="color: #008080;"> 85</span>         d.append($('&lt;div&gt;间隔：' + timeLag + ', 方向：' + dir + '&lt;/div&gt;'<span style="color: #000000;">));
+</span><span style="color: #008080;"> 86</span>         <span style="color: #0000ff;">return</span><span style="color: #000000;"> dir;
+</span><span style="color: #008080;"> 87</span> <span style="color: #000000;">    },
+</span><span style="color: #008080;"> 88</span>     <span style="color: #008000;">//</span><span style="color: #008000;">单独用于计算上下的</span>
+<span style="color: #008080;"> 89</span> <span style="color: #008000;"></span>    _getUDDir: <span style="color: #0000ff;">function</span><span style="color: #000000;"> (dir) {
+</span><span style="color: #008080;"> 90</span>         <span style="color: #0000ff;">if</span> (<span style="color: #0000ff;">this</span>.mouseData.eY - <span style="color: #0000ff;">this</span>.mouseData.sY &gt; 0) dir += 'Down'<span style="color: #000000;">;
+</span><span style="color: #008080;"> 91</span>         <span style="color: #0000ff;">if</span> (<span style="color: #0000ff;">this</span>.mouseData.eY - <span style="color: #0000ff;">this</span>.mouseData.sY &lt; 0) dir += 'Up'<span style="color: #000000;">;
+</span><span style="color: #008080;"> 92</span>         <span style="color: #0000ff;">return</span><span style="color: #000000;"> dir;
+</span><span style="color: #008080;"> 93</span> <span style="color: #000000;">    },
+</span><span style="color: #008080;"> 94</span>     <span style="color: #008000;">//</span><span style="color: #008000;">计算左右</span>
+<span style="color: #008080;"> 95</span> <span style="color: #008000;"></span>    _getLRDir: <span style="color: #0000ff;">function</span><span style="color: #000000;"> (dir) {
+</span><span style="color: #008080;"> 96</span>         <span style="color: #0000ff;">if</span> (<span style="color: #0000ff;">this</span>.mouseData.eX - <span style="color: #0000ff;">this</span>.mouseData.sX &gt; 0) dir += 'Right'<span style="color: #000000;">;
+</span><span style="color: #008080;"> 97</span>         <span style="color: #0000ff;">if</span> (<span style="color: #0000ff;">this</span>.mouseData.eX - <span style="color: #0000ff;">this</span>.mouseData.sX &lt; 0) dir += 'Left'<span style="color: #000000;">;
+</span><span style="color: #008080;"> 98</span>         <span style="color: #0000ff;">return</span><span style="color: #000000;"> dir;
+</span><span style="color: #008080;"> 99</span> <span style="color: #000000;">    }
+</span><span style="color: #008080;">100</span> <span style="color: #000000;">};
+</span><span style="color: #008080;">101</span> 
+<span style="color: #008080;">102</span> <span style="color: #0000ff;">new</span> touchEvents(d[0], 'swipe', <span style="color: #0000ff;">function</span><span style="color: #000000;"> () {
+</span><span style="color: #008080;">103</span> <span style="color: #008000;">//</span><span style="color: #008000;">        d.append($('&lt;div&gt;间隔：' + data.timeLag + ', 方向：' + data.dir + '&lt;/div&gt;'));</span>
+<span style="color: #008080;">104</span> <span style="color: #008000;"></span>});</pre>
+</div>
+<h3>测试地址</h3>
+<p><a href="34154238956159.jpg">34154238956159.jpg</a></p>
+<p><span style="color: #ff0000;"><strong>测试时请使用chrome，并且开启touch事件</strong></span></p>
+<h3>测试效果</h3>
+<p><iframe width="400" height="500" style="line-height: 1.5;" src="34154238956159.jpg"></iframe></p>
+<h3>完整可绑定事件代码</h3>
+<div class="cnblogs_code" onclick="cnblogs_code_show('10b656cf-d718-4100-8786-326e0fe8dd35')"><img src="43570758473519.gif" class="code_img_closed" id="code_img_closed_10b656cf-d718-4100-8786-326e0fe8dd35"><img src="16365178109279.gif" class="code_img_opened" id="code_img_opened_10b656cf-d718-4100-8786-326e0fe8dd35" onclick="cnblogs_code_hide('10b656cf-d718-4100-8786-326e0fe8dd35',event)" style="display: none;">
+<div id="cnblogs_code_open_10b656cf-d718-4100-8786-326e0fe8dd35" class="cnblogs_code_hide">
+<pre><span style="color: #008080;">  1</span> <span style="color: #0000ff;">&lt;!</span><span style="color: #ff00ff;">DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">  2</span> <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">html </span><span style="color: #ff0000;">xmlns</span><span style="color: #0000ff;">="http://www.w3.org/1999/xhtml"</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">  3</span> <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">head</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">  4</span>     <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">title</span><span style="color: #0000ff;">&gt;&lt;/</span><span style="color: #800000;">title</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">  5</span>     <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">meta </span><span style="color: #ff0000;">name</span><span style="color: #0000ff;">="viewport"</span><span style="color: #ff0000;"> content</span><span style="color: #0000ff;">="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no"</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">  6</span>     <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">script </span><span style="color: #ff0000;">id</span><span style="color: #0000ff;">="others_zepto_10rc1"</span><span style="color: #ff0000;"> type</span><span style="color: #0000ff;">="text/javascript"</span><span style="color: #ff0000;"> class</span><span style="color: #0000ff;">="library"</span><span style="color: #ff0000;"> src</span><span style="color: #0000ff;">="http://sandbox.runjs.cn/js/sandbox/other/zepto.min.js"</span><span style="color: #0000ff;">&gt;&lt;/</span><span style="color: #800000;">script</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">  7</span> <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">head</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">  8</span> <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">body</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">  9</span>     <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">div </span><span style="color: #ff0000;">id</span><span style="color: #0000ff;">="d"</span><span style="color: #ff0000;"> style</span><span style="color: #0000ff;">="position: absolute; top: 50px; left: 50px; width: 100px; height: 100px;
+</span><span style="color: #008080;"> 10</span> <span style="color: #0000ff;">        border: 1px solid black;"</span><span style="color: #0000ff;">&gt;</span><span style="color: #000000;">滑动我
+</span><span style="color: #008080;"> 11</span>     <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">div</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 12</span> <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">body</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 13</span> <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">script </span><span style="color: #ff0000;">type</span><span style="color: #0000ff;">="text/javascript"</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 14</span> <span style="background-color: #f5f5f5; color: #000000;"></span><span style="background-color: #f5f5f5; color: #0000ff;">var</span><span style="background-color: #f5f5f5; color: #000000;"> log </span><span style="background-color: #f5f5f5; color: #000000;">=</span> <span style="background-color: #f5f5f5; color: #0000ff;">function</span><span style="background-color: #f5f5f5; color: #000000;"> (msg) {
+</span><span style="color: #008080;"> 15</span> <span style="background-color: #f5f5f5; color: #000000;">    console.log(msg);
+</span><span style="color: #008080;"> 16</span> <span style="background-color: #f5f5f5; color: #000000;">};
+</span><span style="color: #008080;"> 17</span> <span style="background-color: #f5f5f5; color: #000000;"></span><span style="background-color: #f5f5f5; color: #0000ff;">var</span><span style="background-color: #f5f5f5; color: #000000;"> d </span><span style="background-color: #f5f5f5; color: #000000;">=</span><span style="background-color: #f5f5f5; color: #000000;"> $(</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">body</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">);
+</span><span style="color: #008080;"> 18</span> 
+<span style="color: #008080;"> 19</span> <span style="background-color: #f5f5f5; color: #000000;"></span><span style="background-color: #f5f5f5; color: #0000ff;">var</span><span style="background-color: #f5f5f5; color: #000000;"> touchEvents </span><span style="background-color: #f5f5f5; color: #000000;">=</span> <span style="background-color: #f5f5f5; color: #0000ff;">function</span><span style="background-color: #f5f5f5; color: #000000;"> (el, type, func) {
+</span><span style="color: #008080;"> 20</span>     <span style="background-color: #f5f5f5; color: #0000ff;">this</span><span style="background-color: #f5f5f5; color: #000000;">.</span><span style="background-color: #f5f5f5; color: #0000ff;">long</span> <span style="background-color: #f5f5f5; color: #000000;">=</span> <span style="background-color: #f5f5f5; color: #000000;">400</span><span style="background-color: #f5f5f5; color: #000000;">; </span><span style="background-color: #f5f5f5; color: #008000;">//</span><span style="background-color: #f5f5f5; color: #008000;">用于设置长点击阀值</span>
+<span style="color: #008080;"> 21</span> <span style="background-color: #f5f5f5; color: #008000;"></span>    <span style="background-color: #f5f5f5; color: #0000ff;">this</span><span style="background-color: #f5f5f5; color: #000000;">.el </span><span style="background-color: #f5f5f5; color: #000000;">=</span><span style="background-color: #f5f5f5; color: #000000;"> el </span><span style="background-color: #f5f5f5; color: #000000;">||</span><span style="background-color: #f5f5f5; color: #000000;"> document;
+</span><span style="color: #008080;"> 22</span>     <span style="background-color: #f5f5f5; color: #0000ff;">this</span><span style="background-color: #f5f5f5; color: #000000;">.func </span><span style="background-color: #f5f5f5; color: #000000;">=</span><span style="background-color: #f5f5f5; color: #000000;"> func </span><span style="background-color: #f5f5f5; color: #000000;">||</span> <span style="background-color: #f5f5f5; color: #0000ff;">function</span><span style="background-color: #f5f5f5; color: #000000;"> () { };
+</span><span style="color: #008080;"> 23</span>     <span style="background-color: #f5f5f5; color: #0000ff;">this</span><span style="background-color: #f5f5f5; color: #000000;">.type </span><span style="background-color: #f5f5f5; color: #000000;">=</span><span style="background-color: #f5f5f5; color: #000000;"> type </span><span style="background-color: #f5f5f5; color: #000000;">||</span> <span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">tap</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">;
+</span><span style="color: #008080;"> 24</span>     <span style="background-color: #f5f5f5; color: #0000ff;">this</span><span style="background-color: #f5f5f5; color: #000000;">.mouseData </span><span style="background-color: #f5f5f5; color: #000000;">=</span><span style="background-color: #f5f5f5; color: #000000;"> {
+</span><span style="color: #008080;"> 25</span> <span style="background-color: #f5f5f5; color: #000000;">        sTime: </span><span style="background-color: #f5f5f5; color: #000000;">0</span><span style="background-color: #f5f5f5; color: #000000;">,
+</span><span style="color: #008080;"> 26</span> <span style="background-color: #f5f5f5; color: #000000;">        eTime: </span><span style="background-color: #f5f5f5; color: #000000;">0</span><span style="background-color: #f5f5f5; color: #000000;">,
+</span><span style="color: #008080;"> 27</span> <span style="background-color: #f5f5f5; color: #000000;">        sX: </span><span style="background-color: #f5f5f5; color: #000000;">0</span><span style="background-color: #f5f5f5; color: #000000;">,
+</span><span style="color: #008080;"> 28</span> <span style="background-color: #f5f5f5; color: #000000;">        eX: </span><span style="background-color: #f5f5f5; color: #000000;">0</span><span style="background-color: #f5f5f5; color: #000000;">,
+</span><span style="color: #008080;"> 29</span> <span style="background-color: #f5f5f5; color: #000000;">        sY: </span><span style="background-color: #f5f5f5; color: #000000;">0</span><span style="background-color: #f5f5f5; color: #000000;">,
+</span><span style="color: #008080;"> 30</span> <span style="background-color: #f5f5f5; color: #000000;">        eY: </span><span style="background-color: #f5f5f5; color: #000000;">0</span>
+<span style="color: #008080;"> 31</span> <span style="background-color: #f5f5f5; color: #000000;">    };
+</span><span style="color: #008080;"> 32</span>     <span style="background-color: #f5f5f5; color: #0000ff;">this</span><span style="background-color: #f5f5f5; color: #000000;">.addEvent();
+</span><span style="color: #008080;"> 33</span> 
+<span style="color: #008080;"> 34</span> <span style="background-color: #f5f5f5; color: #000000;">};
+</span><span style="color: #008080;"> 35</span> <span style="background-color: #f5f5f5; color: #000000;">touchEvents.prototype </span><span style="background-color: #f5f5f5; color: #000000;">=</span><span style="background-color: #f5f5f5; color: #000000;"> {
+</span><span style="color: #008080;"> 36</span> <span style="background-color: #f5f5f5; color: #000000;">    constructor: touchEvents,
+</span><span style="color: #008080;"> 37</span> <span style="background-color: #f5f5f5; color: #000000;">    addEvent: </span><span style="background-color: #f5f5f5; color: #0000ff;">function</span><span style="background-color: #f5f5f5; color: #000000;"> () {
+</span><span style="color: #008080;"> 38</span>         <span style="background-color: #f5f5f5; color: #0000ff;">var</span><span style="background-color: #f5f5f5; color: #000000;"> scope </span><span style="background-color: #f5f5f5; color: #000000;">=</span> <span style="background-color: #f5f5f5; color: #0000ff;">this</span><span style="background-color: #f5f5f5; color: #000000;">;
+</span><span style="color: #008080;"> 39</span>         <span style="background-color: #f5f5f5; color: #0000ff;">this</span><span style="background-color: #f5f5f5; color: #000000;">.startFn </span><span style="background-color: #f5f5f5; color: #000000;">=</span> <span style="background-color: #f5f5f5; color: #0000ff;">function</span><span style="background-color: #f5f5f5; color: #000000;"> (e) {
+</span><span style="color: #008080;"> 40</span> <span style="background-color: #f5f5f5; color: #000000;">            scope.touchStart.call(scope, e);
+</span><span style="color: #008080;"> 41</span> <span style="background-color: #f5f5f5; color: #000000;">        };
+</span><span style="color: #008080;"> 42</span>         <span style="background-color: #f5f5f5; color: #0000ff;">this</span><span style="background-color: #f5f5f5; color: #000000;">.moveFn </span><span style="background-color: #f5f5f5; color: #000000;">=</span> <span style="background-color: #f5f5f5; color: #0000ff;">function</span><span style="background-color: #f5f5f5; color: #000000;"> (e) {
+</span><span style="color: #008080;"> 43</span> <span style="background-color: #f5f5f5; color: #000000;">            scope.touchMove.call(scope, e);
+</span><span style="color: #008080;"> 44</span> <span style="background-color: #f5f5f5; color: #000000;">        };
+</span><span style="color: #008080;"> 45</span>         <span style="background-color: #f5f5f5; color: #0000ff;">this</span><span style="background-color: #f5f5f5; color: #000000;">.endFn </span><span style="background-color: #f5f5f5; color: #000000;">=</span> <span style="background-color: #f5f5f5; color: #0000ff;">function</span><span style="background-color: #f5f5f5; color: #000000;"> (e) {
+</span><span style="color: #008080;"> 46</span> <span style="background-color: #f5f5f5; color: #000000;">            scope.touchEnd.call(scope, e);
+</span><span style="color: #008080;"> 47</span> <span style="background-color: #f5f5f5; color: #000000;">        };
+</span><span style="color: #008080;"> 48</span>         <span style="background-color: #f5f5f5; color: #0000ff;">this</span><span style="background-color: #f5f5f5; color: #000000;">.el.addEventListener(</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">touchstart</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">, </span><span style="background-color: #f5f5f5; color: #0000ff;">this</span><span style="background-color: #f5f5f5; color: #000000;">.startFn);
+</span><span style="color: #008080;"> 49</span>         <span style="background-color: #f5f5f5; color: #008000;">//</span><span style="background-color: #f5f5f5; color: #008000;">此处可以换成这样</span>
+<span style="color: #008080;"> 50</span> <span style="background-color: #f5f5f5; color: #008000;"></span>        <span style="background-color: #f5f5f5; color: #008000;">//</span><span style="background-color: #f5f5f5; color: #008000;">            document.addEventListener('touchmove', this.touchMove);</span>
+<span style="color: #008080;"> 51</span> <span style="background-color: #f5f5f5; color: #008000;"></span>        <span style="background-color: #f5f5f5; color: #0000ff;">this</span><span style="background-color: #f5f5f5; color: #000000;">.el.addEventListener(</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">touchmove</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">, </span><span style="background-color: #f5f5f5; color: #0000ff;">this</span><span style="background-color: #f5f5f5; color: #000000;">.moveFn);
+</span><span style="color: #008080;"> 52</span>         <span style="background-color: #f5f5f5; color: #0000ff;">this</span><span style="background-color: #f5f5f5; color: #000000;">.el.addEventListener(</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">touchend</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">, </span><span style="background-color: #f5f5f5; color: #0000ff;">this</span><span style="background-color: #f5f5f5; color: #000000;">.endFn);
+</span><span style="color: #008080;"> 53</span> <span style="background-color: #f5f5f5; color: #000000;">    },
+</span><span style="color: #008080;"> 54</span> <span style="background-color: #f5f5f5; color: #000000;">    removeEvent: </span><span style="background-color: #f5f5f5; color: #0000ff;">function</span><span style="background-color: #f5f5f5; color: #000000;"> () {
+</span><span style="color: #008080;"> 55</span>         <span style="background-color: #f5f5f5; color: #0000ff;">this</span><span style="background-color: #f5f5f5; color: #000000;">.el.removeEventListener(</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">touchstart</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">, </span><span style="background-color: #f5f5f5; color: #0000ff;">this</span><span style="background-color: #f5f5f5; color: #000000;">.touchStart);
+</span><span style="color: #008080;"> 56</span>         <span style="background-color: #f5f5f5; color: #0000ff;">this</span><span style="background-color: #f5f5f5; color: #000000;">.el.removeEventListener(</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">touchmove</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">, </span><span style="background-color: #f5f5f5; color: #0000ff;">this</span><span style="background-color: #f5f5f5; color: #000000;">.touchMove);
+</span><span style="color: #008080;"> 57</span>         <span style="background-color: #f5f5f5; color: #0000ff;">this</span><span style="background-color: #f5f5f5; color: #000000;">.el.removeEventListener(</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">touchend</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">, </span><span style="background-color: #f5f5f5; color: #0000ff;">this</span><span style="background-color: #f5f5f5; color: #000000;">.touchEnd);
+</span><span style="color: #008080;"> 58</span> <span style="background-color: #f5f5f5; color: #000000;">    },
+</span><span style="color: #008080;"> 59</span> <span style="background-color: #f5f5f5; color: #000000;">    touchStart: </span><span style="background-color: #f5f5f5; color: #0000ff;">function</span><span style="background-color: #f5f5f5; color: #000000;"> (e) {
+</span><span style="color: #008080;"> 60</span>         <span style="background-color: #f5f5f5; color: #0000ff;">var</span><span style="background-color: #f5f5f5; color: #000000;"> pos </span><span style="background-color: #f5f5f5; color: #000000;">=</span><span style="background-color: #f5f5f5; color: #000000;"> e.changedTouches[</span><span style="background-color: #f5f5f5; color: #000000;">0</span><span style="background-color: #f5f5f5; color: #000000;">];
+</span><span style="color: #008080;"> 61</span>         <span style="background-color: #f5f5f5; color: #0000ff;">this</span><span style="background-color: #f5f5f5; color: #000000;">.mouseData.sTime </span><span style="background-color: #f5f5f5; color: #000000;">=</span> <span style="background-color: #f5f5f5; color: #0000ff;">new</span><span style="background-color: #f5f5f5; color: #000000;"> Date().getTime();
+</span><span style="color: #008080;"> 62</span>         <span style="background-color: #f5f5f5; color: #0000ff;">this</span><span style="background-color: #f5f5f5; color: #000000;">.mouseData.sX </span><span style="background-color: #f5f5f5; color: #000000;">=</span><span style="background-color: #f5f5f5; color: #000000;"> pos.pageX;
+</span><span style="color: #008080;"> 63</span>         <span style="background-color: #f5f5f5; color: #0000ff;">this</span><span style="background-color: #f5f5f5; color: #000000;">.mouseData.sY </span><span style="background-color: #f5f5f5; color: #000000;">=</span><span style="background-color: #f5f5f5; color: #000000;"> pos.pageY;
+</span><span style="color: #008080;"> 64</span> <span style="background-color: #f5f5f5; color: #000000;">    },
+</span><span style="color: #008080;"> 65</span> <span style="background-color: #f5f5f5; color: #000000;">    touchMove: </span><span style="background-color: #f5f5f5; color: #0000ff;">function</span><span style="background-color: #f5f5f5; color: #000000;"> (e) {
+</span><span style="color: #008080;"> 66</span> <span style="background-color: #f5f5f5; color: #000000;">        e.preventDefault();
+</span><span style="color: #008080;"> 67</span>         <span style="background-color: #f5f5f5; color: #0000ff;">return</span> <span style="background-color: #f5f5f5; color: #0000ff;">false</span><span style="background-color: #f5f5f5; color: #000000;">;
+</span><span style="color: #008080;"> 68</span> <span style="background-color: #f5f5f5; color: #000000;">    },
+</span><span style="color: #008080;"> 69</span> <span style="background-color: #f5f5f5; color: #000000;">    touchEnd: </span><span style="background-color: #f5f5f5; color: #0000ff;">function</span><span style="background-color: #f5f5f5; color: #000000;"> (e) {
+</span><span style="color: #008080;"> 70</span>         <span style="background-color: #f5f5f5; color: #0000ff;">var</span><span style="background-color: #f5f5f5; color: #000000;"> pos </span><span style="background-color: #f5f5f5; color: #000000;">=</span><span style="background-color: #f5f5f5; color: #000000;"> e.changedTouches[</span><span style="background-color: #f5f5f5; color: #000000;">0</span><span style="background-color: #f5f5f5; color: #000000;">];
+</span><span style="color: #008080;"> 71</span>         <span style="background-color: #f5f5f5; color: #0000ff;">this</span><span style="background-color: #f5f5f5; color: #000000;">.mouseData.eTime </span><span style="background-color: #f5f5f5; color: #000000;">=</span> <span style="background-color: #f5f5f5; color: #0000ff;">new</span><span style="background-color: #f5f5f5; color: #000000;"> Date().getTime();
+</span><span style="color: #008080;"> 72</span>         <span style="background-color: #f5f5f5; color: #0000ff;">this</span><span style="background-color: #f5f5f5; color: #000000;">.mouseData.eX </span><span style="background-color: #f5f5f5; color: #000000;">=</span><span style="background-color: #f5f5f5; color: #000000;"> pos.pageX;
+</span><span style="color: #008080;"> 73</span>         <span style="background-color: #f5f5f5; color: #0000ff;">this</span><span style="background-color: #f5f5f5; color: #000000;">.mouseData.eY </span><span style="background-color: #f5f5f5; color: #000000;">=</span><span style="background-color: #f5f5f5; color: #000000;"> pos.pageY;
+</span><span style="color: #008080;"> 74</span>         <span style="background-color: #f5f5f5; color: #0000ff;">this</span><span style="background-color: #f5f5f5; color: #000000;">.onTouchEnd(e);
+</span><span style="color: #008080;"> 75</span> <span style="background-color: #f5f5f5; color: #000000;">    },
+</span><span style="color: #008080;"> 76</span> <span style="background-color: #f5f5f5; color: #000000;">    onTouchEnd: </span><span style="background-color: #f5f5f5; color: #0000ff;">function</span><span style="background-color: #f5f5f5; color: #000000;"> (e) {
+</span><span style="color: #008080;"> 77</span>         <span style="background-color: #f5f5f5; color: #0000ff;">if</span><span style="background-color: #f5f5f5; color: #000000;"> (</span><span style="background-color: #f5f5f5; color: #0000ff;">this</span><span style="background-color: #f5f5f5; color: #000000;">.type </span><span style="background-color: #f5f5f5; color: #000000;">==</span> <span style="background-color: #f5f5f5; color: #0000ff;">this</span><span style="background-color: #f5f5f5; color: #000000;">._getDir()) {
+</span><span style="color: #008080;"> 78</span>             <span style="background-color: #f5f5f5; color: #0000ff;">this</span><span style="background-color: #f5f5f5; color: #000000;">.func(e, </span><span style="background-color: #f5f5f5; color: #0000ff;">this</span><span style="background-color: #f5f5f5; color: #000000;">);
+</span><span style="color: #008080;"> 79</span> <span style="background-color: #f5f5f5; color: #000000;">        }
+</span><span style="color: #008080;"> 80</span> <span style="background-color: #f5f5f5; color: #000000;">    },
+</span><span style="color: #008080;"> 81</span> <span style="background-color: #f5f5f5; color: #000000;">    _getDir: </span><span style="background-color: #f5f5f5; color: #0000ff;">function</span><span style="background-color: #f5f5f5; color: #000000;"> () {
+</span><span style="color: #008080;"> 82</span>         <span style="background-color: #f5f5f5; color: #008000;">//</span><span style="background-color: #f5f5f5; color: #008000;">时间间隔，间隔小于100都认为是快速，大于400的认为是慢速</span>
+<span style="color: #008080;"> 83</span> <span style="background-color: #f5f5f5; color: #008000;"></span>        <span style="background-color: #f5f5f5; color: #0000ff;">var</span><span style="background-color: #f5f5f5; color: #000000;"> timeLag </span><span style="background-color: #f5f5f5; color: #000000;">=</span> <span style="background-color: #f5f5f5; color: #0000ff;">this</span><span style="background-color: #f5f5f5; color: #000000;">.mouseData.eTime </span><span style="background-color: #f5f5f5; color: #000000;">-</span> <span style="background-color: #f5f5f5; color: #0000ff;">this</span><span style="background-color: #f5f5f5; color: #000000;">.mouseData.sTime;
+</span><span style="color: #008080;"> 84</span>         <span style="background-color: #f5f5f5; color: #0000ff;">var</span><span style="background-color: #f5f5f5; color: #000000;"> dir </span><span style="background-color: #f5f5f5; color: #000000;">=</span> <span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">swipe</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">;
+</span><span style="color: #008080;"> 85</span>         <span style="background-color: #f5f5f5; color: #0000ff;">if</span><span style="background-color: #f5f5f5; color: #000000;"> (timeLag </span><span style="background-color: #f5f5f5; color: #000000;">&gt;</span> <span style="background-color: #f5f5f5; color: #0000ff;">this</span><span style="background-color: #f5f5f5; color: #000000;">.</span><span style="background-color: #f5f5f5; color: #0000ff;">long</span><span style="background-color: #f5f5f5; color: #000000;">) dir </span><span style="background-color: #f5f5f5; color: #000000;">=</span> <span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">longSwipe</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">;
+</span><span style="color: #008080;"> 86</span>         <span style="background-color: #f5f5f5; color: #0000ff;">if</span><span style="background-color: #f5f5f5; color: #000000;"> (</span><span style="background-color: #f5f5f5; color: #0000ff;">this</span><span style="background-color: #f5f5f5; color: #000000;">.mouseData.sX </span><span style="background-color: #f5f5f5; color: #000000;">==</span> <span style="background-color: #f5f5f5; color: #0000ff;">this</span><span style="background-color: #f5f5f5; color: #000000;">.mouseData.eX </span><span style="background-color: #f5f5f5; color: #000000;">&amp;&amp;</span> <span style="background-color: #f5f5f5; color: #0000ff;">this</span><span style="background-color: #f5f5f5; color: #000000;">.mouseData.sY </span><span style="background-color: #f5f5f5; color: #000000;">==</span> <span style="background-color: #f5f5f5; color: #0000ff;">this</span><span style="background-color: #f5f5f5; color: #000000;">.mouseData.eY) {
+</span><span style="color: #008080;"> 87</span> <span style="background-color: #f5f5f5; color: #000000;">            dir </span><span style="background-color: #f5f5f5; color: #000000;">=</span> <span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">tap</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">;
+</span><span style="color: #008080;"> 88</span>             <span style="background-color: #f5f5f5; color: #0000ff;">if</span><span style="background-color: #f5f5f5; color: #000000;"> (timeLag </span><span style="background-color: #f5f5f5; color: #000000;">&gt;</span> <span style="background-color: #f5f5f5; color: #0000ff;">this</span><span style="background-color: #f5f5f5; color: #000000;">.</span><span style="background-color: #f5f5f5; color: #0000ff;">long</span><span style="background-color: #f5f5f5; color: #000000;">) dir </span><span style="background-color: #f5f5f5; color: #000000;">=</span> <span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">longTap</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">;
+</span><span style="color: #008080;"> 89</span> <span style="background-color: #f5f5f5; color: #000000;">        } </span><span style="background-color: #f5f5f5; color: #0000ff;">else</span><span style="background-color: #f5f5f5; color: #000000;"> {
+</span><span style="color: #008080;"> 90</span>             <span style="background-color: #f5f5f5; color: #0000ff;">if</span><span style="background-color: #f5f5f5; color: #000000;"> (Math.abs(</span><span style="background-color: #f5f5f5; color: #0000ff;">this</span><span style="background-color: #f5f5f5; color: #000000;">.mouseData.eY </span><span style="background-color: #f5f5f5; color: #000000;">-</span> <span style="background-color: #f5f5f5; color: #0000ff;">this</span><span style="background-color: #f5f5f5; color: #000000;">.mouseData.sY) </span><span style="background-color: #f5f5f5; color: #000000;">&gt;</span><span style="background-color: #f5f5f5; color: #000000;"> Math.abs(</span><span style="background-color: #f5f5f5; color: #0000ff;">this</span><span style="background-color: #f5f5f5; color: #000000;">.mouseData.eX </span><span style="background-color: #f5f5f5; color: #000000;">-</span> <span style="background-color: #f5f5f5; color: #0000ff;">this</span><span style="background-color: #f5f5f5; color: #000000;">.mouseData.sX)) {
+</span><span style="color: #008080;"> 91</span> <span style="background-color: #f5f5f5; color: #000000;">                dir </span><span style="background-color: #f5f5f5; color: #000000;">=</span> <span style="background-color: #f5f5f5; color: #0000ff;">this</span><span style="background-color: #f5f5f5; color: #000000;">._getUDDir(dir);
+</span><span style="color: #008080;"> 92</span> <span style="background-color: #f5f5f5; color: #000000;">            } </span><span style="background-color: #f5f5f5; color: #0000ff;">else</span><span style="background-color: #f5f5f5; color: #000000;"> {
+</span><span style="color: #008080;"> 93</span> <span style="background-color: #f5f5f5; color: #000000;">                dir </span><span style="background-color: #f5f5f5; color: #000000;">=</span> <span style="background-color: #f5f5f5; color: #0000ff;">this</span><span style="background-color: #f5f5f5; color: #000000;">._getLRDir(dir);
+</span><span style="color: #008080;"> 94</span> <span style="background-color: #f5f5f5; color: #000000;">            }
+</span><span style="color: #008080;"> 95</span> <span style="background-color: #f5f5f5; color: #000000;">        }
+</span><span style="color: #008080;"> 96</span> <span style="background-color: #f5f5f5; color: #000000;">        log(dir);
+</span><span style="color: #008080;"> 97</span> <span style="background-color: #f5f5f5; color: #000000;">        d.append($(</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">&lt;div&gt;间隔：</span><span style="background-color: #f5f5f5; color: #000000;">'</span> <span style="background-color: #f5f5f5; color: #000000;">+</span><span style="background-color: #f5f5f5; color: #000000;"> timeLag </span><span style="background-color: #f5f5f5; color: #000000;">+</span> <span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">, 方向：</span><span style="background-color: #f5f5f5; color: #000000;">'</span> <span style="background-color: #f5f5f5; color: #000000;">+</span><span style="background-color: #f5f5f5; color: #000000;"> dir </span><span style="background-color: #f5f5f5; color: #000000;">+</span> <span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">&lt;/div&gt;</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">));
+</span><span style="color: #008080;"> 98</span>         <span style="background-color: #f5f5f5; color: #0000ff;">return</span><span style="background-color: #f5f5f5; color: #000000;"> dir;
+</span><span style="color: #008080;"> 99</span> <span style="background-color: #f5f5f5; color: #000000;">    },
+</span><span style="color: #008080;">100</span>     <span style="background-color: #f5f5f5; color: #008000;">//</span><span style="background-color: #f5f5f5; color: #008000;">单独用于计算上下的</span>
+<span style="color: #008080;">101</span> <span style="background-color: #f5f5f5; color: #008000;"></span><span style="background-color: #f5f5f5; color: #000000;">    _getUDDir: </span><span style="background-color: #f5f5f5; color: #0000ff;">function</span><span style="background-color: #f5f5f5; color: #000000;"> (dir) {
+</span><span style="color: #008080;">102</span>         <span style="background-color: #f5f5f5; color: #0000ff;">if</span><span style="background-color: #f5f5f5; color: #000000;"> (</span><span style="background-color: #f5f5f5; color: #0000ff;">this</span><span style="background-color: #f5f5f5; color: #000000;">.mouseData.eY </span><span style="background-color: #f5f5f5; color: #000000;">-</span> <span style="background-color: #f5f5f5; color: #0000ff;">this</span><span style="background-color: #f5f5f5; color: #000000;">.mouseData.sY </span><span style="background-color: #f5f5f5; color: #000000;">&gt;</span> <span style="background-color: #f5f5f5; color: #000000;">0</span><span style="background-color: #f5f5f5; color: #000000;">) dir </span><span style="background-color: #f5f5f5; color: #000000;">+=</span> <span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">Down</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">;
+</span><span style="color: #008080;">103</span>         <span style="background-color: #f5f5f5; color: #0000ff;">if</span><span style="background-color: #f5f5f5; color: #000000;"> (</span><span style="background-color: #f5f5f5; color: #0000ff;">this</span><span style="background-color: #f5f5f5; color: #000000;">.mouseData.eY </span><span style="background-color: #f5f5f5; color: #000000;">-</span> <span style="background-color: #f5f5f5; color: #0000ff;">this</span><span style="background-color: #f5f5f5; color: #000000;">.mouseData.sY </span><span style="background-color: #f5f5f5; color: #000000;">&lt;</span> <span style="background-color: #f5f5f5; color: #000000;">0</span><span style="background-color: #f5f5f5; color: #000000;">) dir </span><span style="background-color: #f5f5f5; color: #000000;">+=</span> <span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">Up</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">;
+</span><span style="color: #008080;">104</span>         <span style="background-color: #f5f5f5; color: #0000ff;">return</span><span style="background-color: #f5f5f5; color: #000000;"> dir;
+</span><span style="color: #008080;">105</span> <span style="background-color: #f5f5f5; color: #000000;">    },
+</span><span style="color: #008080;">106</span>     <span style="background-color: #f5f5f5; color: #008000;">//</span><span style="background-color: #f5f5f5; color: #008000;">计算左右</span>
+<span style="color: #008080;">107</span> <span style="background-color: #f5f5f5; color: #008000;"></span><span style="background-color: #f5f5f5; color: #000000;">    _getLRDir: </span><span style="background-color: #f5f5f5; color: #0000ff;">function</span><span style="background-color: #f5f5f5; color: #000000;"> (dir) {
+</span><span style="color: #008080;">108</span>         <span style="background-color: #f5f5f5; color: #0000ff;">if</span><span style="background-color: #f5f5f5; color: #000000;"> (</span><span style="background-color: #f5f5f5; color: #0000ff;">this</span><span style="background-color: #f5f5f5; color: #000000;">.mouseData.eX </span><span style="background-color: #f5f5f5; color: #000000;">-</span> <span style="background-color: #f5f5f5; color: #0000ff;">this</span><span style="background-color: #f5f5f5; color: #000000;">.mouseData.sX </span><span style="background-color: #f5f5f5; color: #000000;">&gt;</span> <span style="background-color: #f5f5f5; color: #000000;">0</span><span style="background-color: #f5f5f5; color: #000000;">) dir </span><span style="background-color: #f5f5f5; color: #000000;">+=</span> <span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">Right</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">;
+</span><span style="color: #008080;">109</span>         <span style="background-color: #f5f5f5; color: #0000ff;">if</span><span style="background-color: #f5f5f5; color: #000000;"> (</span><span style="background-color: #f5f5f5; color: #0000ff;">this</span><span style="background-color: #f5f5f5; color: #000000;">.mouseData.eX </span><span style="background-color: #f5f5f5; color: #000000;">-</span> <span style="background-color: #f5f5f5; color: #0000ff;">this</span><span style="background-color: #f5f5f5; color: #000000;">.mouseData.sX </span><span style="background-color: #f5f5f5; color: #000000;">&lt;</span> <span style="background-color: #f5f5f5; color: #000000;">0</span><span style="background-color: #f5f5f5; color: #000000;">) dir </span><span style="background-color: #f5f5f5; color: #000000;">+=</span> <span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">Left</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">;
+</span><span style="color: #008080;">110</span>         <span style="background-color: #f5f5f5; color: #0000ff;">return</span><span style="background-color: #f5f5f5; color: #000000;"> dir;
+</span><span style="color: #008080;">111</span> <span style="background-color: #f5f5f5; color: #000000;">    }
+</span><span style="color: #008080;">112</span> <span style="background-color: #f5f5f5; color: #000000;">};
+</span><span style="color: #008080;">113</span> 
+<span style="color: #008080;">114</span> <span style="background-color: #f5f5f5; color: #000000;"></span><span style="background-color: #f5f5f5; color: #0000ff;">new</span><span style="background-color: #f5f5f5; color: #000000;"> touchEvents(d[</span><span style="background-color: #f5f5f5; color: #000000;">0</span><span style="background-color: #f5f5f5; color: #000000;">], </span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">tap</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">, </span><span style="background-color: #f5f5f5; color: #0000ff;">function</span><span style="background-color: #f5f5f5; color: #000000;"> (e) {
+</span><span style="color: #008080;">115</span> <span style="background-color: #f5f5f5; color: #000000;">    log(arguments);
+</span><span style="color: #008080;">116</span> <span style="background-color: #f5f5f5; color: #000000;">});
+</span><span style="color: #008080;">117</span> 
+<span style="color: #008080;">118</span> <span style="background-color: #f5f5f5; color: #000000;"></span><span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">script</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">119</span> <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">html</span><span style="color: #0000ff;">&gt;</span></pre>
+</div>
+<span class="cnblogs_code_collapse">View Code </span></div>
+<p>这个代码基本可用了，但是使用上不是很方便，我们这里就不关注了，下面我们来看看zepto的代码和兼容问题</p>
+<h1>zepto的touch与兼容</h1>
+<p>先上zepto源码，一看就知道我写的有多不行啦！</p>
+<div class="cnblogs_code" onclick="cnblogs_code_show('8f584fe6-d0cd-441c-8980-0f76fa9abe32')"><img src="43570758473519.gif" class="code_img_closed" id="code_img_closed_8f584fe6-d0cd-441c-8980-0f76fa9abe32"><img src="16365178109279.gif" class="code_img_opened" id="code_img_opened_8f584fe6-d0cd-441c-8980-0f76fa9abe32" onclick="cnblogs_code_hide('8f584fe6-d0cd-441c-8980-0f76fa9abe32',event)" style="display: none;">
+<div id="cnblogs_code_open_8f584fe6-d0cd-441c-8980-0f76fa9abe32" class="cnblogs_code_hide">
+<pre><span style="color: #008080;">  1</span> (<span style="color: #0000ff;">function</span><span style="color: #000000;"> ($) {
+</span><span style="color: #008080;">  2</span>     <span style="color: #0000ff;">var</span> touch =<span style="color: #000000;"> {},
+</span><span style="color: #008080;">  3</span> <span style="color: #000000;">    touchTimeout, tapTimeout, swipeTimeout,
+</span><span style="color: #008080;">  4</span>     longTapDelay = 750<span style="color: #000000;">, longTapTimeout
+</span><span style="color: #008080;">  5</span> 
+<span style="color: #008080;">  6</span>     <span style="color: #0000ff;">function</span><span style="color: #000000;"> parentIfText(node) {
+</span><span style="color: #008080;">  7</span>         <span style="color: #0000ff;">return</span> 'tagName' <span style="color: #0000ff;">in</span> node ?<span style="color: #000000;"> node : node.parentNode
+</span><span style="color: #008080;">  8</span> <span style="color: #000000;">    }
+</span><span style="color: #008080;">  9</span> 
+<span style="color: #008080;"> 10</span>     <span style="color: #0000ff;">function</span><span style="color: #000000;"> swipeDirection(x1, x2, y1, y2) {
+</span><span style="color: #008080;"> 11</span>         <span style="color: #0000ff;">var</span> xDelta = Math.abs(x1 - x2), yDelta = Math.abs(y1 -<span style="color: #000000;"> y2)
+</span><span style="color: #008080;"> 12</span>         <span style="color: #0000ff;">return</span> xDelta &gt;= yDelta ? (x1 - x2 &gt; 0 ? 'Left' : 'Right') : (y1 - y2 &gt; 0 ? 'Up' : 'Down'<span style="color: #000000;">)
+</span><span style="color: #008080;"> 13</span> <span style="color: #000000;">    }
+</span><span style="color: #008080;"> 14</span> 
+<span style="color: #008080;"> 15</span>     <span style="color: #0000ff;">function</span><span style="color: #000000;"> longTap() {
+</span><span style="color: #008080;"> 16</span>         longTapTimeout = <span style="color: #0000ff;">null</span>
+<span style="color: #008080;"> 17</span>         <span style="color: #0000ff;">if</span><span style="color: #000000;"> (touch.last) {
+</span><span style="color: #008080;"> 18</span>             touch.el.trigger('longTap'<span style="color: #000000;">)
+</span><span style="color: #008080;"> 19</span>             touch =<span style="color: #000000;"> {}
+</span><span style="color: #008080;"> 20</span> <span style="color: #000000;">        }
+</span><span style="color: #008080;"> 21</span> <span style="color: #000000;">    }
+</span><span style="color: #008080;"> 22</span> 
+<span style="color: #008080;"> 23</span>     <span style="color: #0000ff;">function</span><span style="color: #000000;"> cancelLongTap() {
+</span><span style="color: #008080;"> 24</span>         <span style="color: #0000ff;">if</span><span style="color: #000000;"> (longTapTimeout) clearTimeout(longTapTimeout)
+</span><span style="color: #008080;"> 25</span>         longTapTimeout = <span style="color: #0000ff;">null</span>
+<span style="color: #008080;"> 26</span> <span style="color: #000000;">    }
+</span><span style="color: #008080;"> 27</span> 
+<span style="color: #008080;"> 28</span>     <span style="color: #0000ff;">function</span><span style="color: #000000;"> cancelAll() {
+</span><span style="color: #008080;"> 29</span>         <span style="color: #0000ff;">if</span><span style="color: #000000;"> (touchTimeout) clearTimeout(touchTimeout)
+</span><span style="color: #008080;"> 30</span>         <span style="color: #0000ff;">if</span><span style="color: #000000;"> (tapTimeout) clearTimeout(tapTimeout)
+</span><span style="color: #008080;"> 31</span>         <span style="color: #0000ff;">if</span><span style="color: #000000;"> (swipeTimeout) clearTimeout(swipeTimeout)
+</span><span style="color: #008080;"> 32</span>         <span style="color: #0000ff;">if</span><span style="color: #000000;"> (longTapTimeout) clearTimeout(longTapTimeout)
+</span><span style="color: #008080;"> 33</span>         touchTimeout = tapTimeout = swipeTimeout = longTapTimeout = <span style="color: #0000ff;">null</span>
+<span style="color: #008080;"> 34</span>         touch =<span style="color: #000000;"> {}
+</span><span style="color: #008080;"> 35</span> <span style="color: #000000;">    }
+</span><span style="color: #008080;"> 36</span> 
+<span style="color: #008080;"> 37</span>     $(document).ready(<span style="color: #0000ff;">function</span><span style="color: #000000;"> () {
+</span><span style="color: #008080;"> 38</span>         <span style="color: #0000ff;">var</span><span style="color: #000000;"> now, delta
+</span><span style="color: #008080;"> 39</span> 
+<span style="color: #008080;"> 40</span> <span style="color: #000000;">        $(document.body)
+</span><span style="color: #008080;"> 41</span>       .bind('touchstart', <span style="color: #0000ff;">function</span><span style="color: #000000;"> (e) {
+</span><span style="color: #008080;"> 42</span>           now =<span style="color: #000000;"> Date.now()
+</span><span style="color: #008080;"> 43</span>           delta = now - (touch.last ||<span style="color: #000000;"> now)
+</span><span style="color: #008080;"> 44</span>           touch.el = $(parentIfText(e.touches[0<span style="color: #000000;">].target))
+</span><span style="color: #008080;"> 45</span>           touchTimeout &amp;&amp;<span style="color: #000000;"> clearTimeout(touchTimeout)
+</span><span style="color: #008080;"> 46</span>           touch.x1 = e.touches[0<span style="color: #000000;">].pageX
+</span><span style="color: #008080;"> 47</span>           touch.y1 = e.touches[0<span style="color: #000000;">].pageY
+</span><span style="color: #008080;"> 48</span>           <span style="color: #0000ff;">if</span> (delta &gt; 0 &amp;&amp; delta &lt;= 250) touch.isDoubleTap = <span style="color: #0000ff;">true</span>
+<span style="color: #008080;"> 49</span>           touch.last =<span style="color: #000000;"> now
+</span><span style="color: #008080;"> 50</span>           longTapTimeout =<span style="color: #000000;"> setTimeout(longTap, longTapDelay)
+</span><span style="color: #008080;"> 51</span> <span style="color: #000000;">      })
+</span><span style="color: #008080;"> 52</span>       .bind('touchmove', <span style="color: #0000ff;">function</span><span style="color: #000000;"> (e) {
+</span><span style="color: #008080;"> 53</span> <span style="color: #000000;">          cancelLongTap()
+</span><span style="color: #008080;"> 54</span>           touch.x2 = e.touches[0<span style="color: #000000;">].pageX
+</span><span style="color: #008080;"> 55</span>           touch.y2 = e.touches[0<span style="color: #000000;">].pageY
+</span><span style="color: #008080;"> 56</span>           <span style="color: #0000ff;">if</span> (Math.abs(touch.x1 - touch.x2) &gt; 10<span style="color: #000000;">)
+</span><span style="color: #008080;"> 57</span> <span style="color: #000000;">              e.preventDefault()
+</span><span style="color: #008080;"> 58</span> <span style="color: #000000;">      })
+</span><span style="color: #008080;"> 59</span>       .bind('touchend', <span style="color: #0000ff;">function</span><span style="color: #000000;"> (e) {
+</span><span style="color: #008080;"> 60</span> <span style="color: #000000;">          cancelLongTap()
+</span><span style="color: #008080;"> 61</span> 
+<span style="color: #008080;"> 62</span>           <span style="color: #008000;">//</span><span style="color: #008000;"> swipe</span>
+<span style="color: #008080;"> 63</span> <span style="color: #008000;"></span>          <span style="color: #0000ff;">if</span> ((touch.x2 &amp;&amp; Math.abs(touch.x1 - touch.x2) &gt; 30) ||
+<span style="color: #008080;"> 64</span>             (touch.y2 &amp;&amp; Math.abs(touch.y1 - touch.y2) &gt; 30<span style="color: #000000;">))
+</span><span style="color: #008080;"> 65</span> 
+<span style="color: #008080;"> 66</span>               swipeTimeout = setTimeout(<span style="color: #0000ff;">function</span><span style="color: #000000;"> () {
+</span><span style="color: #008080;"> 67</span>                   touch.el.trigger('swipe'<span style="color: #000000;">)
+</span><span style="color: #008080;"> 68</span>                   touch.el.trigger('swipe' +<span style="color: #000000;"> (swipeDirection(touch.x1, touch.x2, touch.y1, touch.y2)))
+</span><span style="color: #008080;"> 69</span>                   touch =<span style="color: #000000;"> {}
+</span><span style="color: #008080;"> 70</span>               }, 0<span style="color: #000000;">)
+</span><span style="color: #008080;"> 71</span> 
+<span style="color: #008080;"> 72</span>           <span style="color: #008000;">//</span><span style="color: #008000;"> normal tap</span>
+<span style="color: #008080;"> 73</span> <span style="color: #008000;"></span>          <span style="color: #0000ff;">else</span> <span style="color: #0000ff;">if</span> ('last' <span style="color: #0000ff;">in</span><span style="color: #000000;"> touch)
+</span><span style="color: #008080;"> 74</span> 
+<span style="color: #008080;"> 75</span>           <span style="color: #008000;">//</span><span style="color: #008000;"> delay by one tick so we can cancel the 'tap' event if 'scroll' fires</span>
+<span style="color: #008080;"> 76</span> <span style="color: #008000;"></span>          <span style="color: #008000;">//</span><span style="color: #008000;"> ('tap' fires before 'scroll')</span>
+<span style="color: #008080;"> 77</span> <span style="color: #008000;"></span>              tapTimeout = setTimeout(<span style="color: #0000ff;">function</span><span style="color: #000000;"> () {
+</span><span style="color: #008080;"> 78</span> 
+<span style="color: #008080;"> 79</span>                   <span style="color: #008000;">//</span><span style="color: #008000;"> trigger universal 'tap' with the option to cancelTouch()</span>
+<span style="color: #008080;"> 80</span> <span style="color: #008000;"></span>                  <span style="color: #008000;">//</span><span style="color: #008000;"> (cancelTouch cancels processing of single vs double taps for faster 'tap' response)</span>
+<span style="color: #008080;"> 81</span> <span style="color: #008000;"></span>                  <span style="color: #0000ff;">var</span> event = $.Event('tap'<span style="color: #000000;">)
+</span><span style="color: #008080;"> 82</span>                   event.cancelTouch =<span style="color: #000000;"> cancelAll
+</span><span style="color: #008080;"> 83</span> <span style="color: #000000;">                  touch.el.trigger(event)
+</span><span style="color: #008080;"> 84</span> 
+<span style="color: #008080;"> 85</span>                   <span style="color: #008000;">//</span><span style="color: #008000;"> trigger double tap immediately</span>
+<span style="color: #008080;"> 86</span> <span style="color: #008000;"></span>                  <span style="color: #0000ff;">if</span><span style="color: #000000;"> (touch.isDoubleTap) {
+</span><span style="color: #008080;"> 87</span>                       touch.el.trigger('doubleTap'<span style="color: #000000;">)
+</span><span style="color: #008080;"> 88</span>                       touch =<span style="color: #000000;"> {}
+</span><span style="color: #008080;"> 89</span> <span style="color: #000000;">                  }
+</span><span style="color: #008080;"> 90</span> 
+<span style="color: #008080;"> 91</span>                   <span style="color: #008000;">//</span><span style="color: #008000;"> trigger single tap after 250ms of inactivity</span>
+<span style="color: #008080;"> 92</span> <span style="color: #008000;"></span>                  <span style="color: #0000ff;">else</span><span style="color: #000000;"> {
+</span><span style="color: #008080;"> 93</span>                       touchTimeout = setTimeout(<span style="color: #0000ff;">function</span><span style="color: #000000;"> () {
+</span><span style="color: #008080;"> 94</span>                           touchTimeout = <span style="color: #0000ff;">null</span>
+<span style="color: #008080;"> 95</span>                           touch.el.trigger('singleTap'<span style="color: #000000;">)
+</span><span style="color: #008080;"> 96</span>                           touch =<span style="color: #000000;"> {}
+</span><span style="color: #008080;"> 97</span>                       }, 250<span style="color: #000000;">)
+</span><span style="color: #008080;"> 98</span> <span style="color: #000000;">                  }
+</span><span style="color: #008080;"> 99</span> 
+<span style="color: #008080;">100</span>               }, 0<span style="color: #000000;">)
+</span><span style="color: #008080;">101</span> 
+<span style="color: #008080;">102</span> <span style="color: #000000;">      })
+</span><span style="color: #008080;">103</span>       .bind('touchcancel'<span style="color: #000000;">, cancelAll)
+</span><span style="color: #008080;">104</span> 
+<span style="color: #008080;">105</span>         $(window).bind('scroll'<span style="color: #000000;">, cancelAll)
+</span><span style="color: #008080;">106</span> <span style="color: #000000;">    })
+</span><span style="color: #008080;">107</span> 
+<span style="color: #008080;">108</span>   ; ['swipe', 'swipeLeft', 'swipeRight', 'swipeUp', 'swipeDown', 'doubleTap', 'tap', 'singleTap', 'longTap'].forEach(<span style="color: #0000ff;">function</span><span style="color: #000000;"> (m) {
+</span><span style="color: #008080;">109</span>       $.fn[m] = <span style="color: #0000ff;">function</span> (callback) { <span style="color: #0000ff;">return</span> <span style="color: #0000ff;">this</span><span style="color: #000000;">.bind(m, callback) }
+</span><span style="color: #008080;">110</span> <span style="color: #000000;">  })
+</span><span style="color: #008080;">111</span> })(Zepto)</pre>
+</div>
+<span class="cnblogs_code_collapse">View Code </span></div>
+<p>touch对象与上面mouseData功效相同，记录一些属性<br>delta 用于记录两次点击的间隔，间隔短就是双击<br>swipeDirection 函数与_getDir _getUDDir _getLRDir 功能相似，只不过代码更为简练，并且真正的私有化了<br>63行代码开始，若是代码移动过便是划屏，否则就是点击，这点我也没考虑到<br>73行，否则就应该是点击，这里并且判断是否存在结束时间，代码比较健壮，做了双击或者快速点击的判断</p>
+<h2>开始兼容</h2>
+<p>zepto代码我自然没有资格去评说，现在我们来看看他的兼容问题</p>
+<p>PS：我这里很水，不太敢动源码，就加一个tap判断，因为也只是用了这个，具体大动手脚的事情，我们后面再做</p>
+<p>这样做事因为，我们的项目主要是把click改成了tap事件，导致页面很多功能不可用</p>
+<div class="cnblogs_code">
+<pre><span style="color: #008080;">1</span> ['swipe', 'swipeLeft', 'swipeRight', 'swipeUp', 'swipeDown', 'doubleTap', 'tap', 'singleTap', 'longTap'].forEach(<span style="color: #0000ff;">function</span><span style="color: #000000;"> (m) {
+</span><span style="color: #008080;">2</span>   <span style="color: #008000;">//</span><span style="color: #008000;">兼容性方案处理，以及后期资源清理，如果为假时候，就触发点击事件</span>
+<span style="color: #008080;">3</span> <span style="color: #008000;"></span>    <span style="color: #0000ff;">var</span> isTouch = 'ontouchstart' <span style="color: #0000ff;">in</span><span style="color: #000000;"> document.documentElement;
+</span><span style="color: #008080;">4</span>     <span style="color: #0000ff;">if</span>(m === 'tap' &amp;&amp; isTouch === <span style="color: #0000ff;">false</span><span style="color: #000000;">) {
+</span><span style="color: #008080;">5</span>         $.fn[m] = <span style="color: #0000ff;">function</span> (callback) { <span style="color: #0000ff;">return</span> <span style="color: #0000ff;">this</span>.bind('click'<span style="color: #000000;">, callback) }
+</span><span style="color: #008080;">6</span>     } <span style="color: #0000ff;">else</span><span style="color: #000000;"> {
+</span><span style="color: #008080;">7</span>         $.fn[m] = <span style="color: #0000ff;">function</span> (callback) { <span style="color: #0000ff;">return</span> <span style="color: #0000ff;">this</span><span style="color: #000000;">.bind(m, callback) }
+</span><span style="color: #008080;">8</span> <span style="color: #000000;">    }
+</span><span style="color: #008080;">9</span>   })</pre>
+</div>
+<p>我就干了这么一点点事情......</p>
+<h1>待续</h1>
+<p>今天耗时过长，暂时到这里，对鼠标等操作，对event参数的兼容我们后面点再看看</p>
+                </div>
+
+                <div class='span3 sidebar'>
+                    <h2>导航栏</h2>
+                    <ul class="nav nav-tabs nav-stacked">
+                             				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/javascriptzdyxhxzsdyjxyzyddf/index.html">javascript中的一些核心知识点以及需要注意的地方</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/[zd]webappdyhzlyzydqdyhdpyjlkkb/index.html">[置顶]【webapp的优化整理】要做移动前端优化的朋友进来看看吧</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/[zd]yddjrwtyjjavascriptsjjzxjsjydjr/index.html">[置顶]【移动端兼容问题研究】javascript事件机制详解（涉及移动兼容）</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/gruntzhb30fzxhsygruntdbqddm/index.html">【grunt整合版】30分钟学会使用grunt打包前端代码</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/gruntdyd30fzxhsygruntdbqddm/index.html">【grunt第一弹】30分钟学会使用grunt打包前端代码</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/gruntdsdgruntzqdsjxmzdyy/index.html">【grunt第三弹】grunt在前端实际项目中的应用</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/gruntded30fzxhsygruntdbqddm02/index.html">【grunt第二弹】30分钟学会使用grunt打包前端代码（02）</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/IScrollsrxxtpyddhadlqs/index.html">【IScroll深入学习】突破移动端黑暗的利器（上）</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/IScrollsrxxjjIScrollynzz/index.html">【IScroll深入学习】解决IScroll疑难杂症</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/iScrollymxx00mniScroll/index.html">【iScroll源码学习00】模拟iScroll</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/iScrollymxx01zbjd/index.html">【iScroll源码学习01】准备阶段</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/iScrollymxx02fjiScrollsghxsjd/index.html">【iScroll源码学习02】分解iScroll三个核心事件点</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/iScrollymxx03iScrollsjjzygdtdsx/index.html">【iScroll源码学习03】iScroll事件机制与滚动条的实现</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/iScrollymxx04flIScrollhx/index.html">【iScroll源码学习04】分离IScroll核心</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/javascriptpxdytyyjc/index.html">【javascript培训第一天】语言基础</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/javascriptpxdstcybl/index.html">【javascript培训第三天】查遗补漏</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/javascriptpxdetDOMyBOM/index.html">【javascript培训第二天】DOM与BOM</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/javascriptjzdsk01mkhbc/index.html">【javascript激增的思考01】模块化编程</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/javascriptjzdsk02mkhyMVC/index.html">【javascript激增的思考02】模块化与MVC</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/javascriptjzdsk03MVVMyKnockout/index.html">【javascript激增的思考03】MVVM与Knockout</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/javascriptjzdsk04MVCyBackbonejs(beta)/index.html">【javascript激增的思考04】MVC与Backbonejs(beta)</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/javascriptmxdxzlrwmyqltkdzb01/index.html">【javascript面向对象之路】让我们一起来坦克大战吧01</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/NodeJSxxbj04xwfbxt/index.html">【NodeJS学习笔记04】新闻发布系统</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/requireJSymxx01ljzgrequireJSdjg/index.html">【requireJS源码学习01】了解整个requireJS的结构</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/requireJSymxx02datamainjzdsx/index.html">【requireJS源码学习02】datamain加载的实现</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/requireJSymxx03xjrequireJSdjzlc/index.html">【requireJS源码学习03】细究requireJS的加载流程</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/UIcjkfygjdrlcjs/index.html">【UI插件】开发一个简单日历插件（上）</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/UIcjjddrlcjxxxMVCsx/index.html">【UI插件】简单的日历插件（下）——学习MVC思想</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/zeptoxxbj01hxff$()/index.html">【zepto学习笔记01】核心方法$()</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/zeptoxxbj01hxff$()b/index.html">【zepto学习笔记01】核心方法$()（补）</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/zeptoxxbj02lsd/index.html">【zepto学习笔记02】零碎点</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/zeptoxxbj03sjjz/index.html">【zepto学习笔记03】事件机制</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/ycmsztjavascriptzdjc/index.html">【一次面试】再谈javascript中的继承</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/ztbackbone01mxModel/index.html">【再探backbone01】模型Model</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/ztbackbone02jhCollection/index.html">【再探backbone02】集合Collection</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/ztbackbone03bkydyyysltgym/index.html">【再探backbone03】博客园单页应用实例（提供源码）</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/ztbackbone04dyyydjslycl/index.html">【再探backbone04】单页应用的基石路由处理</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/ctUnderscorezsmbyq/index.html">【初探Underscore】再说模版引擎</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/ckjavascriptamzAjaxjsxnszddAjax/index.html">【初窥javascript奥秘之Ajax】简述下你所知道的Ajax？</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/ckjavascriptamzsjmpnxnwmyqmdp/index.html">【初窥javascript奥秘之事件冒泡】那些年我们一起冒的泡</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/ckjavascriptamzsjjzldtygdj/index.html">【初窥javascript奥秘之事件机制】论“点透”与“鬼点击”</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/ckjavascriptamzrrzmbddthisnzdxzthiszxnlm/index.html">【初窥javascript奥秘之让人捉摸不定的this】你知道现在this指向哪里吗？？？</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/ckjavascriptamzbbydxbdhlqbcl/index.html">【初窥javascript奥秘之闭包】叶大侠病都好了，求不踩了：）</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/ckjavascriptamzmxdxfzyjc/index.html">【初窥javascript奥秘之面向对象】封装与继承</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/qdmdsjdjgjdnzdljm/index.html">【前端盲点】事件的几个阶段你真的了解么？？？</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/dyyyviewymodelxgsl/index.html">【单页应用】view与model相关梳理</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/dyyyyqldyyybsxjdwbgns/index.html">【单页应用】一起来单页应用吧，实现简单微博功能！（上）</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/dyyyqjkzqappyggxsm/index.html">【单页应用】全局控制器app应该干些什么？</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/dyyywmgrhclkjdcccjgx/index.html">【单页应用】我们该如何处理框架弹出层层级关系？</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/dyyyljMVC/index.html">【单页应用】理解MVC</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/dyyyztxjzviewzjygrhtx/index.html">【单页应用之通信机制】view之间应该如何通信</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/dyyyjkzHistoryxsHistorydgdyyydm/index.html">【单页应用巨坑之History】细数History带给单页应用的噩梦</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/xtszeptofindysyjiosdcjpknrnhtt/index.html">【小贴士】zeptofind元素以及ios弹出键盘可能让你很头疼</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/xtsgytransitionEndanimatedygyqgs/index.html">【小贴士】关于transitionEndanimate的一个有趣故事</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/xtsgzzdbbysjwtdzzmp/index.html">【小贴士】工作中的”闭包“与事件委托的”阻止冒泡“</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/xtstytjavascriptzdreplace/index.html">【小贴士】探一探javascript中的replace</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/xtsxnjpyfixeddgydddt/index.html">【小贴士】虚拟键盘与fixed带给移动端的痛！</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/ttjavascriptsjjzdcsxyl/index.html">【探讨】javascript事件机制底层实现原理</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/mkhbcljrequireJSsxygjddmkjzq/index.html">【模块化编程】理解requireJS实现一个简单的模块加载器</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/zyJavaScriptmfjmtsdqlxkjzbfgndcljz/index.html">【转】【译】JavaScript魔法揭秘探索当前流行框架中部分功能的处理机制</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/zxjavascriptgszl01javascriptcszds/index.html">【追寻javascript高手之路01】javascript参数知多少？</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/zxjavascriptgszl02blzyyzds/index.html">【追寻javascript高手之路02】变量、作用域知多少？</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/zxjavascriptgszl03javascriptdxdld/index.html">【追寻javascript高手之路03】javascript对象大乱斗</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/zxjavascriptgszl04ljprototype/index.html">【追寻javascript高手之路04】理解prototype</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/zxjavascriptgszl05ljsjl/index.html">【追寻javascript高手之路05】理解事件流</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/zgbj04zxzzsj(2)/index.html">【重构笔记04】重新组织数据(2)</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/zgbj05jhtjbds/index.html">【重构笔记05】简化条件表达式</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/zgbj06jhhsdy/index.html">【重构笔记06】简化函数调用</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/ycmshgttbxysjfl/index.html">一次面试回顾——探讨表现与数据分离</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/dhzwebappzdxz/index.html">动画在webapp中的现状</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/ysandriodlqhthdomclicksjqtsxwttj/index.html">原生andriod浏览器回退后dom（click）事件全体失效问题探究</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/scsbdjxysdsbsjytouchsjdnxs/index.html">手持设备点击响应速度，鼠标事件与touch事件的那些事</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/mnbjQueryzeptohxymfx/index.html">迷你版jQuery——zepto核心源码分析</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/dbsgzdlwmlyqxjdddomxzqb/index.html">都别说工资低了，我们来一起写简单的dom选择器吧！</a></li>
+    				                                         
+                    </ul>
+                </div>
+            </div>
+
+        </div>
+    </body>
+</html>

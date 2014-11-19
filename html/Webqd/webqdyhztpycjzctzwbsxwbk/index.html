@@ -1,0 +1,375 @@
+﻿<!DOCTYPE html>
+
+<html lang="zh">
+    <head>
+        <meta charset="utf-8">
+        <meta name="description" content="android,ios" />
+        <meta name="keywords" content="android,ios" />
+
+        <title>叶小钗</title>
+        <style type='text/css'>
+            body {
+                background-color: #CCC;
+            }
+        </style>
+        <link rel="stylesheet" href="../../../css/bootstrap.css" />
+    </head>
+
+    <body>
+        <div class="container">
+
+            <h1>叶小钗</h1>
+
+            <div class='navbar navbar-inverse'>
+                <div class='navbar-inner nav-collapse' style="height: auto;">
+                    <ul class="nav">
+                              				<li><a href="http://songboriceboy.github.io/xxoo/html/blade/index.html">blade</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/css/index.html">css</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/HTML5&CSS3/index.html">HTML5&CSS3</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/index.html">javascript</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Javaxx/index.html">Java学习</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/nodejs/index.html">nodejs</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/requirejs/index.html">requirejs</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/index.html">Web前端</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/xxgw/index.html">学习感悟</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/gzdd/index.html">工作点滴</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/jkxx/index.html">接口学习</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/wfl/index.html">未分类</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/ydkf/index.html">移动开发</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/sjms/index.html">设计模式</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/mst/index.html">面试题</a></li>
+    				                      </ul>
+                </div>
+            </div>
+
+            <div id='content' class='row-fluid'>
+
+                <div class='span9 main'>
+				<div style="color:blue" align=center>【web前端优化之图片延迟加载初探】中午不睡，下午崩溃</div><br><h1>前言</h1>
+<p>图片延迟加载技术其实应该被用得很多了，令人汗颜的是我居然之前一直没有用过，今天还是一个后端的大哥给提出来的，于是我便趁着中午休息的时间做了一下研究，这里提出来和大家讨论一下。</p>
+<p>PS：小生初学，各位有问题可以提出来讨论</p>
+<h1>延迟加载原理</h1>
+<p>延迟加载有多种实现，我选择了其中一种：</p>
+<div class="cnblogs_code">
+<pre><span style="color: #800000;">为img标签src设置统一的图片链接，而将真实链接地址装在自定义属性中。
+所以开始时候图片是不会加载的，我们将满足条件的图片的src重置为自定义属性便可实现延迟加载功能</span></pre>
+</div>
+<p>当然还有其它的方案，里面我还比较青睐的就是将dom结构装入textare，满足条件时候将之载入，这里我便不讨论了。</p>
+<p>来看看我们用到的共用图片：</p>
+<p><img src="38949935672838.png" alt=""></p>
+<p><strong>问题</strong></p>
+<p>其实这种方案不能说没有问题，因为我会遍历所有的img标签，相当于把整个页面走了一次，万一我有1000张图片，我想效率会是很大的问题！</p>
+<p>PS：页面上出现1000张图片这种事情我是不会让其发生的，就算真的出现，也会有对应的解决之法，这里不扯远了，于是我们开始今天的准备工作。</p>
+<h1>给我100张图片</h1>
+<p>既然要做延迟加载，当然需要图片了，所以给我100张图片吧！！！</p>
+<p>咳咳，其实我是一个程序员，所以我不会一张一张的搞的，下面是我的处理步骤：</p>
+<div class="cnblogs_code">
+<pre><span style="color: #800000;">① 在google图片里面搜索图片
+② 将主要节点给拷贝出来
+③ 在后面改写代码，将所有的img搞出来并装入我们的节点
+④ 批量操作节点</span></pre>
+</div>
+<p>反正最后就成了这个样子啦：</p>
+<p><img src="3387469253822.png" alt=""></p>
+<p>我们轻松加愉快的获得了100张图片（具体有没有100张我没有数。。。）</p>
+<h1>功能实现</h1>
+<p>代码很简单，我这里就直接给贴出来了，我们一起来看看吧：</p>
+<div class="cnblogs_code">
+<pre><span style="color: #0000ff;">function</span><span style="color: #000000;"> imgLazyLoad(container) {
+    container </span>= container || $(window); <span style="color: #008000;">//</span><span style="color: #008000;">需要时jquery对象</span>
+    <span style="color: #0000ff;">var</span> imgArr =<span style="color: #000000;"> {};
+
+    initImg();
+    lazyLoad();
+    container.scroll(</span><span style="color: #0000ff;">function</span><span style="color: #000000;"> () {
+        lazyLoad();
+    });
+    $(window).resize(</span><span style="color: #0000ff;">function</span><span style="color: #000000;"> () {
+        initImg();
+    });
+
+    </span><span style="color: #0000ff;">function</span><span style="color: #000000;"> initImg() {
+        $(</span>'img').each(<span style="color: #0000ff;">function</span><span style="color: #000000;"> () {
+            </span><span style="color: #0000ff;">var</span> el = $(<span style="color: #0000ff;">this</span><span style="color: #000000;">);
+            </span><span style="color: #0000ff;">if</span> (el.attr('lazy-src') &amp;&amp; el.attr('lazy-src') != ''<span style="color: #000000;">) {
+                </span><span style="color: #0000ff;">var</span> offset =<span style="color: #000000;"> el.offset();
+                </span><span style="color: #0000ff;">if</span> (!<span style="color: #000000;">imgArr[offset.top]) {
+                    imgArr[offset.top] </span>=<span style="color: #000000;"> [];
+                }
+                imgArr[offset.top].push(el);
+            }
+        });
+    }
+
+    </span><span style="color: #0000ff;">function</span><span style="color: #000000;"> lazyLoad() {
+        </span><span style="color: #0000ff;">var</span> height =<span style="color: #000000;"> container.height();
+        </span><span style="color: #0000ff;">var</span> srollHeight =<span style="color: #000000;"> container.scrollTop();
+        </span><span style="color: #0000ff;">for</span> (<span style="color: #0000ff;">var</span> k <span style="color: #0000ff;">in</span><span style="color: #000000;"> imgArr) {
+            </span><span style="color: #0000ff;">if</span> (parseInt(k) &lt; srollHeight +<span style="color: #000000;"> height) {
+                </span><span style="color: #0000ff;">var</span> _imgs =<span style="color: #000000;"> imgArr[k];
+                </span><span style="color: #0000ff;">for</span> (<span style="color: #0000ff;">var</span> i = 0, len = _imgs.length; i &lt; len; i++<span style="color: #000000;">) {
+                    </span><span style="color: #0000ff;">var</span> tmpImg =<span style="color: #000000;"> _imgs[i];
+                    </span><span style="color: #0000ff;">if</span> (tmpImg.attr('lazy-src') &amp;&amp; tmpImg.attr('lazy-src') != ''<span style="color: #000000;">) {
+                        tmpImg.attr(</span>'src', tmpImg.attr('lazy-src'<span style="color: #000000;">));
+                        tmpImg.removeAttr(</span>'lazy-src'<span style="color: #000000;">);
+                    }
+                }
+                </span><span style="color: #0000ff;">delete</span><span style="color: #000000;"> imgArr[k];
+            }
+        }
+    } </span><span style="color: #008000;">//</span><span style="color: #008000;">lazyLoad</span>
+<span style="color: #000000;">}
+imgLazyLoad($(</span>'#con'));</pre>
+</div>
+<p>① 我们首先会给函数传入一个容器，不传的话默认就是window</p>
+<p>② 然后我这里会初始化整个img，事实上就是遍历了，我会把同时处于某一个的高度的图片给他搞出来放到一起：</p>
+<p><img src="42277565395793.png" alt=""></p>
+<p>③ 当我们初始化结束后，我这里便定义了一个延迟加载的函数，他会取得当前的视图高度与滚动条高度，然后遍历我们的对象，将高度在他之上的图片给显示出来（<span style="color: #ff0000;">这一步很关键哦</span>）</p>
+<p>当元素图片一旦加载的话便移除对象并且移除元素的lazy-src属性，因为当我们窗口大小发生变化后，我们会重新计算图片位置，计算中加载的元素不具备lazy-src属性便忽略了。</p>
+<p>以上我们的功能便结束了，我以为好像就这样结束了，于是就结束了。。。。。。真的结束了吗？</p>
+<h1>狗屁延迟加载</h1>
+<p>请思考以下场景，叶小钗现在正在看苍老师的漫画呢，叶小钗有好几期没看了呢，于是叶小钗猥琐的打开了多个窗口慢慢等待图片加载！自己就高高兴兴玩起游戏来。</p>
+<p>半个小时后，叶小钗打开网页一看，恩不错所有网页图片都加载出来了呢！！</p>
+<p>但是往下一番，尼玛怎么下面的图片没有出来！！！我的苍老师呢？换了几个网页都是这样，所以叶小钗是否憎恨延迟加载！！！！</p>
+<p>PS：以上场景只是笑话，不可能发生的，但是却是我们需要考虑到的问题。</p>
+<p>当页面比较空闲的情况下，我们为什么要延迟加载呢？所以我们需要将以上代码做一点改变，我是这样想的：</p>
+<div class="cnblogs_code">
+<pre><span style="color: #800000;">若是页面长时间没有鼠标移动的话，我这里就继续加载剩下图片了，一旦鼠标运动，我这里就暂停一下</span></pre>
+</div>
+<p>直接上代码吧：</p>
+<div class="cnblogs_code">
+<pre><span style="color: #008080;"> 1</span> <span style="color: #0000ff;">function</span><span style="color: #000000;"> imgLazyLoad(container) {
+</span><span style="color: #008080;"> 2</span> 
+<span style="color: #008080;"> 3</span>     <span style="color: #0000ff;">var</span> imgLazyLoadTimer = <span style="color: #0000ff;">null</span><span style="color: #000000;">;
+</span><span style="color: #008080;"> 4</span>     <span style="color: #0000ff;">var</span> resetImglazy = <span style="color: #0000ff;">null</span><span style="color: #000000;">;
+</span><span style="color: #008080;"> 5</span> 
+<span style="color: #008080;"> 6</span>     container = container || $(window); <span style="color: #008000;">//</span><span style="color: #008000;">需要时jquery对象</span>
+<span style="color: #008080;"> 7</span>     <span style="color: #0000ff;">var</span> imgArr =<span style="color: #000000;"> {};
+</span><span style="color: #008080;"> 8</span> <span style="color: #000000;">    initImg();
+</span><span style="color: #008080;"> 9</span> <span style="color: #000000;">    lazyLoad();
+</span><span style="color: #008080;">10</span> <span style="color: #000000;">    autoLoad();
+</span><span style="color: #008080;">11</span>     container.scroll(<span style="color: #0000ff;">function</span><span style="color: #000000;"> () {
+</span><span style="color: #008080;">12</span> <span style="color: #000000;">        lazyLoad();
+</span><span style="color: #008080;">13</span> <span style="color: #000000;">    });
+</span><span style="color: #008080;">14</span>     $(window).resize(<span style="color: #0000ff;">function</span><span style="color: #000000;"> () {
+</span><span style="color: #008080;">15</span> <span style="color: #000000;">        initImg();
+</span><span style="color: #008080;">16</span> <span style="color: #000000;">    });
+</span><span style="color: #008080;">17</span>     $(document).mousemove(<span style="color: #0000ff;">function</span><span style="color: #000000;"> () {
+</span><span style="color: #008080;">18</span> <span style="color: #000000;">        clearTimeout(imgLazyLoadTimer);
+</span><span style="color: #008080;">19</span>         <span style="color: #0000ff;">if</span><span style="color: #000000;"> (resetImglazy) clearTimeout(resetImglazy);
+</span><span style="color: #008080;">20</span>         resetImglazy = setTimeout(<span style="color: #0000ff;">function</span><span style="color: #000000;"> () {
+</span><span style="color: #008080;">21</span> <span style="color: #000000;">            autoLoad();
+</span><span style="color: #008080;">22</span>         }, 5000<span style="color: #000000;">);
+</span><span style="color: #008080;">23</span> <span style="color: #000000;">    });
+</span><span style="color: #008080;">24</span>     <span style="color: #0000ff;">function</span><span style="color: #000000;"> initImg() {
+</span><span style="color: #008080;">25</span>         $('img').each(<span style="color: #0000ff;">function</span><span style="color: #000000;"> () {
+</span><span style="color: #008080;">26</span>             <span style="color: #0000ff;">var</span> el = $(<span style="color: #0000ff;">this</span><span style="color: #000000;">);
+</span><span style="color: #008080;">27</span>             <span style="color: #0000ff;">if</span> (el.attr('lazy-src') &amp;&amp; el.attr('lazy-src') != ''<span style="color: #000000;">) {
+</span><span style="color: #008080;">28</span>                 <span style="color: #0000ff;">var</span> offset =<span style="color: #000000;"> el.offset();
+</span><span style="color: #008080;">29</span>                 <span style="color: #0000ff;">if</span> (!<span style="color: #000000;">imgArr[offset.top]) {
+</span><span style="color: #008080;">30</span>                     imgArr[offset.top] =<span style="color: #000000;"> [];
+</span><span style="color: #008080;">31</span> <span style="color: #000000;">                }
+</span><span style="color: #008080;">32</span> <span style="color: #000000;">                imgArr[offset.top].push(el);
+</span><span style="color: #008080;">33</span> <span style="color: #000000;">            }
+</span><span style="color: #008080;">34</span> <span style="color: #000000;">        });
+</span><span style="color: #008080;">35</span> <span style="color: #000000;">    }
+</span><span style="color: #008080;">36</span> 
+<span style="color: #008080;">37</span>     <span style="color: #0000ff;">function</span><span style="color: #000000;"> lazyLoad() {
+</span><span style="color: #008080;">38</span>         <span style="color: #0000ff;">var</span> height =<span style="color: #000000;"> container.height();
+</span><span style="color: #008080;">39</span>         <span style="color: #0000ff;">var</span> srollHeight =<span style="color: #000000;"> container.scrollTop();
+</span><span style="color: #008080;">40</span>         <span style="color: #0000ff;">for</span> (<span style="color: #0000ff;">var</span> k <span style="color: #0000ff;">in</span><span style="color: #000000;"> imgArr) {
+</span><span style="color: #008080;">41</span>             <span style="color: #0000ff;">if</span> (parseInt(k) &lt; srollHeight +<span style="color: #000000;"> height) {
+</span><span style="color: #008080;">42</span>                 <span style="color: #0000ff;">var</span> _imgs =<span style="color: #000000;"> imgArr[k];
+</span><span style="color: #008080;">43</span>                 <span style="color: #0000ff;">for</span> (<span style="color: #0000ff;">var</span> i = 0, len = _imgs.length; i &lt; len; i++<span style="color: #000000;">) {
+</span><span style="color: #008080;">44</span>                     <span style="color: #0000ff;">var</span> tmpImg =<span style="color: #000000;"> _imgs[i];
+</span><span style="color: #008080;">45</span>                     <span style="color: #0000ff;">if</span> (tmpImg.attr('lazy-src') &amp;&amp; tmpImg.attr('lazy-src') != ''<span style="color: #000000;">) {
+</span><span style="color: #008080;">46</span>                         tmpImg.attr('src', tmpImg.attr('lazy-src'<span style="color: #000000;">));
+</span><span style="color: #008080;">47</span>                         tmpImg.removeAttr('lazy-src'<span style="color: #000000;">);
+</span><span style="color: #008080;">48</span> <span style="color: #000000;">                    }
+</span><span style="color: #008080;">49</span> <span style="color: #000000;">                }
+</span><span style="color: #008080;">50</span>                 <span style="color: #0000ff;">delete</span><span style="color: #000000;"> imgArr[k];
+</span><span style="color: #008080;">51</span> <span style="color: #000000;">            }
+</span><span style="color: #008080;">52</span> <span style="color: #000000;">        }
+</span><span style="color: #008080;">53</span>     } <span style="color: #008000;">//</span><span style="color: #008000;">lazyLoad</span>
+<span style="color: #008080;">54</span> 
+<span style="color: #008080;">55</span>     <span style="color: #0000ff;">function</span><span style="color: #000000;"> autoLoad() {
+</span><span style="color: #008080;">56</span>         <span style="color: #0000ff;">var</span> _key = <span style="color: #0000ff;">null</span><span style="color: #000000;">;
+</span><span style="color: #008080;">57</span>         <span style="color: #0000ff;">for</span> (<span style="color: #0000ff;">var</span> k <span style="color: #0000ff;">in</span><span style="color: #000000;"> imgArr) {
+</span><span style="color: #008080;">58</span>             <span style="color: #0000ff;">if</span> (!<span style="color: #000000;">_key) {
+</span><span style="color: #008080;">59</span>                 _key =<span style="color: #000000;"> k;
+</span><span style="color: #008080;">60</span>                 <span style="color: #0000ff;">break</span><span style="color: #000000;">;
+</span><span style="color: #008080;">61</span> <span style="color: #000000;">            }
+</span><span style="color: #008080;">62</span> <span style="color: #000000;">        }
+</span><span style="color: #008080;">           if(!_key) return false;<br>63</span>         <span style="color: #0000ff;">var</span> _imgs =<span style="color: #000000;"> imgArr[_key];
+</span><span style="color: #008080;">64</span>         <span style="color: #0000ff;">for</span> (<span style="color: #0000ff;">var</span> i = 0, len = _imgs.length; i &lt; len; i++<span style="color: #000000;">) {
+</span><span style="color: #008080;">65</span>             <span style="color: #0000ff;">var</span> tmpImg =<span style="color: #000000;"> _imgs[i];
+</span><span style="color: #008080;">66</span>             <span style="color: #0000ff;">if</span> (tmpImg.attr('lazy-src') &amp;&amp; tmpImg.attr('lazy-src') != ''<span style="color: #000000;">) {
+</span><span style="color: #008080;">67</span>                 tmpImg.attr('src', tmpImg.attr('lazy-src'<span style="color: #000000;">));
+</span><span style="color: #008080;">68</span>                 tmpImg.removeAttr('lazy-src'<span style="color: #000000;">);
+</span><span style="color: #008080;">69</span> <span style="color: #000000;">            }
+</span><span style="color: #008080;">70</span> <span style="color: #000000;">        }
+</span><span style="color: #008080;">71</span>         <span style="color: #0000ff;">delete</span><span style="color: #000000;"> imgArr[_key];
+</span><span style="color: #008080;">72</span>         <span style="color: #0000ff;">if</span><span style="color: #000000;"> (imgLazyLoadTimer) {
+</span><span style="color: #008080;">73</span> <span style="color: #000000;">            clearTimeout(imgLazyLoadTimer);
+</span><span style="color: #008080;">74</span> <span style="color: #000000;">        }
+</span><span style="color: #008080;">75</span>         imgLazyLoadTimer = setTimeout(autoLoad, 1000<span style="color: #000000;">);
+</span><span style="color: #008080;">76</span> <span style="color: #000000;">    }
+</span><span style="color: #008080;">77</span> } <span style="color: #008000;">//</span><span style="color: #008000;">imgLazyLoad</span>
+<span style="color: #008080;">78</span> imgLazyLoad($('#con'));</pre>
+</div>
+<p>具体我还没怎么测试呢，各位看看吧，<strong><span style="color: #ff0000;">有问题请提出来哦</span></strong></p>
+<p><strong><span style="color: #ff0000;">昨天有朋友提出有问题，我解决了下下面上新代码：</span></strong></p>
+<div class="cnblogs_code" onclick="cnblogs_code_show('63433ebe-7fcf-48f1-8e1f-c9fb498f6f7e')"><img id="code_img_closed_63433ebe-7fcf-48f1-8e1f-c9fb498f6f7e" class="code_img_closed" src="43570758473519.gif" alt=""><img id="code_img_opened_63433ebe-7fcf-48f1-8e1f-c9fb498f6f7e" class="code_img_opened" style="display: none;" onclick="cnblogs_code_hide('63433ebe-7fcf-48f1-8e1f-c9fb498f6f7e',event)" src="16365178109279.gif" alt="">
+<div id="cnblogs_code_open_63433ebe-7fcf-48f1-8e1f-c9fb498f6f7e" class="cnblogs_code_hide">
+<pre><span style="color: #0000ff;">function</span><span style="color: #000000;"> imgLazyLoad(container) {
+
+    </span><span style="color: #0000ff;">var</span> imgLazyLoadTimer = <span style="color: #0000ff;">null</span><span style="color: #000000;">;
+    </span><span style="color: #0000ff;">var</span> resetImglazy = <span style="color: #0000ff;">null</span><span style="color: #000000;">;
+
+    container </span>= container || $(window); <span style="color: #008000;">//</span><span style="color: #008000;">需要时jquery对象</span>
+    <span style="color: #0000ff;">var</span> imgArr =<span style="color: #000000;"> {};
+    initImg();
+    lazyLoad();
+    imgLazyLoadTimer </span>= setTimeout(autoLoad, 5000<span style="color: #000000;">);
+
+    container.scroll(</span><span style="color: #0000ff;">function</span><span style="color: #000000;"> () {
+        lazyLoad();
+    });
+    $(window).resize(</span><span style="color: #0000ff;">function</span><span style="color: #000000;"> () {
+        initImg();
+    });
+    $(document).mousemove(</span><span style="color: #0000ff;">function</span><span style="color: #000000;"> () {
+        </span><span style="color: #0000ff;">if</span><span style="color: #000000;"> (imgLazyLoadTimer) clearTimeout(imgLazyLoadTimer);
+        </span><span style="color: #0000ff;">if</span><span style="color: #000000;"> (resetImglazy) clearTimeout(resetImglazy);
+        resetImglazy </span>= setTimeout(<span style="color: #0000ff;">function</span><span style="color: #000000;"> () {
+            autoLoad();
+        }, </span>5000<span style="color: #000000;">);
+    });
+    </span><span style="color: #0000ff;">function</span><span style="color: #000000;"> initImg() {
+        $(</span>'img').each(<span style="color: #0000ff;">function</span><span style="color: #000000;"> () {
+            </span><span style="color: #0000ff;">var</span> el = $(<span style="color: #0000ff;">this</span><span style="color: #000000;">);
+            </span><span style="color: #0000ff;">if</span> (el.attr('lazy-src') &amp;&amp; el.attr('lazy-src') != ''<span style="color: #000000;">) {
+                </span><span style="color: #0000ff;">var</span> offset =<span style="color: #000000;"> el.offset();
+                </span><span style="color: #0000ff;">if</span> (!<span style="color: #000000;">imgArr[offset.top]) {
+                    imgArr[offset.top] </span>=<span style="color: #000000;"> [];
+                }
+                imgArr[offset.top].push(el);
+            }
+        });
+    }
+
+    </span><span style="color: #0000ff;">function</span><span style="color: #000000;"> lazyLoad() {
+        </span><span style="color: #0000ff;">var</span> height =<span style="color: #000000;"> container.height();
+        </span><span style="color: #0000ff;">var</span> srollHeight =<span style="color: #000000;"> container.scrollTop();
+        </span><span style="color: #0000ff;">for</span> (<span style="color: #0000ff;">var</span> k <span style="color: #0000ff;">in</span><span style="color: #000000;"> imgArr) {
+            </span><span style="color: #0000ff;">if</span> (parseInt(k) &lt; srollHeight +<span style="color: #000000;"> height) {
+                </span><span style="color: #0000ff;">var</span> _imgs =<span style="color: #000000;"> imgArr[k];
+                </span><span style="color: #0000ff;">for</span> (<span style="color: #0000ff;">var</span> i = 0, len = _imgs.length; i &lt; len; i++<span style="color: #000000;">) {
+                    </span><span style="color: #0000ff;">var</span> tmpImg =<span style="color: #000000;"> _imgs[i];
+                    </span><span style="color: #0000ff;">if</span> (tmpImg.attr('lazy-src') &amp;&amp; tmpImg.attr('lazy-src') != ''<span style="color: #000000;">) {
+                        tmpImg.attr(</span>'src', tmpImg.attr('lazy-src'<span style="color: #000000;">));
+                        tmpImg.removeAttr(</span>'lazy-src'<span style="color: #000000;">);
+                    }
+                }
+                </span><span style="color: #0000ff;">delete</span><span style="color: #000000;"> imgArr[k];
+            }
+        }
+    } </span><span style="color: #008000;">//</span><span style="color: #008000;">lazyLoad</span>
+
+    <span style="color: #0000ff;">function</span><span style="color: #000000;"> autoLoad() {
+        </span><span style="color: #0000ff;">var</span> _key = <span style="color: #0000ff;">null</span><span style="color: #000000;">;
+        </span><span style="color: #0000ff;">for</span> (<span style="color: #0000ff;">var</span> k <span style="color: #0000ff;">in</span><span style="color: #000000;"> imgArr) {
+            </span><span style="color: #0000ff;">if</span> (!<span style="color: #000000;">_key) {
+                _key </span>=<span style="color: #000000;"> k;
+                </span><span style="color: #0000ff;">break</span><span style="color: #000000;">;
+            }
+        }
+        </span><span style="color: #0000ff;">if</span> (!_key) <span style="color: #0000ff;">return</span> <span style="color: #0000ff;">false</span><span style="color: #000000;">;
+        </span><span style="color: #0000ff;">var</span> _imgs =<span style="color: #000000;"> imgArr[_key];
+        </span><span style="color: #0000ff;">for</span> (<span style="color: #0000ff;">var</span> i = 0, len = _imgs.length; i &lt; len; i++<span style="color: #000000;">) {
+            </span><span style="color: #0000ff;">var</span> tmpImg =<span style="color: #000000;"> _imgs[i];
+            </span><span style="color: #0000ff;">if</span> (tmpImg.attr('lazy-src') &amp;&amp; tmpImg.attr('lazy-src') != ''<span style="color: #000000;">) {
+                tmpImg.attr(</span>'src', tmpImg.attr('lazy-src'<span style="color: #000000;">));
+                tmpImg.removeAttr(</span>'lazy-src'<span style="color: #000000;">);
+            }
+        }
+        </span><span style="color: #0000ff;">delete</span><span style="color: #000000;"> imgArr[_key];
+        </span><span style="color: #0000ff;">if</span><span style="color: #000000;"> (imgLazyLoadTimer) {
+            clearTimeout(imgLazyLoadTimer);
+        }
+        imgLazyLoadTimer </span>= setTimeout(autoLoad, 1000<span style="color: #000000;">);
+    }
+} </span><span style="color: #008000;">//</span><span style="color: #008000;">imgLazyLoad</span>
+imgLazyLoad($('#con'));</pre>
+</div>
+<span class="cnblogs_code_collapse">View Code </span></div>
+<h1>演示地址</h1>
+<p><a href="4361449426163.jpg">4361449426163.jpg</a></p>
+<p><iframe src="4361449426163.jpg" frameborder="0" width="86%" height="422"></iframe></p>
+<p>&nbsp;</p>
+<h1>结语</h1>
+<p>中午不睡下午崩溃，我这里感觉去睡一会，若是您觉得这篇文章不错请点一下推荐，若是您发现有何问题请一定提出来！</p>
+<p>哎，没有功劳也有苦劳，没有苦劳我有疲劳哦，各位看在中午没睡的情况下，顶下吧。。。。：）</p>
+<h1>不足与交流</h1>
+<p>呵呵，根据这个功能居然会有朋友关注，并提出了宝贵的意见，真的十分感谢，以下是朋友的见解：</p>
+<p><span style="font-family: FangSong_GB2312; font-size: 16px;">通过阅读原作中的代码，可以看到，在上述几个步骤中存在如下几个问题：</span></p>
+<ol>
+<li><span style="font-family: FangSong_GB2312; font-size: 16px;">用户指定的图片容器其实没有用；</span></li>
+<li><span style="font-family: FangSong_GB2312; font-size: 16px;">自动扫描全部被延迟加载的图片信息(按照作者的意图其实应该是仅扫描指定容器内的图片)，另外，图片扫描的代码可以写的更简练；</span></li>
+<li><span style="font-family: FangSong_GB2312; font-size: 16px;">加载当前屏幕图片时，计算某图片是否在当前窗口的算法不够严谨，仅当容器的高度小于当前浏览器窗口高度时算法有效，其他情况下均无效；</span></li>
+<li><span style="font-family: FangSong_GB2312; font-size: 16px;">另外，我认为这里判断lazy-src是否为空几乎没有必要，因为实际应用中几乎不可能出现，更可能出现的是地址错误，但是这种错误根本没法去检测出现；</span></li>
+</ol>
+<p><span style="font-family: FangSong_GB2312; font-size: 16px;">针对上述四点问题，我只重点说一下第三点。</span></p>
+<p><span style="font-family: FangSong_GB2312; font-size: 16px;">我们不妨做一个假设，<span style="background-color: #99bb00;">假设所有的图片不是在做着假设的id为con的div中，而是直接在body中，那么根据原来的算法，在计算某图片是否属于当前屏幕时，结果总是为true，此时延迟加载算法几乎完全失效了</span>！</span><br><span style="font-family: FangSong_GB2312; font-size: 16px;"><strong><span style="color: #99bb00;">为什么呢？</span></strong>看看原作的代码，如果图片的容器是body，即整个document，那么代码<span style="background-color: #99bb00;">var height = container.height();</span>得到的高度值就是整个页面的高度，这个高度超过所有图片的offset().top的高度，因此导致的结果就是，所有的图片都被认为是在当前屏幕而被一次性加载，这跟不使用延迟加载有什么不同呢？</span></p>
+<p><span style="font-family: FangSong_GB2312; font-size: 16px;">修改后的代码：</span></p>
+<p><span style="font-family: FangSong_GB2312; font-size: 16px;"><span class="com">//延迟加载图片</span><span class="pln"><br></span><span class="kwd">var</span><span class="pln"> imageloadCurrentWindower </span><span class="pun">=</span><span class="kwd">function</span><span class="pun">(</span><span class="pln">container</span><span class="pun">)</span><span class="pun">{</span><span class="pln"><br></span><span class="com">//在空闲时循环加载剩余图片工作的定时器</span><span class="pln"><br></span><span class="kwd">var</span><span class="pln"> autoLoaderTimer </span><span class="pun">=</span><span class="kwd">null</span><span class="pun">;</span><span class="pln"><br></span><span class="com">//在空闲时启动加载剩余图片工作的定时器</span><span class="pln"><br></span><span class="kwd">var</span><span class="pln"> restartAutoLoaderTimer </span><span class="pun">=</span><span class="kwd">null</span><span class="pun">;</span><span class="pln"><br></span><span class="com">//图片容器</span><span class="pln"><br></span><span class="kwd">this</span><span class="pun">.</span><span class="pln">container </span><span class="pun">=</span><span class="pln"> container </span><span class="pun">||</span><span class="pln"> $</span><span class="pun">(</span><span class="pln">document</span><span class="pun">);</span><span class="com">//容器默认为整个文档</span><span class="pln"><br></span><span class="com">//所有图片</span><span class="pln"><br></span><span class="kwd">this</span><span class="pun">.</span><span class="pln">allImages</span><span class="pun">;</span><span class="pln"><br></span><span class="com">//初始化延迟加载的图片的信息</span><span class="pln"><br></span><span class="kwd">this</span><span class="pun">.</span><span class="pln">scanLazyImageInfo </span><span class="pun">=</span><span class="kwd">function</span><span class="pun">()</span><span class="pun">{</span><span class="pln"><br>allImages </span><span class="pun">=</span><span class="pun">{};</span><span class="pln"><br></span><span class="kwd">this</span><span class="pun">.</span><span class="pln">container</span><span class="pun">.</span><span class="pln">find</span><span class="pun">(</span><span class="str">'img[lazy-src]'</span><span class="pun">).</span><span class="pln">each</span><span class="pun">(</span><span class="kwd">function</span><span class="pun">()</span><span class="pun">{</span><span class="pln"><br></span><span class="kwd">var</span><span class="pln"> el </span><span class="pun">=</span><span class="pln"> $</span><span class="pun">(</span><span class="kwd">this</span><span class="pun">);</span><span class="pln"><br></span><span class="kwd">var</span><span class="pln"> offset </span><span class="pun">=</span><span class="pln"> el</span><span class="pun">.</span><span class="pln">offset</span><span class="pun">();</span><span class="pln"><br></span><span class="kwd">if</span><span class="pun">(!</span><span class="pln">allImages</span><span class="pun">[</span><span class="pln">offset</span><span class="pun">.</span><span class="pln">top</span><span class="pun">])</span><span class="pun">{</span><span class="pln"><br>allImages</span><span class="pun">[</span><span class="pln">offset</span><span class="pun">.</span><span class="pln">top</span><span class="pun">]</span><span class="pun">=</span><span class="pun">[];</span><span class="pln"><br></span><span class="pun">}</span><span class="pln"><br>allImages</span><span class="pun">[</span><span class="pln">offset</span><span class="pun">.</span><span class="pln">top</span><span class="pun">].</span><span class="pln">push</span><span class="pun">(</span><span class="pln">el</span><span class="pun">);</span><span class="pln"><br></span><span class="pun">});</span><span class="pln"><br></span><span class="pun">}</span><span class="pln"><br></span><span class="com">//加载当前屏幕中被延迟加载的图片</span><span class="pln"><br></span><span class="kwd">this</span><span class="pun">.</span><span class="pln">loadCurrentWindow </span><span class="pun">=</span><span class="kwd">function</span><span class="pun">()</span><span class="pun">{</span><span class="pln"><br></span><span class="kwd">var</span><span class="pln"> h1</span><span class="pun">,</span><span class="pln">h2</span><span class="pun">;</span><span class="pln"><br>h1 </span><span class="pun">=</span><span class="kwd">this</span><span class="pun">.</span><span class="pln">container</span><span class="pun">.</span><span class="pln">height</span><span class="pun">();</span><span class="pln"><br>h2 </span><span class="pun">=</span><span class="pln"> $</span><span class="pun">(</span><span class="pln">window</span><span class="pun">).</span><span class="pln">height</span><span class="pun">();</span><span class="pln"><br></span><span class="kwd">var</span><span class="pln"> height </span><span class="pun">=</span><span class="kwd">this</span><span class="pun">.</span><span class="pln">container</span><span class="pun">.</span><span class="pln">scrollTop</span><span class="pun">()</span><span class="pun">+</span><span class="pun">(</span><span class="pln">h1 </span><span class="pun">&gt;</span><span class="pln"> h2 </span><span class="pun">?</span><span class="pln"> h2 </span><span class="pun">:</span><span class="pln"> h1</span><span class="pun">);</span><span class="pln"><br></span><span class="kwd">for</span><span class="pun">(</span><span class="kwd">var</span><span class="pln"> k in allImages</span><span class="pun">)</span><span class="pun">{</span><span class="pln"><br></span><span class="kwd">if</span><span class="pun">(</span><span class="pln">parseInt</span><span class="pun">(</span><span class="pln">k</span><span class="pun">)</span><span class="pun">&lt;</span><span class="pln"> height</span><span class="pun">)</span><span class="pun">{</span><span class="pln"><br>loadImages</span><span class="pun">(</span><span class="pln">allImages</span><span class="pun">,</span><span class="pln"> k</span><span class="pun">);</span><span class="pln"><br></span><span class="kwd">continue</span><span class="pun">;</span><span class="pln"><br></span><span class="pun">}</span><span class="pln"><br></span><span class="kwd">break</span><span class="pun">;</span><span class="pln"><br></span><span class="pun">}</span><span class="pln"><br></span><span class="pun">}</span><span class="pln"><br></span><span class="com">//页面空闲时自动加载未加载的图片</span><span class="pln"><br></span><span class="kwd">this</span><span class="pun">.</span><span class="pln">autoLoad </span><span class="pun">=</span><span class="kwd">function</span><span class="pun">()</span><span class="pun">{</span><span class="pln"><br></span><span class="com">// 取一行图片加载</span><span class="pln"><br></span><span class="kwd">for</span><span class="pun">(</span><span class="kwd">var</span><span class="pln"> k in allImages</span><span class="pun">)</span><span class="pun">{</span><span class="pln"><br>loadImages</span><span class="pun">(</span><span class="pln">allImages</span><span class="pun">,</span><span class="pln"> k</span><span class="pun">);</span><span class="pln"><br></span><span class="kwd">break</span><span class="pun">;</span><span class="pln"><br></span><span class="pun">}</span><span class="pln"><br></span><span class="com">//取消上一个定时器</span><span class="pln"><br></span><span class="kwd">if</span><span class="pun">(</span><span class="pln">autoLoaderTimer</span><span class="pun">)</span><span class="pun">{</span><span class="pln"><br>clearTimeout</span><span class="pun">(</span><span class="pln">autoLoaderTimer</span><span class="pun">);</span><span class="pln"><br></span><span class="pun">}</span><span class="pln"><br></span><span class="com">//重新生成定时器，1秒后如果页面仍然空闲则加载下一行图片</span><span class="pln"><br>autoLoaderTimer </span><span class="pun">=</span><span class="pln"> setTimeout</span><span class="pun">(</span><span class="pln">autoLoad</span><span class="pun">,</span><span class="lit">1000</span><span class="pun">);</span><span class="pln"><br></span><span class="pun">}</span><span class="pln"><br></span><span class="com">//加载图片</span><span class="pln"><br>loadImages </span><span class="pun">=</span><span class="kwd">function</span><span class="pun">(</span><span class="pln">allImages</span><span class="pun">,</span><span class="pln"> _key</span><span class="pun">){</span><span class="pln"><br></span><span class="kwd">var</span><span class="pln"> _imgs </span><span class="pun">=</span><span class="pln"> allImages</span><span class="pun">[</span><span class="pln">_key</span><span class="pun">];</span><span class="pln"><br></span><span class="kwd">for</span><span class="pun">(</span><span class="kwd">var</span><span class="pln"> i </span><span class="pun">=</span><span class="lit">0</span><span class="pun">,</span><span class="pln"> len </span><span class="pun">=</span><span class="pln"> _imgs</span><span class="pun">.</span><span class="pln">length</span><span class="pun">;</span><span class="pln"> i </span><span class="pun">&lt;</span><span class="pln"> len</span><span class="pun">;</span><span class="pln"> i</span><span class="pun">++)</span><span class="pun">{</span><span class="pln"><br></span><span class="kwd">var</span><span class="pln"> tmpImg </span><span class="pun">=</span><span class="pln"> _imgs</span><span class="pun">[</span><span class="pln">i</span><span class="pun">];</span><span class="pln"><br>tmpImg</span><span class="pun">.</span><span class="pln">attr</span><span class="pun">(</span><span class="str">'src'</span><span class="pun">,</span><span class="pln"> tmpImg</span><span class="pun">.</span><span class="pln">attr</span><span class="pun">(</span><span class="str">'lazy-src'</span><span class="pun">));</span><span class="pln"><br>tmpImg</span><span class="pun">.</span><span class="pln">removeAttr</span><span class="pun">(</span><span class="str">'lazy-src'</span><span class="pun">);</span><span class="pln"><br></span><span class="pun">}</span><span class="pln"><br></span><span class="kwd">delete</span><span class="pln"> allImages</span><span class="pun">[</span><span class="pln">_key</span><span class="pun">];</span><span class="pln"><br></span><span class="pun">}</span><span class="pln"><br></span><span class="com">//扫描所有被延迟加载的图片信息</span><span class="pln"><br></span><span class="kwd">this</span><span class="pun">.</span><span class="pln">scanLazyImageInfo</span><span class="pun">();</span><span class="pln"><br></span><span class="com">//加载当前窗口中的图片</span><span class="pln"><br></span><span class="kwd">this</span><span class="pun">.</span><span class="pln">loadCurrentWindow</span><span class="pun">();</span><span class="pln"><br></span><span class="com">//监视当前容器的滚动条滚动事件</span><span class="pln"><br></span><span class="kwd">this</span><span class="pun">.</span><span class="pln">container</span><span class="pun">.</span><span class="pln">scroll</span><span class="pun">(</span><span class="kwd">function</span><span class="pun">()</span><span class="pun">{</span><span class="pln"><br>loadCurrentWindow</span><span class="pun">();</span><span class="pln"><br></span><span class="pun">});</span><span class="pln"><br></span><span class="com">//监视窗口的尺寸改变事件</span><span class="pln"><br>$</span><span class="pun">(</span><span class="pln">window</span><span class="pun">).</span><span class="pln">resize</span><span class="pun">(</span><span class="kwd">function</span><span class="pun">()</span><span class="pun">{</span><span class="pln"><br>scanLazyImageInfo</span><span class="pun">();</span><span class="pln"><br>loadCurrentWindow</span><span class="pun">();</span><span class="pln"><br></span><span class="pun">});</span><span class="pln"><br></span><span class="com">//监视页面是否空闲,以鼠标是否移动为标志</span><span class="pln"><br>$</span><span class="pun">(</span><span class="pln">document</span><span class="pun">).</span><span class="pln">mousemove</span><span class="pun">(</span><span class="kwd">function</span><span class="pun">()</span><span class="pun">{</span><span class="pln"><br></span><span class="com">//清除空闲时自动加载图片的定时器</span><span class="pln"><br>clearTimeout</span><span class="pun">(</span><span class="pln">autoLoaderTimer</span><span class="pun">);</span><span class="pln"><br></span><span class="com">//如果存在清除重启空闲时自动加载图片的定时器</span><span class="pln"><br></span><span class="kwd">if</span><span class="pun">(</span><span class="pln">restartAutoLoaderTimer</span><span class="pun">)</span><span class="pln"><br>clearTimeout</span><span class="pun">(</span><span class="pln">restartAutoLoaderTimer</span><span class="pun">);</span><span class="pln"><br></span><span class="com">//重新生成重启空闲时自动加载图片的定时器</span><span class="pln"><br>restartAutoLoaderTimer </span><span class="pun">=</span><span class="pln"> setTimeout</span><span class="pun">(</span><span class="kwd">function</span><span class="pun">()</span><span class="pun">{</span><span class="pln"><br>autoLoad</span><span class="pun">();</span><span class="pln"><br></span><span class="pun">},</span><span class="lit">5000</span><span class="pun">);</span><span class="pln"><br></span><span class="pun">});</span><span class="pln"><br></span><span class="com">//启动自动加载当前屏幕外图片</span><span class="pln"><br></span><span class="kwd">this</span><span class="pun">.</span><span class="pln">autoLoad</span><span class="pun">();</span><span class="pln"><br></span><span class="pun">}</span><span class="pln"><br></span><span class="com">//页面下载完成后即刻开始延迟加载图片工作</span><span class="pln"><br>$</span><span class="pun">(</span><span class="pln">document</span><span class="pun">).</span><span class="pln">ready</span><span class="pun">(</span><span class="kwd">function</span><span class="pun">(){</span><span class="pln"><br></span><span class="com">//启动延迟加载,支持$(document)</span><span class="pln"><br>imageloadCurrentWindower</span><span class="pun">(</span><span class="pln">$</span><span class="pun">(</span><span class="str">"#con"</span><span class="pun">));</span><span class="pln"><br></span><span class="pun">});</span></span></p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+                </div>
+
+                <div class='span3 sidebar'>
+                    <h2>导航栏</h2>
+                    <ul class="nav nav-tabs nav-stacked">
+                             				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/Fiddlerznqddsq/index.html">Fiddler真乃前端大杀器！！！</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/Requirejs/index.html">Requirejs</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/RequireJSyBackbonejdzh/index.html">RequireJS与Backbone简单整合</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/RequireJSxxbj/index.html">RequireJS学习笔记</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/Webqdyhctxdpzyyqdgsgpng/index.html">Web前端优化初探，小弟抛砖引玉，期待高手共破难关！</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/Webqdlqjrctxsqwpzyyqdgsgpng/index.html">Web前端浏览器兼容初探，小生浅文抛砖引玉，期待高手攻破难关！</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/jqueryfdataListxnyhmbybysxtgxn10bys/index.html">【jquery仿dataList——性能优化】模板预编译思想提高性能10倍以上！！！</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/jqueryfdataListyyzmfigoogledzhtdpxzdhfp/index.html">【jquery仿dataList】应用之——模仿igoogle【定制化、拖动排序，最大化、分屏】</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/jqueryfdatalistdygwtqzszmxxsjlkzDIVdjjbf/index.html">【jquery仿datalist的一个问题，求助】——设置每行显示几列，块状DIV的解决办法</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/jquerymfnetkjcbGridViewmxsxjqjdyy/index.html">【jquery模仿net控件】初步GridView模型实现，及其简单应用</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/jquerymfnetkjjdfykj10fsgridviewsycs/index.html">【jquery模仿net控件】简单分页控件10，附上gridview使用测试</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/jquerymfnetkjjdddatalistkjgxjqjdyy/index.html">【jquery模仿net控件】简单的datalist控件更新，及其简单应用</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/jquerymfnetkjjdddropdownlistydatalist/index.html">【jquery模仿net控件】简单的dropdownlist与datalist</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/jquerybnetkjdropdownlistfymhydjzdzzpz/index.html">【jquery版net控件—dropdownlist】附源码，欢迎大家指点、指正、拍砖！！！</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/positionykyhfzddccyslsbdws/index.html">【position也可以很复杂】当弹出层遇上了鼠标定位（上）</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/positionykyhfzddccyslsbdwx/index.html">【position也可以很复杂】当弹出层遇上了鼠标定位（下）</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/SEOzmlwljnmtsbwmlyqkkSEOb/index.html">【SEO】周末了，为了纪念明天上班，我们来一起看看SEO吧</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/webqdyhqdwyhyrzrz/index.html">【web前端优化】前端无优化，庸人自扰之！</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/webqdyhzreflowjsymdhl/index.html">【web前端优化之reflow】减少页面的回流</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/webqdyhztpycjzctzwbsxwbk/index.html">【web前端优化之图片延迟加载初探】中午不睡，下午崩溃</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/webqdyhztpmhdqxkwQQkjrhxsxp/index.html">【web前端优化之图片模糊到清晰】看我QQ空间如何显示相片</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/webqdpxzqhddphsywmsxdDatalistsmwtb/index.html">【web前端培训之前后端的配合（上）】以我们熟悉的Datalist说明问题吧</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/webqdpxzqhddphzjxzrdgs/index.html">【web前端培训之前后端的配合（中）】继续昨日的故事</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/dyyygybkydbfgqym/index.html">【单页应用】关于博客园的补发（高清有码）。。。</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/xtsstringifysBUGlocalstoragesxxmSafarialertksfycjzym10pxbp/index.html">【小贴士】【stringify神BUG】【localstorage失效】【消灭Safarialert框】【是否延迟加载】【页面10px白屏】</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/dalhdmsthhdsdmstjsh/index.html">【答阿里寒冬面试题】呵呵，大神的面试题就是好！</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/ycsjmstdldgwxxdgjxxdff/index.html">一次上机面试题带来的感悟【学习的感觉、学习的方法】</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/ydmstdldqdyhsxxxdp/index.html">一道面试题带来的前端优化——实现星星点评</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/zysyzjjhfzwebqdbfxlgxmndjjfa/index.html">只言碎语总结，今后发展web前端，并分享两个项目难点解决方案。</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/gwjlytbllbnwmljxwwdbdyzb/index.html">各位加了一天班累了吧？那我们来继续未完的表单验证吧</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/gwzmwlytllbwmyqlzldmstbjstbdy/index.html">各位周末玩了一天累了吧，我们一起来做两道面试题吧（据说淘宝的哟）！</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/jyjQuerydxlcdcjzwsy/index.html">基于jQuery的下拉菜单插件，诸位上眼！！！</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/jyjQuerydxlcdcd02zwsy/index.html">基于jQuery的下拉菜单菜单【02】，诸位上眼！！！</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/gzzpddyxdxdccktfybwjsc/index.html">工作中碰到的一些东西【弹出窗口】【拖放】【异步文件上传】</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/gzlygxqgwydllbnwmyqlbdyzyfb/index.html">工作了一个星期各位一定累了吧，那我们一起来表单验证一番吧！</a></li>
+    				                                         
+                    </ul>
+                </div>
+            </div>
+
+        </div>
+    </body>
+</html>

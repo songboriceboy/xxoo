@@ -1,0 +1,594 @@
+﻿<!DOCTYPE html>
+
+<html lang="zh">
+    <head>
+        <meta charset="utf-8">
+        <meta name="description" content="android,ios" />
+        <meta name="keywords" content="android,ios" />
+
+        <title>叶小钗</title>
+        <style type='text/css'>
+            body {
+                background-color: #CCC;
+            }
+        </style>
+        <link rel="stylesheet" href="../../../css/bootstrap.css" />
+    </head>
+
+    <body>
+        <div class="container">
+
+            <h1>叶小钗</h1>
+
+            <div class='navbar navbar-inverse'>
+                <div class='navbar-inner nav-collapse' style="height: auto;">
+                    <ul class="nav">
+                              				<li><a href="http://songboriceboy.github.io/xxoo/html/blade/index.html">blade</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/css/index.html">css</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/HTML5&CSS3/index.html">HTML5&CSS3</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/index.html">javascript</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Javaxx/index.html">Java学习</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/nodejs/index.html">nodejs</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/requirejs/index.html">requirejs</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/index.html">Web前端</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/xxgw/index.html">学习感悟</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/gzdd/index.html">工作点滴</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/jkxx/index.html">接口学习</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/wfl/index.html">未分类</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/ydkf/index.html">移动开发</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/sjms/index.html">设计模式</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/mst/index.html">面试题</a></li>
+    				                      </ul>
+                </div>
+            </div>
+
+            <div id='content' class='row-fluid'>
+
+                <div class='span9 main'>
+				<div style="color:blue" align=center>【小贴士】关于transitionEndanimate的一个有趣故事</div><br><h1>前言</h1>
+<p>在很久之前，我们项目有一个动画功能，功能本身很简单，便是典型的右进左出，并且带动画功能</p>
+<p>以当时来说，虽然很简单，但是受限于框架本身的难度，就直接使用了CSS3的方式完成了功能</p>
+<p>当时主要使用transform与animation实现功能，并且用了一个settimeout执行回调，然后此事便不了了之了</p>
+<p>但是出来混总是要还的，这不，最近相似的东西又提了出来，我们当然可以将原来的那套东西拿来用，但是看着那个settimeout总是不是滋味，因为这样捕捉回调的效果以及可能引起的BUG大家都懂，于是就想使用transitionEnd监控动画结束再执行相关回调，于是便有了一个有趣的想法</p>
+<h3>当时的心声</h3>
+<p>嗯，不行，这次我要写一个通用的东西，他至少有这些功能：</p>
+<p>① 我可以给他一个CSS变化属性</p>
+<p>② 我可以给他一个时间长度</p>
+<p>③ 我可以给他一个动画曲线参数</p>
+<p>有了以上东西我就可以让一个元素触发动画，并且对其注册transitionEnd事件，最后执行我们的回调，于是我基本就陷进去了</p>
+<p>但是，我想着想着突然感觉不对，感觉以上东西好像在哪里见过，于是一个叫<strong>animate</strong>的东西冒了出来</p>
+<p>突然一刹那，我有一个不妙的感觉，搞出来一看：</p>
+<div class="cnblogs_code">
+<pre><span style="color: #800000;">animate
+animate(properties, [duration, [easing, [function()</span>{<span style="color: #ff0000;"> ... </span>}<span style="color: #800000;">]]])   &rArr; self
+      animate(properties, </span>{<span style="color: #ff0000;"> duration</span>:<span style="color: #0000ff;"> msec, easing: type, complete: fn </span>}<span style="color: #800000;">)   &rArr; self
+      animate(animationName, </span>{<span style="color: #ff0000;"> ... </span>}<span style="color: #800000;">)   &rArr; self
+  
+对当前Zepto集合对象中元素进行css transition属性平滑过渡。
+
+properties: 一个对象，该对象包含了css动画的值，或者css帧动画的名称。
+duration (默认 400)：以毫秒为单位的时间，或者一个字符串。
+fast (200 ms)
+slow (600 ms)
+任何$.fx.speeds自定义属性
+easing (默认 linear)：指定动画的缓动类型，使用以下一个：
+ease
+linear
+ease-in / ease-out
+ease-in-out
+cubic-bezier(...)
+complete：动画完成时的回调函数</span></pre>
+</div>
+<p>于是，我自己的想法就只能呵呵了，这个就是我要的嘛......</p>
+<p>而且zepto里面便是监听transitionEnd这个事件触发回调，所以，我们今天就来学习这个animate即可！！！</p>
+<h1>transitionEnd</h1>
+<p><span style="line-height: 1.5;">transitionEnd是CSS3动画transition唯一的事件，我之前还去找个transitionStart，米有找到......</span></p>
+<p><span style="line-height: 1.5;">介绍他之前，我们先来个简单的例子，W3C上面的例子：</span></p>
+<div class="cnblogs_code">
+<pre><span style="color: #0000ff;">&lt;!</span><span style="color: #ff00ff;">DOCTYPE html</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #0000ff;">&lt;</span><span style="color: #800000;">html</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #0000ff;">&lt;</span><span style="color: #800000;">head</span><span style="color: #0000ff;">&gt;</span>
+    <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">style</span><span style="color: #0000ff;">&gt;</span><span style="background-color: #f5f5f5; color: #800000;">
+        div </span><span style="background-color: #f5f5f5; color: #000000;">{</span><span style="background-color: #f5f5f5; color: #ff0000;"> width</span><span style="background-color: #f5f5f5; color: #000000;">:</span><span style="background-color: #f5f5f5; color: #0000ff;"> 100px</span><span style="background-color: #f5f5f5; color: #000000;">;</span><span style="background-color: #f5f5f5; color: #ff0000;"> height</span><span style="background-color: #f5f5f5; color: #000000;">:</span><span style="background-color: #f5f5f5; color: #0000ff;"> 100px</span><span style="background-color: #f5f5f5; color: #000000;">;</span><span style="background-color: #f5f5f5; color: #ff0000;"> background</span><span style="background-color: #f5f5f5; color: #000000;">:</span><span style="background-color: #f5f5f5; color: #0000ff;"> blue</span><span style="background-color: #f5f5f5; color: #000000;">;</span><span style="background-color: #f5f5f5; color: #ff0000;"> transition</span><span style="background-color: #f5f5f5; color: #000000;">:</span><span style="background-color: #f5f5f5; color: #0000ff;"> width 2s</span><span style="background-color: #f5f5f5; color: #000000;">;</span><span style="background-color: #f5f5f5; color: #ff0000;"> -moz-transition</span><span style="background-color: #f5f5f5; color: #000000;">:</span><span style="background-color: #f5f5f5; color: #0000ff;"> width 2s</span><span style="background-color: #f5f5f5; color: #000000;">;</span> <span style="background-color: #f5f5f5; color: #008000;">/*</span><span style="background-color: #f5f5f5; color: #008000;"> Firefox 4 </span><span style="background-color: #f5f5f5; color: #008000;">*/</span><span style="background-color: #f5f5f5; color: #ff0000;"> -webkit-transition</span><span style="background-color: #f5f5f5; color: #000000;">:</span><span style="background-color: #f5f5f5; color: #0000ff;"> width 2s</span><span style="background-color: #f5f5f5; color: #000000;">;</span> <span style="background-color: #f5f5f5; color: #008000;">/*</span><span style="background-color: #f5f5f5; color: #008000;"> Safari and Chrome </span><span style="background-color: #f5f5f5; color: #008000;">*/</span><span style="background-color: #f5f5f5; color: #ff0000;"> -o-transition</span><span style="background-color: #f5f5f5; color: #000000;">:</span><span style="background-color: #f5f5f5; color: #0000ff;"> width 2s</span><span style="background-color: #f5f5f5; color: #000000;">;</span> <span style="background-color: #f5f5f5; color: #008000;">/*</span><span style="background-color: #f5f5f5; color: #008000;"> Opera </span><span style="background-color: #f5f5f5; color: #008000;">*/</span> <span style="background-color: #f5f5f5; color: #000000;">}</span><span style="background-color: #f5f5f5; color: #800000;">
+        
+        div:hover </span><span style="background-color: #f5f5f5; color: #000000;">{</span><span style="background-color: #f5f5f5; color: #ff0000;"> width</span><span style="background-color: #f5f5f5; color: #000000;">:</span><span style="background-color: #f5f5f5; color: #0000ff;"> 300px</span><span style="background-color: #f5f5f5; color: #000000;">;</span> <span style="background-color: #f5f5f5; color: #000000;">}</span>
+    <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">style</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">head</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #0000ff;">&lt;</span><span style="color: #800000;">body</span><span style="color: #0000ff;">&gt;</span>
+    <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">div</span><span style="color: #0000ff;">&gt;</span>
+    <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">div</span><span style="color: #0000ff;">&gt;</span>
+    <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">p</span><span style="color: #0000ff;">&gt;</span><span style="color: #000000;">
+        请把鼠标指针移动到蓝色的 div 元素上，就可以看到过渡效果。</span><span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">p</span><span style="color: #0000ff;">&gt;</span>
+    <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">p</span><span style="color: #0000ff;">&gt;</span>
+        <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">b</span><span style="color: #0000ff;">&gt;</span>注释：<span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">b</span><span style="color: #0000ff;">&gt;</span>本例在 Internet Explorer 中无效。<span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">p</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">body</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">html</span><span style="color: #0000ff;">&gt;</span></pre>
+</div>
+<p><iframe src="17433565989222.jpg" width="80%" height="200"></iframe></p>
+<p><span style="line-height: 1.5;">好了，现在若是我们要在动画结束时候加一个事件该怎么办呢？</span>&nbsp;</p>
+<div class="cnblogs_code">
+<pre><span style="color: #0000ff;">&lt;!</span><span style="color: #ff00ff;">DOCTYPE html</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #0000ff;">&lt;</span><span style="color: #800000;">html</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #0000ff;">&lt;</span><span style="color: #800000;">head</span><span style="color: #0000ff;">&gt;</span>
+    <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">style</span><span style="color: #0000ff;">&gt;</span><span style="background-color: #f5f5f5; color: #800000;">
+        div </span><span style="background-color: #f5f5f5; color: #000000;">{</span><span style="background-color: #f5f5f5; color: #ff0000;"> width</span><span style="background-color: #f5f5f5; color: #000000;">:</span><span style="background-color: #f5f5f5; color: #0000ff;"> 100px</span><span style="background-color: #f5f5f5; color: #000000;">;</span><span style="background-color: #f5f5f5; color: #ff0000;"> height</span><span style="background-color: #f5f5f5; color: #000000;">:</span><span style="background-color: #f5f5f5; color: #0000ff;"> 100px</span><span style="background-color: #f5f5f5; color: #000000;">;</span><span style="background-color: #f5f5f5; color: #ff0000;"> background</span><span style="background-color: #f5f5f5; color: #000000;">:</span><span style="background-color: #f5f5f5; color: #0000ff;"> blue</span><span style="background-color: #f5f5f5; color: #000000;">;</span><span style="background-color: #f5f5f5; color: #ff0000;"> transition</span><span style="background-color: #f5f5f5; color: #000000;">:</span><span style="background-color: #f5f5f5; color: #0000ff;"> width 1s</span><span style="background-color: #f5f5f5; color: #000000;">;</span><span style="background-color: #f5f5f5; color: #ff0000;"> -moz-transition</span><span style="background-color: #f5f5f5; color: #000000;">:</span><span style="background-color: #f5f5f5; color: #0000ff;"> width 1s</span><span style="background-color: #f5f5f5; color: #000000;">;</span> <span style="background-color: #f5f5f5; color: #008000;">/*</span><span style="background-color: #f5f5f5; color: #008000;"> Firefox 4 </span><span style="background-color: #f5f5f5; color: #008000;">*/</span><span style="background-color: #f5f5f5; color: #ff0000;"> -webkit-transition</span><span style="background-color: #f5f5f5; color: #000000;">:</span><span style="background-color: #f5f5f5; color: #0000ff;"> width 1s</span><span style="background-color: #f5f5f5; color: #000000;">;</span> <span style="background-color: #f5f5f5; color: #008000;">/*</span><span style="background-color: #f5f5f5; color: #008000;"> Safari and Chrome </span><span style="background-color: #f5f5f5; color: #008000;">*/</span><span style="background-color: #f5f5f5; color: #ff0000;"> -o-transition</span><span style="background-color: #f5f5f5; color: #000000;">:</span><span style="background-color: #f5f5f5; color: #0000ff;"> width 1s</span><span style="background-color: #f5f5f5; color: #000000;">;</span> <span style="background-color: #f5f5f5; color: #008000;">/*</span><span style="background-color: #f5f5f5; color: #008000;"> Opera </span><span style="background-color: #f5f5f5; color: #008000;">*/</span> <span style="background-color: #f5f5f5; color: #000000;">}</span><span style="background-color: #f5f5f5; color: #800000;">
+        
+        div:hover </span><span style="background-color: #f5f5f5; color: #000000;">{</span><span style="background-color: #f5f5f5; color: #ff0000;"> width</span><span style="background-color: #f5f5f5; color: #000000;">:</span><span style="background-color: #f5f5f5; color: #0000ff;"> 300px</span><span style="background-color: #f5f5f5; color: #000000;">;</span> <span style="background-color: #f5f5f5; color: #000000;">}</span>
+    <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">style</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">head</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #0000ff;">&lt;</span><span style="color: #800000;">body</span><span style="color: #0000ff;">&gt;</span>
+    <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">div </span><span style="color: #ff0000;">id</span><span style="color: #0000ff;">="demo"</span><span style="color: #0000ff;">&gt;</span>
+    <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">div</span><span style="color: #0000ff;">&gt;</span>
+    <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">br </span><span style="color: #0000ff;">/&gt;</span>
+    <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">span </span><span style="color: #ff0000;">id</span><span style="color: #0000ff;">="msg"</span><span style="color: #0000ff;">&gt;&lt;/</span><span style="color: #800000;">span</span><span style="color: #0000ff;">&gt;</span>
+    <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">p</span><span style="color: #0000ff;">&gt;</span><span style="color: #000000;">
+        请把鼠标指针移动到蓝色的 div 元素上，就可以看到过渡效果。</span><span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">p</span><span style="color: #0000ff;">&gt;</span>
+    <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">p</span><span style="color: #0000ff;">&gt;</span>
+        <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">b</span><span style="color: #0000ff;">&gt;</span>注释：<span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">b</span><span style="color: #0000ff;">&gt;</span>本例在 Internet Explorer 中无效。<span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">p</span><span style="color: #0000ff;">&gt;</span>
+    <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">script </span><span style="color: #ff0000;">type</span><span style="color: #0000ff;">="text/javascript"</span><span style="color: #0000ff;">&gt;</span>
+        <span style="background-color: #f5f5f5; color: #0000ff;">var</span><span style="background-color: #f5f5f5; color: #000000;"> demo </span><span style="background-color: #f5f5f5; color: #000000;">=</span><span style="background-color: #f5f5f5; color: #000000;"> document.getElementById(</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">demo</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">);
+        </span><span style="background-color: #f5f5f5; color: #0000ff;">var</span><span style="background-color: #f5f5f5; color: #000000;"> msg </span><span style="background-color: #f5f5f5; color: #000000;">=</span><span style="background-color: #f5f5f5; color: #000000;"> document.getElementById(</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">msg</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">);
+
+</span><span style="background-color: #f5f5f5; color: #008000;">//</span><span style="background-color: #f5f5f5; color: #008000;">        eventType(this.scroller, 'transitionend', this);</span><span style="background-color: #f5f5f5; color: #008000;">
+//</span><span style="background-color: #f5f5f5; color: #008000;">        eventType(this.scroller, 'webkitTransitionEnd', this);</span><span style="background-color: #f5f5f5; color: #008000;">
+//</span><span style="background-color: #f5f5f5; color: #008000;">        eventType(this.scroller, 'oTransitionEnd', this);</span><span style="background-color: #f5f5f5; color: #008000;">
+//</span><span style="background-color: #f5f5f5; color: #008000;">        eventType(this.scroller, 'MSTransitionEnd', this);</span>
+<span style="background-color: #f5f5f5; color: #000000;">
+        demo.addEventListener(</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">webkitTransitionEnd</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">, </span><span style="background-color: #f5f5f5; color: #0000ff;">function</span><span style="background-color: #f5f5f5; color: #000000;"> () {
+            msg.innerHTML </span><span style="background-color: #f5f5f5; color: #000000;">=</span> <span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">事件回调，当前原始宽度：</span><span style="background-color: #f5f5f5; color: #000000;">'</span> <span style="background-color: #f5f5f5; color: #000000;">+</span><span style="background-color: #f5f5f5; color: #000000;"> window.getComputedStyle(demo).width;
+        });
+        
+    </span><span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">script</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">body</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">html</span><span style="color: #0000ff;">&gt;</span></pre>
+</div>
+<p><iframe style="line-height: 1.5;" src="35258315763786.jpg" width="80%" height="200"></iframe></p>
+<p><span style="line-height: 1.5;">这个例子虽然简单却很好的说明了一些问题，现在我们就来简单模拟一下animate</span></p>
+<h2><span style="line-height: 1.5;">简单模拟animate</span></h2>
+<p><span style="line-height: 1.5;">既然zepto已经很好的实现了该功能，我们这里就简单的模拟下即可，然后看看zepto源码</span></p>
+<div class="cnblogs_code">
+<pre><span style="color: #0000ff;">var</span> demo = document.getElementById('demo'<span style="color: #000000;">);
+</span><span style="color: #0000ff;">var</span> msg = document.getElementById('msg'<span style="color: #000000;">);
+
+</span><span style="color: #008000;">//</span><span style="color: #008000;">简单模拟animate，参数问题就不管他了，暂时只考虑width吧</span>
+<span style="color: #0000ff;">function</span><span style="color: #000000;"> animate(el, css, time, fn) {
+      
+  </span><span style="color: #0000ff;">if</span> (!el) <span style="color: #0000ff;">return</span><span style="color: #000000;">;
+
+  </span><span style="color: #0000ff;">var</span> callback = <span style="color: #0000ff;">function</span><span style="color: #000000;"> () {
+    fn(arguments);
+    el.removeEventListener(</span>'webkitTransitionEnd'<span style="color: #000000;">, callback);
+  };
+
+  el.addEventListener(</span>'webkitTransitionEnd'<span style="color: #000000;">, callback);
+
+  </span><span style="color: #0000ff;">for</span> (<span style="color: #0000ff;">var</span> k <span style="color: #0000ff;">in</span><span style="color: #000000;"> css) {
+    </span><span style="color: #008000;">//</span><span style="color: #008000;">这里暂时只考虑webkit内核</span>
+    el.style['-webkit-transition'] = k + ' ' + time + 's'<span style="color: #000000;">;
+  }
+
+  </span><span style="color: #0000ff;">for</span> (<span style="color: #0000ff;">var</span> k <span style="color: #0000ff;">in</span><span style="color: #000000;"> css) {
+    </span><span style="color: #008000;">//</span><span style="color: #008000;">这里暂时只考虑webkit内核</span>
+    el.style[k] =<span style="color: #000000;"> css[k];
+  }
+}
+
+demo.addEventListener(</span>'mouseenter', <span style="color: #0000ff;">function</span><span style="color: #000000;"> () {
+  animate(demo, { width: </span>'300px' }, 1<span style="color: #000000;">, fn);
+});
+
+demo.addEventListener(</span>'mouseout', <span style="color: #0000ff;">function</span><span style="color: #000000;"> () {
+  animate(demo, { width: </span>'100px' }, 2<span style="color: #000000;">, fn);
+});
+
+</span><span style="color: #0000ff;">var</span> fn = <span style="color: #0000ff;">function</span><span style="color: #000000;"> () {
+  msg.innerHTML </span>= '事件回调，当前原始宽度：' +<span style="color: #000000;"> window.getComputedStyle(demo).width;
+}</span></pre>
+</div>
+<p>这是一个简单的实现，每次执行animate的时候，先会执行一次transitionEnd的事件注册，并且执行一次后就销毁</p>
+<p>第二步为其设置transition属性，如果可以的话，这里最好是可以消除</p>
+<p>最后一步就是为其设置css属性即可整个逻辑很简单，大概原理就是这样，我接下来来看看zepto高大上的实现！！！</p>
+<h1>zepto高大上的animate</h1>
+<p>zepto要实现以上代码的话，这样搞：</p>
+<div class="cnblogs_code">
+<pre><span style="color: #0000ff;">var</span> demo = $('#demo'<span style="color: #000000;">);
+</span><span style="color: #0000ff;">var</span> msg = $('#msg'<span style="color: #000000;">);
+
+</span><span style="color: #0000ff;">var</span> fn = <span style="color: #0000ff;">function</span><span style="color: #000000;"> () {
+  msg.html(</span>'事件回调，当前原始宽度：' +<span style="color: #000000;"> demo.width());
+};
+
+demo.on(</span>'mouseenter', <span style="color: #0000ff;">function</span><span style="color: #000000;"> () {
+  demo.animate({ </span>'width': '300px' }, 1000, 'ease-out'<span style="color: #000000;">, fn);
+});
+
+demo.on(</span>'mouseout', <span style="color: #0000ff;">function</span><span style="color: #000000;"> () {
+  demo.animate({ </span>'width': '100px' }, 2000, 'ease-out'<span style="color: #000000;">, fn);
+});</span></pre>
+</div>
+<p>然后我们现在来看看源码：</p>
+<div class="cnblogs_code" onclick="cnblogs_code_show('ca8e63ef-325e-4f51-bde2-90d331452360')"><img id="code_img_closed_ca8e63ef-325e-4f51-bde2-90d331452360" class="code_img_closed" src="43570758473519.gif" alt=""><img id="code_img_opened_ca8e63ef-325e-4f51-bde2-90d331452360" class="code_img_opened" style="display: none;" onclick="cnblogs_code_hide('ca8e63ef-325e-4f51-bde2-90d331452360',event)" src="16365178109279.gif" alt="">
+<div id="cnblogs_code_open_ca8e63ef-325e-4f51-bde2-90d331452360" class="cnblogs_code_hide">
+<pre>;(<span style="color: #0000ff;">function</span><span style="color: #000000;">($, undefined){
+  </span><span style="color: #0000ff;">var</span> prefix = ''<span style="color: #000000;">, eventPrefix, endEventName, endAnimationName,
+    vendors </span>= { Webkit: 'webkit', Moz: '', O: 'o'<span style="color: #000000;"> },
+    document </span>= window.document, testEl = document.createElement('div'<span style="color: #000000;">),
+    supportedTransforms </span>= /^((translate|rotate|scale)(X|Y|Z|3d)?|matrix(3d)?|perspective|skew(X|Y)?)$/<span style="color: #000000;">i,
+    transform,
+    transitionProperty, transitionDuration, transitionTiming, transitionDelay,
+    animationName, animationDuration, animationTiming, animationDelay,
+    cssReset </span>=<span style="color: #000000;"> {}
+
+  </span><span style="color: #0000ff;">function</span> dasherize(str) { <span style="color: #0000ff;">return</span> str.replace(/([a-z])([A-Z])/, '$1-$2'<span style="color: #000000;">).toLowerCase() }
+  </span><span style="color: #0000ff;">function</span> normalizeEvent(name) { <span style="color: #0000ff;">return</span> eventPrefix ? eventPrefix +<span style="color: #000000;"> name : name.toLowerCase() }
+
+  $.each(vendors, </span><span style="color: #0000ff;">function</span><span style="color: #000000;">(vendor, event){
+    </span><span style="color: #0000ff;">if</span> (testEl.style[vendor + 'TransitionProperty'] !==<span style="color: #000000;"> undefined) {
+      prefix </span>= '-' + vendor.toLowerCase() + '-'<span style="color: #000000;">
+      eventPrefix </span>=<span style="color: #000000;"> event
+      </span><span style="color: #0000ff;">return</span> <span style="color: #0000ff;">false</span><span style="color: #000000;">
+    }
+  })
+
+  transform </span>= prefix + 'transform'<span style="color: #000000;">
+  cssReset[transitionProperty </span>= prefix + 'transition-property'] =<span style="color: #000000;">
+  cssReset[transitionDuration </span>= prefix + 'transition-duration'] =<span style="color: #000000;">
+  cssReset[transitionDelay    </span>= prefix + 'transition-delay'] =<span style="color: #000000;">
+  cssReset[transitionTiming   </span>= prefix + 'transition-timing-function'] =<span style="color: #000000;">
+  cssReset[animationName      </span>= prefix + 'animation-name'] =<span style="color: #000000;">
+  cssReset[animationDuration  </span>= prefix + 'animation-duration'] =<span style="color: #000000;">
+  cssReset[animationDelay     </span>= prefix + 'animation-delay'] =<span style="color: #000000;">
+  cssReset[animationTiming    </span>= prefix + 'animation-timing-function'] = ''<span style="color: #000000;">
+
+  $.fx </span>=<span style="color: #000000;"> {
+    off: (eventPrefix </span>=== undefined &amp;&amp; testEl.style.transitionProperty ===<span style="color: #000000;"> undefined),
+    speeds: { _default: </span>400, fast: 200, slow: 600<span style="color: #000000;"> },
+    cssPrefix: prefix,
+    transitionEnd: normalizeEvent(</span>'TransitionEnd'<span style="color: #000000;">),
+    animationEnd: normalizeEvent(</span>'AnimationEnd'<span style="color: #000000;">)
+  }
+
+  $.fn.animate </span>= <span style="color: #0000ff;">function</span><span style="color: #000000;">(properties, duration, ease, callback, delay){
+    </span><span style="color: #0000ff;">if</span><span style="color: #000000;"> ($.isFunction(duration))
+      callback </span>= duration, ease = undefined, duration =<span style="color: #000000;"> undefined
+    </span><span style="color: #0000ff;">if</span><span style="color: #000000;"> ($.isFunction(ease))
+      callback </span>= ease, ease =<span style="color: #000000;"> undefined
+    </span><span style="color: #0000ff;">if</span><span style="color: #000000;"> ($.isPlainObject(duration))
+      ease </span>= duration.easing, callback = duration.complete, delay = duration.delay, duration =<span style="color: #000000;"> duration.duration
+    </span><span style="color: #0000ff;">if</span> (duration) duration = (<span style="color: #0000ff;">typeof</span> duration == 'number' ?<span style="color: #000000;"> duration :
+                    ($.fx.speeds[duration] </span>|| $.fx.speeds._default)) / 1000
+    <span style="color: #0000ff;">if</span> (delay) delay = parseFloat(delay) / 1000
+    <span style="color: #0000ff;">return</span> <span style="color: #0000ff;">this</span><span style="color: #000000;">.anim(properties, duration, ease, callback, delay)
+  }
+
+  $.fn.anim </span>= <span style="color: #0000ff;">function</span><span style="color: #000000;">(properties, duration, ease, callback, delay){
+    </span><span style="color: #0000ff;">var</span> key, cssValues = {}, cssProperties, transforms = ''<span style="color: #000000;">,
+        that </span>= <span style="color: #0000ff;">this</span>, wrappedCallback, endEvent =<span style="color: #000000;"> $.fx.transitionEnd,
+        fired </span>= <span style="color: #0000ff;">false</span>
+
+    <span style="color: #0000ff;">if</span> (duration === undefined) duration = $.fx.speeds._default / 1000
+    <span style="color: #0000ff;">if</span> (delay === undefined) delay = 0
+    <span style="color: #0000ff;">if</span> ($.fx.off) duration = 0
+
+    <span style="color: #0000ff;">if</span> (<span style="color: #0000ff;">typeof</span> properties == 'string'<span style="color: #000000;">) {
+      </span><span style="color: #008000;">//</span><span style="color: #008000;"> keyframe animation</span>
+      cssValues[animationName] =<span style="color: #000000;"> properties
+      cssValues[animationDuration] </span>= duration + 's'<span style="color: #000000;">
+      cssValues[animationDelay] </span>= delay + 's'<span style="color: #000000;">
+      cssValues[animationTiming] </span>= (ease || 'linear'<span style="color: #000000;">)
+      endEvent </span>=<span style="color: #000000;"> $.fx.animationEnd
+    } </span><span style="color: #0000ff;">else</span><span style="color: #000000;"> {
+      cssProperties </span>=<span style="color: #000000;"> []
+      </span><span style="color: #008000;">//</span><span style="color: #008000;"> CSS transitions</span>
+      <span style="color: #0000ff;">for</span> (key <span style="color: #0000ff;">in</span><span style="color: #000000;"> properties)
+        </span><span style="color: #0000ff;">if</span> (supportedTransforms.test(key)) transforms += key + '(' + properties[key] + ') '
+        <span style="color: #0000ff;">else</span> cssValues[key] =<span style="color: #000000;"> properties[key], cssProperties.push(dasherize(key))
+
+      </span><span style="color: #0000ff;">if</span> (transforms) cssValues[transform] =<span style="color: #000000;"> transforms, cssProperties.push(transform)
+      </span><span style="color: #0000ff;">if</span> (duration &gt; 0 &amp;&amp; <span style="color: #0000ff;">typeof</span> properties === 'object'<span style="color: #000000;">) {
+        cssValues[transitionProperty] </span>= cssProperties.join(', '<span style="color: #000000;">)
+        cssValues[transitionDuration] </span>= duration + 's'<span style="color: #000000;">
+        cssValues[transitionDelay] </span>= delay + 's'<span style="color: #000000;">
+        cssValues[transitionTiming] </span>= (ease || 'linear'<span style="color: #000000;">)
+      }
+    }
+
+    wrappedCallback </span>= <span style="color: #0000ff;">function</span><span style="color: #000000;">(event){
+      </span><span style="color: #0000ff;">if</span> (<span style="color: #0000ff;">typeof</span> event !== 'undefined'<span style="color: #000000;">) {
+        </span><span style="color: #0000ff;">if</span> (event.target !== event.currentTarget) <span style="color: #0000ff;">return</span> <span style="color: #008000;">//</span><span style="color: #008000;"> makes sure the event didn't bubble from "below"</span>
+<span style="color: #000000;">        $(event.target).unbind(endEvent, wrappedCallback)
+      } </span><span style="color: #0000ff;">else</span><span style="color: #000000;">
+        $(</span><span style="color: #0000ff;">this</span>).unbind(endEvent, wrappedCallback) <span style="color: #008000;">//</span><span style="color: #008000;"> triggered by setTimeout</span>
+<span style="color: #000000;">
+      fired </span>= <span style="color: #0000ff;">true</span><span style="color: #000000;">
+      $(</span><span style="color: #0000ff;">this</span><span style="color: #000000;">).css(cssReset)
+      callback </span>&amp;&amp; callback.call(<span style="color: #0000ff;">this</span><span style="color: #000000;">)
+    }
+    </span><span style="color: #0000ff;">if</span> (duration &gt; 0<span style="color: #000000;">){
+      </span><span style="color: #0000ff;">this</span><span style="color: #000000;">.bind(endEvent, wrappedCallback)
+      </span><span style="color: #008000;">//</span><span style="color: #008000;"> transitionEnd is not always firing on older Android phones</span>
+      <span style="color: #008000;">//</span><span style="color: #008000;"> so make sure it gets fired</span>
+      setTimeout(<span style="color: #0000ff;">function</span><span style="color: #000000;">(){
+        </span><span style="color: #0000ff;">if</span> (fired) <span style="color: #0000ff;">return</span><span style="color: #000000;">
+        wrappedCallback.call(that)
+      }, (duration </span>* 1000) + 25<span style="color: #000000;">)
+    }
+
+    </span><span style="color: #008000;">//</span><span style="color: #008000;"> trigger page reflow so new elements can animate</span>
+    <span style="color: #0000ff;">this</span>.size() &amp;&amp; <span style="color: #0000ff;">this</span>.get(0<span style="color: #000000;">).clientLeft
+
+    </span><span style="color: #0000ff;">this</span><span style="color: #000000;">.css(cssValues)
+
+    </span><span style="color: #0000ff;">if</span> (duration &lt;= 0) setTimeout(<span style="color: #0000ff;">function</span><span style="color: #000000;">() {
+      that.each(</span><span style="color: #0000ff;">function</span>(){ wrappedCallback.call(<span style="color: #0000ff;">this</span><span style="color: #000000;">) })
+    }, </span>0<span style="color: #000000;">)
+
+    </span><span style="color: #0000ff;">return</span> <span style="color: #0000ff;">this</span><span style="color: #000000;">
+  }
+
+  testEl </span>= <span style="color: #0000ff;">null</span><span style="color: #000000;">
+})(Zepto)</span></pre>
+</div>
+<span class="cnblogs_code_collapse">View Code </span></div>
+<p>看代码首先还是看入口，我们这里的入口就是animate</p>
+<div class="cnblogs_code">
+<pre>demo.animate({ 'width': '300px' }, 1000, 'ease-out', fn);</pre>
+</div>
+<div class="cnblogs_code">
+<pre><span style="color: #008080;"> 1</span> $.fn.animate = <span style="color: #0000ff;">function</span><span style="color: #000000;">(properties, duration, ease, callback, delay){
+</span><span style="color: #008080;"> 2</span>   <span style="color: #0000ff;">if</span><span style="color: #000000;"> ($.isFunction(duration))
+</span><span style="color: #008080;"> 3</span>     callback = duration, ease = undefined, duration =<span style="color: #000000;"> undefined
+</span><span style="color: #008080;"> 4</span>   <span style="color: #0000ff;">if</span><span style="color: #000000;"> ($.isFunction(ease))
+</span><span style="color: #008080;"> 5</span>     callback = ease, ease =<span style="color: #000000;"> undefined
+</span><span style="color: #008080;"> 6</span>   <span style="color: #0000ff;">if</span><span style="color: #000000;"> ($.isPlainObject(duration))
+</span><span style="color: #008080;"> 7</span>     ease = duration.easing, callback = duration.complete, delay = duration.delay, duration =<span style="color: #000000;"> duration.duration
+</span><span style="color: #008080;"> 8</span>   <span style="color: #0000ff;">if</span> (duration) duration = (<span style="color: #0000ff;">typeof</span> duration == 'number' ?<span style="color: #000000;"> duration :
+</span><span style="color: #008080;"> 9</span>                   ($.fx.speeds[duration] || $.fx.speeds._default)) / 1000
+<span style="color: #008080;">10</span>   <span style="color: #0000ff;">if</span> (delay) delay = parseFloat(delay) / 1000
+<span style="color: #008080;">11</span>   <span style="color: #0000ff;">return</span> <span style="color: #0000ff;">this</span><span style="color: #000000;">.anim(properties, duration, ease, callback, delay)
+</span><span style="color: #008080;">12</span> }</pre>
+</div>
+<p>他首先这里做了一些默认处理，因为我们传递的参数是不定的，所以第二个参数极有可能是回调</p>
+<p>所以他第一句就是做一个简单的判断，第二句也不例外</p>
+<p>其实他整个animate都是做一些属性处理，并未做实际的事情，具体的实现还是在anim中</p>
+<div class="cnblogs_code">
+<pre><span style="color: #008080;"> 1</span> $.fn.anim = <span style="color: #0000ff;">function</span><span style="color: #000000;">(properties, duration, ease, callback, delay){
+</span><span style="color: #008080;"> 2</span>   <span style="color: #0000ff;">var</span> key, cssValues = {}, cssProperties, transforms = ''<span style="color: #000000;">,
+</span><span style="color: #008080;"> 3</span>       that = <span style="color: #0000ff;">this</span>, wrappedCallback, endEvent =<span style="color: #000000;"> $.fx.transitionEnd,
+</span><span style="color: #008080;"> 4</span>       fired = <span style="color: #0000ff;">false</span>
+<span style="color: #008080;"> 5</span> 
+<span style="color: #008080;"> 6</span>   <span style="color: #0000ff;">if</span> (duration === undefined) duration = $.fx.speeds._default / 1000
+<span style="color: #008080;"> 7</span>   <span style="color: #0000ff;">if</span> (delay === undefined) delay = 0
+<span style="color: #008080;"> 8</span>   <span style="color: #0000ff;">if</span> ($.fx.off) duration = 0
+<span style="color: #008080;"> 9</span> 
+<span style="color: #008080;">10</span>   <span style="color: #0000ff;">if</span> (<span style="color: #0000ff;">typeof</span> properties == 'string'<span style="color: #000000;">) {
+</span><span style="color: #008080;">11</span>     <span style="color: #008000;">//</span><span style="color: #008000;"> keyframe animation</span>
+<span style="color: #008080;">12</span>     cssValues[animationName] =<span style="color: #000000;"> properties
+</span><span style="color: #008080;">13</span>     cssValues[animationDuration] = duration + 's'
+<span style="color: #008080;">14</span>     cssValues[animationDelay] = delay + 's'
+<span style="color: #008080;">15</span>     cssValues[animationTiming] = (ease || 'linear'<span style="color: #000000;">)
+</span><span style="color: #008080;">16</span>     endEvent =<span style="color: #000000;"> $.fx.animationEnd
+</span><span style="color: #008080;">17</span>   } <span style="color: #0000ff;">else</span><span style="color: #000000;"> {
+</span><span style="color: #008080;">18</span>     cssProperties =<span style="color: #000000;"> []
+</span><span style="color: #008080;">19</span>     <span style="color: #008000;">//</span><span style="color: #008000;"> CSS transitions</span>
+<span style="color: #008080;">20</span>     <span style="color: #0000ff;">for</span> (key <span style="color: #0000ff;">in</span><span style="color: #000000;"> properties)
+</span><span style="color: #008080;">21</span>       <span style="color: #0000ff;">if</span> (supportedTransforms.test(key)) transforms += key + '(' + properties[key] + ') '
+<span style="color: #008080;">22</span>       <span style="color: #0000ff;">else</span> cssValues[key] =<span style="color: #000000;"> properties[key], cssProperties.push(dasherize(key))
+</span><span style="color: #008080;">23</span> 
+<span style="color: #008080;">24</span>     <span style="color: #0000ff;">if</span> (transforms) cssValues[transform] =<span style="color: #000000;"> transforms, cssProperties.push(transform)
+</span><span style="color: #008080;">25</span>     <span style="color: #0000ff;">if</span> (duration &gt; 0 &amp;&amp; <span style="color: #0000ff;">typeof</span> properties === 'object'<span style="color: #000000;">) {
+</span><span style="color: #008080;">26</span>       cssValues[transitionProperty] = cssProperties.join(', '<span style="color: #000000;">)
+</span><span style="color: #008080;">27</span>       cssValues[transitionDuration] = duration + 's'
+<span style="color: #008080;">28</span>       cssValues[transitionDelay] = delay + 's'
+<span style="color: #008080;">29</span>       cssValues[transitionTiming] = (ease || 'linear'<span style="color: #000000;">)
+</span><span style="color: #008080;">30</span> <span style="color: #000000;">    }
+</span><span style="color: #008080;">31</span> <span style="color: #000000;">  }
+</span><span style="color: #008080;">32</span> 
+<span style="color: #008080;">33</span>   wrappedCallback = <span style="color: #0000ff;">function</span><span style="color: #000000;">(event){
+</span><span style="color: #008080;">34</span>     <span style="color: #0000ff;">if</span> (<span style="color: #0000ff;">typeof</span> event !== 'undefined'<span style="color: #000000;">) {
+</span><span style="color: #008080;">35</span>       <span style="color: #0000ff;">if</span> (event.target !== event.currentTarget) <span style="color: #0000ff;">return</span> <span style="color: #008000;">//</span><span style="color: #008000;"> makes sure the event didn't bubble from "below"</span>
+<span style="color: #008080;">36</span> <span style="color: #000000;">      $(event.target).unbind(endEvent, wrappedCallback)
+</span><span style="color: #008080;">37</span>     } <span style="color: #0000ff;">else</span>
+<span style="color: #008080;">38</span>       $(<span style="color: #0000ff;">this</span>).unbind(endEvent, wrappedCallback) <span style="color: #008000;">//</span><span style="color: #008000;"> triggered by setTimeout</span>
+<span style="color: #008080;">39</span> 
+<span style="color: #008080;">40</span>     fired = <span style="color: #0000ff;">true</span>
+<span style="color: #008080;">41</span>     $(<span style="color: #0000ff;">this</span><span style="color: #000000;">).css(cssReset)
+</span><span style="color: #008080;">42</span>     callback &amp;&amp; callback.call(<span style="color: #0000ff;">this</span><span style="color: #000000;">)
+</span><span style="color: #008080;">43</span> <span style="color: #000000;">  }
+</span><span style="color: #008080;">44</span>   <span style="color: #0000ff;">if</span> (duration &gt; 0<span style="color: #000000;">){
+</span><span style="color: #008080;">45</span>     <span style="color: #0000ff;">this</span><span style="color: #000000;">.bind(endEvent, wrappedCallback)
+</span><span style="color: #008080;">46</span>     <span style="color: #008000;">//</span><span style="color: #008000;"> transitionEnd is not always firing on older Android phones</span>
+<span style="color: #008080;">47</span>     <span style="color: #008000;">//</span><span style="color: #008000;"> so make sure it gets fired</span>
+<span style="color: #008080;">48</span>     setTimeout(<span style="color: #0000ff;">function</span><span style="color: #000000;">(){
+</span><span style="color: #008080;">49</span>       <span style="color: #0000ff;">if</span> (fired) <span style="color: #0000ff;">return</span>
+<span style="color: #008080;">50</span> <span style="color: #000000;">      wrappedCallback.call(that)
+</span><span style="color: #008080;">51</span>     }, (duration * 1000) + 25<span style="color: #000000;">)
+</span><span style="color: #008080;">52</span> <span style="color: #000000;">  }
+</span><span style="color: #008080;">53</span> 
+<span style="color: #008080;">54</span>   <span style="color: #008000;">//</span><span style="color: #008000;"> trigger page reflow so new elements can animate</span>
+<span style="color: #008080;">55</span>   <span style="color: #0000ff;">this</span>.size() &amp;&amp; <span style="color: #0000ff;">this</span>.get(0<span style="color: #000000;">).clientLeft
+</span><span style="color: #008080;">56</span> 
+<span style="color: #008080;">57</span>   <span style="color: #0000ff;">this</span><span style="color: #000000;">.css(cssValues)
+</span><span style="color: #008080;">58</span> 
+<span style="color: #008080;">59</span>   <span style="color: #0000ff;">if</span> (duration &lt;= 0) setTimeout(<span style="color: #0000ff;">function</span><span style="color: #000000;">() {
+</span><span style="color: #008080;">60</span>     that.each(<span style="color: #0000ff;">function</span>(){ wrappedCallback.call(<span style="color: #0000ff;">this</span><span style="color: #000000;">) })
+</span><span style="color: #008080;">61</span>   }, 0<span style="color: #000000;">)
+</span><span style="color: #008080;">62</span> 
+<span style="color: #008080;">63</span>   <span style="color: #0000ff;">return</span> <span style="color: #0000ff;">this</span>
+<span style="color: #008080;">64</span> }</pre>
+</div>
+<p>传入anim的参数真的就没有什么问题了</p>
+<p>第一个是css属性</p>
+<p>第二个是动画运行时间</p>
+<p>第三个是动画曲线，这个很神奇，没事不要去搞他</p>
+<p>第四个是回调函数</p>
+<p>第五个是什么就暂时不知道是什么了</p>
+<p>进入后，10行之前还是在做容错性处理，这里我们最主要关注点放在endEvent上面</p>
+<p>这个东西由前面的fx对象获取：</p>
+<div class="cnblogs_code">
+<pre>$.fx =<span style="color: #000000;"> {
+  off: (eventPrefix </span>=== undefined &amp;&amp; testEl.style.transitionProperty ===<span style="color: #000000;"> undefined),
+  speeds: { _default: </span>400, fast: 200, slow: 600<span style="color: #000000;"> },
+  cssPrefix: prefix,
+  transitionEnd: normalizeEvent(</span>'TransitionEnd'<span style="color: #000000;">),
+  animationEnd: normalizeEvent(</span>'AnimationEnd'<span style="color: #000000;">)
+}</span></pre>
+</div>
+<p>而我们要做的chrome、firefox等兼容全部被normalizeEvent做了，这里</p>
+<div class="cnblogs_code">
+<pre>vendors = { Webkit: 'webkit', Moz: '', O: 'o' }<br>testEl = document.createElement('div'<span style="color: #000000;">)
+$.each(vendors, </span><span style="color: #0000ff;">function</span><span style="color: #000000;">(vendor, event){
+  </span><span style="color: #0000ff;">if</span> (testEl.style[vendor + 'TransitionProperty'] !==<span style="color: #000000;"> undefined) {
+    prefix </span>= '-' + vendor.toLowerCase() + '-'<span style="color: #000000;">
+    eventPrefix </span>=<span style="color: #000000;"> event
+    </span><span style="color: #0000ff;">return</span> <span style="color: #0000ff;">false</span><span style="color: #000000;">
+  }
+})</span></pre>
+</div>
+<p>这里根据这种方式得出了兼容事件的前缀，webkit的话会返回webkit前缀：</p>
+<div class="cnblogs_code">
+<pre><span style="color: #000000;">$.fx.transitionEnd =&gt; </span>"webkitTransitionEnd"</pre>
+</div>
+<p>然后下一步简单仍然是先设置transition相关的属性，并且指定事件结束事件回调：</p>
+<div class="cnblogs_code">
+<pre>cssValues[animationName] =<span style="color: #000000;"> properties
+cssValues[animationDuration] </span>= duration + 's'<span style="color: #000000;">
+cssValues[animationDelay] </span>= delay + 's'<span style="color: #000000;">
+cssValues[animationTiming] </span>= (ease || 'linear'<span style="color: #000000;">)
+endEvent </span>= $.fx.animationEnd</pre>
+</div>
+<p>当然，如果我们传入的CSS不止一个的话，下面的处理会相对复杂点</p>
+<div class="cnblogs_code">
+<pre>cssProperties =<span style="color: #000000;"> []
+</span><span style="color: #008000;">//</span><span style="color: #008000;"> CSS transitions</span>
+<span style="color: #0000ff;">for</span> (key <span style="color: #0000ff;">in</span><span style="color: #000000;"> properties)
+  </span><span style="color: #0000ff;">if</span> (supportedTransforms.test(key)) transforms += key + '(' + properties[key] + ') '
+  <span style="color: #0000ff;">else</span> cssValues[key] =<span style="color: #000000;"> properties[key], cssProperties.push(dasherize(key))
+
+</span><span style="color: #0000ff;">if</span> (transforms) cssValues[transform] =<span style="color: #000000;"> transforms, cssProperties.push(transform)
+</span><span style="color: #0000ff;">if</span> (duration &gt; 0 &amp;&amp; <span style="color: #0000ff;">typeof</span> properties === 'object'<span style="color: #000000;">) {
+  cssValues[transitionProperty] </span>= cssProperties.join(', '<span style="color: #000000;">)
+  cssValues[transitionDuration] </span>= duration + 's'<span style="color: #000000;">
+  cssValues[transitionDelay] </span>= delay + 's'<span style="color: #000000;">
+  cssValues[transitionTiming] </span>= (ease || 'linear'<span style="color: #000000;">)
+}</span></pre>
+</div>
+<p>这里先放下处理Transform等新属性之外，与上面的操作无他</p>
+<p>然后关键步骤又来了，</p>
+<div class="cnblogs_code">
+<pre><span style="color: #008080;"> 1</span> wrappedCallback = <span style="color: #0000ff;">function</span><span style="color: #000000;">(event){
+</span><span style="color: #008080;"> 2</span>   <span style="color: #0000ff;">if</span> (<span style="color: #0000ff;">typeof</span> event !== 'undefined'<span style="color: #000000;">) {
+</span><span style="color: #008080;"> 3</span>     <span style="color: #0000ff;">if</span> (event.target !== event.currentTarget) <span style="color: #0000ff;">return</span> <span style="color: #008000;">//</span><span style="color: #008000;"> makes sure the event didn't bubble from "below"</span>
+<span style="color: #008080;"> 4</span> <span style="color: #000000;">    $(event.target).unbind(endEvent, wrappedCallback)
+</span><span style="color: #008080;"> 5</span>   } <span style="color: #0000ff;">else</span>
+<span style="color: #008080;"> 6</span>     $(<span style="color: #0000ff;">this</span>).unbind(endEvent, wrappedCallback) <span style="color: #008000;">//</span><span style="color: #008000;"> triggered by setTimeout</span>
+<span style="color: #008080;"> 7</span> 
+<span style="color: #008080;"> 8</span>   fired = <span style="color: #0000ff;">true</span>
+<span style="color: #008080;"> 9</span>   $(<span style="color: #0000ff;">this</span><span style="color: #000000;">).css(cssReset)
+</span><span style="color: #008080;">10</span>   callback &amp;&amp; callback.call(<span style="color: #0000ff;">this</span><span style="color: #000000;">)
+</span><span style="color: #008080;">11</span> <span style="color: #000000;">}
+</span><span style="color: #008080;">12</span> <span style="color: #0000ff;">if</span> (duration &gt; 0<span style="color: #000000;">){
+</span><span style="color: #008080;">13</span>   <span style="color: #0000ff;">this</span><span style="color: #000000;">.bind(endEvent, wrappedCallback)
+</span><span style="color: #008080;">14</span>   <span style="color: #008000;">//</span><span style="color: #008000;"> transitionEnd is not always firing on older Android phones</span>
+<span style="color: #008080;">15</span>   <span style="color: #008000;">//</span><span style="color: #008000;"> so make sure it gets fired</span>
+<span style="color: #008080;">16</span>   setTimeout(<span style="color: #0000ff;">function</span><span style="color: #000000;">(){
+</span><span style="color: #008080;">17</span>     <span style="color: #0000ff;">if</span> (fired) <span style="color: #0000ff;">return</span>
+<span style="color: #008080;">18</span> <span style="color: #000000;">    wrappedCallback.call(that)
+</span><span style="color: #008080;">19</span>   }, (duration * 1000) + 25<span style="color: #000000;">)
+</span><span style="color: #008080;">20</span> }</pre>
+</div>
+<p>他这里首先声明了回调函数wrappedCallback，这个函数首先干的事情是注销事件</p>
+<p>然后执行传入的回调，这里将this指向了调用者，也就是绑定的标签</p>
+<p>后面便是真实的事件绑定操作，里面仍然有一个延时函数执行</p>
+<p>其中有一个状态机fired，来记录该事件是否触发</p>
+<p>然后就为css复制了，这个时候动画执行结束便会触发transitionEnd事件了</p>
+<p>最后，代码结束.......</p>
+<h1>结语</h1>
+<p>今天，我们简单的说了下zepto的animate方法，希望对各位有帮助，若是文中有任何问题请提出</p>
+                </div>
+
+                <div class='span3 sidebar'>
+                    <h2>导航栏</h2>
+                    <ul class="nav nav-tabs nav-stacked">
+                             				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/javascriptzdyxhxzsdyjxyzyddf/index.html">javascript中的一些核心知识点以及需要注意的地方</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/[zd]webappdyhzlyzydqdyhdpyjlkkb/index.html">[置顶]【webapp的优化整理】要做移动前端优化的朋友进来看看吧</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/[zd]yddjrwtyjjavascriptsjjzxjsjydjr/index.html">[置顶]【移动端兼容问题研究】javascript事件机制详解（涉及移动兼容）</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/gruntzhb30fzxhsygruntdbqddm/index.html">【grunt整合版】30分钟学会使用grunt打包前端代码</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/gruntdyd30fzxhsygruntdbqddm/index.html">【grunt第一弹】30分钟学会使用grunt打包前端代码</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/gruntdsdgruntzqdsjxmzdyy/index.html">【grunt第三弹】grunt在前端实际项目中的应用</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/gruntded30fzxhsygruntdbqddm02/index.html">【grunt第二弹】30分钟学会使用grunt打包前端代码（02）</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/IScrollsrxxtpyddhadlqs/index.html">【IScroll深入学习】突破移动端黑暗的利器（上）</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/IScrollsrxxjjIScrollynzz/index.html">【IScroll深入学习】解决IScroll疑难杂症</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/iScrollymxx00mniScroll/index.html">【iScroll源码学习00】模拟iScroll</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/iScrollymxx01zbjd/index.html">【iScroll源码学习01】准备阶段</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/iScrollymxx02fjiScrollsghxsjd/index.html">【iScroll源码学习02】分解iScroll三个核心事件点</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/iScrollymxx03iScrollsjjzygdtdsx/index.html">【iScroll源码学习03】iScroll事件机制与滚动条的实现</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/iScrollymxx04flIScrollhx/index.html">【iScroll源码学习04】分离IScroll核心</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/javascriptpxdytyyjc/index.html">【javascript培训第一天】语言基础</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/javascriptpxdstcybl/index.html">【javascript培训第三天】查遗补漏</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/javascriptpxdetDOMyBOM/index.html">【javascript培训第二天】DOM与BOM</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/javascriptjzdsk01mkhbc/index.html">【javascript激增的思考01】模块化编程</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/javascriptjzdsk02mkhyMVC/index.html">【javascript激增的思考02】模块化与MVC</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/javascriptjzdsk03MVVMyKnockout/index.html">【javascript激增的思考03】MVVM与Knockout</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/javascriptjzdsk04MVCyBackbonejs(beta)/index.html">【javascript激增的思考04】MVC与Backbonejs(beta)</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/javascriptmxdxzlrwmyqltkdzb01/index.html">【javascript面向对象之路】让我们一起来坦克大战吧01</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/NodeJSxxbj04xwfbxt/index.html">【NodeJS学习笔记04】新闻发布系统</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/requireJSymxx01ljzgrequireJSdjg/index.html">【requireJS源码学习01】了解整个requireJS的结构</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/requireJSymxx02datamainjzdsx/index.html">【requireJS源码学习02】datamain加载的实现</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/requireJSymxx03xjrequireJSdjzlc/index.html">【requireJS源码学习03】细究requireJS的加载流程</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/UIcjkfygjdrlcjs/index.html">【UI插件】开发一个简单日历插件（上）</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/UIcjjddrlcjxxxMVCsx/index.html">【UI插件】简单的日历插件（下）——学习MVC思想</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/zeptoxxbj01hxff$()/index.html">【zepto学习笔记01】核心方法$()</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/zeptoxxbj01hxff$()b/index.html">【zepto学习笔记01】核心方法$()（补）</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/zeptoxxbj02lsd/index.html">【zepto学习笔记02】零碎点</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/zeptoxxbj03sjjz/index.html">【zepto学习笔记03】事件机制</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/ycmsztjavascriptzdjc/index.html">【一次面试】再谈javascript中的继承</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/ztbackbone01mxModel/index.html">【再探backbone01】模型Model</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/ztbackbone02jhCollection/index.html">【再探backbone02】集合Collection</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/ztbackbone03bkydyyysltgym/index.html">【再探backbone03】博客园单页应用实例（提供源码）</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/ztbackbone04dyyydjslycl/index.html">【再探backbone04】单页应用的基石路由处理</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/ctUnderscorezsmbyq/index.html">【初探Underscore】再说模版引擎</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/ckjavascriptamzAjaxjsxnszddAjax/index.html">【初窥javascript奥秘之Ajax】简述下你所知道的Ajax？</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/ckjavascriptamzsjmpnxnwmyqmdp/index.html">【初窥javascript奥秘之事件冒泡】那些年我们一起冒的泡</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/ckjavascriptamzsjjzldtygdj/index.html">【初窥javascript奥秘之事件机制】论“点透”与“鬼点击”</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/ckjavascriptamzrrzmbddthisnzdxzthiszxnlm/index.html">【初窥javascript奥秘之让人捉摸不定的this】你知道现在this指向哪里吗？？？</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/ckjavascriptamzbbydxbdhlqbcl/index.html">【初窥javascript奥秘之闭包】叶大侠病都好了，求不踩了：）</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/ckjavascriptamzmxdxfzyjc/index.html">【初窥javascript奥秘之面向对象】封装与继承</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/qdmdsjdjgjdnzdljm/index.html">【前端盲点】事件的几个阶段你真的了解么？？？</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/dyyyviewymodelxgsl/index.html">【单页应用】view与model相关梳理</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/dyyyyqldyyybsxjdwbgns/index.html">【单页应用】一起来单页应用吧，实现简单微博功能！（上）</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/dyyyqjkzqappyggxsm/index.html">【单页应用】全局控制器app应该干些什么？</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/dyyywmgrhclkjdcccjgx/index.html">【单页应用】我们该如何处理框架弹出层层级关系？</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/dyyyljMVC/index.html">【单页应用】理解MVC</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/dyyyztxjzviewzjygrhtx/index.html">【单页应用之通信机制】view之间应该如何通信</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/dyyyjkzHistoryxsHistorydgdyyydm/index.html">【单页应用巨坑之History】细数History带给单页应用的噩梦</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/xtszeptofindysyjiosdcjpknrnhtt/index.html">【小贴士】zeptofind元素以及ios弹出键盘可能让你很头疼</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/xtsgytransitionEndanimatedygyqgs/index.html">【小贴士】关于transitionEndanimate的一个有趣故事</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/xtsgzzdbbysjwtdzzmp/index.html">【小贴士】工作中的”闭包“与事件委托的”阻止冒泡“</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/xtstytjavascriptzdreplace/index.html">【小贴士】探一探javascript中的replace</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/xtsxnjpyfixeddgydddt/index.html">【小贴士】虚拟键盘与fixed带给移动端的痛！</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/ttjavascriptsjjzdcsxyl/index.html">【探讨】javascript事件机制底层实现原理</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/mkhbcljrequireJSsxygjddmkjzq/index.html">【模块化编程】理解requireJS实现一个简单的模块加载器</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/zyJavaScriptmfjmtsdqlxkjzbfgndcljz/index.html">【转】【译】JavaScript魔法揭秘探索当前流行框架中部分功能的处理机制</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/zxjavascriptgszl01javascriptcszds/index.html">【追寻javascript高手之路01】javascript参数知多少？</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/zxjavascriptgszl02blzyyzds/index.html">【追寻javascript高手之路02】变量、作用域知多少？</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/zxjavascriptgszl03javascriptdxdld/index.html">【追寻javascript高手之路03】javascript对象大乱斗</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/zxjavascriptgszl04ljprototype/index.html">【追寻javascript高手之路04】理解prototype</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/zxjavascriptgszl05ljsjl/index.html">【追寻javascript高手之路05】理解事件流</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/zgbj04zxzzsj(2)/index.html">【重构笔记04】重新组织数据(2)</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/zgbj05jhtjbds/index.html">【重构笔记05】简化条件表达式</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/zgbj06jhhsdy/index.html">【重构笔记06】简化函数调用</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/ycmshgttbxysjfl/index.html">一次面试回顾——探讨表现与数据分离</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/dhzwebappzdxz/index.html">动画在webapp中的现状</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/ysandriodlqhthdomclicksjqtsxwttj/index.html">原生andriod浏览器回退后dom（click）事件全体失效问题探究</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/scsbdjxysdsbsjytouchsjdnxs/index.html">手持设备点击响应速度，鼠标事件与touch事件的那些事</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/mnbjQueryzeptohxymfx/index.html">迷你版jQuery——zepto核心源码分析</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/dbsgzdlwmlyqxjdddomxzqb/index.html">都别说工资低了，我们来一起写简单的dom选择器吧！</a></li>
+    				                                         
+                    </ul>
+                </div>
+            </div>
+
+        </div>
+    </body>
+</html>

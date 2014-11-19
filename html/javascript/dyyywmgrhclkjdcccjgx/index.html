@@ -1,0 +1,319 @@
+﻿<!DOCTYPE html>
+
+<html lang="zh">
+    <head>
+        <meta charset="utf-8">
+        <meta name="description" content="android,ios" />
+        <meta name="keywords" content="android,ios" />
+
+        <title>叶小钗</title>
+        <style type='text/css'>
+            body {
+                background-color: #CCC;
+            }
+        </style>
+        <link rel="stylesheet" href="../../../css/bootstrap.css" />
+    </head>
+
+    <body>
+        <div class="container">
+
+            <h1>叶小钗</h1>
+
+            <div class='navbar navbar-inverse'>
+                <div class='navbar-inner nav-collapse' style="height: auto;">
+                    <ul class="nav">
+                              				<li><a href="http://songboriceboy.github.io/xxoo/html/blade/index.html">blade</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/css/index.html">css</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/HTML5&CSS3/index.html">HTML5&CSS3</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/index.html">javascript</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Javaxx/index.html">Java学习</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/nodejs/index.html">nodejs</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/requirejs/index.html">requirejs</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/index.html">Web前端</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/xxgw/index.html">学习感悟</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/gzdd/index.html">工作点滴</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/jkxx/index.html">接口学习</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/wfl/index.html">未分类</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/ydkf/index.html">移动开发</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/sjms/index.html">设计模式</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/mst/index.html">面试题</a></li>
+    				                      </ul>
+                </div>
+            </div>
+
+            <div id='content' class='row-fluid'>
+
+                <div class='span9 main'>
+				<div style="color:blue" align=center>【单页应用】我们该如何处理框架弹出层层级关系？</div><br><h1>前言</h1>
+<p>最近总结不多，一方面是之前的知识点多比较基础，所以学习总结起来比较快</p>
+<p>但是基础知识只有那么一点，现在当然可以从新知识点着手拓宽视野（这个当然要继续），但是基础积累，再深入学习是成为优秀前端必不可少的阶段</p>
+<p>所以这块地方还得死扛，所幸现在是个优秀的团队，身边高手前辈较多，有时候请教是很有方向的，这个很是幸运啊！</p>
+<p>其次年后来到公司后，总有点浮浮沉沉的事情发生，而每年的3月又是各个公司&ldquo;变化&rdquo;的集中期，所以心境受到了一些影响，此点不可不慎啊！</p>
+<p>搞技术的不可浮躁！如果心思过多的花在了&ldquo;人事&rdquo;上，那么就真有点背道而驰了，技术人员的核心竞争还是应当在技术上</p>
+<p><span style="line-height: 1.5;">当然，年后会为年前干的一些事情擦屁股，一般每个团队年前都会有一些烂事没有做完，刚好一些事情就落到了我的头上，于是进入今日的主题</span></p>
+<p><span style="line-height: 1.5;">因为边思考便行文，有问题请提出。</span></p>
+<h2><span style="line-height: 1.5;">弹出层层次关系</span></h2>
+<p>以我现有视野来说，单页应用应该是移动端的一个趋势，很多公司或多或少的会要求HTML5的站点表现与APP趋于一致</p>
+<p>而好的前端团队的话就会要求HTML5不逊色与APP，当然这块不是不可能发生（在一两年后，应该逐渐明显）</p>
+<p>对于非单页应用来说，弹出层的层次关系比较简单，但是依旧会遇到一个弹出层弹出，另一个弹出层也需要弹出的场景</p>
+<p>而上述比较&ldquo;少见&rdquo;的场景在单页应用中就时常发生了，如果一开始没有对自己框架的层级做设计的话，后面的发展会让你觉得头疼</p>
+<h1>弹出层的问题</h1>
+<p>这里先稍微借鉴一点这里的弹出层做说明：http://sentsin.com/jquery/layer/</p>
+<p><span style="color: #000000;">PS：贤心弹出层是比较全面的，可以少写很多代码说明问题</span></p>
+<h2>小议层次关系</h2>
+<p><img src="21788778402782.png" alt=""></p>
+<p>通过查看样式我们发现其z-index为：</p>
+<div class="cnblogs_code">
+<pre><span style="color: #800000;">element.style </span>{<span style="color: #ff0000;">
+background-color</span>:<span style="color: #0000ff;"> rgb(255, 255, 255)</span>;<span style="color: #ff0000;">
+z-index</span>:<span style="color: #0000ff;"> 19891015</span>;<span style="color: #ff0000;">
+height</span>:<span style="color: #0000ff;"> 132px</span>;
+}</pre>
+</div>
+<p>那么，我这里就会产生一个疑问，如果再弹出一个alert框呢，当然这里会有以下场景：</p>
+<p>① 由于蒙版的存在，只允许一个alert框弹出</p>
+<p>② 框架本身做了处理，同一类型的alert框只能有一个</p>
+<p>③ 框架对z-index做了处理，第二次弹出的层会遮住第一个（这里还会有其它情况我们稍后再说）</p>
+<p>④ 未做特殊处理</p>
+<p>现在，我们干一件很2B的事情，将蒙版去掉再点击试试：</p>
+<p>通过实验发现，该作者的处理方式如下：</p>
+<p>① 只允许一个alert弹出层的出现，与上面②方案类似</p>
+<p>② 不同类型的弹出层需要同时出现时候，只会保留最新的一个</p>
+<p><img src="19243189773557.png" alt=""><img src="24836766062809.png" alt=""></p>
+<p>比如我们这里点击询问类的弹出层时候，再点击信息框，于是询问类的弹出层就被关闭了，再点击确定就没有了弹出层了</p>
+<h2>交叉层次处理</h2>
+<p>当遇到多个层次时候，也是需要处理的，继续以这里的弹出层为例：我们连续弹出两个层</p>
+<p><img src="31563046273279.png" alt="">&nbsp;<img src="42114697025786.png" alt=""></p>
+<p>后出来的层会在先出来的层次之前，意思是其z-index的值比较高，这个时候再加上一个loading框的话就比较齐全了</p>
+<p><img src="55712510448545.png" alt=""></p>
+<p>所以，这里我们可以得出一个结论：</p>
+<p>作者是以先后出现顺序设计层次结构的（未读源码，具体情况不明）</p>
+<p>而，这个还只是第一种层次关系，比较细心的朋友会发现，左边有一个fixed元素：</p>
+<p><img src="49361865630853.png" alt="">&nbsp;<img src="465640510011646.png" alt=""></p>
+<p>而fixed元素在单页应用中多用作view的头尾，那么alert类的弹出层与fixed头尾又是什么关系呢？？</p>
+<h2>fixed头尾与弹出层</h2>
+<p>这里footer的样式如下：</p>
+<div class="cnblogs_code">
+<pre><span style="color: #800000;">.fixnav </span>{<span style="color: #ff0000;">
+position</span>:<span style="color: #0000ff;"> fixed</span>;<span style="color: #ff0000;">
+bottom</span>:<span style="color: #0000ff;"> 0</span>;<span style="color: #ff0000;">
+width</span>:<span style="color: #0000ff;"> 100%</span>;<strong><span style="color: #ff0000;">
+z-index</span>:<span style="color: #0000ff;"> 9999</span>;</strong><span style="color: #ff0000;">
+transition</span>:<span style="color: #0000ff;"> all .8s</span>;<span style="color: #ff0000;">
+background</span>:<span style="color: #0000ff;"> #206F96</span>;
+}</pre>
+</div>
+<p>与上千万的弹出层来说就比较渺小了</p>
+<p><img src="21328808027866.png" alt="">&nbsp;<img src="8076407964707.png" alt=""></p>
+<p>所以弹出层应该遮盖头尾（fixed），这个处理也是有道理的，但是这里也会有一个问题</p>
+<h2>头部是否应该被遮盖</h2>
+<p>对于单页应用来说，头部是否应该被遮盖呢？</p>
+<p>这个不同的人会有不同的想法：</p>
+<p>① 不应该被遮盖</p>
+<p>如果一个loading框加载失败，而代码又未做处理的话，用户除了刷新页面或者退出程序别无他法</p>
+<p>现在很多html5代码会同时用于app中，而app的头部是不可遮盖的</p>
+<p>② 应该被遮盖</p>
+<p>简单而言，弹出层出现时不遮盖头部会引起很多BUG，对代码的健壮性要求更高</p>
+<p>比如，弹出层出现时候，点击后退，如果业务代码未对弹出层作出处理的话，这个弹出层不会消失</p>
+<p>另外，如果view切换过程中会有动画效果的话，view的会被设置为absolute，那么此时alert与页面view会有层级关系</p>
+<p>所以，保险的方案，应该是遮盖头部</p>
+<h2>出现次数问题</h2>
+<p>我们看到该作者的处理是相同的控件只能出现一次，这个处理方法对于单页应用来说可能就有一定麻烦了：</p>
+<p>① 我们当然可以在控制器中设置一些经常出现的弹出层插件：</p>
+<p>alert类，弹出层类，让他们只能出现一次，但是实际项目中，极有可能出现各个view对弹出层的需求不一样的需求</p>
+<p>这个时候我们的弹出层应该被控制么？</p>
+<p>② 弹出层会自带蒙版（mask），这个蒙版又该出现几次呢</p>
+<p><span style="line-height: 1.5;">③ 全屏覆盖层（广告类，或者其他）又该处于什么层次呢？？？</span></p>
+<p><span style="line-height: 1.5;">让我们带着这些问题一一学习今日的知识</span></p>
+<h1>全局唯一的弹出层</h1>
+<p>由设计的角度来说，无论是出现蒙版还是其它因素，我们对一些弹出层是只要求单独存在的，比如，我们不会希望同时存在两个alert</p>
+<p>所以，我们先整理哪些弹出层只会出现一次：</p>
+<p>① alert 类警告层</p>
+<p>②&nbsp;confirm 类确认层</p>
+<p>③ toast类消息层</p>
+<p>④ loading类加载层</p>
+<p>⑤ 其它类似弹出层</p>
+<p>以上弹出层事实上全局只应该有一个，dom一旦存在就不会销毁，但是这里也会有其它问题，比如我们这个confirm吧</p>
+<h2>统一控件不同行为</h2>
+<p>我们现在在demo01时候希望点击确定时候弹出个确定的提示，而提示相关有所不同的话......</p>
+<p><img src="39989546489380.png" alt="">&nbsp;<img src="43016827180965.png" alt=""></p>
+<p><img src="14752439876089.png" alt="">&nbsp;<img src="37870248346038.png" alt=""></p>
+<p>就需要每次show的时候传递参数复写上一次的事件等相关数据：</p>
+<div class="cnblogs_code">
+<pre>showConfirm: <span style="color: #0000ff;">function</span><span style="color: #000000;"> (message, title, okFn, cancelFn, okTxt, cancelTxt) {
+  </span><span style="color: #008000;">//</span><span style="color: #008000;">如果传入的是对象的话，直接用作初始化</span>
+  <span style="color: #0000ff;">if</span> (<span style="color: #0000ff;">typeof</span> message == 'object' &amp;&amp;<span style="color: #000000;"> message.message) {
+    </span><span style="color: #0000ff;">this</span><span style="color: #000000;">.confirm.setViewData(message);
+  } </span><span style="color: #0000ff;">else</span><span style="color: #000000;"> {
+    </span><span style="color: #0000ff;">this</span><span style="color: #000000;">.confirm.setViewData({
+      message: message,
+      title: title,
+      buttons: [
+      { text: (cancelTxt </span>|| '取消'), click: <span style="color: #0000ff;">function</span><span style="color: #000000;"> () {
+        </span><span style="color: #0000ff;">if</span> (<span style="color: #0000ff;">typeof</span> cancelFn == 'function'<span style="color: #000000;">) { cancelFn(); }
+        </span><span style="color: #0000ff;">this</span><span style="color: #000000;">.hide();
+      }, type: Alert.STYLE_CANCEL
+      },
+      {
+        text: (okTxt </span>|| '确定'<span style="color: #000000;">),
+        click: </span><span style="color: #0000ff;">function</span><span style="color: #000000;"> () {
+          </span><span style="color: #0000ff;">if</span> (<span style="color: #0000ff;">typeof</span> okFn == 'function'<span style="color: #000000;">) { okFn(); }
+          </span><span style="color: #0000ff;">this</span><span style="color: #000000;">.hide();
+        },
+        type: Alert.STYLE_CONFIRM
+      }
+    ]
+    });
+  }
+  </span><span style="color: #0000ff;">this</span><span style="color: #000000;">.confirm.show();
+},</span></pre>
+</div>
+<p>这块的结论是：</p>
+<p><strong>同一控件需要在show时候动态改变事件句柄相关参数，以达到dom结构重复利用的目的</strong></p>
+<p>这个操作是很简单的，有问题的是我们的mask控件，如果我们的mask控件具有点击mask关闭alert控件功能的话，情况就有所不同了</p>
+<h2>需要几个mask</h2>
+<p>我们的框架到底需要几个mask，这个问题其实比较关键</p>
+<p>全局只有一个mask，dom代码清晰，这个想法非常合理，但不易操作</p>
+<p>怎么说呢，如果存在两个弹出层同时存在的情况，A弹出层出来后，B弹出层再出来，这个时候A的蒙版应该比A高比B低</p>
+<p>这个时候关掉B，mask又应该比A低，于是我们需要去动态调整蒙版的zindex</p>
+<p>以上场景已经比较烦了，如果我们有点击蒙版关闭插件的需求的话，我们点击蒙版时候该关闭B还是该关闭A呢？？？</p>
+<p>情况又变得复杂起来，实现起来容易照成BUG，所以简单的方案还是，每个弹出层为其配置一个mask，是否具有点击关闭特性由插件决定</p>
+<p>比如loading框就不具有关闭特性，所以结论是：</p>
+<p><strong>为每一个弹出层配置单独mask是比较简单的处理方案</strong></p>
+<h1><span style="line-height: 1.5;">阻止弹出层层次</span></h1>
+<p><span style="line-height: 1.5;">弹出层出现次数确定后，第二个问题就是其出现时候的层级关系，我们这里采用：</span></p>
+<p><strong><span style="line-height: 1.5;">按弹出层出现先后顺序确定其层级</span></strong></p>
+<p><span style="line-height: 1.5;">比如我们几个层同时出现时候，我们就按照其出现顺序定义谁在钱谁在后，在后面的会被蒙版遮住（这里可能会导致蒙版愈来愈黑）</span></p>
+<p><span style="line-height: 1.5;"><img src="17045836299412.png" alt="">&nbsp;<img src="10496488685804.png" alt=""></span></p>
+<p><span style="line-height: 1.5;">那么这个时候层次关系应该怎么确定呢，或者说，我怎么知道我每次取得的z-index都会最大，这个其实就和我们前面的uuid是一个道理了</span></p>
+<div class="cnblogs_code">
+<pre>base.getBiggerzIndex = (<span style="color: #0000ff;">function</span><span style="color: #000000;"> () {
+  </span><span style="color: #0000ff;">var</span> diviso =  1000<span style="color: #000000;">;
+  </span><span style="color: #0000ff;">return</span> <span style="color: #0000ff;">function</span><span style="color: #000000;"> () {
+    </span><span style="color: #0000ff;">return</span> ++<span style="color: #000000;">diviso;
+  };
+})();</span></pre>
+</div>
+<p>每次设置index时候都在这里来获取z-index即可</p>
+<h2><span style="line-height: 1.5;">header与footer</span></h2>
+<p><span style="line-height: 1.5;">header与footer根据我们前面的想法，应该是被遮住的，所以，我们直接将其z-index设置为500即可</span></p>
+<p><span style="line-height: 1.5;">但是这个时候依旧会有一些特殊的情况，比如warning404等情况</span></p>
+<h2><span style="line-height: 1.5;">404提示</span></h2>
+<p><span style="line-height: 1.5;">一般来说，404页面应该比一般弹出层低，并且比header低，但是比footer高，为什么这么说呢</span></p>
+<p><span style="line-height: 1.5;">因为header可能全局只有一个，而footer来说属于单个view，比如提交订单的按钮</span></p>
+<p><span style="line-height: 1.5;">这个时候404提示应该遮盖所有的页面，但是不能遮盖头部</span></p>
+<h1><span style="line-height: 1.5;">页面层级</span></h1>
+<p><span style="line-height: 1.5;">页面切换来说，会将view转化为absolute，这个时候也会有一定层级的，这个时候又会有许多问题，比如footer栏为fixed元素，整个view切换时候他并不会跟着移动</span></p>
+<p><span style="line-height: 1.5;">所以，我们应该将footer栏做成组件，在切换时候将之隐藏</span></p>
+<p><span style="line-height: 1.5;">页面切换时候的层级应该比header低，但是比一般的弹出层要高，所以我们最后可以形成以下规则</span></p>
+<div class="cnblogs_code">
+<pre><span style="color: #800000;">第一级别：（0）
+文档流元素
+
+第二级别：（500）
+footer类组件，需要在文档流之上，依旧属于view内部
+
+第三级别：（1000）
+404提示类，需要覆盖view内的所有元素，但不能遮盖头部，属于遮盖view内部的弹出层
+
+第四级别：（1500）
+view切换时候的层级
+此时view的层级会比404等层级高
+框架切换时候需要对弹出层进行hide
+
+第五级别：（2000）
+header类，头部
+
+第六级别：（3000+）
+一般类弹出层，根据弹出先后顺序计算</span></pre>
+</div>
+<h1><span style="line-height: 1.5;">结语</span></h1>
+<p><span style="line-height: 1.5;">今天正好在整理框架的层级关系，将思考到的东西做了一定记录，如果各位对此有研究请不吝赐教</span></p>
+                </div>
+
+                <div class='span3 sidebar'>
+                    <h2>导航栏</h2>
+                    <ul class="nav nav-tabs nav-stacked">
+                             				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/javascriptzdyxhxzsdyjxyzyddf/index.html">javascript中的一些核心知识点以及需要注意的地方</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/[zd]webappdyhzlyzydqdyhdpyjlkkb/index.html">[置顶]【webapp的优化整理】要做移动前端优化的朋友进来看看吧</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/[zd]yddjrwtyjjavascriptsjjzxjsjydjr/index.html">[置顶]【移动端兼容问题研究】javascript事件机制详解（涉及移动兼容）</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/gruntzhb30fzxhsygruntdbqddm/index.html">【grunt整合版】30分钟学会使用grunt打包前端代码</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/gruntdyd30fzxhsygruntdbqddm/index.html">【grunt第一弹】30分钟学会使用grunt打包前端代码</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/gruntdsdgruntzqdsjxmzdyy/index.html">【grunt第三弹】grunt在前端实际项目中的应用</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/gruntded30fzxhsygruntdbqddm02/index.html">【grunt第二弹】30分钟学会使用grunt打包前端代码（02）</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/IScrollsrxxtpyddhadlqs/index.html">【IScroll深入学习】突破移动端黑暗的利器（上）</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/IScrollsrxxjjIScrollynzz/index.html">【IScroll深入学习】解决IScroll疑难杂症</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/iScrollymxx00mniScroll/index.html">【iScroll源码学习00】模拟iScroll</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/iScrollymxx01zbjd/index.html">【iScroll源码学习01】准备阶段</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/iScrollymxx02fjiScrollsghxsjd/index.html">【iScroll源码学习02】分解iScroll三个核心事件点</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/iScrollymxx03iScrollsjjzygdtdsx/index.html">【iScroll源码学习03】iScroll事件机制与滚动条的实现</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/iScrollymxx04flIScrollhx/index.html">【iScroll源码学习04】分离IScroll核心</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/javascriptpxdytyyjc/index.html">【javascript培训第一天】语言基础</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/javascriptpxdstcybl/index.html">【javascript培训第三天】查遗补漏</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/javascriptpxdetDOMyBOM/index.html">【javascript培训第二天】DOM与BOM</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/javascriptjzdsk01mkhbc/index.html">【javascript激增的思考01】模块化编程</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/javascriptjzdsk02mkhyMVC/index.html">【javascript激增的思考02】模块化与MVC</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/javascriptjzdsk03MVVMyKnockout/index.html">【javascript激增的思考03】MVVM与Knockout</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/javascriptjzdsk04MVCyBackbonejs(beta)/index.html">【javascript激增的思考04】MVC与Backbonejs(beta)</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/javascriptmxdxzlrwmyqltkdzb01/index.html">【javascript面向对象之路】让我们一起来坦克大战吧01</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/NodeJSxxbj04xwfbxt/index.html">【NodeJS学习笔记04】新闻发布系统</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/requireJSymxx01ljzgrequireJSdjg/index.html">【requireJS源码学习01】了解整个requireJS的结构</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/requireJSymxx02datamainjzdsx/index.html">【requireJS源码学习02】datamain加载的实现</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/requireJSymxx03xjrequireJSdjzlc/index.html">【requireJS源码学习03】细究requireJS的加载流程</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/UIcjkfygjdrlcjs/index.html">【UI插件】开发一个简单日历插件（上）</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/UIcjjddrlcjxxxMVCsx/index.html">【UI插件】简单的日历插件（下）——学习MVC思想</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/zeptoxxbj01hxff$()/index.html">【zepto学习笔记01】核心方法$()</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/zeptoxxbj01hxff$()b/index.html">【zepto学习笔记01】核心方法$()（补）</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/zeptoxxbj02lsd/index.html">【zepto学习笔记02】零碎点</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/zeptoxxbj03sjjz/index.html">【zepto学习笔记03】事件机制</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/ycmsztjavascriptzdjc/index.html">【一次面试】再谈javascript中的继承</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/ztbackbone01mxModel/index.html">【再探backbone01】模型Model</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/ztbackbone02jhCollection/index.html">【再探backbone02】集合Collection</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/ztbackbone03bkydyyysltgym/index.html">【再探backbone03】博客园单页应用实例（提供源码）</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/ztbackbone04dyyydjslycl/index.html">【再探backbone04】单页应用的基石路由处理</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/ctUnderscorezsmbyq/index.html">【初探Underscore】再说模版引擎</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/ckjavascriptamzAjaxjsxnszddAjax/index.html">【初窥javascript奥秘之Ajax】简述下你所知道的Ajax？</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/ckjavascriptamzsjmpnxnwmyqmdp/index.html">【初窥javascript奥秘之事件冒泡】那些年我们一起冒的泡</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/ckjavascriptamzsjjzldtygdj/index.html">【初窥javascript奥秘之事件机制】论“点透”与“鬼点击”</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/ckjavascriptamzrrzmbddthisnzdxzthiszxnlm/index.html">【初窥javascript奥秘之让人捉摸不定的this】你知道现在this指向哪里吗？？？</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/ckjavascriptamzbbydxbdhlqbcl/index.html">【初窥javascript奥秘之闭包】叶大侠病都好了，求不踩了：）</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/ckjavascriptamzmxdxfzyjc/index.html">【初窥javascript奥秘之面向对象】封装与继承</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/qdmdsjdjgjdnzdljm/index.html">【前端盲点】事件的几个阶段你真的了解么？？？</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/dyyyviewymodelxgsl/index.html">【单页应用】view与model相关梳理</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/dyyyyqldyyybsxjdwbgns/index.html">【单页应用】一起来单页应用吧，实现简单微博功能！（上）</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/dyyyqjkzqappyggxsm/index.html">【单页应用】全局控制器app应该干些什么？</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/dyyywmgrhclkjdcccjgx/index.html">【单页应用】我们该如何处理框架弹出层层级关系？</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/dyyyljMVC/index.html">【单页应用】理解MVC</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/dyyyztxjzviewzjygrhtx/index.html">【单页应用之通信机制】view之间应该如何通信</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/dyyyjkzHistoryxsHistorydgdyyydm/index.html">【单页应用巨坑之History】细数History带给单页应用的噩梦</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/xtszeptofindysyjiosdcjpknrnhtt/index.html">【小贴士】zeptofind元素以及ios弹出键盘可能让你很头疼</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/xtsgytransitionEndanimatedygyqgs/index.html">【小贴士】关于transitionEndanimate的一个有趣故事</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/xtsgzzdbbysjwtdzzmp/index.html">【小贴士】工作中的”闭包“与事件委托的”阻止冒泡“</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/xtstytjavascriptzdreplace/index.html">【小贴士】探一探javascript中的replace</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/xtsxnjpyfixeddgydddt/index.html">【小贴士】虚拟键盘与fixed带给移动端的痛！</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/ttjavascriptsjjzdcsxyl/index.html">【探讨】javascript事件机制底层实现原理</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/mkhbcljrequireJSsxygjddmkjzq/index.html">【模块化编程】理解requireJS实现一个简单的模块加载器</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/zyJavaScriptmfjmtsdqlxkjzbfgndcljz/index.html">【转】【译】JavaScript魔法揭秘探索当前流行框架中部分功能的处理机制</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/zxjavascriptgszl01javascriptcszds/index.html">【追寻javascript高手之路01】javascript参数知多少？</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/zxjavascriptgszl02blzyyzds/index.html">【追寻javascript高手之路02】变量、作用域知多少？</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/zxjavascriptgszl03javascriptdxdld/index.html">【追寻javascript高手之路03】javascript对象大乱斗</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/zxjavascriptgszl04ljprototype/index.html">【追寻javascript高手之路04】理解prototype</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/zxjavascriptgszl05ljsjl/index.html">【追寻javascript高手之路05】理解事件流</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/zgbj04zxzzsj(2)/index.html">【重构笔记04】重新组织数据(2)</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/zgbj05jhtjbds/index.html">【重构笔记05】简化条件表达式</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/zgbj06jhhsdy/index.html">【重构笔记06】简化函数调用</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/ycmshgttbxysjfl/index.html">一次面试回顾——探讨表现与数据分离</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/dhzwebappzdxz/index.html">动画在webapp中的现状</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/ysandriodlqhthdomclicksjqtsxwttj/index.html">原生andriod浏览器回退后dom（click）事件全体失效问题探究</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/scsbdjxysdsbsjytouchsjdnxs/index.html">手持设备点击响应速度，鼠标事件与touch事件的那些事</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/mnbjQueryzeptohxymfx/index.html">迷你版jQuery——zepto核心源码分析</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/dbsgzdlwmlyqxjdddomxzqb/index.html">都别说工资低了，我们来一起写简单的dom选择器吧！</a></li>
+    				                                         
+                    </ul>
+                </div>
+            </div>
+
+        </div>
+    </body>
+</html>

@@ -1,0 +1,277 @@
+﻿<!DOCTYPE html>
+
+<html lang="zh">
+    <head>
+        <meta charset="utf-8">
+        <meta name="description" content="android,ios" />
+        <meta name="keywords" content="android,ios" />
+
+        <title>叶小钗</title>
+        <style type='text/css'>
+            body {
+                background-color: #CCC;
+            }
+        </style>
+        <link rel="stylesheet" href="../../../css/bootstrap.css" />
+    </head>
+
+    <body>
+        <div class="container">
+
+            <h1>叶小钗</h1>
+
+            <div class='navbar navbar-inverse'>
+                <div class='navbar-inner nav-collapse' style="height: auto;">
+                    <ul class="nav">
+                              				<li><a href="http://songboriceboy.github.io/xxoo/html/blade/index.html">blade</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/css/index.html">css</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/HTML5&CSS3/index.html">HTML5&CSS3</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/index.html">javascript</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Javaxx/index.html">Java学习</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/nodejs/index.html">nodejs</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/requirejs/index.html">requirejs</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/index.html">Web前端</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/xxgw/index.html">学习感悟</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/gzdd/index.html">工作点滴</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/jkxx/index.html">接口学习</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/wfl/index.html">未分类</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/ydkf/index.html">移动开发</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/sjms/index.html">设计模式</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/mst/index.html">面试题</a></li>
+    				                      </ul>
+                </div>
+            </div>
+
+            <div id='content' class='row-fluid'>
+
+                <div class='span9 main'>
+				<div style="color:blue" align=center>【HTML5CSS3进阶04】CSS3动画应该如何在webapp中运用</div><br><h1>动画在webapp的现状</h1>
+<p>webapp模式的网站追求的就是一个体验，是HTML5&amp;CSS3浪潮下的产物，抛开体验不说，webapp模式门槛比较高；</p>
+<p>而体验优化的一个重点便是动画，可以说动画是webapp的一个亮点。但也是一个难点，一个痛点，主要原因是：移动端手机的碎片化严重。</p>
+<p>设备、型号、版本、分辨率等差异导致移动端需要考虑的主流情况达10多种，而Hybrid带来的webview可以让情况更加糟糕</p>
+<p>所以说，近两年想在移动端大范围的使用动画，或者使用webapp模式都对团队的能力提出了要求，原因是：</p>
+<p>① 单页对变量污染更加敏感</p>
+<p>这个变量污染包括js变量污染，css变量污染，虽然js可采用AMD模块消除主要问题，但css的污染却很难避免，有时候更甚于js</p>
+<p>web Component是一个解决方案，但还不敢大范围使用，因为一次UI的改变会导致各个业务团队改变，这个代价没有颠覆性的优势，得不偿失。</p>
+<p>② heap值攀升</p>
+<p>如果view的管理没有一个有效的销毁机制，那么webapp模式的网站不可避免的会消耗更多的内存，甚至降低体验，费力不讨好</p>
+<p>③ 手机烂，CPU烂，国产浏览器多而烂，私自调整webkit内核而引发的问题比比皆是，奇葩浏览器什么的就不提了</p>
+<p>所以动画在webapp或者说在移动端的使用有其场景，他适用于小范围的动画，<span style="color: #ff0000;">适用于view内级别的动画</span>，比如弹出层的动画，细节处的动画</p>
+<p>不适用于页面级别的切换，比如整个view的切换（我们看到的native中的过场动画），view级别动画的痛点是：<span style="color: #ff0000;"><strong>手机碎片化</strong></span></p>
+<p>而view级别动画的难点是：</p>
+<p>① view级别的动画不能预料<span style="color: #ff0000;">dom树的大小</span>，大dom树的动画cpu吃不消</p>
+<p>② 过场动画不能共用window.scollTop，各个View需要维护自己的滚动条，而<span style="color: #ff0000;">区域滚动</span>是移动端另一个痛点</p>
+<p>以上是移动端的现状，技术虽好，有其场景。可以在高端机上使用全局性的动画，但是框架层面一定要提供开关机制，低端机卡帧经常发生，保证低端机的基本功能</p>
+<p>接下来介绍一下CSS3的动画......</p>
+<h1>CSS3的动画</h1>
+<h2>transition</h2>
+<div class="cnblogs_code">
+<pre><span style="color: #800000;">transition包含四个属性
+transition-property 指定需要动画的css属性
+transition-duration 完成过渡的实践
+transition-timing-function 过渡函数，这个一般不设置，使用ease之类的
+transition-delay 动画延迟多少秒执行</span></pre>
+</div>
+<p>PS：当然，上面四个属性可以像border一样写到一堆</p>
+<div class="cnblogs_code">
+<pre><span style="color: #008080;">1</span> <span style="color: #800000;">.demo </span>{
+<span style="color: #008080;">2</span> <span style="color: #ff0000;">  transition</span>:<span style="color: #0000ff;"> border 2s ease 2s</span>;
+<span style="color: #008080;">3</span> }</pre>
+</div>
+<p>这段代码就是告诉浏览器每当border发生变化时，请在两秒后触发，并且在两秒内完成</p>
+<p>这里举一个典型的小例子做说明：</p>
+<p><iframe style="width: 320px; height: 120px;" src="40645127818080.jpg" width="320" height="240"></iframe></p>
+<div class="cnblogs_code" onclick="cnblogs_code_show('27583c83-b6bf-42f8-ac84-a34e15430ac8')"><img id="code_img_closed_27583c83-b6bf-42f8-ac84-a34e15430ac8" class="code_img_closed" src="43570758473519.gif" alt=""><img id="code_img_opened_27583c83-b6bf-42f8-ac84-a34e15430ac8" class="code_img_opened" style="display: none;" onclick="cnblogs_code_hide('27583c83-b6bf-42f8-ac84-a34e15430ac8',event)" src="16365178109279.gif" alt="">
+<div id="cnblogs_code_open_27583c83-b6bf-42f8-ac84-a34e15430ac8" class="cnblogs_code_hide">
+<pre><span style="color: #008080;"> 1</span> <span style="color: #0000ff;">&lt;!</span><span style="color: #ff00ff;">doctype html</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 2</span> <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">html</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 3</span> <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">head</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 4</span>   <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">meta </span><span style="color: #ff0000;">charset</span><span style="color: #0000ff;">="utf-8"</span> <span style="color: #0000ff;">/&gt;</span>
+<span style="color: #008080;"> 5</span>   <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">title</span><span style="color: #0000ff;">&gt;</span>Blade Demo<span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">title</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 6</span>   <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">style </span><span style="color: #ff0000;">type</span><span style="color: #0000ff;">="text/css"</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 7</span> <span style="background-color: #f5f5f5; color: #800000;">    * </span><span style="background-color: #f5f5f5; color: #000000;">{</span><span style="background-color: #f5f5f5; color: #ff0000;"> margin</span><span style="background-color: #f5f5f5; color: #000000;">:</span><span style="background-color: #f5f5f5; color: #0000ff;"> 0 0</span><span style="background-color: #f5f5f5; color: #000000;">;</span><span style="background-color: #f5f5f5; color: #ff0000;"> padding</span><span style="background-color: #f5f5f5; color: #000000;">:</span><span style="background-color: #f5f5f5; color: #0000ff;"> 0 0</span><span style="background-color: #f5f5f5; color: #000000;">;</span> <span style="background-color: #f5f5f5; color: #000000;">}</span>
+<span style="color: #008080;"> 8</span> <span style="background-color: #f5f5f5; color: #800000;">    h1 </span><span style="background-color: #f5f5f5; color: #000000;">{</span><span style="background-color: #f5f5f5; color: #ff0000;"> font-size</span><span style="background-color: #f5f5f5; color: #000000;">:</span><span style="background-color: #f5f5f5; color: #0000ff;"> 16px</span><span style="background-color: #f5f5f5; color: #000000;">;</span><span style="background-color: #f5f5f5; color: #ff0000;"> font-family</span><span style="background-color: #f5f5f5; color: #000000;">:</span><span style="background-color: #f5f5f5; color: #0000ff;"> "Helvetica Neue", Helvetica, STHeiTi, Arial, sans-serif</span><span style="background-color: #f5f5f5; color: #000000;">;</span><span style="background-color: #f5f5f5; color: #000000;">}</span>
+<span style="color: #008080;"> 9</span> <span style="background-color: #f5f5f5; color: #800000;">    .cm-header </span><span style="background-color: #f5f5f5; color: #000000;">{</span><span style="background-color: #f5f5f5; color: #ff0000;"> top</span><span style="background-color: #f5f5f5; color: #000000;">:</span><span style="background-color: #f5f5f5; color: #0000ff;"> 0</span><span style="background-color: #f5f5f5; color: #000000;">;</span><span style="background-color: #f5f5f5; color: #ff0000;"> height</span><span style="background-color: #f5f5f5; color: #000000;">:</span><span style="background-color: #f5f5f5; color: #0000ff;"> 44px</span><span style="background-color: #f5f5f5; color: #000000;">;</span><span style="background-color: #f5f5f5; color: #ff0000;"> line-height</span><span style="background-color: #f5f5f5; color: #000000;">:</span><span style="background-color: #f5f5f5; color: #0000ff;"> 44px</span><span style="background-color: #f5f5f5; color: #000000;">;</span><span style="background-color: #f5f5f5; color: #ff0000;"> text-align</span><span style="background-color: #f5f5f5; color: #000000;">:</span><span style="background-color: #f5f5f5; color: #0000ff;"> center</span><span style="background-color: #f5f5f5; color: #000000;">;</span><span style="background-color: #f5f5f5; color: #ff0000;"> background-color</span><span style="background-color: #f5f5f5; color: #000000;">:</span><span style="background-color: #f5f5f5; color: #0000ff;"> #099fde</span><span style="background-color: #f5f5f5; color: #000000;">;</span><span style="background-color: #f5f5f5; color: #ff0000;"> color</span><span style="background-color: #f5f5f5; color: #000000;">:</span><span style="background-color: #f5f5f5; color: #0000ff;"> #fff</span><span style="background-color: #f5f5f5; color: #000000;">;</span><span style="background-color: #f5f5f5; color: #ff0000;"> z-index</span><span style="background-color: #f5f5f5; color: #000000;">:</span><span style="background-color: #f5f5f5; color: #0000ff;"> 960</span><span style="background-color: #f5f5f5; color: #000000;">;</span> <span style="background-color: #f5f5f5; color: #000000;">}</span>
+<span style="color: #008080;">10</span> <span style="background-color: #f5f5f5; color: #800000;">    .title::after </span><span style="background-color: #f5f5f5; color: #000000;">{</span><span style="background-color: #f5f5f5; color: #ff0000;"> content</span><span style="background-color: #f5f5f5; color: #000000;">:</span><span style="background-color: #f5f5f5; color: #0000ff;"> ""</span><span style="background-color: #f5f5f5; color: #000000;">;</span><span style="background-color: #f5f5f5; color: #ff0000;"> display</span><span style="background-color: #f5f5f5; color: #000000;">:</span><span style="background-color: #f5f5f5; color: #0000ff;"> inline-block</span><span style="background-color: #f5f5f5; color: #000000;">;</span><span style="background-color: #f5f5f5; color: #ff0000;"> vertical-align</span><span style="background-color: #f5f5f5; color: #000000;">:</span><span style="background-color: #f5f5f5; color: #0000ff;"> middle</span><span style="background-color: #f5f5f5; color: #000000;">;</span><span style="background-color: #f5f5f5; color: #ff0000;"> width</span><span style="background-color: #f5f5f5; color: #000000;">:</span><span style="background-color: #f5f5f5; color: #0000ff;"> 6px</span><span style="background-color: #f5f5f5; color: #000000;">;</span><span style="background-color: #f5f5f5; color: #ff0000;"> height</span><span style="background-color: #f5f5f5; color: #000000;">:</span><span style="background-color: #f5f5f5; color: #0000ff;"> 6px</span><span style="background-color: #f5f5f5; color: #000000;">;</span><span style="background-color: #f5f5f5; color: #ff0000;"> border-left</span><span style="background-color: #f5f5f5; color: #000000;">:</span><span style="background-color: #f5f5f5; color: #0000ff;"> 2px solid #fff</span><span style="background-color: #f5f5f5; color: #000000;">;</span><span style="background-color: #f5f5f5; color: #ff0000;"> border-bottom</span><span style="background-color: #f5f5f5; color: #000000;">:</span><span style="background-color: #f5f5f5; color: #0000ff;"> 2px solid #fff</span><span style="background-color: #f5f5f5; color: #000000;">;</span><span style="background-color: #f5f5f5; color: #ff0000;">  display</span><span style="background-color: #f5f5f5; color: #000000;">:</span><span style="background-color: #f5f5f5; color: #0000ff;"> inline-block</span><span style="background-color: #f5f5f5; color: #000000;">;</span><span style="background-color: #f5f5f5; color: #ff0000;"> margin-left</span><span style="background-color: #f5f5f5; color: #000000;">:</span><span style="background-color: #f5f5f5; color: #0000ff;"> 5px</span><span style="background-color: #f5f5f5; color: #000000;">;</span><span style="background-color: #f5f5f5; color: #ff0000;"> vertical-align</span><span style="background-color: #f5f5f5; color: #000000;">:</span><span style="background-color: #f5f5f5; color: #0000ff;"> middle</span><span style="background-color: #f5f5f5; color: #000000;">;</span><span style="background-color: #f5f5f5; color: #ff0000;"> position</span><span style="background-color: #f5f5f5; color: #000000;">:</span><span style="background-color: #f5f5f5; color: #0000ff;"> relative</span><span style="background-color: #f5f5f5; color: #000000;">;</span><span style="background-color: #f5f5f5; color: #ff0000;"> top</span><span style="background-color: #f5f5f5; color: #000000;">:</span><span style="background-color: #f5f5f5; color: #0000ff;"> -4px</span><span style="background-color: #f5f5f5; color: #000000;">;</span><span style="background-color: #f5f5f5; color: #ff0000;"> -webkit-transition</span><span style="background-color: #f5f5f5; color: #000000;">:</span><span style="background-color: #f5f5f5; color: #0000ff;"> all 0.3s ease-in-out</span><span style="background-color: #f5f5f5; color: #000000;">;</span>  <span style="background-color: #f5f5f5; color: #000000;">}</span>
+<span style="color: #008080;">11</span> <span style="background-color: #f5f5f5; color: #800000;">    .up::after </span><span style="background-color: #f5f5f5; color: #000000;">{</span><span style="background-color: #f5f5f5; color: #ff0000;"> -webkit-transform</span><span style="background-color: #f5f5f5; color: #000000;">:</span><span style="background-color: #f5f5f5; color: #0000ff;"> rotate(135deg)</span><span style="background-color: #f5f5f5; color: #000000;">;</span><span style="background-color: #f5f5f5; color: #ff0000;">  top</span><span style="background-color: #f5f5f5; color: #000000;">:</span><span style="background-color: #f5f5f5; color: #0000ff;"> 1px</span><span style="background-color: #f5f5f5; color: #000000;">;</span> <span style="background-color: #f5f5f5; color: #000000;">}</span>
+<span style="color: #008080;">12</span> <span style="background-color: #f5f5f5; color: #800000;">    .down::after </span><span style="background-color: #f5f5f5; color: #000000;">{</span><span style="background-color: #f5f5f5; color: #ff0000;"> -webkit-transform</span><span style="background-color: #f5f5f5; color: #000000;">:</span><span style="background-color: #f5f5f5; color: #0000ff;"> rotate(-45deg)</span><span style="background-color: #f5f5f5; color: #000000;">;</span><span style="background-color: #f5f5f5; color: #ff0000;">  top</span><span style="background-color: #f5f5f5; color: #000000;">:</span><span style="background-color: #f5f5f5; color: #0000ff;"> -4px</span><span style="background-color: #f5f5f5; color: #000000;">;</span> <span style="background-color: #f5f5f5; color: #000000;">}</span>
+<span style="color: #008080;">13</span>   <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">style</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">14</span> <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">head</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">15</span> <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">body</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">16</span>   <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">header </span><span style="color: #ff0000;">class</span><span style="color: #0000ff;">="cm-header"</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">17</span>     <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">h1 </span><span style="color: #ff0000;">class</span><span style="color: #0000ff;">="title up"</span><span style="color: #ff0000;"> id</span><span style="color: #0000ff;">="title"</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">18</span>       点击我<span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">h1</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">19</span>   <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">header</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">20</span>   <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">script </span><span style="color: #ff0000;">type</span><span style="color: #0000ff;">="text/javascript"</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">21</span>     <span style="background-color: #f5f5f5; color: #0000ff;">var</span><span style="background-color: #f5f5f5; color: #000000;"> el </span><span style="background-color: #f5f5f5; color: #000000;">=</span><span style="background-color: #f5f5f5; color: #000000;"> $(</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">#title</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">);
+</span><span style="color: #008080;">22</span> <span style="background-color: #f5f5f5; color: #000000;">    el.on(</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">click</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">, </span><span style="background-color: #f5f5f5; color: #0000ff;">function</span><span style="background-color: #f5f5f5; color: #000000;"> () {
+</span><span style="color: #008080;">23</span>       <span style="background-color: #f5f5f5; color: #0000ff;">if</span><span style="background-color: #f5f5f5; color: #000000;"> (el.hasClass(</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">up</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">)) {
+</span><span style="color: #008080;">24</span> <span style="background-color: #f5f5f5; color: #000000;">        el.removeClass(</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">up</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">);
+</span><span style="color: #008080;">25</span> <span style="background-color: #f5f5f5; color: #000000;">        el.addClass(</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">down</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">);
+</span><span style="color: #008080;">26</span> <span style="background-color: #f5f5f5; color: #000000;">      } </span><span style="background-color: #f5f5f5; color: #0000ff;">else</span> <span style="background-color: #f5f5f5; color: #0000ff;">if</span><span style="background-color: #f5f5f5; color: #000000;"> (el.hasClass(</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">down</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">)) {
+</span><span style="color: #008080;">27</span> <span style="background-color: #f5f5f5; color: #000000;">        el.removeClass(</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">down</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">);
+</span><span style="color: #008080;">28</span> <span style="background-color: #f5f5f5; color: #000000;">        el.addClass(</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">up</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">);
+</span><span style="color: #008080;">29</span> <span style="background-color: #f5f5f5; color: #000000;">      }
+</span><span style="color: #008080;">30</span> <span style="background-color: #f5f5f5; color: #000000;">    });
+</span><span style="color: #008080;">31</span>   <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">script</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">32</span> <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">body</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">33</span> <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">html</span><span style="color: #0000ff;">&gt;</span></pre>
+</div>
+<span class="cnblogs_code_collapse">View Code</span></div>
+<h2>animation</h2>
+<p>简单的动画使用transition，复杂的动画便要使用animation了；或者说需要从一个状态到另一个状态的话，最好使用animation</p>
+<div class="cnblogs_code">
+<pre><span style="color: #800000;">animation
+animation-name 对于keyframe的名称
+animation-duration 动画花费时间
+animation-timing-function 动画曲线
+animation-delay 延迟多少毫秒a执行
+animation-iteration-count 执行次数
+animation-direction 是否反方向播放</span></pre>
+</div>
+<p>我们一般使用前四个参数，这里的使用需要先创建keyframe规则，这里先来一个简单的例子：</p>
+<p><iframe style="width: 320px; height: 320px;" src="24266928158655.jpg" width="320" height="240"></iframe></p>
+<div class="cnblogs_code">
+<pre><span style="color: #008080;"> 1</span> <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">html</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 2</span> <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">head</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 3</span>   <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">meta </span><span style="color: #ff0000;">charset</span><span style="color: #0000ff;">="utf-8"</span> <span style="color: #0000ff;">/&gt;</span>
+<span style="color: #008080;"> 4</span>   <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">title</span><span style="color: #0000ff;">&gt;</span>Blade Demo<span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">title</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 5</span>   <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">style </span><span style="color: #ff0000;">type</span><span style="color: #0000ff;">="text/css"</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 6</span> <span style="background-color: #f5f5f5; color: #800000;">    @-webkit-keyframes demoFrame </span><span style="background-color: #f5f5f5; color: #000000;">{</span>
+<span style="color: #008080;"> 7</span> <span style="background-color: #f5f5f5; color: #ff0000;">      from { left</span><span style="background-color: #f5f5f5; color: #000000;">:</span><span style="background-color: #f5f5f5; color: #0000ff;"> 0</span><span style="background-color: #f5f5f5; color: #000000;">;</span> <span style="background-color: #f5f5f5; color: #000000;">}</span>
+<span style="color: #008080;"> 8</span> <span style="background-color: #f5f5f5; color: #800000;">      to </span><span style="background-color: #f5f5f5; color: #000000;">{</span><span style="background-color: #f5f5f5; color: #ff0000;"> left</span><span style="background-color: #f5f5f5; color: #000000;">:</span><span style="background-color: #f5f5f5; color: #0000ff;"> 100px</span><span style="background-color: #f5f5f5; color: #000000;">;</span> <span style="background-color: #f5f5f5; color: #000000;">}</span>
+<span style="color: #008080;"> 9</span> <span style="background-color: #f5f5f5; color: #800000;">    }
+</span><span style="color: #008080;">10</span> <span style="background-color: #f5f5f5; color: #800000;">        div </span><span style="background-color: #f5f5f5; color: #000000;">{</span><span style="background-color: #f5f5f5; color: #ff0000;"> width</span><span style="background-color: #f5f5f5; color: #000000;">:</span><span style="background-color: #f5f5f5; color: #0000ff;"> 100px</span><span style="background-color: #f5f5f5; color: #000000;">;</span><span style="background-color: #f5f5f5; color: #ff0000;"> top</span><span style="background-color: #f5f5f5; color: #000000;">:</span><span style="background-color: #f5f5f5; color: #0000ff;"> 100px</span><span style="background-color: #f5f5f5; color: #000000;">;</span><span style="background-color: #f5f5f5; color: #ff0000;"> height</span><span style="background-color: #f5f5f5; color: #000000;">:</span><span style="background-color: #f5f5f5; color: #0000ff;"> 100px</span><span style="background-color: #f5f5f5; color: #000000;">;</span><span style="background-color: #f5f5f5; color: #ff0000;"> background</span><span style="background-color: #f5f5f5; color: #000000;">:</span><span style="background-color: #f5f5f5; color: #0000ff;"> gray</span><span style="background-color: #f5f5f5; color: #000000;">;</span><span style="background-color: #f5f5f5; color: #ff0000;"> position</span><span style="background-color: #f5f5f5; color: #000000;">:</span><span style="background-color: #f5f5f5; color: #0000ff;"> absolute</span><span style="background-color: #f5f5f5; color: #000000;">;</span> <span style="background-color: #f5f5f5; color: #000000;">}</span>
+<span style="color: #008080;">11</span> <span style="background-color: #f5f5f5; color: #800000;">    .demo </span><span style="background-color: #f5f5f5; color: #000000;">{</span><span style="background-color: #f5f5f5; color: #ff0000;"> -webkit-animation</span><span style="background-color: #f5f5f5; color: #000000;">:</span><span style="background-color: #f5f5f5; color: #0000ff;"> demoFrame 1s </span><span style="background-color: #f5f5f5; color: #000000;">;</span> <span style="background-color: #f5f5f5; color: #000000;">}</span>
+<span style="color: #008080;">12</span>   <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">style</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">13</span>     <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">script </span><span style="color: #ff0000;">id</span><span style="color: #0000ff;">="others_zepto_10rc1"</span><span style="color: #ff0000;"> type</span><span style="color: #0000ff;">="text/javascript"</span><span style="color: #ff0000;"> class</span><span style="color: #0000ff;">="library"</span><span style="color: #ff0000;"> src</span><span style="color: #0000ff;">="/js/sandbox/other/zepto.min.js"</span><span style="color: #0000ff;">&gt;&lt;/</span><span style="color: #800000;">script</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">14</span> <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">head</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">15</span> <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">body</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">16</span> <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">div </span><span style="color: #ff0000;">id</span><span style="color: #0000ff;">="demo"</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">17</span> <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">div</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">18</span> <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">input </span><span style="color: #ff0000;">type</span><span style="color: #0000ff;">="button"</span><span style="color: #ff0000;"> value</span><span style="color: #0000ff;">="点击我开始动画"</span><span style="color: #ff0000;"> id</span><span style="color: #0000ff;">="btn"</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">19</span> <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">script</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">20</span> <span style="background-color: #f5f5f5; color: #0000ff;">var</span><span style="background-color: #f5f5f5; color: #000000;"> el </span><span style="background-color: #f5f5f5; color: #000000;">=</span><span style="background-color: #f5f5f5; color: #000000;"> $(</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">#demo</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">);
+</span><span style="color: #008080;">21</span> <span style="background-color: #f5f5f5; color: #0000ff;">var</span><span style="background-color: #f5f5f5; color: #000000;"> btn </span><span style="background-color: #f5f5f5; color: #000000;">=</span><span style="background-color: #f5f5f5; color: #000000;"> $(</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">#btn</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">);
+</span><span style="color: #008080;">22</span> <span style="background-color: #f5f5f5; color: #000000;">el.on(</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">webkitAnimationEnd</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">, </span><span style="background-color: #f5f5f5; color: #0000ff;">function</span><span style="background-color: #f5f5f5; color: #000000;"> () {
+</span><span style="color: #008080;">23</span> <span style="background-color: #f5f5f5; color: #000000;">    el.removeClass(</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">demo</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">);
+</span><span style="color: #008080;">24</span> <span style="background-color: #f5f5f5; color: #000000;">});
+</span><span style="color: #008080;">25</span> <span style="background-color: #f5f5f5; color: #000000;">btn.on(</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">click</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">, </span><span style="background-color: #f5f5f5; color: #0000ff;">function</span><span style="background-color: #f5f5f5; color: #000000;">() {
+</span><span style="color: #008080;">26</span> <span style="background-color: #f5f5f5; color: #000000;"> el.addClass(</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">demo</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">);
+</span><span style="color: #008080;">27</span> <span style="background-color: #f5f5f5; color: #000000;">});
+</span><span style="color: #008080;">28</span> <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">script</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">29</span> <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">body</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">30</span> <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">html</span><span style="color: #0000ff;">&gt;</span></pre>
+</div>
+<p>每次执行了动画逻辑后需要移除class达到重置效果，animationEnd便是对应回调，对应transition也有一个transitionEnd回调会在动画后触发，偶尔不灵就采用setTimeout吧。</p>
+<p>这里举一个更加适用于项目的例子：</p>
+<p><iframe src="23005658992474.jpg" width="320" height="546"></iframe></p>
+<div class="cnblogs_code" onclick="cnblogs_code_show('c5a95ad4-1c3e-4834-b1c0-f7bf13014bb8')"><img id="code_img_closed_c5a95ad4-1c3e-4834-b1c0-f7bf13014bb8" class="code_img_closed" src="43570758473519.gif" alt=""><img id="code_img_opened_c5a95ad4-1c3e-4834-b1c0-f7bf13014bb8" class="code_img_opened" style="display: none;" onclick="cnblogs_code_hide('c5a95ad4-1c3e-4834-b1c0-f7bf13014bb8',event)" src="16365178109279.gif" alt="">
+<div id="cnblogs_code_open_c5a95ad4-1c3e-4834-b1c0-f7bf13014bb8" class="cnblogs_code_hide">
+<pre><span style="color: #008080;"> 1</span> <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">html</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 2</span> <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">head</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 3</span>   <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">meta </span><span style="color: #ff0000;">charset</span><span style="color: #0000ff;">="utf-8"</span> <span style="color: #0000ff;">/&gt;</span>
+<span style="color: #008080;"> 4</span>   <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">title</span><span style="color: #0000ff;">&gt;</span>Blade Demo<span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">title</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 5</span>   <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">style </span><span style="color: #ff0000;">type</span><span style="color: #0000ff;">="text/css"</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 6</span> <span style="background-color: #f5f5f5; color: #800000;">    @-webkit-keyframes itemFrame </span><span style="background-color: #f5f5f5; color: #000000;">{</span>
+<span style="color: #008080;"> 7</span> <span style="background-color: #f5f5f5; color: #ff0000;">      from { -webkit-transform</span><span style="background-color: #f5f5f5; color: #000000;">:</span><span style="background-color: #f5f5f5; color: #0000ff;"> translateY(-80px)</span><span style="background-color: #f5f5f5; color: #000000;">;</span> <span style="background-color: #f5f5f5; color: #000000;">}</span>
+<span style="color: #008080;"> 8</span> <span style="background-color: #f5f5f5; color: #800000;">      to </span><span style="background-color: #f5f5f5; color: #000000;">{</span><span style="background-color: #f5f5f5; color: #ff0000;"> -webkit-transform</span><span style="background-color: #f5f5f5; color: #000000;">:</span><span style="background-color: #f5f5f5; color: #0000ff;"> translate(0)</span><span style="background-color: #f5f5f5; color: #000000;">;</span> <span style="background-color: #f5f5f5; color: #000000;">}</span>
+<span style="color: #008080;"> 9</span> <span style="background-color: #f5f5f5; color: #800000;">    }
+</span><span style="color: #008080;">10</span> <span style="background-color: #f5f5f5; color: #800000;">    * </span><span style="background-color: #f5f5f5; color: #000000;">{</span><span style="background-color: #f5f5f5; color: #ff0000;"> margin</span><span style="background-color: #f5f5f5; color: #000000;">:</span><span style="background-color: #f5f5f5; color: #0000ff;"> 0</span><span style="background-color: #f5f5f5; color: #000000;">;</span><span style="background-color: #f5f5f5; color: #ff0000;"> padding</span><span style="background-color: #f5f5f5; color: #000000;">:</span><span style="background-color: #f5f5f5; color: #0000ff;"> 0</span><span style="background-color: #f5f5f5; color: #000000;">;</span> <span style="background-color: #f5f5f5; color: #000000;">}</span>
+<span style="color: #008080;">11</span> <span style="background-color: #f5f5f5; color: #800000;">    #demo li </span><span style="background-color: #f5f5f5; color: #000000;">{</span><span style="background-color: #f5f5f5; color: #ff0000;"> list-style</span><span style="background-color: #f5f5f5; color: #000000;">:</span><span style="background-color: #f5f5f5; color: #0000ff;"> none</span><span style="background-color: #f5f5f5; color: #000000;">;</span><span style="background-color: #f5f5f5; color: #ff0000;"> border</span><span style="background-color: #f5f5f5; color: #000000;">:</span><span style="background-color: #f5f5f5; color: #0000ff;"> 1px solid black</span><span style="background-color: #f5f5f5; color: #000000;">;</span><span style="background-color: #f5f5f5; color: #ff0000;"> margin</span><span style="background-color: #f5f5f5; color: #000000;">:</span><span style="background-color: #f5f5f5; color: #0000ff;"> 10px</span><span style="background-color: #f5f5f5; color: #000000;">;</span><span style="background-color: #f5f5f5; color: #ff0000;"> padding</span><span style="background-color: #f5f5f5; color: #000000;">:</span><span style="background-color: #f5f5f5; color: #0000ff;"> 10px</span><span style="background-color: #f5f5f5; color: #000000;">;</span> <span style="background-color: #f5f5f5; color: #000000;">}</span>
+<span style="color: #008080;">12</span> <span style="background-color: #f5f5f5; color: #800000;">    .animateItem </span><span style="background-color: #f5f5f5; color: #000000;">{</span><span style="background-color: #f5f5f5; color: #ff0000;"> -webkit-animation</span><span style="background-color: #f5f5f5; color: #000000;">:</span><span style="background-color: #f5f5f5; color: #0000ff;"> itemFrame 1s </span><span style="background-color: #f5f5f5; color: #000000;">;</span> <span style="background-color: #f5f5f5; color: #000000;">}</span>
+<span style="color: #008080;">13</span> 
+<span style="color: #008080;">14</span>   <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">style</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">15</span>   <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">script </span><span style="color: #ff0000;">id</span><span style="color: #0000ff;">="others_zepto_10rc1"</span><span style="color: #ff0000;"> type</span><span style="color: #0000ff;">="text/javascript"</span><span style="color: #ff0000;"> class</span><span style="color: #0000ff;">="library"</span><span style="color: #ff0000;"> src</span><span style="color: #0000ff;">="http://sandbox.runjs.cn/js/sandbox/other/zepto.min.js"</span><span style="color: #0000ff;">&gt;&lt;/</span><span style="color: #800000;">script</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">16</span> <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">head</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">17</span> <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">body</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">18</span> <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">ul </span><span style="color: #ff0000;">id</span><span style="color: #0000ff;">="demo"</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">19</span> <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">ul</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">20</span> <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">script</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">21</span>   <span style="background-color: #f5f5f5; color: #0000ff;">var</span><span style="background-color: #f5f5f5; color: #000000;"> el </span><span style="background-color: #f5f5f5; color: #000000;">=</span><span style="background-color: #f5f5f5; color: #000000;"> $(</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">#demo</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">);
+</span><span style="color: #008080;">22</span>   <span style="background-color: #f5f5f5; color: #0000ff;">for</span><span style="background-color: #f5f5f5; color: #000000;">(</span><span style="background-color: #f5f5f5; color: #0000ff;">var</span><span style="background-color: #f5f5f5; color: #000000;"> i </span><span style="background-color: #f5f5f5; color: #000000;">=</span> <span style="background-color: #f5f5f5; color: #000000;">0</span><span style="background-color: #f5f5f5; color: #000000;">; i </span><span style="background-color: #f5f5f5; color: #000000;">&lt;</span> <span style="background-color: #f5f5f5; color: #000000;">10</span><span style="background-color: #f5f5f5; color: #000000;">; i</span><span style="background-color: #f5f5f5; color: #000000;">++</span><span style="background-color: #f5f5f5; color: #000000;">) {
+</span><span style="color: #008080;">23</span>     <span style="background-color: #f5f5f5; color: #0000ff;">var</span><span style="background-color: #f5f5f5; color: #000000;"> li </span><span style="background-color: #f5f5f5; color: #000000;">=</span><span style="background-color: #f5f5f5; color: #000000;"> $(</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">&lt;li&gt;项目_</span><span style="background-color: #f5f5f5; color: #000000;">'</span> <span style="background-color: #f5f5f5; color: #000000;">+</span><span style="background-color: #f5f5f5; color: #000000;"> i);
+</span><span style="color: #008080;">24</span> <span style="background-color: #f5f5f5; color: #000000;">    el.append(li);
+</span><span style="color: #008080;">25</span> <span style="background-color: #f5f5f5; color: #000000;">  }
+</span><span style="color: #008080;">26</span>   <span style="background-color: #f5f5f5; color: #0000ff;">var</span><span style="background-color: #f5f5f5; color: #000000;"> items </span><span style="background-color: #f5f5f5; color: #000000;">=</span><span style="background-color: #f5f5f5; color: #000000;"> $(</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">#demo li</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">);
+</span><span style="color: #008080;">27</span> 
+<span style="color: #008080;">28</span>   <span style="background-color: #f5f5f5; color: #0000ff;">function</span><span style="background-color: #f5f5f5; color: #000000;"> animatFn() {
+</span><span style="color: #008080;">29</span> <span style="background-color: #f5f5f5; color: #000000;">    $.each(items, </span><span style="background-color: #f5f5f5; color: #0000ff;">function</span><span style="background-color: #f5f5f5; color: #000000;"> (i) {
+</span><span style="color: #008080;">30</span>       <span style="background-color: #f5f5f5; color: #0000ff;">var</span><span style="background-color: #f5f5f5; color: #000000;"> el </span><span style="background-color: #f5f5f5; color: #000000;">=</span><span style="background-color: #f5f5f5; color: #000000;"> $(</span><span style="background-color: #f5f5f5; color: #0000ff;">this</span><span style="background-color: #f5f5f5; color: #000000;">);
+</span><span style="color: #008080;">31</span> <span style="background-color: #f5f5f5; color: #000000;">      el.css(</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">-webkit-animation-delay</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">, i </span><span style="background-color: #f5f5f5; color: #000000;">*</span> <span style="background-color: #f5f5f5; color: #000000;">50</span>   <span style="background-color: #f5f5f5; color: #000000;">+</span> <span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">ms</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">);
+</span><span style="color: #008080;">32</span> <span style="background-color: #f5f5f5; color: #000000;">      el.addClass(</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">animateItem</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">);
+</span><span style="color: #008080;">33</span> <span style="background-color: #f5f5f5; color: #000000;">    })
+</span><span style="color: #008080;">34</span> <span style="background-color: #f5f5f5; color: #000000;">  }
+</span><span style="color: #008080;">35</span> 
+<span style="color: #008080;">36</span> <span style="background-color: #f5f5f5; color: #000000;">  items.on(</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">webkitAnimationEnd</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">, </span><span style="background-color: #f5f5f5; color: #0000ff;">function</span><span style="background-color: #f5f5f5; color: #000000;"> () {
+</span><span style="color: #008080;">37</span> <span style="background-color: #f5f5f5; color: #000000;">    items.removeClass(</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">animateItem</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">);
+</span><span style="color: #008080;">38</span> <span style="background-color: #f5f5f5; color: #000000;">    items.css(</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">-webkit-animation-delay</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">, </span><span style="background-color: #f5f5f5; color: #000000;">''</span><span style="background-color: #f5f5f5; color: #000000;">);
+</span><span style="color: #008080;">39</span> <span style="background-color: #f5f5f5; color: #000000;">  });
+</span><span style="color: #008080;">40</span> 
+<span style="color: #008080;">41</span> <span style="background-color: #f5f5f5; color: #000000;">  animatFn();
+</span><span style="color: #008080;">42</span> 
+<span style="color: #008080;">43</span> <span style="background-color: #f5f5f5; color: #000000;">  setInterval(</span><span style="background-color: #f5f5f5; color: #0000ff;">function</span><span style="background-color: #f5f5f5; color: #000000;"> () {
+</span><span style="color: #008080;">44</span> <span style="background-color: #f5f5f5; color: #000000;">    animatFn();
+</span><span style="color: #008080;">45</span> <span style="background-color: #f5f5f5; color: #000000;">  }, </span><span style="background-color: #f5f5f5; color: #000000;">3000</span><span style="background-color: #f5f5f5; color: #000000;">)
+</span><span style="color: #008080;">46</span> 
+<span style="color: #008080;">47</span> <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">script</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">48</span> <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">body</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">49</span> <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">html</span><span style="color: #0000ff;">&gt;</span></pre>
+</div>
+<span class="cnblogs_code_collapse">View Code</span></div>
+<p>这是一个list页面的经典效果，做得好会让人眼前一亮，当然做得不好也会让人头疼，这里为了效果便代码上循环了下，这里有一个知识点要说下：</p>
+<div class="cnblogs_code">
+<pre>浏览器的dom操作与页面渲染时互斥的</pre>
+</div>
+<p>以代码为例：</p>
+<div class="cnblogs_code">
+<pre><span style="color: #008080;">1</span>     $.each(items, <span style="color: #0000ff;">function</span><span style="color: #000000;"> (i) {
+</span><span style="color: #008080;">2</span>       <span style="color: #0000ff;">var</span> el = $(<span style="color: #0000ff;">this</span><span style="color: #000000;">);
+</span><span style="color: #008080;">3</span>       el.css('-webkit-animation-delay', i * 50   + 'ms'<span style="color: #000000;">);
+</span><span style="color: #008080;">4</span>       el.addClass('animateItem'<span style="color: #000000;">);
+</span><span style="color: #008080;">5</span>     })</pre>
+</div>
+<p>事实上每次循环皆将class与css属性同步设置到了dom上但没有执行动画，而是整个dom操作执行结束后才执行的，如果这里代码加入时间片便不一样了</p>
+<p>这样的话一次循环会马上执行，随后会执行其中的一个个setTimeout的代码，也可以看到setTimeout之间的时序不太好被保证，比如item有100项</p>
+<div class="cnblogs_code">
+<pre><span style="color: #008080;">1</span> <span style="color: #0000ff;">function</span><span style="color: #000000;"> animatFn() {
+</span><span style="color: #008080;">2</span>   $.each(items, <span style="color: #0000ff;">function</span><span style="color: #000000;"> (i) {
+</span><span style="color: #008080;">3</span>     setTimeout($.proxy(<span style="color: #0000ff;">function</span><span style="color: #000000;"> () {
+</span><span style="color: #008080;">4</span>       <span style="color: #0000ff;">var</span> el = $(<span style="color: #0000ff;">this</span><span style="color: #000000;">);
+</span><span style="color: #008080;">5</span>       el.addClass('animateItem'<span style="color: #000000;">);
+</span><span style="color: #008080;">6</span>     }, <span style="color: #0000ff;">this</span>), 300 *<span style="color: #000000;"> i);
+</span><span style="color: #008080;">7</span> <span style="color: #000000;">  })
+</span><span style="color: #008080;">8</span> }</pre>
+</div>
+<p>更复杂的效果，比如模拟qq的页面转场动画，就要与专业的重构同事上场了，可以看这个代码：</p>
+<p><a href="https://github.com/yexiaochai/cssui/tree/gh-pages" target="_blank">https://github.com/yexiaochai/cssui/tree/gh-pages</a></p>
+<p><iframe src="45358949720560.html#a" width="320" height="460"></iframe></p>
+<p>demo地址：<a href="45358949720560.html#a" target="_blank">45358949720560.html#a</a></p>
+<h1>结语</h1>
+<p>初学重构，如果文中有何不足，请您留言</p>
+                </div>
+
+                <div class='span3 sidebar'>
+                    <h2>导航栏</h2>
+                    <ul class="nav nav-tabs nav-stacked">
+                             				<li><a href="http://songboriceboy.github.io/xxoo/html/css/HTML5&CSS3jj03JseryCsserrhyqykdfxlzj/index.html">【HTML5&CSS3进阶03】Jser与Csser如何一起愉快的翻新老组件</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/css/HTML5&CSS3jj04CSS3dhygrhzwebappzyy/index.html">【HTML5&CSS3进阶04】CSS3动画应该如何在webapp中运用</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/css/HTML5&CSS3jjxx01qpzjdsx/index.html">【HTML5&CSS3进阶学习01】气泡组件的实现</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/css/ctHTMLbxdzzbgzrhtmlbqtshz/index.html">【初探HTML本相】道之真谛不过自然，html标签脱俗还真</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/css/qdmdDOMsjllzCSShmxsfjyhd/index.html">【前端盲点】DOM事件流论证CSS盒模型是否具有厚度</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/css/zsCSS02inlineylineheightfloatabsolutedgs/index.html">【正视CSS02】inline与lineheight、float、absolute的故事</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/css/zsCSS03blockypositioncmzwdpydwjkl/index.html">【正视CSS03】block与position，出门在外的朋友端午节快乐</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/css/zsCSS05wmcglxsmwhyx/index.html">【正视CSS05】我们错过了些什么，为何叶小钗？</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/css/zsCSS06gjwmzjdsjg/index.html">【正视CSS06】构建我们自己的世界观！</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/css/zsCSS07zkverticalalign/index.html">【正视CSS07】再看verticalalign</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/css/zsCSS08fdwzfloatnwsmyttwdys/index.html">【正视CSS08】巅峰对武之float你为什么要坍塌我的元素！！！</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/css/zsCSStszykyzBzxsmargin/index.html">【正视CSS】他山之玉可以装B之细说margin</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/css/gwzmjshdllbnwmyqlkkhddmstbjsaldy/index.html">各位周末结束后都累了吧，那我们一起来看看【寒冬】的面试题吧（据说阿里的哟）</a></li>
+    				                                         
+                    </ul>
+                </div>
+            </div>
+
+        </div>
+    </body>
+</html>

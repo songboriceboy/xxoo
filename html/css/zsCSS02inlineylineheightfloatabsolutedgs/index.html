@@ -1,0 +1,226 @@
+﻿<!DOCTYPE html>
+
+<html lang="zh">
+    <head>
+        <meta charset="utf-8">
+        <meta name="description" content="android,ios" />
+        <meta name="keywords" content="android,ios" />
+
+        <title>叶小钗</title>
+        <style type='text/css'>
+            body {
+                background-color: #CCC;
+            }
+        </style>
+        <link rel="stylesheet" href="../../../css/bootstrap.css" />
+    </head>
+
+    <body>
+        <div class="container">
+
+            <h1>叶小钗</h1>
+
+            <div class='navbar navbar-inverse'>
+                <div class='navbar-inner nav-collapse' style="height: auto;">
+                    <ul class="nav">
+                              				<li><a href="http://songboriceboy.github.io/xxoo/html/blade/index.html">blade</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/css/index.html">css</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/HTML5&CSS3/index.html">HTML5&CSS3</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/index.html">javascript</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Javaxx/index.html">Java学习</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/nodejs/index.html">nodejs</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/requirejs/index.html">requirejs</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/index.html">Web前端</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/xxgw/index.html">学习感悟</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/gzdd/index.html">工作点滴</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/jkxx/index.html">接口学习</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/wfl/index.html">未分类</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/ydkf/index.html">移动开发</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/sjms/index.html">设计模式</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/mst/index.html">面试题</a></li>
+    				                      </ul>
+                </div>
+            </div>
+
+            <div id='content' class='row-fluid'>
+
+                <div class='span9 main'>
+				<div style="color:blue" align=center>【正视CSS02】inline与lineheight、float、absolute的故事</div><br><h1>前言</h1>
+<p>那是一个很久之前的故事了。。。之前我一直认为CSS最重要的是布局，将一个图片很好的以网页显示出来就是王道。</p>
+<p>但是，经过后来慢慢入门后，才发现其实布局感觉不是很难了，倒是行内元素这个家伙深藏不露。</p>
+<p>行内元素属于那种很仁慈的主，你了解他你能做得更好，你不了解他，你的页面也不会过于乱，所以我们就容易忽略他的威力，所以今天我们一起来好好的审视一番吧</p>
+<h1>那一年，你未娶我未嫁</h1>
+<p>在那一年我会写这样的代码：</p>
+<div class="cnblogs_code">
+<pre><span style="color: #0000ff;">&lt;</span><span style="color: #800000;">p</span><span style="color: #0000ff;">&gt;</span><span style="color: #000000;">
+    霹雳布袋戏中最广为人知的主角之一。叶小钗一生悲情，命运多舛，亲人恩人朋友一个个离他而去，遭遇令人心酸，却也因此练就了超绝的禅定功夫。
+耿直专一、守信重诺的侠客，虽为侍童出身，但不屈不挠的个性，丰富的人生阅历，让其成为中原武林不可或缺的一员，
+享有</span><span style="color: #0000ff;">&lt;</span><span style="color: #800000;">span </span><span style="color: #ff0000;">style</span><span style="color: #0000ff;">=" width: 200px; height: 200px; margin: 10px; padding: 10px; border: 1px solid black;"</span><span style="color: #0000ff;">&gt;</span>「刀狂剑痴」<span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">span</span><span style="color: #0000ff;">&gt;</span><span style="color: #000000;">
+之盛名，披肩的白发和脸上的英雄疤，搭配沉默无言的特色，营造出该角色独特的风范。</span><span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">p</span><span style="color: #0000ff;">&gt;</span></pre>
+</div>
+<p><img src="915347762465.x-png" alt=""></p>
+<p><img src="6415705564004.x-png" alt=""></p>
+<p>然后，我再做了一点demo，就以为掌握到了精华：</p>
+<p>1 设置width无效</p>
+<p>2 设置height无效</p>
+<p>3 margin上下无效，左右有效</p>
+<p>4 padding上下无效，左右有效（元素范围增大，但是元素内容无效）</p>
+<p>以上便是我很长一段时间对行内元素的理解，只是流于表面，而且一段时间也没有什么问题的。</p>
+<p>后来一点，各方面有所成长，我发现其实自己是忽略了一些东西的。</p>
+<h1>奇怪的现象</h1>
+<p>在上面我们发现设置高度和宽度是没有意义的，特别是高度又让我们变得更加疑惑了，请看例子：</p>
+<div class="cnblogs_code">
+<pre><span style="color: #008080;">1</span> <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">div</span><span style="color: #0000ff;">&gt;</span>我在之前<span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">div</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">2</span> <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">div </span><span style="color: #ff0000;">style</span><span style="color: #0000ff;">=" border: 1px solid black; background-color: Red; "</span><span style="color: #0000ff;">&gt;</span>空格<span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">div</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">3</span> <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">div</span><span style="color: #0000ff;">&gt;</span>我在之和<span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">div</span><span style="color: #0000ff;">&gt;</span></pre>
+</div>
+<p><img src="20917636037315.png" alt=""></p>
+<p><img src="5180358926874.png" alt=""></p>
+<p>以上是div中有字和div中没字时候的差别，我们发现div若是没字的话，他就&ldquo;消失了&rdquo;。</p>
+<p>有了文字后，div就有高度了，所以我们认为是文字撑开了div，但是根据我们之前对行内元素的理解后，我们会慢慢怀疑不是文字撑开了高度而是line-height：</p>
+<div class="cnblogs_code">
+<pre><span style="color: #008080;">1</span> <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">div</span><span style="color: #0000ff;">&gt;</span>我在之前<span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">div</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">2</span> <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">div </span><span style="color: #ff0000;">style</span><span style="color: #0000ff;">=" border: 1px solid black; background-color: Red; line-height: 1px; "</span><span style="color: #0000ff;">&gt;</span>空格<span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">div</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">3</span> <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">div</span><span style="color: #0000ff;">&gt;</span>我在之和<span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">div</span><span style="color: #0000ff;">&gt;</span></pre>
+</div>
+<p><img src="36434467994628.png" alt=""></p>
+<p>对于这张图其实我们是应该感到诧异的，因为他狠狠的给了我一巴掌（真是有图有真相啊）。</p>
+<p>他基本就说明了，文字其实并没有撑开div，控制div高度的是line-height，但是为什么没有文字时候他就没有高度呢？</p>
+<p>在inline box 模型中，有个line boxes，他就是文字的框（CSS里面神马东西都会有框），一行文字有一个line boxes，上面的&ldquo;空格&rdquo;就有一个line boxes（每个文字又会有自己的行内框inline box，这两爷们取名过于相似，容易误解），div空着的时候里面没有line boxes，但是有字后，这家伙就有line boxes了，所以他就很嚣张的&ldquo;膨胀&rdquo;了起来。</p>
+<p>以上的line boxes还不是最终boss，最终boss其实是里面的行内元素，因为事实上是行内元素的inline boxes形成的行高，来一个走：</p>
+<div class="cnblogs_code">
+<pre><span style="color: #008080;">1</span> <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">div</span><span style="color: #0000ff;">&gt;</span>我在之前<span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">div</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">2</span> <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">div </span><span style="color: #ff0000;">style</span><span style="color: #0000ff;">=" border: 1px solid black; background-color: Red; line-height: 1px; "</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">3</span>     <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">img </span><span style="color: #ff0000;">src</span><span style="color: #0000ff;">="1.png"</span> <span style="color: #0000ff;">/&gt;</span>空格<span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">div</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">4</span> <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">div</span><span style="color: #0000ff;">&gt;</span>我在之和<span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">div</span><span style="color: #0000ff;">&gt;</span></pre>
+</div>
+<p><img src="39770957148446.png" alt=""></p>
+<p>看着我们伟大的图片，撑开了我们的div！</p>
+<p>PS：其实我这里不该引入图片的，他会把情况变得更加复杂，比如你给图片设置行高什么的，你会发现。。。所以，我们重新来个例子：</p>
+<div class="cnblogs_code">
+<pre><span style="color: #008080;">1</span> <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">div</span><span style="color: #0000ff;">&gt;</span>我在之前<span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">div</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">2</span> <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">div </span><span style="color: #ff0000;">style</span><span style="color: #0000ff;">=" border: 1px solid black; background-color: Red; line-height: 1px; "</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">3</span>     <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">span </span><span style="color: #ff0000;">style</span><span style="color: #0000ff;">="  "</span><span style="color: #0000ff;">&gt;</span>叶小钗<span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">span</span><span style="color: #0000ff;">&gt;</span>空格<span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">div</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">4</span> <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">div</span><span style="color: #0000ff;">&gt;</span>我在之和<span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">div</span><span style="color: #0000ff;">&gt;</span></pre>
+</div>
+<p><img src="33332179960039.png" alt=""></p>
+<div class="cnblogs_code">
+<pre><span style="color: #008080;">1</span> <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">div</span><span style="color: #0000ff;">&gt;</span>我在之前<span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">div</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">2</span> <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">div </span><span style="color: #ff0000;">style</span><span style="color: #0000ff;">=" border: 1px solid black; background-color: Red; line-height: 1px; "</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">3</span>     <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">span </span><span style="color: #ff0000;">style</span><span style="color: #0000ff;">="line-height: 10px;  "</span><span style="color: #0000ff;">&gt;</span>叶小钗<span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">span</span><span style="color: #0000ff;">&gt;</span>空格<span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">div</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">4</span> <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">div</span><span style="color: #0000ff;">&gt;</span>我在之和<span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">div</span><span style="color: #0000ff;">&gt;</span></pre>
+</div>
+<p><img src="17891038490408.png" alt=""></p>
+<p>我们可以看到，无论图片或者后面的span，&ldquo;叶小钗&rdquo;将一条街的高度都拉高啦！！！</p>
+<p>这是为什么呢？？</p>
+<p>因为行内元素&ldquo;叶小钗&rdquo;的inline boxes 将整个line boxes拉高了（其实叶小钗是3个inline boxes了。。。）</p>
+<p>在这个情况下，我们再来看看文字居中的实现：</p>
+<div class="cnblogs_code">
+<pre><span style="color: #008080;">1</span> <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">div</span><span style="color: #0000ff;">&gt;</span>我在之前<span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">div</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">2</span> <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">div </span><span style="color: #ff0000;">style</span><span style="color: #0000ff;">=" border: 1px solid black; background-color: Red; line-height: 40px; "</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">3</span> 叶小钗<span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">div</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">4</span> <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">div</span><span style="color: #0000ff;">&gt;</span>我在之和<span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">div</span><span style="color: #0000ff;">&gt;</span></pre>
+</div>
+<p><img src="16814136886368.png" alt=""></p>
+<p>我们发现，这里并没有把height与line-height设置为一样，但是他还是居中了，其实是因为没有设置height的时候line-height就是他的height了，所以height有时候还是需要的。</p>
+<p>至此，我想我们队行内元素的认识应该更加深刻了吧。。。。于是我们再拓宽一下吧。</p>
+<h1>float与行内元素</h1>
+<p>float是个坏家伙，我们之前就说过，inline boxes让line boxes拥有了高度，所以我们整个元素就有了高度，但是我们来看一下情况：</p>
+<div class="cnblogs_code">
+<pre><span style="color: #008080;">1</span> <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">div</span><span style="color: #0000ff;">&gt;</span>我在之前<span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">div</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">2</span> <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">div </span><span style="color: #ff0000;">style</span><span style="color: #0000ff;">=" border: 1px solid black; background-color: Red; line-height: 2px; "</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">3</span>     <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">span </span><span style="color: #ff0000;">style</span><span style="color: #0000ff;">="line-height: 10px;  "</span><span style="color: #0000ff;">&gt;</span>叶小钗<span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">span</span><span style="color: #0000ff;">&gt;</span>空格<span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">div</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">4</span> <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">div</span><span style="color: #0000ff;">&gt;</span>我在之和<span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">div</span><span style="color: #0000ff;">&gt;</span></pre>
+</div>
+<p><img src="453104810161548.png" alt=""></p>
+<p>这张图没问题，&ldquo;叶小钗&rdquo;拉高了整个line boxes的高度，但是我们若是给他加上浮动呢？</p>
+<div class="cnblogs_code">
+<pre><span style="color: #008080;">1</span> <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">div</span><span style="color: #0000ff;">&gt;</span>我在之前<span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">div</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">2</span> <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">div </span><span style="color: #ff0000;">style</span><span style="color: #0000ff;">=" border: 1px solid black; background-color: Red; line-height: 2px; "</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">3</span>     <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">span </span><span style="color: #ff0000;">style</span><span style="color: #0000ff;">="line-height: 10px;  float: left; "</span><span style="color: #0000ff;">&gt;</span>叶小钗<span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">span</span><span style="color: #0000ff;">&gt;</span>空格<span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">div</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">4</span> <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">div</span><span style="color: #0000ff;">&gt;</span>我在之和<span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">div</span><span style="color: #0000ff;">&gt;</span></pre>
+</div>
+<p><img src="504188510023549.png" alt=""></p>
+<p>我们来看看float这个坏家伙干了些什么事情：</p>
+<p>① 破坏了我&ldquo;叶小钗&rdquo;的高度，我连高度都没了，而且脱离了文档流（呜呜，救命）</p>
+<p>② 虽然我没有了高度，却为何要给我宽度，所以后面的字在我之前</p>
+<p>看吧，float这家伙够坏吧，所以我们布局不要用着家伙了，因为他让叶小钗没了高度！！！！</p>
+<p>我们为原来的代码加点效果也许又会看到一点不同的东西：</p>
+<div class="cnblogs_code">
+<pre><span style="color: #008080;">1</span> <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">div</span><span style="color: #0000ff;">&gt;</span>我在之前<span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">div</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">2</span> <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">div </span><span style="color: #ff0000;">style</span><span style="color: #0000ff;">=" border: 1px solid black; background-color: Red; line-height: 2px; "</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">3</span>     <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">span </span><span style="color: #ff0000;">style</span><span style="color: #0000ff;">=" float: left; background-color: Gray; "</span><span style="color: #0000ff;">&gt;</span>叶小钗<span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">span</span><span style="color: #0000ff;">&gt;</span>空格<span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">div</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">4</span> <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">div</span><span style="color: #0000ff;">&gt;</span>我在之和<span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">div</span><span style="color: #0000ff;">&gt;</span></pre>
+</div>
+<p><img src="11371178541389.png" alt=""></p>
+<p>这是无比诡异的一幕！我们在学习行内元素时候为什么难，因为稍不注意就会颠覆我们的想法，稍不注意又会陷入疑惑！</p>
+<p>我们明明破坏了叶小钗的高度，为什么他还会有那么一点背景呢？？？</p>
+<p><span style="color: #ff0000;">我这里就斗胆认为div有一点点默认高度了，若是不对请大神指出</span>。若是动态指定其高度，那么背景区域会更大一点，好了，我们马上来试试：</p>
+<div class="cnblogs_code">
+<pre><span style="color: #008080;">1</span> <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">div</span><span style="color: #0000ff;">&gt;</span>我在之前<span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">div</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">2</span> <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">div </span><span style="color: #ff0000;">style</span><span style="color: #0000ff;">=" border: 1px solid black; background-color: Red; line-height: 2px; "</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">3</span>     <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">span </span><span style="color: #ff0000;">style</span><span style="color: #0000ff;">=" float: left; background-color: Gray; width: 50px; height: 50px; padding: 10px; margin: 10px; "</span><span style="color: #0000ff;">&gt;</span>叶小钗<span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">span</span><span style="color: #0000ff;">&gt;</span>空格<span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">div</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">4</span> <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">div</span><span style="color: #0000ff;">&gt;</span>我在之和<span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">div</span><span style="color: #0000ff;">&gt;</span></pre>
+</div>
+<p><img src="14191355647867.png" alt=""></p>
+<p><img src="25850196045119.png" alt=""></p>
+<p>主意来！我们叶小钗外面的元素可是span哟，按道理说span设置height时无效的，但是这里明显他是<span style="color: #ff0000;">有效</span>的！！这又是为什么呢？这个和我们元素的框又产生关系了。</p>
+<p>PS：事实上这里&ldquo;<span style="color: #ff0000;">float强迫行内元素变成了inline-block元素啦&rdquo;</span>。</p>
+<p>float这家伙的做法便是：破坏之、重建之！</p>
+<p>反正不管怎么说，float让行内元素变成了不是inline-block的inline-block元素。</p>
+<h1>行内元素与absolute</h1>
+<p>与float一致，absolute干的坏事不必他好，有过之而无不及啊！！！也是让元素脱离文档流。</p>
+<p><span style="color: #ff0000;">绝对定位元素会将一个元素的width和height破坏的一干二净(<strong>不对请指出</strong>)</span>。</p>
+<p>若是说float是白蚁的话，absolute就是会飞的白蚁，其实我们这样认为不好！</p>
+<p>absolute虽然会破坏重建一个元素，但是他本身就是用来布局的，会飞的inline-box就是对他最好的形容。反正我的意思就是大家要好好对待他了：</p>
+<div class="cnblogs_code">
+<pre><span style="color: #0000ff;">&lt;</span><span style="color: #800000;">div</span><span style="color: #0000ff;">&gt;</span>我在之前<span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">div</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #0000ff;">&lt;</span><span style="color: #800000;">div </span><span style="color: #ff0000;">style</span><span style="color: #0000ff;">=" border: 1px solid black; background-color: Red; line-height: 2px; "</span><span style="color: #0000ff;">&gt;</span>
+    <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">span </span><span style="color: #ff0000;">style</span><span style="color: #0000ff;">=" position: absolute; background-color: Gray; width: 50px; height: 50px; padding: 10px; margin: 10px; "</span><span style="color: #0000ff;">&gt;</span>叶小钗<span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">span</span><span style="color: #0000ff;">&gt;</span>空格<span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">div</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #0000ff;">&lt;</span><span style="color: #800000;">div</span><span style="color: #0000ff;">&gt;</span>我在之和<span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">div</span><span style="color: #0000ff;">&gt;</span></pre>
+</div>
+<p><img src="30127716053615.png" alt=""></p>
+<p>absolute就是会飞的inline-block。</p>
+<h1>行内元素与vertical-algin</h1>
+<p>vertical-align这个家伙是行内元素对齐的工具：</p>
+<p><img src="5660415738635.png" alt=""></p>
+<p>以上一坨东西，我这里就不管了，反正大家一定记得：</p>
+<div class="cnblogs_code">
+<pre><span style="color: #0000ff;">&lt;</span><span style="color: #800000;">input  </span><span style="color: #ff0000;">type</span><span style="color: #0000ff;">="checkbox"</span><span style="color: #ff0000;"> style</span><span style="color: #0000ff;">=" vertical-align: -2px;"</span><span style="color: #0000ff;">/&gt;</span></pre>
+</div>
+<p>这段代码有什么用就好。</p>
+<p>有时候我们会将vertical-align用于块级元素，这样是不起作用滴，他只能用于块级或者行内元素，而且会让一整块相对于基线做漂移。</p>
+<p>我们这里这个可能用不到太深入，这边便不深究了。接下来我们以一个例子结束本文吧。</p>
+<h1>参考资料</h1>
+<p>独孤求败当年悟道独孤九剑花费10年光景，令狐冲1年不到就学会，这就是名师的威力啦，所以我们要多学习，多借鉴，甚至多模仿人家的思想，然后集合大家之长形成自己的理念甚至学说，过程如何不重要，重要的是不停的学习。该文参考(传说中的名师)：</p>
+<p><a style="font: 14px/21px 'Lucida Grande', Verdana, Arial, sans-serif; text-align: justify; color: #34538b; text-transform: none; text-indent: 0px; letter-spacing: normal; text-decoration: none; word-spacing: 0px; white-space: normal; font-size-adjust: none; font-stretch: normal; background-color: #ffffff; -webkit-text-stroke-width: 0px;" href="http://www.zhangxinxu.com/wordpress/?p=384">http://www.zhangxinxu.com/</a></p>
+<p><a href="http://www.cnblogs.com/winter-cn/">http://www.cnblogs.com/winter-cn/</a></p>
+<h1>结语</h1>
+<p>中午不睡，下午崩溃！！！后面点时间我们还是一起研究bootstrap与CSS相关的东西。</p>
+<h2><strong>小弟初学，有何问题欢迎拍砖哟。</strong></h2>
+                </div>
+
+                <div class='span3 sidebar'>
+                    <h2>导航栏</h2>
+                    <ul class="nav nav-tabs nav-stacked">
+                             				<li><a href="http://songboriceboy.github.io/xxoo/html/css/HTML5&CSS3jj03JseryCsserrhyqykdfxlzj/index.html">【HTML5&CSS3进阶03】Jser与Csser如何一起愉快的翻新老组件</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/css/HTML5&CSS3jj04CSS3dhygrhzwebappzyy/index.html">【HTML5&CSS3进阶04】CSS3动画应该如何在webapp中运用</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/css/HTML5&CSS3jjxx01qpzjdsx/index.html">【HTML5&CSS3进阶学习01】气泡组件的实现</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/css/ctHTMLbxdzzbgzrhtmlbqtshz/index.html">【初探HTML本相】道之真谛不过自然，html标签脱俗还真</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/css/qdmdDOMsjllzCSShmxsfjyhd/index.html">【前端盲点】DOM事件流论证CSS盒模型是否具有厚度</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/css/zsCSS02inlineylineheightfloatabsolutedgs/index.html">【正视CSS02】inline与lineheight、float、absolute的故事</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/css/zsCSS03blockypositioncmzwdpydwjkl/index.html">【正视CSS03】block与position，出门在外的朋友端午节快乐</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/css/zsCSS05wmcglxsmwhyx/index.html">【正视CSS05】我们错过了些什么，为何叶小钗？</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/css/zsCSS06gjwmzjdsjg/index.html">【正视CSS06】构建我们自己的世界观！</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/css/zsCSS07zkverticalalign/index.html">【正视CSS07】再看verticalalign</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/css/zsCSS08fdwzfloatnwsmyttwdys/index.html">【正视CSS08】巅峰对武之float你为什么要坍塌我的元素！！！</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/css/zsCSStszykyzBzxsmargin/index.html">【正视CSS】他山之玉可以装B之细说margin</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/css/gwzmjshdllbnwmyqlkkhddmstbjsaldy/index.html">各位周末结束后都累了吧，那我们一起来看看【寒冬】的面试题吧（据说阿里的哟）</a></li>
+    				                                         
+                    </ul>
+                </div>
+            </div>
+
+        </div>
+    </body>
+</html>

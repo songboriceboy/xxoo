@@ -1,0 +1,578 @@
+﻿<!DOCTYPE html>
+
+<html lang="zh">
+    <head>
+        <meta charset="utf-8">
+        <meta name="description" content="android,ios" />
+        <meta name="keywords" content="android,ios" />
+
+        <title>叶小钗</title>
+        <style type='text/css'>
+            body {
+                background-color: #CCC;
+            }
+        </style>
+        <link rel="stylesheet" href="../../../css/bootstrap.css" />
+    </head>
+
+    <body>
+        <div class="container">
+
+            <h1>叶小钗</h1>
+
+            <div class='navbar navbar-inverse'>
+                <div class='navbar-inner nav-collapse' style="height: auto;">
+                    <ul class="nav">
+                              				<li><a href="http://songboriceboy.github.io/xxoo/html/blade/index.html">blade</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/css/index.html">css</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/HTML5&CSS3/index.html">HTML5&CSS3</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/index.html">javascript</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Javaxx/index.html">Java学习</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/nodejs/index.html">nodejs</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/requirejs/index.html">requirejs</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/index.html">Web前端</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/xxgw/index.html">学习感悟</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/gzdd/index.html">工作点滴</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/jkxx/index.html">接口学习</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/wfl/index.html">未分类</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/ydkf/index.html">移动开发</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/sjms/index.html">设计模式</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/mst/index.html">面试题</a></li>
+    				                      </ul>
+                </div>
+            </div>
+
+            <div id='content' class='row-fluid'>
+
+                <div class='span9 main'>
+				<div style="color:blue" align=center>[置顶]【blade利刃出鞘】一起进入移动端webapp开发吧</div><br><h1>前言</h1>
+<p>在移动浪潮袭来的时候，小钗有幸进入框架组做webapp框架开发，过程中遇到了移动端的各种坑，也产生了各种激情，就我们公司的发展历程来说</p>
+<p>第一阶段：使用传统方式开发移动站点，少量引入HTML5元素</p>
+<p>第二阶段：框架化，使用jquery mobile框架，发现慢，组件不好管理，不好维护给搞掉了</p>
+<p>第三阶段：jquery+Backbone的组合，最后为了瘦身将jquery换成了zepto</p>
+<p>第四阶段：框架适应Hybrid版本，Hybrid相关频道与H5站点一套代码，业务扩展遍地开花</p>
+<p>第五阶段：框架适应ipad版本/实现前端ABTesting，由于不可控原因，计划夭折</p>
+<p>框架使用过程中需要快速适应业务需求，框架中过多的掺杂了业务代码，并且随之发展，框架本身的耦合度、设计不合理的地方也体现了出来</p>
+<p>小钗虽然知道哪里有问题，但框架的代码不是想象那么好改，一个API的改变会导致整个业务线的崩溃，听之任之又很不爽</p>
+<p>开发一套干净webapp框架的想法油然而生，于是该框架便出现了</p>
+<p>诚然，此框架比不上Backbone、比不了anglarJS，毕竟小钗的资历、水平有限，所以框架本身可能都会有一些缺陷，但作为初步接触前端的同学</p>
+<p>或者想在前端看到一些设计思想的同学，或者想在移动webapp试水的公司。此框架还是有一些他一些优势，我们带着看看不吃亏的想法，还是可以看看嘛！！！</p>
+<p>也希望各位多多支持，<strong>代码写的不好也在提高</strong>，<span style="color: #ff0000;">因为小钗不是专业的重构，其中的CSS及DOM结构全部由在线网站down下来了，</span><strong><span style="color: #800000;">这里是抄袭我说清楚了哦</span></strong><span style="line-height: 1.5;">。<br></span></p>
+<p><span style="line-height: 1.5;">① 这次首先出一篇大体介绍性文章，简单结束</span></p>
+<p><span style="line-height: 1.5;">② 而后有1,2篇博客对其中的全局MVC相关做说明，这里使用了hashChange与pushState两种方案</span></p>
+<p><span style="line-height: 1.5;">③ 然后对其中的UI继承关系做梳理，并拿其中比较复杂的几个UI组件说一下设计思路，预计会有3-5篇</span></p>
+<p><span style="line-height: 1.5;">④ 最后根据反馈对框架做一些调整，效果好的话，我也试试捐赠，我们家的<span style="color: #ff0000;"><strong>左小萌</strong></span>居然也在搞捐赠，我觉得我也该搞个！！！</span></p>
+<p><span style="line-height: 1.5;">框架主要用途还是自我<span style="color: #ff0000;"><strong>学习交流</strong></span>，以及框架思维整理，<span style="color: #ff0000;"><strong>BUG在所难免，若是有BUG请给我留言</strong></span>！</span></p>
+<h1>框架简介</h1>
+<h3>快速浏览</h3>
+<p>想简单看看demo的朋友请到：&nbsp;<a href="27791238108199.jpg">27791238108199.jpg</a></p>
+<p>对源码有兴趣的朋友请入：<a href="https://github.com/yexiaochai/blade">https://github.com/yexiaochai/blade</a></p>
+<p><span style="color: #ff0000;"><strong>若是PC端浏览请使用chrome浏览器，不用谢我叫雷锋，若是只有IE的同学请装chrome暂时抛弃IE</strong></span></p>
+<p><iframe src="27791238108199.jpg" width="450" height="700"></iframe></p>
+<h3>支持情况</h3>
+<p>由于做是个人框架，并且是学习，框架便抛弃了一些系统现在支持情况是</p>
+<p>IOS6+</p>
+<p>android4+</p>
+<p>那些手机不过千的浏览器上渲染可能会有问题，至于wp或者低版本兼容，小钗便需要看后续精力与工作强度</p>
+<h2><span style="line-height: 1.5;">框架发展</span></h2>
+<h3>第一期-MVC</h3>
+<p>该框架第一期的目标是简单的webapp MVC的实现，现在也基本实现了，app支持hashChange与pushState两种方式做路由加载view</p>
+<p>对此有兴趣的同学可以看看helloWord，关于app与页面级View的关系如下：</p>
+<p><a href="14957456045348.png" target="_blank"><img src="14957456045348.png" alt="Toast UML"></a></p>
+<h3><a class="anchor" name="user-content-%E7%AC%AC%E4%BA%8C%E6%9C%9F-%E9%80%9A%E7%94%A8%E5%B7%A5%E5%85%B7" href="https://github.com/yexiaochai/blade#%E7%AC%AC%E4%BA%8C%E6%9C%9F-%E9%80%9A%E7%94%A8%E5%B7%A5%E5%85%B7"></a>第二期-通用工具</h3>
+<p>框架第二期的想法是，完善本身一些通用的东西，比如UI组件或者简单的flip手势工具等</p>
+<p>这里小钗不是专业的前端，就直接从线上将公司的CSS Down下来了，也用了他的Dom结构 但是</p>
+<p>整个组件的扩展非常方便，有兴趣的同学看看UI一块的代码，UI的继承关系如下：</p>
+<p><a href="32675876032819.png" target="_blank"><img src="32675876032819.png" alt="Toast UML"></a></p>
+<h3><a class="anchor" name="user-content-%E7%AC%AC%E4%B8%89%E6%9C%9F-abtesting" href="https://github.com/yexiaochai/blade#%E7%AC%AC%E4%B8%89%E6%9C%9F-abtesting"></a>第三期-ABTesting</h3>
+<p>框架第三期目标是实现前端ABTesting方案</p>
+<h3><a class="anchor" name="user-content-%E7%AC%AC%E5%9B%9B%E6%9C%9F-ipad%E9%80%82%E9%85%8D" href="https://github.com/yexiaochai/blade#%E7%AC%AC%E5%9B%9B%E6%9C%9F-ipad%E9%80%82%E9%85%8D"></a>第四期-ipad适配</h3>
+<p>框架第四期的目标是一套业务代码，可以同时用于mobile与ipad</p>
+<h3><a class="anchor" name="user-content-%E7%AC%AC%E4%BA%94%E6%9C%9F-hybrid" href="https://github.com/yexiaochai/blade#%E7%AC%AC%E4%BA%94%E6%9C%9F-hybrid"></a>第五期-Hybrid</h3>
+<p>框架第五期目标是实现Hybrid交互适配，由于小钗本身不懂native开发所以此方案要靠后</p>
+<h3><a class="anchor" name="user-content-%E9%9A%8F%E6%9C%BA%E6%9C%9F-%E7%96%91%E9%9A%BE%E6%9D%82%E7%97%87" href="https://github.com/yexiaochai/blade#%E9%9A%8F%E6%9C%BA%E6%9C%9F-%E7%96%91%E9%9A%BE%E6%9D%82%E7%97%87"></a>随机期-疑难杂症</h3>
+<p>框架还会单开一个频道做一些疑难杂症处理，比如： ① fixed问题 ② 区域滚动问题 ③ app唤醒 ④ History路径问题等</p>
+<h2>目录简介</h2>
+<p><img src="11072739747503.png" alt=""></p>
+<p>有些项目文件或者不相关的文件我们不予关注，整个框架代码在blade文件目录中主要</p>
+<p>demo在demo中......</p>
+<p>dest为框架打包后的文件</p>
+<p>doc用于存放一些文档，暂时还未补齐，我的想法是博客作为文档，因为后期会源码解析，并分析设计思维</p>
+<p>grunt存放着打包文件</p>
+<p>helloworld为最简单的入门代码，教我们如何进入webapp开发</p>
+<p>res存放资源样式文件，这里是<span style="color: #ff0000;"><strong>直接用的别人的</strong></span></p>
+<p>test用于存放测试用例，当然现在很多用例未加上......</p>
+<h1>Helloworld</h1>
+<p><span style="line-height: 1.5;">要进入webapp开发非常简单，只需要将代码下载下来即可，其中helloworld异常简单</span></p>
+<p><img src="31749518677344.png" alt=""></p>
+<p>&nbsp;</p>
+<p>blade框架每个页面为一个页面片，一个页面片对应一个js文件，并且可能会对应一个html模板文件</p>
+<p>一个频道的运行只需要这些文件即可（其实有点多的），最外层的index.html是基本入口</p>
+<div class="cnblogs_code">
+<pre><span style="color: #008080;"> 1</span> <span style="color: #0000ff;">&lt;!</span><span style="color: #ff00ff;">doctype html</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 2</span> <span style="color: #008000;">&lt;!--</span><span style="color: #008000;">[if (gte IE 9)|(gt IEMobile 7)|!(IEMobile)|!(IE)]&gt;&lt;!</span><span style="color: #008000;">--&gt;</span>
+<span style="color: #008080;"> 3</span> <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">html </span><span style="color: #ff0000;">class</span><span style="color: #0000ff;">="ie"</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 4</span> <span style="color: #008000;">&lt;!--</span><span style="color: #008000;">&lt;![endif]</span><span style="color: #008000;">--&gt;</span>
+<span style="color: #008080;"> 5</span> <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">html</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 6</span>   <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">head</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 7</span>     <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">meta </span><span style="color: #ff0000;">charset</span><span style="color: #0000ff;">="utf-8"</span> <span style="color: #0000ff;">/&gt;</span>
+<span style="color: #008080;"> 8</span>     <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">title</span><span style="color: #0000ff;">&gt;</span>hello world<span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">title</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 9</span>     <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">meta </span><span style="color: #ff0000;">name</span><span style="color: #0000ff;">="viewport"</span><span style="color: #ff0000;"> content</span><span style="color: #0000ff;">="width=device-width,initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no"</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">10</span>     <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">meta </span><span style="color: #ff0000;">content</span><span style="color: #0000ff;">="telephone=no"</span><span style="color: #ff0000;"> name</span><span style="color: #0000ff;">="format-detection"</span> <span style="color: #0000ff;">/&gt;</span>
+<span style="color: #008080;">11</span>     <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">meta </span><span style="color: #ff0000;">name</span><span style="color: #0000ff;">="apple-mobile-web-app-capable"</span><span style="color: #ff0000;"> content</span><span style="color: #0000ff;">="yes"</span> <span style="color: #0000ff;">/&gt;</span>
+<span style="color: #008080;">12</span>     <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">link </span><span style="color: #ff0000;">href</span><span style="color: #0000ff;">="../res/style/style.css"</span><span style="color: #ff0000;"> rel</span><span style="color: #0000ff;">="stylesheet"</span><span style="color: #ff0000;"> type</span><span style="color: #0000ff;">="text/css"</span> <span style="color: #0000ff;">/&gt;</span>
+<span style="color: #008080;">13</span> 
+<span style="color: #008080;">14</span>   <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">head</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">15</span>   <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">body </span><span style="color: #ff0000;">onselectstart</span><span style="color: #0000ff;">="return false"</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">16</span> 
+<span style="color: #008080;">17</span>     <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">script </span><span style="color: #ff0000;">src</span><span style="color: #0000ff;">="../blade/libs/require.js"</span><span style="color: #ff0000;"> type</span><span style="color: #0000ff;">="text/javascript"</span><span style="color: #0000ff;">&gt;&lt;/</span><span style="color: #800000;">script</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">18</span> 
+<span style="color: #008080;">19</span>     <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">script </span><span style="color: #ff0000;">src</span><span style="color: #0000ff;">="../blade/libs/zepto.js"</span><span style="color: #ff0000;"> type</span><span style="color: #0000ff;">="text/javascript"</span><span style="color: #0000ff;">&gt;&lt;/</span><span style="color: #800000;">script</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">20</span>     <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">script </span><span style="color: #ff0000;">src</span><span style="color: #0000ff;">="../blade/libs/underscore.js"</span><span style="color: #ff0000;"> type</span><span style="color: #0000ff;">="text/javascript"</span><span style="color: #0000ff;">&gt;&lt;/</span><span style="color: #800000;">script</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">21</span>     <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">script </span><span style="color: #ff0000;">src</span><span style="color: #0000ff;">="../blade/libs/underscore.extend.js"</span><span style="color: #ff0000;"> type</span><span style="color: #0000ff;">="text/javascript"</span><span style="color: #0000ff;">&gt;&lt;/</span><span style="color: #800000;">script</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">22</span>     <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">script </span><span style="color: #ff0000;">src</span><span style="color: #0000ff;">="../blade/libs/fastclick.js"</span><span style="color: #ff0000;"> type</span><span style="color: #0000ff;">="text/javascript"</span><span style="color: #0000ff;">&gt;&lt;/</span><span style="color: #800000;">script</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">23</span> 
+<span style="color: #008080;">24</span>     <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">script </span><span style="color: #ff0000;">src</span><span style="color: #0000ff;">="../blade/common.js"</span><span style="color: #ff0000;"> type</span><span style="color: #0000ff;">="text/javascript"</span><span style="color: #0000ff;">&gt;&lt;/</span><span style="color: #800000;">script</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">25</span>     <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">script </span><span style="color: #ff0000;">type</span><span style="color: #0000ff;">="text/javascript"</span><span style="color: #ff0000;"> src</span><span style="color: #0000ff;">="./main.js"</span><span style="color: #0000ff;">&gt;&lt;/</span><span style="color: #800000;">script</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">26</span>   <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">body</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">27</span> <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">html</span><span style="color: #0000ff;">&gt;</span></pre>
+</div>
+<p><span style="color: #ff0000;">他这里引入了源码文件，我这里未做任何处理，实际使用请参考demo的dest.html</span></p>
+<p><span style="line-height: 1.5;">可以看到，js入口为对应的main.js：</span></p>
+<div class="cnblogs_code">
+<pre><span style="color: #008080;"> 1</span> (<span style="color: #0000ff;">function</span><span style="color: #000000;"> () {
+</span><span style="color: #008080;"> 2</span> 
+<span style="color: #008080;"> 3</span>   window.getViewTemplatePath = <span style="color: #0000ff;">function</span><span style="color: #000000;"> (path) {
+</span><span style="color: #008080;"> 4</span>     <span style="color: #0000ff;">return</span> 'text!helloworld/templates/' + path + '.html'<span style="color: #000000;">;
+</span><span style="color: #008080;"> 5</span> <span style="color: #000000;">  }
+</span><span style="color: #008080;"> 6</span> 
+<span style="color: #008080;"> 7</span> <span style="color: #000000;">  require.config({
+</span><span style="color: #008080;"> 8</span>     baseUrl: '../'<span style="color: #000000;">,
+</span><span style="color: #008080;"> 9</span> <span style="color: #000000;">    paths: {
+</span><span style="color: #008080;">10</span> <span style="color: #000000;">    }
+</span><span style="color: #008080;">11</span> <span style="color: #000000;">  });
+</span><span style="color: #008080;">12</span> 
+<span style="color: #008080;">13</span>   require(['AbstractApp'], <span style="color: #0000ff;">function</span><span style="color: #000000;"> (App) {
+</span><span style="color: #008080;">14</span>     <span style="color: #008000;">//</span><span style="color: #008000;">实例化App</span>
+<span style="color: #008080;">15</span>     <span style="color: #0000ff;">var</span> app = <span style="color: #0000ff;">new</span><span style="color: #000000;"> App({
+</span><span style="color: #008080;">16</span>       'defaultView': 'index'<span style="color: #000000;">,
+</span><span style="color: #008080;">17</span>       'viewRootPath': 'helloworld/views/'
+<span style="color: #008080;">18</span> <span style="color: #000000;">    });
+</span><span style="color: #008080;">19</span> 
+<span style="color: #008080;">20</span> <span style="color: #000000;">  });
+</span><span style="color: #008080;">21</span> })();</pre>
+</div>
+<p>那里引入了我们全局抽象App，并进行了实例化，这个时候整个代码便开始运行了，这里默认加载的是index View</p>
+<div class="cnblogs_code" onclick="cnblogs_code_show('77656486-b7d9-408f-a92a-55d7ca19f24a')"><img id="code_img_closed_77656486-b7d9-408f-a92a-55d7ca19f24a" class="code_img_closed" src="43570758473519.gif" alt=""><img id="code_img_opened_77656486-b7d9-408f-a92a-55d7ca19f24a" class="code_img_opened" style="display: none;" onclick="cnblogs_code_hide('77656486-b7d9-408f-a92a-55d7ca19f24a',event)" src="16365178109279.gif" alt="">
+<div id="cnblogs_code_open_77656486-b7d9-408f-a92a-55d7ca19f24a" class="cnblogs_code_hide">
+<pre><span style="color: #008080;"> 1</span> define(['AbstractView', getViewTemplatePath('index')], <span style="color: #0000ff;">function</span><span style="color: #000000;"> (View, viewhtml) {
+</span><span style="color: #008080;"> 2</span>   <span style="color: #0000ff;">return</span><span style="color: #000000;"> _.inherit(View, {
+</span><span style="color: #008080;"> 3</span>     onCreate: <span style="color: #0000ff;">function</span><span style="color: #000000;"> () {
+</span><span style="color: #008080;"> 4</span>       <span style="color: #0000ff;">this</span><span style="color: #000000;">.$el.html(viewhtml);
+</span><span style="color: #008080;"> 5</span>       console.log('大家好，我是omCreate事件，我会执行并且只会执行一次'<span style="color: #000000;">);
+</span><span style="color: #008080;"> 6</span> <span style="color: #000000;">    },
+</span><span style="color: #008080;"> 7</span> 
+<span style="color: #008080;"> 8</span> <span style="color: #000000;">    events: {
+</span><span style="color: #008080;"> 9</span>       'click h2': <span style="color: #0000ff;">function</span><span style="color: #000000;"> (e) {
+</span><span style="color: #008080;">10</span>         <span style="color: #0000ff;">this</span>.forward('list'<span style="color: #000000;">);
+</span><span style="color: #008080;">11</span> <span style="color: #000000;">      },
+</span><span style="color: #008080;">12</span>         'click .icon_home': <span style="color: #0000ff;">function</span><span style="color: #000000;"> () {
+</span><span style="color: #008080;">13</span>         window.location = '../index.html'<span style="color: #000000;">;
+</span><span style="color: #008080;">14</span> <span style="color: #000000;">      }
+</span><span style="color: #008080;">15</span> <span style="color: #000000;">    },
+</span><span style="color: #008080;">16</span> 
+<span style="color: #008080;">17</span>     onPreShow: <span style="color: #0000ff;">function</span><span style="color: #000000;"> () {
+</span><span style="color: #008080;">18</span>       console.log('大家好，我是onPreShow事件，我每次都会执行，执行最后执行turning方法便可显示view'<span style="color: #000000;">);
+</span><span style="color: #008080;">19</span>       <span style="color: #0000ff;">this</span><span style="color: #000000;">.turning();
+</span><span style="color: #008080;">20</span> <span style="color: #000000;">    },
+</span><span style="color: #008080;">21</span> 
+<span style="color: #008080;">22</span>     onShow: <span style="color: #0000ff;">function</span><span style="color: #000000;"> () {
+</span><span style="color: #008080;">23</span>       console.log('大家好，我是onShow事件，我在onPreShow执行turning后会执行'<span style="color: #000000;">);
+</span><span style="color: #008080;">24</span> 
+<span style="color: #008080;">25</span> <span style="color: #000000;">    },
+</span><span style="color: #008080;">26</span> 
+<span style="color: #008080;">27</span>     onHide: <span style="color: #0000ff;">function</span><span style="color: #000000;"> () {
+</span><span style="color: #008080;">28</span>       console.log('大家好，我是onHide事件，每次切换我将隐藏时候我会触发'<span style="color: #000000;">);
+</span><span style="color: #008080;">29</span> <span style="color: #000000;">    }
+</span><span style="color: #008080;">30</span> 
+<span style="color: #008080;">31</span> <span style="color: #000000;">  });
+</span><span style="color: #008080;">32</span> });</pre>
+</div>
+<span class="cnblogs_code_collapse">View Code</span></div>
+<p><span style="line-height: 1.5;">我们每个View皆是继承至MVC中的View，对于业务层的View只需要关注上面四个事件点即可，描述文字写的比较清楚了，我这里便不多说了</span></p>
+<p>这个时候直接运行index.html便会默认加载index.js的逻辑代码，webapp卡片设计由此开始</p>
+<h1>demo</h1>
+<h2>是否引入第三方组件？</h2>
+<p>demo中会列举出框架中的一些UI组件与一些通用功能的API，并做简单示例，一个框架是否好用的一个标识便是其API是否丰富好用</p>
+<p>blade这里还需要很多努力，这里还望各位多多提点</p>
+<p>稍微成熟点的公司一般不会使用什么第三方组件，什么创业团队就最喜欢使用第三方的插件，或者通用功能，我原来就见过一个公司：</p>
+<p>① 需要一个弹出层组件便引用国外的，1000-2000行代码，功能非常全面</p>
+<p>② 需要一个flip手势工具也引用一个第三方的，代码500-2000行，功能非常全面</p>
+<p>但是一来程序员抓不住其中的关键，一旦遇到不能适应项目的功能便完蛋了，这个时候对程序员的水准要求便高了可能需要源码修改</p>
+<p>往往完全读懂后却发现自己只是需要其中的一点点功能而已，这个时候很有可能会重写，或者寻找另外的库，所以只有2B公司才会<strong>完全</strong>依赖什么第三方库</p>
+<p>一般放出来的库文件，都是十分全面，会满足很多场景，但是你只会用到一个，或者你基本适用，但是总有一个两个地方不适用，那么怎么办呢？再从新引入一个第三方库么？？？</p>
+<p>这样的话产品前端代码便会越发臃肿难以维护，并且BUG无数，又烂又慢。</p>
+<h2>demo简介</h2>
+<p>算了，这里扯远了，回到demo中来，demo中的代码逻辑便稍微复杂一点了，首先他存在着两个入口文件，分别是：</p>
+<p>① debug.html 用于调试，其中的所有文件皆是源码形式</p>
+<p>② dest.html 这个文件稍有不同，其使用的框架文件和控制器js文件全部被<strong>grunt</strong>打包好了，我们这里不存在Ajax数据请求，所以整个浏览不会发生请求延时，按道理来说比较快</p>
+<p><img src="31688287918872.png" alt=""></p>
+<p>dest目录便是装的压缩后的文件，我们其实将所有相关文件全部打包至了其中的dest/main.js，包括模板文件，这个多亏grunt与requireJS之功</p>
+<p><img src="36412995405852.png" alt=""></p>
+<p><strong>整个demo的设计我们放到下一章节再说</strong>，这里简单描述下，其中比较关键的是ex_mvc中的文件，顾名思义，他代表对框架mvc的扩展</p>
+<p>扩展的基石是<strong>继承</strong>，业内前端面试一道必考提便是继承，但是前端真正使用该技术的人感觉不多，很多前端都喜欢堆代码，还停留在面向过程。</p>
+<p>blade这里便对js的继承做了一个很好的示例，希望对js的继承、面向对象知识点有所了解的朋友，不妨看看两个MVC中的代码有何不同</p>
+<div class="cnblogs_code" onclick="cnblogs_code_show('bcace482-d443-4f9d-85fc-70568e15297a')"><img id="code_img_closed_bcace482-d443-4f9d-85fc-70568e15297a" class="code_img_closed" src="43570758473519.gif" alt=""><img id="code_img_opened_bcace482-d443-4f9d-85fc-70568e15297a" class="code_img_opened" style="display: none;" onclick="cnblogs_code_hide('bcace482-d443-4f9d-85fc-70568e15297a',event)" src="16365178109279.gif" alt="">
+<div id="cnblogs_code_open_bcace482-d443-4f9d-85fc-70568e15297a" class="cnblogs_code_hide">
+<pre><span style="color: #008080;"> 1</span> define(['AbstractView', 'cHighlight'], <span style="color: #0000ff;">function</span><span style="color: #000000;"> (AbstractView, cHighlight) {
+</span><span style="color: #008080;"> 2</span> 
+<span style="color: #008080;"> 3</span>   <span style="color: #0000ff;">var</span> hljs = <span style="color: #0000ff;">new</span><span style="color: #000000;"> cHighlight();
+</span><span style="color: #008080;"> 4</span> 
+<span style="color: #008080;"> 5</span>   hljs.registerLanguage("javascript", <span style="color: #0000ff;">function</span><span style="color: #000000;">(a) {
+</span><span style="color: #008080;"> 6</span>     <span style="color: #0000ff;">return</span> {aliases: ["js"],k: {keyword: "in if for while finally var new function do return void else break catch instanceof with throw case default try this switch continue typeof delete let yield const class",literal: "true false null undefined NaN Infinity",built_in: "eval isFinite isNaN parseFloat parseInt decodeURI decodeURIComponent encodeURI encodeURIComponent escape unescape Object Function Boolean Error EvalError InternalError RangeError ReferenceError StopIteration SyntaxError TypeError URIError Number Math Date String RegExp Array Float32Array Float64Array Int16Array Int32Array Int8Array Uint16Array Uint32Array Uint8Array Uint8ClampedArray ArrayBuffer DataView JSON Intl arguments require"},c: [{cN: "pi",b: /^\s*('|")use strict('|")/,r: 10}, a.ASM, a.QSM, a.CLCM, a.CBLCLM, a.CNM, {b: "(" + a.RSR + "|\\b(case|return|throw)\\b)\\s*",k: "return throw case",c: [a.CLCM, a.CBLCLM, a.REGEXP_MODE, {b: /&lt;/,e: /&gt;;/,r: 0,sL: "xml"}],r: 0}, {cN: "function",bK: "function",e: /\{/,c: [a.inherit(a.TM, {b: /[A-Za-z$_][0-9A-Za-z$_]*/}), {cN: "params",b: /\(/,e: /\)/,c: [a.CLCM, a.CBLCLM],i: /["'\(]/}],i: /\[|%/}, {b: /\$[(.]/}, {b: "\\." + a.IR,r: 0<span style="color: #000000;">}]}
+</span><span style="color: #008080;"> 7</span> <span style="color: #000000;">});
+</span><span style="color: #008080;"> 8</span> hljs.registerLanguage("xml", <span style="color: #0000ff;">function</span><span style="color: #000000;">(a) {
+</span><span style="color: #008080;"> 9</span>     <span style="color: #0000ff;">var</span> c = "[A-Za-z0-9\\._:-]+"<span style="color: #000000;">;
+</span><span style="color: #008080;">10</span>     <span style="color: #0000ff;">var</span> d = {b: /&lt;\?(php)?(?!\w)/,e: /\?&gt;/,sL: "php",subLanguageMode: "continuous"<span style="color: #000000;">};
+</span><span style="color: #008080;">11</span>     <span style="color: #0000ff;">var</span> b = {eW: <span style="color: #0000ff;">true</span>,i: /&lt;/,r: 0,c: [d, {cN: "attribute",b: c,r: 0}, {b: "=",r: 0,c: [{cN: "value",v: [{b: /"/,e: /"/}, {b: /'/,e: /'/}, {b: /[^\s\/&gt;]+/<span style="color: #000000;">}]}]}]};
+</span><span style="color: #008080;">12</span>     <span style="color: #0000ff;">return</span> {aliases: ["html"],cI: <span style="color: #0000ff;">true</span>,c: [{cN: "doctype",b: "&lt;!DOCTYPE",e: "&gt;",r: 10,c: [{b: "\\[",e: "\\]"}]}, {cN: "comment",b: "&lt;!--",e: "--&gt;",r: 10}, {cN: "cdata",b: "&lt;\\!\\[CDATA\\[",e: "\\]\\]&gt;",r: 10}, {cN: "tag",b: "&lt;style(?=\\s|&gt;|$)",e: "&gt;",k: {title: "style"},c: [b],starts: {e: "&lt;/style&gt;",rE: <span style="color: #0000ff;">true</span>,sL: "css"}}, {cN: "tag",b: "&lt;script(?=\\s|&gt;|$)",e: "&gt;",k: {title: "script"},c: [b],starts: {e: "&lt;\/script&gt;",rE: <span style="color: #0000ff;">true</span>,sL: "javascript"}}, {b: "&lt;%",e: "%&gt;",sL: "vbscript"}, d, {cN: "pi",b: /&lt;\?\w+/,e: /\?&gt;/,r: 10}, {cN: "tag",b: "&lt;/?",e: "/?&gt;",c: [{cN: "title",b: "[^ /&gt;&lt;]+",r: 0<span style="color: #000000;">}, b]}]}
+</span><span style="color: #008080;">13</span> <span style="color: #000000;">});
+</span><span style="color: #008080;">14</span> hljs.registerLanguage("markdown", <span style="color: #0000ff;">function</span><span style="color: #000000;">(a) {
+</span><span style="color: #008080;">15</span>     <span style="color: #0000ff;">return</span> {c: [{cN: "header",v: [{b: "^#{1,6}",e: "$"}, {b: "^.+?\\n[=-]{2,}$"}]}, {b: "&lt;",e: "&gt;",sL: "xml",r: 0}, {cN: "bullet",b: "^([*+-]|(\\d+\\.))\\s+"}, {cN: "strong",b: "[*_]{2}.+?[*_]{2}"}, {cN: "emphasis",v: [{b: "\\*.+?\\*"}, {b: "_.+?_",r: 0}]}, {cN: "blockquote",b: "^&gt;\\s+",e: "$"}, {cN: "code",v: [{b: "`.+?`"}, {b: "^( {4}|\t)",e: "$",r: 0}]}, {cN: "horizontal_rule",b: "^[-\\*]{3,}",e: "$"}, {b: "\\[.+?\\][\\(\\[].+?[\\)\\]]",rB: <span style="color: #0000ff;">true</span>,c: [{cN: "link_label",b: "\\[",e: "\\]",eB: <span style="color: #0000ff;">true</span>,rE: <span style="color: #0000ff;">true</span>,r: 0}, {cN: "link_url",b: "\\]\\(",e: "\\)",eB: <span style="color: #0000ff;">true</span>,eE: <span style="color: #0000ff;">true</span>}, {cN: "link_reference",b: "\\]\\[",e: "\\]",eB: <span style="color: #0000ff;">true</span>,eE: <span style="color: #0000ff;">true</span>,}],r: 10}, {b: "^\\[.+\\]:",e: "$",rB: <span style="color: #0000ff;">true</span>,c: [{cN: "link_reference",b: "\\[",e: "\\]",eB: <span style="color: #0000ff;">true</span>,eE: <span style="color: #0000ff;">true</span>}, {cN: "link_url",b: "\\s",e: "$"<span style="color: #000000;">}]}]}
+</span><span style="color: #008080;">16</span> <span style="color: #000000;">});
+</span><span style="color: #008080;">17</span> hljs.registerLanguage("css", <span style="color: #0000ff;">function</span><span style="color: #000000;">(a) {
+</span><span style="color: #008080;">18</span>     <span style="color: #0000ff;">var</span> b = "[a-zA-Z-][a-zA-Z0-9_-]*"<span style="color: #000000;">;
+</span><span style="color: #008080;">19</span>     <span style="color: #0000ff;">var</span> c = {cN: "function",b: b + "\\(",e: "\\)",c: ["self"<span style="color: #000000;">, a.NM, a.ASM, a.QSM]};
+</span><span style="color: #008080;">20</span>     <span style="color: #0000ff;">return</span> {cI: <span style="color: #0000ff;">true</span>,i: "[=/|']",c: [a.CBLCLM, {cN: "id",b: "\\#[A-Za-z0-9_-]+"}, {cN: "class",b: "\\.[A-Za-z0-9_-]+",r: 0}, {cN: "attr_selector",b: "\\[",e: "\\]",i: "$"}, {cN: "pseudo",b: ":(:)?[a-zA-Z0-9\\_\\-\\+\\(\\)\\\"\\']+"}, {cN: "at_rule",b: "@(font-face|page)",l: "[a-z-]+",k: "font-face page"}, {cN: "at_rule",b: "@",e: "[{;]",c: [{cN: "keyword",b: /\S+/}, {b: /\s/,eW: <span style="color: #0000ff;">true</span>,eE: <span style="color: #0000ff;">true</span>,r: 0,c: [c, a.ASM, a.QSM, a.NM]}]}, {cN: "tag",b: b,r: 0}, {cN: "rules",b: "{",e: "}",i: "[^\\s]",r: 0,c: [a.CBLCLM, {cN: "rule",b: "[^\\s]",rB: <span style="color: #0000ff;">true</span>,e: ";",eW: <span style="color: #0000ff;">true</span>,c: [{cN: "attribute",b: "[A-Z\\_\\.\\-]+",e: ":",eE: <span style="color: #0000ff;">true</span>,i: "[^\\s]",starts: {cN: "value",eW: <span style="color: #0000ff;">true</span>,eE: <span style="color: #0000ff;">true</span>,c: [c, a.NM, a.QSM, a.ASM, a.CBLCLM, {cN: "hexcolor",b: "#[0-9A-Fa-f]+"}, {cN: "important",b: "!important"<span style="color: #000000;">}]}}]}]}]}
+</span><span style="color: #008080;">21</span> <span style="color: #000000;">});
+</span><span style="color: #008080;">22</span> hljs.registerLanguage("json", <span style="color: #0000ff;">function</span><span style="color: #000000;">(a) {
+</span><span style="color: #008080;">23</span>     <span style="color: #0000ff;">var</span> e = {literal: "true false null"<span style="color: #000000;">};
+</span><span style="color: #008080;">24</span>     <span style="color: #0000ff;">var</span> d =<span style="color: #000000;"> [a.QSM, a.CNM];
+</span><span style="color: #008080;">25</span>     <span style="color: #0000ff;">var</span> c = {cN: "value",e: ",",eW: <span style="color: #0000ff;">true</span>,eE: <span style="color: #0000ff;">true</span><span style="color: #000000;">,c: d,k: e};
+</span><span style="color: #008080;">26</span>     <span style="color: #0000ff;">var</span> b = {b: "{",e: "}",c: [{cN: "attribute",b: '\\s*"',e: '"\\s*:\\s*',eB: <span style="color: #0000ff;">true</span>,eE: <span style="color: #0000ff;">true</span>,c: [a.BE],i: "\\n",starts: c}],i: "\\S"<span style="color: #000000;">};
+</span><span style="color: #008080;">27</span>     <span style="color: #0000ff;">var</span> f = {b: "\\[",e: "\\]",c: [a.inherit(c, {cN: <span style="color: #0000ff;">null</span>})],i: "\\S"<span style="color: #000000;">};
+</span><span style="color: #008080;">28</span>     d.splice(d.length, 0<span style="color: #000000;">, b, f);
+</span><span style="color: #008080;">29</span>     <span style="color: #0000ff;">return</span> {c: d,k: e,i: "\\S"<span style="color: #000000;">}
+</span><span style="color: #008080;">30</span> <span style="color: #000000;">});
+</span><span style="color: #008080;">31</span> 
+<span style="color: #008080;">32</span> 
+<span style="color: #008080;">33</span>   <span style="color: #0000ff;">return</span><span style="color: #000000;"> _.inherit(AbstractView, {
+</span><span style="color: #008080;">34</span> 
+<span style="color: #008080;">35</span>     propertys: <span style="color: #0000ff;">function</span><span style="color: #000000;"> ($super) {
+</span><span style="color: #008080;">36</span> <span style="color: #000000;">      $super();
+</span><span style="color: #008080;">37</span> 
+<span style="color: #008080;">38</span> <span style="color: #000000;">    },
+</span><span style="color: #008080;">39</span> 
+<span style="color: #008080;">40</span>     _initHead: <span style="color: #0000ff;">function</span><span style="color: #000000;"> () {
+</span><span style="color: #008080;">41</span> 
+<span style="color: #008080;">42</span>       <span style="color: #0000ff;">this</span>.$('header').append($('&lt;i  class="returnico i_bef"&gt;&lt;/i&gt;'<span style="color: #000000;">));
+</span><span style="color: #008080;">43</span> <span style="color: #000000;">    },
+</span><span style="color: #008080;">44</span> 
+<span style="color: #008080;">45</span> <span style="color: #000000;">    events: {
+</span><span style="color: #008080;">46</span>       'click .returnico': <span style="color: #0000ff;">function</span><span style="color: #000000;"> () {
+</span><span style="color: #008080;">47</span>         <span style="color: #0000ff;">this</span>.back('index'<span style="color: #000000;">);
+</span><span style="color: #008080;">48</span> <span style="color: #000000;">      }
+</span><span style="color: #008080;">49</span> <span style="color: #000000;">    },
+</span><span style="color: #008080;">50</span> 
+<span style="color: #008080;">51</span>     initialize: <span style="color: #0000ff;">function</span><span style="color: #000000;"> ($super, app, id) {
+</span><span style="color: #008080;">52</span> <span style="color: #000000;">      $super(app, id);
+</span><span style="color: #008080;">53</span> 
+<span style="color: #008080;">54</span>       <span style="color: #0000ff;">this</span><span style="color: #000000;">._initHead();
+</span><span style="color: #008080;">55</span> <span style="color: #000000;">    },
+</span><span style="color: #008080;">56</span> 
+<span style="color: #008080;">57</span>     onPreShow: <span style="color: #0000ff;">function</span><span style="color: #000000;"> ($super) {
+</span><span style="color: #008080;">58</span> <span style="color: #000000;">      $super();
+</span><span style="color: #008080;">59</span> 
+<span style="color: #008080;">60</span> <span style="color: #000000;">    },
+</span><span style="color: #008080;">61</span> 
+<span style="color: #008080;">62</span>     show: <span style="color: #0000ff;">function</span><span style="color: #000000;"> ($super) {
+</span><span style="color: #008080;">63</span> <span style="color: #000000;">      $super();
+</span><span style="color: #008080;">64</span> 
+<span style="color: #008080;">65</span>       hljs.initHighlighting(<span style="color: #0000ff;">this</span><span style="color: #000000;">);
+</span><span style="color: #008080;">66</span> 
+<span style="color: #008080;">67</span> <span style="color: #000000;">    }
+</span><span style="color: #008080;">68</span> 
+<span style="color: #008080;">69</span> 
+<span style="color: #008080;">70</span> <span style="color: #000000;">  });
+</span><span style="color: #008080;">71</span> 
+<span style="color: #008080;">72</span> });</pre>
+</div>
+<span class="cnblogs_code_collapse">View Code</span></div>
+<p>这里代码比较简单，主要是继承至AbstractView，然后做了demo项目的一些通用工作</p>
+<p>其中有一大段代码是对代码高亮做处理的，这里小钗可耻的引用了一个第三方库。。。。。。</p>
+<p>实现继承的代码在underscore.extend中，这段代码需要各位仔细研读，是本项目的基石。</p>
+<div class="cnblogs_code" onclick="cnblogs_code_show('4193afb6-4c85-4c4d-9af5-4767874b89ae')"><img id="code_img_closed_4193afb6-4c85-4c4d-9af5-4767874b89ae" class="code_img_closed" src="43570758473519.gif" alt=""><img id="code_img_opened_4193afb6-4c85-4c4d-9af5-4767874b89ae" class="code_img_opened" style="display: none;" onclick="cnblogs_code_hide('4193afb6-4c85-4c4d-9af5-4767874b89ae',event)" src="16365178109279.gif" alt="">
+<div id="cnblogs_code_open_4193afb6-4c85-4c4d-9af5-4767874b89ae" class="cnblogs_code_hide">
+<pre><span style="color: #008000;">//</span><span style="color: #008000;">继承相关逻辑</span>
+(<span style="color: #0000ff;">function</span><span style="color: #000000;"> () {
+
+  </span><span style="color: #008000;">//</span><span style="color: #008000;"> 全局可能用到的变量</span>
+  <span style="color: #0000ff;">var</span> arr =<span style="color: #000000;"> [];
+  </span><span style="color: #0000ff;">var</span> slice =<span style="color: #000000;"> arr.slice;
+  </span><span style="color: #008000;">/*</span><span style="color: #008000;">*
+  * inherit方法，js的继承，默认为两个参数
+  *
+  * @param  {function} origin  可选，要继承的类
+  * @param  {object}   methods 被创建类的成员，扩展的方法和属性
+  * @return {function}         继承之后的子类
+  </span><span style="color: #008000;">*/</span><span style="color: #000000;">
+  _.inherit </span>= <span style="color: #0000ff;">function</span><span style="color: #000000;"> (origin, methods) {
+
+    </span><span style="color: #008000;">//</span><span style="color: #008000;"> 参数检测，该继承方法，只支持一个参数创建类，或者两个参数继承类</span>
+    <span style="color: #0000ff;">if</span> (arguments.length === 0 || arguments.length &gt; 2) <span style="color: #0000ff;">throw</span> '参数错误'<span style="color: #000000;">;
+
+    </span><span style="color: #0000ff;">var</span> parent = <span style="color: #0000ff;">null</span><span style="color: #000000;">;
+
+    </span><span style="color: #008000;">//</span><span style="color: #008000;"> 将参数转换为数组</span>
+    <span style="color: #0000ff;">var</span> properties =<span style="color: #000000;"> slice.call(arguments);
+
+    </span><span style="color: #008000;">//</span><span style="color: #008000;"> 如果第一个参数为类（function），那么就将之取出</span>
+    <span style="color: #0000ff;">if</span> (<span style="color: #0000ff;">typeof</span> properties[0] === 'function'<span style="color: #000000;">)
+      parent </span>=<span style="color: #000000;"> properties.shift();
+    properties </span>= properties[0<span style="color: #000000;">];
+
+    </span><span style="color: #008000;">//</span><span style="color: #008000;"> 创建新类用于返回</span>
+    <span style="color: #0000ff;">function</span><span style="color: #000000;"> klass() {
+      </span><span style="color: #0000ff;">if</span> (_.isFunction(<span style="color: #0000ff;">this</span><span style="color: #000000;">.initialize))
+        </span><span style="color: #0000ff;">this</span>.initialize.apply(<span style="color: #0000ff;">this</span><span style="color: #000000;">, arguments);
+    }
+
+    klass.superclass </span>=<span style="color: #000000;"> parent;
+
+    </span><span style="color: #008000;">//</span><span style="color: #008000;"> 父类的方法不做保留，直接赋给子类</span>
+    <span style="color: #008000;">//</span><span style="color: #008000;"> parent.subclasses = [];</span>
+
+    <span style="color: #0000ff;">if</span><span style="color: #000000;"> (parent) {
+      </span><span style="color: #008000;">//</span><span style="color: #008000;"> 中间过渡类，防止parent的构造函数被执行</span>
+      <span style="color: #0000ff;">var</span> subclass = <span style="color: #0000ff;">function</span><span style="color: #000000;"> () { };
+      subclass.prototype </span>=<span style="color: #000000;"> parent.prototype;
+      klass.prototype </span>= <span style="color: #0000ff;">new</span><span style="color: #000000;"> subclass();
+
+      </span><span style="color: #008000;">//</span><span style="color: #008000;"> 父类的方法不做保留，直接赋给子类</span>
+      <span style="color: #008000;">//</span><span style="color: #008000;"> parent.subclasses.push(klass);</span>
+<span style="color: #000000;">    }
+
+    </span><span style="color: #0000ff;">var</span> ancestor = klass.superclass &amp;&amp;<span style="color: #000000;"> klass.superclass.prototype;
+    </span><span style="color: #0000ff;">for</span> (<span style="color: #0000ff;">var</span> k <span style="color: #0000ff;">in</span><span style="color: #000000;"> properties) {
+      </span><span style="color: #0000ff;">var</span> value =<span style="color: #000000;"> properties[k];
+
+      </span><span style="color: #008000;">//</span><span style="color: #008000;">满足条件就重写</span>
+      <span style="color: #0000ff;">if</span> (ancestor &amp;&amp; <span style="color: #0000ff;">typeof</span> value == 'function'<span style="color: #000000;">) {
+        </span><span style="color: #0000ff;">var</span> argslist = /^\s*function\s*\(([^\(\)]*?)\)\s*?\{/i.exec(value.toString())[1].replace(/\s/i, '').split(','<span style="color: #000000;">);
+        </span><span style="color: #008000;">//</span><span style="color: #008000;">只有在第一个参数为$super情况下才需要处理（是否具有重复方法需要用户自己决定）</span>
+        <span style="color: #0000ff;">if</span> (argslist[0] === '$super' &amp;&amp;<span style="color: #000000;"> ancestor[k]) {
+          value </span>= (<span style="color: #0000ff;">function</span><span style="color: #000000;"> (methodName, fn) {
+            </span><span style="color: #0000ff;">return</span> <span style="color: #0000ff;">function</span><span style="color: #000000;"> () {
+              </span><span style="color: #0000ff;">var</span> scope = <span style="color: #0000ff;">this</span><span style="color: #000000;">;
+              </span><span style="color: #0000ff;">var</span> args =<span style="color: #000000;"> [
+                </span><span style="color: #0000ff;">function</span><span style="color: #000000;"> () {
+                  </span><span style="color: #0000ff;">return</span><span style="color: #000000;"> ancestor[methodName].apply(scope, arguments);
+                }
+              ];
+              </span><span style="color: #0000ff;">return</span> fn.apply(<span style="color: #0000ff;">this</span><span style="color: #000000;">, args.concat(slice.call(arguments)));
+            };
+          })(k, value);
+        }
+      }
+
+      </span><span style="color: #008000;">//</span><span style="color: #008000;">此处对对象进行扩展，当前原型链已经存在该对象，便进行扩展</span>
+      <span style="color: #0000ff;">if</span> (_.isObject(klass.prototype[k]) &amp;&amp; _.isObject(value) &amp;&amp; (<span style="color: #0000ff;">typeof</span> klass.prototype[k] != 'function' &amp;&amp; <span style="color: #0000ff;">typeof</span> value != 'fuction'<span style="color: #000000;">)) {
+        </span><span style="color: #008000;">//</span><span style="color: #008000;">原型链是共享的，这里处理逻辑要改</span>
+        <span style="color: #0000ff;">var</span> temp =<span style="color: #000000;"> {};
+        _.extend(temp, klass.prototype[k]);
+        _.extend(temp, value);
+        klass.prototype[k] </span>=<span style="color: #000000;"> temp;
+      } </span><span style="color: #0000ff;">else</span><span style="color: #000000;"> {
+        klass.prototype[k] </span>=<span style="color: #000000;"> value;
+      }
+
+    }
+
+    </span><span style="color: #0000ff;">if</span> (!<span style="color: #000000;">klass.prototype.initialize)
+      klass.prototype.initialize </span>= <span style="color: #0000ff;">function</span><span style="color: #000000;"> () { };
+
+    klass.prototype.constructor </span>=<span style="color: #000000;"> klass;
+
+    </span><span style="color: #0000ff;">return</span><span style="color: #000000;"> klass;
+  };
+
+})();</span></pre>
+</div>
+<span class="cnblogs_code_collapse" style="color: #ff0000;">继承基石</span></div>
+<p><span style="line-height: 1.5;">总的来说，各个view页面卡片的代码存放与views里面，对应的模板文件存放与templates中，具体原理我们后面点说明</span></p>
+<h2><span style="line-height: 1.5;">业务入口与全局控制器</span></h2>
+<p><span style="line-height: 1.5;">这里入口的js文件为main.js，这个是最为关键一个js，我们将里面的动画相关逻辑去掉，来看看主干代码：</span></p>
+<div class="cnblogs_code">
+<pre><span style="color: #008080;"> 1</span> (<span style="color: #0000ff;">function</span><span style="color: #000000;"> () {
+</span><span style="color: #008080;"> 2</span>   <span style="color: #0000ff;">var</span> project = 'demo/'<span style="color: #000000;">;
+</span><span style="color: #008080;"> 3</span> 
+<span style="color: #008080;"> 4</span>   window.getViewTemplatePath = <span style="color: #0000ff;">function</span><span style="color: #000000;"> (path) {
+</span><span style="color: #008080;"> 5</span>     <span style="color: #0000ff;">return</span> 'text!' + project + 'templates/' + path + '.html'<span style="color: #000000;">;
+</span><span style="color: #008080;"> 6</span> <span style="color: #000000;">  }
+</span><span style="color: #008080;"> 7</span> 
+<span style="color: #008080;"> 8</span> <span style="color: #000000;">  require.config({
+</span><span style="color: #008080;"> 9</span>     baseUrl: '../'<span style="color: #000000;">,
+</span><span style="color: #008080;">10</span> <span style="color: #000000;">    paths: {
+</span><span style="color: #008080;">11</span>       'View': project + 'ex_mvc/view'
+<span style="color: #008080;">12</span> <span style="color: #000000;">    }
+</span><span style="color: #008080;">13</span> <span style="color: #000000;">  });
+</span><span style="color: #008080;">14</span> 
+<span style="color: #008080;">15</span>   <span style="color: #0000ff;">var</span> animations =<span style="color: #000000;"> {};
+</span><span style="color: #008080;">16</span> 
+<span style="color: #008080;">17</span>   require(['AbstractApp'], <span style="color: #0000ff;">function</span><span style="color: #000000;"> (App) {
+</span><span style="color: #008080;">18</span>     <span style="color: #008000;">//</span><span style="color: #008000;">实例化App</span>
+<span style="color: #008080;">19</span>     <span style="color: #0000ff;">var</span> app = <span style="color: #0000ff;">new</span><span style="color: #000000;"> App({
+</span><span style="color: #008080;">20</span>       <span style="color: #008000;">//</span><span style="color: #008000;">选择pushState还是hashChange</span>
+<span style="color: #008080;">21</span>       hasPushState: <span style="color: #0000ff;">false</span><span style="color: #000000;">,
+</span><span style="color: #008080;">22</span>       'defaultView': 'index'<span style="color: #000000;">,
+</span><span style="color: #008080;">23</span>       'viewRootPath': '' + project + 'views/'<span style="color: #000000;">,
+</span><span style="color: #008080;">24</span> <span style="color: #000000;">      animations: animations
+</span><span style="color: #008080;">25</span> <span style="color: #000000;">    });
+</span><span style="color: #008080;">26</span>     
+<span style="color: #008080;">27</span>   $.bindFastClick &amp;&amp;<span style="color: #000000;"> $.bindFastClick();
+</span><span style="color: #008080;">28</span> 
+<span style="color: #008080;">29</span> <span style="color: #000000;">  });
+</span><span style="color: #008080;">30</span> })();</pre>
+</div>
+<p>核心代码是17-27行，这里首先做了一些初始化变量定义，然后使用requireJS引入了我们的全局控制器，这个文件虽然不到400行，却是整个框架的最大核心！</p>
+<p><span style="line-height: 1.5;"><img src="14369239940969.png" alt=""></span></p>
+<h3>全局控制器的工作</h3>
+<p><span style="line-height: 1.5;">这里点一下便是，后续我们会详解之，这里简单介绍全局控制器app应该干的事情</span></p>
+<p>① 提供URL解析机制，以便让控制器可以根据URL获得当前是要加载哪个view的实例，比如</p>
+<p>http://www.baidu.com/index.html#index</p>
+<p>http://www.baidu.com/index</p>
+<p>若是使用hashChange实现浏览器跳转便直接取出index这个键值；</p>
+<p>若是使用pushState方案的话，便需要业务同事给出取出URL键值的方法，最终我们需要得到index这个键值</p>
+<p>② app应该保留各个view的实例，并且维护一个队列关系</p>
+<p>以现在博客园为例，我们可能具有两个view页面片：index-&gt;detail</p>
+<p>我们首次便是加载index这个view，点击其中一个项目便加载detail这个view，这个时候app是应该同时保存两个view，并且内部要维系一个访问顺序队列</p>
+<p>这个队列最好可与浏览器保存一致，若不能保存一致，后期便可能会出现点击浏览器后退死循环的问题</p>
+<p>③ app应该提供view实例化的方法</p>
+<p>所以的view实例若无特殊原因，皆应该由app生成，app应该具有实例化view的能力，view一般使用AMD规范管理，这里涉及异步加载</p>
+<p>PS：真实工作环境中，view需要自建一套事件机制，比如实例化时候要触发什么事件，显示时候要触发什么事件，皆需要有，app只会负责</p>
+<p>实例化-&gt;显示-&gt;隐藏</p>
+<p>④ app应该提供监控浏览器事件，每次自动加载各个view</p>
+<p>如上面所述，app会注册一个hashChange事件或者popState事件以达到改变URL不刷新页面的功能，这个功能主要用于用户点击浏览器原生后退键</p>
+<p><img src="15402466006327.png" alt=""></p>
+<h3>可扩展性/共性与继承</h3>
+<p>blade的构想是高扩展性，比如我们核心的MVC的代码即可被继承扩展</p>
+<p>无论是AbstractView还是AbstractAPP或者AbstractModel，皆是可继承扩展的</p>
+<p>我们后面会根据需要以AbstractApp继承一个ipadAPP版本出来</p>
+<p>我们也会根据AbstractModel继承至十月localstorage缓存请求数据的版本</p>
+<p>AbstractView的继承扩展更是家常便饭</p>
+<p>以上是MVC的扩展，完了就是UI组件的扩展，简单由日历组件的demo来看</p>
+<p><img src="51496019041582.png" alt=""></p>
+<p><img src="33825269105370.png" alt=""></p>
+<p>我只需要提供简单的实现，用户几行代码便可以实现假日日历，很多公司会出现价格日历，也仅仅是几行代码的事情</p>
+<p>我们可以继承下来做单独实现，也可在实例化时候传入数据解决，总之这里的观点便是</p>
+<p><strong>UI需要寻找共性，做抽象，而不是重复编码</strong></p>
+<p>再以弹出层类为例：</p>
+<p>我们的alert、toast、bubble.layer（冒泡层），皆是继承至ui.layer，这样做的好处是什么呢？</p>
+<p>简单来说他们具有以下共性：</p>
+<p>① 都需要mask蒙版，也可以不具有</p>
+<p>② 点击mask可关闭</p>
+<p>③ 居中排列</p>
+<p>④ 以绝对定位的形式出现</p>
+<p>于是我们可以轻易实现这样的代码：</p>
+<div class="cnblogs_code" onclick="cnblogs_code_show('ce2993ba-586a-49d8-8f28-7890c6de3202')"><img id="code_img_closed_ce2993ba-586a-49d8-8f28-7890c6de3202" class="code_img_closed" src="43570758473519.gif" alt=""><img id="code_img_opened_ce2993ba-586a-49d8-8f28-7890c6de3202" class="code_img_opened" style="display: none;" onclick="cnblogs_code_hide('ce2993ba-586a-49d8-8f28-7890c6de3202',event)" src="16365178109279.gif" alt="">
+<div id="cnblogs_code_open_ce2993ba-586a-49d8-8f28-7890c6de3202" class="cnblogs_code_hide">
+<pre><span style="color: #008080;"> 1</span> <span style="color: #0000ff;">return</span><span style="color: #000000;"> _.inherit(UIView, {
+</span><span style="color: #008080;"> 2</span> 
+<span style="color: #008080;"> 3</span>     <span style="color: #008000;">//</span><span style="color: #008000;">默认属性</span>
+<span style="color: #008080;"> 4</span>     propertys: <span style="color: #0000ff;">function</span><span style="color: #000000;"> ($super) {
+</span><span style="color: #008080;"> 5</span> <span style="color: #000000;">      $super();
+</span><span style="color: #008080;"> 6</span>       <span style="color: #0000ff;">this</span>.mask = <span style="color: #0000ff;">new</span><span style="color: #000000;"> UIMask();
+</span><span style="color: #008080;"> 7</span> 
+<span style="color: #008080;"> 8</span>       <span style="color: #008000;">//</span><span style="color: #008000;">需要蒙版</span>
+<span style="color: #008080;"> 9</span>       <span style="color: #0000ff;">this</span>.needMask = <span style="color: #0000ff;">true</span><span style="color: #000000;">;
+</span><span style="color: #008080;">10</span> 
+<span style="color: #008080;">11</span>       <span style="color: #008000;">//</span><span style="color: #008000;">需要点击蒙版删除</span>
+<span style="color: #008080;">12</span>       <span style="color: #0000ff;">this</span>.maskToHide = <span style="color: #0000ff;">true</span><span style="color: #000000;">;
+</span><span style="color: #008080;">13</span> 
+<span style="color: #008080;">14</span>       <span style="color: #008000;">//</span><span style="color: #008000;">需要居中定位</span>
+<span style="color: #008080;">15</span>       <span style="color: #0000ff;">this</span>.needReposition = <span style="color: #0000ff;">true</span><span style="color: #000000;">;
+</span><span style="color: #008080;">16</span> 
+<span style="color: #008080;">17</span> <span style="color: #000000;">    },
+</span><span style="color: #008080;">18</span> 
+<span style="color: #008080;">19</span>     initialize: <span style="color: #0000ff;">function</span><span style="color: #000000;"> ($super, opts) {
+</span><span style="color: #008080;">20</span> <span style="color: #000000;">      $super(opts);
+</span><span style="color: #008080;">21</span> 
+<span style="color: #008080;">22</span>       <span style="color: #0000ff;">this</span><span style="color: #000000;">.clearRes();
+</span><span style="color: #008080;">23</span> <span style="color: #000000;">    },
+</span><span style="color: #008080;">24</span> 
+<span style="color: #008080;">25</span>     <span style="color: #008000;">//</span><span style="color: #008000;">资源清理</span>
+<span style="color: #008080;">26</span>     clearRes: <span style="color: #0000ff;">function</span><span style="color: #000000;"> () {
+</span><span style="color: #008080;">27</span>       <span style="color: #008000;">//</span><span style="color: #008000;">      if (this.needMask == false) this.mask = null;</span>
+<span style="color: #008080;">28</span> <span style="color: #000000;">    },
+</span><span style="color: #008080;">29</span> 
+<span style="color: #008080;">30</span>     addEvent: <span style="color: #0000ff;">function</span><span style="color: #000000;"> () {
+</span><span style="color: #008080;">31</span>       <span style="color: #0000ff;">this</span>.on('onCreate', <span style="color: #0000ff;">function</span><span style="color: #000000;"> () {
+</span><span style="color: #008080;">32</span>         <span style="color: #0000ff;">this</span>.$el.addClass('cui-layer'<span style="color: #000000;">);
+</span><span style="color: #008080;">33</span> <span style="color: #000000;">      });
+</span><span style="color: #008080;">34</span> 
+<span style="color: #008080;">35</span>       <span style="color: #0000ff;">this</span>.on('onPreShow', <span style="color: #0000ff;">function</span><span style="color: #000000;"> () {
+</span><span style="color: #008080;">36</span>         <span style="color: #0000ff;">var</span> scope = <span style="color: #0000ff;">this</span><span style="color: #000000;">;
+</span><span style="color: #008080;">37</span> 
+<span style="color: #008080;">38</span>         <span style="color: #0000ff;">if</span> (<span style="color: #0000ff;">this</span><span style="color: #000000;">.needMask) {
+</span><span style="color: #008080;">39</span>           <span style="color: #0000ff;">this</span><span style="color: #000000;">.mask.show();
+</span><span style="color: #008080;">40</span> <span style="color: #000000;">        }
+</span><span style="color: #008080;">41</span> 
+<span style="color: #008080;">42</span>         <span style="color: #0000ff;">if</span> (<span style="color: #0000ff;">this</span>.needMask &amp;&amp; <span style="color: #0000ff;">this</span><span style="color: #000000;">.maskToHide) {
+</span><span style="color: #008080;">43</span>           <span style="color: #008000;">//</span><span style="color: #008000;">mask显示之前为mask绑定关闭事件，一次执行便不予理睬了</span>
+<span style="color: #008080;">44</span>           <span style="color: #0000ff;">this</span>.mask.$el.on('click.uimask' + <span style="color: #0000ff;">this</span>.mask.id, <span style="color: #0000ff;">function</span><span style="color: #000000;"> () {
+</span><span style="color: #008080;">45</span> <span style="color: #000000;">            scope.hide();
+</span><span style="color: #008080;">46</span> <span style="color: #000000;">          });
+</span><span style="color: #008080;">47</span> <span style="color: #000000;">        }
+</span><span style="color: #008080;">48</span> 
+<span style="color: #008080;">49</span> <span style="color: #000000;">      });
+</span><span style="color: #008080;">50</span> 
+<span style="color: #008080;">51</span>       <span style="color: #0000ff;">this</span>.on('onShow', <span style="color: #0000ff;">function</span><span style="color: #000000;"> () {
+</span><span style="color: #008080;">52</span>         <span style="color: #0000ff;">if</span> (<span style="color: #0000ff;">this</span>.needReposition) <span style="color: #0000ff;">this</span><span style="color: #000000;">.reposition();
+</span><span style="color: #008080;">53</span>         <span style="color: #0000ff;">this</span><span style="color: #000000;">.setzIndexTop();
+</span><span style="color: #008080;">54</span> <span style="color: #000000;">      });
+</span><span style="color: #008080;">55</span> 
+<span style="color: #008080;">56</span>       <span style="color: #0000ff;">this</span>.on('onHide', <span style="color: #0000ff;">function</span><span style="color: #000000;"> () {
+</span><span style="color: #008080;">57</span>         <span style="color: #0000ff;">this</span>.mask.$el.off('.uimask' + <span style="color: #0000ff;">this</span><span style="color: #000000;">.mask.id);
+</span><span style="color: #008080;">58</span>         <span style="color: #0000ff;">this</span><span style="color: #000000;">.mask.hide();
+</span><span style="color: #008080;">59</span> 
+<span style="color: #008080;">60</span> <span style="color: #000000;">      });
+</span><span style="color: #008080;">61</span> 
+<span style="color: #008080;">62</span> <span style="color: #000000;">    },
+</span><span style="color: #008080;">63</span> 
+<span style="color: #008080;">64</span>     <span style="color: #008000;">//</span><span style="color: #008000;">弹出层类垂直居中使用</span>
+<span style="color: #008080;">65</span>     reposition: <span style="color: #0000ff;">function</span><span style="color: #000000;"> () {
+</span><span style="color: #008080;">66</span>       <span style="color: #0000ff;">this</span><span style="color: #000000;">.$el.css({
+</span><span style="color: #008080;">67</span>         'margin-left': -($(<span style="color: #0000ff;">this</span>.$el).width() / 2) + 'px'<span style="color: #000000;">,
+</span><span style="color: #008080;">68</span>         'margin-top': -($(<span style="color: #0000ff;">this</span>.$el).height() / 2) + 'px'
+<span style="color: #008080;">69</span> <span style="color: #000000;">      });
+</span><span style="color: #008080;">70</span> <span style="color: #000000;">    }
+</span><span style="color: #008080;">71</span> 
+<span style="color: #008080;">72</span>   });</pre>
+</div>
+<span class="cnblogs_code_collapse">View Code</span></div>
+<p><span style="line-height: 1.5;">至于气泡弹层当然不是居中的，于是气泡弹层中只需要重写掉repositon接口罢了</span></p>
+<p><img src="37216446882632.png" alt=""></p>
+<p><strong>前端经常会提到继承，经常会提到闭包，但是到底如何使用继承，或者闭包是什么，还是必须真正使用才能掌握</strong></p>
+<p>若是不使用就不会真正明白，那么如何成为优秀的前端，如何成为前端架构只是空想！更何论站在顶端呢？</p>
+<p><span style="color: #ff0000;"><strong>PS：当然，小钗这里有点扯淡，并不是说小钗是高手，其实我在公司也只是小码农</strong></span></p>
+<h1><span style="line-height: 1.5;">结语</span></h1>
+<p><span style="line-height: 1.5;">好了，扯着扯着，就扯多了，今天暂时到此，</span><span style="line-height: 1.5;">其实也没有什么好介绍的，代码在那里各位自己看吧，若是有什么问题请给位留言</span></p>
+<p><span style="color: #ff0000; font-size: 16px;"><strong><span style="line-height: 1.5;">最后，各位若能点一下推荐，或者在git中为我加一颗心便善莫大焉了</span></strong></span></p>
+<p><span style="line-height: 1.5;">后面点，小钗会对框架进行源码解读，希望对入门级的前端朋友有所帮助，也不知道各位是否感兴趣</span></p>
+                </div>
+
+                <div class='span3 sidebar'>
+                    <h2>导航栏</h2>
+                    <ul class="nav nav-tabs nav-stacked">
+                             				<li><a href="http://songboriceboy.github.io/xxoo/html/blade/[zd]bladelrcqyqjryddwebappkfb/index.html">[置顶]【blade利刃出鞘】一起进入移动端webapp开发吧</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/blade/blade04ymxdxdffxjavascripttkdz/index.html">【blade04】用面向对象的方法写javascript坦克大战</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/blade/bladedUIsjljqdMVCyfcsx/index.html">【blade的UI设计】理解前端MVC与分层思想</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/blade/ttwebappdSEOnts/index.html">探讨webapp的SEO难题（上）</a></li>
+    				                                         
+                    </ul>
+                </div>
+            </div>
+
+        </div>
+    </body>
+</html>

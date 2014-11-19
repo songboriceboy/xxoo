@@ -1,0 +1,266 @@
+	<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title></title>
+    <style type="text/css">
+        body, input, textarea, select, small, a { font-family: Arial, "宋体"; font-size: 12px; }
+        /*下拉文本样式*/
+        .dropText { display: inline-block; border: 1px solid #B6B6B6; border-right: none; border-radius: 5px 0 0 5px; cursor: pointer; margin-right: 20px; }
+        .dropText input { border: none; border-radius: 5px 0 0 5px; cursor: pointer; padding-left: 5px; }
+        .dropText span { display: inline-block; margin-right: -10px; width: 20px; border: 1px solid #B6B6B6; border-radius: 0 5px 5px 0; margin: -1px -20px -1px 0; text-align: center; padding: 4px 0 4px 8px; }
+        .dropText i { display: inline-block; border: 6px solid black; border-color: black transparent transparent; border-bottom: none; vertical-align: 2px; }
+        
+        /*职位列表样式*/
+        .jobList { border: 1px solid #8A9FA4; position: absolute; width: 710px; left: 100px; top: 60px; display: none; z-index: 100; background-color: White; }
+        .jobList > div { padding: 2px; }
+        
+        .jobList .title { display: inline-block; width: 120px; text-align: right; font-weight: bold; margin-right: 20px; }
+        .jobList .items { display: inline-block; padding: 2px; width: 555px; }
+        .jobList .items label { background: url(http://images.cnitblog.com/blog/294743/201306/17235544-3da2f08fa48147c9a8fa4a25e98a4632.gif) no-repeat 5px 5px; width: 155px; display: inline-block; padding: 4px 1px 4px 22px; margin: 2px; cursor: pointer; }
+        .jobList .items label.cls { background: #ffffff url(http://images.cnitblog.com/blog/294743/201306/18090058-4de319626b6f46adbb3871292dca97b6.gif) no-repeat 4px 4px; border: 1px solid #C7C7C7; padding: 3px 0 3px 21px; }
+        
+        .alt { background-color: #EFF6FF; }
+        
+        .jobList .toolBar { display: block; position: absolute; background-color: White; border: 1px solid #8A9FA4; border-bottom: none; height: 25px; top: -30px; left: -1px; padding: 4px 10px 0 4px; }
+        .jobList .toolBar h2 { display: inline-block; font-size: 12px; margin: 0; padding: 2px 50px 2px 10px; }
+        .jobList .toolBar .bts { display: inline-block; }
+        .jobList .toolBar .bts a { display: inline-block; border-radius: 2px; text-decoration: none; color: #1b6f8b; background-color: #cfe2f4; border: 1px solid #98bed8; padding: 2px 6px; }
+        
+        
+        .jobItem { background-color: White; width: 360px; border: 1px solid #C7C7C7; padding: 5px; position: absolute; z-index: 200; display: none; }
+        .jobItem label { display: inline-block; width: 170px; color: #3059A8; }
+        .jobItem label input { vertical-align: -2px; }
+        .btBlock { border-top: 1px solid #C7C7C7; margin-top: 10px; padding: 5px 0; }
+        
+        .jobItem .bgLine { background: #C7C7C7; height: 1px; position: absolute; width: 194px; }
+        
+        .button { display: inline-block; border-radius: 2px; text-decoration: none; color: #1b6f8b; background-color: #cfe2f4; border: 1px solid #98bed8; padding: 2px 10px; }
+    </style>
+	<script id="jquery_183" type="text/javascript" class="library" src="/js/sandbox/jquery/jquery-1.8.3.min.js"></script>
+</head>
+<body>
+    <div style="margin: 100px auto; padding-left: 100px;">
+        <div class="dropText" id="dropText">
+            <input type="text" placeholder="请选择职位" /><span><i></i>&nbsp;</span>
+        </div>
+    </div>
+    <div id="jobList" class="jobList">
+        <div class="toolBar">
+            <h2>
+                请选择职位</h2>
+            <div class="bts">
+                <a href="#" id="btUnLess">不限</a> <a href="#" id="btCls">关闭</a></div>
+        </div>
+        <div class="item_0 ">
+            <span class="title">销售|客服|采购 </span>
+            <div class="items">
+                <label>
+                    销售业务</label><label>
+                        销售管理</label><label>
+                            销售支持/商务</label><label>
+                                客户服务/售前/售后/技术支持</label><label><span class="croSwitch"><i class="horizontal"></i><i
+                                    class="vertical"></i></span> 采购/贸易</label></div>
+        </div>
+        <div class="item_1  alt ">
+            <span class="title">财会|金融 </span>
+            <div class="items">
+                <label>
+                    财务/审计/税务</label><label>
+                        银行</label><label>
+                            金融/证券/期货/投资</label><label>
+                                保险</label></div>
+        </div>
+        <div class="item_2 ">
+            <span class="title">汽车|工程机械 </span>
+            <div class="items">
+                <label>
+                    汽车/摩托车制造</label><label>
+                        汽车销售与服务</label><label>
+                            工程机械</label></div>
+        </div>
+        <div class="item_3  alt ">
+            <span class="title">消费品|生产|物流 </span>
+            <div class="items">
+                <label>
+                    生产/加工/制造</label><label>
+                        交通运输服务</label><label>
+                            服装/纺织/食品饮料/皮革</label><label><span class="croSwitch"><i class="horizontal"></i><i
+                                class="vertical"></i></span> 物流/仓储</label><label><span class="croSwitch"><i class="horizontal"></i><i
+                                    class="vertical"></i></span> 技工</label><label><span class="croSwitch"><i class="horizontal"></i><i
+                                        class="vertical"></i></span> 质量管理/安全防护</label></div>
+        </div>
+        <div class="item_4 ">
+            <span class="title">市场|媒介|设计 </span>
+            <div class="items">
+                <label>
+                    市场/营销</label><label>
+                        公关/媒介</label><label>
+                            美术/设计/创意</label><label>
+                                广告/会展</label><label>
+                                    传媒/影视/报刊/出版/印刷</label></div>
+        </div>
+        <div class="item_5  alt ">
+            <span class="title">医药|化工|能源|环保 </span>
+            <div class="items">
+                <label>
+                    生物/制药/医疗器械</label><label>
+                        化工</label><label>
+                            环境科学/环保</label><label>
+                                能源/矿产/地质勘查</label></div>
+        </div>
+        <div class="item_6 ">
+            <span class="title">管理|人力资源|行政 </span>
+            <div class="items">
+                <label>
+                    高级管理</label><label>
+                        人力资源</label><label>
+                            行政/后勤/文秘</label></div>
+        </div>
+        <div class="item_7  alt ">
+            <span class="title">咨询|法律|教育|翻译 </span>
+            <div class="items">
+                <label>
+                    咨询/顾问</label><label>
+                        教育/培训</label><label>
+                            律师/法务/合规</label><label>
+                                翻译（口译与笔译）</label></div>
+        </div>
+        <div class="item_8 ">
+            <span class="title">服务业 </span>
+            <div class="items">
+                <label>
+                    零售/百货/连锁/超市</label><label>
+                        酒店/餐饮/旅游/娱乐</label><label>
+                            保健/美容/美发/健身</label><label>
+                                医院/医疗/护理</label><label>
+                                    保安/家政/普通劳动力</label></div>
+        </div>
+        <div class="item_9  alt ">
+            <span class="title">机关单位|学生|其他 </span>
+            <div class="items">
+                <label>
+                    公务员/事业单位/科研机构</label><label><span class="croSwitch"><i class="horizontal"></i><i
+                        class="vertical"></i></span> 农/林/牧/渔业</label><label><span class="croSwitch"><i class="horizontal"></i><i
+                            class="vertical"></i></span> 毕业生/实习生/培训生</label><label><span class="croSwitch"><i
+                                class="horizontal"></i><i class="vertical"></i></span> 兼职/临时</label><label><span
+                                    class="croSwitch"><i class="horizontal"></i><i class="vertical"></i></span> 其他</label></div>
+        </div>
+    </div>
+    <div id="jobItem0" class="jobItem">
+        <div class="bgLine">
+        </div>
+        <label>
+            <input type="checkbox" name="chItem_0"><span>销售代表</span></label><label><input type="checkbox"
+                name="chItem_0"><span>客户代表</span></label><label><input type="checkbox" name="chItem_0"><span>电话销售</span></label><label><input
+                    type="checkbox" name="chItem_0"><span>销售工程师</span></label><label><input type="checkbox"
+                        name="chItem_0"><span>渠道/分销专员</span></label><label><input type="checkbox" name="chItem_0"><span>医药销售代表</span></label><label><input
+                            type="checkbox" name="chItem_0"><span>经销商</span></label><label><input type="checkbox"
+                                name="chItem_0"><span>网站推广</span></label><label><input type="checkbox" name="chItem_0"><span>团购业务员</span></label><label><input
+                                    type="checkbox" name="chItem_0"><span>其他</span></label>
+        <div class="btBlock">
+            <label>
+                <input type="checkbox"><span>全选</span></label>
+            <a href="#" class="ok button">确认</a> <a href="#" class="cancel button">取消</a>
+        </div>
+    </div>
+
+	
+    <script type="text/javascript">
+        $(document).ready(function () {
+            var timer = null;
+            var dropText = $('#dropText');
+            var jobList = $('#jobList');
+            var jobItem0 = $('#jobItem0');
+            dropText.click(function () {
+                var el = $(this);
+                var offset = el.offset();
+                jobList.css({ 'top': (offset.top + 25) + 'px', 'left': (offset.left) + 'px' });
+                jobList.show();
+            });
+
+            //点击关闭
+            $('#btCls').click(function () {
+                jobList.hide();
+            });
+
+            jobItem0.mouseenter(function () {
+                if (timer) clearTimeout(timer);
+
+            });
+
+            //点击展开三级菜单
+            $('#jobList').delegate(' .items label', 'click', function (e) {
+                var el = $(this);
+                if (el.hasClass('cls')) {
+                    el.removeClass('cls');
+                    clsJobList();
+                } else {
+                    el.addClass('cls');
+                    var bgLine = jobItem0.find('.bgLine');
+
+                    //获取作为客户端判断点
+                    var x = e.clientX;
+                    var y = e.clientY;
+                    var offset = el.offset();
+                    var height = parseInt(el.outerHeight());
+                    var width = parseInt(el.outerWidth());
+
+                    jobItem0.css('border', '1px solid #C7C7C7');
+
+                    jobItem0.show();
+
+                    //向上
+                    if (y > 300 && false) {
+                        jobItem0.css({
+                            'top': (offset.top - height - 1) + 'px',
+                            'border-bottom': 'none'
+                        });
+                        bgLine.css('bottom', '1px');
+                    } else {
+                        jobItem0.css({
+                            'top': (offset.top + height - 1) + 'px',
+                            'border-top': 'none'
+                        });
+                        bgLine.css('top', '-1px');
+                    }
+
+                    //向左
+                    if (x > 500) {
+                        jobItem0.css({
+                            'left': (offset.left - width - 16) + 'px'
+                        });
+                        bgLine.css('right', '177px');
+                    } else {
+                        jobItem0.css({
+                            'left': offset.left + 'px'
+                        });
+                        bgLine.css('right', '0');
+                    }
+                    var s = '';
+
+                    el.unbind('mouseout').mouseout(function () {
+                        if (timer) clearTimeout(timer);
+                        timer = setTimeout(clsJobList, 100)
+
+                    });
+                    jobItem0.mouseleave(clsJobList);
+                }
+
+                function clsJobList() {
+                    el.removeClass('cls');
+                    jobItem0.hide();
+                    el.unbind('mouseout');
+                }
+
+            });
+
+
+        });
+    </script>
+</body>
+</html>
+
+    	<style></style>
+	    		<script></script>
+	
+<!-- Generated by RunJS (Wed Nov 19 14:37:57 CST 2014) 2ms -->

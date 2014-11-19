@@ -1,0 +1,359 @@
+﻿<!DOCTYPE html>
+
+<html lang="zh">
+    <head>
+        <meta charset="utf-8">
+        <meta name="description" content="android,ios" />
+        <meta name="keywords" content="android,ios" />
+
+        <title>叶小钗</title>
+        <style type='text/css'>
+            body {
+                background-color: #CCC;
+            }
+        </style>
+        <link rel="stylesheet" href="../../css/bootstrap.css" />
+    </head>
+
+    <body>
+        <div class="container">
+
+            <h1>叶小钗</h1>
+
+            <div class='navbar navbar-inverse'>
+                <div class='navbar-inner nav-collapse' style="height: auto;">
+                    <ul class="nav">
+                              				<li><a href="http://songboriceboy.github.io/xxoo/html/blade/index.html">blade</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/css/index.html">css</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/HTML5&CSS3/index.html">HTML5&CSS3</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/index.html">javascript</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Javaxx/index.html">Java学习</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/nodejs/index.html">nodejs</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/requirejs/index.html">requirejs</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/index.html">Web前端</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/xxgw/index.html">学习感悟</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/gzdd/index.html">工作点滴</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/jkxx/index.html">接口学习</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/wfl/index.html">未分类</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/ydkf/index.html">移动开发</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/sjms/index.html">设计模式</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/mst/index.html">面试题</a></li>
+    				                      </ul>
+                </div>
+            </div>
+
+            <div id='content' class='row-fluid'>
+
+                <div class='span9 main'>
+				<div style="color:blue" align=center>【web前端面试题整理01】各位加班累了吧，来做点前端面试题吧</div><br><h1>前言</h1>
+<p>最近小叶子有点疲惫，主要是在外地工作生活上不太适应，吃一样的东西，我居然会拉肚子，而且是一个星期一个星期的。。。。</p>
+<p>脸上长了一个豆豆一个星期还没消，我那个去啊。</p>
+<p>昨天上午上班后，本来想继续研究javascript方面的东西的，但是下午要开会，结果一开就是4.5小时，哎哟，我那个怎么感觉很累啊，</p>
+<p>明明是坐着的啊，开完会腰酸背痛的，回来吃过饭，本来想接着学习，却迷迷糊糊的睡着了......</p>
+<p>按照进度我们本来想要开始做小窗口的，但是也碰到点问题，除了各大微博，其它数据全部是RSS，与我想象的数据源不一样，所以这块还需要点时间，加之今天起来还是有点疲惫，那我们不如这个周末就休息下吧，来做几道有意思的面试题好了，当是对前面学习的总结好了。</p>
+<p>事情不顺利不要紧，我们一步一步来，没有什么事情做不完的。</p>
+<h1>布局类</h1>
+<p style="font: 14px/28px 宋体; margin: 10px 0px; padding: 0px; color: #333333; text-transform: none; text-indent: 28px; letter-spacing: normal; word-spacing: 0px; white-space: normal; font-size-adjust: none; font-stretch: normal; background-color: #f8f8f8; -webkit-text-stroke-width: 0px;">让我们一起来做一个页面</p>
+<p style="font: 14px/28px 宋体; margin: 10px 0px; padding: 0px; color: #333333; text-transform: none; text-indent: 28px; letter-spacing: normal; word-spacing: 0px; white-space: normal; font-size-adjust: none; font-stretch: normal; background-color: #f8f8f8; -webkit-text-stroke-width: 0px;">首先，我们需要一个布局。</p>
+<p style="font: 14px/28px 宋体; margin: 10px 0px; padding: 0px; color: #333333; text-transform: none; text-indent: 28px; letter-spacing: normal; word-spacing: 0px; white-space: normal; font-size-adjust: none; font-stretch: normal; background-color: #f8f8f8; -webkit-text-stroke-width: 0px;">请使用CSS控制3个div，实现如下图的布局。</p>
+<p><img src="51730265808068.jpg" alt=""></p>
+<p>我们前面已经学了很多CSS方面的东西了，我们现在来看看这道题，我们会怎么做呢？</p>
+<p>这道题限制了只能使用三个div，并且我多float布局比较厌恶，所以第一步应该不会采用float，但是也必须考虑各个浏览器的兼容性，于是我第一份答案出来了：</p>
+<div class="cnblogs_code">
+<pre><span style="color: #008080;"> 1</span> <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">html </span><span style="color: #ff0000;">xmlns</span><span style="color: #0000ff;">="http://www.w3.org/1999/xhtml"</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 2</span> <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">head</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 3</span>     <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">title</span><span style="color: #0000ff;">&gt;&lt;/</span><span style="color: #800000;">title</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 4</span>     <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">style </span><span style="color: #ff0000;">type</span><span style="color: #0000ff;">="text/css"</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 5</span> <span style="background-color: #f5f5f5; color: #800000;">        body </span><span style="background-color: #f5f5f5; color: #000000;">{</span><span style="background-color: #f5f5f5; color: #ff0000;"> margin</span><span style="background-color: #f5f5f5; color: #000000;">:</span><span style="background-color: #f5f5f5; color: #0000ff;"> 0</span><span style="background-color: #f5f5f5; color: #000000;">;</span> <span style="background-color: #f5f5f5; color: #000000;">}</span>
+<span style="color: #008080;"> 6</span> <span style="background-color: #f5f5f5; color: #800000;">        div </span><span style="background-color: #f5f5f5; color: #000000;">{</span><span style="background-color: #f5f5f5; color: #ff0000;"> background-color</span><span style="background-color: #f5f5f5; color: #000000;">:</span><span style="background-color: #f5f5f5; color: #0000ff;"> Gray</span><span style="background-color: #f5f5f5; color: #000000;">;</span><span style="background-color: #f5f5f5; color: #ff0000;"> color</span><span style="background-color: #f5f5f5; color: #000000;">:</span><span style="background-color: #f5f5f5; color: #0000ff;"> White</span><span style="background-color: #f5f5f5; color: #000000;">;</span><span style="background-color: #f5f5f5; color: #ff0000;"> text-align</span><span style="background-color: #f5f5f5; color: #000000;">:</span><span style="background-color: #f5f5f5; color: #0000ff;"> center</span><span style="background-color: #f5f5f5; color: #000000;">;</span> <span style="background-color: #f5f5f5; color: #000000;">}</span>
+<span style="color: #008080;"> 7</span> <span style="background-color: #f5f5f5; color: #800000;">        .main </span><span style="background-color: #f5f5f5; color: #000000;">{</span><span style="background-color: #f5f5f5; color: #ff0000;"> margin-left</span><span style="background-color: #f5f5f5; color: #000000;">:</span><span style="background-color: #f5f5f5; color: #0000ff;"> 310px</span><span style="background-color: #f5f5f5; color: #000000;">;</span><span style="background-color: #f5f5f5; color: #ff0000;"> height</span><span style="background-color: #f5f5f5; color: #000000;">:</span><span style="background-color: #f5f5f5; color: #0000ff;"> 350px</span><span style="background-color: #f5f5f5; color: #000000;">;</span> <span style="background-color: #f5f5f5; color: #000000;">}</span>
+<span style="color: #008080;"> 8</span> <span style="background-color: #f5f5f5; color: #800000;">        .sidebar1 </span><span style="background-color: #f5f5f5; color: #000000;">{</span><span style="background-color: #f5f5f5; color: #ff0000;"> width</span><span style="background-color: #f5f5f5; color: #000000;">:</span><span style="background-color: #f5f5f5; color: #0000ff;"> 300px</span><span style="background-color: #f5f5f5; color: #000000;">;</span><span style="background-color: #f5f5f5; color: #ff0000;"> height</span><span style="background-color: #f5f5f5; color: #000000;">:</span><span style="background-color: #f5f5f5; color: #0000ff;"> 200px</span><span style="background-color: #f5f5f5; color: #000000;">;</span><span style="background-color: #f5f5f5; color: #ff0000;"> position</span><span style="background-color: #f5f5f5; color: #000000;">:</span><span style="background-color: #f5f5f5; color: #0000ff;"> absolute</span><span style="background-color: #f5f5f5; color: #000000;">;</span><span style="background-color: #f5f5f5; color: #ff0000;"> top</span><span style="background-color: #f5f5f5; color: #000000;">:</span><span style="background-color: #f5f5f5; color: #0000ff;"> 0</span><span style="background-color: #f5f5f5; color: #000000;">;</span> <span style="background-color: #f5f5f5; color: #000000;">}</span>
+<span style="color: #008080;"> 9</span> <span style="background-color: #f5f5f5; color: #800000;">        .sidebar2 </span><span style="background-color: #f5f5f5; color: #000000;">{</span><span style="background-color: #f5f5f5; color: #ff0000;"> width</span><span style="background-color: #f5f5f5; color: #000000;">:</span><span style="background-color: #f5f5f5; color: #0000ff;"> 300px</span><span style="background-color: #f5f5f5; color: #000000;">;</span><span style="background-color: #f5f5f5; color: #ff0000;"> height</span><span style="background-color: #f5f5f5; color: #000000;">:</span><span style="background-color: #f5f5f5; color: #0000ff;"> 140px</span><span style="background-color: #f5f5f5; color: #000000;">;</span><span style="background-color: #f5f5f5; color: #ff0000;"> position</span><span style="background-color: #f5f5f5; color: #000000;">:</span><span style="background-color: #f5f5f5; color: #0000ff;"> absolute</span><span style="background-color: #f5f5f5; color: #000000;">;</span><span style="background-color: #f5f5f5; color: #ff0000;"> top</span><span style="background-color: #f5f5f5; color: #000000;">:</span><span style="background-color: #f5f5f5; color: #0000ff;"> 210px</span><span style="background-color: #f5f5f5; color: #000000;">;</span>  <span style="background-color: #f5f5f5; color: #000000;">}</span>
+<span style="color: #008080;">10</span>         
+<span style="color: #008080;">11</span>     <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">style</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">12</span> <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">head</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">13</span> <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">body</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">14</span>     <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">div </span><span style="color: #ff0000;">class</span><span style="color: #0000ff;">="main"</span><span style="color: #0000ff;">&gt;</span><span style="color: #000000;">main
+</span><span style="color: #008080;">15</span>     <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">div</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">16</span>     <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">div </span><span style="color: #ff0000;">class</span><span style="color: #0000ff;">="sidebar1"</span><span style="color: #0000ff;">&gt;</span><span style="color: #000000;">sidebar1
+</span><span style="color: #008080;">17</span>     <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">div</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">18</span>     <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">div </span><span style="color: #ff0000;">class</span><span style="color: #0000ff;">="sidebar2"</span><span style="color: #0000ff;">&gt;</span><span style="color: #000000;">sidebar2
+</span><span style="color: #008080;">19</span>     <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">div</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">20</span> <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">body</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">21</span> <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">html</span><span style="color: #0000ff;">&gt;</span></pre>
+</div>
+<p><img src="44399836037505.png" alt=""></p>
+<p>各位看到了，虽然我比较像用inline-block，但是实施起来时候发现有点困难，并且我这里想到了其它东西：</p>
+<p><strong><span style="color: #ff0000;">主要内容优先原则</span></strong>，不管是怎样的布局，我的main内容皆应该放到最前面，优先加载，这也对后面将之改成响应式布局有好处。</p>
+<p>这样做还有一个好处便是，我们主要内容若是临时要在左边的话，改起来也必将方便，不要动到html结构。</p>
+<p>好了，我们现在来看看有没有其它方法，比如float：</p>
+<div class="cnblogs_code">
+<pre><span style="color: #008080;"> 1</span> <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">html </span><span style="color: #ff0000;">xmlns</span><span style="color: #0000ff;">="http://www.w3.org/1999/xhtml"</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 2</span> <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">head</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 3</span>     <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">title</span><span style="color: #0000ff;">&gt;&lt;/</span><span style="color: #800000;">title</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 4</span>     <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">style </span><span style="color: #ff0000;">type</span><span style="color: #0000ff;">="text/css"</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 5</span> <span style="background-color: #f5f5f5; color: #800000;">        body </span><span style="background-color: #f5f5f5; color: #000000;">{</span><span style="background-color: #f5f5f5; color: #ff0000;"> margin</span><span style="background-color: #f5f5f5; color: #000000;">:</span><span style="background-color: #f5f5f5; color: #0000ff;"> 0</span><span style="background-color: #f5f5f5; color: #000000;">;</span> <span style="background-color: #f5f5f5; color: #000000;">}</span>
+<span style="color: #008080;"> 6</span> <span style="background-color: #f5f5f5; color: #800000;">        div </span><span style="background-color: #f5f5f5; color: #000000;">{</span><span style="background-color: #f5f5f5; color: #ff0000;"> background-color</span><span style="background-color: #f5f5f5; color: #000000;">:</span><span style="background-color: #f5f5f5; color: #0000ff;"> Gray</span><span style="background-color: #f5f5f5; color: #000000;">;</span><span style="background-color: #f5f5f5; color: #ff0000;"> color</span><span style="background-color: #f5f5f5; color: #000000;">:</span><span style="background-color: #f5f5f5; color: #0000ff;"> White</span><span style="background-color: #f5f5f5; color: #000000;">;</span><span style="background-color: #f5f5f5; color: #ff0000;"> text-align</span><span style="background-color: #f5f5f5; color: #000000;">:</span><span style="background-color: #f5f5f5; color: #0000ff;"> center</span><span style="background-color: #f5f5f5; color: #000000;">;</span> <span style="background-color: #f5f5f5; color: #000000;">}</span>
+<span style="color: #008080;"> 7</span> <span style="background-color: #f5f5f5; color: #800000;">        .main </span><span style="background-color: #f5f5f5; color: #000000;">{</span><span style="background-color: #f5f5f5; color: #ff0000;"> margin-left</span><span style="background-color: #f5f5f5; color: #000000;">:</span><span style="background-color: #f5f5f5; color: #0000ff;"> 310px</span><span style="background-color: #f5f5f5; color: #000000;">;</span><span style="background-color: #f5f5f5; color: #ff0000;"> height</span><span style="background-color: #f5f5f5; color: #000000;">:</span><span style="background-color: #f5f5f5; color: #0000ff;"> 350px</span><span style="background-color: #f5f5f5; color: #000000;">;</span> <span style="background-color: #f5f5f5; color: #000000;">}</span>
+<span style="color: #008080;"> 8</span> <span style="background-color: #f5f5f5; color: #800000;">        .sidebar1 </span><span style="background-color: #f5f5f5; color: #000000;">{</span><span style="background-color: #f5f5f5; color: #ff0000;"> width</span><span style="background-color: #f5f5f5; color: #000000;">:</span><span style="background-color: #f5f5f5; color: #0000ff;"> 300px</span><span style="background-color: #f5f5f5; color: #000000;">;</span><span style="background-color: #f5f5f5; color: #ff0000;"> height</span><span style="background-color: #f5f5f5; color: #000000;">:</span><span style="background-color: #f5f5f5; color: #0000ff;"> 200px</span><span style="background-color: #f5f5f5; color: #000000;">;</span><span style="background-color: #f5f5f5; color: #ff0000;"> float</span><span style="background-color: #f5f5f5; color: #000000;">:</span><span style="background-color: #f5f5f5; color: #0000ff;"> left</span><span style="background-color: #f5f5f5; color: #000000;">;</span> <span style="background-color: #f5f5f5; color: #000000;">}</span>
+<span style="color: #008080;"> 9</span> <span style="background-color: #f5f5f5; color: #800000;">        .sidebar2 </span><span style="background-color: #f5f5f5; color: #000000;">{</span><span style="background-color: #f5f5f5; color: #ff0000;"> width</span><span style="background-color: #f5f5f5; color: #000000;">:</span><span style="background-color: #f5f5f5; color: #0000ff;"> 300px</span><span style="background-color: #f5f5f5; color: #000000;">;</span><span style="background-color: #f5f5f5; color: #ff0000;"> height</span><span style="background-color: #f5f5f5; color: #000000;">:</span><span style="background-color: #f5f5f5; color: #0000ff;"> 140px</span><span style="background-color: #f5f5f5; color: #000000;">;</span><span style="background-color: #f5f5f5; color: #ff0000;"> float</span><span style="background-color: #f5f5f5; color: #000000;">:</span><span style="background-color: #f5f5f5; color: #0000ff;"> left</span><span style="background-color: #f5f5f5; color: #000000;">;</span><span style="background-color: #f5f5f5; color: #ff0000;"> clear</span><span style="background-color: #f5f5f5; color: #000000;">:</span><span style="background-color: #f5f5f5; color: #0000ff;"> left</span><span style="background-color: #f5f5f5; color: #000000;">;</span><span style="background-color: #f5f5f5; color: #ff0000;"> margin-top</span><span style="background-color: #f5f5f5; color: #000000;">:</span><span style="background-color: #f5f5f5; color: #0000ff;"> 10px</span><span style="background-color: #f5f5f5; color: #000000;">;</span>  <span style="background-color: #f5f5f5; color: #000000;">}</span>
+<span style="color: #008080;">10</span>         
+<span style="color: #008080;">11</span>     <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">style</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">12</span> <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">head</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">13</span> <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">body</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">14</span>     <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">div </span><span style="color: #ff0000;">class</span><span style="color: #0000ff;">="main"</span><span style="color: #0000ff;">&gt;</span><span style="color: #000000;">main
+</span><span style="color: #008080;">15</span>     <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">div</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">16</span>     <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">div </span><span style="color: #ff0000;">class</span><span style="color: #0000ff;">="sidebar1"</span><span style="color: #0000ff;">&gt;</span><span style="color: #000000;">sidebar1
+</span><span style="color: #008080;">17</span>     <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">div</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">18</span>     <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">div </span><span style="color: #ff0000;">class</span><span style="color: #0000ff;">="sidebar2"</span><span style="color: #0000ff;">&gt;</span><span style="color: #000000;">sidebar2
+</span><span style="color: #008080;">19</span>     <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">div</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">20</span> <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">body</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">21</span> <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">html</span><span style="color: #0000ff;">&gt;</span></pre>
+</div>
+<p><img src="27536806031234.png" alt=""></p>
+<p>有以下几个问题：</p>
+<p>① 因为我们主要区域在前，所以后面两个浮动元素要改变位置才行，这与我们主要内容在前规则违背</p>
+<p>② 若是此处主要内容要显示在左边的话，原来的CSS与HTML结构皆需改变</p>
+<p>③ 浏览器兼容问题，原来的做法是没有兼容问题的，这里使用float不久后IE6下又会莫名其妙的搞好多问题出来（IE3像素，清楚浮动）</p>
+<p>所以就这块布局来说，我是不会使用float布局的。</p>
+<p>PS：<span style="color: #ff0000;"><strong>哪位大哥有不同的意见请一定留言</strong></span></p>
+<p style="font: 14px/28px 宋体; margin: 10px 0px; padding: 0px; text-align: left; color: #333333; text-transform: none; text-indent: 28px; letter-spacing: normal; word-spacing: 0px; white-space: normal; font-size-adjust: none; font-stretch: normal; background-color: #f8f8f8; -webkit-text-stroke-width: 0px;"><strong style="text-align: center; font-weight: bold;">第二部分：用javascript优化布局</strong></p>
+<p style="font: 14px/28px 宋体; margin: 10px 0px; padding: 0px; text-align: left; color: #333333; text-transform: none; text-indent: 28px; letter-spacing: normal; word-spacing: 0px; white-space: normal; font-size-adjust: none; font-stretch: normal; background-color: #f8f8f8; -webkit-text-stroke-width: 0px;">由于我们的用户群喜欢放大看页面</p>
+<p style="font: 14px/28px 宋体; margin: 10px 0px; padding: 0px; text-align: left; color: #333333; text-transform: none; text-indent: 28px; letter-spacing: normal; word-spacing: 0px; white-space: normal; font-size-adjust: none; font-stretch: normal; background-color: #f8f8f8; -webkit-text-stroke-width: 0px;">于是我们给上一题的布局做一次优化。</p>
+<p style="font: 14px/28px 宋体; margin: 10px 0px; padding: 0px; text-align: left; color: #333333; text-transform: none; text-indent: 28px; letter-spacing: normal; word-spacing: 0px; white-space: normal; font-size-adjust: none; font-stretch: normal; background-color: #f8f8f8; -webkit-text-stroke-width: 0px;">当鼠标略过某个区块的时候，该区块会放大25%，</p>
+<p style="font: 14px/28px 宋体; margin: 10px 0px; padding: 0px; text-align: left; color: #333333; text-transform: none; text-indent: 28px; letter-spacing: normal; word-spacing: 0px; white-space: normal; font-size-adjust: none; font-stretch: normal; background-color: #f8f8f8; -webkit-text-stroke-width: 0px;">并且其他的区块仍然固定不动。</p>
+<p><img src="47512655653071.gif" alt=""></p>
+<p>于是我们来看看这道题第二个需求，他要鼠标划上扩大25%，根据我们布局1的话，这个题应该比较简单，而且某些情况下也许链js都不必使用了，但是我们这里不管他：</p>
+<p>PS：<span style="color: #ff0000;">各位请不要小看这一块，你认真做了的话，他会让你感受到，没jquery并且没有形成自己库的渺小，单单是设置样式，设置class都会费尽很多</span></p>
+<div class="cnblogs_code" onclick="cnblogs_code_show('b2384397-07d0-42a2-aa74-d1400e49ed91')"><img id="code_img_closed_b2384397-07d0-42a2-aa74-d1400e49ed91" class="code_img_closed" src="43570758473519.gif" alt=""><img id="code_img_opened_b2384397-07d0-42a2-aa74-d1400e49ed91" class="code_img_opened" style="display: none;" onclick="cnblogs_code_hide('b2384397-07d0-42a2-aa74-d1400e49ed91',event)" src="16365178109279.gif" alt="">
+<div id="cnblogs_code_open_b2384397-07d0-42a2-aa74-d1400e49ed91" class="cnblogs_code_hide">
+<pre><span style="color: #008080;"> 1</span> <span style="color: #0000ff;">&lt;!</span><span style="color: #ff00ff;">DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 2</span> <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">html </span><span style="color: #ff0000;">xmlns</span><span style="color: #0000ff;">="http://www.w3.org/1999/xhtml"</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 3</span> <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">head</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 4</span>     <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">title</span><span style="color: #0000ff;">&gt;&lt;/</span><span style="color: #800000;">title</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 5</span>     <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">style </span><span style="color: #ff0000;">type</span><span style="color: #0000ff;">="text/css"</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 6</span>         
+<span style="color: #008080;"> 7</span> <span style="background-color: #f5f5f5; color: #800000;">        body </span><span style="background-color: #f5f5f5; color: #000000;">{</span><span style="background-color: #f5f5f5; color: #ff0000;"> margin</span><span style="background-color: #f5f5f5; color: #000000;">:</span><span style="background-color: #f5f5f5; color: #0000ff;"> 0</span><span style="background-color: #f5f5f5; color: #000000;">;</span> <span style="background-color: #f5f5f5; color: #000000;">}</span>
+<span style="color: #008080;"> 8</span> <span style="background-color: #f5f5f5; color: #800000;">        div </span><span style="background-color: #f5f5f5; color: #000000;">{</span><span style="background-color: #f5f5f5; color: #ff0000;"> background-color</span><span style="background-color: #f5f5f5; color: #000000;">:</span><span style="background-color: #f5f5f5; color: #0000ff;"> Gray</span><span style="background-color: #f5f5f5; color: #000000;">;</span><span style="background-color: #f5f5f5; color: #ff0000;"> color</span><span style="background-color: #f5f5f5; color: #000000;">:</span><span style="background-color: #f5f5f5; color: #0000ff;"> White</span><span style="background-color: #f5f5f5; color: #000000;">;</span><span style="background-color: #f5f5f5; color: #ff0000;"> text-align</span><span style="background-color: #f5f5f5; color: #000000;">:</span><span style="background-color: #f5f5f5; color: #0000ff;"> center</span><span style="background-color: #f5f5f5; color: #000000;">;</span> <span style="background-color: #f5f5f5; color: #000000;">}</span>
+<span style="color: #008080;"> 9</span> <span style="background-color: #f5f5f5; color: #800000;">        .main </span><span style="background-color: #f5f5f5; color: #000000;">{</span><span style="background-color: #f5f5f5; color: #ff0000;"> margin-left</span><span style="background-color: #f5f5f5; color: #000000;">:</span><span style="background-color: #f5f5f5; color: #0000ff;"> 310px</span><span style="background-color: #f5f5f5; color: #000000;">;</span><span style="background-color: #f5f5f5; color: #ff0000;"> height</span><span style="background-color: #f5f5f5; color: #000000;">:</span><span style="background-color: #f5f5f5; color: #0000ff;"> 350px</span><span style="background-color: #f5f5f5; color: #000000;">;</span> <span style="background-color: #f5f5f5; color: #000000;">}</span>
+<span style="color: #008080;">10</span> <span style="background-color: #f5f5f5; color: #800000;">        .sidebar1 </span><span style="background-color: #f5f5f5; color: #000000;">{</span><span style="background-color: #f5f5f5; color: #ff0000;"> width</span><span style="background-color: #f5f5f5; color: #000000;">:</span><span style="background-color: #f5f5f5; color: #0000ff;"> 300px</span><span style="background-color: #f5f5f5; color: #000000;">;</span><span style="background-color: #f5f5f5; color: #ff0000;"> height</span><span style="background-color: #f5f5f5; color: #000000;">:</span><span style="background-color: #f5f5f5; color: #0000ff;"> 200px</span><span style="background-color: #f5f5f5; color: #000000;">;</span><span style="background-color: #f5f5f5; color: #ff0000;"> position</span><span style="background-color: #f5f5f5; color: #000000;">:</span><span style="background-color: #f5f5f5; color: #0000ff;"> absolute</span><span style="background-color: #f5f5f5; color: #000000;">;</span><span style="background-color: #f5f5f5; color: #ff0000;"> top</span><span style="background-color: #f5f5f5; color: #000000;">:</span><span style="background-color: #f5f5f5; color: #0000ff;"> 0</span><span style="background-color: #f5f5f5; color: #000000;">;</span> <span style="background-color: #f5f5f5; color: #000000;">}</span>
+<span style="color: #008080;">11</span> <span style="background-color: #f5f5f5; color: #800000;">        .sidebar1:hover </span><span style="background-color: #f5f5f5; color: #000000;">{</span><span style="background-color: #f5f5f5; color: #ff0000;"> background-color</span><span style="background-color: #f5f5f5; color: #000000;">:</span><span style="background-color: #f5f5f5; color: #0000ff;"> Green</span><span style="background-color: #f5f5f5; color: #000000;">;</span><span style="background-color: #f5f5f5; color: #ff0000;"> border</span><span style="background-color: #f5f5f5; color: #000000;">:</span><span style="background-color: #f5f5f5; color: #0000ff;"> 1px solid black</span><span style="background-color: #f5f5f5; color: #000000;">;</span><span style="background-color: #f5f5f5; color: #ff0000;"> z-index</span><span style="background-color: #f5f5f5; color: #000000;">:</span><span style="background-color: #f5f5f5; color: #0000ff;"> 100</span><span style="background-color: #f5f5f5; color: #000000;">;</span> <span style="background-color: #f5f5f5; color: #000000;">}</span>
+<span style="color: #008080;">12</span> <span style="background-color: #f5f5f5; color: #800000;">        .sidebar2 </span><span style="background-color: #f5f5f5; color: #000000;">{</span><span style="background-color: #f5f5f5; color: #ff0000;"> width</span><span style="background-color: #f5f5f5; color: #000000;">:</span><span style="background-color: #f5f5f5; color: #0000ff;"> 300px</span><span style="background-color: #f5f5f5; color: #000000;">;</span><span style="background-color: #f5f5f5; color: #ff0000;"> height</span><span style="background-color: #f5f5f5; color: #000000;">:</span><span style="background-color: #f5f5f5; color: #0000ff;"> 140px</span><span style="background-color: #f5f5f5; color: #000000;">;</span><span style="background-color: #f5f5f5; color: #ff0000;"> position</span><span style="background-color: #f5f5f5; color: #000000;">:</span><span style="background-color: #f5f5f5; color: #0000ff;"> absolute</span><span style="background-color: #f5f5f5; color: #000000;">;</span><span style="background-color: #f5f5f5; color: #ff0000;"> top</span><span style="background-color: #f5f5f5; color: #000000;">:</span><span style="background-color: #f5f5f5; color: #0000ff;"> 210px</span><span style="background-color: #f5f5f5; color: #000000;">;</span>  <span style="background-color: #f5f5f5; color: #000000;">}</span>
+<span style="color: #008080;">13</span>     <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">style</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">14</span>     <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">script </span><span style="color: #ff0000;">type</span><span style="color: #0000ff;">="text/javascript"</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">15</span>         <span style="background-color: #f5f5f5; color: #0000ff;">function</span><span style="background-color: #f5f5f5; color: #000000;"> preViewHtml(el) {
+</span><span style="color: #008080;">16</span>             <span style="background-color: #f5f5f5; color: #0000ff;">if</span><span style="background-color: #f5f5f5; color: #000000;"> (</span><span style="background-color: #f5f5f5; color: #000000;">!</span><span style="background-color: #f5f5f5; color: #000000;">el) </span><span style="background-color: #f5f5f5; color: #0000ff;">return</span> <span style="background-color: #f5f5f5; color: #0000ff;">false</span><span style="background-color: #f5f5f5; color: #000000;">;
+</span><span style="color: #008080;">17</span>             <span style="background-color: #f5f5f5; color: #0000ff;">var</span><span style="background-color: #f5f5f5; color: #000000;"> w </span><span style="background-color: #f5f5f5; color: #000000;">=</span><span style="background-color: #f5f5f5; color: #000000;"> parseInt(el.offsetWidth);
+</span><span style="color: #008080;">18</span>             <span style="background-color: #f5f5f5; color: #0000ff;">var</span><span style="background-color: #f5f5f5; color: #000000;"> h </span><span style="background-color: #f5f5f5; color: #000000;">=</span><span style="background-color: #f5f5f5; color: #000000;"> parseInt(el.offsetHeight);
+</span><span style="color: #008080;">19</span> <span style="background-color: #f5f5f5; color: #000000;">            setCss(el, </span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">width</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">, w </span><span style="background-color: #f5f5f5; color: #000000;">*</span> <span style="background-color: #f5f5f5; color: #000000;">1.25</span> <span style="background-color: #f5f5f5; color: #000000;">+</span> <span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">px</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">);
+</span><span style="color: #008080;">20</span> <span style="background-color: #f5f5f5; color: #000000;">            setCss(el, </span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">height</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">, h </span><span style="background-color: #f5f5f5; color: #000000;">*</span> <span style="background-color: #f5f5f5; color: #000000;">1.25</span> <span style="background-color: #f5f5f5; color: #000000;">+</span> <span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">px</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">);
+</span><span style="color: #008080;">21</span> <span style="background-color: #f5f5f5; color: #000000;">            setCss(el, </span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">background-color</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">, parseInt(el.offsetHeight) </span><span style="background-color: #f5f5f5; color: #000000;">*</span> <span style="background-color: #f5f5f5; color: #000000;">1.25</span> <span style="background-color: #f5f5f5; color: #000000;">+</span> <span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">px</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">);
+</span><span style="color: #008080;">22</span> 
+<span style="color: #008080;">23</span> <span style="background-color: #f5f5f5; color: #000000;">            addEvent(el, </span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">mouseout</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">, </span><span style="background-color: #f5f5f5; color: #0000ff;">function</span><span style="background-color: #f5f5f5; color: #000000;"> () {
+</span><span style="color: #008080;">24</span> <span style="background-color: #f5f5f5; color: #000000;">                setCss(el, </span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">width</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">, </span><span style="background-color: #f5f5f5; color: #000000;">''</span><span style="background-color: #f5f5f5; color: #000000;">);
+</span><span style="color: #008080;">25</span> <span style="background-color: #f5f5f5; color: #000000;">                setCss(el, </span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">height</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">, </span><span style="background-color: #f5f5f5; color: #000000;">''</span><span style="background-color: #f5f5f5; color: #000000;">);
+</span><span style="color: #008080;">26</span> <span style="background-color: #f5f5f5; color: #000000;">            });
+</span><span style="color: #008080;">27</span>             
+<span style="color: #008080;">28</span> <span style="background-color: #f5f5f5; color: #000000;">        }
+</span><span style="color: #008080;">29</span> 
+<span style="color: #008080;">30</span>         <span style="background-color: #f5f5f5; color: #0000ff;">function</span><span style="background-color: #f5f5f5; color: #000000;"> addEvent(el, type, fn) {
+</span><span style="color: #008080;">31</span>             <span style="background-color: #f5f5f5; color: #0000ff;">if</span><span style="background-color: #f5f5f5; color: #000000;"> (el.attachEvent) {
+</span><span style="color: #008080;">32</span> <span style="background-color: #f5f5f5; color: #000000;">                el[</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">e</span><span style="background-color: #f5f5f5; color: #000000;">'</span> <span style="background-color: #f5f5f5; color: #000000;">+</span><span style="background-color: #f5f5f5; color: #000000;"> type </span><span style="background-color: #f5f5f5; color: #000000;">+</span><span style="background-color: #f5f5f5; color: #000000;"> fn] </span><span style="background-color: #f5f5f5; color: #000000;">=</span><span style="background-color: #f5f5f5; color: #000000;"> fn;
+</span><span style="color: #008080;">33</span> <span style="background-color: #f5f5f5; color: #000000;">                el[type </span><span style="background-color: #f5f5f5; color: #000000;">+</span><span style="background-color: #f5f5f5; color: #000000;"> fn] </span><span style="background-color: #f5f5f5; color: #000000;">=</span> <span style="background-color: #f5f5f5; color: #0000ff;">function</span><span style="background-color: #f5f5f5; color: #000000;"> () { obj[</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">e</span><span style="background-color: #f5f5f5; color: #000000;">'</span> <span style="background-color: #f5f5f5; color: #000000;">+</span><span style="background-color: #f5f5f5; color: #000000;"> type </span><span style="background-color: #f5f5f5; color: #000000;">+</span><span style="background-color: #f5f5f5; color: #000000;"> fn](window.event); }
+</span><span style="color: #008080;">34</span> <span style="background-color: #f5f5f5; color: #000000;">                el.attachEvent(</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">on</span><span style="background-color: #f5f5f5; color: #000000;">'</span> <span style="background-color: #f5f5f5; color: #000000;">+</span><span style="background-color: #f5f5f5; color: #000000;"> type, obj[type </span><span style="background-color: #f5f5f5; color: #000000;">+</span><span style="background-color: #f5f5f5; color: #000000;"> fn]);
+</span><span style="color: #008080;">35</span> <span style="background-color: #f5f5f5; color: #000000;">            } </span><span style="background-color: #f5f5f5; color: #0000ff;">else</span>
+<span style="color: #008080;">36</span> <span style="background-color: #f5f5f5; color: #000000;">                el.addEventListener(type, fn, </span><span style="background-color: #f5f5f5; color: #0000ff;">false</span><span style="background-color: #f5f5f5; color: #000000;">);
+</span><span style="color: #008080;">37</span> <span style="background-color: #f5f5f5; color: #000000;">        }
+</span><span style="color: #008080;">38</span>         <span style="background-color: #f5f5f5; color: #0000ff;">function</span><span style="background-color: #f5f5f5; color: #000000;"> removeEvent(el, type, fn) {
+</span><span style="color: #008080;">39</span>             <span style="background-color: #f5f5f5; color: #0000ff;">if</span><span style="background-color: #f5f5f5; color: #000000;"> (el.detachEvent) {
+</span><span style="color: #008080;">40</span> <span style="background-color: #f5f5f5; color: #000000;">                el.detachEvent(</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">on</span><span style="background-color: #f5f5f5; color: #000000;">'</span> <span style="background-color: #f5f5f5; color: #000000;">+</span><span style="background-color: #f5f5f5; color: #000000;"> type, obj[type </span><span style="background-color: #f5f5f5; color: #000000;">+</span><span style="background-color: #f5f5f5; color: #000000;"> fn]);
+</span><span style="color: #008080;">41</span> <span style="background-color: #f5f5f5; color: #000000;">                el[type </span><span style="background-color: #f5f5f5; color: #000000;">+</span><span style="background-color: #f5f5f5; color: #000000;"> fn] </span><span style="background-color: #f5f5f5; color: #000000;">=</span> <span style="background-color: #f5f5f5; color: #0000ff;">null</span><span style="background-color: #f5f5f5; color: #000000;">;
+</span><span style="color: #008080;">42</span> <span style="background-color: #f5f5f5; color: #000000;">            } </span><span style="background-color: #f5f5f5; color: #0000ff;">else</span>
+<span style="color: #008080;">43</span> <span style="background-color: #f5f5f5; color: #000000;">                el.removeEventListener(type, fn, </span><span style="background-color: #f5f5f5; color: #0000ff;">false</span><span style="background-color: #f5f5f5; color: #000000;">);
+</span><span style="color: #008080;">44</span> <span style="background-color: #f5f5f5; color: #000000;">        }
+</span><span style="color: #008080;">45</span> 
+<span style="color: #008080;">46</span>         <span style="background-color: #f5f5f5; color: #0000ff;">function</span><span style="background-color: #f5f5f5; color: #000000;"> addClass(el, k) {
+</span><span style="color: #008080;">47</span> 
+<span style="color: #008080;">48</span> <span style="background-color: #f5f5f5; color: #000000;">        }
+</span><span style="color: #008080;">49</span> 
+<span style="color: #008080;">50</span>         <span style="background-color: #f5f5f5; color: #0000ff;">function</span><span style="background-color: #f5f5f5; color: #000000;"> removeClass(el, k) {
+</span><span style="color: #008080;">51</span> 
+<span style="color: #008080;">52</span> <span style="background-color: #f5f5f5; color: #000000;">        }
+</span><span style="color: #008080;">53</span> 
+<span style="color: #008080;">54</span>         <span style="background-color: #f5f5f5; color: #0000ff;">function</span><span style="background-color: #f5f5f5; color: #000000;"> getCss(el, k) {
+</span><span style="color: #008080;">55</span>             <span style="background-color: #f5f5f5; color: #0000ff;">if</span><span style="background-color: #f5f5f5; color: #000000;"> (el) {
+</span><span style="color: #008080;">56</span>                 <span style="background-color: #f5f5f5; color: #0000ff;">if</span><span style="background-color: #f5f5f5; color: #000000;"> (el.style[k]) {
+</span><span style="color: #008080;">57</span>                     <span style="background-color: #f5f5f5; color: #0000ff;">return</span><span style="background-color: #f5f5f5; color: #000000;"> el.style[k];
+</span><span style="color: #008080;">58</span> <span style="background-color: #f5f5f5; color: #000000;">                }
+</span><span style="color: #008080;">59</span>                 <span style="background-color: #f5f5f5; color: #0000ff;">return</span> <span style="background-color: #f5f5f5; color: #0000ff;">null</span><span style="background-color: #f5f5f5; color: #000000;">;
+</span><span style="color: #008080;">60</span> <span style="background-color: #f5f5f5; color: #000000;">            }
+</span><span style="color: #008080;">61</span> <span style="background-color: #f5f5f5; color: #000000;">        }
+</span><span style="color: #008080;">62</span> 
+<span style="color: #008080;">63</span>         <span style="background-color: #f5f5f5; color: #0000ff;">function</span><span style="background-color: #f5f5f5; color: #000000;"> setCss(el, k, v) {
+</span><span style="color: #008080;">64</span>             <span style="background-color: #f5f5f5; color: #0000ff;">if</span><span style="background-color: #f5f5f5; color: #000000;"> (el) {
+</span><span style="color: #008080;">65</span>                 <span style="background-color: #f5f5f5; color: #0000ff;">if</span><span style="background-color: #f5f5f5; color: #000000;"> (</span><span style="background-color: #f5f5f5; color: #000000;">!</span><span style="background-color: #f5f5f5; color: #000000;">el.style </span><span style="background-color: #f5f5f5; color: #000000;">||</span><span style="background-color: #f5f5f5; color: #000000;"> el.style.length </span><span style="background-color: #f5f5f5; color: #000000;">==</span> <span style="background-color: #f5f5f5; color: #000000;">0</span><span style="background-color: #f5f5f5; color: #000000;">) {
+</span><span style="color: #008080;">66</span> <span style="background-color: #f5f5f5; color: #000000;">                    el.style </span><span style="background-color: #f5f5f5; color: #000000;">=</span><span style="background-color: #f5f5f5; color: #000000;"> {};
+</span><span style="color: #008080;">67</span> <span style="background-color: #f5f5f5; color: #000000;">                }
+</span><span style="color: #008080;">68</span> <span style="background-color: #f5f5f5; color: #000000;">                el.style[k] </span><span style="background-color: #f5f5f5; color: #000000;">=</span><span style="background-color: #f5f5f5; color: #000000;"> v;
+</span><span style="color: #008080;">69</span> <span style="background-color: #f5f5f5; color: #000000;">            }
+</span><span style="color: #008080;">70</span> <span style="background-color: #f5f5f5; color: #000000;">        }
+</span><span style="color: #008080;">71</span>     <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">script</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">72</span> <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">head</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">73</span> <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">body</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">74</span>     <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">div </span><span style="color: #ff0000;">class</span><span style="color: #0000ff;">="main"</span><span style="color: #0000ff;">&gt;</span><span style="color: #000000;">main
+</span><span style="color: #008080;">75</span>     <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">div</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">76</span>     <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">div </span><span style="color: #ff0000;">class</span><span style="color: #0000ff;">="sidebar1"</span><span style="color: #ff0000;"> id</span><span style="color: #0000ff;">="preView"</span><span style="color: #ff0000;"> onmouseover</span><span style="color: #0000ff;">="preViewHtml(this)"</span> <span style="color: #0000ff;">&gt;</span><span style="color: #000000;">sidebar1
+</span><span style="color: #008080;">77</span>     <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">div</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">78</span>     <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">div </span><span style="color: #ff0000;">class</span><span style="color: #0000ff;">="sidebar2"</span><span style="color: #0000ff;">&gt;</span><span style="color: #000000;">sidebar2
+</span><span style="color: #008080;">79</span>     <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">div</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">80</span> <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">body</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">81</span> <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">html</span><span style="color: #0000ff;">&gt;</span></pre>
+</div>
+<span class="cnblogs_code_collapse">View Code </span></div>
+<p><img src="287837310246560.png" alt=""></p>
+<p>这个代码有很多问题，其实我本意也不完全是这个意思啦，其实要做好这道题我觉得应该做好以下几个事情：</p>
+<p>① 封装获取dom的函数</p>
+<p>② 封装操作dom属性的函数</p>
+<p>③ 封装操作class的函数</p>
+<p>④ 封装事件绑定的函数</p>
+<p>有了以上几块后，这道题便很简单了，所以我们这里还是来封装以下吧。。。虽说我还真没全部写过，没有jquery操作dom真讨厌。。。</p>
+<div class="cnblogs_code">
+<pre><span style="color: #008080;"> 1</span> <span style="color: #0000ff;">function</span><span style="color: #000000;"> getById(id) {
+</span><span style="color: #008080;"> 2</span> 
+<span style="color: #008080;"> 3</span> <span style="color: #000000;">}
+</span><span style="color: #008080;"> 4</span> 
+<span style="color: #008080;"> 5</span> <span style="color: #0000ff;">function</span><span style="color: #000000;"> getAttr(el, k) {
+</span><span style="color: #008080;"> 6</span> 
+<span style="color: #008080;"> 7</span> <span style="color: #000000;">}
+</span><span style="color: #008080;"> 8</span> 
+<span style="color: #008080;"> 9</span> <span style="color: #0000ff;">function</span><span style="color: #000000;"> setAttr(el, k, v) {
+</span><span style="color: #008080;">10</span> 
+<span style="color: #008080;">11</span> <span style="color: #000000;">}
+</span><span style="color: #008080;">12</span> 
+<span style="color: #008080;">13</span> <span style="color: #0000ff;">function</span><span style="color: #000000;"> addClass(el, k) {
+</span><span style="color: #008080;">14</span> 
+<span style="color: #008080;">15</span> <span style="color: #000000;">}
+</span><span style="color: #008080;">16</span> 
+<span style="color: #008080;">17</span> <span style="color: #0000ff;">function</span><span style="color: #000000;"> removeClass(el, k, v) {
+</span><span style="color: #008080;">18</span> 
+<span style="color: #008080;">19</span> <span style="color: #000000;">}
+</span><span style="color: #008080;">20</span> 
+<span style="color: #008080;">21</span> <span style="color: #0000ff;">function</span><span style="color: #000000;"> getStyle(el, k) {
+</span><span style="color: #008080;">22</span> 
+<span style="color: #008080;">23</span> <span style="color: #000000;">}
+</span><span style="color: #008080;">24</span> 
+<span style="color: #008080;">25</span> <span style="color: #0000ff;">function</span><span style="color: #000000;"> setStyle(el, k, v) {
+</span><span style="color: #008080;">26</span> 
+<span style="color: #008080;">27</span> <span style="color: #000000;">}
+</span><span style="color: #008080;">28</span> 
+<span style="color: #008080;">29</span> <span style="color: #0000ff;">function</span><span style="color: #000000;"> addEvent(el, type, func) {
+</span><span style="color: #008080;">30</span> 
+<span style="color: #008080;">31</span> <span style="color: #000000;">}
+</span><span style="color: #008080;">32</span> 
+<span style="color: #008080;">33</span> <span style="color: #0000ff;">function</span><span style="color: #000000;"> removerEvent(el, type, func) {
+</span><span style="color: #008080;">34</span> 
+<span style="color: #008080;">35</span> }</pre>
+</div>
+<p>以下附上实现的代码：</p>
+<p align="left">首先来几个简单的：</p>
+<div class="cnblogs_code">
+<pre><span style="color: #008080;"> 1</span> <span style="color: #0000ff;">function</span><span style="color: #000000;"> getById(id) {
+</span><span style="color: #008080;"> 2</span>     <span style="color: #0000ff;">return</span> id ? document.getElementById(id) : <span style="color: #0000ff;">null</span><span style="color: #000000;">;
+</span><span style="color: #008080;"> 3</span> <span style="color: #000000;">}
+</span><span style="color: #008080;"> 4</span> 
+<span style="color: #008080;"> 5</span> <span style="color: #0000ff;">function</span><span style="color: #000000;"> getAttr(el, k) {
+</span><span style="color: #008080;"> 6</span>     <span style="color: #0000ff;">if</span><span style="color: #000000;"> (el) {
+</span><span style="color: #008080;"> 7</span>         <span style="color: #0000ff;">return</span><span style="color: #000000;"> el.getAttribute[k];
+</span><span style="color: #008080;"> 8</span> <span style="color: #000000;">    }
+</span><span style="color: #008080;"> 9</span>     <span style="color: #0000ff;">return</span> <span style="color: #0000ff;">null</span><span style="color: #000000;">;
+</span><span style="color: #008080;">10</span> <span style="color: #000000;">}
+</span><span style="color: #008080;">11</span> 
+<span style="color: #008080;">12</span> <span style="color: #0000ff;">function</span><span style="color: #000000;"> setAttr(el, k, v) {
+</span><span style="color: #008080;">13</span>     <span style="color: #0000ff;">if</span><span style="color: #000000;"> (el) {
+</span><span style="color: #008080;">14</span> <span style="color: #000000;">        el.setAttribute(k, v);
+</span><span style="color: #008080;">15</span> <span style="color: #000000;">    }
+</span><span style="color: #008080;">16</span> <span style="color: #000000;">}
+</span><span style="color: #008080;">17</span> 
+<span style="color: #008080;">18</span> <span style="color: #0000ff;">function</span><span style="color: #000000;"> addClass(el, k) {
+</span><span style="color: #008080;">19</span>     <span style="color: #0000ff;">if</span><span style="color: #000000;"> (el) {
+</span><span style="color: #008080;">20</span>         <span style="color: #0000ff;">var</span> arr = el.className.split(' '<span style="color: #000000;">);
+</span><span style="color: #008080;">21</span>         <span style="color: #0000ff;">var</span> arrClass =<span style="color: #000000;"> [];
+</span><span style="color: #008080;">22</span>         <span style="color: #0000ff;">var</span> isExist = <span style="color: #0000ff;">false</span><span style="color: #000000;">;
+</span><span style="color: #008080;">23</span>         <span style="color: #0000ff;">for</span> (<span style="color: #0000ff;">var</span> i = 0, len = arr.length; i &lt; len; i++<span style="color: #000000;">) {
+</span><span style="color: #008080;">24</span>             <span style="color: #0000ff;">if</span> (arr[i] != ''<span style="color: #000000;">) arrClass.push(arr[i]);
+</span><span style="color: #008080;">25</span>             <span style="color: #0000ff;">if</span> (arr[i] ==<span style="color: #000000;"> k) {
+</span><span style="color: #008080;">26</span>                 isExist = <span style="color: #0000ff;">true</span><span style="color: #000000;">;
+</span><span style="color: #008080;">27</span>                 <span style="color: #0000ff;">break</span><span style="color: #000000;">;
+</span><span style="color: #008080;">28</span> <span style="color: #000000;">            }
+</span><span style="color: #008080;">29</span> <span style="color: #000000;">        }
+</span><span style="color: #008080;">30</span>         <span style="color: #0000ff;">if</span> (isExist == <span style="color: #0000ff;">false</span><span style="color: #000000;">) {
+</span><span style="color: #008080;">31</span> <span style="color: #000000;">            arrClass.push(k);
+</span><span style="color: #008080;">32</span>             <span style="color: #0000ff;">var</span> cls = arrClass.join(' '<span style="color: #000000;">);
+</span><span style="color: #008080;">33</span>             el.className =<span style="color: #000000;"> cls;
+</span><span style="color: #008080;">34</span>             setAttr(el, 'class'<span style="color: #000000;">, cls)
+</span><span style="color: #008080;">35</span> <span style="color: #000000;">        }
+</span><span style="color: #008080;">36</span> <span style="color: #000000;">    }
+</span><span style="color: #008080;">37</span> <span style="color: #000000;">}
+</span><span style="color: #008080;">38</span> 
+<span style="color: #008080;">39</span> <span style="color: #0000ff;">function</span><span style="color: #000000;"> removeClass(el, k) {
+</span><span style="color: #008080;">40</span>     <span style="color: #0000ff;">if</span><span style="color: #000000;"> (el) {
+</span><span style="color: #008080;">41</span>         <span style="color: #0000ff;">var</span> arr = el.className.split(' '<span style="color: #000000;">);
+</span><span style="color: #008080;">42</span>         <span style="color: #0000ff;">var</span> arrClass =<span style="color: #000000;"> [];
+</span><span style="color: #008080;">43</span>         <span style="color: #0000ff;">for</span> (<span style="color: #0000ff;">var</span> i = 0, len = arr.length; i &lt; len; i++<span style="color: #000000;">) {
+</span><span style="color: #008080;">44</span>             <span style="color: #0000ff;">if</span> (arr[i] != '' &amp;&amp; arr[i] !=<span style="color: #000000;"> k) arrClass.push(arr[i]);
+</span><span style="color: #008080;">45</span> <span style="color: #000000;">        }
+</span><span style="color: #008080;">46</span> 
+<span style="color: #008080;">47</span>         <span style="color: #0000ff;">var</span> cls = arrClass.join(' '<span style="color: #000000;">);
+</span><span style="color: #008080;">48</span>         el.className =<span style="color: #000000;"> cls;
+</span><span style="color: #008080;">49</span>         setAttr(el, 'class'<span style="color: #000000;">, cls)
+</span><span style="color: #008080;">50</span> <span style="color: #000000;">    }
+</span><span style="color: #008080;">51</span> }</pre>
+</div>
+<p>我们看到，firefox可以获取class列表，而ie几个浏览器只有className这一属性，所以操作class时候我们要用到。</p>
+<p align="left">但是获取当前样式却比较麻烦，还需要计算各个样式表的比重，我们这里用不到就暂时忽略了。</p>
+<p align="left">以上简单测试了一番，基本没有问题，我最后加上事件绑定，便暂时告一段落。</p>
+<div class="cnblogs_code">
+<pre><span style="color: #008080;"> 1</span> <span style="color: #0000ff;">function</span><span style="color: #000000;"> addEvent(el, type, func) {
+</span><span style="color: #008080;"> 2</span>     <span style="color: #0000ff;">if</span><span style="color: #000000;"> (el) {
+</span><span style="color: #008080;"> 3</span>         <span style="color: #0000ff;">if</span><span style="color: #000000;"> (el.attachEvent) {
+</span><span style="color: #008080;"> 4</span>             el.attachEvent('on' +<span style="color: #000000;"> type, func);
+</span><span style="color: #008080;"> 5</span>         } <span style="color: #0000ff;">else</span><span style="color: #000000;"> {
+</span><span style="color: #008080;"> 6</span>             el.addEventListener(type , func, <span style="color: #0000ff;">false</span><span style="color: #000000;">);
+</span><span style="color: #008080;"> 7</span> <span style="color: #000000;">        }
+</span><span style="color: #008080;"> 8</span> <span style="color: #000000;">    }
+</span><span style="color: #008080;"> 9</span> <span style="color: #000000;">}
+</span><span style="color: #008080;">10</span> 
+<span style="color: #008080;">11</span> <span style="color: #0000ff;">function</span><span style="color: #000000;"> removerEvent(el, type, func) {
+</span><span style="color: #008080;">12</span>     <span style="color: #0000ff;">if</span><span style="color: #000000;"> (el) {
+</span><span style="color: #008080;">13</span>         <span style="color: #0000ff;">if</span><span style="color: #000000;"> (el.attachEvent) {
+</span><span style="color: #008080;">14</span>             el.detachEvent('on' +<span style="color: #000000;"> type, func);
+</span><span style="color: #008080;">15</span> 
+<span style="color: #008080;">16</span>         } <span style="color: #0000ff;">else</span><span style="color: #000000;"> {
+</span><span style="color: #008080;">17</span>             el.removeEventListener(type, func, <span style="color: #0000ff;">false</span><span style="color: #000000;">);
+</span><span style="color: #008080;">18</span> <span style="color: #000000;">        }
+</span><span style="color: #008080;">19</span> <span style="color: #000000;">    }
+</span><span style="color: #008080;">20</span> }</pre>
+</div>
+<p>以上是很简陋的做法，若是要完全解决兼容性方法，需要call篡改IE事件中this指向，以及传入的e参数，但是那样对删除事件有提出了麻烦，我们这里便不管他了。</p>
+<h1>结语</h1>
+<p>今天状态不佳，暂时这样了吧，先去吃个饭再说。</p>
+                </div>
+
+                <div class='span3 sidebar'>
+                    <h2>导航栏</h2>
+                    <ul class="nav nav-tabs nav-stacked">
+                             				<li><a href="http://songboriceboy.github.io/xxoo/html/mst/webqdmstzl01gwjbllblzdqdmstb/index.html">【web前端面试题整理01】各位加班累了吧，来做点前端面试题吧</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/mst/webqdmstzl02qdmstdedxljz/index.html">【web前端面试题整理02】前端面试题第二弹袭来，接招！</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/mst/webqdmstzl03lkydCSSxgdb/index.html">【web前端面试题整理03】来看一点CSS相关的吧</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/mst/webqdmstzl04alyxzdsmdm/index.html">【web前端面试题整理04】阿里一行之大神面对面</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/mst/webqdmstzl05zjdqdmstxxxxb/index.html">【web前端面试题整理05】做几道前端面试题休息休息吧</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/mst/webqdmstzl06cddydjmyp/index.html">【web前端面试题整理06】成都第一弹，邂逅聚美优品</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/mst/webqdmstzl07wbljbxysjfl/index.html">【web前端面试题整理07】我不理解表现与数据分离。。。</a></li>
+    				                                         
+                    </ul>
+                </div>
+            </div>
+
+        </div>
+    </body>
+</html>

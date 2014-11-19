@@ -1,0 +1,1009 @@
+﻿<!DOCTYPE html>
+
+<html lang="zh">
+    <head>
+        <meta charset="utf-8">
+        <meta name="description" content="android,ios" />
+        <meta name="keywords" content="android,ios" />
+
+        <title>叶小钗</title>
+        <style type='text/css'>
+            body {
+                background-color: #CCC;
+            }
+        </style>
+        <link rel="stylesheet" href="../../../css/bootstrap.css" />
+    </head>
+
+    <body>
+        <div class="container">
+
+            <h1>叶小钗</h1>
+
+            <div class='navbar navbar-inverse'>
+                <div class='navbar-inner nav-collapse' style="height: auto;">
+                    <ul class="nav">
+                              				<li><a href="http://songboriceboy.github.io/xxoo/html/blade/index.html">blade</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/css/index.html">css</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/HTML5&CSS3/index.html">HTML5&CSS3</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/index.html">javascript</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Javaxx/index.html">Java学习</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/nodejs/index.html">nodejs</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/requirejs/index.html">requirejs</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/index.html">Web前端</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/xxgw/index.html">学习感悟</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/gzdd/index.html">工作点滴</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/jkxx/index.html">接口学习</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/wfl/index.html">未分类</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/ydkf/index.html">移动开发</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/sjms/index.html">设计模式</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/mst/index.html">面试题</a></li>
+    				                      </ul>
+                </div>
+            </div>
+
+            <div id='content' class='row-fluid'>
+
+                <div class='span9 main'>
+				<div style="color:blue" align=center>【初探Underscore】再说模版引擎</div><br><h1>前言</h1>
+<p><a href="http://github.com/documentcloud/underscore/">Underscore</a>&nbsp;是一个JavaScript实用库,提供了类似<a href="http://prototypejs.org/api">Prototype.js</a>&nbsp;(或&nbsp;<a href="http://www.ruby-doc.org/core/classes/Enumerable.html">Ruby</a>)的一些功能,但是没有扩展任何JavaScript内置对象。</p>
+<p>它弥补了部分<a href="http://docs.jquery.com/">jQuery</a>没有实现的功能,同时又是<a href="http://backbonejs.org/">Backbone.js</a>必不可少的部分。</p>
+<p>Underscore提供了80多个函数,包括常用的:&nbsp;<strong>map</strong>,&nbsp;<strong>select</strong>,&nbsp;<strong>invoke</strong>&nbsp;&mdash; 当然还有更多专业的辅助函数,如:函数绑定, JavaScript模板功能, 强类型相等测试, 等等.</p>
+<p>在新的浏览器中, 有许多函数如果浏览器本身直接支持,将会采用原生的,如&nbsp;<strong>forEach</strong>,&nbsp;<strong>map</strong>,&nbsp;<strong>reduce</strong>,&nbsp;<strong>filter</strong>,<strong>every</strong>,&nbsp;<strong>some</strong>&nbsp;和&nbsp;<strong>indexOf</strong>。</p>
+<p>我们使用Underscore一般配合backbone，用得最多的还是里面的模板引擎，我们今天就来一窥underscore的神秘面纱</p>
+<p>PS：老规矩，我们还是看着API 一个个来看源码，如果确实有用的就写demo，我估计只会多模板引擎一块深入研究</p>
+<p><strong>本文参考了愚人码头翻译的中文api</strong></p>
+<h1>template(templateString, [data], [settings])</h1>
+<p>模板引擎是underscore在我们项目中用得最多的东西，夸张点来说，除了模板引擎，其它东西我们都想将之移除</p>
+<p>因为zepto本身提供了很多不错的方法，而移除其它无用方法后可以节约13-5k的流量，是一个不错的选择</p>
+<p>模板引擎是实现数据与行为分离的一大利器，其实大概两年前我就干过这个事情了</p>
+<h2>两年前的模板引擎</h2>
+<p>当时的想法很傻很天真，做了最简单的对象替换，还恬不知耻的说自己用了模板预加载的模式，现在看来确实不错。。。。适合我坑爹的个性</p>
+<div class="cnblogs_code" onclick="cnblogs_code_show('50b0b0b5-7b3c-4d6a-a49e-7e064504db4e')"><img id="code_img_closed_50b0b0b5-7b3c-4d6a-a49e-7e064504db4e" class="code_img_closed" src="43570758473519.gif" alt=""><img id="code_img_opened_50b0b0b5-7b3c-4d6a-a49e-7e064504db4e" class="code_img_opened" style="display: none;" onclick="cnblogs_code_hide('50b0b0b5-7b3c-4d6a-a49e-7e064504db4e',event)" src="16365178109279.gif" alt="">
+<div id="cnblogs_code_open_50b0b0b5-7b3c-4d6a-a49e-7e064504db4e" class="cnblogs_code_hide">
+<pre><span style="color: #008080;"> 1</span> <span style="color: #0000ff;">&lt;!</span><span style="color: #ff00ff;">DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 2</span> <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">html </span><span style="color: #ff0000;">xmlns</span><span style="color: #0000ff;">="http://www.w3.org/1999/xhtml"</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 3</span> <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">head</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 4</span>     <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">title</span><span style="color: #0000ff;">&gt;&lt;/</span><span style="color: #800000;">title</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 5</span>     <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">script </span><span style="color: #ff0000;">src</span><span style="color: #0000ff;">="../zepto/zepto.js"</span><span style="color: #ff0000;"> type</span><span style="color: #0000ff;">="text/javascript"</span><span style="color: #0000ff;">&gt;&lt;/</span><span style="color: #800000;">script</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 6</span>     <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">script </span><span style="color: #ff0000;">type</span><span style="color: #0000ff;">="text/javascript"</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 7</span> <span style="background-color: #f5f5f5; color: #000000;">        $(document).ready(</span><span style="background-color: #f5f5f5; color: #0000ff;">function</span><span style="background-color: #f5f5f5; color: #000000;"> () {
+</span><span style="color: #008080;"> 8</span>             <span style="background-color: #f5f5f5; color: #0000ff;">var</span><span style="background-color: #f5f5f5; color: #000000;"> data </span><span style="background-color: #f5f5f5; color: #000000;">=</span><span style="background-color: #f5f5f5; color: #000000;"> [];
+</span><span style="color: #008080;"> 9</span>             <span style="background-color: #f5f5f5; color: #0000ff;">var</span><span style="background-color: #f5f5f5; color: #000000;"> i;
+</span><span style="color: #008080;">10</span>             <span style="background-color: #f5f5f5; color: #0000ff;">for</span><span style="background-color: #f5f5f5; color: #000000;"> (i </span><span style="background-color: #f5f5f5; color: #000000;">=</span> <span style="background-color: #f5f5f5; color: #000000;">0</span><span style="background-color: #f5f5f5; color: #000000;">; i </span><span style="background-color: #f5f5f5; color: #000000;">&lt;</span> <span style="background-color: #f5f5f5; color: #000000;">10</span><span style="background-color: #f5f5f5; color: #000000;">; i</span><span style="background-color: #f5f5f5; color: #000000;">++</span><span style="background-color: #f5f5f5; color: #000000;">) {
+</span><span style="color: #008080;">11</span>                 <span style="background-color: #f5f5f5; color: #0000ff;">var</span><span style="background-color: #f5f5f5; color: #000000;"> temp </span><span style="background-color: #f5f5f5; color: #000000;">=</span><span style="background-color: #f5f5f5; color: #000000;"> {};
+</span><span style="color: #008080;">12</span> <span style="background-color: #f5f5f5; color: #000000;">                temp.name </span><span style="background-color: #f5f5f5; color: #000000;">=</span> <span style="background-color: #f5f5f5; color: #000000;">"</span><span style="background-color: #f5f5f5; color: #000000;">name_</span><span style="background-color: #f5f5f5; color: #000000;">"</span> <span style="background-color: #f5f5f5; color: #000000;">+</span><span style="background-color: #f5f5f5; color: #000000;"> i.toString();
+</span><span style="color: #008080;">13</span> <span style="background-color: #f5f5f5; color: #000000;">                temp.age </span><span style="background-color: #f5f5f5; color: #000000;">=</span> <span style="background-color: #f5f5f5; color: #000000;">"</span><span style="background-color: #f5f5f5; color: #000000;">age_</span><span style="background-color: #f5f5f5; color: #000000;">"</span> <span style="background-color: #f5f5f5; color: #000000;">+</span><span style="background-color: #f5f5f5; color: #000000;"> i.toString();
+</span><span style="color: #008080;">14</span> <span style="background-color: #f5f5f5; color: #000000;">                temp.home </span><span style="background-color: #f5f5f5; color: #000000;">=</span> <span style="background-color: #f5f5f5; color: #000000;">"</span><span style="background-color: #f5f5f5; color: #000000;">home_</span><span style="background-color: #f5f5f5; color: #000000;">"</span> <span style="background-color: #f5f5f5; color: #000000;">+</span><span style="background-color: #f5f5f5; color: #000000;"> i.toString();
+</span><span style="color: #008080;">15</span> <span style="background-color: #f5f5f5; color: #000000;">                temp.test </span><span style="background-color: #f5f5f5; color: #000000;">=</span> <span style="background-color: #f5f5f5; color: #000000;">"</span><span style="background-color: #f5f5f5; color: #000000;">test_</span><span style="background-color: #f5f5f5; color: #000000;">"</span> <span style="background-color: #f5f5f5; color: #000000;">+</span><span style="background-color: #f5f5f5; color: #000000;"> i.toString();
+</span><span style="color: #008080;">16</span> <span style="background-color: #f5f5f5; color: #000000;">                data.push(temp);
+</span><span style="color: #008080;">17</span> <span style="background-color: #f5f5f5; color: #000000;">            }
+</span><span style="color: #008080;">18</span>             <span style="background-color: #f5f5f5; color: #0000ff;">var</span><span style="background-color: #f5f5f5; color: #000000;"> template </span><span style="background-color: #f5f5f5; color: #000000;">=</span> <span style="background-color: #f5f5f5; color: #000000;">"</span><span style="background-color: #f5f5f5; color: #000000;">&lt;div&gt;{name}&lt;/div&gt;&lt;div&gt;{age}&lt;/div&gt;&lt;div&gt;{home}&lt;/div&gt;&lt;div&gt;{test}&lt;/div&gt;&lt;hr/&gt;</span><span style="background-color: #f5f5f5; color: #000000;">"</span>
+<span style="color: #008080;">19</span>             <span style="background-color: #f5f5f5; color: #0000ff;">var</span><span style="background-color: #f5f5f5; color: #000000;"> wl2 </span><span style="background-color: #f5f5f5; color: #000000;">=</span><span style="background-color: #f5f5f5; color: #000000;"> $(</span><span style="background-color: #f5f5f5; color: #000000;">"</span><span style="background-color: #f5f5f5; color: #000000;">#wl2</span><span style="background-color: #f5f5f5; color: #000000;">"</span><span style="background-color: #f5f5f5; color: #000000;">);
+</span><span style="color: #008080;">20</span> 
+<span style="color: #008080;">21</span>             <span style="background-color: #f5f5f5; color: #008000;">//</span><span style="background-color: #f5f5f5; color: #008000;">现在做法</span>
+<span style="color: #008080;">22</span>             <span style="background-color: #f5f5f5; color: #0000ff;">function</span><span style="background-color: #f5f5f5; color: #000000;"> update() {
+</span><span style="color: #008080;">23</span>                 <span style="background-color: #f5f5f5; color: #0000ff;">var</span><span style="background-color: #f5f5f5; color: #000000;"> now </span><span style="background-color: #f5f5f5; color: #000000;">=</span> <span style="background-color: #f5f5f5; color: #0000ff;">new</span><span style="background-color: #f5f5f5; color: #000000;"> Date();
+</span><span style="color: #008080;">24</span>                 <span style="background-color: #f5f5f5; color: #0000ff;">var</span><span style="background-color: #f5f5f5; color: #000000;"> beginTime </span><span style="background-color: #f5f5f5; color: #000000;">=</span><span style="background-color: #f5f5f5; color: #000000;"> now.getTime();
+</span><span style="color: #008080;">25</span> 
+<span style="color: #008080;">26</span>                 <span style="background-color: #f5f5f5; color: #0000ff;">var</span><span style="background-color: #f5f5f5; color: #000000;"> templateObj </span><span style="background-color: #f5f5f5; color: #000000;">=</span><span style="background-color: #f5f5f5; color: #000000;"> [];
+</span><span style="color: #008080;">27</span>                 <span style="background-color: #f5f5f5; color: #0000ff;">var</span><span style="background-color: #f5f5f5; color: #000000;"> reg </span><span style="background-color: #f5f5f5; color: #000000;">=</span> <span style="background-color: #f5f5f5; color: #000000;">/</span><span style="background-color: #f5f5f5; color: #000000;">\{[A-Za-z]*\}</span><span style="background-color: #f5f5f5; color: #000000;">/</span><span style="background-color: #f5f5f5; color: #000000;">;
+</span><span style="color: #008080;">28</span>                 <span style="background-color: #f5f5f5; color: #0000ff;">var</span><span style="background-color: #f5f5f5; color: #000000;"> para </span><span style="background-color: #f5f5f5; color: #000000;">=</span><span style="background-color: #f5f5f5; color: #000000;"> reg.exec(template);
+</span><span style="color: #008080;">29</span>                 <span style="background-color: #f5f5f5; color: #0000ff;">var</span><span style="background-color: #f5f5f5; color: #000000;"> tempHtml </span><span style="background-color: #f5f5f5; color: #000000;">=</span><span style="background-color: #f5f5f5; color: #000000;"> template;
+</span><span style="color: #008080;">30</span>                 <span style="background-color: #f5f5f5; color: #0000ff;">while</span><span style="background-color: #f5f5f5; color: #000000;"> (para </span><span style="background-color: #f5f5f5; color: #000000;">&amp;&amp;</span><span style="background-color: #f5f5f5; color: #000000;"> para.length </span><span style="background-color: #f5f5f5; color: #000000;">&gt;</span> <span style="background-color: #f5f5f5; color: #000000;">0</span><span style="background-color: #f5f5f5; color: #000000;">) {
+</span><span style="color: #008080;">31</span>                     <span style="background-color: #f5f5f5; color: #0000ff;">var</span><span style="background-color: #f5f5f5; color: #000000;"> len </span><span style="background-color: #f5f5f5; color: #000000;">=</span><span style="background-color: #f5f5f5; color: #000000;"> para.index;
+</span><span style="color: #008080;">32</span>                     <span style="background-color: #f5f5f5; color: #0000ff;">var</span><span style="background-color: #f5f5f5; color: #000000;"> temp </span><span style="background-color: #f5f5f5; color: #000000;">=</span><span style="background-color: #f5f5f5; color: #000000;"> {};
+</span><span style="color: #008080;">33</span> <span style="background-color: #f5f5f5; color: #000000;">                    temp.html </span><span style="background-color: #f5f5f5; color: #000000;">=</span><span style="background-color: #f5f5f5; color: #000000;"> tempHtml.substr(</span><span style="background-color: #f5f5f5; color: #000000;">0</span><span style="background-color: #f5f5f5; color: #000000;">, len);
+</span><span style="color: #008080;">34</span> <span style="background-color: #f5f5f5; color: #000000;">                    temp.field </span><span style="background-color: #f5f5f5; color: #000000;">=</span><span style="background-color: #f5f5f5; color: #000000;"> para[</span><span style="background-color: #f5f5f5; color: #000000;">0</span><span style="background-color: #f5f5f5; color: #000000;">].substr(</span><span style="background-color: #f5f5f5; color: #000000;">1</span><span style="background-color: #f5f5f5; color: #000000;">, para[</span><span style="background-color: #f5f5f5; color: #000000;">0</span><span style="background-color: #f5f5f5; color: #000000;">].length </span><span style="background-color: #f5f5f5; color: #000000;">-</span> <span style="background-color: #f5f5f5; color: #000000;">2</span><span style="background-color: #f5f5f5; color: #000000;">); ;
+</span><span style="color: #008080;">35</span> <span style="background-color: #f5f5f5; color: #000000;">                    templateObj.push(temp);
+</span><span style="color: #008080;">36</span> <span style="background-color: #f5f5f5; color: #000000;">                    tempHtml </span><span style="background-color: #f5f5f5; color: #000000;">=</span><span style="background-color: #f5f5f5; color: #000000;"> tempHtml.substr(len </span><span style="background-color: #f5f5f5; color: #000000;">+</span><span style="background-color: #f5f5f5; color: #000000;"> para[</span><span style="background-color: #f5f5f5; color: #000000;">0</span><span style="background-color: #f5f5f5; color: #000000;">].length);
+</span><span style="color: #008080;">37</span> <span style="background-color: #f5f5f5; color: #000000;">                    para </span><span style="background-color: #f5f5f5; color: #000000;">=</span><span style="background-color: #f5f5f5; color: #000000;"> reg.exec(tempHtml);
+</span><span style="color: #008080;">38</span> <span style="background-color: #f5f5f5; color: #000000;">                }
+</span><span style="color: #008080;">39</span>                 <span style="background-color: #f5f5f5; color: #0000ff;">var</span><span style="background-color: #f5f5f5; color: #000000;"> end </span><span style="background-color: #f5f5f5; color: #000000;">=</span><span style="background-color: #f5f5f5; color: #000000;"> {};
+</span><span style="color: #008080;">40</span> <span style="background-color: #f5f5f5; color: #000000;">                end.html </span><span style="background-color: #f5f5f5; color: #000000;">=</span><span style="background-color: #f5f5f5; color: #000000;"> tempHtml;
+</span><span style="color: #008080;">41</span> <span style="background-color: #f5f5f5; color: #000000;">                templateObj.push(end);
+</span><span style="color: #008080;">42</span> 
+<span style="color: #008080;">43</span>                 <span style="background-color: #f5f5f5; color: #0000ff;">var</span><span style="background-color: #f5f5f5; color: #000000;"> html </span><span style="background-color: #f5f5f5; color: #000000;">=</span> <span style="background-color: #f5f5f5; color: #000000;">""</span><span style="background-color: #f5f5f5; color: #000000;">;
+</span><span style="color: #008080;">44</span> <span style="background-color: #f5f5f5; color: #000000;">                $.each(data, </span><span style="background-color: #f5f5f5; color: #0000ff;">function</span><span style="background-color: #f5f5f5; color: #000000;"> (index, dataItem) {
+</span><span style="color: #008080;">45</span>                     <span style="background-color: #f5f5f5; color: #0000ff;">var</span><span style="background-color: #f5f5f5; color: #000000;"> tempHtm </span><span style="background-color: #f5f5f5; color: #000000;">=</span> <span style="background-color: #f5f5f5; color: #000000;">""</span><span style="background-color: #f5f5f5; color: #000000;">;
+</span><span style="color: #008080;">46</span> <span style="background-color: #f5f5f5; color: #000000;">                    $.each(templateObj, </span><span style="background-color: #f5f5f5; color: #0000ff;">function</span><span style="background-color: #f5f5f5; color: #000000;"> (i, item) {
+</span><span style="color: #008080;">47</span>                         <span style="background-color: #f5f5f5; color: #0000ff;">if</span><span style="background-color: #f5f5f5; color: #000000;"> (item.field) {
+</span><span style="color: #008080;">48</span> <span style="background-color: #f5f5f5; color: #000000;">                            tempHtm </span><span style="background-color: #f5f5f5; color: #000000;">=</span><span style="background-color: #f5f5f5; color: #000000;"> tempHtm </span><span style="background-color: #f5f5f5; color: #000000;">+</span><span style="background-color: #f5f5f5; color: #000000;"> item.html </span><span style="background-color: #f5f5f5; color: #000000;">+</span><span style="background-color: #f5f5f5; color: #000000;"> dataItem[item.field];
+</span><span style="color: #008080;">49</span> <span style="background-color: #f5f5f5; color: #000000;">                        } </span><span style="background-color: #f5f5f5; color: #0000ff;">else</span><span style="background-color: #f5f5f5; color: #000000;"> {
+</span><span style="color: #008080;">50</span> <span style="background-color: #f5f5f5; color: #000000;">                            tempHtm </span><span style="background-color: #f5f5f5; color: #000000;">=</span><span style="background-color: #f5f5f5; color: #000000;"> tempHtm </span><span style="background-color: #f5f5f5; color: #000000;">+</span><span style="background-color: #f5f5f5; color: #000000;"> item.html;
+</span><span style="color: #008080;">51</span> <span style="background-color: #f5f5f5; color: #000000;">                        }
+</span><span style="color: #008080;">52</span> <span style="background-color: #f5f5f5; color: #000000;">                    });
+</span><span style="color: #008080;">53</span> <span style="background-color: #f5f5f5; color: #000000;">                    html </span><span style="background-color: #f5f5f5; color: #000000;">+=</span><span style="background-color: #f5f5f5; color: #000000;"> tempHtm;
+</span><span style="color: #008080;">54</span> <span style="background-color: #f5f5f5; color: #000000;">                });
+</span><span style="color: #008080;">55</span> <span style="background-color: #f5f5f5; color: #000000;">                wl2.append(html);
+</span><span style="color: #008080;">56</span> <span style="background-color: #f5f5f5; color: #000000;">            }
+</span><span style="color: #008080;">57</span> <span style="background-color: #f5f5f5; color: #000000;">            update();
+</span><span style="color: #008080;">58</span> <span style="background-color: #f5f5f5; color: #000000;">        });
+</span><span style="color: #008080;">59</span>      
+<span style="color: #008080;">60</span>     <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">script</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">61</span> <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">head</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">62</span> <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">body</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">63</span>     <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">div </span><span style="color: #ff0000;">id</span><span style="color: #0000ff;">="wl2"</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">64</span>     <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">div</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">65</span> <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">body</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">66</span> <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">html</span><span style="color: #0000ff;">&gt;</span></pre>
+</div>
+<span class="cnblogs_code_collapse">View Code </span></div>
+<p>当时想法比较简单，而且核心代码也比较少，提供一个模板加一个二维数据即可</p>
+<p>① 第一步首先是解析模板，将模板变为字符串数组</p>
+<div class="cnblogs_code">
+<pre><span style="color: #008080;"> 1</span> <span style="color: #0000ff;">var</span> templateObj =<span style="color: #000000;"> [];
+</span><span style="color: #008080;"> 2</span> <span style="color: #0000ff;">var</span> reg = /\{[A-Za-z]*\}/<span style="color: #000000;">;
+</span><span style="color: #008080;"> 3</span> <span style="color: #0000ff;">var</span> para =<span style="color: #000000;"> reg.exec(template);
+</span><span style="color: #008080;"> 4</span> <span style="color: #0000ff;">var</span> tempHtml =<span style="color: #000000;"> template;
+</span><span style="color: #008080;"> 5</span> <span style="color: #0000ff;">while</span> (para &amp;&amp; para.length &gt; 0<span style="color: #000000;">) {
+</span><span style="color: #008080;"> 6</span>     <span style="color: #0000ff;">var</span> len =<span style="color: #000000;"> para.index;
+</span><span style="color: #008080;"> 7</span>     <span style="color: #0000ff;">var</span> temp =<span style="color: #000000;"> {};
+</span><span style="color: #008080;"> 8</span>     temp.html = tempHtml.substr(0<span style="color: #000000;">, len);
+</span><span style="color: #008080;"> 9</span>     temp.field = para[0].substr(1, para[0].length - 2<span style="color: #000000;">); ;
+</span><span style="color: #008080;">10</span> <span style="color: #000000;">    templateObj.push(temp);
+</span><span style="color: #008080;">11</span>     tempHtml = tempHtml.substr(len + para[0<span style="color: #000000;">].length);
+</span><span style="color: #008080;">12</span>     para =<span style="color: #000000;"> reg.exec(tempHtml);
+</span><span style="color: #008080;">13</span> <span style="color: #000000;">}
+</span><span style="color: #008080;">14</span> <span style="color: #0000ff;">var</span> end =<span style="color: #000000;"> {};
+</span><span style="color: #008080;">15</span> end.html =<span style="color: #000000;"> tempHtml;
+</span><span style="color: #008080;">16</span> templateObj.push(end);</pre>
+</div>
+<div class="cnblogs_code">
+<pre><span style="color: #0000ff;">&lt;</span><span style="color: #800000;">div</span><span style="color: #0000ff;">&gt;</span>{name}<span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">div</span><span style="color: #0000ff;">&gt;&lt;</span><span style="color: #800000;">div</span><span style="color: #0000ff;">&gt;</span>{age}<span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">div</span><span style="color: #0000ff;">&gt;&lt;</span><span style="color: #800000;">div</span><span style="color: #0000ff;">&gt;</span>{home}<span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">div</span><span style="color: #0000ff;">&gt;&lt;</span><span style="color: #800000;">div</span><span style="color: #0000ff;">&gt;</span>{test}<span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">div</span><span style="color: #0000ff;">&gt;&lt;</span><span style="color: #800000;">hr</span><span style="color: #0000ff;">/&gt;</span></pre>
+</div>
+<p>上面一段模板解析结束后就变成了这个样子了：</p>
+<p><img src="38654107093327.png" alt=""></p>
+<p>可以看到已经将需要替换的标识给取了出来，接下来就进入第二步</p>
+<p>② 现在就只需要将模板中的标识变为data的数据即可</p>
+<div class="cnblogs_code">
+<pre><span style="color: #008080;"> 1</span> <span style="color: #0000ff;">var</span> html = ""<span style="color: #000000;">;
+</span><span style="color: #008080;"> 2</span> $.each(data, <span style="color: #0000ff;">function</span><span style="color: #000000;"> (index, dataItem) {
+</span><span style="color: #008080;"> 3</span>     <span style="color: #0000ff;">var</span> tempHtm = ""<span style="color: #000000;">;
+</span><span style="color: #008080;"> 4</span>     $.each(templateObj, <span style="color: #0000ff;">function</span><span style="color: #000000;"> (i, item) {
+</span><span style="color: #008080;"> 5</span>         <span style="color: #0000ff;">if</span><span style="color: #000000;"> (item.field) {
+</span><span style="color: #008080;"> 6</span>             tempHtm = tempHtm + item.html +<span style="color: #000000;"> dataItem[item.field];
+</span><span style="color: #008080;"> 7</span>         } <span style="color: #0000ff;">else</span><span style="color: #000000;"> {
+</span><span style="color: #008080;"> 8</span>             tempHtm = tempHtm +<span style="color: #000000;"> item.html;
+</span><span style="color: #008080;"> 9</span> <span style="color: #000000;">        }
+</span><span style="color: #008080;">10</span> <span style="color: #000000;">    });
+</span><span style="color: #008080;">11</span>     html +=<span style="color: #000000;"> tempHtm;
+</span><span style="color: #008080;">12</span> <span style="color: #000000;">});
+</span><span style="color: #008080;">13</span> wl2.append(html);</pre>
+</div>
+<p>这个代码本身不难，但是还是有很多缺陷的，比如说模板中的js就无法解析，当时为了解决这个问题还用到了eval自己注入自己......</p>
+<p>现在回过头来，项目中的underscore模板用得很不错，所以今天我们首要来看看他的模板方法</p>
+<h2>初试模板</h2>
+<div class="cnblogs_code">
+<pre><span style="color: #008080;"> 1</span> <span style="color: #0000ff;">var</span> compiled = _.template("hello: &lt;%= name %&gt;"<span style="color: #000000;">);
+</span><span style="color: #008080;"> 2</span> compiled({name: 'moe'<span style="color: #000000;">});
+</span><span style="color: #008080;"> 3</span> =&gt; "hello: moe"
+<span style="color: #008080;"> 4</span> 
+<span style="color: #008080;"> 5</span> <span style="color: #0000ff;">var</span> list = "&lt;% _.each(people, function(name) { %&gt; &lt;li&gt;&lt;%= name %&gt;&lt;/li&gt; &lt;% }); %&gt;"<span style="color: #000000;">;
+</span><span style="color: #008080;"> 6</span> _.template(list, {people: ['moe', 'curly', 'larry'<span style="color: #000000;">]});
+</span><span style="color: #008080;"> 7</span> =&gt; "&lt;li&gt;moe&lt;/li&gt;&lt;li&gt;curly&lt;/li&gt;&lt;li&gt;larry&lt;/li&gt;"
+<span style="color: #008080;"> 8</span> 
+<span style="color: #008080;"> 9</span> <span style="color: #0000ff;">var</span> template = _.template("&lt;b&gt;&lt;%- value %&gt;&lt;/b&gt;"<span style="color: #000000;">);
+</span><span style="color: #008080;">10</span> template({value: '&lt;script&gt;'<span style="color: #000000;">});
+</span><span style="color: #008080;">11</span> =&gt; "&lt;b&gt;&amp;lt;script&amp;gt;&lt;/b&gt;"</pre>
+</div>
+<p>这就是underscore的模板相关的语法，只要提供模板，然后template一下，再给他个data就行了</p>
+<p>最帅的就是其中可以使用js了，只不过js需要放到&lt;%%&gt;里面，于是我们来一点点看他的源码</p>
+<p>事实上underscore的机制就是执行&lt;%%&gt;中的逻辑即可，其它都是配套的，或者其它都是字符串，由我们选择是否打印与否</p>
+<h2>源码分析</h2>
+<div class="cnblogs_code">
+<pre><span style="color: #008080;"> 1</span> _.templateSettings =<span style="color: #000000;"> {
+</span><span style="color: #008080;"> 2</span>     evaluate: /&lt;%([\s\S]+?)%&gt;/<span style="color: #000000;">g,
+</span><span style="color: #008080;"> 3</span>     interpolate: /&lt;%=([\s\S]+?)%&gt;/<span style="color: #000000;">g,
+</span><span style="color: #008080;"> 4</span>     escape: /&lt;%-([\s\S]+?)%&gt;/<span style="color: #000000;">g
+</span><span style="color: #008080;"> 5</span> <span style="color: #000000;">};
+</span><span style="color: #008080;"> 6</span> <span style="color: #0000ff;">var</span> noMatch = /(.)^/<span style="color: #000000;">;
+</span><span style="color: #008080;"> 7</span> 
+<span style="color: #008080;"> 8</span> <span style="color: #0000ff;">var</span> escapes =<span style="color: #000000;"> {
+</span><span style="color: #008080;"> 9</span>     "'": "'"<span style="color: #000000;">,
+</span><span style="color: #008080;">10</span>     '\\': '\\'<span style="color: #000000;">,
+</span><span style="color: #008080;">11</span>     '\r': 'r'<span style="color: #000000;">,
+</span><span style="color: #008080;">12</span>     '\n': 'n'<span style="color: #000000;">,
+</span><span style="color: #008080;">13</span>     '\t': 't'<span style="color: #000000;">,
+</span><span style="color: #008080;">14</span>     '\u2028': 'u2028'<span style="color: #000000;">,
+</span><span style="color: #008080;">15</span>     '\u2029': 'u2029'
+<span style="color: #008080;">16</span> <span style="color: #000000;">};
+</span><span style="color: #008080;">17</span> 
+<span style="color: #008080;">18</span> <span style="color: #0000ff;">var</span> escaper = /\\|'|\r|\n|\t|\u2028|\u2029/<span style="color: #000000;">g;
+</span><span style="color: #008080;">19</span> 
+<span style="color: #008080;">20</span> _.template = <span style="color: #0000ff;">function</span><span style="color: #000000;"> (text, data, settings) {
+</span><span style="color: #008080;">21</span>     <span style="color: #0000ff;">var</span><span style="color: #000000;"> render;
+</span><span style="color: #008080;">22</span>     settings =<span style="color: #000000;"> _.defaults({}, settings, _.templateSettings);
+</span><span style="color: #008080;">23</span> 
+<span style="color: #008080;">24</span>     <span style="color: #0000ff;">var</span> matcher = <span style="color: #0000ff;">new</span><span style="color: #000000;"> RegExp([
+</span><span style="color: #008080;">25</span> (settings.escape ||<span style="color: #000000;"> noMatch).source,
+</span><span style="color: #008080;">26</span> (settings.interpolate ||<span style="color: #000000;"> noMatch).source,
+</span><span style="color: #008080;">27</span> (settings.evaluate ||<span style="color: #000000;"> noMatch).source
+</span><span style="color: #008080;">28</span> ].join('|') + '|$', 'g'<span style="color: #000000;">);
+</span><span style="color: #008080;">29</span> 
+<span style="color: #008080;">30</span>     <span style="color: #0000ff;">var</span> index = 0<span style="color: #000000;">;
+</span><span style="color: #008080;">31</span>     <span style="color: #0000ff;">var</span> source = "__p+='"<span style="color: #000000;">;
+</span><span style="color: #008080;">32</span>     text.replace(matcher, <span style="color: #0000ff;">function</span><span style="color: #000000;"> (match, escape, interpolate, evaluate, offset) {
+</span><span style="color: #008080;">33</span>         source +=<span style="color: #000000;"> text.slice(index, offset)
+</span><span style="color: #008080;">34</span> .replace(escaper, <span style="color: #0000ff;">function</span> (match) { <span style="color: #0000ff;">return</span> '\\' +<span style="color: #000000;"> escapes[match]; });
+</span><span style="color: #008080;">35</span> 
+<span style="color: #008080;">36</span>         <span style="color: #0000ff;">if</span><span style="color: #000000;"> (escape) {
+</span><span style="color: #008080;">37</span>             source += "'+\n((__t=(" + escape + "))==null?'':_.escape(__t))+\n'"<span style="color: #000000;">;
+</span><span style="color: #008080;">38</span> <span style="color: #000000;">        }
+</span><span style="color: #008080;">39</span>         <span style="color: #0000ff;">if</span><span style="color: #000000;"> (interpolate) {
+</span><span style="color: #008080;">40</span>             source += "'+\n((__t=(" + interpolate + "))==null?'':__t)+\n'"<span style="color: #000000;">;
+</span><span style="color: #008080;">41</span> <span style="color: #000000;">        }
+</span><span style="color: #008080;">42</span>         <span style="color: #0000ff;">if</span><span style="color: #000000;"> (evaluate) {
+</span><span style="color: #008080;">43</span>             source += "';\n" + evaluate + "\n__p+='"<span style="color: #000000;">;
+</span><span style="color: #008080;">44</span> <span style="color: #000000;">        }
+</span><span style="color: #008080;">45</span>         index = offset +<span style="color: #000000;"> match.length;
+</span><span style="color: #008080;">46</span>         <span style="color: #0000ff;">return</span><span style="color: #000000;"> match;
+</span><span style="color: #008080;">47</span> <span style="color: #000000;">    });
+</span><span style="color: #008080;">48</span>     source += "';\n"<span style="color: #000000;">;
+</span><span style="color: #008080;">49</span> 
+<span style="color: #008080;">50</span>     <span style="color: #0000ff;">if</span> (!settings.variable) source = 'with(obj||{}){\n' + source + '}\n'<span style="color: #000000;">;
+</span><span style="color: #008080;">51</span> 
+<span style="color: #008080;">52</span>     source = "var __t,__p='',__j=Array.prototype.join," +
+<span style="color: #008080;">53</span> "print=function(){__p+=__j.call(arguments,'');};\n" +
+<span style="color: #008080;">54</span> source + "return __p;\n"<span style="color: #000000;">;
+</span><span style="color: #008080;">55</span> 
+<span style="color: #008080;">56</span>     <span style="color: #0000ff;">try</span><span style="color: #000000;"> {
+</span><span style="color: #008080;">57</span>         render = <span style="color: #0000ff;">new</span> Function(settings.variable || 'obj', '_'<span style="color: #000000;">, source);
+</span><span style="color: #008080;">58</span>     } <span style="color: #0000ff;">catch</span><span style="color: #000000;"> (e) {
+</span><span style="color: #008080;">59</span>         e.source =<span style="color: #000000;"> source;
+</span><span style="color: #008080;">60</span>         <span style="color: #0000ff;">throw</span><span style="color: #000000;"> e;
+</span><span style="color: #008080;">61</span> <span style="color: #000000;">    }
+</span><span style="color: #008080;">62</span> 
+<span style="color: #008080;">63</span>     <span style="color: #0000ff;">if</span> (data) <span style="color: #0000ff;">return</span><span style="color: #000000;"> render(data, _);
+</span><span style="color: #008080;">64</span>     <span style="color: #0000ff;">var</span> template = <span style="color: #0000ff;">function</span><span style="color: #000000;"> (data) {
+</span><span style="color: #008080;">65</span>         <span style="color: #0000ff;">return</span> render.call(<span style="color: #0000ff;">this</span><span style="color: #000000;">, data, _);
+</span><span style="color: #008080;">66</span> <span style="color: #000000;">    };
+</span><span style="color: #008080;">67</span> 
+<span style="color: #008080;">68</span>     template.source = 'function(' + (settings.variable || 'obj') + '){\n' + source + '}'<span style="color: #000000;">;
+</span><span style="color: #008080;">69</span> 
+<span style="color: #008080;">70</span>     <span style="color: #0000ff;">return</span><span style="color: #000000;"> template;
+</span><span style="color: #008080;">71</span> };</pre>
+</div>
+<p>不得不说这段代码很经典啊，两年前我绝对不会想到如此重要的模板功能竟会只有这点代码......事实上看源码之前也不知道</p>
+<p><strong>① 参数说明</strong></p>
+<p>template本身是一个方法，可以提供三个参数，第一个为模板文本，第二个为对应模板数据，第三个为基本配置信息，一般不予传递</p>
+<p>如果我们传递了data的话，会直接返回解析后的html字符串，没有传递的话就会返回一个编译过的模板</p>
+<p>这里用到了defaults方法，我们来看看他是干什么的：</p>
+<h3>_.defaults(object, *defaults)</h3>
+<p><span>用</span><strong>defaults</strong><span>对象填充</span><strong>object</strong><span>中</span><tt>undefined</tt><span>属性。并且返回这个</span><strong>object</strong><span>。一旦这个属性被填充，再使用defaults方法将不会有任何效果。</span></p>
+<div class="cnblogs_code">
+<pre><span style="color: #0000ff;">var</span> iceCream = {flavor: "chocolate"<span style="color: #000000;">};
+_.defaults(iceCream, {flavor: </span>"vanilla", sprinkles: "lots"<span style="color: #000000;">});
+</span>=&gt; {flavor: "chocolate", sprinkles: "lots"}</pre>
+</div>
+<p><strong>② 正则分析</strong></p>
+<p>这里用到的几个正则都是匹配全部字符，并且不会保存分组信息，首先看一个简单的</p>
+<div class="cnblogs_code">
+<pre>_.templateSettings =<span style="color: #000000;"> {
+evaluate    : </span>/&lt;%([\s\S]+?)%&gt;/<span style="color: #000000;">g,
+interpolate : </span>/&lt;%=([\s\S]+?)%&gt;/<span style="color: #000000;">g,
+escape      : </span>/&lt;%-([\s\S]+?)%&gt;/<span style="color: #000000;">g
+};</span></pre>
+</div>
+<p>以上三个最后会被形成一个正则字符串组：</p>
+<div class="cnblogs_code">
+<pre><span style="color: #008080;">1</span> <span style="color: #0000ff;">var</span> matcher = <span style="color: #0000ff;">new</span><span style="color: #000000;"> RegExp([
+</span><span style="color: #008080;">2</span>     (settings.escape ||<span style="color: #000000;"> noMatch).source,
+</span><span style="color: #008080;">3</span>     (settings.interpolate ||<span style="color: #000000;"> noMatch).source,
+</span><span style="color: #008080;">4</span>     (settings.evaluate ||<span style="color: #000000;"> noMatch).source
+</span><span style="color: #008080;">5</span> ].join('|') + '|$', 'g'<span style="color: #000000;">);
+</span><span style="color: #008080;">6</span> <span style="color: #008000;">//</span><span style="color: #008000;">=&gt;/&lt;%-([\s\S]+?)%&gt;|&lt;%=([\s\S]+?)%&gt;|&lt;%([\s\S]+?)%&gt;|$/g</span></pre>
+</div>
+<p>这个正则会由左向右的顺序匹配，如果成功了就不找后面的了，然后下面开始解析模板</p>
+<p><strong>③ 模板解析阶段</strong></p>
+<p>我们先不管他的逻辑，我们用这个正则来匹配下我们的代码看看有些什么东西</p>
+<div class="cnblogs_code">
+<pre><span style="color: #000000;">matcher.exec(text)
+[</span>"&lt;%-name %&gt;", "name ", undefined, undefined]</pre>
+</div>
+<p>以上为他输出的结果，第一个是匹配到的对象，第一个参数为匹配到的字符串，第二个为括号中的字符串，现在我们回到程序</p>
+<p>程序中用了replace方法，该方法可使用正则表达式，第二个参数为一个函数，这里就需要各位对replace方法比较熟悉了：</p>
+<div class="cnblogs_code">
+<pre><span style="color: #800000;">function函数具有几个参数：
+
+第一个参数为每次匹配的全文本（$&amp;）。
+中间参数为子表达式匹配字符串，个数不限，也就是括号中的东西
+倒数第二个参数为匹配文本字符串的匹配下标位置。
+最后一个参数表示字符串本身。</span></pre>
+</div>
+<p>比如我这里第一次的匹配就应该是这个样子：</p>
+<div class="cnblogs_code">
+<pre><span style="color: #800000;">["&lt;%-name %&gt;", "name ", undefined, undefined, 5, <br>"&lt;div&gt;&lt;%-name %&gt;</span>{<span style="color: #ff0000;">name</span>}<span style="color: #800000;">&lt;/div&gt;&lt;div&gt;&lt;%=age %&gt;</span>{<span style="color: #ff0000;">age</span>}<span style="color: #800000;">&lt;/div&gt;&lt;div&gt;&lt;%=home %&gt;</span>{<span style="color: #ff0000;">home</span>}<span style="color: #800000;">&lt;/div&gt;&lt;div&gt;</span>{<span style="color: #ff0000;">test</span>}<span style="color: #800000;">&lt;/div&gt;,<br>&lt;%if(name == "name_0") %&gt;,我是叶小钗,&lt;%else %&gt;,我是素还真"]</span></pre>
+</div>
+<p>我们来看看他的replace：</p>
+<div class="cnblogs_code">
+<pre><span style="color: #008080;"> 1</span> text.replace(matcher, <span style="color: #0000ff;">function</span><span style="color: #000000;">(match, escape, interpolate, evaluate, offset) {
+</span><span style="color: #008080;"> 2</span>     source +=<span style="color: #000000;"> text.slice(index, offset)
+</span><span style="color: #008080;"> 3</span>     .replace(escaper, <span style="color: #0000ff;">function</span>(match) { <span style="color: #0000ff;">return</span> '\\' +<span style="color: #000000;"> escapes[match]; });
+</span><span style="color: #008080;"> 4</span> 
+<span style="color: #008080;"> 5</span>     <span style="color: #0000ff;">if</span><span style="color: #000000;"> (escape) {
+</span><span style="color: #008080;"> 6</span>     source += "'+\n((__t=(" + escape + "))==null?'':_.escape(__t))+\n'"<span style="color: #000000;">;
+</span><span style="color: #008080;"> 7</span> <span style="color: #000000;">    }
+</span><span style="color: #008080;"> 8</span>     <span style="color: #0000ff;">if</span><span style="color: #000000;"> (interpolate) {
+</span><span style="color: #008080;"> 9</span>     source += "'+\n((__t=(" + interpolate + "))==null?'':__t)+\n'"<span style="color: #000000;">;
+</span><span style="color: #008080;">10</span> <span style="color: #000000;">    }
+</span><span style="color: #008080;">11</span>     <span style="color: #0000ff;">if</span><span style="color: #000000;"> (evaluate) {
+</span><span style="color: #008080;">12</span>     source += "';\n" + evaluate + "\n__p+='"<span style="color: #000000;">;
+</span><span style="color: #008080;">13</span> <span style="color: #000000;">    }
+</span><span style="color: #008080;">14</span>     index = offset +<span style="color: #000000;"> match.length;
+</span><span style="color: #008080;">15</span>     <span style="color: #0000ff;">return</span><span style="color: #000000;"> match;
+</span><span style="color: #008080;">16</span> });</pre>
+</div>
+<p>他正则有三个括号，所以他参数也相对而言有三个对应参数了，只不过后面的为空罢了，但是随着匹配类型不同，为空的顺序会不同</p>
+<p>PS：各位注意这里的位置参数offset，后面有大用的，这里与我原来的做法类似</p>
+<p>好了，我们这里来看他是如何一步步解析的，其实这里有个原则就是，如果能有js解析的一定还是用js简单，比如我们原来字符串转换json使用eval</p>
+<p><strong>④ 解析细节</strong></p>
+<p>按照我们给出的模板，第一次应该被解析到&lt;%-name%&gt;，这个东西插入的html会被转义比如</p>
+<div class="cnblogs_code">
+<pre><span style="color: #008000;">//</span><span style="color: #008000;">&lt;script&gt;=&gt;&amp;lt;script&amp;gt;</span></pre>
+</div>
+<p>他这里又分了几步走，第一步是将匹配字符串之前的字符串给保存起来，这里对应的&ldquo;&lt;div&gt;&rdquo;，</p>
+<div class="cnblogs_code">
+<pre>text.slice(index, offset)<span style="color: #008000;">//</span><span style="color: #008000;">text.slice(0, 5)=&gt;&lt;div&gt;</span></pre>
+</div>
+<p>要注意的是，他这里做了字符串转义处理</p>
+<div class="cnblogs_code">
+<pre><span style="color: #008080;">1</span> source +=<span style="color: #000000;"> text.slice(index, offset)
+</span><span style="color: #008080;">2</span> .replace(escaper, <span style="color: #0000ff;">function</span>(match) { <span style="color: #0000ff;">return</span> '\\' +<span style="color: #000000;"> escapes[match]; });
+</span><span style="color: #008080;">3</span> <span style="color: #008000;">//</span><span style="color: #008000;">比如字符串中具有\n会被换成\\n，里面的引号也会做处理</span></pre>
+</div>
+<div class="cnblogs_code">
+<pre><span style="color: #008080;">1</span> <span style="color: #0000ff;">if</span><span style="color: #000000;"> (escape) {
+</span><span style="color: #008080;">2</span>     source += "'+\n((__t=(" + escape + "))==null?'':_.escape(__t))+\n'"<span style="color: #000000;">;
+</span><span style="color: #008080;">3</span> <span style="color: #000000;">}
+</span><span style="color: #008080;">4</span> <span style="color: #008000;">/*</span>
+<span style="color: #008080;">5</span> <span style="color: #008000;">"__p+='&lt;div&gt;'+
+</span><span style="color: #008080;">6</span> <span style="color: #008000;">((__t=(name ))==null?'':_.escape(__t))+
+</span><span style="color: #008080;">7</span> <span style="color: #008000;">'"
+</span><span style="color: #008080;">8</span> <span style="color: #008000;">*</span></pre>
+</div>
+<p>第一步处理后，我们的字符串变成了这样，然后我们的index当然会后移：</p>
+<div class="cnblogs_code">
+<pre>index = offset + match.length;</pre>
+</div>
+<p>其中&lt;%-str%&gt;与&lt;%=str%&gt;都比较简单，特殊的情况发生在第三个地方</p>
+<div class="cnblogs_code">
+<pre><span style="color: #008080;">1</span> <span style="color: #0000ff;">if</span><span style="color: #000000;"> (evaluate) {
+</span><span style="color: #008080;">2</span>     source += "';\n" + evaluate + "\n__p+='"<span style="color: #000000;">;
+</span><span style="color: #008080;">3</span> }</pre>
+</div>
+<p>各位看到了，在模板中出现js表达式时候（非-、=情况），时候后面多了一个__p+=，这个东西学问就大了，因为这里字符串会重新多出一行</p>
+<div class="cnblogs_code">
+<pre><span style="color: #800000;">"__p+='&lt;div&gt;'+
+((__t=(name ))==null?'':_.escape(__t))+
+'</span>{<span style="color: #ff0000;">name</span>}<span style="color: #800000;">&lt;/div&gt;&lt;div&gt;'+
+((__t=(age ))==null?'':__t)+
+'</span>{<span style="color: #ff0000;">age</span>}<span style="color: #800000;">&lt;/div&gt;&lt;div&gt;'+
+((__t=(home ))==null?'':__t)+
+'</span>{<span style="color: #ff0000;">home</span>}<span style="color: #800000;">&lt;/div&gt;&lt;div&gt;</span>{<span style="color: #ff0000;">test</span>}<span style="color: #800000;">&lt;/div&gt;,';
+if(name == "name_0") 
+__p+='"</span></pre>
+</div>
+<p>这个就比较经典了，如果使用js 的eval解析的话，前面会作为一个语句，后面会作为一个新的语句，整个模板解析结束便是这个东西了：</p>
+<div class="cnblogs_code">
+<pre><span style="color: #800000;">"__p+='&lt;div&gt;'+
+((__t=(name ))==null?'':_.escape(__t))+
+'</span>{<span style="color: #ff0000;">name</span>}<span style="color: #800000;">&lt;/div&gt;&lt;div&gt;'+
+((__t=(age ))==null?'':__t)+
+'</span>{<span style="color: #ff0000;">age</span>}<span style="color: #800000;">&lt;/div&gt;&lt;div&gt;'+
+((__t=(home ))==null?'':__t)+
+'</span>{<span style="color: #ff0000;">home</span>}<span style="color: #800000;">&lt;/div&gt;&lt;div&gt;</span>{<span style="color: #ff0000;">test</span>}<span style="color: #800000;">&lt;/div&gt;,';
+if(name == "name_0") 
+__p+=',我是叶小钗,';
+else 
+__p+=',我是素还真';
+"</span></pre>
+</div>
+<p>而对javascript function方法比较熟悉的朋友会知道，javascript其实本身就是使用Function构造函数搞出来的，比如说：</p>
+<div class="cnblogs_code">
+<pre><span style="color: #008080;">1</span> <span style="color: #0000ff;">function</span><span style="color: #000000;"> test() {
+</span><span style="color: #008080;">2</span>     alert('叶小钗'<span style="color: #000000;">);
+</span><span style="color: #008080;">3</span> <span style="color: #000000;">}
+</span><span style="color: #008080;">4</span> <span style="color: #0000ff;">var</span> test1 = <span style="color: #0000ff;">new</span> Function('alert(\'叶小钗\')'<span style="color: #000000;">);
+</span><span style="color: #008080;">5</span> <span style="color: #000000;">test();
+</span><span style="color: #008080;">6</span> test1();</pre>
+</div>
+<p>test1与test2实际上是等价的，而上面模板解析出来的字符串，不难联想会被我们封装为一个函数</p>
+<p>PS：最简单的解析果然是javascript的自己的解析！</p>
+<div class="cnblogs_code">
+<pre>render = <span style="color: #0000ff;">new</span> Function(settings.variable || 'obj', '_', source);</pre>
+</div>
+<p>这里underscore毫不犹豫的将解析结束的模板封装为了一个函数，render最后形成的函数体如下：</p>
+<div class="cnblogs_code">
+<pre><span style="color: #008080;"> 1</span> <span style="color: #0000ff;">function</span> anonymous(obj, _ <span style="color: #008000;">/**/</span><span style="color: #000000;">) {
+</span><span style="color: #008080;"> 2</span>     <span style="color: #0000ff;">var</span> __t, __p = '', __j = Array.prototype.join, print = <span style="color: #0000ff;">function</span> () { __p += __j.call(arguments, ''<span style="color: #000000;">); };
+</span><span style="color: #008080;"> 3</span>     <span style="color: #0000ff;">with</span> (obj ||<span style="color: #000000;"> {}) {
+</span><span style="color: #008080;"> 4</span>         __p += '&lt;div&gt;' +
+<span style="color: #008080;"> 5</span>         ((__t = (name)) == <span style="color: #0000ff;">null</span> ? '' : _.escape(__t)) +
+<span style="color: #008080;"> 6</span>         '{name}&lt;/div&gt;&lt;div&gt;' +
+<span style="color: #008080;"> 7</span>         ((__t = (age)) == <span style="color: #0000ff;">null</span> ? '' : __t) +
+<span style="color: #008080;"> 8</span>         '{age}&lt;/div&gt;&lt;div&gt;' +
+<span style="color: #008080;"> 9</span>         ((__t = (home)) == <span style="color: #0000ff;">null</span> ? '' : __t) +
+<span style="color: #008080;">10</span>         '{home}&lt;/div&gt;&lt;div&gt;{test}&lt;/div&gt;,'<span style="color: #000000;">;
+</span><span style="color: #008080;">11</span>         <span style="color: #0000ff;">if</span> (name == "name_0"<span style="color: #000000;">)
+</span><span style="color: #008080;">12</span>             __p += ',我是叶小钗,'<span style="color: #000000;">;
+</span><span style="color: #008080;">13</span>         <span style="color: #0000ff;">else</span>
+<span style="color: #008080;">14</span>             __p += ',我是素还真'<span style="color: #000000;">;
+</span><span style="color: #008080;">15</span> <span style="color: #000000;">    }
+</span><span style="color: #008080;">16</span>     <span style="color: #0000ff;">return</span><span style="color: #000000;"> __p;
+</span><span style="color: #008080;">17</span> }</pre>
+</div>
+<p>不得不说，这个template代码写的真好......，这里还有一点需要注意的就是这里with语句的作用于问题，没有with的话可能就需要做其它处理了，也许是call</p>
+<p>函数封装结束只等待调用即可：</p>
+<div class="cnblogs_code">
+<pre><span style="color: #0000ff;">var</span> template = <span style="color: #0000ff;">function</span><span style="color: #000000;">(data) {
+    </span><span style="color: #0000ff;">return</span> render.call(<span style="color: #0000ff;">this</span><span style="color: #000000;">, data, _);
+};</span></pre>
+</div>
+<p>至此，我们队template的分析结束，我也为自己两年前的问题画下圆满的句号......&nbsp;</p>
+<h1>Collections</h1>
+<h2>each<span>(list, iterator, [context])</span></h2>
+<p>underscore也对each做了实现，如果引用了zepto/jquery包的话可以更加精简：</p>
+<div class="cnblogs_code">
+<pre><span style="color: #008080;"> 1</span> <span style="color: #0000ff;">var</span> each = _.each = _.forEach = <span style="color: #0000ff;">function</span><span style="color: #000000;">(obj, iterator, context) {
+</span><span style="color: #008080;"> 2</span>   <span style="color: #0000ff;">if</span> (obj == <span style="color: #0000ff;">null</span>) <span style="color: #0000ff;">return</span><span style="color: #000000;">;
+</span><span style="color: #008080;"> 3</span>   <span style="color: #0000ff;">if</span> (nativeForEach &amp;&amp; obj.forEach ===<span style="color: #000000;"> nativeForEach) {
+</span><span style="color: #008080;"> 4</span> <span style="color: #000000;">    obj.forEach(iterator, context);
+</span><span style="color: #008080;"> 5</span>   } <span style="color: #0000ff;">else</span> <span style="color: #0000ff;">if</span> (obj.length === +<span style="color: #000000;">obj.length) {
+</span><span style="color: #008080;"> 6</span>     <span style="color: #0000ff;">for</span> (<span style="color: #0000ff;">var</span> i = 0, length = obj.length; i &lt; length; i++<span style="color: #000000;">) {
+</span><span style="color: #008080;"> 7</span>       <span style="color: #0000ff;">if</span> (iterator.call(context, obj[i], i, obj) === breaker) <span style="color: #0000ff;">return</span><span style="color: #000000;">;
+</span><span style="color: #008080;"> 8</span> <span style="color: #000000;">    }
+</span><span style="color: #008080;"> 9</span>   } <span style="color: #0000ff;">else</span><span style="color: #000000;"> {
+</span><span style="color: #008080;">10</span>     <span style="color: #0000ff;">var</span> keys =<span style="color: #000000;"> _.keys(obj);
+</span><span style="color: #008080;">11</span>     <span style="color: #0000ff;">for</span> (<span style="color: #0000ff;">var</span> i = 0, length = keys.length; i &lt; length; i++<span style="color: #000000;">) {
+</span><span style="color: #008080;">12</span>       <span style="color: #0000ff;">if</span> (iterator.call(context, obj[keys[i]], keys[i], obj) === breaker) <span style="color: #0000ff;">return</span><span style="color: #000000;">;
+</span><span style="color: #008080;">13</span> <span style="color: #000000;">    }
+</span><span style="color: #008080;">14</span> <span style="color: #000000;">  }
+</span><span style="color: #008080;">15</span> };</pre>
+</div>
+<div class="cnblogs_code">
+<pre>_.each([1, 2, 3<span style="color: #000000;">], alert);
+</span>=&gt; alerts each number <span style="color: #0000ff;">in</span><span style="color: #000000;"> turn...
+_.each({one: </span>1, two: 2, three: 3<span style="color: #000000;">}, alert);
+</span>=&gt; alerts each number value <span style="color: #0000ff;">in</span> turn...</pre>
+</div>
+<p><span style="line-height: 1.5;">由于</span><span style="line-height: 1.5;">ECMAScript 5中的array提供了新的ForEach方法，这里如果支持最新的方法，使用即可</span></p>
+<p>第一个参数为对象集合，第二个为回调函数，第三个为回调函数执行作用域，此方法与zepto类似又多了一个参数，这里不细究</p>
+<h2>map<span>(list, iterator, [context])</span></h2>
+<p>码头哥的解释是，通过变换函数（iterator替代器、回调函数）,将list集合值映射到新数组</p>
+<div class="cnblogs_code">
+<pre><span style="color: #008080;">1</span> _.map = _.collect = <span style="color: #0000ff;">function</span><span style="color: #000000;">(obj, iterator, context) {
+</span><span style="color: #008080;">2</span>   <span style="color: #0000ff;">var</span> results =<span style="color: #000000;"> [];
+</span><span style="color: #008080;">3</span>   <span style="color: #0000ff;">if</span> (obj == <span style="color: #0000ff;">null</span>) <span style="color: #0000ff;">return</span><span style="color: #000000;"> results;
+</span><span style="color: #008080;">4</span>   <span style="color: #0000ff;">if</span> (nativeMap &amp;&amp; obj.map === nativeMap) <span style="color: #0000ff;">return</span><span style="color: #000000;"> obj.map(iterator, context);
+</span><span style="color: #008080;">5</span>   each(obj, <span style="color: #0000ff;">function</span><span style="color: #000000;">(value, index, list) {
+</span><span style="color: #008080;">6</span> <span style="color: #000000;">    results.push(iterator.call(context, value, index, list));
+</span><span style="color: #008080;">7</span> <span style="color: #000000;">  });
+</span><span style="color: #008080;">8</span>   <span style="color: #0000ff;">return</span><span style="color: #000000;"> results;
+</span><span style="color: #008080;">9</span> };</pre>
+</div>
+<div class="cnblogs_code">
+<pre>_.map([1, 2, 3], <span style="color: #0000ff;">function</span>(num){ <span style="color: #0000ff;">return</span> num * 3<span style="color: #000000;">; });
+</span>=&gt; [3, 6, 9<span style="color: #000000;">]
+_.map({one: </span>1, two: 2, three: 3}, <span style="color: #0000ff;">function</span>(num, key){ <span style="color: #0000ff;">return</span> num * 3<span style="color: #000000;">; });
+</span>=&gt; [3, 6, 9]</pre>
+</div>
+<p><span style="line-height: 1.5;">ECMAScript5 array同样实现了相关功能，其实就是用于处理数组的，根据处理结果返回新的数组，这个不予深究，想做精简也可以换下</span></p>
+<h2><span style="line-height: 1.5;">reduce(list, iterator, memo, [context])&nbsp;</span></h2>
+<div class="cnblogs_code">
+<pre><span style="color: #008080;"> 1</span> _.reduce = _.foldl = _.inject = <span style="color: #0000ff;">function</span><span style="color: #000000;">(obj, iterator, memo, context) {
+</span><span style="color: #008080;"> 2</span>   <span style="color: #0000ff;">var</span> initial = arguments.length &gt; 2<span style="color: #000000;">;
+</span><span style="color: #008080;"> 3</span>   <span style="color: #0000ff;">if</span> (obj == <span style="color: #0000ff;">null</span>) obj =<span style="color: #000000;"> [];
+</span><span style="color: #008080;"> 4</span>   <span style="color: #0000ff;">if</span> (nativeReduce &amp;&amp; obj.reduce ===<span style="color: #000000;"> nativeReduce) {
+</span><span style="color: #008080;"> 5</span>     <span style="color: #0000ff;">if</span> (context) iterator =<span style="color: #000000;"> _.bind(iterator, context);
+</span><span style="color: #008080;"> 6</span>     <span style="color: #0000ff;">return</span> initial ?<span style="color: #000000;"> obj.reduce(iterator, memo) : obj.reduce(iterator);
+</span><span style="color: #008080;"> 7</span> <span style="color: #000000;">  }
+</span><span style="color: #008080;"> 8</span>   each(obj, <span style="color: #0000ff;">function</span><span style="color: #000000;">(value, index, list) {
+</span><span style="color: #008080;"> 9</span>     <span style="color: #0000ff;">if</span> (!<span style="color: #000000;">initial) {
+</span><span style="color: #008080;">10</span>       memo =<span style="color: #000000;"> value;
+</span><span style="color: #008080;">11</span>       initial = <span style="color: #0000ff;">true</span><span style="color: #000000;">;
+</span><span style="color: #008080;">12</span>     } <span style="color: #0000ff;">else</span><span style="color: #000000;"> {
+</span><span style="color: #008080;">13</span>       memo =<span style="color: #000000;"> iterator.call(context, memo, value, index, list);
+</span><span style="color: #008080;">14</span> <span style="color: #000000;">    }
+</span><span style="color: #008080;">15</span> <span style="color: #000000;">  });
+</span><span style="color: #008080;">16</span>   <span style="color: #0000ff;">if</span> (!initial) <span style="color: #0000ff;">throw</span> <span style="color: #0000ff;">new</span><span style="color: #000000;"> TypeError(reduceError);
+</span><span style="color: #008080;">17</span>   <span style="color: #0000ff;">return</span><span style="color: #000000;"> memo;
+</span><span style="color: #008080;">18</span> };</pre>
+</div>
+<div class="cnblogs_code">
+<pre><span style="color: #0000ff;">var</span> sum = _.reduce([1, 2, 3], <span style="color: #0000ff;">function</span>(memo, num){ <span style="color: #0000ff;">return</span> memo + num; }, 0<span style="color: #000000;">);
+</span>=&gt; 6</pre>
+</div>
+<p>该函数将list中的集合归结为单独一个值，每个值会被回调函数处理</p>
+<p>这个方法有点迷糊，我们稍微来理一理（这里忽略系统采用原生ECMAScript 5 的做法）：</p>
+<p>① each方法中的回调第一个参数为当前值，第二个为index（这点好像与zepto不同），第三个为数组对象本身</p>
+<p>② 如果传入参数过少（可能不含有回调函数或者传入失误，这里做容错处理，不予关注）</p>
+<p>③ 调用回调函数返回处理的数值，由此逻辑结束</p>
+<p>这里逻辑乱主要是传入的参数过多，而且参数有所重复，所以我开始有点迷糊</p>
+<h2><span>find(list, iterator, [context])</span></h2>
+<p>遍历数组，返回第一个回调检测为真的值</p>
+<div class="cnblogs_code">
+<pre><span style="color: #008080;"> 1</span> _.find = _.detect = <span style="color: #0000ff;">function</span><span style="color: #000000;">(obj, iterator, context) {
+</span><span style="color: #008080;"> 2</span>   <span style="color: #0000ff;">var</span><span style="color: #000000;"> result;
+</span><span style="color: #008080;"> 3</span>   any(obj, <span style="color: #0000ff;">function</span><span style="color: #000000;">(value, index, list) {
+</span><span style="color: #008080;"> 4</span>     <span style="color: #0000ff;">if</span><span style="color: #000000;"> (iterator.call(context, value, index, list)) {
+</span><span style="color: #008080;"> 5</span>       result =<span style="color: #000000;"> value;
+</span><span style="color: #008080;"> 6</span>       <span style="color: #0000ff;">return</span> <span style="color: #0000ff;">true</span><span style="color: #000000;">;
+</span><span style="color: #008080;"> 7</span> <span style="color: #000000;">    }
+</span><span style="color: #008080;"> 8</span> <span style="color: #000000;">  });
+</span><span style="color: #008080;"> 9</span>   <span style="color: #0000ff;">return</span><span style="color: #000000;"> result;
+</span><span style="color: #008080;">10</span> };</pre>
+</div>
+<div class="cnblogs_code">
+<pre><span style="color: #0000ff;">var</span> even = _.find([1, 2, 3, 4, 5, 6], <span style="color: #0000ff;">function</span>(num){ <span style="color: #0000ff;">return</span> num % 2 == 0<span style="color: #000000;">; });
+</span>=&gt; 2</pre>
+</div>
+<p>比较简单，不予理睬，感觉何map有点类似的感觉</p>
+<h2><span style="line-height: 1.5;">filter(list, iterator, [context])</span></h2>
+<p><span style="line-height: 1.5;">遍历list，返回回调函数返回true的值</span></p>
+<div class="cnblogs_code">
+<pre><span style="color: #008080;">1</span> _.filter = _.select = <span style="color: #0000ff;">function</span><span style="color: #000000;">(obj, iterator, context) {
+</span><span style="color: #008080;">2</span>   <span style="color: #0000ff;">var</span> results =<span style="color: #000000;"> [];
+</span><span style="color: #008080;">3</span>   <span style="color: #0000ff;">if</span> (obj == <span style="color: #0000ff;">null</span>) <span style="color: #0000ff;">return</span><span style="color: #000000;"> results;
+</span><span style="color: #008080;">4</span>   <span style="color: #0000ff;">if</span> (nativeFilter &amp;&amp; obj.filter === nativeFilter) <span style="color: #0000ff;">return</span><span style="color: #000000;"> obj.filter(iterator, context);
+</span><span style="color: #008080;">5</span>   each(obj, <span style="color: #0000ff;">function</span><span style="color: #000000;">(value, index, list) {
+</span><span style="color: #008080;">6</span>     <span style="color: #0000ff;">if</span><span style="color: #000000;"> (iterator.call(context, value, index, list)) results.push(value);
+</span><span style="color: #008080;">7</span> <span style="color: #000000;">  });
+</span><span style="color: #008080;">8</span>   <span style="color: #0000ff;">return</span><span style="color: #000000;"> results;
+</span><span style="color: #008080;">9</span> };</pre>
+</div>
+<div class="cnblogs_code">
+<pre><span style="color: #0000ff;">var</span> evens = _.filter([1, 2, 3, 4, 5, 6], <span style="color: #0000ff;">function</span>(num){ <span style="color: #0000ff;">return</span> num % 2 == 0<span style="color: #000000;">; });
+</span>=&gt; [2, 4, 6]</pre>
+</div>
+<p><span style="line-height: 1.5;">简单来说就是过滤数组</span></p>
+<h2>where(list, properties)</h2>
+<p>遍历list，返回一个数组，这个数组包含对象所列出属性所有的值</p>
+<div class="cnblogs_code">
+<pre><span style="color: #008080;">1</span> _.where = <span style="color: #0000ff;">function</span><span style="color: #000000;">(obj, attrs, first) {
+</span><span style="color: #008080;">2</span>   <span style="color: #0000ff;">if</span> (_.isEmpty(attrs)) <span style="color: #0000ff;">return</span> first ? <span style="color: #0000ff;">void</span> 0<span style="color: #000000;"> : [];
+</span><span style="color: #008080;">3</span>   <span style="color: #0000ff;">return</span> _[first ? 'find' : 'filter'](obj, <span style="color: #0000ff;">function</span><span style="color: #000000;">(value) {
+</span><span style="color: #008080;">4</span>     <span style="color: #0000ff;">for</span> (<span style="color: #0000ff;">var</span> key <span style="color: #0000ff;">in</span><span style="color: #000000;"> attrs) {
+</span><span style="color: #008080;">5</span>       <span style="color: #0000ff;">if</span> (attrs[key] !== value[key]) <span style="color: #0000ff;">return</span> <span style="color: #0000ff;">false</span><span style="color: #000000;">;
+</span><span style="color: #008080;">6</span> <span style="color: #000000;">    }
+</span><span style="color: #008080;">7</span>     <span style="color: #0000ff;">return</span> <span style="color: #0000ff;">true</span><span style="color: #000000;">;
+</span><span style="color: #008080;">8</span> <span style="color: #000000;">  });
+</span><span style="color: #008080;">9</span> };</pre>
+</div>
+<div class="cnblogs_code">
+<pre>_.where(listOfPlays, {author: "Shakespeare", year: 1611<span style="color: #000000;">});
+</span>=&gt; [{title: "Cymbeline", author: "Shakespeare", year: 1611<span style="color: #000000;">},
+    {title: </span>"The Tempest", author: "Shakespeare", year: 1611}]</pre>
+</div>
+<p>这个函数会调用find或者filter做筛选，本身意义不大</p>
+<h2>reject(list, iterator, [context])</h2>
+<p><span>返回</span><strong>list</strong><span>中没有通过</span><strong>iterator</strong><span>真值检测的元素集合，与</span><strong>filter</strong><span>相反。</span></p>
+<div class="cnblogs_code">
+<pre><span style="color: #008080;">1</span> _.reject = <span style="color: #0000ff;">function</span><span style="color: #000000;">(obj, iterator, context) {
+</span><span style="color: #008080;">2</span>   <span style="color: #0000ff;">return</span> _.filter(obj, <span style="color: #0000ff;">function</span><span style="color: #000000;">(value, index, list) {
+</span><span style="color: #008080;">3</span>     <span style="color: #0000ff;">return</span> !<span style="color: #000000;">iterator.call(context, value, index, list);
+</span><span style="color: #008080;">4</span> <span style="color: #000000;">  }, context);
+</span><span style="color: #008080;">5</span> };</pre>
+</div>
+<div class="cnblogs_code">
+<pre><span style="color: #0000ff;">var</span> odds = _.reject([1, 2, 3, 4, 5, 6], <span style="color: #0000ff;">function</span>(num){ <span style="color: #0000ff;">return</span> num % 2 == 0<span style="color: #000000;">; });
+</span>=&gt; [1, 3, 5]</pre>
+</div>
+<h2>every(list, [iterator], [context])</h2>
+<div class="cnblogs_code">
+<pre><span style="color: #008080;"> 1</span> _.every = _.all = <span style="color: #0000ff;">function</span><span style="color: #000000;">(obj, iterator, context) {
+</span><span style="color: #008080;"> 2</span>   iterator || (iterator =<span style="color: #000000;"> _.identity);
+</span><span style="color: #008080;"> 3</span>   <span style="color: #0000ff;">var</span> result = <span style="color: #0000ff;">true</span><span style="color: #000000;">;
+</span><span style="color: #008080;"> 4</span>   <span style="color: #0000ff;">if</span> (obj == <span style="color: #0000ff;">null</span>) <span style="color: #0000ff;">return</span><span style="color: #000000;"> result;
+</span><span style="color: #008080;"> 5</span>   <span style="color: #0000ff;">if</span> (nativeEvery &amp;&amp; obj.every === nativeEvery) <span style="color: #0000ff;">return</span><span style="color: #000000;"> obj.every(iterator, context);
+</span><span style="color: #008080;"> 6</span>   each(obj, <span style="color: #0000ff;">function</span><span style="color: #000000;">(value, index, list) {
+</span><span style="color: #008080;"> 7</span>     <span style="color: #0000ff;">if</span> (!(result = result &amp;&amp; iterator.call(context, value, index, list))) <span style="color: #0000ff;">return</span><span style="color: #000000;"> breaker;
+</span><span style="color: #008080;"> 8</span> <span style="color: #000000;">  });
+</span><span style="color: #008080;"> 9</span>   <span style="color: #0000ff;">return</span> !!<span style="color: #000000;">result;
+</span><span style="color: #008080;">10</span> };</pre>
+</div>
+<div class="cnblogs_code">
+<pre>_.every([<span style="color: #0000ff;">true</span>, 1, <span style="color: #0000ff;">null</span>, 'yes'<span style="color: #000000;">], _.identity);
+</span>=&gt; <span style="color: #0000ff;">false</span></pre>
+</div>
+<h2>some(list, [iterator], [context])</h2>
+<div class="cnblogs_code">
+<pre><span style="color: #008080;"> 1</span> <span style="color: #0000ff;">var</span> any = _.some = _.any = <span style="color: #0000ff;">function</span><span style="color: #000000;">(obj, iterator, context) {
+</span><span style="color: #008080;"> 2</span>   iterator || (iterator =<span style="color: #000000;"> _.identity);
+</span><span style="color: #008080;"> 3</span>   <span style="color: #0000ff;">var</span> result = <span style="color: #0000ff;">false</span><span style="color: #000000;">;
+</span><span style="color: #008080;"> 4</span>   <span style="color: #0000ff;">if</span> (obj == <span style="color: #0000ff;">null</span>) <span style="color: #0000ff;">return</span><span style="color: #000000;"> result;
+</span><span style="color: #008080;"> 5</span>   <span style="color: #0000ff;">if</span> (nativeSome &amp;&amp; obj.some === nativeSome) <span style="color: #0000ff;">return</span><span style="color: #000000;"> obj.some(iterator, context);
+</span><span style="color: #008080;"> 6</span>   each(obj, <span style="color: #0000ff;">function</span><span style="color: #000000;">(value, index, list) {
+</span><span style="color: #008080;"> 7</span>     <span style="color: #0000ff;">if</span> (result || (result = iterator.call(context, value, index, list))) <span style="color: #0000ff;">return</span><span style="color: #000000;"> breaker;
+</span><span style="color: #008080;"> 8</span> <span style="color: #000000;">  });
+</span><span style="color: #008080;"> 9</span>   <span style="color: #0000ff;">return</span> !!<span style="color: #000000;">result;
+</span><span style="color: #008080;">10</span> };</pre>
+</div>
+<div class="cnblogs_code">
+<pre>_.some([<span style="color: #0000ff;">null</span>, 0, 'yes', <span style="color: #0000ff;">false</span><span style="color: #000000;">]);
+</span>=&gt; <span style="color: #0000ff;">true</span></pre>
+</div>
+<p><span>如果</span><strong>list</strong><span>中有任何一个元素通过&nbsp;</span><strong>iterator</strong><span>&nbsp;的真值检测就返回</span><em>true</em><span>。一旦找到了符合条件的元素, 就直接中断对list的遍历. 如果存在原生的</span><strong>some</strong><span>方法，就使用原生的</span><strong>some</strong></p>
+<h2>contains(list, value)</h2>
+<div class="cnblogs_code">
+<pre><span style="color: #008080;">1</span> _.contains = _.include = <span style="color: #0000ff;">function</span><span style="color: #000000;">(obj, target) {
+</span><span style="color: #008080;">2</span>   <span style="color: #0000ff;">if</span> (obj == <span style="color: #0000ff;">null</span>) <span style="color: #0000ff;">return</span> <span style="color: #0000ff;">false</span><span style="color: #000000;">;
+</span><span style="color: #008080;">3</span>   <span style="color: #0000ff;">if</span> (nativeIndexOf &amp;&amp; obj.indexOf === nativeIndexOf) <span style="color: #0000ff;">return</span> obj.indexOf(target) != -1<span style="color: #000000;">;
+</span><span style="color: #008080;">4</span>   <span style="color: #0000ff;">return</span> any(obj, <span style="color: #0000ff;">function</span><span style="color: #000000;">(value) {
+</span><span style="color: #008080;">5</span>     <span style="color: #0000ff;">return</span> value ===<span style="color: #000000;"> target;
+</span><span style="color: #008080;">6</span> <span style="color: #000000;">  });
+</span><span style="color: #008080;">7</span> };</pre>
+</div>
+<div class="cnblogs_code">
+<pre>_.contains([1, 2, 3], 3<span style="color: #000000;">);
+</span>=&gt; <span style="color: #0000ff;">true</span></pre>
+</div>
+<p><span style="line-height: 1.5;">如果</span><strong style="line-height: 1.5;">list</strong><span style="line-height: 1.5;">包含指定的</span><strong style="line-height: 1.5;">value</strong><span style="line-height: 1.5;">则返回</span><em style="line-height: 1.5;">true</em><span style="line-height: 1.5;">（愚人码头注：使用===检测）。如果</span><strong style="line-height: 1.5;">list</strong><span style="line-height: 1.5;">&nbsp;是数组，内部使用</span><strong style="line-height: 1.5;">indexOf</strong><span style="line-height: 1.5;">判断。</span></p>
+<p><span style="line-height: 1.5;">PS:搞了这么久，这个东西比较靠谱，较实用</span></p>
+<h2><span style="line-height: 1.5;">invoke(list, methodName, [*arguments])</span></h2>
+<p><span style="line-height: 1.5;"><span>在</span><strong>list</strong><span>的每个元素上执行</span><strong>methodName</strong><span>方法。 任何传递给</span><strong>invoke</strong><span>的额外参数，</span><strong>invoke</strong><span>都会在调用</span><strong>methodName</strong><span>方法的时候传递给它。</span></span></p>
+<div class="cnblogs_code">
+<pre><span style="color: #008080;">1</span> _.invoke = <span style="color: #0000ff;">function</span><span style="color: #000000;">(obj, method) {
+</span><span style="color: #008080;">2</span>   <span style="color: #0000ff;">var</span> args = slice.call(arguments, 2<span style="color: #000000;">);
+</span><span style="color: #008080;">3</span>   <span style="color: #0000ff;">var</span> isFunc =<span style="color: #000000;"> _.isFunction(method);
+</span><span style="color: #008080;">4</span>   <span style="color: #0000ff;">return</span> _.map(obj, <span style="color: #0000ff;">function</span><span style="color: #000000;">(value) {
+</span><span style="color: #008080;">5</span>     <span style="color: #0000ff;">return</span> (isFunc ?<span style="color: #000000;"> method : value[method]).apply(value, args);
+</span><span style="color: #008080;">6</span> <span style="color: #000000;">  });
+</span><span style="color: #008080;">7</span> };</pre>
+</div>
+<div class="cnblogs_code">
+<pre>_.invoke([[5, 1, 7], [3, 2, 1]], 'sort'<span style="color: #000000;">);
+</span>=&gt; [[1, 5, 7], [1, 2, 3]]</pre>
+</div>
+<h2>pluck(list, propertyName)</h2>
+<p><strong>pluck</strong><span>也许是</span><strong>map</strong><span>最常使用的用例模型的版本，即萃取对象数组中某属性值，返回一个数组。</span></p>
+<div class="cnblogs_code">
+<pre><span style="color: #008080;">1</span> _.pluck = <span style="color: #0000ff;">function</span><span style="color: #000000;">(obj, key) {
+</span><span style="color: #008080;">2</span>   <span style="color: #0000ff;">return</span> _.map(obj, <span style="color: #0000ff;">function</span>(value){ <span style="color: #0000ff;">return</span><span style="color: #000000;"> value[key]; });
+</span><span style="color: #008080;">3</span> };</pre>
+</div>
+<div class="cnblogs_code">
+<pre><span style="color: #0000ff;">var</span> stooges = [{name: 'moe', age: 40}, {name: 'larry', age: 50}, {name: 'curly', age: 60<span style="color: #000000;">}];
+_.pluck(stooges, </span>'name'<span style="color: #000000;">);
+</span>=&gt; ["moe", "larry", "curly"]</pre>
+</div>
+<h2>max(list, [iterator], [context])</h2>
+<p><span>返回</span><strong>list</strong><span>中的最大值。如果传递</span><strong>iterator</strong><span>参数，</span><strong>iterator</strong><span>将作为</span><strong>list</strong><span>排序的依据。</span></p>
+<div class="cnblogs_code">
+<pre><span style="color: #008080;"> 1</span> _.max = <span style="color: #0000ff;">function</span><span style="color: #000000;">(obj, iterator, context) {
+</span><span style="color: #008080;"> 2</span>   <span style="color: #0000ff;">if</span> (!iterator &amp;&amp; _.isArray(obj) &amp;&amp; obj[0] === +obj[0] &amp;&amp; obj.length &lt; 65535<span style="color: #000000;">) {
+</span><span style="color: #008080;"> 3</span>     <span style="color: #0000ff;">return</span><span style="color: #000000;"> Math.max.apply(Math, obj);
+</span><span style="color: #008080;"> 4</span> <span style="color: #000000;">  }
+</span><span style="color: #008080;"> 5</span>   <span style="color: #0000ff;">if</span> (!iterator &amp;&amp; _.isEmpty(obj)) <span style="color: #0000ff;">return</span> -<span style="color: #000000;">Infinity;
+</span><span style="color: #008080;"> 6</span>   <span style="color: #0000ff;">var</span> result = {computed : -Infinity, value: -<span style="color: #000000;">Infinity};
+</span><span style="color: #008080;"> 7</span>   each(obj, <span style="color: #0000ff;">function</span><span style="color: #000000;">(value, index, list) {
+</span><span style="color: #008080;"> 8</span>     <span style="color: #0000ff;">var</span> computed = iterator ?<span style="color: #000000;"> iterator.call(context, value, index, list) : value;
+</span><span style="color: #008080;"> 9</span>     computed &gt; result.computed &amp;&amp; (result =<span style="color: #000000;"> {value : value, computed : computed});
+</span><span style="color: #008080;">10</span> <span style="color: #000000;">  });
+</span><span style="color: #008080;">11</span>   <span style="color: #0000ff;">return</span><span style="color: #000000;"> result.value;
+</span><span style="color: #008080;">12</span> };</pre>
+</div>
+<div class="cnblogs_code">
+<pre><span style="color: #0000ff;">var</span> stooges = [{name: 'moe', age: 40}, {name: 'larry', age: 50}, {name: 'curly', age: 60<span style="color: #000000;">}];
+_.max(stooges, </span><span style="color: #0000ff;">function</span>(stooge){ <span style="color: #0000ff;">return</span><span style="color: #000000;"> stooge.age; });
+</span>=&gt; {name: 'curly', age: 60};</pre>
+</div>
+<p>该方法源码内部原理就是求数组最大值......</p>
+<h2>min(list, [iterator], [context])</h2>
+<p><span>返回</span><strong>list</strong><span>中的最小值。如果传递</span><strong>iterator</strong><span>参数，</span><strong>iterator</strong><span>将作为</span><strong>list</strong><span>排序的依据。</span></p>
+<div class="cnblogs_code">
+<pre><span style="color: #008080;"> 1</span> _.min = <span style="color: #0000ff;">function</span><span style="color: #000000;">(obj, iterator, context) {
+</span><span style="color: #008080;"> 2</span>   <span style="color: #0000ff;">if</span> (!iterator &amp;&amp; _.isArray(obj) &amp;&amp; obj[0] === +obj[0] &amp;&amp; obj.length &lt; 65535<span style="color: #000000;">) {
+</span><span style="color: #008080;"> 3</span>     <span style="color: #0000ff;">return</span><span style="color: #000000;"> Math.min.apply(Math, obj);
+</span><span style="color: #008080;"> 4</span> <span style="color: #000000;">  }
+</span><span style="color: #008080;"> 5</span>   <span style="color: #0000ff;">if</span> (!iterator &amp;&amp; _.isEmpty(obj)) <span style="color: #0000ff;">return</span><span style="color: #000000;"> Infinity;
+</span><span style="color: #008080;"> 6</span>   <span style="color: #0000ff;">var</span> result =<span style="color: #000000;"> {computed : Infinity, value: Infinity};
+</span><span style="color: #008080;"> 7</span>   each(obj, <span style="color: #0000ff;">function</span><span style="color: #000000;">(value, index, list) {
+</span><span style="color: #008080;"> 8</span>     <span style="color: #0000ff;">var</span> computed = iterator ?<span style="color: #000000;"> iterator.call(context, value, index, list) : value;
+</span><span style="color: #008080;"> 9</span>     computed &lt; result.computed &amp;&amp; (result =<span style="color: #000000;"> {value : value, computed : computed});
+</span><span style="color: #008080;">10</span> <span style="color: #000000;">  });
+</span><span style="color: #008080;">11</span>   <span style="color: #0000ff;">return</span><span style="color: #000000;"> result.value;
+</span><span style="color: #008080;">12</span> };</pre>
+</div>
+<div class="cnblogs_code">
+<pre><span style="color: #0000ff;">var</span> numbers = [10, 5, 100, 2, 1000<span style="color: #000000;">];
+_.min(numbers);
+</span>=&gt; 2</pre>
+</div>
+<h2>sortBy(list, iterator, [context])</h2>
+<p><span>返回一个排序后的</span><strong>list</strong><span>拷贝副本。如果有</span><strong>iterator</strong><span>参数，</span><strong>iterator</strong><span>将作为</span><strong>list</strong><span>排序的依据。迭代器也可以是字符串的属性的名称进行排序的(比如&nbsp;</span><tt>length</tt><span>)。</span></p>
+<div class="cnblogs_code">
+<pre><span style="color: #008080;"> 1</span> _.sortBy = <span style="color: #0000ff;">function</span><span style="color: #000000;">(obj, value, context) {
+</span><span style="color: #008080;"> 2</span>   <span style="color: #0000ff;">var</span> iterator =<span style="color: #000000;"> lookupIterator(value);
+</span><span style="color: #008080;"> 3</span>   <span style="color: #0000ff;">return</span> _.pluck(_.map(obj, <span style="color: #0000ff;">function</span><span style="color: #000000;">(value, index, list) {
+</span><span style="color: #008080;"> 4</span>     <span style="color: #0000ff;">return</span><span style="color: #000000;"> {
+</span><span style="color: #008080;"> 5</span> <span style="color: #000000;">      value: value,
+</span><span style="color: #008080;"> 6</span> <span style="color: #000000;">      index: index,
+</span><span style="color: #008080;"> 7</span> <span style="color: #000000;">      criteria: iterator.call(context, value, index, list)
+</span><span style="color: #008080;"> 8</span> <span style="color: #000000;">    };
+</span><span style="color: #008080;"> 9</span>   }).sort(<span style="color: #0000ff;">function</span><span style="color: #000000;">(left, right) {
+</span><span style="color: #008080;">10</span>     <span style="color: #0000ff;">var</span> a =<span style="color: #000000;"> left.criteria;
+</span><span style="color: #008080;">11</span>     <span style="color: #0000ff;">var</span> b =<span style="color: #000000;"> right.criteria;
+</span><span style="color: #008080;">12</span>     <span style="color: #0000ff;">if</span> (a !==<span style="color: #000000;"> b) {
+</span><span style="color: #008080;">13</span>       <span style="color: #0000ff;">if</span> (a &gt; b || a === <span style="color: #0000ff;">void</span> 0) <span style="color: #0000ff;">return</span> 1<span style="color: #000000;">;
+</span><span style="color: #008080;">14</span>       <span style="color: #0000ff;">if</span> (a &lt; b || b === <span style="color: #0000ff;">void</span> 0) <span style="color: #0000ff;">return</span> -1<span style="color: #000000;">;
+</span><span style="color: #008080;">15</span> <span style="color: #000000;">    }
+</span><span style="color: #008080;">16</span>     <span style="color: #0000ff;">return</span> left.index -<span style="color: #000000;"> right.index;
+</span><span style="color: #008080;">17</span>   }), 'value'<span style="color: #000000;">);
+</span><span style="color: #008080;">18</span> };</pre>
+</div>
+<div class="cnblogs_code">
+<pre>_.sortBy([1, 2, 3, 4, 5, 6], <span style="color: #0000ff;">function</span>(num){ <span style="color: #0000ff;">return</span><span style="color: #000000;"> Math.sin(num); });
+</span>=&gt; [5, 4, 6, 3, 1, 2]</pre>
+</div>
+<h2>groupBy(list, iterator, [context])</h2>
+<p><span>把一个集合分组为多个集合，通过&nbsp;</span><strong>iterator</strong><span>&nbsp;返回的结果进行分组. 如果&nbsp;</span><strong>iterator</strong><span>&nbsp;是一个字符串而不是函数, 那么将使用&nbsp;</span><strong>iterator</strong><span>&nbsp;作为各元素的属性名来对比进行分组.</span></p>
+<div class="cnblogs_code">
+<pre><span style="color: #008080;"> 1</span> <span style="color: #0000ff;">var</span> group = <span style="color: #0000ff;">function</span><span style="color: #000000;">(behavior) {
+</span><span style="color: #008080;"> 2</span>   <span style="color: #0000ff;">return</span> <span style="color: #0000ff;">function</span><span style="color: #000000;">(obj, value, context) {
+</span><span style="color: #008080;"> 3</span>     <span style="color: #0000ff;">var</span> result =<span style="color: #000000;"> {};
+</span><span style="color: #008080;"> 4</span>     <span style="color: #0000ff;">var</span> iterator = value == <span style="color: #0000ff;">null</span> ?<span style="color: #000000;"> _.identity : lookupIterator(value);
+</span><span style="color: #008080;"> 5</span>     each(obj, <span style="color: #0000ff;">function</span><span style="color: #000000;">(value, index) {
+</span><span style="color: #008080;"> 6</span>       <span style="color: #0000ff;">var</span> key =<span style="color: #000000;"> iterator.call(context, value, index, obj);
+</span><span style="color: #008080;"> 7</span> <span style="color: #000000;">      behavior(result, key, value);
+</span><span style="color: #008080;"> 8</span> <span style="color: #000000;">    });
+</span><span style="color: #008080;"> 9</span>     <span style="color: #0000ff;">return</span><span style="color: #000000;"> result;
+</span><span style="color: #008080;">10</span> <span style="color: #000000;">  };
+</span><span style="color: #008080;">11</span> <span style="color: #000000;">};
+</span><span style="color: #008080;">12</span> _.groupBy = group(<span style="color: #0000ff;">function</span><span style="color: #000000;">(result, key, value) {
+</span><span style="color: #008080;">13</span>   (_.has(result, key) ? result[key] : (result[key] =<span style="color: #000000;"> [])).push(value);
+</span><span style="color: #008080;">14</span> });</pre>
+</div>
+<div class="cnblogs_code">
+<pre>_.groupBy([1.3, 2.1, 2.4], <span style="color: #0000ff;">function</span>(num){ <span style="color: #0000ff;">return</span><span style="color: #000000;"> Math.floor(num); });
+</span>=&gt; {1: [1.3], 2: [2.1, 2.4<span style="color: #000000;">]}
+
+_.groupBy([</span>'one', 'two', 'three'], 'length'<span style="color: #000000;">);
+</span>=&gt; {3: ["one", "two"], 5: ["three"]}</pre>
+</div>
+<h2>indexBy(list, iterator, [context])</h2>
+<p><span>给定一个</span><strong>list</strong><span>，和 一个用来返回一个在列表中的每个元素键 的</span><strong>iterator</strong><span>&nbsp;函数（或属性名）， 返回一个每一项索引的对象。和</span><a href="http://www.css88.com/doc/underscore/#groupBy">groupBy</a><span>非常像，但是当你知道你的键是唯一的时候可以使用</span><strong>indexBy</strong><span>&nbsp;。</span></p>
+<div class="cnblogs_code">
+<pre><span style="color: #008080;">1</span> _.indexBy = group(<span style="color: #0000ff;">function</span><span style="color: #000000;">(result, key, value) {
+</span><span style="color: #008080;">2</span>   result[key] =<span style="color: #000000;"> value;
+</span><span style="color: #008080;">3</span> });</pre>
+</div>
+<div class="cnblogs_code">
+<pre><span style="color: #0000ff;">var</span> stooges = [{name: 'moe', age: 40}, {name: 'larry', age: 50}, {name: 'curly', age: 60<span style="color: #000000;">}];
+_.indexBy(stooges, </span>'age'<span style="color: #000000;">);
+</span>=&gt;<span style="color: #000000;"> {
+  </span>"40": {name: 'moe', age: 40<span style="color: #000000;">},
+  </span>"50": {name: 'larry', age: 50<span style="color: #000000;">},
+  </span>"60": {name: 'curly', age: 60<span style="color: #000000;">}
+}</span></pre>
+</div>
+<h2>countBy(list, iterator, [context])</h2>
+<p><span>排序一个列表组成一个组，并且返回各组中的对象的数量的计数。类似</span><tt>groupBy</tt><span>，但是不是返回列表的值，而是返回在该组中值的数目。</span></p>
+<div class="cnblogs_code">
+<pre><span style="color: #008080;">1</span> _.countBy = group(<span style="color: #0000ff;">function</span><span style="color: #000000;">(result, key) {
+</span><span style="color: #008080;">2</span>   _.has(result, key) ? result[key]++ : result[key] = 1<span style="color: #000000;">;
+</span><span style="color: #008080;">3</span> });</pre>
+</div>
+<div class="cnblogs_code">
+<pre>_.countBy([1, 2, 3, 4, 5], <span style="color: #0000ff;">function</span><span style="color: #000000;">(num) {
+  </span><span style="color: #0000ff;">return</span> num % 2 == 0 ? 'even': 'odd'<span style="color: #000000;">;
+});
+</span>=&gt; {odd: 3, even: 2}</pre>
+</div>
+<h2>shuffle(list)</h2>
+<p><span>返回一个随机乱序的&nbsp;</span><strong>list</strong><span>&nbsp;副本, 使用&nbsp;</span><a href="http://en.wikipedia.org/wiki/Fisher%E2%80%93Yates_shuffle">Fisher-Yates shuffle</a><span>&nbsp;来进行随机乱序.</span></p>
+<div class="cnblogs_code">
+<pre><span style="color: #008080;"> 1</span> _.shuffle = <span style="color: #0000ff;">function</span><span style="color: #000000;">(obj) {
+</span><span style="color: #008080;"> 2</span>   <span style="color: #0000ff;">var</span><span style="color: #000000;"> rand;
+</span><span style="color: #008080;"> 3</span>   <span style="color: #0000ff;">var</span> index = 0<span style="color: #000000;">;
+</span><span style="color: #008080;"> 4</span>   <span style="color: #0000ff;">var</span> shuffled =<span style="color: #000000;"> [];
+</span><span style="color: #008080;"> 5</span>   each(obj, <span style="color: #0000ff;">function</span><span style="color: #000000;">(value) {
+</span><span style="color: #008080;"> 6</span>     rand = _.random(index++<span style="color: #000000;">);
+</span><span style="color: #008080;"> 7</span>     shuffled[index - 1] =<span style="color: #000000;"> shuffled[rand];
+</span><span style="color: #008080;"> 8</span>     shuffled[rand] =<span style="color: #000000;"> value;
+</span><span style="color: #008080;"> 9</span> <span style="color: #000000;">  });
+</span><span style="color: #008080;">10</span>   <span style="color: #0000ff;">return</span><span style="color: #000000;"> shuffled;
+</span><span style="color: #008080;">11</span> };</pre>
+</div>
+<div class="cnblogs_code">
+<pre>_.shuffle([1, 2, 3, 4, 5, 6<span style="color: #000000;">]);
+</span>=&gt; [4, 1, 6, 3, 5, 2]</pre>
+</div>
+<h2>sample(list, [n])</h2>
+<p><span>从&nbsp;</span><strong>list</strong><span>中产生一个随机样本。传递一个数字表示从</span><strong>list</strong><span>中返回</span><strong>n</strong><span>个随机元素。否则将返回一个单一的随机项。</span></p>
+<div class="cnblogs_code">
+<pre><span style="color: #008080;">1</span> _.sample = <span style="color: #0000ff;">function</span><span style="color: #000000;">(obj, n, guard) {
+</span><span style="color: #008080;">2</span>   <span style="color: #0000ff;">if</span> (arguments.length &lt; 2 ||<span style="color: #000000;"> guard) {
+</span><span style="color: #008080;">3</span>     <span style="color: #0000ff;">return</span> obj[_.random(obj.length - 1<span style="color: #000000;">)];
+</span><span style="color: #008080;">4</span> <span style="color: #000000;">  }
+</span><span style="color: #008080;">5</span>   <span style="color: #0000ff;">return</span> _.shuffle(obj).slice(0, Math.max(0<span style="color: #000000;">, n));
+</span><span style="color: #008080;">6</span> };</pre>
+</div>
+<div class="cnblogs_code">
+<pre>_.sample([1, 2, 3, 4, 5, 6<span style="color: #000000;">]);
+</span>=&gt; 4<span style="color: #000000;">
+
+_.sample([</span>1, 2, 3, 4, 5, 6], 3<span style="color: #000000;">);
+</span>=&gt; [1, 6, 2]</pre>
+</div>
+<h2>toArray(list)</h2>
+<p><span>把</span><strong>list</strong><span>(任何可以迭代的对象)转换成一个数组，在转换&nbsp;</span><strong>arguments</strong><span>&nbsp;对象时非常有用。</span></p>
+<div class="cnblogs_code">
+<pre><span style="color: #008080;">1</span> _.toArray = <span style="color: #0000ff;">function</span><span style="color: #000000;">(obj) {
+</span><span style="color: #008080;">2</span>   <span style="color: #0000ff;">if</span> (!obj) <span style="color: #0000ff;">return</span><span style="color: #000000;"> [];
+</span><span style="color: #008080;">3</span>   <span style="color: #0000ff;">if</span> (_.isArray(obj)) <span style="color: #0000ff;">return</span><span style="color: #000000;"> slice.call(obj);
+</span><span style="color: #008080;">4</span>   <span style="color: #0000ff;">if</span> (obj.length === +obj.length) <span style="color: #0000ff;">return</span><span style="color: #000000;"> _.map(obj, _.identity);
+</span><span style="color: #008080;">5</span>   <span style="color: #0000ff;">return</span><span style="color: #000000;"> _.values(obj);
+</span><span style="color: #008080;">6</span> };</pre>
+</div>
+<div class="cnblogs_code">
+<pre>(<span style="color: #0000ff;">function</span>(){ <span style="color: #0000ff;">return</span> _.toArray(arguments).slice(1); })(1, 2, 3, 4<span style="color: #000000;">);
+</span>=&gt; [2, 3, 4]</pre>
+</div>
+<p>PS：该方法比较实用</p>
+<h2>size(list)</h2>
+<p><span>返回</span><strong>list</strong><span>的长度。</span></p>
+<div class="cnblogs_code">
+<pre><span style="color: #008080;">1</span> _.size = <span style="color: #0000ff;">function</span><span style="color: #000000;">(obj) {
+</span><span style="color: #008080;">2</span>   <span style="color: #0000ff;">if</span> (obj == <span style="color: #0000ff;">null</span>) <span style="color: #0000ff;">return</span> 0<span style="color: #000000;">;
+</span><span style="color: #008080;">3</span>   <span style="color: #0000ff;">return</span> (obj.length === +obj.length) ?<span style="color: #000000;"> obj.length : _.keys(obj).length;
+</span><span style="color: #008080;">4</span> };</pre>
+</div>
+<div class="cnblogs_code">
+<pre>_.size({one: 1, two: 2, three: 3<span style="color: #000000;">});
+</span>=&gt; 3</pre>
+</div>
+<p>该方法无用</p>
+<h2>阶段总结</h2>
+<p><span style="line-height: 1.5;">collection与array我这里都不管他了，感觉意义不大，有需要的朋友自己去看API和源码吧</span></p>
+<p><span style="line-height: 1.5;"><a href="http://www.css88.com/doc/underscore/#first">http://www.css88.com/doc/underscore/#first</a></span></p>
+<p><span style="line-height: 1.5;">下面就挑一点我感兴趣的来说吧</span></p>
+<h1><span style="line-height: 1.5;">Functions</span></h1>
+<p><span style="line-height: 1.5;">functions前面提到了几个函数如bind或者bindAll与zepto proxy类似，又有少许不同，我们这里不予关注，我们来看看其他的</span></p>
+<h2><span style="line-height: 1.5;">memoize(function, [hashFunction])</span></h2>
+<p><span style="line-height: 1.5;"><span>Memoizes方法可以缓存某函数的计算结果。对于耗时较长的计算是很有帮助的。如果传递了&nbsp;</span><strong>hashFunction</strong><span>&nbsp;参数，就用&nbsp;</span><strong>hashFunction</strong><span>&nbsp;的返回值作为key存储函数的计算结果。&nbsp;</span><strong>hashFunction</strong><span>&nbsp;默认使用function的第一个参数作为key</span></span></p>
+<div class="cnblogs_code">
+<pre><span style="color: #008080;">1</span> _.memoize = <span style="color: #0000ff;">function</span><span style="color: #000000;">(func, hasher) {
+</span><span style="color: #008080;">2</span>   <span style="color: #0000ff;">var</span> memo =<span style="color: #000000;"> {};
+</span><span style="color: #008080;">3</span>   hasher || (hasher =<span style="color: #000000;"> _.identity);
+</span><span style="color: #008080;">4</span>   <span style="color: #0000ff;">return</span> <span style="color: #0000ff;">function</span><span style="color: #000000;">() {
+</span><span style="color: #008080;">5</span>     <span style="color: #0000ff;">var</span> key = hasher.apply(<span style="color: #0000ff;">this</span><span style="color: #000000;">, arguments);
+</span><span style="color: #008080;">6</span>     <span style="color: #0000ff;">return</span> _.has(memo, key) ? memo[key] : (memo[key] = func.apply(<span style="color: #0000ff;">this</span><span style="color: #000000;">, arguments));
+</span><span style="color: #008080;">7</span> <span style="color: #000000;">  };
+</span><span style="color: #008080;">8</span> };</pre>
+</div>
+<div class="cnblogs_code">
+<pre><span style="color: #0000ff;">var</span> fibonacci = _.memoize(<span style="color: #0000ff;">function</span><span style="color: #000000;">(n) {
+  </span><span style="color: #0000ff;">return</span> n &lt; 2 ? n: fibonacci(n - 1) + fibonacci(n - 2<span style="color: #000000;">);
+});</span></pre>
+</div>
+<p>这个函数有点意思，他在函数外层保留了一个闭包，然后，每次都会用到，这个知识点，我们这里来详细说说</p>
+<p>......</p>
+<p>&nbsp;</p>
+<h2><span style="line-height: 1.5;">throttle(function, wait, [options])</span></h2>
+<p id="throttle">创建并返回一个像节流阀一样的函数，当重复调用函数的时候，最多每隔&nbsp;<strong>wait</strong>毫秒调用一次该函数。 对于想控制一些触发频率较高的事件有帮助。（愚人码头注：详见：<a href="http://www.css88.com/archives/5256" target="_blank">javascript函数的throttle和debounce</a>）</p>
+<p>默认情况下，<strong>throttle</strong>将在你调用的第一时间尽快执行这个<strong>function</strong>，并且，如果你在<strong>wait</strong>周期内调用任意次数的函数，都将尽快的被覆盖。如果你想禁用第一次首先执行的话，传递<tt>{leading: false}</tt>，还有如果你想禁用最后一次执行的话，传递<tt>{trailing: false}</tt>。</p>
+<div class="cnblogs_code">
+<pre><span style="color: #008080;"> 1</span> _.throttle = <span style="color: #0000ff;">function</span><span style="color: #000000;">(func, wait, options) {
+</span><span style="color: #008080;"> 2</span>   <span style="color: #0000ff;">var</span><span style="color: #000000;"> context, args, result;
+</span><span style="color: #008080;"> 3</span>   <span style="color: #0000ff;">var</span> timeout = <span style="color: #0000ff;">null</span><span style="color: #000000;">;
+</span><span style="color: #008080;"> 4</span>   <span style="color: #0000ff;">var</span> previous = 0<span style="color: #000000;">;
+</span><span style="color: #008080;"> 5</span>   options || (options =<span style="color: #000000;"> {});
+</span><span style="color: #008080;"> 6</span>   <span style="color: #0000ff;">var</span> later = <span style="color: #0000ff;">function</span><span style="color: #000000;">() {
+</span><span style="color: #008080;"> 7</span>     previous = options.leading === <span style="color: #0000ff;">false</span> ? 0 : <span style="color: #0000ff;">new</span><span style="color: #000000;"> Date;
+</span><span style="color: #008080;"> 8</span>     timeout = <span style="color: #0000ff;">null</span><span style="color: #000000;">;
+</span><span style="color: #008080;"> 9</span>     result =<span style="color: #000000;"> func.apply(context, args);
+</span><span style="color: #008080;">10</span> <span style="color: #000000;">  };
+</span><span style="color: #008080;">11</span>   <span style="color: #0000ff;">return</span> <span style="color: #0000ff;">function</span><span style="color: #000000;">() {
+</span><span style="color: #008080;">12</span>     <span style="color: #0000ff;">var</span> now = <span style="color: #0000ff;">new</span><span style="color: #000000;"> Date;
+</span><span style="color: #008080;">13</span>     <span style="color: #0000ff;">if</span> (!previous &amp;&amp; options.leading === <span style="color: #0000ff;">false</span>) previous =<span style="color: #000000;"> now;
+</span><span style="color: #008080;">14</span>     <span style="color: #0000ff;">var</span> remaining = wait - (now -<span style="color: #000000;"> previous);
+</span><span style="color: #008080;">15</span>     context = <span style="color: #0000ff;">this</span><span style="color: #000000;">;
+</span><span style="color: #008080;">16</span>     args =<span style="color: #000000;"> arguments;
+</span><span style="color: #008080;">17</span>     <span style="color: #0000ff;">if</span> (remaining &lt;= 0<span style="color: #000000;">) {
+</span><span style="color: #008080;">18</span> <span style="color: #000000;">      clearTimeout(timeout);
+</span><span style="color: #008080;">19</span>       timeout = <span style="color: #0000ff;">null</span><span style="color: #000000;">;
+</span><span style="color: #008080;">20</span>       previous =<span style="color: #000000;"> now;
+</span><span style="color: #008080;">21</span>       result =<span style="color: #000000;"> func.apply(context, args);
+</span><span style="color: #008080;">22</span>     } <span style="color: #0000ff;">else</span> <span style="color: #0000ff;">if</span> (!timeout &amp;&amp; options.trailing !== <span style="color: #0000ff;">false</span><span style="color: #000000;">) {
+</span><span style="color: #008080;">23</span>       timeout =<span style="color: #000000;"> setTimeout(later, remaining);
+</span><span style="color: #008080;">24</span> <span style="color: #000000;">    }
+</span><span style="color: #008080;">25</span>     <span style="color: #0000ff;">return</span><span style="color: #000000;"> result;
+</span><span style="color: #008080;">26</span> <span style="color: #000000;">  };
+</span><span style="color: #008080;">27</span> };</pre>
+</div>
+<div class="cnblogs_code">
+<pre><span style="color: #0000ff;">var</span> throttled = _.throttle(updatePosition, 100<span style="color: #000000;">);
+$(window).scroll(throttled);</span></pre>
+</div>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<h1>&nbsp;结语</h1>
+<p>来不起了，有点晚了，待续......</p>
+                </div>
+
+                <div class='span3 sidebar'>
+                    <h2>导航栏</h2>
+                    <ul class="nav nav-tabs nav-stacked">
+                             				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/javascriptzdyxhxzsdyjxyzyddf/index.html">javascript中的一些核心知识点以及需要注意的地方</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/[zd]webappdyhzlyzydqdyhdpyjlkkb/index.html">[置顶]【webapp的优化整理】要做移动前端优化的朋友进来看看吧</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/[zd]yddjrwtyjjavascriptsjjzxjsjydjr/index.html">[置顶]【移动端兼容问题研究】javascript事件机制详解（涉及移动兼容）</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/gruntzhb30fzxhsygruntdbqddm/index.html">【grunt整合版】30分钟学会使用grunt打包前端代码</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/gruntdyd30fzxhsygruntdbqddm/index.html">【grunt第一弹】30分钟学会使用grunt打包前端代码</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/gruntdsdgruntzqdsjxmzdyy/index.html">【grunt第三弹】grunt在前端实际项目中的应用</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/gruntded30fzxhsygruntdbqddm02/index.html">【grunt第二弹】30分钟学会使用grunt打包前端代码（02）</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/IScrollsrxxtpyddhadlqs/index.html">【IScroll深入学习】突破移动端黑暗的利器（上）</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/IScrollsrxxjjIScrollynzz/index.html">【IScroll深入学习】解决IScroll疑难杂症</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/iScrollymxx00mniScroll/index.html">【iScroll源码学习00】模拟iScroll</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/iScrollymxx01zbjd/index.html">【iScroll源码学习01】准备阶段</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/iScrollymxx02fjiScrollsghxsjd/index.html">【iScroll源码学习02】分解iScroll三个核心事件点</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/iScrollymxx03iScrollsjjzygdtdsx/index.html">【iScroll源码学习03】iScroll事件机制与滚动条的实现</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/iScrollymxx04flIScrollhx/index.html">【iScroll源码学习04】分离IScroll核心</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/javascriptpxdytyyjc/index.html">【javascript培训第一天】语言基础</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/javascriptpxdstcybl/index.html">【javascript培训第三天】查遗补漏</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/javascriptpxdetDOMyBOM/index.html">【javascript培训第二天】DOM与BOM</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/javascriptjzdsk01mkhbc/index.html">【javascript激增的思考01】模块化编程</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/javascriptjzdsk02mkhyMVC/index.html">【javascript激增的思考02】模块化与MVC</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/javascriptjzdsk03MVVMyKnockout/index.html">【javascript激增的思考03】MVVM与Knockout</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/javascriptjzdsk04MVCyBackbonejs(beta)/index.html">【javascript激增的思考04】MVC与Backbonejs(beta)</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/javascriptmxdxzlrwmyqltkdzb01/index.html">【javascript面向对象之路】让我们一起来坦克大战吧01</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/NodeJSxxbj04xwfbxt/index.html">【NodeJS学习笔记04】新闻发布系统</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/requireJSymxx01ljzgrequireJSdjg/index.html">【requireJS源码学习01】了解整个requireJS的结构</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/requireJSymxx02datamainjzdsx/index.html">【requireJS源码学习02】datamain加载的实现</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/requireJSymxx03xjrequireJSdjzlc/index.html">【requireJS源码学习03】细究requireJS的加载流程</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/UIcjkfygjdrlcjs/index.html">【UI插件】开发一个简单日历插件（上）</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/UIcjjddrlcjxxxMVCsx/index.html">【UI插件】简单的日历插件（下）——学习MVC思想</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/zeptoxxbj01hxff$()/index.html">【zepto学习笔记01】核心方法$()</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/zeptoxxbj01hxff$()b/index.html">【zepto学习笔记01】核心方法$()（补）</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/zeptoxxbj02lsd/index.html">【zepto学习笔记02】零碎点</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/zeptoxxbj03sjjz/index.html">【zepto学习笔记03】事件机制</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/ycmsztjavascriptzdjc/index.html">【一次面试】再谈javascript中的继承</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/ztbackbone01mxModel/index.html">【再探backbone01】模型Model</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/ztbackbone02jhCollection/index.html">【再探backbone02】集合Collection</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/ztbackbone03bkydyyysltgym/index.html">【再探backbone03】博客园单页应用实例（提供源码）</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/ztbackbone04dyyydjslycl/index.html">【再探backbone04】单页应用的基石路由处理</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/ctUnderscorezsmbyq/index.html">【初探Underscore】再说模版引擎</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/ckjavascriptamzAjaxjsxnszddAjax/index.html">【初窥javascript奥秘之Ajax】简述下你所知道的Ajax？</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/ckjavascriptamzsjmpnxnwmyqmdp/index.html">【初窥javascript奥秘之事件冒泡】那些年我们一起冒的泡</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/ckjavascriptamzsjjzldtygdj/index.html">【初窥javascript奥秘之事件机制】论“点透”与“鬼点击”</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/ckjavascriptamzrrzmbddthisnzdxzthiszxnlm/index.html">【初窥javascript奥秘之让人捉摸不定的this】你知道现在this指向哪里吗？？？</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/ckjavascriptamzbbydxbdhlqbcl/index.html">【初窥javascript奥秘之闭包】叶大侠病都好了，求不踩了：）</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/ckjavascriptamzmxdxfzyjc/index.html">【初窥javascript奥秘之面向对象】封装与继承</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/qdmdsjdjgjdnzdljm/index.html">【前端盲点】事件的几个阶段你真的了解么？？？</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/dyyyviewymodelxgsl/index.html">【单页应用】view与model相关梳理</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/dyyyyqldyyybsxjdwbgns/index.html">【单页应用】一起来单页应用吧，实现简单微博功能！（上）</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/dyyyqjkzqappyggxsm/index.html">【单页应用】全局控制器app应该干些什么？</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/dyyywmgrhclkjdcccjgx/index.html">【单页应用】我们该如何处理框架弹出层层级关系？</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/dyyyljMVC/index.html">【单页应用】理解MVC</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/dyyyztxjzviewzjygrhtx/index.html">【单页应用之通信机制】view之间应该如何通信</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/dyyyjkzHistoryxsHistorydgdyyydm/index.html">【单页应用巨坑之History】细数History带给单页应用的噩梦</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/xtszeptofindysyjiosdcjpknrnhtt/index.html">【小贴士】zeptofind元素以及ios弹出键盘可能让你很头疼</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/xtsgytransitionEndanimatedygyqgs/index.html">【小贴士】关于transitionEndanimate的一个有趣故事</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/xtsgzzdbbysjwtdzzmp/index.html">【小贴士】工作中的”闭包“与事件委托的”阻止冒泡“</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/xtstytjavascriptzdreplace/index.html">【小贴士】探一探javascript中的replace</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/xtsxnjpyfixeddgydddt/index.html">【小贴士】虚拟键盘与fixed带给移动端的痛！</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/ttjavascriptsjjzdcsxyl/index.html">【探讨】javascript事件机制底层实现原理</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/mkhbcljrequireJSsxygjddmkjzq/index.html">【模块化编程】理解requireJS实现一个简单的模块加载器</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/zyJavaScriptmfjmtsdqlxkjzbfgndcljz/index.html">【转】【译】JavaScript魔法揭秘探索当前流行框架中部分功能的处理机制</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/zxjavascriptgszl01javascriptcszds/index.html">【追寻javascript高手之路01】javascript参数知多少？</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/zxjavascriptgszl02blzyyzds/index.html">【追寻javascript高手之路02】变量、作用域知多少？</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/zxjavascriptgszl03javascriptdxdld/index.html">【追寻javascript高手之路03】javascript对象大乱斗</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/zxjavascriptgszl04ljprototype/index.html">【追寻javascript高手之路04】理解prototype</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/zxjavascriptgszl05ljsjl/index.html">【追寻javascript高手之路05】理解事件流</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/zgbj04zxzzsj(2)/index.html">【重构笔记04】重新组织数据(2)</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/zgbj05jhtjbds/index.html">【重构笔记05】简化条件表达式</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/zgbj06jhhsdy/index.html">【重构笔记06】简化函数调用</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/ycmshgttbxysjfl/index.html">一次面试回顾——探讨表现与数据分离</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/dhzwebappzdxz/index.html">动画在webapp中的现状</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/ysandriodlqhthdomclicksjqtsxwttj/index.html">原生andriod浏览器回退后dom（click）事件全体失效问题探究</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/scsbdjxysdsbsjytouchsjdnxs/index.html">手持设备点击响应速度，鼠标事件与touch事件的那些事</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/mnbjQueryzeptohxymfx/index.html">迷你版jQuery——zepto核心源码分析</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/dbsgzdlwmlyqxjdddomxzqb/index.html">都别说工资低了，我们来一起写简单的dom选择器吧！</a></li>
+    				                                         
+                    </ul>
+                </div>
+            </div>
+
+        </div>
+    </body>
+</html>

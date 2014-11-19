@@ -1,0 +1,131 @@
+﻿<!DOCTYPE html>
+
+<html lang="zh">
+    <head>
+        <meta charset="utf-8">
+        <meta name="description" content="android,ios" />
+        <meta name="keywords" content="android,ios" />
+
+        <title>叶小钗</title>
+        <style type='text/css'>
+            body {
+                background-color: #CCC;
+            }
+        </style>
+        <link rel="stylesheet" href="../../css/bootstrap.css" />
+    </head>
+
+    <body>
+        <div class="container">
+
+            <h1>叶小钗</h1>
+
+            <div class='navbar navbar-inverse'>
+                <div class='navbar-inner nav-collapse' style="height: auto;">
+                    <ul class="nav">
+                              				<li><a href="http://songboriceboy.github.io/xxoo/html/blade/index.html">blade</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/css/index.html">css</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/HTML5&CSS3/index.html">HTML5&CSS3</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/index.html">javascript</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Javaxx/index.html">Java学习</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/nodejs/index.html">nodejs</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/requirejs/index.html">requirejs</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/index.html">Web前端</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/xxgw/index.html">学习感悟</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/gzdd/index.html">工作点滴</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/jkxx/index.html">接口学习</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/wfl/index.html">未分类</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/ydkf/index.html">移动开发</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/sjms/index.html">设计模式</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/mst/index.html">面试题</a></li>
+    				                      </ul>
+                </div>
+            </div>
+
+            <div id='content' class='row-fluid'>
+
+                <div class='span9 main'>
+				<div style="color:blue" align=center>【求勿删】【求助！！！】如何破解net的viewerstate？？如</div><br><p>小弟最近遇见一件非常令人抓狂的事情：选修课学分不够......</p>
+<p>那么意味着，拿不到毕业证，多方求人无果，最后一个办法，进入教务系统，在选课吧........</p>
+<p>但是，教务系统原来的提交按钮被隐藏了。按我多年的理解，按道理说，在前台viewstate应该是记录</p>
+<p>了其中按钮的一些信息的吧，于是在想以下一个问题：我有两个基本一致的页面</p>
+<div class="cnblogs_Highlighter">
+<pre class="brush:csharp;gutter:false;">&lt;body&gt;
+    &lt;form id="form1" runat="server"&gt;
+    &lt;asp:Button ID="Button1" runat="server" Text="Button" /&gt;
+    &lt;/form&gt;
+&lt;/body&gt;
+</pre>
+</div>
+<p>　　</p>
+<div class="cnblogs_Highlighter">
+<pre class="brush:csharp;gutter:false;">&lt;body&gt;
+    &lt;form id="form1" runat="server"&gt;
+    &lt;asp:Button ID="Button1" runat="server" Text="Button" Visible="false" /&gt;
+    &lt;/form&gt;
+&lt;/body&gt;
+
+ 　　
+</pre>
+</div>
+<p>　　</p>
+<p>唯一的不同点便是一个服务器空间隐藏了，那么前台对应代码如下：</p>
+<div class="cnblogs_Highlighter">
+<pre class="brush:html;gutter:false;">&lt;body&gt;
+    &lt;form id="form1" action="01.aspx" method="post"&gt;
+&lt;div class="aspNetHidden"&gt;
+&lt;input type="hidden" value="/wEPDwUKMjA0OTM4MTAwNGRkWb2delwTAGqQEhBrVDKlL3LBM4y121kWlpL35+YRjmo=" id="__VIEWSTATE" name="__VIEWSTATE"&gt;
+&lt;/div&gt;
+
+&lt;div class="aspNetHidden"&gt;
+
+	&lt;input type="hidden" value="/wEWAgKqntG0DAKM54rGBpDf5PWr79CwYIj+osiyvMgGcmUe9I+pbxmhfAcrd2ED" id="__EVENTVALIDATION" name="__EVENTVALIDATION"&gt;
+&lt;/div&gt;
+    &lt;input type="submit" id="Button1" value="Button" name="Button1"&gt;
+    &lt;/form&gt;
+
+
+&lt;/body&gt;
+</pre>
+</div>
+<p>　　</p>
+<div class="cnblogs_Highlighter">
+<pre class="brush:html;gutter:false;">&lt;body&gt;
+    &lt;form id="form1" action="02.aspx" method="post"&gt;
+&lt;div class="aspNetHidden"&gt;
+&lt;input type="hidden" value="/wEPDwUKMjA0OTM4MTAwNGRkWb2delwTAGqQEhBrVDKlL3LBM4y121kWlpL35+YRjmo=" id="__VIEWSTATE" name="__VIEWSTATE"&gt;
+&lt;/div&gt;
+
+    
+    &lt;/form&gt;
+
+
+&lt;/body&gt;
+</pre>
+</div>
+<p>　　</p>
+<p><span style="color: #ff0000; font-size: 18pt;"><strong>求助！！！如何让第二页被隐藏的服务器空间按钮显示出来啊！！</strong></span></p>
+<p><span style="color: #ff0000; font-size: 18pt;"><strong>我用firefox可以编辑viewstate................有法没有哦</strong></span></p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+                </div>
+
+                <div class='span3 sidebar'>
+                    <h2>导航栏</h2>
+                    <ul class="nav nav-tabs nav-stacked">
+                             				<li><a href="http://songboriceboy.github.io/xxoo/html/gzdd/qwsqzrhpjnetdviewerstaterhjycdfwqkjxscl/index.html">【求勿删】【求助！！！】如何破解net的viewerstate？？如何将隐藏的服务器控件显示出来</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/gzdd/txxlggwbxxhjqmsqfa/index.html">【腾讯】【新浪】【公共微博】——信息汇聚【求免授权方案】</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/gzdd/gzstdthgsjsgshxxgrbt/index.html">工作四天的体会，公司就是公司和学校果然不同！！！</a></li>
+    				                                         
+                    </ul>
+                </div>
+            </div>
+
+        </div>
+    </body>
+</html>

@@ -1,0 +1,919 @@
+﻿<!DOCTYPE html>
+
+<html lang="zh">
+    <head>
+        <meta charset="utf-8">
+        <meta name="description" content="android,ios" />
+        <meta name="keywords" content="android,ios" />
+
+        <title>叶小钗</title>
+        <style type='text/css'>
+            body {
+                background-color: #CCC;
+            }
+        </style>
+        <link rel="stylesheet" href="../../../css/bootstrap.css" />
+    </head>
+
+    <body>
+        <div class="container">
+
+            <h1>叶小钗</h1>
+
+            <div class='navbar navbar-inverse'>
+                <div class='navbar-inner nav-collapse' style="height: auto;">
+                    <ul class="nav">
+                              				<li><a href="http://songboriceboy.github.io/xxoo/html/blade/index.html">blade</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/css/index.html">css</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/HTML5&CSS3/index.html">HTML5&CSS3</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/index.html">javascript</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Javaxx/index.html">Java学习</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/nodejs/index.html">nodejs</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/requirejs/index.html">requirejs</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/index.html">Web前端</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/xxgw/index.html">学习感悟</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/gzdd/index.html">工作点滴</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/jkxx/index.html">接口学习</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/wfl/index.html">未分类</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/ydkf/index.html">移动开发</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/sjms/index.html">设计模式</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/mst/index.html">面试题</a></li>
+    				                      </ul>
+                </div>
+            </div>
+
+            <div id='content' class='row-fluid'>
+
+                <div class='span9 main'>
+				<div style="color:blue" align=center>【GoogleFusionTablesAPI初探】地图与云计算</div><br><h1>前言</h1>
+<p>这次当然又是标题党啦！我和云计算扯不上关系的。。。。</p>
+<p>最近公司有个需求，类似于将中国各个省市给列出来（图标），这个应用其实很广泛我说的是原需求的变形，再扩散一点我们可以获得各个城市具有苹果专卖店的地址然后显示出来，比如：</p>
+<p><img src="13218797390164.png" alt=""></p>
+<p>这个的实现原理是客户端渲染技术，浏览器指定在哪些地方打上标记，便在哪些地方打上</p>
+<div class="cnblogs_code">
+<pre><span style="color: #0000ff;">&lt;!</span><span style="color: #ff00ff;">DOCTYPE html</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #0000ff;">&lt;</span><span style="color: #800000;">html </span><span style="color: #ff0000;">xmlns</span><span style="color: #0000ff;">="http://www.w3.org/1999/xhtml"</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #0000ff;">&lt;</span><span style="color: #800000;">head</span><span style="color: #0000ff;">&gt;</span>
+    <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">title</span><span style="color: #0000ff;">&gt;&lt;/</span><span style="color: #800000;">title</span><span style="color: #0000ff;">&gt;</span>
+    <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">style </span><span style="color: #ff0000;">type</span><span style="color: #0000ff;">="text/css"</span><span style="color: #0000ff;">&gt;</span><span style="background-color: #f5f5f5; color: #800000;">
+        #map </span><span style="background-color: #f5f5f5; color: #000000;">{</span><span style="background-color: #f5f5f5; color: #ff0000;"> width</span><span style="background-color: #f5f5f5; color: #000000;">:</span><span style="background-color: #f5f5f5; color: #0000ff;"> 600px</span><span style="background-color: #f5f5f5; color: #000000;">;</span><span style="background-color: #f5f5f5; color: #ff0000;"> height</span><span style="background-color: #f5f5f5; color: #000000;">:</span><span style="background-color: #f5f5f5; color: #0000ff;"> 400px</span><span style="background-color: #f5f5f5; color: #000000;">;</span> <span style="background-color: #f5f5f5; color: #000000;">}</span>
+    <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">style</span><span style="color: #0000ff;">&gt;</span>
+    <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">script </span><span style="color: #ff0000;">src</span><span style="color: #0000ff;">="js/jquery-1.7.1.js"</span><span style="color: #ff0000;"> type</span><span style="color: #0000ff;">="text/javascript"</span><span style="color: #0000ff;">&gt;&lt;/</span><span style="color: #800000;">script</span><span style="color: #0000ff;">&gt;</span>
+    <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">script </span><span style="color: #ff0000;">type</span><span style="color: #0000ff;">="text/javascript"</span><span style="color: #ff0000;"> src</span><span style="color: #0000ff;">="http://maps.google.com/maps/api/js?sensor=true"</span><span style="color: #0000ff;">&gt;&lt;/</span><span style="color: #800000;">script</span><span style="color: #0000ff;">&gt;</span>
+    <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">script </span><span style="color: #ff0000;">src</span><span style="color: #0000ff;">="js/gmaps.js"</span><span style="color: #ff0000;"> type</span><span style="color: #0000ff;">="text/javascript"</span><span style="color: #0000ff;">&gt;&lt;/</span><span style="color: #800000;">script</span><span style="color: #0000ff;">&gt;</span>
+      <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">script </span><span style="color: #ff0000;">type</span><span style="color: #0000ff;">="text/javascript"</span><span style="color: #ff0000;"> src</span><span style="color: #0000ff;">="http://google-maps-utility-library-v3.googlecode.com/svn/tags/markerclusterer/1.0/src/markerclusterer.js"</span><span style="color: #0000ff;">&gt;&lt;/</span><span style="color: #800000;">script</span><span style="color: #0000ff;">&gt;</span>
+    <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">script </span><span style="color: #ff0000;">type</span><span style="color: #0000ff;">="text/javascript"</span><span style="color: #0000ff;">&gt;</span><span style="background-color: #f5f5f5; color: #000000;">
+        $(document).ready(</span><span style="background-color: #f5f5f5; color: #0000ff;">function</span><span style="background-color: #f5f5f5; color: #000000;"> () {
+            </span><span style="background-color: #f5f5f5; color: #0000ff;">var</span><span style="background-color: #f5f5f5; color: #000000;"> path </span><span style="background-color: #f5f5f5; color: #000000;">=</span><span style="background-color: #f5f5f5; color: #000000;"> [];
+            </span><span style="background-color: #f5f5f5; color: #0000ff;">var</span><span style="background-color: #f5f5f5; color: #000000;"> map </span><span style="background-color: #f5f5f5; color: #000000;">=</span> <span style="background-color: #f5f5f5; color: #0000ff;">new</span><span style="background-color: #f5f5f5; color: #000000;"> GMaps({
+                div: </span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">#map</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">,
+                lat: </span><span style="background-color: #f5f5f5; color: #000000;">30.657358499999994</span><span style="background-color: #f5f5f5; color: #000000;">,
+                lng: </span><span style="background-color: #f5f5f5; color: #000000;">104.049977</span><span style="background-color: #f5f5f5; color: #000000;">,
+                markerClusterer: </span><span style="background-color: #f5f5f5; color: #0000ff;">function</span><span style="background-color: #f5f5f5; color: #000000;"> (map) {
+                    </span><span style="background-color: #f5f5f5; color: #0000ff;">return</span> <span style="background-color: #f5f5f5; color: #0000ff;">new</span><span style="background-color: #f5f5f5; color: #000000;"> MarkerClusterer(map);
+                }
+            });
+            </span><span style="background-color: #f5f5f5; color: #0000ff;">var</span><span style="background-color: #f5f5f5; color: #000000;"> lat_span </span><span style="background-color: #f5f5f5; color: #000000;">=</span> <span style="background-color: #f5f5f5; color: #000000;">30.657358499999994</span><span style="background-color: #f5f5f5; color: #000000;">;
+            </span><span style="background-color: #f5f5f5; color: #0000ff;">var</span><span style="background-color: #f5f5f5; color: #000000;"> lng_span </span><span style="background-color: #f5f5f5; color: #000000;">=</span> <span style="background-color: #f5f5f5; color: #000000;">104.049977</span><span style="background-color: #f5f5f5; color: #000000;">;
+            </span><span style="background-color: #f5f5f5; color: #0000ff;">for</span><span style="background-color: #f5f5f5; color: #000000;"> (</span><span style="background-color: #f5f5f5; color: #0000ff;">var</span><span style="background-color: #f5f5f5; color: #000000;"> i </span><span style="background-color: #f5f5f5; color: #000000;">=</span> <span style="background-color: #f5f5f5; color: #000000;">0</span><span style="background-color: #f5f5f5; color: #000000;">; i </span><span style="background-color: #f5f5f5; color: #000000;">&lt;</span> <span style="background-color: #f5f5f5; color: #000000;">100</span><span style="background-color: #f5f5f5; color: #000000;">; i</span><span style="background-color: #f5f5f5; color: #000000;">++</span><span style="background-color: #f5f5f5; color: #000000;">) {
+                </span><span style="background-color: #f5f5f5; color: #0000ff;">var</span><span style="background-color: #f5f5f5; color: #000000;"> latitude </span><span style="background-color: #f5f5f5; color: #000000;">=</span><span style="background-color: #f5f5f5; color: #000000;"> Math.random()</span><span style="background-color: #f5f5f5; color: #000000;">*</span><span style="background-color: #f5f5f5; color: #000000;">0.01</span>  <span style="background-color: #f5f5f5; color: #000000;">+</span> <span style="background-color: #f5f5f5; color: #000000;">30.657358499999994</span><span style="background-color: #f5f5f5; color: #000000;">;
+                </span><span style="background-color: #f5f5f5; color: #0000ff;">var</span><span style="background-color: #f5f5f5; color: #000000;"> longitude </span><span style="background-color: #f5f5f5; color: #000000;">=</span><span style="background-color: #f5f5f5; color: #000000;"> Math.random()</span><span style="background-color: #f5f5f5; color: #000000;">*</span><span style="background-color: #f5f5f5; color: #000000;">0.01</span> <span style="background-color: #f5f5f5; color: #000000;">+</span> <span style="background-color: #f5f5f5; color: #000000;">104.049977</span><span style="background-color: #f5f5f5; color: #000000;">;
+
+                map.addMarker({
+                    lat: latitude,
+                    lng: longitude,
+                    title: </span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">Marker #</span><span style="background-color: #f5f5f5; color: #000000;">'</span> <span style="background-color: #f5f5f5; color: #000000;">+</span><span style="background-color: #f5f5f5; color: #000000;"> i
+                });
+            }
+        });
+    </span><span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">script</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">head</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #0000ff;">&lt;</span><span style="color: #800000;">body</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #0000ff;">&lt;</span><span style="color: #800000;">input </span><span style="color: #ff0000;">type</span><span style="color: #0000ff;">="text"</span><span style="color: #ff0000;"> value</span><span style="color: #0000ff;">="请输入地址"</span><span style="color: #ff0000;"> id</span><span style="color: #0000ff;">="address"</span> <span style="color: #0000ff;">/&gt;</span>
+    <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">div </span><span style="color: #ff0000;">id</span><span style="color: #0000ff;">="map"</span><span style="color: #0000ff;">&gt;</span>
+    <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">div</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">body</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">html</span><span style="color: #0000ff;">&gt;</span></pre>
+</div>
+<p>但是他这样做是有一定问题的，比如我们有以下应用：<span style="color: #ff0000;"><strong>显示全国现在所有的qq登录用户地点</strong></span>，这个需求是很恐怖的，我们假设全国qq用户只有10万人吧，现在我们要在页面上画100000个。。。<br><img src="20992318352906.png" alt=""></p>
+<p><span style="color: #ff0000;"><strong>浏览器表示很卡！！！</strong></span></p>
+<p>PS：说句实话，碰到这种场景不是很多，但是既然都到这一步了，我们还是继续往下面看看吧！</p>
+<p>基于这个原因，google新推出了一个Fusion Tables API&nbsp;，这个东东感觉有点不错，他是干什么的呢，我们进入正题吧</p>
+<h1>Fusion Tables API&nbsp;</h1>
+<p>什么是Fusion Tables API&nbsp;呢？</p>
+<p><a style="font: 13px/21px Arial, sans-serif; margin: 0px; padding: 0px; border: 0px currentColor; color: #1155cc; text-transform: none; text-indent: 0px; letter-spacing: normal; text-decoration: underline; word-spacing: 0px; vertical-align: baseline; white-space: normal; font-size-adjust: none; font-stretch: normal; background-color: #ffffff; -webkit-text-stroke-width: 0px;" href="http://www.google.com/fusiontables">Google Fusion Tables</a><span style="font: 13px/21px Arial, sans-serif; color: #222222; text-transform: none; text-indent: 0px; letter-spacing: normal; word-spacing: 0px; float: none; display: inline !important; white-space: normal; font-size-adjust: none; font-stretch: normal; background-color: #ffffff; -webkit-text-stroke-width: 0px;"><span class="Apple-converted-space">&nbsp;</span>is a web application used for sharing, visualizing, and publishing tabular data. You can upload your own CSV, KML, ODS, XLS, or Google Spreadsheet data to a Fusion Tables table. Once your data is in Fusion Tables, you can collaborate on it with others in real time, publish it for Google Search, create map and chart visualizations for private use or for embedding on websites, filter it according to specific criteria, and update the data behind your visualizations or filters at any time.</span>&nbsp;</p>
+<p>以上时原文介绍，不错，你们没看错这个好像是google最新推出的一个东西，文档全部是英文的，我这样的水货居然也开始读英文文档了。。。。</p>
+<div class="cnblogs_code">
+<pre><span style="color: #800000;">根据连猜带蒙，fusion table
+应该是云存储一类的东西，其中google为用户提供一个表格，这个表会具有唯一id，
+根据id获得表后，便可以对其列进行操作。
+意思是我们的服务性数据都可以存到google上啦！</span></pre>
+</div>
+<p><strong><span style="color: #ff0000;">注意陷阱：使用该功能时，切记使用自己的邮箱，不要使用公司的邮箱，因为会有所限制：</span></strong><br><img src="8777288358090.png" alt=""></p>
+<p><strong>我们在干什么？</strong></p>
+<p>那好，扯了那么远，我们在干什么？</p>
+<div class="cnblogs_code">
+<pre><span style="color: #800000;">我们将当前所有qq在线数据信息存入fusion table，然后在google map 调用相关接口
+地图会在服务器端渲染图片，将搞好了的地图传我们</span></pre>
+</div>
+<p>所以，便解决了以上问题，但是我个人感觉这是很有问题的，因为数据时一个公司的生命，各个公司会愿意交出来？？？</p>
+<p>好了，我们来建立一张表试试。</p>
+<h1>Fusion Table 第一步建表</h1>
+<p><a href="https://www.google.com/fusiontables/DataSource?dsrcid=implicit&amp;redirectPath=data">https://www.google.com/fusiontables/DataSource?dsrcid=implicit&amp;redirectPath=data</a></p>
+<p>用google mail 账号登陆后，进入上链接：</p>
+<p><img src="18112039457693.png" alt=""></p>
+<p>好了，现在什么也不管的选择建立一张空表，于是有了以下东西：</p>
+<p><img src="20996398396346.png" alt=""></p>
+<p><span style="color: #ff0000;">这里搞完后一定记得分享出去，不然外部不能使用</span></p>
+<p>好了，我们来使用下此表（表的id见地址栏<a href="https://www.google.com/fusiontables/data?docid=1qv6QEpgjYvl3b0PiJx4PFlE04zAZcwmAJJsTd5w#rows:id=1">https://www.google.com/fusiontables/data?docid=1qv6QEpgjYvl3b0PiJx4PFlE04zAZcwmAJJsTd5w#rows:id=1</a>）</p>
+<p>我们来在地图上简单搞几个标记，就把上面几个地址弄出来吧：</p>
+<div class="cnblogs_code">
+<pre><span style="color: #008080;"> 1</span> <span style="color: #0000ff;">&lt;!</span><span style="color: #ff00ff;">DOCTYPE html</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 2</span> <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">html </span><span style="color: #ff0000;">xmlns</span><span style="color: #0000ff;">="http://www.w3.org/1999/xhtml"</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 3</span> <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">head</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 4</span>     <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">title</span><span style="color: #0000ff;">&gt;</span>获取当前位置<span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">title</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 5</span>     <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">style </span><span style="color: #ff0000;">type</span><span style="color: #0000ff;">="text/css"</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 6</span> <span style="background-color: #f5f5f5; color: #800000;">        #map </span><span style="background-color: #f5f5f5; color: #000000;">{</span><span style="background-color: #f5f5f5; color: #ff0000;"> width</span><span style="background-color: #f5f5f5; color: #000000;">:</span><span style="background-color: #f5f5f5; color: #0000ff;"> 1200px</span><span style="background-color: #f5f5f5; color: #000000;">;</span><span style="background-color: #f5f5f5; color: #ff0000;"> height</span><span style="background-color: #f5f5f5; color: #000000;">:</span><span style="background-color: #f5f5f5; color: #0000ff;"> 500px</span><span style="background-color: #f5f5f5; color: #000000;">;</span> <span style="background-color: #f5f5f5; color: #000000;">}</span>
+<span style="color: #008080;"> 7</span> <span style="background-color: #f5f5f5; color: #800000;">        ul, li </span><span style="background-color: #f5f5f5; color: #000000;">{</span><span style="background-color: #f5f5f5; color: #ff0000;"> padding</span><span style="background-color: #f5f5f5; color: #000000;">:</span><span style="background-color: #f5f5f5; color: #0000ff;"> 0</span><span style="background-color: #f5f5f5; color: #000000;">;</span><span style="background-color: #f5f5f5; color: #ff0000;"> list-style</span><span style="background-color: #f5f5f5; color: #000000;">:</span><span style="background-color: #f5f5f5; color: #0000ff;"> none</span><span style="background-color: #f5f5f5; color: #000000;">;</span><span style="background-color: #f5f5f5; color: #ff0000;"> margin</span><span style="background-color: #f5f5f5; color: #000000;">:</span><span style="background-color: #f5f5f5; color: #0000ff;"> 0</span><span style="background-color: #f5f5f5; color: #000000;">;</span> <span style="background-color: #f5f5f5; color: #000000;">}</span>
+<span style="color: #008080;"> 8</span> <span style="background-color: #f5f5f5; color: #800000;">        ul </span><span style="background-color: #f5f5f5; color: #000000;">{</span><span style="background-color: #f5f5f5; color: #ff0000;"> padding</span><span style="background-color: #f5f5f5; color: #000000;">:</span><span style="background-color: #f5f5f5; color: #0000ff;"> 10px</span><span style="background-color: #f5f5f5; color: #000000;">;</span><span style="background-color: #f5f5f5; color: #ff0000;"> border</span><span style="background-color: #f5f5f5; color: #000000;">:</span><span style="background-color: #f5f5f5; color: #0000ff;"> 1px solid black</span><span style="background-color: #f5f5f5; color: #000000;">;</span><span style="background-color: #f5f5f5; color: #ff0000;"> border-radius</span><span style="background-color: #f5f5f5; color: #000000;">:</span><span style="background-color: #f5f5f5; color: #0000ff;"> 5px</span><span style="background-color: #f5f5f5; color: #000000;">;</span><span style="background-color: #f5f5f5; color: #ff0000;"> background</span><span style="background-color: #f5f5f5; color: #000000;">:</span><span style="background-color: #f5f5f5; color: #0000ff;"> white</span><span style="background-color: #f5f5f5; color: #000000;">;</span><span style="background-color: #f5f5f5; color: #ff0000;"> position</span><span style="background-color: #f5f5f5; color: #000000;">:</span><span style="background-color: #f5f5f5; color: #0000ff;"> absolute</span><span style="background-color: #f5f5f5; color: #000000;">;</span><span style="background-color: #f5f5f5; color: #ff0000;"> left</span><span style="background-color: #f5f5f5; color: #000000;">:</span><span style="background-color: #f5f5f5; color: #0000ff;"> 1000px</span><span style="background-color: #f5f5f5; color: #000000;">;</span><span style="background-color: #f5f5f5; color: #ff0000;"> top</span><span style="background-color: #f5f5f5; color: #000000;">:</span><span style="background-color: #f5f5f5; color: #0000ff;"> 300px</span><span style="background-color: #f5f5f5; color: #000000;">;</span> <span style="background-color: #f5f5f5; color: #000000;">}</span>
+<span style="color: #008080;"> 9</span>     <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">style</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">10</span>     <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">script </span><span style="color: #ff0000;">src</span><span style="color: #0000ff;">="js/jquery-1.7.1.js"</span><span style="color: #ff0000;"> type</span><span style="color: #0000ff;">="text/javascript"</span><span style="color: #0000ff;">&gt;&lt;/</span><span style="color: #800000;">script</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">11</span>     <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">script </span><span style="color: #ff0000;">type</span><span style="color: #0000ff;">="text/javascript"</span><span style="color: #ff0000;"> src</span><span style="color: #0000ff;">="http://maps.google.com/maps/api/js?sensor=true"</span><span style="color: #0000ff;">&gt;&lt;/</span><span style="color: #800000;">script</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">12</span>     <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">script </span><span style="color: #ff0000;">src</span><span style="color: #0000ff;">="js/gmaps.js"</span><span style="color: #ff0000;"> type</span><span style="color: #0000ff;">="text/javascript"</span><span style="color: #0000ff;">&gt;&lt;/</span><span style="color: #800000;">script</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">13</span>     <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">script </span><span style="color: #ff0000;">type</span><span style="color: #0000ff;">="text/javascript"</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">14</span>         <span style="background-color: #f5f5f5; color: #0000ff;">var</span><span style="background-color: #f5f5f5; color: #000000;"> map, infoWindow;
+</span><span style="color: #008080;">15</span> <span style="background-color: #f5f5f5; color: #000000;">        $(document).ready(</span><span style="background-color: #f5f5f5; color: #0000ff;">function</span><span style="background-color: #f5f5f5; color: #000000;"> () {
+</span><span style="color: #008080;">16</span> <span style="background-color: #f5f5f5; color: #000000;">            infoWindow </span><span style="background-color: #f5f5f5; color: #000000;">=</span> <span style="background-color: #f5f5f5; color: #0000ff;">new</span><span style="background-color: #f5f5f5; color: #000000;"> google.maps.InfoWindow({});
+</span><span style="color: #008080;">17</span> <span style="background-color: #f5f5f5; color: #000000;">            map </span><span style="background-color: #f5f5f5; color: #000000;">=</span> <span style="background-color: #f5f5f5; color: #0000ff;">new</span><span style="background-color: #f5f5f5; color: #000000;"> GMaps({
+</span><span style="color: #008080;">18</span> <span style="background-color: #f5f5f5; color: #000000;">                el: </span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">#map</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">,
+</span><span style="color: #008080;">19</span> <span style="background-color: #f5f5f5; color: #000000;">                zoom: </span><span style="background-color: #f5f5f5; color: #000000;">11</span><span style="background-color: #f5f5f5; color: #000000;">,
+</span><span style="color: #008080;">20</span> <span style="background-color: #f5f5f5; color: #000000;">                lat: </span><span style="background-color: #f5f5f5; color: #000000;">30.657358499999994</span><span style="background-color: #f5f5f5; color: #000000;">,
+</span><span style="color: #008080;">21</span> <span style="background-color: #f5f5f5; color: #000000;">                lng: </span><span style="background-color: #f5f5f5; color: #000000;">104.049977</span>
+<span style="color: #008080;">22</span> <span style="background-color: #f5f5f5; color: #000000;">            });
+</span><span style="color: #008080;">23</span> <span style="background-color: #f5f5f5; color: #000000;">            map.loadFromFusionTables({
+</span><span style="color: #008080;">24</span> <span style="background-color: #f5f5f5; color: #000000;">                query: {
+</span><span style="color: #008080;">25</span> <span style="background-color: #f5f5f5; color: #000000;">                    select: </span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">Location</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">,
+</span><span style="color: #008080;">26</span> <span style="background-color: #f5f5f5; color: #000000;">                    from: </span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">1qv6QEpgjYvl3b0PiJx4PFlE04zAZcwmAJJsTd5w</span><span style="background-color: #f5f5f5; color: #000000;">'</span>
+<span style="color: #008080;">27</span> <span style="background-color: #f5f5f5; color: #000000;">                } 
+</span><span style="color: #008080;">28</span> <span style="background-color: #f5f5f5; color: #000000;">            });
+</span><span style="color: #008080;">29</span> <span style="background-color: #f5f5f5; color: #000000;">        });
+</span><span style="color: #008080;">30</span>     <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">script</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">31</span> <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">head</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">32</span> <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">body</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">33</span>     <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">div </span><span style="color: #ff0000;">id</span><span style="color: #0000ff;">="map"</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">34</span>     <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">div</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">35</span> 
+<span style="color: #008080;">36</span>     <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">br </span><span style="color: #0000ff;">/&gt;</span>
+<span style="color: #008080;">37</span>     <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">label</span><span style="color: #0000ff;">&gt;&lt;</span><span style="color: #800000;">input </span><span style="color: #ff0000;">type</span><span style="color: #0000ff;">="checkbox"</span><span style="color: #ff0000;"> value</span><span style="color: #0000ff;">="四川大学"</span> <span style="color: #0000ff;">/&gt;</span> 四川大学<span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">label</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">38</span>     <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">label</span><span style="color: #0000ff;">&gt;&lt;</span><span style="color: #800000;">input </span><span style="color: #ff0000;">type</span><span style="color: #0000ff;">="checkbox"</span><span style="color: #ff0000;"> value</span><span style="color: #0000ff;">="电子科大"</span> <span style="color: #0000ff;">/&gt;</span> 电子科大<span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">label</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">39</span>     <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">label</span><span style="color: #0000ff;">&gt;&lt;</span><span style="color: #800000;">input </span><span style="color: #ff0000;">type</span><span style="color: #0000ff;">="checkbox"</span><span style="color: #ff0000;"> value</span><span style="color: #0000ff;">="成都大学"</span> <span style="color: #0000ff;">/&gt;</span> 成都大学<span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">label</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">40</span>     <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">label</span><span style="color: #0000ff;">&gt;&lt;</span><span style="color: #800000;">input </span><span style="color: #ff0000;">type</span><span style="color: #0000ff;">="checkbox"</span><span style="color: #ff0000;"> value</span><span style="color: #0000ff;">="西南交大"</span> <span style="color: #0000ff;">/&gt;</span> 西南交大<span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">label</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">41</span>     <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">label</span><span style="color: #0000ff;">&gt;&lt;</span><span style="color: #800000;">input </span><span style="color: #ff0000;">type</span><span style="color: #0000ff;">="checkbox"</span><span style="color: #ff0000;"> value</span><span style="color: #0000ff;">="清华大学"</span> <span style="color: #0000ff;">/&gt;</span> 清华大学<span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">label</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">42</span> <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">body</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">43</span> <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">html</span><span style="color: #0000ff;">&gt;</span></pre>
+</div>
+<div class="cnblogs_Highlighter">
+<pre class="brush:javascript;gutter:true;">map.loadFromFusionTables({
+    query: {
+        select: 'Location',
+        from: '1qv6QEpgjYvl3b0PiJx4PFlE04zAZcwmAJJsTd5w'
+    } 
+});
+</pre>
+</div>
+<p>这个相当于sql语句哟，在下面还能写where语句，我们接下来再说，那么在我们地图上便会多出两个点：</p>
+<p><img src="51690895990535.png" alt="" width="969" height="272"></p>
+<p>暂时便只能达到此类效果了，好了，我们接下来搞点其它事情呢。</p>
+<h1>在地图上标注所以四川的大学</h1>
+<p>第一步，我们来看看四川有多少大学呢？</p>
+<div class="cnblogs_code" onclick="cnblogs_code_show('ceb54927-2ff6-428f-87a7-748ec1b80a5d')"><img id="code_img_closed_ceb54927-2ff6-428f-87a7-748ec1b80a5d" class="code_img_closed" src="43570758473519.gif" alt=""><img id="code_img_opened_ceb54927-2ff6-428f-87a7-748ec1b80a5d" class="code_img_opened" style="display: none;" onclick="cnblogs_code_hide('ceb54927-2ff6-428f-87a7-748ec1b80a5d',event)" src="16365178109279.gif" alt=""><span class="cnblogs_code_collapse">所有大学</span>
+<div id="cnblogs_code_open_ceb54927-2ff6-428f-87a7-748ec1b80a5d" class="cnblogs_code_hide">
+<pre><span style="color: #008080;"> 1</span> <span style="color: #000000;">四川大学
+</span><span style="color: #008080;"> 2</span> <span style="color: #000000;">西南交通大学
+</span><span style="color: #008080;"> 3</span> <span style="color: #000000;">电子科技大学
+</span><span style="color: #008080;"> 4</span> <span style="color: #000000;">西南财经大学
+</span><span style="color: #008080;"> 5</span> <span style="color: #000000;">西南民族大学
+</span><span style="color: #008080;"> 6</span> <span style="color: #000000;">中国民用航空飞行学院
+</span><span style="color: #008080;"> 7</span> <span style="color: #000000;">成都理工大学
+</span><span style="color: #008080;"> 8</span> <span style="color: #000000;">西华大学
+</span><span style="color: #008080;"> 9</span> <span style="color: #000000;">西南科技大学
+</span><span style="color: #008080;">10</span> <span style="color: #000000;">四川农业大学
+</span><span style="color: #008080;">11</span> <span style="color: #000000;">成都中医药大学
+</span><span style="color: #008080;">12</span> <span style="color: #000000;">四川师范大学
+</span><span style="color: #008080;">13</span> <span style="color: #000000;">西华师范大学
+</span><span style="color: #008080;">14</span> <span style="color: #000000;">西南石油大学
+</span><span style="color: #008080;">15</span> <span style="color: #000000;">成都信息工程学院
+</span><span style="color: #008080;">16</span> <span style="color: #000000;">四川理工学院
+</span><span style="color: #008080;">17</span> <span style="color: #000000;">泸州医学院
+</span><span style="color: #008080;">18</span> <span style="color: #000000;">川北医学院
+</span><span style="color: #008080;">19</span> <span style="color: #000000;">成都医学院
+</span><span style="color: #008080;">20</span> <span style="color: #000000;">乐山师范学院
+</span><span style="color: #008080;">21</span> <span style="color: #000000;">内江师范学院
+</span><span style="color: #008080;">22</span> <span style="color: #000000;">四川文理学院
+</span><span style="color: #008080;">23</span> <span style="color: #000000;">四川警察学院
+</span><span style="color: #008080;">24</span> <span style="color: #000000;">成都体育学院
+</span><span style="color: #008080;">25</span> <span style="color: #000000;">四川音乐学院
+</span><span style="color: #008080;">26</span> <span style="color: #000000;">四川民族学院
+</span><span style="color: #008080;">27</span> <span style="color: #000000;">成都学院
+</span><span style="color: #008080;">28</span> <span style="color: #000000;">西昌学院
+</span><span style="color: #008080;">29</span> <span style="color: #000000;">攀枝花学院
+</span><span style="color: #008080;">30</span> <span style="color: #000000;">宜宾学院
+</span><span style="color: #008080;">31</span> <span style="color: #000000;">绵阳师范学院
+</span><span style="color: #008080;">32</span> <span style="color: #000000;">成都理工大学工程技术学院
+</span><span style="color: #008080;">33</span> <span style="color: #000000;">成都理工大学广播影视学院
+</span><span style="color: #008080;">34</span> <span style="color: #000000;">成都信息工程学院银杏酒店管理学院
+</span><span style="color: #008080;">35</span> <span style="color: #000000;">四川师范大学文理学院
+</span><span style="color: #008080;">36</span> <span style="color: #000000;">四川师范大学成都学院
+</span><span style="color: #008080;">37</span> <span style="color: #000000;">四川外语学院成都学院
+</span><span style="color: #008080;">38</span> <span style="color: #000000;">电子科技大学成都学院
+</span><span style="color: #008080;">39</span> <span style="color: #000000;">四川大学锦城学院
+</span><span style="color: #008080;">40</span> <span style="color: #000000;">西南科技大学城市学院
+</span><span style="color: #008080;">41</span> <span style="color: #000000;">四川音乐学院绵阳艺术学院
+</span><span style="color: #008080;">42</span> <span style="color: #000000;">四川大学锦江学院
+</span><span style="color: #008080;">43</span> <span style="color: #000000;">西南财经大学天府学院
+</span><span style="color: #008080;">44</span> <span style="color: #000000;">西南交通大学希望学院
+</span><span style="color: #008080;">45</span> <span style="color: #000000;">成都电子机械高等专科学校
+</span><span style="color: #008080;">46</span> <span style="color: #000000;">四川烹饪高等专科学校
+</span><span style="color: #008080;">47</span> <span style="color: #000000;">成都纺织高等专科学校
+</span><span style="color: #008080;">48</span> <span style="color: #000000;">四川中医药高等专科学校
+</span><span style="color: #008080;">49</span> <span style="color: #000000;">阿坝师范高等专科学校
+</span><span style="color: #008080;">50</span> <span style="color: #000000;">四川幼儿师范高等专科学校
+</span><span style="color: #008080;">51</span> <span style="color: #000000;">民办四川天一学院
+</span><span style="color: #008080;">52</span> <span style="color: #000000;">成都航空职业技术学院
+</span><span style="color: #008080;">53</span> <span style="color: #000000;">泸州职业技术学院
+</span><span style="color: #008080;">54</span> <span style="color: #000000;">眉山职业技术学院
+</span><span style="color: #008080;">55</span> <span style="color: #000000;">四川文化传媒职业学院
+</span><span style="color: #008080;">56</span> <span style="color: #000000;">四川管理职业学院
+</span><span style="color: #008080;">57</span> <span style="color: #000000;">四川华新现代职业学院
+</span><span style="color: #008080;">58</span> <span style="color: #000000;">四川商务职业学院
+</span><span style="color: #008080;">59</span> <span style="color: #000000;">广安职业技术学院
+</span><span style="color: #008080;">60</span> <span style="color: #000000;">四川信息职业技术学院
+</span><span style="color: #008080;">61</span> <span style="color: #000000;">四川警安职业学院
+</span><span style="color: #008080;">62</span> <span style="color: #000000;">四川司法警官职业学院
+</span><span style="color: #008080;">63</span> <span style="color: #000000;">乐山职业技术学院
+</span><span style="color: #008080;">64</span> <span style="color: #000000;">内江职业技术学院
+</span><span style="color: #008080;">65</span> <span style="color: #000000;">四川机电职业技术学院
+</span><span style="color: #008080;">66</span> <span style="color: #000000;">四川交通职业技术学院
+</span><span style="color: #008080;">67</span> <span style="color: #000000;">达州职业技术学院
+</span><span style="color: #008080;">68</span> <span style="color: #000000;">四川建筑职业技术学院
+</span><span style="color: #008080;">69</span> <span style="color: #000000;">四川工商职业技术学院
+</span><span style="color: #008080;">70</span> <span style="color: #000000;">绵阳职业技术学院
+</span><span style="color: #008080;">71</span> <span style="color: #000000;">四川电力职业技术学院
+</span><span style="color: #008080;">72</span> <span style="color: #000000;">四川工程职业技术学院
+</span><span style="color: #008080;">73</span> <span style="color: #000000;">四川科技职业学院
+</span><span style="color: #008080;">74</span> <span style="color: #000000;">四川文化产业职业学院
+</span><span style="color: #008080;">75</span> <span style="color: #000000;">四川财经职业学院
+</span><span style="color: #008080;">76</span> <span style="color: #000000;">四川现代职业学院
+</span><span style="color: #008080;">77</span> <span style="color: #000000;">雅安职业技术学院
+</span><span style="color: #008080;">78</span> <span style="color: #000000;">四川国际标榜职业学院
+</span><span style="color: #008080;">79</span> <span style="color: #000000;">四川艺术职业学院
+</span><span style="color: #008080;">80</span> <span style="color: #000000;">四川邮电职业技术学院
+</span><span style="color: #008080;">81</span> <span style="color: #000000;">四川航天职业技术学院
+</span><span style="color: #008080;">82</span> <span style="color: #000000;">四川化工职业技术学院
+</span><span style="color: #008080;">83</span> <span style="color: #000000;">成都职业技术学院
+</span><span style="color: #008080;">84</span> <span style="color: #000000;">四川水利职业技术学院
+</span><span style="color: #008080;">85</span> <span style="color: #000000;">四川城市职业学院
+</span><span style="color: #008080;">86</span> <span style="color: #000000;">南充职业技术学院
+</span><span style="color: #008080;">87</span> <span style="color: #000000;">成都东软信息技术职业学院
+</span><span style="color: #008080;">88</span> <span style="color: #000000;">四川职业技术学院
+</span><span style="color: #008080;">89</span> <span style="color: #000000;">成都农业科技职业学院
+</span><span style="color: #008080;">90</span> <span style="color: #000000;">宜宾职业技术学院
+</span><span style="color: #008080;">91</span> <span style="color: #000000;">成都艺术职业学院
+</span><span style="color: #008080;">92</span> <span style="color: #000000;">四川托普信息技术职业学院
+</span><span style="color: #008080;">93</span> <span style="color: #000000;">中国工程物理研究院职工工学院
+</span><span style="color: #008080;">94</span> 四川教育学院</pre>
+</div>
+</div>
+<p>好像是94所大学呢，其中的其它应该我们便不管了，我们就只把大学名字与其经纬度存入表中即可，于是马上问他就来了！！<br>我去哪里找那劳什子坐标呢？？不能一个个输入吧，于是我们有了以下程序：</p>
+<p><img src="31509556725727.png" alt=""></p>
+<p>我们操作了下word有了以上东西，于是：我们调用google的搜索接口后会有以下东西：</p>
+<div class="cnblogs_code" onclick="cnblogs_code_show('13a6f145-859b-4656-870d-ae1dc578ae93')"><img id="code_img_closed_13a6f145-859b-4656-870d-ae1dc578ae93" class="code_img_closed" src="43570758473519.gif" alt=""><img id="code_img_opened_13a6f145-859b-4656-870d-ae1dc578ae93" class="code_img_opened" style="display: none;" onclick="cnblogs_code_hide('13a6f145-859b-4656-870d-ae1dc578ae93',event)" src="16365178109279.gif" alt=""><span class="cnblogs_code_collapse">获取所有学校的坐标</span>
+<div id="cnblogs_code_open_13a6f145-859b-4656-870d-ae1dc578ae93" class="cnblogs_code_hide">
+<pre><span style="color: #008080;"> 1</span> <span style="color: #0000ff;">&lt;!</span><span style="color: #ff00ff;">DOCTYPE html</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 2</span> <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">html </span><span style="color: #ff0000;">xmlns</span><span style="color: #0000ff;">="http://www.w3.org/1999/xhtml"</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 3</span> <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">head</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 4</span>     <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">title</span><span style="color: #0000ff;">&gt;&lt;/</span><span style="color: #800000;">title</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 5</span>     <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">style </span><span style="color: #ff0000;">type</span><span style="color: #0000ff;">="text/css"</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 6</span> <span style="background-color: #f5f5f5; color: #800000;">        #map </span><span style="background-color: #f5f5f5; color: #000000;">{</span><span style="background-color: #f5f5f5; color: #ff0000;"> width</span><span style="background-color: #f5f5f5; color: #000000;">:</span><span style="background-color: #f5f5f5; color: #0000ff;"> 600px</span><span style="background-color: #f5f5f5; color: #000000;">;</span><span style="background-color: #f5f5f5; color: #ff0000;"> height</span><span style="background-color: #f5f5f5; color: #000000;">:</span><span style="background-color: #f5f5f5; color: #0000ff;"> 400px</span><span style="background-color: #f5f5f5; color: #000000;">;</span> <span style="background-color: #f5f5f5; color: #000000;">}</span>
+<span style="color: #008080;"> 7</span> <span style="background-color: #f5f5f5; color: #800000;">        tr </span><span style="background-color: #f5f5f5; color: #000000;">{</span><span style="background-color: #f5f5f5; color: #ff0000;"> border</span><span style="background-color: #f5f5f5; color: #000000;">:</span><span style="background-color: #f5f5f5; color: #0000ff;"> 1px solid black</span><span style="background-color: #f5f5f5; color: #000000;">;</span> <span style="background-color: #f5f5f5; color: #000000;">}</span>
+<span style="color: #008080;"> 8</span> <span style="background-color: #f5f5f5; color: #800000;">        table </span><span style="background-color: #f5f5f5; color: #000000;">{</span><span style="background-color: #f5f5f5; color: #ff0000;"> border</span><span style="background-color: #f5f5f5; color: #000000;">:</span><span style="background-color: #f5f5f5; color: #0000ff;"> 1px solid black</span><span style="background-color: #f5f5f5; color: #000000;">;</span><span style="background-color: #f5f5f5; color: #ff0000;"> width</span><span style="background-color: #f5f5f5; color: #000000;">:</span><span style="background-color: #f5f5f5; color: #0000ff;"> 600px</span><span style="background-color: #f5f5f5; color: #000000;">;</span> <span style="background-color: #f5f5f5; color: #000000;">}</span>
+<span style="color: #008080;"> 9</span>     <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">style</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">10</span>     <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">script </span><span style="color: #ff0000;">src</span><span style="color: #0000ff;">="js/jquery-1.7.1.js"</span><span style="color: #ff0000;"> type</span><span style="color: #0000ff;">="text/javascript"</span><span style="color: #0000ff;">&gt;&lt;/</span><span style="color: #800000;">script</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">11</span>     <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">script </span><span style="color: #ff0000;">type</span><span style="color: #0000ff;">="text/javascript"</span><span style="color: #ff0000;"> src</span><span style="color: #0000ff;">="http://maps.google.com/maps/api/js?sensor=true"</span><span style="color: #0000ff;">&gt;&lt;/</span><span style="color: #800000;">script</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">12</span>     <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">script </span><span style="color: #ff0000;">src</span><span style="color: #0000ff;">="js/gmaps.js"</span><span style="color: #ff0000;"> type</span><span style="color: #0000ff;">="text/javascript"</span><span style="color: #0000ff;">&gt;&lt;/</span><span style="color: #800000;">script</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">13</span>     <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">script </span><span style="color: #ff0000;">type</span><span style="color: #0000ff;">="text/javascript"</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">14</span> <span style="background-color: #f5f5f5; color: #000000;">        $(document).ready(</span><span style="background-color: #f5f5f5; color: #0000ff;">function</span><span style="background-color: #f5f5f5; color: #000000;"> () {
+</span><span style="color: #008080;">15</span>             <span style="background-color: #f5f5f5; color: #0000ff;">var</span><span style="background-color: #f5f5f5; color: #000000;"> arr </span><span style="background-color: #f5f5f5; color: #000000;">=</span><span style="background-color: #f5f5f5; color: #000000;"> [</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">四川大学</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">, </span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">西南交通大学</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">, </span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">电子科技大学</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">, </span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">西南财经大学</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">, </span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">西南民族大学</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">, </span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">中国民用航空飞行学院</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">, </span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">成都理工大学</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">, </span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">西华大学</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">, </span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">西南科技大学</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">, </span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">四川农业大学</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">, </span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">成都中医药大学</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">, </span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">四川师范大学</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">, </span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">西华师范大学</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">, </span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">西南石油大学</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">, </span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">成都信息工程学院</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">, </span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">四川理工学院</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">, </span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">泸州医学院</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">, </span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">川北医学院</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">, </span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">成都医学院</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">, </span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">乐山师范学院</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">, </span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">内江师范学院</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">, </span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">四川文理学院</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">, </span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">四川警察学院</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">, </span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">成都体育学院</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">, </span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">四川音乐学院</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">, </span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">四川民族学院</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">, </span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">成都学院</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">, </span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">西昌学院</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">, </span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">攀枝花学院</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">, </span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">宜宾学院</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">, </span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">绵阳师范学院</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">, </span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">成都理工大学工程技术学院</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">, </span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">成都理工大学广播影视学院</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">, </span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">成都信息工程学院银杏酒店管理学院</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">, </span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">四川师范大学文理学院</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">, </span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">四川师范大学成都学院</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">, </span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">四川外语学院成都学院</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">, </span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">电子科技大学成都学院</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">, </span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">四川大学锦城学院</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">, </span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">西南科技大学城市学院</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">, </span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">四川音乐学院绵阳艺术学院</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">, </span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">四川大学锦江学院</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">, </span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">西南财经大学天府学院</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">, </span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">西南交通大学希望学院</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">, </span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">成都电子机械高等专科学校</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">, </span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">四川烹饪高等专科学校</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">, </span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">成都纺织高等专科学校</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">, </span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">四川中医药高等专科学校</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">, </span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">阿坝师范高等专科学校</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">, </span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">四川幼儿师范高等专科学校</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">, </span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">民办四川天一学院</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">, </span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">成都航空职业技术学院</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">, </span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">泸州职业技术学院</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">, </span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">眉山职业技术学院</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">, </span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">四川文化传媒职业学院</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">, </span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">四川管理职业学院</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">, </span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">四川华新现代职业学院</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">, </span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">四川商务职业学院</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">, </span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">广安职业技术学院</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">, </span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">四川信息职业技术学院</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">, </span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">四川警安职业学院</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">, </span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">四川司法警官职业学院</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">, </span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">乐山职业技术学院</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">, </span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">内江职业技术学院</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">, </span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">四川机电职业技术学院</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">, </span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">四川交通职业技术学院</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">, </span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">达州职业技术学院</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">, </span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">四川建筑职业技术学院</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">, </span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">四川工商职业技术学院</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">, </span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">绵阳职业技术学院</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">, </span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">四川电力职业技术学院</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">, </span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">四川工程职业技术学院</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">, </span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">四川科技职业学院</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">, </span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">四川文化产业职业学院</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">, </span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">四川财经职业学院</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">, </span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">四川现代职业学院</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">, </span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">雅安职业技术学院</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">, </span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">四川国际标榜职业学院</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">, </span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">四川艺术职业学院</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">, </span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">四川邮电职业技术学院</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">, </span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">四川航天职业技术学院</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">, </span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">四川化工职业技术学院</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">, </span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">成都职业技术学院</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">, </span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">四川水利职业技术学院</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">, </span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">四川城市职业学院</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">, </span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">南充职业技术学院</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">, </span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">成都东软信息技术职业学院</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">, </span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">四川职业技术学院</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">, </span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">成都农业科技职业学院</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">, </span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">宜宾职业技术学院</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">, </span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">成都艺术职业学院</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">, </span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">四川托普信息技术职业学院</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">, </span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">中国工程物理研究院职工工学院</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">, </span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">四川教育学院</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">];
+</span><span style="color: #008080;">16</span> <span style="background-color: #f5f5f5; color: #000000;">            ;
+</span><span style="color: #008080;">17</span>             <span style="background-color: #f5f5f5; color: #0000ff;">var</span><span style="background-color: #f5f5f5; color: #000000;"> map </span><span style="background-color: #f5f5f5; color: #000000;">=</span> <span style="background-color: #f5f5f5; color: #0000ff;">new</span><span style="background-color: #f5f5f5; color: #000000;"> GMaps({
+</span><span style="color: #008080;">18</span> <span style="background-color: #f5f5f5; color: #000000;">                el: </span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">#map</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">,
+</span><span style="color: #008080;">19</span> <span style="background-color: #f5f5f5; color: #000000;">                lat: </span><span style="background-color: #f5f5f5; color: #000000;">30.657358499999994</span><span style="background-color: #f5f5f5; color: #000000;">,
+</span><span style="color: #008080;">20</span> <span style="background-color: #f5f5f5; color: #000000;">                lng: </span><span style="background-color: #f5f5f5; color: #000000;">104.049977</span>
+<span style="color: #008080;">21</span> <span style="background-color: #f5f5f5; color: #000000;">            });
+</span><span style="color: #008080;">22</span> 
+<span style="color: #008080;">23</span> 
+<span style="color: #008080;">24</span>             <span style="background-color: #f5f5f5; color: #0000ff;">var</span><span style="background-color: #f5f5f5; color: #000000;"> tb </span><span style="background-color: #f5f5f5; color: #000000;">=</span><span style="background-color: #f5f5f5; color: #000000;"> $(</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">#tb</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">);
+</span><span style="color: #008080;">25</span>             <span style="background-color: #f5f5f5; color: #0000ff;">for</span><span style="background-color: #f5f5f5; color: #000000;"> (</span><span style="background-color: #f5f5f5; color: #0000ff;">var</span><span style="background-color: #f5f5f5; color: #000000;"> i </span><span style="background-color: #f5f5f5; color: #000000;">=</span> <span style="background-color: #f5f5f5; color: #000000;">0</span><span style="background-color: #f5f5f5; color: #000000;">, len </span><span style="background-color: #f5f5f5; color: #000000;">=</span><span style="background-color: #f5f5f5; color: #000000;"> arr.length; i </span><span style="background-color: #f5f5f5; color: #000000;">&lt;</span><span style="background-color: #f5f5f5; color: #000000;"> len; i</span><span style="background-color: #f5f5f5; color: #000000;">++</span><span style="background-color: #f5f5f5; color: #000000;">) {
+</span><span style="color: #008080;">26</span>                 <span style="background-color: #f5f5f5; color: #0000ff;">var</span><span style="background-color: #f5f5f5; color: #000000;"> name </span><span style="background-color: #f5f5f5; color: #000000;">=</span><span style="background-color: #f5f5f5; color: #000000;"> arr[i];
+</span><span style="color: #008080;">27</span> <span style="background-color: #f5f5f5; color: #000000;">                (</span><span style="background-color: #f5f5f5; color: #0000ff;">function</span><span style="background-color: #f5f5f5; color: #000000;"> (name, i) {
+</span><span style="color: #008080;">28</span> <span style="background-color: #f5f5f5; color: #000000;">                    setTimeout(</span><span style="background-color: #f5f5f5; color: #0000ff;">function</span><span style="background-color: #f5f5f5; color: #000000;"> () {
+</span><span style="color: #008080;">29</span> <span style="background-color: #f5f5f5; color: #000000;">                        GMaps.geocode({
+</span><span style="color: #008080;">30</span> <span style="background-color: #f5f5f5; color: #000000;">                            address: name,
+</span><span style="color: #008080;">31</span> <span style="background-color: #f5f5f5; color: #000000;">                            callback: </span><span style="background-color: #f5f5f5; color: #0000ff;">function</span><span style="background-color: #f5f5f5; color: #000000;"> (r, s) {
+</span><span style="color: #008080;">32</span>                                 <span style="background-color: #f5f5f5; color: #0000ff;">if</span><span style="background-color: #f5f5f5; color: #000000;"> (s </span><span style="background-color: #f5f5f5; color: #000000;">==</span> <span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">OK</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">) {
+</span><span style="color: #008080;">33</span>                                     <span style="background-color: #f5f5f5; color: #0000ff;">var</span><span style="background-color: #f5f5f5; color: #000000;"> latlng </span><span style="background-color: #f5f5f5; color: #000000;">=</span><span style="background-color: #f5f5f5; color: #000000;"> r[</span><span style="background-color: #f5f5f5; color: #000000;">0</span><span style="background-color: #f5f5f5; color: #000000;">].geometry.location;
+</span><span style="color: #008080;">34</span> <span style="background-color: #f5f5f5; color: #000000;">                                    map.setCenter(latlng.lat(), latlng.lng());
+</span><span style="color: #008080;">35</span> <span style="background-color: #f5f5f5; color: #000000;">                                    map.addMarker({
+</span><span style="color: #008080;">36</span> <span style="background-color: #f5f5f5; color: #000000;">                                        lat: latlng.lat(),
+</span><span style="color: #008080;">37</span> <span style="background-color: #f5f5f5; color: #000000;">                                        lng: latlng.lng(),
+</span><span style="color: #008080;">38</span> <span style="background-color: #f5f5f5; color: #000000;">                                        title: name
+</span><span style="color: #008080;">39</span> <span style="background-color: #f5f5f5; color: #000000;">                                    });
+</span><span style="color: #008080;">40</span> 
+<span style="color: #008080;">41</span>                                     <span style="background-color: #f5f5f5; color: #0000ff;">var</span><span style="background-color: #f5f5f5; color: #000000;"> tr </span><span style="background-color: #f5f5f5; color: #000000;">=</span><span style="background-color: #f5f5f5; color: #000000;"> $(</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">&lt;tr&gt;&lt;/tr&gt;</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">);
+</span><span style="color: #008080;">42</span>                                     <span style="background-color: #f5f5f5; color: #0000ff;">var</span><span style="background-color: #f5f5f5; color: #000000;"> td </span><span style="background-color: #f5f5f5; color: #000000;">=</span><span style="background-color: #f5f5f5; color: #000000;"> $(</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">&lt;td&gt;</span><span style="background-color: #f5f5f5; color: #000000;">'</span> <span style="background-color: #f5f5f5; color: #000000;">+</span><span style="background-color: #f5f5f5; color: #000000;"> name </span><span style="background-color: #f5f5f5; color: #000000;">+</span> <span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">&lt;/td&gt;&lt;td&gt;</span><span style="background-color: #f5f5f5; color: #000000;">'</span> <span style="background-color: #f5f5f5; color: #000000;">+</span><span style="background-color: #f5f5f5; color: #000000;"> latlng.lat() </span><span style="background-color: #f5f5f5; color: #000000;">+</span> <span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">,</span><span style="background-color: #f5f5f5; color: #000000;">'</span> <span style="background-color: #f5f5f5; color: #000000;">+</span><span style="background-color: #f5f5f5; color: #000000;"> latlng.lng() </span><span style="background-color: #f5f5f5; color: #000000;">+</span> <span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">&lt;/td&gt;</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">);
+</span><span style="color: #008080;">43</span> <span style="background-color: #f5f5f5; color: #000000;">                                    tr.append(td);
+</span><span style="color: #008080;">44</span> <span style="background-color: #f5f5f5; color: #000000;">                                    tb.append(tr);
+</span><span style="color: #008080;">45</span> <span style="background-color: #f5f5f5; color: #000000;">                                }
+</span><span style="color: #008080;">46</span> <span style="background-color: #f5f5f5; color: #000000;">                            }
+</span><span style="color: #008080;">47</span> <span style="background-color: #f5f5f5; color: #000000;">                        });
+</span><span style="color: #008080;">48</span> <span style="background-color: #f5f5f5; color: #000000;">                    }, </span><span style="background-color: #f5f5f5; color: #000000;">10</span> <span style="background-color: #f5f5f5; color: #000000;">*</span><span style="background-color: #f5f5f5; color: #000000;"> i);
+</span><span style="color: #008080;">49</span> <span style="background-color: #f5f5f5; color: #000000;">                })(name, i);
+</span><span style="color: #008080;">50</span> <span style="background-color: #f5f5f5; color: #000000;">            }
+</span><span style="color: #008080;">51</span> 
+<span style="color: #008080;">52</span> 
+<span style="color: #008080;">53</span> <span style="background-color: #f5f5f5; color: #000000;">        });
+</span><span style="color: #008080;">54</span>     <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">script</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">55</span> <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">head</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">56</span> <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">body</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">57</span>     <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">div </span><span style="color: #ff0000;">id</span><span style="color: #0000ff;">="map"</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">58</span>     <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">div</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">59</span>     <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">table </span><span style="color: #ff0000;">id</span><span style="color: #0000ff;">="tb"</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">60</span>         <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">tr</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">61</span>             <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">td</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">62</span> <span style="color: #000000;">                名称
+</span><span style="color: #008080;">63</span>             <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">td</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">64</span>             <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">td</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">65</span> <span style="color: #000000;">                位置
+</span><span style="color: #008080;">66</span>             <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">td</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">67</span>         <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">tr</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">68</span>     <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">table</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">69</span> <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">body</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">70</span> <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">html</span><span style="color: #0000ff;">&gt;</span></pre>
+</div>
+</div>
+<p><img src="19919438210477.png" alt=""></p>
+<table style="width: 883px;" border="0" cellspacing="0" cellpadding="0"><colgroup><col width="300"> <col width="583"></colgroup>
+<tbody>
+<tr>
+<td class="xl63" width="300" height="16">名称</td>
+<td class="xl63" width="583">位置</td>
+</tr>
+<tr>
+<td class="xl63" width="300" height="16">四川大学</td>
+<td class="xl63" width="583">30.632278,104.08679299999994</td>
+</tr>
+<tr>
+<td class="xl63" width="300" height="16">西南交通大学</td>
+<td class="xl63" width="583">29.568325,103.45211419999998</td>
+</tr>
+<tr>
+<td class="xl63" width="300" height="16">电子科技大学</td>
+<td class="xl63" width="583">30.675104,104.10036100000002</td>
+</tr>
+<tr>
+<td class="xl63" width="300" height="16">西南财经大学</td>
+<td class="xl63" width="583">30.6646,104.01711</td>
+</tr>
+<tr>
+<td class="xl63" width="300" height="16">西南民族大学</td>
+<td class="xl63" width="583">30.6381136,104.05211110000005</td>
+</tr>
+<tr>
+<td class="xl63" width="300" height="16">中国民用航空飞行学院</td>
+<td class="xl63" width="583">30.95188,104.30784300000005</td>
+</tr>
+<tr>
+<td class="xl63" width="300" height="16">成都理工大学</td>
+<td class="xl63" width="583">30.673151,104.14298699999995</td>
+</tr>
+<tr>
+<td class="xl63" width="300" height="16">西华大学</td>
+<td class="xl63" width="583">30.634153,104.06710999999996</td>
+</tr>
+<tr>
+<td class="xl63" width="300" height="16">西南科技大学</td>
+<td class="xl63" width="583">31.535485,104.69739600000003</td>
+</tr>
+<tr>
+<td class="xl63" width="300" height="16">四川农业大学</td>
+<td class="xl63" width="583">29.977484,102.99369100000001</td>
+</tr>
+<tr>
+<td class="xl63" width="300" height="16">成都中医药大学</td>
+<td class="xl63" width="583">30.682799,103.81025699999998</td>
+</tr>
+<tr>
+<td class="xl63" width="300" height="16">西华师范大学</td>
+<td class="xl63" width="583">30.7974055,106.08870819999993</td>
+</tr>
+<tr>
+<td class="xl63" width="300" height="16">四川师范大学</td>
+<td class="xl63" width="583">30.608217,104.12046299999997</td>
+</tr>
+<tr>
+<td class="xl63" width="300" height="16">西南石油大学</td>
+<td class="xl63" width="583">30.8217896,104.18355880000001</td>
+</tr>
+<tr>
+<td class="xl63" width="300" height="16">成都信息工程学院</td>
+<td class="xl63" width="583">30.644946,104.06579499999998</td>
+</tr>
+<tr>
+<td class="xl63" width="300" height="16">泸州医学院</td>
+<td class="xl63" width="583">28.882316,105.44513600000005</td>
+</tr>
+<tr>
+<td class="xl63" width="300" height="16">川北医学院</td>
+<td class="xl63" width="583">30.795586,106.07915600000001</td>
+</tr>
+<tr>
+<td class="xl63" width="300" height="16">成都医学院</td>
+<td class="xl63" width="583">30.749365,104.11383000000001</td>
+</tr>
+<tr>
+<td class="xl63" width="300" height="16">乐山师范学院</td>
+<td class="xl63" width="583">29.55498,103.75279999999998</td>
+</tr>
+<tr>
+<td class="xl63" width="300" height="16">四川理工学院</td>
+<td class="xl63" width="583">30.691293,103.817994</td>
+</tr>
+<tr>
+<td class="xl63" width="300" height="16">成都体育学院</td>
+<td class="xl63" width="583">30.646466,104.04396799999995</td>
+</tr>
+<tr>
+<td class="xl63" width="300" height="16">内江师范学院</td>
+<td class="xl63" width="583">29.588892,105.04991100000007</td>
+</tr>
+<tr>
+<td class="xl63" width="300" height="16">四川文理学院</td>
+<td class="xl63" width="583">31.210814,107.48566700000003</td>
+</tr>
+<tr>
+<td class="xl63" width="300" height="16">四川警察学院</td>
+<td class="xl63" width="583">28.874513,105.431827</td>
+</tr>
+<tr>
+<td class="xl63" width="300" height="16">四川音乐学院</td>
+<td class="xl63" width="583">30.638649,104.07938999999999</td>
+</tr>
+<tr>
+<td class="xl63" width="300" height="16">四川民族学院</td>
+<td class="xl63" width="583">30.6361015,104.04933800000003</td>
+</tr>
+<tr>
+<td class="xl63" width="300" height="16">成都学院</td>
+<td class="xl63" width="583">30.8211452,103.9815489</td>
+</tr>
+<tr>
+<td class="xl63" width="300" height="16">西昌学院</td>
+<td class="xl63" width="583">27.945208,102.20954000000006</td>
+</tr>
+<tr>
+<td class="xl63" width="300" height="16">攀枝花学院</td>
+<td class="xl63" width="583">26.5670352,101.72353659999999</td>
+</tr>
+<tr>
+<td class="xl63" width="300" height="16">宜宾学院</td>
+<td class="xl63" width="583">28.790945,104.61263299999996</td>
+</tr>
+<tr>
+<td class="xl63" width="300" height="16">成都信息工程学院银杏酒店管理学院</td>
+<td class="xl63" width="583">30.7864588,103.95632139999998</td>
+</tr>
+<tr>
+<td class="xl63" width="300" height="16">绵阳师范学院</td>
+<td class="xl63" width="583">31.494497,104.77592000000004</td>
+</tr>
+<tr>
+<td class="xl63" width="300" height="16">成都理工大学工程技术学院</td>
+<td class="xl63" width="583">29.560394,103.72431699999993</td>
+</tr>
+<tr>
+<td class="xl63" width="300" height="16">成都理工大学广播影视学院</td>
+<td class="xl63" width="583">30.825179,103.981356</td>
+</tr>
+<tr>
+<td class="xl63" width="300" height="16">四川师范大学文理学院</td>
+<td class="xl63" width="583">30.6083283,104.16653100000008</td>
+</tr>
+<tr>
+<td class="xl63" width="300" height="16">四川师范大学成都学院</td>
+<td class="xl63" width="583">30.821234,103.98181899999997</td>
+</tr>
+<tr>
+<td class="xl63" width="300" height="16">四川外语学院成都学院</td>
+<td class="xl63" width="583">30.829334,103.57538</td>
+</tr>
+<tr>
+<td class="xl63" width="300" height="16">电子科技大学成都学院</td>
+<td class="xl63" width="583">30.729952,103.96324099999993</td>
+</tr>
+<tr>
+<td class="xl63" width="300" height="16">西南科技大学城市学院</td>
+<td class="xl63" width="583">31.443738,104.79513500000007</td>
+</tr>
+<tr>
+<td class="xl63" width="300" height="16">四川大学锦城学院</td>
+<td class="xl63" width="583">30.725417,103.95104500000002</td>
+</tr>
+<tr>
+<td class="xl63" width="300" height="16">西南交通大学希望学院</td>
+<td class="xl63" width="583">30.746804,106.04791999999998</td>
+</tr>
+<tr>
+<td class="xl63" width="300" height="16">四川音乐学院绵阳艺术学院</td>
+<td class="xl63" width="583">31.420544,104.763777</td>
+</tr>
+<tr>
+<td class="xl63" width="300" height="16">四川大学锦江学院</td>
+<td class="xl63" width="583">30.213946,103.87377600000002</td>
+</tr>
+<tr>
+<td class="xl63" width="300" height="16">成都电子机械高等专科学校</td>
+<td class="xl63" width="583">30.676769,104.048768</td>
+</tr>
+<tr>
+<td class="xl63" width="300" height="16">成都纺织高等专科学校</td>
+<td class="xl63" width="583">30.7586151,103.95988490000002</td>
+</tr>
+<tr>
+<td class="xl63" width="300" height="16">四川烹饪高等专科学校</td>
+<td class="xl63" width="583">30.579139,104.27734599999997</td>
+</tr>
+<tr>
+<td class="xl63" width="300" height="16">四川中医药高等专科学校</td>
+<td class="xl63" width="583">31.455273,104.75084330000004</td>
+</tr>
+<tr>
+<td class="xl63" width="300" height="16">阿坝师范高等专科学校</td>
+<td class="xl63" width="583">31.4702775,103.57603510000001</td>
+</tr>
+<tr>
+<td class="xl63" width="300" height="16">四川幼儿师范高等专科学校</td>
+<td class="xl63" width="583">30.651652,104.07593099999997</td>
+</tr>
+<tr>
+<td class="xl63" width="300" height="16">西南财经大学天府学院</td>
+<td class="xl63" width="583">31.493071,104.68737099999998</td>
+</tr>
+<tr>
+<td class="xl63" width="300" height="16">眉山职业技术学院</td>
+<td class="xl63" width="583">30.0358408,103.83557180000003</td>
+</tr>
+<tr>
+<td class="xl63" width="300" height="16">民办四川天一学院</td>
+<td class="xl63" width="583">30.5680356,104.26512449999996</td>
+</tr>
+<tr>
+<td class="xl63" width="300" height="16">四川管理职业学院</td>
+<td class="xl63" width="583">30.6646209,104.01193920000003</td>
+</tr>
+<tr>
+<td class="xl63" width="300" height="16">成都航空职业技术学院</td>
+<td class="xl63" width="583">30.529353,104.23955999999998</td>
+</tr>
+<tr>
+<td class="xl63" width="300" height="16">四川文化传媒职业学院</td>
+<td class="xl63" width="583">30.614098,103.677955</td>
+</tr>
+<tr>
+<td class="xl63" width="300" height="16">四川华新现代职业学院</td>
+<td class="xl63" width="583">30.539319,103.91459800000007</td>
+</tr>
+<tr>
+<td class="xl63" width="300" height="16">四川商务职业学院</td>
+<td class="xl63" width="583">30.692743,103.92368599999998</td>
+</tr>
+<tr>
+<td class="xl63" width="300" height="16">广安职业技术学院</td>
+<td class="xl63" width="583">30.463775,106.66608999999994</td>
+</tr>
+<tr>
+<td class="xl63" width="300" height="16">四川信息职业技术学院</td>
+<td class="xl63" width="583">32.43947,105.85393599999998</td>
+</tr>
+<tr>
+<td class="xl63" width="300" height="16">泸州职业技术学院</td>
+<td class="xl63" width="583">28.865876,105.42632600000002</td>
+</tr>
+<tr>
+<td class="xl63" width="300" height="16">内江职业技术学院</td>
+<td class="xl63" width="583">29.59454,105.06688800000006</td>
+</tr>
+<tr>
+<td class="xl63" width="300" height="16">四川司法警官职业学院</td>
+<td class="xl63" width="583">31.1301659,104.41259880000007</td>
+</tr>
+<tr>
+<td class="xl63" width="300" height="16">四川警安职业学院</td>
+<td class="xl63" width="583">31.323047,104.49960699999997</td>
+</tr>
+<tr>
+<td class="xl63" width="300" height="16">乐山职业技术学院</td>
+<td class="xl63" width="583">29.556832,103.74356399999999</td>
+</tr>
+<tr>
+<td class="xl63" width="300" height="16">四川交通职业技术学院</td>
+<td class="xl63" width="583">30.686475,103.81869099999994</td>
+</tr>
+<tr>
+<td class="xl63" width="300" height="16">四川机电职业技术学院</td>
+<td class="xl63" width="583">26.56832,101.76037999999994</td>
+</tr>
+<tr>
+<td class="xl63" width="300" height="16">达州职业技术学院</td>
+<td class="xl63" width="583">31.2810107,107.53018680000002</td>
+</tr>
+<tr>
+<td class="xl63" width="300" height="16">四川建筑职业技术学院</td>
+<td class="xl63" width="583">31.085562,104.38607300000001</td>
+</tr>
+<tr>
+<td class="xl63" width="300" height="16">四川工商职业技术学院</td>
+<td class="xl63" width="583">30.916133,103.69336699999997</td>
+</tr>
+<tr>
+<td class="xl63" width="300" height="16">绵阳职业技术学院</td>
+<td class="xl63" width="583">31.490128,104.78429400000005</td>
+</tr>
+<tr>
+<td class="xl63" width="300" height="16">四川文化产业职业学院</td>
+<td class="xl63" width="583">30.519122,104.03962899999999</td>
+</tr>
+<tr>
+<td class="xl63" width="300" height="16">四川国际标榜职业学院</td>
+<td class="xl63" width="583">30.597239,104.29942600000004</td>
+</tr>
+<tr>
+<td class="xl63" width="300" height="16">四川电力职业技术学院</td>
+<td class="xl63" width="583">30.719586,103.83697099999995</td>
+</tr>
+<tr>
+<td class="xl63" width="300" height="16">四川工程职业技术学院</td>
+<td class="xl63" width="583">31.091347,104.38872500000002</td>
+</tr>
+<tr>
+<td class="xl63" width="300" height="16">四川科技职业学院</td>
+<td class="xl63" width="583">30.8233017,103.98101789999998</td>
+</tr>
+<tr>
+<td class="xl63" width="300" height="16">四川现代职业学院</td>
+<td class="xl63" width="583">30.5212762,103.99990019999996</td>
+</tr>
+<tr>
+<td class="xl63" width="300" height="16">雅安职业技术学院</td>
+<td class="xl63" width="583">29.97853,103.01496999999995</td>
+</tr>
+<tr>
+<td class="xl63" width="300" height="16">四川艺术职业学院</td>
+<td class="xl63" width="583">30.6463276,104.16460200000006</td>
+</tr>
+<tr>
+<td class="xl63" width="300" height="16">四川邮电职业技术学院</td>
+<td class="xl63" width="583">30.62012,104.12373400000001</td>
+</tr>
+<tr>
+<td class="xl63" width="300" height="16">四川财经职业学院</td>
+<td class="xl63" width="583">30.5776231,104.21111580000002</td>
+</tr>
+<tr>
+<td class="xl63" width="300" height="16">四川水利职业技术学院</td>
+<td class="xl63" width="583">30.9923311,103.61572130000002</td>
+</tr>
+<tr>
+<td class="xl63" width="300" height="16">四川职业技术学院</td>
+<td class="xl63" width="583">29.59454,105.06688800000006</td>
+</tr>
+<tr>
+<td class="xl63" width="300" height="16">四川城市职业学院</td>
+<td class="xl63" width="583">30.6085892,104.16698399999996</td>
+</tr>
+<tr>
+<td class="xl63" width="300" height="16">四川航天职业技术学院</td>
+<td class="xl63" width="583">30.5537694,104.26544339999998</td>
+</tr>
+<tr>
+<td class="xl63" width="300" height="16">成都职业技术学院</td>
+<td class="xl63" width="583">30.5942018,104.06126549999999</td>
+</tr>
+<tr>
+<td class="xl63" width="300" height="16">四川化工职业技术学院</td>
+<td class="xl63" width="583">28.86498,105.42272700000001</td>
+</tr>
+<tr>
+<td class="xl63" width="300" height="16">成都东软信息技术职业学院</td>
+<td class="xl63" width="583">30.889109,103.59484099999997</td>
+</tr>
+<tr>
+<td class="xl63" width="300" height="16">成都农业科技职业学院</td>
+<td class="xl63" width="583">30.6949737,103.81747010000004</td>
+</tr>
+<tr>
+<td class="xl63" width="300" height="16">宜宾职业技术学院</td>
+<td class="xl63" width="583">28.712597,104.57818700000007</td>
+</tr>
+<tr>
+<td class="xl63" width="300" height="16">南充职业技术学院</td>
+<td class="xl63" width="583">30.850018,106.15655500000003</td>
+</tr>
+<tr>
+<td class="xl63" width="300" height="16">中国工程物理研究院职工工学院</td>
+<td class="xl63" width="583">35.86166,104.19539699999996</td>
+</tr>
+<tr>
+<td class="xl63" width="300" height="16">四川教育学院</td>
+<td class="xl63" width="583">31.132059,104.38520800000003</td>
+</tr>
+<tr>
+<td class="xl63" width="300" height="16">成都艺术职业学院</td>
+<td class="xl63" width="583">30.48657369999999,103.88415220000002</td>
+</tr>
+<tr>
+<td class="xl63" width="300" height="16">四川托普信息技术职业学院</td>
+<td class="xl63" width="583">30.7787636,103.92162740000003</td>
+</tr>
+</tbody>
+</table>
+<p>PS：大家运行过程中若是有问题可将此时间点加长：</p>
+<div class="cnblogs_code">
+<pre><span style="color: #000000;">setTimeout(function () {
+    GMaps.geocode({
+        address: name,
+        callback: function (r, s) {
+            if (s == 'OK') {
+                var latlng = r[0].geometry.location;
+                map.setCenter(latlng.lat(), latlng.lng());
+                map.addMarker({
+                    lat: latlng.lat(),
+                    lng: latlng.lng(),
+                    title: name
+                });
+
+                var tr = $('</span><span style="color: #0000ff;">&lt;</span><span style="color: #800000;">tr</span><span style="color: #0000ff;">&gt;&lt;/</span><span style="color: #800000;">tr</span><span style="color: #0000ff;">&gt;</span><span style="color: #000000;">');
+                var td = $('</span><span style="color: #0000ff;">&lt;</span><span style="color: #800000;">td</span><span style="color: #0000ff;">&gt;</span>' + name + '<span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">td</span><span style="color: #0000ff;">&gt;&lt;</span><span style="color: #800000;">td</span><span style="color: #0000ff;">&gt;</span>' + latlng.lat() + ',' + latlng.lng() + '<span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">td</span><span style="color: #0000ff;">&gt;</span><span style="color: #000000;">');
+                tr.append(td);
+                tb.append(tr);
+            }
+        }
+    });
+}, <span style="color: #ff0000;"><strong>10 * i</strong></span>);</span></pre>
+</div>
+<p>好了下一步我们将数据导入！</p>
+<h1>导入四川所有大学数据</h1>
+<p>&nbsp;<img src="37544175269093.png" alt=""></p>
+<p><span style="color: #ff0000;"><strong>导入过程中注意UTF-8编码，否则</strong></span></p>
+<p>&nbsp;<img src="3142607866899.png" alt=""></p>
+<p><img src="50340798028577.png" alt=""></p>
+<p><span style="color: #ff0000;"><strong>然后请选择右上角的分享！！！</strong></span></p>
+<p>于是我们来试试代码吧：</p>
+<div class="cnblogs_code">
+<pre><span style="color: #008080;"> 1</span> <span style="color: #0000ff;">&lt;!</span><span style="color: #ff00ff;">DOCTYPE html</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 2</span> <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">html </span><span style="color: #ff0000;">xmlns</span><span style="color: #0000ff;">="http://www.w3.org/1999/xhtml"</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 3</span> <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">head</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 4</span>     <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">title</span><span style="color: #0000ff;">&gt;</span>获取当前位置<span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">title</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 5</span>     <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">style </span><span style="color: #ff0000;">type</span><span style="color: #0000ff;">="text/css"</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 6</span> <span style="background-color: #f5f5f5; color: #800000;">        #map </span><span style="background-color: #f5f5f5; color: #000000;">{</span><span style="background-color: #f5f5f5; color: #ff0000;"> width</span><span style="background-color: #f5f5f5; color: #000000;">:</span><span style="background-color: #f5f5f5; color: #0000ff;"> 1200px</span><span style="background-color: #f5f5f5; color: #000000;">;</span><span style="background-color: #f5f5f5; color: #ff0000;"> height</span><span style="background-color: #f5f5f5; color: #000000;">:</span><span style="background-color: #f5f5f5; color: #0000ff;"> 500px</span><span style="background-color: #f5f5f5; color: #000000;">;</span> <span style="background-color: #f5f5f5; color: #000000;">}</span>
+<span style="color: #008080;"> 7</span> <span style="background-color: #f5f5f5; color: #800000;">        ul, li </span><span style="background-color: #f5f5f5; color: #000000;">{</span><span style="background-color: #f5f5f5; color: #ff0000;"> padding</span><span style="background-color: #f5f5f5; color: #000000;">:</span><span style="background-color: #f5f5f5; color: #0000ff;"> 0</span><span style="background-color: #f5f5f5; color: #000000;">;</span><span style="background-color: #f5f5f5; color: #ff0000;"> list-style</span><span style="background-color: #f5f5f5; color: #000000;">:</span><span style="background-color: #f5f5f5; color: #0000ff;"> none</span><span style="background-color: #f5f5f5; color: #000000;">;</span><span style="background-color: #f5f5f5; color: #ff0000;"> margin</span><span style="background-color: #f5f5f5; color: #000000;">:</span><span style="background-color: #f5f5f5; color: #0000ff;"> 0</span><span style="background-color: #f5f5f5; color: #000000;">;</span> <span style="background-color: #f5f5f5; color: #000000;">}</span>
+<span style="color: #008080;"> 8</span> <span style="background-color: #f5f5f5; color: #800000;">        ul </span><span style="background-color: #f5f5f5; color: #000000;">{</span><span style="background-color: #f5f5f5; color: #ff0000;"> padding</span><span style="background-color: #f5f5f5; color: #000000;">:</span><span style="background-color: #f5f5f5; color: #0000ff;"> 10px</span><span style="background-color: #f5f5f5; color: #000000;">;</span><span style="background-color: #f5f5f5; color: #ff0000;"> border</span><span style="background-color: #f5f5f5; color: #000000;">:</span><span style="background-color: #f5f5f5; color: #0000ff;"> 1px solid black</span><span style="background-color: #f5f5f5; color: #000000;">;</span><span style="background-color: #f5f5f5; color: #ff0000;"> border-radius</span><span style="background-color: #f5f5f5; color: #000000;">:</span><span style="background-color: #f5f5f5; color: #0000ff;"> 5px</span><span style="background-color: #f5f5f5; color: #000000;">;</span><span style="background-color: #f5f5f5; color: #ff0000;"> background</span><span style="background-color: #f5f5f5; color: #000000;">:</span><span style="background-color: #f5f5f5; color: #0000ff;"> white</span><span style="background-color: #f5f5f5; color: #000000;">;</span><span style="background-color: #f5f5f5; color: #ff0000;"> position</span><span style="background-color: #f5f5f5; color: #000000;">:</span><span style="background-color: #f5f5f5; color: #0000ff;"> absolute</span><span style="background-color: #f5f5f5; color: #000000;">;</span><span style="background-color: #f5f5f5; color: #ff0000;"> left</span><span style="background-color: #f5f5f5; color: #000000;">:</span><span style="background-color: #f5f5f5; color: #0000ff;"> 1000px</span><span style="background-color: #f5f5f5; color: #000000;">;</span><span style="background-color: #f5f5f5; color: #ff0000;"> top</span><span style="background-color: #f5f5f5; color: #000000;">:</span><span style="background-color: #f5f5f5; color: #0000ff;"> 300px</span><span style="background-color: #f5f5f5; color: #000000;">;</span> <span style="background-color: #f5f5f5; color: #000000;">}</span>
+<span style="color: #008080;"> 9</span>     <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">style</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">10</span>     <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">script </span><span style="color: #ff0000;">src</span><span style="color: #0000ff;">="js/jquery-1.7.1.js"</span><span style="color: #ff0000;"> type</span><span style="color: #0000ff;">="text/javascript"</span><span style="color: #0000ff;">&gt;&lt;/</span><span style="color: #800000;">script</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">11</span>     <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">script </span><span style="color: #ff0000;">type</span><span style="color: #0000ff;">="text/javascript"</span><span style="color: #ff0000;"> src</span><span style="color: #0000ff;">="http://maps.google.com/maps/api/js?sensor=true"</span><span style="color: #0000ff;">&gt;&lt;/</span><span style="color: #800000;">script</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">12</span>     <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">script </span><span style="color: #ff0000;">src</span><span style="color: #0000ff;">="js/gmaps.js"</span><span style="color: #ff0000;"> type</span><span style="color: #0000ff;">="text/javascript"</span><span style="color: #0000ff;">&gt;&lt;/</span><span style="color: #800000;">script</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">13</span>     <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">script </span><span style="color: #ff0000;">type</span><span style="color: #0000ff;">="text/javascript"</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">14</span>         <span style="background-color: #f5f5f5; color: #0000ff;">var</span><span style="background-color: #f5f5f5; color: #000000;"> map, infoWindow;
+</span><span style="color: #008080;">15</span> <span style="background-color: #f5f5f5; color: #000000;">        $(document).ready(</span><span style="background-color: #f5f5f5; color: #0000ff;">function</span><span style="background-color: #f5f5f5; color: #000000;"> () {
+</span><span style="color: #008080;">16</span> <span style="background-color: #f5f5f5; color: #000000;">            infoWindow </span><span style="background-color: #f5f5f5; color: #000000;">=</span> <span style="background-color: #f5f5f5; color: #0000ff;">new</span><span style="background-color: #f5f5f5; color: #000000;"> google.maps.InfoWindow({});
+</span><span style="color: #008080;">17</span> <span style="background-color: #f5f5f5; color: #000000;">            map </span><span style="background-color: #f5f5f5; color: #000000;">=</span> <span style="background-color: #f5f5f5; color: #0000ff;">new</span><span style="background-color: #f5f5f5; color: #000000;"> GMaps({
+</span><span style="color: #008080;">18</span> <span style="background-color: #f5f5f5; color: #000000;">                el: </span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">#map</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">,
+</span><span style="color: #008080;">19</span> <span style="background-color: #f5f5f5; color: #000000;">                zoom: </span><span style="background-color: #f5f5f5; color: #000000;">11</span><span style="background-color: #f5f5f5; color: #000000;">,
+</span><span style="color: #008080;">20</span> <span style="background-color: #f5f5f5; color: #000000;">                lat: </span><span style="background-color: #f5f5f5; color: #000000;">30.657358499999994</span><span style="background-color: #f5f5f5; color: #000000;">,
+</span><span style="color: #008080;">21</span> <span style="background-color: #f5f5f5; color: #000000;">                lng: </span><span style="background-color: #f5f5f5; color: #000000;">104.049977</span>
+<span style="color: #008080;">22</span> <span style="background-color: #f5f5f5; color: #000000;">            });
+</span><span style="color: #008080;">23</span> <span style="background-color: #f5f5f5; color: #000000;">            map.loadFromFusionTables({
+</span><span style="color: #008080;">24</span> <span style="background-color: #f5f5f5; color: #000000;">                query: {
+</span><span style="color: #008080;">25</span> <span style="background-color: #f5f5f5; color: #000000;">                    select: </span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">Location</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">,
+</span><span style="color: #008080;">26</span> <span style="background-color: #f5f5f5; color: #000000;">                    from: </span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">1WDn3ksr-bYGEaYpeO8BEC-TwZJ5zdM5otx1oe7M</span><span style="background-color: #f5f5f5; color: #000000;">'</span>
+<span style="color: #008080;">27</span> <span style="background-color: #f5f5f5; color: #000000;">                } 
+</span><span style="color: #008080;">28</span> <span style="background-color: #f5f5f5; color: #000000;">            });
+</span><span style="color: #008080;">29</span> <span style="background-color: #f5f5f5; color: #000000;">        });
+</span><span style="color: #008080;">30</span>     <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">script</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">31</span> <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">head</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">32</span> <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">body</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">33</span>     <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">div </span><span style="color: #ff0000;">id</span><span style="color: #0000ff;">="map"</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">34</span>     <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">div</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">35</span> <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">body</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">36</span> <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">html</span><span style="color: #0000ff;">&gt;</span></pre>
+</div>
+<p>于是四川所有的学校出来啦！！！！</p>
+<p><img src="37779999260412.png" alt=""></p>
+<p>基本功能完成后我们来干点其他事情，因为我们肯定会有检索条件的，所以我们这边给6种搜索条件（这里我变使用纬度经度分类了）</p>
+<p>为什么是6种不是5种呢？因为google api写的最多好像是5种，所以我想试试6种会怎么样了。。。。</p>
+<h1>加入搜索条件</h1>
+<p>这里我们在原表中做一个手脚，在后面加入一个自动编号，作为后面的搜索条件，所以每行数据多了个no编号。</p>
+<p><img src="15222646606648.png" alt=""></p>
+<h2>第一步，简单与恶心的实现</h2>
+<p>现在简单一般都有以下特点：</p>
+<p>1 代码量大</p>
+<p>2 思维简单</p>
+<p>3 效果不好</p>
+<p>4 恶心</p>
+<p>不信见以下代码：</p>
+<div class="cnblogs_code" onclick="cnblogs_code_show('f621f97a-ee35-49eb-a002-3d67b3d34540')"><img id="code_img_closed_f621f97a-ee35-49eb-a002-3d67b3d34540" class="code_img_closed" src="43570758473519.gif" alt=""><img id="code_img_opened_f621f97a-ee35-49eb-a002-3d67b3d34540" class="code_img_opened" style="display: none;" onclick="cnblogs_code_hide('f621f97a-ee35-49eb-a002-3d67b3d34540',event)" src="16365178109279.gif" alt=""><span class="cnblogs_code_collapse">丑陋的代码</span>
+<div id="cnblogs_code_open_f621f97a-ee35-49eb-a002-3d67b3d34540" class="cnblogs_code_hide">
+<pre><span style="color: #008080;"> 1</span> <span style="color: #0000ff;">&lt;!</span><span style="color: #ff00ff;">DOCTYPE html</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 2</span> <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">html </span><span style="color: #ff0000;">xmlns</span><span style="color: #0000ff;">="http://www.w3.org/1999/xhtml"</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 3</span> <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">head</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 4</span>     <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">title</span><span style="color: #0000ff;">&gt;</span>获取当前位置<span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">title</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 5</span>     <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">style </span><span style="color: #ff0000;">type</span><span style="color: #0000ff;">="text/css"</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 6</span> <span style="background-color: #f5f5f5; color: #800000;">        #map </span><span style="background-color: #f5f5f5; color: #000000;">{</span><span style="background-color: #f5f5f5; color: #ff0000;"> width</span><span style="background-color: #f5f5f5; color: #000000;">:</span><span style="background-color: #f5f5f5; color: #0000ff;"> 1200px</span><span style="background-color: #f5f5f5; color: #000000;">;</span><span style="background-color: #f5f5f5; color: #ff0000;"> height</span><span style="background-color: #f5f5f5; color: #000000;">:</span><span style="background-color: #f5f5f5; color: #0000ff;"> 500px</span><span style="background-color: #f5f5f5; color: #000000;">;</span> <span style="background-color: #f5f5f5; color: #000000;">}</span>
+<span style="color: #008080;"> 7</span> <span style="background-color: #f5f5f5; color: #800000;">        ul, li </span><span style="background-color: #f5f5f5; color: #000000;">{</span><span style="background-color: #f5f5f5; color: #ff0000;"> padding</span><span style="background-color: #f5f5f5; color: #000000;">:</span><span style="background-color: #f5f5f5; color: #0000ff;"> 0</span><span style="background-color: #f5f5f5; color: #000000;">;</span><span style="background-color: #f5f5f5; color: #ff0000;"> list-style</span><span style="background-color: #f5f5f5; color: #000000;">:</span><span style="background-color: #f5f5f5; color: #0000ff;"> none</span><span style="background-color: #f5f5f5; color: #000000;">;</span><span style="background-color: #f5f5f5; color: #ff0000;"> margin</span><span style="background-color: #f5f5f5; color: #000000;">:</span><span style="background-color: #f5f5f5; color: #0000ff;"> 0</span><span style="background-color: #f5f5f5; color: #000000;">;</span> <span style="background-color: #f5f5f5; color: #000000;">}</span>
+<span style="color: #008080;"> 8</span> <span style="background-color: #f5f5f5; color: #800000;">        ul </span><span style="background-color: #f5f5f5; color: #000000;">{</span><span style="background-color: #f5f5f5; color: #ff0000;"> padding</span><span style="background-color: #f5f5f5; color: #000000;">:</span><span style="background-color: #f5f5f5; color: #0000ff;"> 10px</span><span style="background-color: #f5f5f5; color: #000000;">;</span><span style="background-color: #f5f5f5; color: #ff0000;"> border</span><span style="background-color: #f5f5f5; color: #000000;">:</span><span style="background-color: #f5f5f5; color: #0000ff;"> 1px solid black</span><span style="background-color: #f5f5f5; color: #000000;">;</span><span style="background-color: #f5f5f5; color: #ff0000;"> border-radius</span><span style="background-color: #f5f5f5; color: #000000;">:</span><span style="background-color: #f5f5f5; color: #0000ff;"> 5px</span><span style="background-color: #f5f5f5; color: #000000;">;</span><span style="background-color: #f5f5f5; color: #ff0000;"> background</span><span style="background-color: #f5f5f5; color: #000000;">:</span><span style="background-color: #f5f5f5; color: #0000ff;"> white</span><span style="background-color: #f5f5f5; color: #000000;">;</span><span style="background-color: #f5f5f5; color: #ff0000;"> position</span><span style="background-color: #f5f5f5; color: #000000;">:</span><span style="background-color: #f5f5f5; color: #0000ff;"> absolute</span><span style="background-color: #f5f5f5; color: #000000;">;</span><span style="background-color: #f5f5f5; color: #ff0000;"> left</span><span style="background-color: #f5f5f5; color: #000000;">:</span><span style="background-color: #f5f5f5; color: #0000ff;"> 1000px</span><span style="background-color: #f5f5f5; color: #000000;">;</span><span style="background-color: #f5f5f5; color: #ff0000;"> top</span><span style="background-color: #f5f5f5; color: #000000;">:</span><span style="background-color: #f5f5f5; color: #0000ff;"> 300px</span><span style="background-color: #f5f5f5; color: #000000;">;</span> <span style="background-color: #f5f5f5; color: #000000;">}</span>
+<span style="color: #008080;"> 9</span>     <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">style</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">10</span>     <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">script </span><span style="color: #ff0000;">src</span><span style="color: #0000ff;">="js/jquery-1.7.1.js"</span><span style="color: #ff0000;"> type</span><span style="color: #0000ff;">="text/javascript"</span><span style="color: #0000ff;">&gt;&lt;/</span><span style="color: #800000;">script</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">11</span>     <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">script </span><span style="color: #ff0000;">type</span><span style="color: #0000ff;">="text/javascript"</span><span style="color: #ff0000;"> src</span><span style="color: #0000ff;">="http://maps.google.com/maps/api/js?sensor=true"</span><span style="color: #0000ff;">&gt;&lt;/</span><span style="color: #800000;">script</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">12</span>     <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">script </span><span style="color: #ff0000;">src</span><span style="color: #0000ff;">="js/gmaps.js"</span><span style="color: #ff0000;"> type</span><span style="color: #0000ff;">="text/javascript"</span><span style="color: #0000ff;">&gt;&lt;/</span><span style="color: #800000;">script</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">13</span>     <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">script </span><span style="color: #ff0000;">type</span><span style="color: #0000ff;">="text/javascript"</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">14</span> <span style="background-color: #f5f5f5; color: #000000;">        $(document).ready(</span><span style="background-color: #f5f5f5; color: #0000ff;">function</span><span style="background-color: #f5f5f5; color: #000000;"> () {
+</span><span style="color: #008080;">15</span>             <span style="background-color: #f5f5f5; color: #0000ff;">var</span><span style="background-color: #f5f5f5; color: #000000;"> map;
+</span><span style="color: #008080;">16</span>             <span style="background-color: #f5f5f5; color: #0000ff;">function</span><span style="background-color: #f5f5f5; color: #000000;"> getMap() {
+</span><span style="color: #008080;">17</span> <span style="background-color: #f5f5f5; color: #000000;">                map </span><span style="background-color: #f5f5f5; color: #000000;">=</span> <span style="background-color: #f5f5f5; color: #0000ff;">new</span><span style="background-color: #f5f5f5; color: #000000;"> GMaps({
+</span><span style="color: #008080;">18</span> <span style="background-color: #f5f5f5; color: #000000;">                    el: </span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">#map</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">,
+</span><span style="color: #008080;">19</span> <span style="background-color: #f5f5f5; color: #000000;">                    zoom: </span><span style="background-color: #f5f5f5; color: #000000;">11</span><span style="background-color: #f5f5f5; color: #000000;">,
+</span><span style="color: #008080;">20</span> <span style="background-color: #f5f5f5; color: #000000;">                    lat: </span><span style="background-color: #f5f5f5; color: #000000;">30.657358499999994</span><span style="background-color: #f5f5f5; color: #000000;">,
+</span><span style="color: #008080;">21</span> <span style="background-color: #f5f5f5; color: #000000;">                    lng: </span><span style="background-color: #f5f5f5; color: #000000;">104.049977</span>
+<span style="color: #008080;">22</span> <span style="background-color: #f5f5f5; color: #000000;">                });
+</span><span style="color: #008080;">23</span> <span style="background-color: #f5f5f5; color: #000000;">            }
+</span><span style="color: #008080;">24</span>             <span style="background-color: #f5f5f5; color: #0000ff;">function</span><span style="background-color: #f5f5f5; color: #000000;"> loadFusionTable(opt) {
+</span><span style="color: #008080;">25</span>                 <span style="background-color: #f5f5f5; color: #0000ff;">if</span><span style="background-color: #f5f5f5; color: #000000;"> (</span><span style="background-color: #f5f5f5; color: #000000;">!</span><span style="background-color: #f5f5f5; color: #000000;">opt) {
+</span><span style="color: #008080;">26</span> <span style="background-color: #f5f5f5; color: #000000;">                    opt </span><span style="background-color: #f5f5f5; color: #000000;">=</span> <span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">1=1</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">;
+</span><span style="color: #008080;">27</span> <span style="background-color: #f5f5f5; color: #000000;">                }
+</span><span style="color: #008080;">28</span> <span style="background-color: #f5f5f5; color: #000000;">                map.loadFromFusionTables({
+</span><span style="color: #008080;">29</span> <span style="background-color: #f5f5f5; color: #000000;">                    query: {
+</span><span style="color: #008080;">30</span> <span style="background-color: #f5f5f5; color: #000000;">                        select: </span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">Location</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">,
+</span><span style="color: #008080;">31</span> <span style="background-color: #f5f5f5; color: #000000;">                        from: </span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">13W-mWrG2SOkFiS-6UsjGUxarYxxDidnStg4Md6E</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">,
+</span><span style="color: #008080;">32</span> <span style="background-color: #f5f5f5; color: #000000;">                        where: opt
+</span><span style="color: #008080;">33</span> <span style="background-color: #f5f5f5; color: #000000;">                    }
+</span><span style="color: #008080;">34</span> <span style="background-color: #f5f5f5; color: #000000;">                });
+</span><span style="color: #008080;">35</span> <span style="background-color: #f5f5f5; color: #000000;">            }
+</span><span style="color: #008080;">36</span> 
+<span style="color: #008080;">37</span> <span style="background-color: #f5f5f5; color: #000000;">            getMap();
+</span><span style="color: #008080;">38</span> 
+<span style="color: #008080;">39</span> <span style="background-color: #f5f5f5; color: #000000;">            $(</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">input</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">).click(</span><span style="background-color: #f5f5f5; color: #0000ff;">function</span><span style="background-color: #f5f5f5; color: #000000;"> () {
+</span><span style="color: #008080;">40</span> <span style="background-color: #f5f5f5; color: #000000;">                getMap();
+</span><span style="color: #008080;">41</span> <span style="background-color: #f5f5f5; color: #000000;">                $(</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">input</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">).each(</span><span style="background-color: #f5f5f5; color: #0000ff;">function</span><span style="background-color: #f5f5f5; color: #000000;"> () {
+</span><span style="color: #008080;">42</span>                     <span style="background-color: #f5f5f5; color: #0000ff;">var</span><span style="background-color: #f5f5f5; color: #000000;"> el </span><span style="background-color: #f5f5f5; color: #000000;">=</span><span style="background-color: #f5f5f5; color: #000000;"> $(</span><span style="background-color: #f5f5f5; color: #0000ff;">this</span><span style="background-color: #f5f5f5; color: #000000;">);
+</span><span style="color: #008080;">43</span>                     <span style="background-color: #f5f5f5; color: #0000ff;">if</span><span style="background-color: #f5f5f5; color: #000000;"> (el.attr(</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">checked</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">)) {
+</span><span style="color: #008080;">44</span> <span style="background-color: #f5f5f5; color: #000000;">                        loadFusionTable(el.val());
+</span><span style="color: #008080;">45</span> <span style="background-color: #f5f5f5; color: #000000;">                    }
+</span><span style="color: #008080;">46</span> <span style="background-color: #f5f5f5; color: #000000;">                });
+</span><span style="color: #008080;">47</span> <span style="background-color: #f5f5f5; color: #000000;">            });
+</span><span style="color: #008080;">48</span> 
+<span style="color: #008080;">49</span> <span style="background-color: #f5f5f5; color: #000000;">        });                   </span><span style="background-color: #f5f5f5; color: #008000;">//</span><span style="background-color: #f5f5f5; color: #008000;">$(document)</span>
+<span style="color: #008080;">50</span>     <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">script</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">51</span> <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">head</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">52</span> <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">body</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">53</span>     <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">div </span><span style="color: #ff0000;">id</span><span style="color: #0000ff;">="map"</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">54</span>     <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">div</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">55</span>     <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">label</span><span style="color: #0000ff;">&gt;&lt;</span><span style="color: #800000;">input </span><span style="color: #ff0000;">type</span><span style="color: #0000ff;">="checkbox"</span><span style="color: #ff0000;"> value</span><span style="color: #0000ff;">="no&lt;10"</span>  <span style="color: #0000ff;">/&gt;</span> NO 0-10的大学<span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">label</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">56</span>     <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">label</span><span style="color: #0000ff;">&gt;&lt;</span><span style="color: #800000;">input </span><span style="color: #ff0000;">type</span><span style="color: #0000ff;">="checkbox"</span><span style="color: #ff0000;"> value</span><span style="color: #0000ff;">="no&gt;10 AND  no&lt;20"</span> <span style="color: #0000ff;">/&gt;</span> NO 10-20的大学<span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">label</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">57</span>     <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">label</span><span style="color: #0000ff;">&gt;&lt;</span><span style="color: #800000;">input </span><span style="color: #ff0000;">type</span><span style="color: #0000ff;">="checkbox"</span><span style="color: #ff0000;"> value</span><span style="color: #0000ff;">="no&gt;20 AND  no&lt;30"</span> <span style="color: #0000ff;">/&gt;</span> NO 20-30的大学<span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">label</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">58</span>     <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">label</span><span style="color: #0000ff;">&gt;&lt;</span><span style="color: #800000;">input </span><span style="color: #ff0000;">type</span><span style="color: #0000ff;">="checkbox"</span><span style="color: #ff0000;"> value</span><span style="color: #0000ff;">="no&gt;30 AND  no&lt;40"</span> <span style="color: #0000ff;">/&gt;</span> NO 30-40的大学<span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">label</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">59</span>     <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">label</span><span style="color: #0000ff;">&gt;&lt;</span><span style="color: #800000;">input </span><span style="color: #ff0000;">type</span><span style="color: #0000ff;">="checkbox"</span><span style="color: #ff0000;"> value</span><span style="color: #0000ff;">="no&gt;40 AND  no&lt;50"</span> <span style="color: #0000ff;">/&gt;</span> NO 40-50的大学<span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">label</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">60</span>     <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">label</span><span style="color: #0000ff;">&gt;&lt;</span><span style="color: #800000;">input </span><span style="color: #ff0000;">type</span><span style="color: #0000ff;">="checkbox"</span><span style="color: #ff0000;"> value</span><span style="color: #0000ff;">="no&gt;50"</span> <span style="color: #0000ff;">/&gt;</span> NO 大于50的大学<span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">label</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">61</span> 
+<span style="color: #008080;">62</span> <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">body</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">63</span> <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">html</span><span style="color: #0000ff;">&gt;</span></pre>
+</div>
+</div>
+<p><img src="18575419725798.png" alt=""></p>
+<p><span style="color: #ff0000; font-size: 16px;"><strong>这样的话，没点一次由于需要清除以前的，我迫不得已重新加载了一次地图！！！！解决方案，我没有找到！！！！</strong></span></p>
+<h1>结语</h1>
+<p>今天这块东西，有点问题，现在我还在搞下面的筛选功能，等下搞出来了再加上吧。&nbsp;</p>
+                </div>
+
+                <div class='span3 sidebar'>
+                    <h2>导航栏</h2>
+                    <ul class="nav nav-tabs nav-stacked">
+                             				<li><a href="http://songboriceboy.github.io/xxoo/html/jkxx/GoogleFusionTablesAPIctdtyyjs/index.html">【GoogleFusionTablesAPI初探】地图与云计算</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/jkxx/qdkjzBootstrap01wmyqlkkzgjhssm/index.html">【前端框架之Bootstrap01】我们一起来看看这个家伙是什么</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/jkxx/qdkjzBootstrap02bjydh/index.html">【前端框架之Bootstrap02】布局与导航</a></li>
+    				                                         
+                    </ul>
+                </div>
+            </div>
+
+        </div>
+    </body>
+</html>

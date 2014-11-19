@@ -1,0 +1,1273 @@
+﻿<!DOCTYPE html>
+
+<html lang="zh">
+    <head>
+        <meta charset="utf-8">
+        <meta name="description" content="android,ios" />
+        <meta name="keywords" content="android,ios" />
+
+        <title>叶小钗</title>
+        <style type='text/css'>
+            body {
+                background-color: #CCC;
+            }
+        </style>
+        <link rel="stylesheet" href="../../../css/bootstrap.css" />
+    </head>
+
+    <body>
+        <div class="container">
+
+            <h1>叶小钗</h1>
+
+            <div class='navbar navbar-inverse'>
+                <div class='navbar-inner nav-collapse' style="height: auto;">
+                    <ul class="nav">
+                              				<li><a href="http://songboriceboy.github.io/xxoo/html/blade/index.html">blade</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/css/index.html">css</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/HTML5&CSS3/index.html">HTML5&CSS3</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/index.html">javascript</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Javaxx/index.html">Java学习</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/nodejs/index.html">nodejs</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/requirejs/index.html">requirejs</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/index.html">Web前端</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/xxgw/index.html">学习感悟</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/gzdd/index.html">工作点滴</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/jkxx/index.html">接口学习</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/wfl/index.html">未分类</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/ydkf/index.html">移动开发</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/sjms/index.html">设计模式</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/mst/index.html">面试题</a></li>
+    				                      </ul>
+                </div>
+            </div>
+
+            <div id='content' class='row-fluid'>
+
+                <div class='span9 main'>
+				<div style="color:blue" align=center>【blade的UI设计】理解前端MVC与分层思想</div><br><h1>前言</h1>
+<p>最近校招要来了，很多大三的同学一定按捺不住心中的焦躁，其中有期待也有彷徨，或许更多的是些许担忧，最近在开始疯狂的复习了吧</p>
+<p>这里小钗有几点建议给各位：</p>
+<p>① 不要看得太重，关心则乱，太紧张反而表现不好</p>
+<p>② 好的选择比坚持更重要</p>
+<p>这点小钗便深有体会了，因为当年我是搞.net的，凭着这项技能想进bat简直就是妄想，于是当时我就非常机智的转了前端，另一个同学也非常机智的转了安卓</p>
+<p>所以各位想进大公司，还需要提前关注各个公司最大的缺口是什么，找不准缺口基本无望进大公司的</p>
+<p>③ 积累最重要/没有积累现在就专精</p>
+<p>想进大公司除了运气，最重要的还是平时积累，若是大三之前没有5W行代码量的同学便需要专精一门，不要东搞西搞，最后什么都不会，那就完了</p>
+<p>④ 不要扯设计模式</p>
+<p>这里虽然有点偏激，但是就我的观察，我原来的leader、我身边的同事，我们公司的架构师，真的没有几个完全理解了设计模式，我们很多架构师甚至连个依赖图，时序图都搞不出来</p>
+<p>所以各位面试的同学除非真的对设计模式有深入了解，或者代码量达到了10-20w行，除此之外不要在面试扯设计模式，肯定会中招的</p>
+<p>PS：尼玛，这里差点忘了加<strong>之前</strong>，万一被leader看见了就完了！</p>
+<p>最后，进得了大公司的同学一般之前大学时光没有怎么浪费，或者说天资本来就好，进不了的同学便先积累吧，搞不好哪天就中彩票不用工作了</p>
+<p>好了，我们进入今天的正题，这是与blade框架有关的第三篇博客，第二篇是关于webapp seo难题的解决方案</p>
+<p>由于该方案本身具有一定难度还在实现之中，所以这里就先出第三篇了......</p>
+<p><strong><span style="color: #ff0000;">PS：此文只是个人粗浅的认识，有误请指正</span></strong></p>
+<h1>前端的发展</h1>
+<p>我原来常与leader讨论，javascript之前不适合做大规模应用的一个主要原因是其无法分模块，这个就带来了多人维护一个文件的难题</p>
+<p>程序员往往都是2B，我们可能不会觉得自己的代码写得多好，但是一般会觉得别人的代码写得很烂！</p>
+<p>于是你会看见一个有趣的现象便是两个有一定差距的程序员维护了一个js文件后，可能以后他们都不能愉快的玩耍了</p>
+<p>让2个程序员维护一个文件都非常困难了，何况是多个？所以分模块、分文件是javascript或者说是前端一个极大的进步</p>
+<p>他让前端合作变成了可能，由此才出现了几万甚至几十万代码量的前端应用，这里requireJS相关的模块库功不可没</p>
+<p>这里我们先来回顾下之前我们是怎么写代码的</p>
+<h2>混杂编程</h2>
+<p>最初，我们的应用一般都不复杂，我们会这样写前端代码：</p>
+<div class="cnblogs_code">
+<pre><span style="color: #0000ff;">&lt;</span><span style="color: #800000;">body</span><span style="color: #0000ff;">&gt;</span>
+  <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">div</span><span style="color: #0000ff;">&gt;</span>
+    <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">span </span><span style="color: #ff0000;">onclick</span><span style="color: #0000ff;">="test()"</span><span style="color: #0000ff;">&gt;</span>测试<span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">span</span><span style="color: #0000ff;">&gt;</span>
+  <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">div</span><span style="color: #0000ff;">&gt;</span>
+  <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">script </span><span style="color: #ff0000;">type</span><span style="color: #0000ff;">="text/javascript"</span><span style="color: #0000ff;">&gt;</span>
+    <span style="background-color: #f5f5f5; color: #0000ff;">function</span><span style="background-color: #f5f5f5; color: #000000;"> test() {
+      alert(</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">do something</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">);
+    }
+  </span><span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">script</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">body</span><span style="color: #0000ff;">&gt;</span></pre>
+</div>
+<p>慢慢的我们感觉好像不对，因为B同事好像也有个test方法，由于B同事比我们早来几年我们也不好喷他，于是只好寻求解决方案，于是出现了命名空间</p>
+<div class="cnblogs_code">
+<pre><span style="color: #0000ff;">&lt;</span><span style="color: #800000;">div</span><span style="color: #0000ff;">&gt;</span>
+  <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">span </span><span style="color: #ff0000;">onclick</span><span style="color: #0000ff;">="yexiaochai.test()"</span><span style="color: #0000ff;">&gt;</span>测试<span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">span</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">div</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #0000ff;">&lt;</span><span style="color: #800000;">script </span><span style="color: #ff0000;">type</span><span style="color: #0000ff;">="text/javascript"</span><span style="color: #0000ff;">&gt;</span>
+  <span style="background-color: #f5f5f5; color: #0000ff;">var</span><span style="background-color: #f5f5f5; color: #000000;"> yexiaochai </span><span style="background-color: #f5f5f5; color: #000000;">=</span><span style="background-color: #f5f5f5; color: #000000;"> {
+    test: </span><span style="background-color: #f5f5f5; color: #0000ff;">function</span><span style="background-color: #f5f5f5; color: #000000;"> () {
+      alert(</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">do something</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">);
+    }
+  };
+</span><span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">script</span><span style="color: #0000ff;">&gt;</span></pre>
+</div>
+<p>这里解决了B同事冲刷我代码的问题后，突然B同事便离职了，B同事的代码交给了我们，于是我们非常看不惯其以B开头的命名空间！</p>
+<p>此类情况也出现与了最初的ASP、JSP甚至现今的PHP，他们有一些共同的特点便是：</p>
+<p>① web中的asp代码与javascript代码交替，代码杂乱</p>
+<p>② 界面设计与程序设计混杂，维护升级困难</p>
+<p>一个经典的例子便是著名论坛框架discuz的源码（他js其实控制的比较好），看过其源码的同学想必对其印象极其深刻</p>
+<p>动则一个文件成千上万，内中html php代码混杂，整个维护阅读成本非常之高</p>
+<p>这个时候由于社会发展，越来越多的复杂需求层出不穷，为了满足社会的需要，各大框架分分求变，于是有了一些变化</p>
+<h2>UI分离</h2>
+<p>这一次的变化我认为集中体现在UI分离这块，里面做的最成功的当然是ASP.net，javascript有与之对应的struts2</p>
+<p>这一次的革新两大巨头不在将逻辑操作以及数据库操作写在与HTML有关的文件中了，而是写在与之对应的后台文件中，这里最优雅的是.net的codebehind方案</p>
+<p>这次的变化倒不是说程序本身发生了什么变化，事实上程序本身并没有发生变化，以小钗熟悉的.net为例</p>
+<p>我们一次新建页面会具有两个文件：</p>
+<p>① index.apsx</p>
+<p>② index.aspx.cs</p>
+<div class="cnblogs_code">
+<pre><span style="background-color: #ffff00; color: #000000;">&lt;%</span><span style="background-color: #f5f5f5; color: #000000;">@ Page Language</span><span style="background-color: #f5f5f5; color: #000000;">=</span><span style="background-color: #f5f5f5; color: #800000;">"</span><span style="background-color: #f5f5f5; color: #800000;">C#</span><span style="background-color: #f5f5f5; color: #800000;">"</span><span style="background-color: #f5f5f5; color: #000000;"> AutoEventWireup</span><span style="background-color: #f5f5f5; color: #000000;">=</span><span style="background-color: #f5f5f5; color: #800000;">"</span><span style="background-color: #f5f5f5; color: #800000;">true</span><span style="background-color: #f5f5f5; color: #800000;">"</span><span style="background-color: #f5f5f5; color: #000000;"> CodeFile</span><span style="background-color: #f5f5f5; color: #000000;">=</span><span style="background-color: #f5f5f5; color: #800000;">"</span><span style="background-color: #f5f5f5; color: #800000;">index.aspx.cs</span><span style="background-color: #f5f5f5; color: #800000;">"</span><span style="background-color: #f5f5f5; color: #000000;"> Inherits</span><span style="background-color: #f5f5f5; color: #000000;">=</span><span style="background-color: #f5f5f5; color: #800000;">"</span><span style="background-color: #f5f5f5; color: #800000;">_00综合_11mvc_index</span><span style="background-color: #f5f5f5; color: #800000;">"</span> <span style="background-color: #ffff00; color: #000000;">%&gt;</span></pre>
+</div>
+<div class="cnblogs_code">
+<pre><span style="color: #0000ff;">public</span> <span style="color: #0000ff;">partial</span> <span style="color: #0000ff;">class</span><span style="color: #000000;"> _00综合_10doc_write_index : System.Web.UI.Page
+{
+    </span><span style="color: #0000ff;">protected</span> <span style="color: #0000ff;">void</span> Page_Load(<span style="color: #0000ff;">object</span><span style="color: #000000;"> sender, EventArgs e)
+    {
+
+    }
+}</span></pre>
+</div>
+<p>值得关注的是两个文件的这些代码，这里的内部实现我们不去深究，但是小钗可以告诉你，最终的编译会将这两个文件和到一起，以上的代码映射便是他们合并的凭据</p>
+<p>因为他们最终会和到一起，所以index.apsx与其index.apsx.cs才会具有方法数据通信的能力，跨页面就不行了</p>
+<p>UI分离带来的第二个好处便是经典的.net三层架构以及经典的Java SSH框架，在UI分离之前，这类分离是不好实现的</p>
+<p>于是.net与java的代码可以基于此一再细分，各个领域的程序员专注点与擅长点完全分开了，所以很多复杂的软件出现了</p>
+<h2>前端模块化</h2>
+<p><span style="line-height: 1.5;">最初.net的做法也带来了很多质疑，因为懂行的都会知道，这样的代码事实上效率低了，理解差了；这里便和现今javascript的一些特征惊人的一致</span></p>
+<p>我们的代码存在着这样一种递进的关系：</p>
+<p>① 最简单的代码</p>
+<div class="cnblogs_code">
+<pre><span style="color: #0000ff;">&lt;</span><span style="color: #800000;">span </span><span style="color: #ff0000;">onclick</span><span style="color: #0000ff;">="test()"</span><span style="color: #0000ff;">&gt;</span>测试<span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">span</span><span style="color: #0000ff;">&gt;</span></pre>
+</div>
+<p>② 考虑方法重名问题后的代码</p>
+<div class="cnblogs_code">
+<pre> <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">span </span><span style="color: #ff0000;">onclick</span><span style="color: #0000ff;">="yexiaochai.test()"</span><span style="color: #0000ff;">&gt;</span>测试<span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">span</span><span style="color: #0000ff;">&gt;</span></pre>
+</div>
+<p>③ 考虑一个标签具有多个事件的实现</p>
+<div class="cnblogs_code">
+<pre><span style="color: #0000ff;">&lt;</span><span style="color: #800000;">body</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #0000ff;">&lt;</span><span style="color: #800000;">div</span><span style="color: #0000ff;">&gt;</span>
+  <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">span </span><span style="color: #ff0000;">id</span><span style="color: #0000ff;">="test"</span><span style="color: #0000ff;">&gt;</span>测试<span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">span</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">div</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #0000ff;">&lt;</span><span style="color: #800000;">script </span><span style="color: #ff0000;">type</span><span style="color: #0000ff;">="text/javascript"</span><span style="color: #0000ff;">&gt;</span>
+  <span style="background-color: #f5f5f5; color: #0000ff;">var</span><span style="background-color: #f5f5f5; color: #000000;"> yexiaochai </span><span style="background-color: #f5f5f5; color: #000000;">=</span><span style="background-color: #f5f5f5; color: #000000;"> {
+    test: </span><span style="background-color: #f5f5f5; color: #0000ff;">function</span><span style="background-color: #f5f5f5; color: #000000;"> () {
+      alert(</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">do something</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">);
+    }
+  };
+  document.getElementById(</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">test</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">).addEventListener(</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">click</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">, yexiaochai.test);
+</span><span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">script</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">body</span><span style="color: #0000ff;">&gt;</span></pre>
+</div>
+<p>以上三种递进关系其实诠释了一客观因素：</p>
+<p><span style="color: #ff0000;">业务需求变得复杂、业务复杂后处理业务的方法便多了，所以方法会重复，也是因为逻辑的复杂度导致一个标签可能具有多个事件</span></p>
+<p>所以，现阶段前端代码复杂度的提升的根本原因便是原来的写法不满足需求了，我们需要这样写</p>
+<p>以上三种递进关系只是一个开始，由于业务逻辑的膨胀，javascript代码爆炸性的膨胀起来了，于是我们做了一下事情：</p>
+<p>① 将javascript文件放到一个文件里面</p>
+<p>② 一个文件太多不好维护了，于是分成多个文件</p>
+<p>③ 文件太多了，不好管理，于是开始适应模块化管理工具</p>
+<p>以上是前端分模块的主要原因</p>
+<h2>前端MVC</h2>
+<p>前端做久了我们会发现，很多时候我们还是在操作html，无论是js事件操作，或者css操作，或者数据来了需要改变dom结构，总而言之我们总是在操作我们的UI</p>
+<p>这个时候我们也会遇到一种现象是，这里需要一个信息提示框，那里也需要一个信息提示框，好像长得差不多</p>
+<p>这样相似的需求积累，我们又不傻，当然会寻求统一的解决方案，于是便出现了UI组件，UI组件的出现是前端一大进步</p>
+<p>这样前端便不只是写点小特效，小验证的码农了，<span style="color: #ff0000;">摇身一变成为了高大上的交互设计师，而且还有很多妹子，工作环境好得不得了，想来的同学请给位私信，发简历，工资高，妹子多！！！</span></p>
+<p>我们刚开始可能是这样做UI的：</p>
+<div class="cnblogs_code">
+<pre><span style="color: #0000ff;">function</span><span style="color: #000000;"> showAlert(msg) {
+  </span><span style="color: #008000;">//</span><span style="color: #008000;">构架复杂dom结构，略</span>
+  <span style="color: #0000ff;">var</span> el = $('&lt;div class="msg"&gt;' + msg + '&lt;/div&gt;'<span style="color: #000000;">)
+  </span><span style="color: #008000;">//</span><span style="color: #008000;">绑定复杂的事件，略</span>
+  el.click(<span style="color: #0000ff;">function</span><span style="color: #000000;"> () { });
+  $(</span>'body'<span style="color: #000000;">).append(el);
+}
+showAlert(</span>'史上最强孙组长！');</pre>
+</div>
+<p>这里面涉及到几个元素：</p>
+<p>① 数据 =&gt; msg</p>
+<p>② 界面 =&gt; el</p>
+<p>③ 事件 =&gt; click</p>
+<p><strong><span style="color: #ff0000;">PS：此段虚构</span></strong></p>
+<p>逐渐的，我们发现这样写很不方便，原因是UED新来一个叫<span style="color: #ff0000;">左盟主</span>的抽风给我说什么语义化，要动我的dom结构！！！</p>
+<p>尼玛，他当我傻啊！HTML有什么语义化可言嘛！我这边据理力争，因为他不懂嘛，他对不懂的事物便比较恐惧，所以我要把他说明白</p>
+<p>但是史上最强、宇宙无敌孙组长带来了CSS天使小静mm给我语重心长的聊了一下小时代与后会无期的故事与渊源，最后还唱起了女儿情</p>
+<p>于是我深深的理解了左盟主是正确的，前端确实应该考虑语义化，于是我决定修改我的DOM结构！！！</p>
+<p>真正的修改下来，发现这里工作量不小：</p>
+<p>首先是原来代码过程重来没有考虑过dom或者classname会变，这里一变的直接影响便是我那些可怜的事件绑定全部完蛋</p>
+<p>于是我这里便考虑是不是应该将，<span style="color: #ff0000;">表现与行为分离</span></p>
+<p>这里的UI操作不应该影响我具体事件逻辑，而且UI样式的变化是家常便饭，就算UED不便，不同的业务场景总会要求一点不一样的东西，这里便引入了伟大的模板引擎</p>
+<h3>模板引擎</h3>
+<p>前端模板引擎的出现具有划时代的意义，他是实现表现与行为分离的基石，这里再配以zepto的事件机制，最后的结论就是左盟主的需求很简单</p>
+<p>这里以blade的一个组件代码为例：</p>
+<p><img src="24705647333238.png" alt=""></p>
+<p>我们看到这里的alert组件的dom结构就是一个简单的html片段，于是我们要改某个dom结构便直接修改便是，不需要修改我们的js文件</p>
+<p>当然这里的前提是这里的className映射不能丢，这个映射丢了，事件绑定一块仍然需要修改</p>
+<p><img src="28162788396202.png" alt=""></p>
+<p>到这里，我们是时候进入今天MVC的深入发掘了</p>
+<h1>理解MVC</h1>
+<p>正如.net引入Code Behind为了解决UI与业务分离一样，前端javascript也采用了MVC的方式分离UI与业务，前端MVC出现的主要原因其实便是：</p>
+<p><strong>职责分离！</strong></p>
+<p>其实小钗之前一直对MVC不太了解，不知道应该从哪个方案来了解MVC，以structs2为例，我好像就只看到几个配置向并没有看到控制器就完了</p>
+<p>再以Backbone为例，其View的实现以及Model的实现基本处于分离状态，完全可以单独使用，Router一层看似扮演着控制器的角色但是我这里依旧觉得他仅仅是路由</p>
+<p>再拿小钗最近写的Blade框架的app模块，他倒是有点像全局控制器了，控制着各个View的创建、销毁、通信，但是这里的Model好像由不在了</p>
+<p>PS：传统的MVC的控制器是负责转发请求处理请求，生成View的，这点可以参考Blade的app</p>
+<p>所以要想理解MVC还真不是一件容易的事情，当有人问起什么是MVC时往往我们都是一图打发：</p>
+<p><img src="46114648631827.png" alt=""></p>
+<p>事实上这个模型，在前端来说很少出现，他经常不上缺了一个Controller就是缺了一个Model，而每次问起级别较高的同事也只是将上图简单描述一下即只</p>
+<p>好像MVC变成了一个玄之又玄的东西，处处透露着只可意会不可言传的神秘</p>
+<p><span style="color: #ff0000;">PS：所以面试的同学小心了，一般问到什么设计模式或者MVC要么这个面试官很牛，要么狠喜欢装B，两者对你都不利</span></p>
+<p>所谓MVC便是：</p>
+<p>① View就只处理View的事情，其它神马都不要管</p>
+<p>② 数据由Model处理，并且为View提供渲染需要的数据</p>
+<p>③ 由于后端可能抽风可能将name变成Name坑前端所以会衍生出一套viewModel的东西作为Model与View的映射</p>
+<p>④ 业务代码集中与viewController，提供事件让用户与View交互，入口点为View</p>
+<p>所以一般逻辑是，Controller加载，初始化状态Model获得数据生成ViewModel，View生成，用户操作View触发事件由ViewController处理引起数据更新，然后Model通知view做更新</p>
+<p>这里我认为实现最为优雅的是我与原leader的一个开源项目：</p>
+<p><a href="https://github.com/leewind/dalmatians">https://github.com/leewind/dalmatians</a></p>
+<p><img src="218787610064142.png" alt="" width="727" height="734"></p>
+<p>我觉得这个代码便很好的说明了MVC这个思想，各个模块只是关心了自己的职责，举个例子来说：</p>
+<div class="cnblogs_code" onclick="cnblogs_code_show('afc71fc3-082d-4ed8-9794-1981a2fa3307')"><img id="code_img_closed_afc71fc3-082d-4ed8-9794-1981a2fa3307" class="code_img_closed" src="43570758473519.gif" alt=""><img id="code_img_opened_afc71fc3-082d-4ed8-9794-1981a2fa3307" class="code_img_opened" style="display: none;" onclick="cnblogs_code_hide('afc71fc3-082d-4ed8-9794-1981a2fa3307',event)" src="16365178109279.gif" alt="">
+<div id="cnblogs_code_open_afc71fc3-082d-4ed8-9794-1981a2fa3307" class="cnblogs_code_hide">
+<pre><span style="color: #0000ff;">&lt;!</span><span style="color: #ff00ff;">doctype html</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #0000ff;">&lt;</span><span style="color: #800000;">html </span><span style="color: #ff0000;">lang</span><span style="color: #0000ff;">="en"</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #0000ff;">&lt;</span><span style="color: #800000;">head</span><span style="color: #0000ff;">&gt;</span>
+  <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">meta </span><span style="color: #ff0000;">charset</span><span style="color: #0000ff;">="UTF-8"</span><span style="color: #0000ff;">&gt;</span>
+  <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">title</span><span style="color: #0000ff;">&gt;</span>ToDoList<span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">title</span><span style="color: #0000ff;">&gt;</span>
+  <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">meta </span><span style="color: #ff0000;">name</span><span style="color: #0000ff;">="viewport"</span><span style="color: #ff0000;"> content</span><span style="color: #0000ff;">="width=device-width, initial-scale=1.0"</span><span style="color: #0000ff;">&gt;</span>
+  <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">link </span><span style="color: #ff0000;">rel</span><span style="color: #0000ff;">="stylesheet"</span><span style="color: #ff0000;"> type</span><span style="color: #0000ff;">="text/css"</span><span style="color: #ff0000;"> href</span><span style="color: #0000ff;">="http://designmodo.github.io/Flat-UI/bootstrap/css/bootstrap.css"</span><span style="color: #0000ff;">&gt;</span>
+  <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">link </span><span style="color: #ff0000;">rel</span><span style="color: #0000ff;">="stylesheet"</span><span style="color: #ff0000;"> type</span><span style="color: #0000ff;">="text/css"</span><span style="color: #ff0000;"> href</span><span style="color: #0000ff;">="http://designmodo.github.io/Flat-UI/css/flat-ui.css"</span><span style="color: #0000ff;">&gt;</span>
+  <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">link </span><span style="color: #ff0000;">href</span><span style="color: #0000ff;">="../style/main.css"</span><span style="color: #ff0000;"> rel</span><span style="color: #0000ff;">="stylesheet"</span><span style="color: #ff0000;"> type</span><span style="color: #0000ff;">="text/css"</span> <span style="color: #0000ff;">/&gt;</span>
+  <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">style </span><span style="color: #ff0000;">type</span><span style="color: #0000ff;">="text/css"</span><span style="color: #0000ff;">&gt;</span><span style="background-color: #f5f5f5; color: #800000;">
+    .cui-alert </span><span style="background-color: #f5f5f5; color: #000000;">{</span><span style="background-color: #f5f5f5; color: #ff0000;"> width</span><span style="background-color: #f5f5f5; color: #000000;">:</span><span style="background-color: #f5f5f5; color: #0000ff;"> auto</span><span style="background-color: #f5f5f5; color: #000000;">;</span><span style="background-color: #f5f5f5; color: #ff0000;"> position</span><span style="background-color: #f5f5f5; color: #000000;">:</span><span style="background-color: #f5f5f5; color: #0000ff;"> static</span><span style="background-color: #f5f5f5; color: #000000;">;</span> <span style="background-color: #f5f5f5; color: #000000;">}</span><span style="background-color: #f5f5f5; color: #800000;">
+    .txt </span><span style="background-color: #f5f5f5; color: #000000;">{</span><span style="background-color: #f5f5f5; color: #ff0000;"> border</span><span style="background-color: #f5f5f5; color: #000000;">:</span><span style="background-color: #f5f5f5; color: #0000ff;"> #cfcfcf 1px solid</span><span style="background-color: #f5f5f5; color: #000000;">;</span><span style="background-color: #f5f5f5; color: #ff0000;"> margin</span><span style="background-color: #f5f5f5; color: #000000;">:</span><span style="background-color: #f5f5f5; color: #0000ff;"> 10px 0</span><span style="background-color: #f5f5f5; color: #000000;">;</span><span style="background-color: #f5f5f5; color: #ff0000;"> width</span><span style="background-color: #f5f5f5; color: #000000;">:</span><span style="background-color: #f5f5f5; color: #0000ff;"> 80%</span><span style="background-color: #f5f5f5; color: #000000;">;</span> <span style="background-color: #f5f5f5; color: #000000;">}</span><span style="background-color: #f5f5f5; color: #800000;">
+    ul, li </span><span style="background-color: #f5f5f5; color: #000000;">{</span><span style="background-color: #f5f5f5; color: #ff0000;"> padding</span><span style="background-color: #f5f5f5; color: #000000;">:</span><span style="background-color: #f5f5f5; color: #0000ff;"> 0</span><span style="background-color: #f5f5f5; color: #000000;">;</span><span style="background-color: #f5f5f5; color: #ff0000;"> margin</span><span style="background-color: #f5f5f5; color: #000000;">:</span><span style="background-color: #f5f5f5; color: #0000ff;"> 0</span><span style="background-color: #f5f5f5; color: #000000;">;</span> <span style="background-color: #f5f5f5; color: #000000;">}</span><span style="background-color: #f5f5f5; color: #800000;">
+    .cui_calendar, .cui_week </span><span style="background-color: #f5f5f5; color: #000000;">{</span><span style="background-color: #f5f5f5; color: #ff0000;"> list-style</span><span style="background-color: #f5f5f5; color: #000000;">:</span><span style="background-color: #f5f5f5; color: #0000ff;"> none</span><span style="background-color: #f5f5f5; color: #000000;">;</span> <span style="background-color: #f5f5f5; color: #000000;">}</span><span style="background-color: #f5f5f5; color: #800000;">
+    .cui_calendar li, .cui_week li </span><span style="background-color: #f5f5f5; color: #000000;">{</span><span style="background-color: #f5f5f5; color: #ff0000;"> float</span><span style="background-color: #f5f5f5; color: #000000;">:</span><span style="background-color: #f5f5f5; color: #0000ff;"> left</span><span style="background-color: #f5f5f5; color: #000000;">;</span><span style="background-color: #f5f5f5; color: #ff0000;"> width</span><span style="background-color: #f5f5f5; color: #000000;">:</span><span style="background-color: #f5f5f5; color: #0000ff;"> 14%</span><span style="background-color: #f5f5f5; color: #000000;">;</span><span style="background-color: #f5f5f5; color: #ff0000;"> overflow</span><span style="background-color: #f5f5f5; color: #000000;">:</span><span style="background-color: #f5f5f5; color: #0000ff;"> hidden</span><span style="background-color: #f5f5f5; color: #000000;">;</span><span style="background-color: #f5f5f5; color: #ff0000;"> padding</span><span style="background-color: #f5f5f5; color: #000000;">:</span><span style="background-color: #f5f5f5; color: #0000ff;"> 4px 0</span><span style="background-color: #f5f5f5; color: #000000;">;</span><span style="background-color: #f5f5f5; color: #ff0000;"> text-align</span><span style="background-color: #f5f5f5; color: #000000;">:</span><span style="background-color: #f5f5f5; color: #0000ff;"> center</span><span style="background-color: #f5f5f5; color: #000000;">;</span> <span style="background-color: #f5f5f5; color: #000000;">}</span>
+  <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">style</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">head</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #0000ff;">&lt;</span><span style="color: #800000;">body</span><span style="color: #0000ff;">&gt;</span>
+  <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">article </span><span style="color: #ff0000;">id</span><span style="color: #0000ff;">="container"</span><span style="color: #0000ff;">&gt;</span>
+  <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">article</span><span style="color: #0000ff;">&gt;</span>
+  <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">script </span><span style="color: #ff0000;">type</span><span style="color: #0000ff;">="text/underscore-template"</span><span style="color: #ff0000;"> id</span><span style="color: #0000ff;">="template-ajax-init"</span><span style="color: #0000ff;">&gt;</span>
+      <span style="background-color: #f5f5f5; color: #000000;">&lt;</span><span style="background-color: #f5f5f5; color: #000000;">div class</span><span style="background-color: #f5f5f5; color: #000000;">=</span><span style="background-color: #f5f5f5; color: #000000;">"</span><span style="background-color: #f5f5f5; color: #000000;">cui-alert</span><span style="background-color: #f5f5f5; color: #000000;">"</span> <span style="background-color: #f5f5f5; color: #000000;">&gt;</span>
+        <span style="background-color: #f5f5f5; color: #000000;">&lt;</span><span style="background-color: #f5f5f5; color: #000000;">div class</span><span style="background-color: #f5f5f5; color: #000000;">=</span><span style="background-color: #f5f5f5; color: #000000;">"</span><span style="background-color: #f5f5f5; color: #000000;">cui-pop-box</span><span style="background-color: #f5f5f5; color: #000000;">"</span><span style="background-color: #f5f5f5; color: #000000;">&gt;</span>
+          <span style="background-color: #f5f5f5; color: #000000;">&lt;</span><span style="background-color: #f5f5f5; color: #000000;">div class</span><span style="background-color: #f5f5f5; color: #000000;">=</span><span style="background-color: #f5f5f5; color: #000000;">"</span><span style="background-color: #f5f5f5; color: #000000;">cui-hd</span><span style="background-color: #f5f5f5; color: #000000;">"</span><span style="background-color: #f5f5f5; color: #000000;">&gt;</span>
+            <span style="background-color: #f5f5f5; color: #000000;">&lt;%=</span><span style="background-color: #f5f5f5; color: #000000;">title</span><span style="background-color: #f5f5f5; color: #000000;">%&gt;</span>
+          <span style="background-color: #f5f5f5; color: #000000;">&lt;</span><span style="background-color: #f5f5f5; color: #000000;">/</span><span style="background-color: #f5f5f5; color: #000000;">div&gt;</span>
+          <span style="background-color: #f5f5f5; color: #000000;">&lt;</span><span style="background-color: #f5f5f5; color: #000000;">div class</span><span style="background-color: #f5f5f5; color: #000000;">=</span><span style="background-color: #f5f5f5; color: #000000;">"</span><span style="background-color: #f5f5f5; color: #000000;">cui-bd</span><span style="background-color: #f5f5f5; color: #000000;">"</span><span style="background-color: #f5f5f5; color: #000000;">&gt;</span>
+            <span style="background-color: #f5f5f5; color: #000000;">&lt;</span><span style="background-color: #f5f5f5; color: #000000;">div class</span><span style="background-color: #f5f5f5; color: #000000;">=</span><span style="background-color: #f5f5f5; color: #000000;">"</span><span style="background-color: #f5f5f5; color: #000000;">cui-error-tips</span><span style="background-color: #f5f5f5; color: #000000;">"</span><span style="background-color: #f5f5f5; color: #000000;">&gt;</span>
+            <span style="background-color: #f5f5f5; color: #000000;">&lt;</span><span style="background-color: #f5f5f5; color: #000000;">/</span><span style="background-color: #f5f5f5; color: #000000;">div&gt;</span>
+            <span style="background-color: #f5f5f5; color: #000000;">&lt;</span><span style="background-color: #f5f5f5; color: #000000;">div class</span><span style="background-color: #f5f5f5; color: #000000;">=</span><span style="background-color: #f5f5f5; color: #000000;">"</span><span style="background-color: #f5f5f5; color: #000000;">cui-roller-btns</span><span style="background-color: #f5f5f5; color: #000000;">"</span><span style="background-color: #f5f5f5; color: #000000;"> style</span><span style="background-color: #f5f5f5; color: #000000;">=</span><span style="background-color: #f5f5f5; color: #000000;">"</span><span style="background-color: #f5f5f5; color: #000000;">padding: 4px; </span><span style="background-color: #f5f5f5; color: #000000;">"</span><span style="background-color: #f5f5f5; color: #000000;">&gt;&lt;</span><span style="background-color: #f5f5f5; color: #000000;">input type</span><span style="background-color: #f5f5f5; color: #000000;">=</span><span style="background-color: #f5f5f5; color: #000000;">"</span><span style="background-color: #f5f5f5; color: #000000;">text</span><span style="background-color: #f5f5f5; color: #000000;">"</span><span style="background-color: #f5f5f5; color: #000000;"> placeholder</span><span style="background-color: #f5f5f5; color: #000000;">=</span><span style="background-color: #f5f5f5; color: #000000;">"</span><span style="background-color: #f5f5f5; color: #000000;">设置最低价 {day: '', price: ''}</span><span style="background-color: #f5f5f5; color: #000000;">"</span><span style="background-color: #f5f5f5; color: #000000;"> style</span><span style="background-color: #f5f5f5; color: #000000;">=</span><span style="background-color: #f5f5f5; color: #000000;">"</span><span style="background-color: #f5f5f5; color: #000000;">margin: 2px; width: 100%; </span><span style="background-color: #f5f5f5; color: #000000;">"</span><span style="background-color: #f5f5f5; color: #000000;"> id</span><span style="background-color: #f5f5f5; color: #000000;">=</span><span style="background-color: #f5f5f5; color: #000000;">"</span><span style="background-color: #f5f5f5; color: #000000;">ajax_data</span><span style="background-color: #f5f5f5; color: #000000;">"</span><span style="background-color: #f5f5f5; color: #000000;"> class</span><span style="background-color: #f5f5f5; color: #000000;">=</span><span style="background-color: #f5f5f5; color: #000000;">"</span><span style="background-color: #f5f5f5; color: #000000;">txt</span><span style="background-color: #f5f5f5; color: #000000;">"</span><span style="background-color: #f5f5f5; color: #000000;"> value</span><span style="background-color: #f5f5f5; color: #000000;">=</span><span style="background-color: #f5f5f5; color: #000000;">"</span><span style="background-color: #f5f5f5; color: #000000;">{day: , price: }</span><span style="background-color: #f5f5f5; color: #000000;">"</span><span style="background-color: #f5f5f5; color: #000000;">&gt;&lt;</span><span style="background-color: #f5f5f5; color: #000000;">/</span><span style="background-color: #f5f5f5; color: #000000;">div&gt;</span>
+            <span style="background-color: #f5f5f5; color: #000000;">&lt;</span><span style="background-color: #f5f5f5; color: #000000;">div class</span><span style="background-color: #f5f5f5; color: #000000;">=</span><span style="background-color: #f5f5f5; color: #000000;">"</span><span style="background-color: #f5f5f5; color: #000000;">cui-roller-btns</span><span style="background-color: #f5f5f5; color: #000000;">"</span><span style="background-color: #f5f5f5; color: #000000;">&gt;</span>
+              <span style="background-color: #f5f5f5; color: #000000;">&lt;</span><span style="background-color: #f5f5f5; color: #000000;">div class</span><span style="background-color: #f5f5f5; color: #000000;">=</span><span style="background-color: #f5f5f5; color: #000000;">"</span><span style="background-color: #f5f5f5; color: #000000;">cui-flexbd cui-btns-sure</span><span style="background-color: #f5f5f5; color: #000000;">"</span><span style="background-color: #f5f5f5; color: #000000;">&gt;&lt;%=</span><span style="background-color: #f5f5f5; color: #000000;">confirm</span><span style="background-color: #f5f5f5; color: #000000;">%&gt;&lt;</span><span style="background-color: #f5f5f5; color: #000000;">/</span><span style="background-color: #f5f5f5; color: #000000;">div&gt;</span>
+            <span style="background-color: #f5f5f5; color: #000000;">&lt;</span><span style="background-color: #f5f5f5; color: #000000;">/</span><span style="background-color: #f5f5f5; color: #000000;">div&gt;</span>
+          <span style="background-color: #f5f5f5; color: #000000;">&lt;</span><span style="background-color: #f5f5f5; color: #000000;">/</span><span style="background-color: #f5f5f5; color: #000000;">div&gt;</span>
+        <span style="background-color: #f5f5f5; color: #000000;">&lt;</span><span style="background-color: #f5f5f5; color: #000000;">/</span><span style="background-color: #f5f5f5; color: #000000;">div&gt;</span>
+      <span style="background-color: #f5f5f5; color: #000000;">&lt;</span><span style="background-color: #f5f5f5; color: #000000;">/</span><span style="background-color: #f5f5f5; color: #000000;">div&gt;</span>
+  <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">script</span><span style="color: #0000ff;">&gt;</span>
+  <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">script </span><span style="color: #ff0000;">type</span><span style="color: #0000ff;">="text/underscore-template"</span><span style="color: #ff0000;"> id</span><span style="color: #0000ff;">="template-ajax-suc"</span><span style="color: #0000ff;">&gt;</span>
+    <span style="background-color: #f5f5f5; color: #000000;">&lt;</span><span style="background-color: #f5f5f5; color: #000000;">ul</span><span style="background-color: #f5f5f5; color: #000000;">&gt;</span>
+      <span style="background-color: #f5f5f5; color: #000000;">&lt;</span><span style="background-color: #f5f5f5; color: #000000;">li</span><span style="background-color: #f5f5f5; color: #000000;">&gt;</span><span style="background-color: #f5f5f5; color: #000000;">最低价：本月</span><span style="background-color: #f5f5f5; color: #000000;">&lt;%=</span><span style="background-color: #f5f5f5; color: #000000;">ajaxData.day </span><span style="background-color: #f5f5f5; color: #000000;">%&gt;</span><span style="background-color: #f5f5f5; color: #000000;">号，价格：</span><span style="background-color: #f5f5f5; color: #000000;">&lt;%=</span><span style="background-color: #f5f5f5; color: #000000;">ajaxData.price </span><span style="background-color: #f5f5f5; color: #000000;">%&gt;</span><span style="background-color: #f5f5f5; color: #000000;"> 元</span><span style="background-color: #f5f5f5; color: #000000;">&lt;</span><span style="background-color: #f5f5f5; color: #000000;">/</span><span style="background-color: #f5f5f5; color: #000000;">li&gt;</span>
+  <span style="background-color: #f5f5f5; color: #000000;">&lt;</span><span style="background-color: #f5f5f5; color: #000000;">/</span><span style="background-color: #f5f5f5; color: #000000;">ul&gt;</span>
+  <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">script</span><span style="color: #0000ff;">&gt;</span>
+
+  <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">script </span><span style="color: #ff0000;">type</span><span style="color: #0000ff;">="text/underscore-template"</span><span style="color: #ff0000;"> id</span><span style="color: #0000ff;">="template-ajax-loading"</span><span style="color: #0000ff;">&gt;</span>
+    <span style="background-color: #f5f5f5; color: #000000;">&lt;</span><span style="background-color: #f5f5f5; color: #000000;">span</span><span style="background-color: #f5f5f5; color: #000000;">&gt;</span><span style="background-color: #f5f5f5; color: #000000;">loading....</span><span style="background-color: #f5f5f5; color: #000000;">&lt;</span><span style="background-color: #f5f5f5; color: #000000;">/</span><span style="background-color: #f5f5f5; color: #000000;">span&gt;</span>
+  <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">script</span><span style="color: #0000ff;">&gt;</span>
+
+  <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">script </span><span style="color: #ff0000;">src</span><span style="color: #0000ff;">="../../vendor/underscore-min.js"</span><span style="color: #ff0000;"> type</span><span style="color: #0000ff;">="text/javascript"</span><span style="color: #0000ff;">&gt;&lt;/</span><span style="color: #800000;">script</span><span style="color: #0000ff;">&gt;</span>
+  <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">script </span><span style="color: #ff0000;">src</span><span style="color: #0000ff;">="../../vendor/zepto.min.js"</span><span style="color: #ff0000;"> type</span><span style="color: #0000ff;">="text/javascript"</span><span style="color: #0000ff;">&gt;&lt;/</span><span style="color: #800000;">script</span><span style="color: #0000ff;">&gt;</span>
+  <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">script </span><span style="color: #ff0000;">src</span><span style="color: #0000ff;">="../../src/underscore-extend.js"</span><span style="color: #ff0000;"> type</span><span style="color: #0000ff;">="text/javascript"</span><span style="color: #0000ff;">&gt;&lt;/</span><span style="color: #800000;">script</span><span style="color: #0000ff;">&gt;</span>
+  <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">script </span><span style="color: #ff0000;">src</span><span style="color: #0000ff;">="../../src/util.js"</span><span style="color: #ff0000;"> type</span><span style="color: #0000ff;">="text/javascript"</span><span style="color: #0000ff;">&gt;&lt;/</span><span style="color: #800000;">script</span><span style="color: #0000ff;">&gt;</span>
+  <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">script </span><span style="color: #ff0000;">src</span><span style="color: #0000ff;">="../../src/mvc.js"</span><span style="color: #ff0000;"> type</span><span style="color: #0000ff;">="text/javascript"</span><span style="color: #0000ff;">&gt;&lt;/</span><span style="color: #800000;">script</span><span style="color: #0000ff;">&gt;</span>
+  <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">script </span><span style="color: #ff0000;">type</span><span style="color: #0000ff;">="text/javascript"</span><span style="color: #0000ff;">&gt;</span>
+
+<span style="background-color: #f5f5f5; color: #008000;">//</span><span style="background-color: #f5f5f5; color: #008000;">模拟Ajax请求</span>
+<span style="background-color: #f5f5f5; color: #0000ff;">function</span><span style="background-color: #f5f5f5; color: #000000;"> getAjaxData(callback, data) {
+  setTimeout(</span><span style="background-color: #f5f5f5; color: #0000ff;">function</span><span style="background-color: #f5f5f5; color: #000000;"> () {
+    </span><span style="background-color: #f5f5f5; color: #0000ff;">if</span><span style="background-color: #f5f5f5; color: #000000;"> (</span><span style="background-color: #f5f5f5; color: #000000;">!</span><span style="background-color: #f5f5f5; color: #000000;">data) {
+      data </span><span style="background-color: #f5f5f5; color: #000000;">=</span><span style="background-color: #f5f5f5; color: #000000;"> {day: </span><span style="background-color: #f5f5f5; color: #000000;">3</span><span style="background-color: #f5f5f5; color: #000000;">, price: </span><span style="background-color: #f5f5f5; color: #000000;">20</span><span style="background-color: #f5f5f5; color: #000000;">};
+    }
+    callback(data);
+  }, </span><span style="background-color: #f5f5f5; color: #000000;">1000</span><span style="background-color: #f5f5f5; color: #000000;">);
+}
+
+</span><span style="background-color: #f5f5f5; color: #0000ff;">var</span><span style="background-color: #f5f5f5; color: #000000;"> AjaxView </span><span style="background-color: #f5f5f5; color: #000000;">=</span><span style="background-color: #f5f5f5; color: #000000;"> _.inherit(Dalmatian.View, {
+  _initialize: </span><span style="background-color: #f5f5f5; color: #0000ff;">function</span><span style="background-color: #f5f5f5; color: #000000;"> ($super) {
+    </span><span style="background-color: #f5f5f5; color: #008000;">//</span><span style="background-color: #f5f5f5; color: #008000;">设置默认属性</span>
+<span style="background-color: #f5f5f5; color: #000000;">    $super();
+
+    </span><span style="background-color: #f5f5f5; color: #0000ff;">this</span><span style="background-color: #f5f5f5; color: #000000;">.templateSet </span><span style="background-color: #f5f5f5; color: #000000;">=</span><span style="background-color: #f5f5f5; color: #000000;"> {
+      init: $(</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">#template-ajax-init</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">).html(),
+      loading: $(</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">#template-ajax-loading</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">).html(),
+      ajaxSuc: $(</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">#template-ajax-suc</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">).html()
+    };
+
+  }
+});
+
+</span><span style="background-color: #f5f5f5; color: #0000ff;">var</span><span style="background-color: #f5f5f5; color: #000000;"> AjaxAdapter </span><span style="background-color: #f5f5f5; color: #000000;">=</span><span style="background-color: #f5f5f5; color: #000000;"> _.inherit(Dalmatian.Adapter, {
+  _initialize: </span><span style="background-color: #f5f5f5; color: #0000ff;">function</span><span style="background-color: #f5f5f5; color: #000000;"> ($super) {
+    $super();
+    </span><span style="background-color: #f5f5f5; color: #0000ff;">this</span><span style="background-color: #f5f5f5; color: #000000;">.datamodel </span><span style="background-color: #f5f5f5; color: #000000;">=</span><span style="background-color: #f5f5f5; color: #000000;"> {
+      title: </span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">标题</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">,
+      confirm: </span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">刷新数据</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">
+    };
+    </span><span style="background-color: #f5f5f5; color: #0000ff;">this</span><span style="background-color: #f5f5f5; color: #000000;">.datamodel.ajaxData </span><span style="background-color: #f5f5f5; color: #000000;">=</span><span style="background-color: #f5f5f5; color: #000000;"> {};
+  },
+
+  format: </span><span style="background-color: #f5f5f5; color: #0000ff;">function</span><span style="background-color: #f5f5f5; color: #000000;"> (datamodel) {
+    </span><span style="background-color: #f5f5f5; color: #008000;">//</span><span style="background-color: #f5f5f5; color: #008000;">处理datamodel生成viewModel的逻辑</span>
+    <span style="background-color: #f5f5f5; color: #0000ff;">return</span><span style="background-color: #f5f5f5; color: #000000;"> datamodel;
+  },
+
+  ajaxLoading: </span><span style="background-color: #f5f5f5; color: #0000ff;">function</span><span style="background-color: #f5f5f5; color: #000000;"> () {
+    </span><span style="background-color: #f5f5f5; color: #0000ff;">this</span><span style="background-color: #f5f5f5; color: #000000;">.notifyDataChanged();
+  },
+
+  ajaxSuc: </span><span style="background-color: #f5f5f5; color: #0000ff;">function</span><span style="background-color: #f5f5f5; color: #000000;"> (data) {
+    </span><span style="background-color: #f5f5f5; color: #0000ff;">this</span><span style="background-color: #f5f5f5; color: #000000;">.datamodel.ajaxData </span><span style="background-color: #f5f5f5; color: #000000;">=</span><span style="background-color: #f5f5f5; color: #000000;"> data;
+    </span><span style="background-color: #f5f5f5; color: #0000ff;">this</span><span style="background-color: #f5f5f5; color: #000000;">.notifyDataChanged();
+  }
+});
+
+</span><span style="background-color: #f5f5f5; color: #0000ff;">var</span><span style="background-color: #f5f5f5; color: #000000;"> AjaxViewController </span><span style="background-color: #f5f5f5; color: #000000;">=</span><span style="background-color: #f5f5f5; color: #000000;"> _.inherit(Dalmatian.ViewController, {
+  _initialize: </span><span style="background-color: #f5f5f5; color: #0000ff;">function</span><span style="background-color: #f5f5f5; color: #000000;"> ($super) {
+    $super();
+    </span><span style="background-color: #f5f5f5; color: #008000;">//</span><span style="background-color: #f5f5f5; color: #008000;">设置基本的属性</span>
+    <span style="background-color: #f5f5f5; color: #0000ff;">this</span><span style="background-color: #f5f5f5; color: #000000;">.view </span><span style="background-color: #f5f5f5; color: #000000;">=</span> <span style="background-color: #f5f5f5; color: #0000ff;">new</span><span style="background-color: #f5f5f5; color: #000000;"> AjaxView();
+    </span><span style="background-color: #f5f5f5; color: #0000ff;">this</span><span style="background-color: #f5f5f5; color: #000000;">.adapter </span><span style="background-color: #f5f5f5; color: #000000;">=</span> <span style="background-color: #f5f5f5; color: #0000ff;">new</span><span style="background-color: #f5f5f5; color: #000000;"> AjaxAdapter();
+    </span><span style="background-color: #f5f5f5; color: #0000ff;">this</span><span style="background-color: #f5f5f5; color: #000000;">.viewstatus </span><span style="background-color: #f5f5f5; color: #000000;">=</span> <span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">init</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">;
+    </span><span style="background-color: #f5f5f5; color: #0000ff;">this</span><span style="background-color: #f5f5f5; color: #000000;">.container </span><span style="background-color: #f5f5f5; color: #000000;">=</span> <span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">#container</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">;
+  },
+
+  </span><span style="background-color: #f5f5f5; color: #008000;">//</span><span style="background-color: #f5f5f5; color: #008000;">处理datamodel变化引起的dom改变</span>
+<span style="background-color: #f5f5f5; color: #000000;">  render: </span><span style="background-color: #f5f5f5; color: #0000ff;">function</span><span style="background-color: #f5f5f5; color: #000000;"> (data) {
+    </span><span style="background-color: #f5f5f5; color: #008000;">//</span><span style="background-color: #f5f5f5; color: #008000;">这里用户明确知道自己有没有viewdata</span>
+    <span style="background-color: #f5f5f5; color: #0000ff;">var</span><span style="background-color: #f5f5f5; color: #000000;"> viewdata </span><span style="background-color: #f5f5f5; color: #000000;">=</span> <span style="background-color: #f5f5f5; color: #0000ff;">this</span><span style="background-color: #f5f5f5; color: #000000;">.adapter.getViewModel();
+    </span><span style="background-color: #f5f5f5; color: #0000ff;">var</span><span style="background-color: #f5f5f5; color: #000000;"> wrapperSet </span><span style="background-color: #f5f5f5; color: #000000;">=</span><span style="background-color: #f5f5f5; color: #000000;"> {
+      loading: </span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">.cui-error-tips</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">,
+      ajaxSuc: </span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">.cui-error-tips</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">
+    };
+    </span><span style="background-color: #f5f5f5; color: #008000;">//</span><span style="background-color: #f5f5f5; color: #008000;">view具有唯一包裹器</span>
+    <span style="background-color: #f5f5f5; color: #0000ff;">var</span><span style="background-color: #f5f5f5; color: #000000;"> root </span><span style="background-color: #f5f5f5; color: #000000;">=</span> <span style="background-color: #f5f5f5; color: #0000ff;">this</span><span style="background-color: #f5f5f5; color: #000000;">.view.root;
+    </span><span style="background-color: #f5f5f5; color: #0000ff;">var</span><span style="background-color: #f5f5f5; color: #000000;"> selector </span><span style="background-color: #f5f5f5; color: #000000;">=</span><span style="background-color: #f5f5f5; color: #000000;"> wrapperSet[</span><span style="background-color: #f5f5f5; color: #0000ff;">this</span><span style="background-color: #f5f5f5; color: #000000;">.viewstatus];
+
+    </span><span style="background-color: #f5f5f5; color: #0000ff;">if</span><span style="background-color: #f5f5f5; color: #000000;"> (selector) {
+      root </span><span style="background-color: #f5f5f5; color: #000000;">=</span><span style="background-color: #f5f5f5; color: #000000;"> root.find(selector);
+    }
+
+    </span><span style="background-color: #f5f5f5; color: #0000ff;">this</span><span style="background-color: #f5f5f5; color: #000000;">.view.render(</span><span style="background-color: #f5f5f5; color: #0000ff;">this</span><span style="background-color: #f5f5f5; color: #000000;">.viewstatus, </span><span style="background-color: #f5f5f5; color: #0000ff;">this</span><span style="background-color: #f5f5f5; color: #000000;">.adapter </span><span style="background-color: #f5f5f5; color: #000000;">&amp;&amp;</span> <span style="background-color: #f5f5f5; color: #0000ff;">this</span><span style="background-color: #f5f5f5; color: #000000;">.adapter.getViewModel());
+
+    root.html(</span><span style="background-color: #f5f5f5; color: #0000ff;">this</span><span style="background-color: #f5f5f5; color: #000000;">.view.html);
+
+  },
+
+  </span><span style="background-color: #f5f5f5; color: #008000;">//</span><span style="background-color: #f5f5f5; color: #008000;">显示后Ajax请求数据</span>
+<span style="background-color: #f5f5f5; color: #000000;">  onViewAfterShow: </span><span style="background-color: #f5f5f5; color: #0000ff;">function</span><span style="background-color: #f5f5f5; color: #000000;"> () {
+    </span><span style="background-color: #f5f5f5; color: #0000ff;">this</span><span style="background-color: #f5f5f5; color: #000000;">._handleAjax();
+  },
+
+  _handleAjax: </span><span style="background-color: #f5f5f5; color: #0000ff;">function</span><span style="background-color: #f5f5f5; color: #000000;"> (data) {
+    </span><span style="background-color: #f5f5f5; color: #0000ff;">this</span><span style="background-color: #f5f5f5; color: #000000;">.setViewStatus(</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">loading</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">);
+    </span><span style="background-color: #f5f5f5; color: #0000ff;">this</span><span style="background-color: #f5f5f5; color: #000000;">.adapter.ajaxLoading();
+    getAjaxData($.proxy(</span><span style="background-color: #f5f5f5; color: #0000ff;">function</span><span style="background-color: #f5f5f5; color: #000000;"> (data) {
+      </span><span style="background-color: #f5f5f5; color: #0000ff;">this</span><span style="background-color: #f5f5f5; color: #000000;">.setViewStatus(</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">ajaxSuc</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">);
+      </span><span style="background-color: #f5f5f5; color: #0000ff;">this</span><span style="background-color: #f5f5f5; color: #000000;">.adapter.ajaxSuc(data);
+    }, </span><span style="background-color: #f5f5f5; color: #0000ff;">this</span><span style="background-color: #f5f5f5; color: #000000;">), data);
+  },
+
+  events: {
+    </span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">click .cui-btns-sure</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">: </span><span style="background-color: #f5f5f5; color: #0000ff;">function</span><span style="background-color: #f5f5f5; color: #000000;"> () {
+      </span><span style="background-color: #f5f5f5; color: #0000ff;">var</span><span style="background-color: #f5f5f5; color: #000000;"> data </span><span style="background-color: #f5f5f5; color: #000000;">=</span> <span style="background-color: #f5f5f5; color: #0000ff;">this</span><span style="background-color: #f5f5f5; color: #000000;">.$el.find(</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">#ajax_data</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">).val();
+      data </span><span style="background-color: #f5f5f5; color: #000000;">=</span><span style="background-color: #f5f5f5; color: #000000;"> eval(</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">(</span><span style="background-color: #f5f5f5; color: #000000;">'</span> <span style="background-color: #f5f5f5; color: #000000;">+</span><span style="background-color: #f5f5f5; color: #000000;"> data </span><span style="background-color: #f5f5f5; color: #000000;">+</span> <span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">)</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">);
+      </span><span style="background-color: #f5f5f5; color: #0000ff;">this</span><span style="background-color: #f5f5f5; color: #000000;">._handleAjax(data);
+    }
+  }
+});
+
+</span><span style="background-color: #f5f5f5; color: #0000ff;">var</span><span style="background-color: #f5f5f5; color: #000000;"> a </span><span style="background-color: #f5f5f5; color: #000000;">=</span> <span style="background-color: #f5f5f5; color: #0000ff;">new</span><span style="background-color: #f5f5f5; color: #000000;"> AjaxViewController();
+a.show();
+
+  </span><span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">script</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">body</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">html</span><span style="color: #0000ff;">&gt;</span><span style="color: #000000;">
+
+完成HTML</span></pre>
+</div>
+<span class="cnblogs_code_collapse">View Code</span></div>
+<div class="cnblogs_code" onclick="cnblogs_code_show('c23acd61-77ed-4dcf-950b-47248b0af375')"><img id="code_img_closed_c23acd61-77ed-4dcf-950b-47248b0af375" class="code_img_closed" src="43570758473519.gif" alt=""><img id="code_img_opened_c23acd61-77ed-4dcf-950b-47248b0af375" class="code_img_opened" style="display: none;" onclick="cnblogs_code_hide('c23acd61-77ed-4dcf-950b-47248b0af375',event)" src="16365178109279.gif" alt="">
+<div id="cnblogs_code_open_c23acd61-77ed-4dcf-950b-47248b0af375" class="cnblogs_code_hide">
+<pre>"use strict"<span style="color: #000000;">;
+
+</span><span style="color: #008000;">//</span><span style="color: #008000;"> ------------------华丽的分割线--------------------- //</span>
+
+<span style="color: #008000;">//</span><span style="color: #008000;"> @description 正式的声明Dalmatian框架的命名空间</span>
+<span style="color: #0000ff;">var</span> Dalmatian = Dalmatian ||<span style="color: #000000;"> {};
+
+</span><span style="color: #008000;">//</span><span style="color: #008000;"> @description 定义默认的template方法来自于underscore</span>
+Dalmatian.template =<span style="color: #000000;"> _.template;
+Dalmatian.View </span>=<span style="color: #000000;"> _.inherit({
+  </span><span style="color: #008000;">//</span><span style="color: #008000;"> @description 构造函数入口</span>
+  initialize: <span style="color: #0000ff;">function</span><span style="color: #000000;"> (options) {
+    </span><span style="color: #0000ff;">this</span><span style="color: #000000;">._initialize();
+    </span><span style="color: #0000ff;">this</span><span style="color: #000000;">.handleOptions(options);
+    </span><span style="color: #0000ff;">this</span><span style="color: #000000;">._initRoot();
+
+  },
+
+  _initRoot: </span><span style="color: #0000ff;">function</span><span style="color: #000000;"> () {
+    </span><span style="color: #008000;">//</span><span style="color: #008000;">根据html生成的dom包装对象</span>
+    <span style="color: #008000;">//</span><span style="color: #008000;">有一种场景是用户的view本身就是一个只有一个包裹器的结构，他不想要多余的包裹器</span>
+    <span style="color: #0000ff;">this</span>.root = $(<span style="color: #0000ff;">this</span><span style="color: #000000;">.defaultContainerTemplate);
+    </span><span style="color: #0000ff;">this</span>.root.attr('id', <span style="color: #0000ff;">this</span><span style="color: #000000;">.viewid);
+  },
+
+  </span><span style="color: #008000;">//</span><span style="color: #008000;"> @description 设置默认属性</span>
+  _initialize: <span style="color: #0000ff;">function</span><span style="color: #000000;"> () {
+
+    </span><span style="color: #0000ff;">var</span> DEFAULT_CONTAINER_TEMPLATE = '&lt;section class="view" id="&lt;%=viewid%&gt;"&gt;&lt;%=html%&gt;&lt;/section&gt;'<span style="color: #000000;">;
+
+    </span><span style="color: #008000;">//</span><span style="color: #008000;"> @description view状态机</span>
+    <span style="color: #008000;">//</span><span style="color: #008000;"> this.statusSet = {};</span>
+
+    <span style="color: #0000ff;">this</span>.defaultContainerTemplate =<span style="color: #000000;"> DEFAULT_CONTAINER_TEMPLATE;
+
+    </span><span style="color: #008000;">//</span><span style="color: #008000;"> @override</span>
+    <span style="color: #008000;">//</span><span style="color: #008000;"> @description template集合，根据status做template的map</span>
+    <span style="color: #008000;">//</span><span style="color: #008000;"> @example</span>
+    <span style="color: #008000;">//</span><span style="color: #008000;">    { 0: '&lt;ul&gt;&lt;%_.each(list, function(item){%&gt;&lt;li&gt;&lt;%=item.name%&gt;&lt;/li&gt;&lt;%});%&gt;&lt;/ul&gt;' }</span>
+    <span style="color: #008000;">//</span><span style="color: #008000;"> this.templateSet = {};</span>
+
+    <span style="color: #0000ff;">this</span>.viewid = _.uniqueId('dalmatian-view-'<span style="color: #000000;">);
+
+  },
+
+  </span><span style="color: #008000;">//</span><span style="color: #008000;"> @description 操作构造函数传入操作</span>
+  handleOptions: <span style="color: #0000ff;">function</span><span style="color: #000000;"> (options) {
+    </span><span style="color: #008000;">//</span><span style="color: #008000;"> @description 从形参中获取key和value绑定在this上</span>
+    <span style="color: #0000ff;">if</span> (_.isObject(options)) _.extend(<span style="color: #0000ff;">this</span><span style="color: #000000;">, options);
+
+  },
+
+  </span><span style="color: #008000;">//</span><span style="color: #008000;"> @description 通过模板和数据渲染具体的View</span>
+  <span style="color: #008000;">//</span><span style="color: #008000;"> @param status {enum} View的状态参数</span>
+  <span style="color: #008000;">//</span><span style="color: #008000;"> @param data {object} 匹配View的数据格式的具体数据</span>
+  <span style="color: #008000;">//</span><span style="color: #008000;"> @param callback {functiion} 执行完成之后的回调</span>
+  render: <span style="color: #0000ff;">function</span><span style="color: #000000;"> (status, data, callback) {
+
+    </span><span style="color: #0000ff;">var</span> templateSelected = <span style="color: #0000ff;">this</span><span style="color: #000000;">.templateSet[status];
+    </span><span style="color: #0000ff;">if</span><span style="color: #000000;"> (templateSelected) {
+
+      </span><span style="color: #008000;">//</span><span style="color: #008000;"> @description 渲染view</span>
+      <span style="color: #0000ff;">var</span> templateFn =<span style="color: #000000;"> Dalmatian.template(templateSelected);
+      </span><span style="color: #0000ff;">this</span>.html =<span style="color: #000000;"> templateFn(data);
+
+      </span><span style="color: #008000;">//</span><span style="color: #008000;">这里减少一次js编译</span><span style="color: #008000;">
+//</span><span style="color: #008000;">      this.root.html('');</span><span style="color: #008000;">
+//</span><span style="color: #008000;">      this.root.append(this.html);</span>
+
+      <span style="color: #0000ff;">this</span>.currentStatus =<span style="color: #000000;"> status;
+
+      _.callmethod(callback, </span><span style="color: #0000ff;">this</span><span style="color: #000000;">);
+
+      </span><span style="color: #0000ff;">return</span> <span style="color: #0000ff;">this</span><span style="color: #000000;">.html;
+
+    }
+  },
+
+  </span><span style="color: #008000;">//</span><span style="color: #008000;"> @override</span>
+  <span style="color: #008000;">//</span><span style="color: #008000;"> @description 可以被复写，当status和data分别发生变化时候</span>
+  <span style="color: #008000;">//</span><span style="color: #008000;"> @param status {enum} view的状态值</span>
+  <span style="color: #008000;">//</span><span style="color: #008000;"> @param data {object} viewmodel的数据</span>
+  update: <span style="color: #0000ff;">function</span><span style="color: #000000;"> (status, data) {
+
+    </span><span style="color: #0000ff;">if</span> (!<span style="color: #0000ff;">this</span>.currentStatus || <span style="color: #0000ff;">this</span>.currentStatus !==<span style="color: #000000;"> status) {
+      </span><span style="color: #0000ff;">return</span> <span style="color: #0000ff;">this</span><span style="color: #000000;">.render(status, data);
+    }
+
+    </span><span style="color: #008000;">//</span><span style="color: #008000;"> @override</span>
+    <span style="color: #008000;">//</span><span style="color: #008000;"> @description 可复写部分，当数据发生变化但是状态没有发生变化时，页面仅仅变化的可以是局部显示</span>
+    <span style="color: #008000;">//</span><span style="color: #008000;">              可以通过获取this.html进行修改</span>
+    _.callmethod(<span style="color: #0000ff;">this</span>.onUpdate, <span style="color: #0000ff;">this</span><span style="color: #000000;">, data);
+  }
+});
+
+Dalmatian.Adapter </span>=<span style="color: #000000;"> _.inherit({
+
+  </span><span style="color: #008000;">//</span><span style="color: #008000;"> @description 构造函数入口</span>
+  initialize: <span style="color: #0000ff;">function</span><span style="color: #000000;"> (options) {
+    </span><span style="color: #0000ff;">this</span><span style="color: #000000;">._initialize();
+    </span><span style="color: #0000ff;">this</span><span style="color: #000000;">.handleOptions(options);
+
+  },
+
+  </span><span style="color: #008000;">//</span><span style="color: #008000;"> @description 设置默认属性</span>
+  _initialize: <span style="color: #0000ff;">function</span><span style="color: #000000;"> () {
+    </span><span style="color: #0000ff;">this</span>.observers =<span style="color: #000000;"> [];
+    </span><span style="color: #008000;">//</span><span style="color: #008000;">    this.viewmodel = {};</span>
+    <span style="color: #0000ff;">this</span>.datamodel =<span style="color: #000000;"> {};
+  },
+
+  </span><span style="color: #008000;">//</span><span style="color: #008000;"> @description 操作构造函数传入操作</span>
+  handleOptions: <span style="color: #0000ff;">function</span><span style="color: #000000;"> (options) {
+    </span><span style="color: #008000;">//</span><span style="color: #008000;"> @description 从形参中获取key和value绑定在this上</span>
+    <span style="color: #0000ff;">if</span> (_.isObject(options)) _.extend(<span style="color: #0000ff;">this</span><span style="color: #000000;">, options);
+  },
+
+  </span><span style="color: #008000;">//</span><span style="color: #008000;"> @override</span>
+  <span style="color: #008000;">//</span><span style="color: #008000;"> @description 设置</span>
+  format: <span style="color: #0000ff;">function</span><span style="color: #000000;"> (datamodel) {
+    </span><span style="color: #0000ff;">return</span><span style="color: #000000;"> datamodel;
+  },
+
+  getViewModel: </span><span style="color: #0000ff;">function</span><span style="color: #000000;"> () {
+    </span><span style="color: #0000ff;">return</span> <span style="color: #0000ff;">this</span>.format(<span style="color: #0000ff;">this</span><span style="color: #000000;">.datamodel);
+  },
+
+  registerObserver: </span><span style="color: #0000ff;">function</span><span style="color: #000000;"> (viewcontroller) {
+    </span><span style="color: #008000;">//</span><span style="color: #008000;"> @description 检查队列中如果没有viewcontroller，从队列尾部推入</span>
+    <span style="color: #0000ff;">if</span> (!_.contains(<span style="color: #0000ff;">this</span><span style="color: #000000;">.observers, viewcontroller)) {
+      </span><span style="color: #0000ff;">this</span><span style="color: #000000;">.observers.push(viewcontroller);
+    }
+  },
+
+  unregisterObserver: </span><span style="color: #0000ff;">function</span><span style="color: #000000;"> (viewcontroller) {
+    </span><span style="color: #008000;">//</span><span style="color: #008000;"> @description 从observers的队列中剔除viewcontroller</span>
+    <span style="color: #0000ff;">this</span>.observers = _.without(<span style="color: #0000ff;">this</span><span style="color: #000000;">.observers, viewcontroller);
+  },
+
+  </span><span style="color: #008000;">//</span><span style="color: #008000;">统一设置所有观察者的状态，因为对应观察者也许根本不具备相关状态，所以这里需要处理</span><span style="color: #008000;">
+//</span><span style="color: #008000;">  setStatus: function (status) {</span><span style="color: #008000;">
+//</span><span style="color: #008000;">    _.each(this.observers, function (viewcontroller) {</span><span style="color: #008000;">
+//</span><span style="color: #008000;">      if (_.isObject(viewcontroller))</span><span style="color: #008000;">
+//</span><span style="color: #008000;">        viewcontroller.setViewStatus(status);</span><span style="color: #008000;">
+//</span><span style="color: #008000;">    });</span><span style="color: #008000;">
+//</span><span style="color: #008000;">  },</span>
+<span style="color: #000000;">
+  notifyDataChanged: </span><span style="color: #0000ff;">function</span><span style="color: #000000;"> () {
+    </span><span style="color: #008000;">//</span><span style="color: #008000;"> @description 通知所有注册的观察者被观察者的数据发生变化</span>
+    <span style="color: #0000ff;">var</span> data = <span style="color: #0000ff;">this</span><span style="color: #000000;">.getViewModel();
+    _.each(</span><span style="color: #0000ff;">this</span>.observers, <span style="color: #0000ff;">function</span><span style="color: #000000;"> (viewcontroller) {
+      </span><span style="color: #0000ff;">if</span><span style="color: #000000;"> (_.isObject(viewcontroller))
+        _.callmethod(viewcontroller.update, viewcontroller, [data]);
+    });
+  }
+});
+
+Dalmatian.ViewController </span>=<span style="color: #000000;"> _.inherit({
+
+  _initialize: </span><span style="color: #0000ff;">function</span><span style="color: #000000;"> () {
+
+    </span><span style="color: #008000;">//</span><span style="color: #008000;">用户设置的容器选择器，或者dom结构</span>
+    <span style="color: #0000ff;">this</span><span style="color: #000000;">.container;
+    </span><span style="color: #008000;">//</span><span style="color: #008000;">根元素</span>
+    <span style="color: #0000ff;">this</span><span style="color: #000000;">.$el;
+
+    </span><span style="color: #008000;">//</span><span style="color: #008000;">一定会出现</span>
+    <span style="color: #0000ff;">this</span><span style="color: #000000;">.view;
+    </span><span style="color: #008000;">//</span><span style="color: #008000;">可能会出现</span>
+    <span style="color: #0000ff;">this</span><span style="color: #000000;">.adapter;
+    </span><span style="color: #008000;">//</span><span style="color: #008000;">初始化的时候便需要设置view的状态，否则会渲染失败，这里给一个默认值</span>
+    <span style="color: #0000ff;">this</span>.viewstatus = 'init'<span style="color: #000000;">;
+
+  },
+
+  </span><span style="color: #008000;">//</span><span style="color: #008000;"> @description 构造函数入口</span>
+  initialize: <span style="color: #0000ff;">function</span><span style="color: #000000;"> (options) {
+    </span><span style="color: #0000ff;">this</span><span style="color: #000000;">._initialize();
+    </span><span style="color: #0000ff;">this</span><span style="color: #000000;">.handleOptions(options);
+    </span><span style="color: #0000ff;">this</span><span style="color: #000000;">._handleAdapter();
+    </span><span style="color: #0000ff;">this</span><span style="color: #000000;">.create();
+  },
+
+  </span><span style="color: #008000;">//</span><span style="color: #008000;">处理dataAdpter中的datamodel，为其注入view的默认容器数据</span>
+  _handleAdapter: <span style="color: #0000ff;">function</span><span style="color: #000000;"> () {
+    </span><span style="color: #008000;">//</span><span style="color: #008000;">不存在就不予理睬</span>
+    <span style="color: #0000ff;">if</span> (!<span style="color: #0000ff;">this</span>.adapter) <span style="color: #0000ff;">return</span><span style="color: #000000;">;
+    </span><span style="color: #0000ff;">this</span>.adapter.registerObserver(<span style="color: #0000ff;">this</span><span style="color: #000000;">);
+  },
+
+  </span><span style="color: #008000;">//</span><span style="color: #008000;"> @description 操作构造函数传入操作</span>
+  handleOptions: <span style="color: #0000ff;">function</span><span style="color: #000000;"> (options) {
+    </span><span style="color: #0000ff;">if</span> (!options) <span style="color: #0000ff;">return</span><span style="color: #000000;">;
+
+    </span><span style="color: #0000ff;">this</span><span style="color: #000000;">._verify(options);
+
+    </span><span style="color: #008000;">//</span><span style="color: #008000;"> @description 从形参中获取key和value绑定在this上</span>
+    <span style="color: #0000ff;">if</span> (_.isObject(options)) _.extend(<span style="color: #0000ff;">this</span><span style="color: #000000;">, options);
+  },
+
+  setViewStatus: </span><span style="color: #0000ff;">function</span><span style="color: #000000;"> (status) {
+    </span><span style="color: #0000ff;">this</span>.viewstatus =<span style="color: #000000;"> status;
+  },
+
+  </span><span style="color: #008000;">//</span><span style="color: #008000;"> @description 验证参数</span>
+  _verify: <span style="color: #0000ff;">function</span><span style="color: #000000;"> (options) {
+    </span><span style="color: #008000;">//</span><span style="color: #008000;">这个underscore方法新框架在报错</span>
+    <span style="color: #008000;">//</span><span style="color: #008000;">    if (!_.property('view')(options) &amp;&amp; (!this.view)) throw Error('view必须在实例化的时候传入ViewController');</span>
+    <span style="color: #0000ff;">if</span> (options.view &amp;&amp; (!<span style="color: #0000ff;">this</span>.view)) <span style="color: #0000ff;">throw</span> Error('view必须在实例化的时候传入ViewController'<span style="color: #000000;">);
+  },
+
+  </span><span style="color: #008000;">//</span><span style="color: #008000;"> @description 当数据发生变化时调用onViewUpdate，如果onViewUpdate方法不存在的话，直接调用render方法重绘</span>
+  update: <span style="color: #0000ff;">function</span><span style="color: #000000;"> (data) {
+
+    </span><span style="color: #008000;">//</span><span style="color: #008000;">    _.callmethod(this.hide, this);</span>
+
+    <span style="color: #0000ff;">if</span> (<span style="color: #0000ff;">this</span><span style="color: #000000;">.onViewUpdate) {
+      _.callmethod(</span><span style="color: #0000ff;">this</span>.onViewUpdate, <span style="color: #0000ff;">this</span><span style="color: #000000;">, [data]);
+      </span><span style="color: #0000ff;">return</span><span style="color: #000000;">;
+    }
+    </span><span style="color: #0000ff;">this</span><span style="color: #000000;">.render();
+
+    </span><span style="color: #008000;">//</span><span style="color: #008000;">    _.callmethod(this.show, this);</span>
+<span style="color: #000000;">  },
+
+  </span><span style="color: #008000;">/*</span><span style="color: #008000;">*
+  * @override
+  </span><span style="color: #008000;">*/</span><span style="color: #000000;">
+  render: </span><span style="color: #0000ff;">function</span><span style="color: #000000;"> () {
+    </span><span style="color: #008000;">//</span><span style="color: #008000;"> @notation  这个方法需要被复写</span>
+    <span style="color: #0000ff;">this</span>.view.render(<span style="color: #0000ff;">this</span>.viewstatus, <span style="color: #0000ff;">this</span>.adapter &amp;&amp; <span style="color: #0000ff;">this</span><span style="color: #000000;">.adapter.getViewModel());
+    </span><span style="color: #0000ff;">this</span>.view.root.html(<span style="color: #0000ff;">this</span><span style="color: #000000;">.view.html);
+  },
+
+  _create: </span><span style="color: #0000ff;">function</span><span style="color: #000000;"> () {
+    </span><span style="color: #0000ff;">this</span><span style="color: #000000;">.render();
+
+    </span><span style="color: #008000;">//</span><span style="color: #008000;">render 结束后构建好根元素dom结构</span>
+    <span style="color: #0000ff;">this</span>.view.root.html(<span style="color: #0000ff;">this</span><span style="color: #000000;">.view.html);
+    </span><span style="color: #0000ff;">this</span>.$el = <span style="color: #0000ff;">this</span><span style="color: #000000;">.view.root;
+  },
+
+  create: </span><span style="color: #0000ff;">function</span><span style="color: #000000;"> () {
+
+    </span><span style="color: #008000;">//</span><span style="color: #008000;">l_wang这块不是很明白</span>
+    <span style="color: #008000;">//</span><span style="color: #008000;">是否检查映射关系，不存在则recreate，但是在这里dom结构未必在document上</span>
+    <span style="color: #008000;">//</span><span style="color: #008000;">    if (!$('#' + this.view.viewid)[0]) {</span>
+    <span style="color: #008000;">//</span><span style="color: #008000;">      return _.callmethod(this.recreate, this);</span>
+    <span style="color: #008000;">//</span><span style="color: #008000;">    }</span>
+
+    <span style="color: #008000;">//</span><span style="color: #008000;"> @notation 在create方法调用前后设置onViewBeforeCreate和onViewAfterCreate两个回调</span>
+    _.wrapmethod(<span style="color: #0000ff;">this</span>._create, 'onViewBeforeCreate', 'onViewAfterCreate', <span style="color: #0000ff;">this</span><span style="color: #000000;">);
+
+  },
+
+  </span><span style="color: #008000;">/*</span><span style="color: #008000;">*
+  * @description 如果进入create判断是否需要update一下页面，sync view和viewcontroller的数据
+  </span><span style="color: #008000;">*/</span><span style="color: #000000;">
+  _recreate: </span><span style="color: #0000ff;">function</span><span style="color: #000000;"> () {
+    </span><span style="color: #0000ff;">this</span><span style="color: #000000;">.update();
+  },
+
+  recreate: </span><span style="color: #0000ff;">function</span><span style="color: #000000;"> () {
+    _.wrapmethod(</span><span style="color: #0000ff;">this</span>._recreate, 'onViewBeforeRecreate', 'onViewAfterRecreate', <span style="color: #0000ff;">this</span><span style="color: #000000;">);
+  },
+
+  </span><span style="color: #008000;">//</span><span style="color: #008000;">事件注册点</span>
+  bindEvents: <span style="color: #0000ff;">function</span><span style="color: #000000;"> (events) {
+    </span><span style="color: #0000ff;">if</span> (!(events || (events = _.result(<span style="color: #0000ff;">this</span>, 'events')))) <span style="color: #0000ff;">return</span> <span style="color: #0000ff;">this</span><span style="color: #000000;">;
+    </span><span style="color: #0000ff;">this</span><span style="color: #000000;">.unBindEvents();
+
+    </span><span style="color: #008000;">//</span><span style="color: #008000;"> @description 解析event参数的正则</span>
+    <span style="color: #0000ff;">var</span> delegateEventSplitter = /^(\S+)\s*(.*)$/<span style="color: #000000;">;
+    </span><span style="color: #0000ff;">var</span><span style="color: #000000;"> key, method, match, eventName, selector;
+
+    </span><span style="color: #008000;">//</span><span style="color: #008000;">注意，此处做简单的字符串数据解析即可，不做实际业务</span>
+    <span style="color: #0000ff;">for</span> (key <span style="color: #0000ff;">in</span><span style="color: #000000;"> events) {
+      method </span>=<span style="color: #000000;"> events[key];
+      </span><span style="color: #0000ff;">if</span> (!_.isFunction(method)) method = <span style="color: #0000ff;">this</span><span style="color: #000000;">[events[key]];
+      </span><span style="color: #0000ff;">if</span> (!method) <span style="color: #0000ff;">continue</span><span style="color: #000000;">;
+
+      match </span>=<span style="color: #000000;"> key.match(delegateEventSplitter);
+      eventName </span>= match[1], selector = match[2<span style="color: #000000;">];
+      method </span>= _.bind(method, <span style="color: #0000ff;">this</span><span style="color: #000000;">);
+      eventName </span>+= '.delegateEvents' + <span style="color: #0000ff;">this</span><span style="color: #000000;">.view.viewid;
+
+      </span><span style="color: #0000ff;">if</span> (selector === ''<span style="color: #000000;">) {
+        </span><span style="color: #0000ff;">this</span><span style="color: #000000;">.$el.on(eventName, method);
+      } </span><span style="color: #0000ff;">else</span><span style="color: #000000;"> {
+        </span><span style="color: #0000ff;">this</span><span style="color: #000000;">.$el.on(eventName, selector, method);
+      }
+    }
+
+    </span><span style="color: #0000ff;">return</span> <span style="color: #0000ff;">this</span><span style="color: #000000;">;
+  },
+
+  </span><span style="color: #008000;">//</span><span style="color: #008000;">取消所有事件</span>
+  unBindEvents: <span style="color: #0000ff;">function</span><span style="color: #000000;"> () {
+    </span><span style="color: #0000ff;">this</span>.$el.off('.delegateEvents' + <span style="color: #0000ff;">this</span><span style="color: #000000;">.view.viewid);
+    </span><span style="color: #0000ff;">return</span> <span style="color: #0000ff;">this</span><span style="color: #000000;">;
+  },
+
+  _show: </span><span style="color: #0000ff;">function</span><span style="color: #000000;"> () {
+    </span><span style="color: #0000ff;">this</span><span style="color: #000000;">.bindEvents();
+    $(</span><span style="color: #0000ff;">this</span>.container).append(<span style="color: #0000ff;">this</span><span style="color: #000000;">.$el);
+    </span><span style="color: #0000ff;">this</span><span style="color: #000000;">.$el.show();
+  },
+
+  show: </span><span style="color: #0000ff;">function</span><span style="color: #000000;"> () {
+    _.wrapmethod(</span><span style="color: #0000ff;">this</span>._show, 'onViewBeforeShow', 'onViewAfterShow', <span style="color: #0000ff;">this</span><span style="color: #000000;">);
+  },
+
+  _hide: </span><span style="color: #0000ff;">function</span><span style="color: #000000;"> () {
+    </span><span style="color: #0000ff;">this</span><span style="color: #000000;">.forze();
+    </span><span style="color: #0000ff;">this</span><span style="color: #000000;">.$el.hide();
+  },
+
+  hide: </span><span style="color: #0000ff;">function</span><span style="color: #000000;"> () {
+    _.wrapmethod(</span><span style="color: #0000ff;">this</span>._hide, 'onViewBeforeHide', 'onViewAfterHide', <span style="color: #0000ff;">this</span><span style="color: #000000;">);
+  },
+
+  _forze: </span><span style="color: #0000ff;">function</span><span style="color: #000000;"> () {
+    </span><span style="color: #0000ff;">this</span><span style="color: #000000;">.unBindEvents();
+  },
+
+  forze: </span><span style="color: #0000ff;">function</span><span style="color: #000000;"> () {
+    _.wrapmethod(</span><span style="color: #0000ff;">this</span>._forze, 'onViewBeforeForzen', 'onViewAfterForzen', <span style="color: #0000ff;">this</span><span style="color: #000000;">);
+  },
+
+  _destory: </span><span style="color: #0000ff;">function</span><span style="color: #000000;"> () {
+    </span><span style="color: #0000ff;">this</span><span style="color: #000000;">.unBindEvents();
+    </span><span style="color: #0000ff;">this</span><span style="color: #000000;">.$el.remove();
+    </span><span style="color: #008000;">//</span><span style="color: #008000;">    delete this;</span>
+<span style="color: #000000;">  },
+
+  destory: </span><span style="color: #0000ff;">function</span><span style="color: #000000;"> () {
+    _.wrapmethod(</span><span style="color: #0000ff;">this</span>._destory, 'onViewBeforeDestory', 'onViewAfterDestory', <span style="color: #0000ff;">this</span><span style="color: #000000;">);
+  }
+});
+
+完整MVC想法</span></pre>
+</div>
+<span class="cnblogs_code_collapse">View Code</span></div>
+<div class="cnblogs_code">
+<pre>  <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">script </span><span style="color: #ff0000;">type</span><span style="color: #0000ff;">="text/underscore-template"</span><span style="color: #ff0000;"> id</span><span style="color: #0000ff;">="template-ajax-init"</span><span style="color: #0000ff;">&gt;</span>
+      <span style="background-color: #f5f5f5; color: #000000;">&lt;</span><span style="background-color: #f5f5f5; color: #000000;">div class</span><span style="background-color: #f5f5f5; color: #000000;">=</span><span style="background-color: #f5f5f5; color: #000000;">"</span><span style="background-color: #f5f5f5; color: #000000;">cui-alert</span><span style="background-color: #f5f5f5; color: #000000;">"</span> <span style="background-color: #f5f5f5; color: #000000;">&gt;</span>
+        <span style="background-color: #f5f5f5; color: #000000;">&lt;</span><span style="background-color: #f5f5f5; color: #000000;">div class</span><span style="background-color: #f5f5f5; color: #000000;">=</span><span style="background-color: #f5f5f5; color: #000000;">"</span><span style="background-color: #f5f5f5; color: #000000;">cui-pop-box</span><span style="background-color: #f5f5f5; color: #000000;">"</span><span style="background-color: #f5f5f5; color: #000000;">&gt;</span>
+          <span style="background-color: #f5f5f5; color: #000000;">&lt;</span><span style="background-color: #f5f5f5; color: #000000;">div class</span><span style="background-color: #f5f5f5; color: #000000;">=</span><span style="background-color: #f5f5f5; color: #000000;">"</span><span style="background-color: #f5f5f5; color: #000000;">cui-hd</span><span style="background-color: #f5f5f5; color: #000000;">"</span><span style="background-color: #f5f5f5; color: #000000;">&gt;</span>
+            <span style="background-color: #f5f5f5; color: #000000;">&lt;%=</span><span style="background-color: #f5f5f5; color: #000000;">title</span><span style="background-color: #f5f5f5; color: #000000;">%&gt;</span>
+          <span style="background-color: #f5f5f5; color: #000000;">&lt;</span><span style="background-color: #f5f5f5; color: #000000;">/</span><span style="background-color: #f5f5f5; color: #000000;">div&gt;</span>
+          <span style="background-color: #f5f5f5; color: #000000;">&lt;</span><span style="background-color: #f5f5f5; color: #000000;">div class</span><span style="background-color: #f5f5f5; color: #000000;">=</span><span style="background-color: #f5f5f5; color: #000000;">"</span><span style="background-color: #f5f5f5; color: #000000;">cui-bd</span><span style="background-color: #f5f5f5; color: #000000;">"</span><span style="background-color: #f5f5f5; color: #000000;">&gt;</span>
+            <span style="background-color: #f5f5f5; color: #000000;">&lt;</span><span style="background-color: #f5f5f5; color: #000000;">div class</span><span style="background-color: #f5f5f5; color: #000000;">=</span><span style="background-color: #f5f5f5; color: #000000;">"</span><span style="background-color: #f5f5f5; color: #000000;">cui-error-tips</span><span style="background-color: #f5f5f5; color: #000000;">"</span><span style="background-color: #f5f5f5; color: #000000;">&gt;</span>
+            <span style="background-color: #f5f5f5; color: #000000;">&lt;</span><span style="background-color: #f5f5f5; color: #000000;">/</span><span style="background-color: #f5f5f5; color: #000000;">div&gt;</span>
+            <span style="background-color: #f5f5f5; color: #000000;">&lt;</span><span style="background-color: #f5f5f5; color: #000000;">div class</span><span style="background-color: #f5f5f5; color: #000000;">=</span><span style="background-color: #f5f5f5; color: #000000;">"</span><span style="background-color: #f5f5f5; color: #000000;">cui-roller-btns</span><span style="background-color: #f5f5f5; color: #000000;">"</span><span style="background-color: #f5f5f5; color: #000000;"> style</span><span style="background-color: #f5f5f5; color: #000000;">=</span><span style="background-color: #f5f5f5; color: #000000;">"</span><span style="background-color: #f5f5f5; color: #000000;">padding: 4px; </span><span style="background-color: #f5f5f5; color: #000000;">"</span><span style="background-color: #f5f5f5; color: #000000;">&gt;&lt;</span><span style="background-color: #f5f5f5; color: #000000;">input type</span><span style="background-color: #f5f5f5; color: #000000;">=</span><span style="background-color: #f5f5f5; color: #000000;">"</span><span style="background-color: #f5f5f5; color: #000000;">text</span><span style="background-color: #f5f5f5; color: #000000;">"</span><span style="background-color: #f5f5f5; color: #000000;"> placeholder</span><span style="background-color: #f5f5f5; color: #000000;">=</span><span style="background-color: #f5f5f5; color: #000000;">"</span><span style="background-color: #f5f5f5; color: #000000;">设置最低价 {day: '', price: ''}</span><span style="background-color: #f5f5f5; color: #000000;">"</span><span style="background-color: #f5f5f5; color: #000000;"> style</span><span style="background-color: #f5f5f5; color: #000000;">=</span><span style="background-color: #f5f5f5; color: #000000;">"</span><span style="background-color: #f5f5f5; color: #000000;">margin: 2px; width: 100%; </span><span style="background-color: #f5f5f5; color: #000000;">"</span><span style="background-color: #f5f5f5; color: #000000;"> id</span><span style="background-color: #f5f5f5; color: #000000;">=</span><span style="background-color: #f5f5f5; color: #000000;">"</span><span style="background-color: #f5f5f5; color: #000000;">ajax_data</span><span style="background-color: #f5f5f5; color: #000000;">"</span><span style="background-color: #f5f5f5; color: #000000;"> class</span><span style="background-color: #f5f5f5; color: #000000;">=</span><span style="background-color: #f5f5f5; color: #000000;">"</span><span style="background-color: #f5f5f5; color: #000000;">txt</span><span style="background-color: #f5f5f5; color: #000000;">"</span><span style="background-color: #f5f5f5; color: #000000;"> value</span><span style="background-color: #f5f5f5; color: #000000;">=</span><span style="background-color: #f5f5f5; color: #000000;">"</span><span style="background-color: #f5f5f5; color: #000000;">{day: , price: }</span><span style="background-color: #f5f5f5; color: #000000;">"</span><span style="background-color: #f5f5f5; color: #000000;">&gt;&lt;</span><span style="background-color: #f5f5f5; color: #000000;">/</span><span style="background-color: #f5f5f5; color: #000000;">div&gt;</span>
+            <span style="background-color: #f5f5f5; color: #000000;">&lt;</span><span style="background-color: #f5f5f5; color: #000000;">div class</span><span style="background-color: #f5f5f5; color: #000000;">=</span><span style="background-color: #f5f5f5; color: #000000;">"</span><span style="background-color: #f5f5f5; color: #000000;">cui-roller-btns</span><span style="background-color: #f5f5f5; color: #000000;">"</span><span style="background-color: #f5f5f5; color: #000000;">&gt;</span>
+              <span style="background-color: #f5f5f5; color: #000000;">&lt;</span><span style="background-color: #f5f5f5; color: #000000;">div class</span><span style="background-color: #f5f5f5; color: #000000;">=</span><span style="background-color: #f5f5f5; color: #000000;">"</span><span style="background-color: #f5f5f5; color: #000000;">cui-flexbd cui-btns-sure</span><span style="background-color: #f5f5f5; color: #000000;">"</span><span style="background-color: #f5f5f5; color: #000000;">&gt;&lt;%=</span><span style="background-color: #f5f5f5; color: #000000;">confirm</span><span style="background-color: #f5f5f5; color: #000000;">%&gt;&lt;</span><span style="background-color: #f5f5f5; color: #000000;">/</span><span style="background-color: #f5f5f5; color: #000000;">div&gt;</span>
+            <span style="background-color: #f5f5f5; color: #000000;">&lt;</span><span style="background-color: #f5f5f5; color: #000000;">/</span><span style="background-color: #f5f5f5; color: #000000;">div&gt;</span>
+          <span style="background-color: #f5f5f5; color: #000000;">&lt;</span><span style="background-color: #f5f5f5; color: #000000;">/</span><span style="background-color: #f5f5f5; color: #000000;">div&gt;</span>
+        <span style="background-color: #f5f5f5; color: #000000;">&lt;</span><span style="background-color: #f5f5f5; color: #000000;">/</span><span style="background-color: #f5f5f5; color: #000000;">div&gt;</span>
+      <span style="background-color: #f5f5f5; color: #000000;">&lt;</span><span style="background-color: #f5f5f5; color: #000000;">/</span><span style="background-color: #f5f5f5; color: #000000;">div&gt;</span>
+  <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">script</span><span style="color: #0000ff;">&gt;</span>
+  <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">script </span><span style="color: #ff0000;">type</span><span style="color: #0000ff;">="text/underscore-template"</span><span style="color: #ff0000;"> id</span><span style="color: #0000ff;">="template-ajax-suc"</span><span style="color: #0000ff;">&gt;</span>
+    <span style="background-color: #f5f5f5; color: #000000;">&lt;</span><span style="background-color: #f5f5f5; color: #000000;">ul</span><span style="background-color: #f5f5f5; color: #000000;">&gt;</span>
+      <span style="background-color: #f5f5f5; color: #000000;">&lt;</span><span style="background-color: #f5f5f5; color: #000000;">li</span><span style="background-color: #f5f5f5; color: #000000;">&gt;</span><span style="background-color: #f5f5f5; color: #000000;">最低价：本月</span><span style="background-color: #f5f5f5; color: #000000;">&lt;%=</span><span style="background-color: #f5f5f5; color: #000000;">ajaxData.day </span><span style="background-color: #f5f5f5; color: #000000;">%&gt;</span><span style="background-color: #f5f5f5; color: #000000;">号，价格：</span><span style="background-color: #f5f5f5; color: #000000;">&lt;%=</span><span style="background-color: #f5f5f5; color: #000000;">ajaxData.price </span><span style="background-color: #f5f5f5; color: #000000;">%&gt;</span><span style="background-color: #f5f5f5; color: #000000;"> 元</span><span style="background-color: #f5f5f5; color: #000000;">&lt;</span><span style="background-color: #f5f5f5; color: #000000;">/</span><span style="background-color: #f5f5f5; color: #000000;">li&gt;</span>
+  <span style="background-color: #f5f5f5; color: #000000;">&lt;</span><span style="background-color: #f5f5f5; color: #000000;">/</span><span style="background-color: #f5f5f5; color: #000000;">ul&gt;</span>
+  <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">script</span><span style="color: #0000ff;">&gt;</span>
+
+  <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">script </span><span style="color: #ff0000;">type</span><span style="color: #0000ff;">="text/underscore-template"</span><span style="color: #ff0000;"> id</span><span style="color: #0000ff;">="template-ajax-loading"</span><span style="color: #0000ff;">&gt;</span>
+    <span style="background-color: #f5f5f5; color: #000000;">&lt;</span><span style="background-color: #f5f5f5; color: #000000;">span</span><span style="background-color: #f5f5f5; color: #000000;">&gt;</span><span style="background-color: #f5f5f5; color: #000000;">loading....</span><span style="background-color: #f5f5f5; color: #000000;">&lt;</span><span style="background-color: #f5f5f5; color: #000000;">/</span><span style="background-color: #f5f5f5; color: #000000;">span&gt;</span>
+  <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">script</span><span style="color: #0000ff;">&gt;</span></pre>
+</div>
+<div class="cnblogs_code">
+<pre><span style="color: #008000;">//</span><span style="color: #008000;">模拟Ajax请求</span>
+<span style="color: #0000ff;">function</span><span style="color: #000000;"> getAjaxData(callback, data) {
+  setTimeout(</span><span style="color: #0000ff;">function</span><span style="color: #000000;"> () {
+    </span><span style="color: #0000ff;">if</span> (!<span style="color: #000000;">data) {
+      data </span>= {day: 3, price: 20<span style="color: #000000;">};
+    }
+    callback(data);
+  }, </span>1000<span style="color: #000000;">);
+}
+
+</span><span style="color: #0000ff;">var</span> AjaxView =<span style="color: #000000;"> _.inherit(Dalmatian.View, {
+  _initialize: </span><span style="color: #0000ff;">function</span><span style="color: #000000;"> ($super) {
+    </span><span style="color: #008000;">//</span><span style="color: #008000;">设置默认属性</span>
+<span style="color: #000000;">    $super();
+
+    </span><span style="color: #0000ff;">this</span>.templateSet =<span style="color: #000000;"> {
+      init: $(</span>'#template-ajax-init'<span style="color: #000000;">).html(),
+      loading: $(</span>'#template-ajax-loading'<span style="color: #000000;">).html(),
+      ajaxSuc: $(</span>'#template-ajax-suc'<span style="color: #000000;">).html()
+    };
+
+  }
+});
+
+</span><span style="color: #0000ff;">var</span> AjaxAdapter =<span style="color: #000000;"> _.inherit(Dalmatian.Adapter, {
+  _initialize: </span><span style="color: #0000ff;">function</span><span style="color: #000000;"> ($super) {
+    $super();
+    </span><span style="color: #0000ff;">this</span>.datamodel =<span style="color: #000000;"> {
+      title: </span>'标题'<span style="color: #000000;">,
+      confirm: </span>'刷新数据'<span style="color: #000000;">
+    };
+    </span><span style="color: #0000ff;">this</span>.datamodel.ajaxData =<span style="color: #000000;"> {};
+  },
+
+  format: </span><span style="color: #0000ff;">function</span><span style="color: #000000;"> (datamodel) {
+    </span><span style="color: #008000;">//</span><span style="color: #008000;">处理datamodel生成viewModel的逻辑</span>
+    <span style="color: #0000ff;">return</span><span style="color: #000000;"> datamodel;
+  },
+
+  ajaxLoading: </span><span style="color: #0000ff;">function</span><span style="color: #000000;"> () {
+    </span><span style="color: #0000ff;">this</span><span style="color: #000000;">.notifyDataChanged();
+  },
+
+  ajaxSuc: </span><span style="color: #0000ff;">function</span><span style="color: #000000;"> (data) {
+    </span><span style="color: #0000ff;">this</span>.datamodel.ajaxData =<span style="color: #000000;"> data;
+    </span><span style="color: #0000ff;">this</span><span style="color: #000000;">.notifyDataChanged();
+  }
+});
+
+</span><span style="color: #0000ff;">var</span> AjaxViewController =<span style="color: #000000;"> _.inherit(Dalmatian.ViewController, {
+  _initialize: </span><span style="color: #0000ff;">function</span><span style="color: #000000;"> ($super) {
+    $super();
+    </span><span style="color: #008000;">//</span><span style="color: #008000;">设置基本的属性</span>
+    <span style="color: #0000ff;">this</span>.view = <span style="color: #0000ff;">new</span><span style="color: #000000;"> AjaxView();
+    </span><span style="color: #0000ff;">this</span>.adapter = <span style="color: #0000ff;">new</span><span style="color: #000000;"> AjaxAdapter();
+    </span><span style="color: #0000ff;">this</span>.viewstatus = 'init'<span style="color: #000000;">;
+    </span><span style="color: #0000ff;">this</span>.container = '#container'<span style="color: #000000;">;
+  },
+
+  </span><span style="color: #008000;">//</span><span style="color: #008000;">处理datamodel变化引起的dom改变</span>
+  render: <span style="color: #0000ff;">function</span><span style="color: #000000;"> (data) {
+    </span><span style="color: #008000;">//</span><span style="color: #008000;">这里用户明确知道自己有没有viewdata</span>
+    <span style="color: #0000ff;">var</span> viewdata = <span style="color: #0000ff;">this</span><span style="color: #000000;">.adapter.getViewModel();
+    </span><span style="color: #0000ff;">var</span> wrapperSet =<span style="color: #000000;"> {
+      loading: </span>'.cui-error-tips'<span style="color: #000000;">,
+      ajaxSuc: </span>'.cui-error-tips'<span style="color: #000000;">
+    };
+    </span><span style="color: #008000;">//</span><span style="color: #008000;">view具有唯一包裹器</span>
+    <span style="color: #0000ff;">var</span> root = <span style="color: #0000ff;">this</span><span style="color: #000000;">.view.root;
+    </span><span style="color: #0000ff;">var</span> selector = wrapperSet[<span style="color: #0000ff;">this</span><span style="color: #000000;">.viewstatus];
+
+    </span><span style="color: #0000ff;">if</span><span style="color: #000000;"> (selector) {
+      root </span>=<span style="color: #000000;"> root.find(selector);
+    }
+
+    </span><span style="color: #0000ff;">this</span>.view.render(<span style="color: #0000ff;">this</span>.viewstatus, <span style="color: #0000ff;">this</span>.adapter &amp;&amp; <span style="color: #0000ff;">this</span><span style="color: #000000;">.adapter.getViewModel());
+
+    root.html(</span><span style="color: #0000ff;">this</span><span style="color: #000000;">.view.html);
+
+  },
+
+  </span><span style="color: #008000;">//</span><span style="color: #008000;">显示后Ajax请求数据</span>
+  onViewAfterShow: <span style="color: #0000ff;">function</span><span style="color: #000000;"> () {
+    </span><span style="color: #0000ff;">this</span><span style="color: #000000;">._handleAjax();
+  },
+
+  _handleAjax: </span><span style="color: #0000ff;">function</span><span style="color: #000000;"> (data) {
+    </span><span style="color: #0000ff;">this</span>.setViewStatus('loading'<span style="color: #000000;">);
+    </span><span style="color: #0000ff;">this</span><span style="color: #000000;">.adapter.ajaxLoading();
+    getAjaxData($.proxy(</span><span style="color: #0000ff;">function</span><span style="color: #000000;"> (data) {
+      </span><span style="color: #0000ff;">this</span>.setViewStatus('ajaxSuc'<span style="color: #000000;">);
+      </span><span style="color: #0000ff;">this</span><span style="color: #000000;">.adapter.ajaxSuc(data);
+    }, </span><span style="color: #0000ff;">this</span><span style="color: #000000;">), data);
+  },
+
+  events: {
+    </span>'click .cui-btns-sure': <span style="color: #0000ff;">function</span><span style="color: #000000;"> () {
+      </span><span style="color: #0000ff;">var</span> data = <span style="color: #0000ff;">this</span>.$el.find('#ajax_data'<span style="color: #000000;">).val();
+      data </span>= eval('(' + data + ')'<span style="color: #000000;">);
+      </span><span style="color: #0000ff;">this</span><span style="color: #000000;">._handleAjax(data);
+    }
+  }
+});
+
+</span><span style="color: #0000ff;">var</span> a = <span style="color: #0000ff;">new</span><span style="color: #000000;"> AjaxViewController();
+a.show();</span></pre>
+</div>
+<p>程序的执行流程由控制器发起，控制器至少需要一个View的实例，可能需要一个Model的实例</p>
+<p>事件业务全部被控制器负责了，每次View的操作会引起Model的Setter操作从而影响数据模型的变化便会通知其观察者View做出相应的改变</p>
+<p><img src="17580529797547.png" alt=""></p>
+<p><img src="428562210302528.png" alt=""></p>
+<h1>Blade UI中的MVC</h1>
+<p>但是，上述的实现在实际使用中发现并不是那么好用，为什么呢？</p>
+<p><strong>分层过细</strong></p>
+<p>分层思维应该大力倡导，但是层次的划分也有一个度，因为总的来说分层多了业务实现复杂度或者阅读门槛就会上来</p>
+<p>以上述的方案如果去做UI的话是相当得不偿失的，一个UI的形成，便需要一个view的实例，一个Model的实例，再变态一点设置会被划分到不同的模块</p>
+<p>这样的话维护成本以及代码编写成本便有所提高，总之分层有理，但也要适度！这个时候便需要改造，改造点集中表现为：</p>
+<p>① 我的View不需要具有状态值，我就只有一个模块</p>
+<p>② 我的Model不想与人共享，我就放在自己的内部属性即可</p>
+<p><img src="47774578978889.png" alt=""></p>
+<div class="cnblogs_code" onclick="cnblogs_code_show('a1862969-84d8-4617-9b42-37112b84ede4')"><img id="code_img_closed_a1862969-84d8-4617-9b42-37112b84ede4" class="code_img_closed" src="43570758473519.gif" alt=""><img id="code_img_opened_a1862969-84d8-4617-9b42-37112b84ede4" class="code_img_opened" style="display: none;" onclick="cnblogs_code_hide('a1862969-84d8-4617-9b42-37112b84ede4',event)" src="16365178109279.gif" alt="">
+<div id="cnblogs_code_open_a1862969-84d8-4617-9b42-37112b84ede4" class="cnblogs_code_hide">
+<pre>define([], <span style="color: #0000ff;">function</span><span style="color: #000000;"> () {
+
+  </span><span style="color: #008000;">//</span><span style="color: #008000;">闭包保存所有UI共用的信息，比如z-index</span>
+  <span style="color: #0000ff;">var</span> getBiggerzIndex = (<span style="color: #0000ff;">function</span><span style="color: #000000;"> () {
+    </span><span style="color: #0000ff;">var</span> index = 3000<span style="color: #000000;">;
+    </span><span style="color: #0000ff;">return</span> <span style="color: #0000ff;">function</span><span style="color: #000000;"> (level) {
+      </span><span style="color: #0000ff;">return</span> level + (++<span style="color: #000000;">index);
+    };
+  })();
+
+  </span><span style="color: #0000ff;">var</span> UIContainerUtil = (<span style="color: #0000ff;">function</span><span style="color: #000000;"> () {
+    </span><span style="color: #008000;">//</span><span style="color: #008000;">一个闭包对象存放所有实例化的ui实例</span>
+    <span style="color: #0000ff;">var</span> UIContainer =<span style="color: #000000;"> {};
+
+    </span><span style="color: #0000ff;">return</span><span style="color: #000000;"> {
+      addItem: </span><span style="color: #0000ff;">function</span><span style="color: #000000;"> (id, ui) {
+        UIContainer[id] </span>=<span style="color: #000000;"> ui;
+      },
+
+      removeItem: </span><span style="color: #0000ff;">function</span><span style="color: #000000;"> (id) {
+        </span><span style="color: #0000ff;">if</span> (UIContainer[id]) <span style="color: #0000ff;">delete</span><span style="color: #000000;"> UIContainer[id];
+      },
+
+      getItem: </span><span style="color: #0000ff;">function</span><span style="color: #000000;"> (id) {
+        </span><span style="color: #0000ff;">if</span> (id) <span style="color: #0000ff;">return</span><span style="color: #000000;"> UIContainer[id];
+        </span><span style="color: #0000ff;">return</span><span style="color: #000000;"> UIContainer;
+      }
+    };
+  })();
+
+
+  </span><span style="color: #0000ff;">return</span><span style="color: #000000;"> _.inherit({
+
+    </span><span style="color: #008000;">//</span><span style="color: #008000;">默认属性</span>
+    propertys: <span style="color: #0000ff;">function</span><span style="color: #000000;"> () {
+      </span><span style="color: #008000;">//</span><span style="color: #008000;">模板状态</span>
+      <span style="color: #0000ff;">this</span>.template = ''<span style="color: #000000;">;
+      </span><span style="color: #0000ff;">this</span>.datamodel =<span style="color: #000000;"> {};
+      </span><span style="color: #0000ff;">this</span>.events =<span style="color: #000000;"> {};
+      </span><span style="color: #0000ff;">this</span>.wrapper = $('body'<span style="color: #000000;">);
+      </span><span style="color: #0000ff;">this</span>.id = _.uniqueId('ui-view-'<span style="color: #000000;">);
+
+      </span><span style="color: #008000;">//</span><span style="color: #008000;">自定义事件</span>
+      <span style="color: #008000;">//</span><span style="color: #008000;">此处需要注意mask 绑定事件前后问题，考虑scroll.radio插件类型的mask应用，考虑组件通信</span>
+      <span style="color: #0000ff;">this</span>.eventArr =<span style="color: #000000;"> {};
+
+      </span><span style="color: #008000;">//</span><span style="color: #008000;">初始状态为实例化</span>
+      <span style="color: #0000ff;">this</span>.status = 'init'<span style="color: #000000;">;
+
+      </span><span style="color: #008000;">//</span><span style="color: #008000;">      this.availableFn = function () { }</span>
+<span style="color: #000000;">
+    },
+
+    </span><span style="color: #008000;">//</span><span style="color: #008000;">绑定事件，这里应该提供一个方法，表明是insert 或者 push</span>
+    on: <span style="color: #0000ff;">function</span><span style="color: #000000;"> (type, fn, insert) {
+      </span><span style="color: #0000ff;">if</span> (!<span style="color: #0000ff;">this</span>.eventArr[type]) <span style="color: #0000ff;">this</span>.eventArr[type] =<span style="color: #000000;"> [];
+
+      </span><span style="color: #008000;">//</span><span style="color: #008000;">头部插入</span>
+      <span style="color: #0000ff;">if</span><span style="color: #000000;"> (insert) {
+        </span><span style="color: #0000ff;">this</span>.eventArr[type].splice(0, 0<span style="color: #000000;">, fn);
+      } </span><span style="color: #0000ff;">else</span><span style="color: #000000;"> {
+        </span><span style="color: #0000ff;">this</span><span style="color: #000000;">.eventArr[type].push(fn);
+      }
+    },
+
+    off: </span><span style="color: #0000ff;">function</span><span style="color: #000000;"> (type, fn) {
+      </span><span style="color: #0000ff;">if</span> (!<span style="color: #0000ff;">this</span>.eventArr[type]) <span style="color: #0000ff;">return</span><span style="color: #000000;">;
+      </span><span style="color: #0000ff;">if</span><span style="color: #000000;"> (fn) {
+        </span><span style="color: #0000ff;">this</span>.eventArr[type] = _.without(<span style="color: #0000ff;">this</span><span style="color: #000000;">.eventArr[type], fn);
+      } </span><span style="color: #0000ff;">else</span><span style="color: #000000;"> {
+        </span><span style="color: #0000ff;">this</span>.eventArr[type] =<span style="color: #000000;"> [];
+      }
+    },
+
+    trigger: </span><span style="color: #0000ff;">function</span><span style="color: #000000;"> (type) {
+      </span><span style="color: #0000ff;">var</span> _slice =<span style="color: #000000;"> Array.prototype.slice;
+      </span><span style="color: #0000ff;">var</span> args = _slice.call(arguments, 1<span style="color: #000000;">);
+      </span><span style="color: #0000ff;">var</span> events = <span style="color: #0000ff;">this</span><span style="color: #000000;">.eventArr;
+      </span><span style="color: #0000ff;">var</span> results =<span style="color: #000000;"> [], i, l;
+
+      </span><span style="color: #0000ff;">if</span><span style="color: #000000;"> (events[type]) {
+        </span><span style="color: #0000ff;">for</span> (i = 0, l = events[type].length; i &lt; l; i++<span style="color: #000000;">) {
+          results[results.length] </span>= events[type][i].apply(<span style="color: #0000ff;">this</span><span style="color: #000000;">, args);
+        }
+      }
+      </span><span style="color: #0000ff;">return</span><span style="color: #000000;"> results;
+    },
+
+    createRoot: </span><span style="color: #0000ff;">function</span><span style="color: #000000;"> () {
+      </span><span style="color: #0000ff;">this</span>.$el = $('&lt;div class="view" style="display: none; " id="' + <span style="color: #0000ff;">this</span>.id + '"&gt;&lt;/div&gt;'<span style="color: #000000;">);
+    },
+
+    setOption: </span><span style="color: #0000ff;">function</span><span style="color: #000000;"> (options) {
+      </span><span style="color: #0000ff;">for</span> (<span style="color: #0000ff;">var</span> k <span style="color: #0000ff;">in</span><span style="color: #000000;"> options) {
+        </span><span style="color: #0000ff;">if</span> (k == 'datamodel'<span style="color: #000000;">) {
+          _.extend(</span><span style="color: #0000ff;">this</span><span style="color: #000000;">.datamodel, options[k]);
+          </span><span style="color: #0000ff;">continue</span><span style="color: #000000;">;
+        }
+        </span><span style="color: #0000ff;">this</span>[k] =<span style="color: #000000;"> options[k]
+      }
+      </span><span style="color: #008000;">//</span><span style="color: #008000;">      _.extend(this, options);</span>
+<span style="color: #000000;">    },
+
+    initialize: </span><span style="color: #0000ff;">function</span><span style="color: #000000;"> (opts) {
+      </span><span style="color: #0000ff;">this</span><span style="color: #000000;">.propertys();
+      </span><span style="color: #0000ff;">this</span><span style="color: #000000;">.setOption(opts);
+      </span><span style="color: #0000ff;">this</span><span style="color: #000000;">.resetPropery();
+      </span><span style="color: #0000ff;">this</span><span style="color: #000000;">.createRoot();
+      </span><span style="color: #008000;">//</span><span style="color: #008000;">添加系统级别事件</span>
+      <span style="color: #0000ff;">this</span><span style="color: #000000;">.addSysEvents();
+      </span><span style="color: #0000ff;">this</span><span style="color: #000000;">.addEvent();
+
+      </span><span style="color: #008000;">//</span><span style="color: #008000;">开始创建dom</span>
+      <span style="color: #0000ff;">this</span><span style="color: #000000;">.create();
+      </span><span style="color: #0000ff;">this</span><span style="color: #000000;">.initElement();
+
+      </span><span style="color: #008000;">//</span><span style="color: #008000;">将当前的ui实例装入容器</span>
+      UIContainerUtil.addItem(<span style="color: #0000ff;">this</span>.id, <span style="color: #0000ff;">this</span><span style="color: #000000;">);
+
+    },
+
+    </span><span style="color: #008000;">//</span><span style="color: #008000;">返回所有实例化的UI组件集合</span>
+    getUIContainer: <span style="color: #0000ff;">function</span><span style="color: #000000;"> () {
+      </span><span style="color: #0000ff;">return</span><span style="color: #000000;"> UIContainerUtil.getItem();
+    },
+
+    </span><span style="color: #008000;">//</span><span style="color: #008000;">内部重置event，加入全局控制类事件</span>
+    addSysEvents: <span style="color: #0000ff;">function</span><span style="color: #000000;"> () {
+      </span><span style="color: #0000ff;">if</span> (<span style="color: #0000ff;">typeof</span> <span style="color: #0000ff;">this</span>.availableFn != 'function') <span style="color: #0000ff;">return</span><span style="color: #000000;">;
+      </span><span style="color: #0000ff;">this</span><span style="color: #000000;">.removeSysEvents();
+      </span><span style="color: #0000ff;">this</span>.$el.on('click.system' + <span style="color: #0000ff;">this</span>.id, $.proxy(<span style="color: #0000ff;">function</span><span style="color: #000000;"> (e) {
+        </span><span style="color: #0000ff;">if</span> (!<span style="color: #0000ff;">this</span><span style="color: #000000;">.availableFn()) {
+          e.preventDefault();
+          e.stopImmediatePropagation </span>&amp;&amp;<span style="color: #000000;"> e.stopImmediatePropagation();
+        }
+      }, </span><span style="color: #0000ff;">this</span><span style="color: #000000;">));
+    },
+
+    removeSysEvents: </span><span style="color: #0000ff;">function</span><span style="color: #000000;"> () {
+      </span><span style="color: #0000ff;">this</span>.$el.off('.system' + <span style="color: #0000ff;">this</span><span style="color: #000000;">.id);
+    },
+
+    $: </span><span style="color: #0000ff;">function</span><span style="color: #000000;"> (selector) {
+      </span><span style="color: #0000ff;">return</span> <span style="color: #0000ff;">this</span><span style="color: #000000;">.$el.find(selector);
+    },
+
+    </span><span style="color: #008000;">//</span><span style="color: #008000;">提供属性重置功能，对属性做检查</span>
+    resetPropery: <span style="color: #0000ff;">function</span><span style="color: #000000;"> () {
+    },
+
+    </span><span style="color: #008000;">//</span><span style="color: #008000;">各事件注册点，用于被继承</span>
+    addEvent: <span style="color: #0000ff;">function</span><span style="color: #000000;"> () {
+    },
+
+    create: </span><span style="color: #0000ff;">function</span><span style="color: #000000;"> () {
+      </span><span style="color: #0000ff;">this</span>.trigger('onPreCreate'<span style="color: #000000;">);
+      </span><span style="color: #008000;">//</span><span style="color: #008000;">      this.$el.html(this.render(this.getViewModel()));</span>
+      <span style="color: #0000ff;">this</span><span style="color: #000000;">.render();
+      </span><span style="color: #0000ff;">this</span>.status = 'create'<span style="color: #000000;">;
+      </span><span style="color: #0000ff;">this</span>.trigger('onCreate'<span style="color: #000000;">);
+    },
+
+    </span><span style="color: #008000;">//</span><span style="color: #008000;">实例化需要用到到dom元素</span>
+    initElement: <span style="color: #0000ff;">function</span><span style="color: #000000;"> () { },
+
+    render: </span><span style="color: #0000ff;">function</span><span style="color: #000000;"> (data, callback) {
+      data </span>= <span style="color: #0000ff;">this</span>.getViewModel() ||<span style="color: #000000;"> {};
+      </span><span style="color: #0000ff;">var</span> html = <span style="color: #0000ff;">this</span><span style="color: #000000;">.template;
+      </span><span style="color: #0000ff;">if</span> (!<span style="color: #0000ff;">this</span>.template) <span style="color: #0000ff;">return</span> ''<span style="color: #000000;">;
+      </span><span style="color: #0000ff;">if</span><span style="color: #000000;"> (data) {
+        html </span>= _.template(<span style="color: #0000ff;">this</span><span style="color: #000000;">.template)(data);
+      }
+      </span><span style="color: #0000ff;">typeof</span> callback == 'function' &amp;&amp; callback.call(<span style="color: #0000ff;">this</span><span style="color: #000000;">);
+      </span><span style="color: #0000ff;">this</span><span style="color: #000000;">.$el.html(html);
+      </span><span style="color: #0000ff;">return</span><span style="color: #000000;"> html;
+    },
+
+    </span><span style="color: #008000;">//</span><span style="color: #008000;">刷新根据传入参数判断是否走onCreate事件</span>
+    <span style="color: #008000;">//</span><span style="color: #008000;">这里原来的dom会被移除，事件会全部丢失 需要修复*****************************</span>
+    refresh: <span style="color: #0000ff;">function</span><span style="color: #000000;"> (needEvent) {
+      </span><span style="color: #0000ff;">this</span><span style="color: #000000;">.resetPropery();
+      </span><span style="color: #0000ff;">if</span><span style="color: #000000;"> (needEvent) {
+        </span><span style="color: #0000ff;">this</span><span style="color: #000000;">.create();
+      } </span><span style="color: #0000ff;">else</span><span style="color: #000000;"> {
+        </span><span style="color: #0000ff;">this</span><span style="color: #000000;">.render();
+      }
+      </span><span style="color: #0000ff;">this</span><span style="color: #000000;">.initElement();
+      </span><span style="color: #0000ff;">if</span> (<span style="color: #0000ff;">this</span>.status == 'show') <span style="color: #0000ff;">this</span><span style="color: #000000;">.show();
+    },
+
+    show: </span><span style="color: #0000ff;">function</span><span style="color: #000000;"> () {
+      </span><span style="color: #0000ff;">this</span>.wrapper.append(<span style="color: #0000ff;">this</span><span style="color: #000000;">.$el);
+      </span><span style="color: #0000ff;">this</span>.trigger('onPreShow'<span style="color: #000000;">);
+      </span><span style="color: #0000ff;">this</span><span style="color: #000000;">.$el.show();
+      </span><span style="color: #0000ff;">this</span>.status = 'show'<span style="color: #000000;">;
+      </span><span style="color: #0000ff;">this</span><span style="color: #000000;">.bindEvents();
+      </span><span style="color: #0000ff;">this</span>.trigger('onShow'<span style="color: #000000;">);
+    },
+
+    hide: </span><span style="color: #0000ff;">function</span><span style="color: #000000;"> () {
+      </span><span style="color: #0000ff;">this</span>.trigger('onPreHide'<span style="color: #000000;">);
+      </span><span style="color: #0000ff;">this</span><span style="color: #000000;">.$el.hide();
+      </span><span style="color: #0000ff;">this</span>.status = 'hide'<span style="color: #000000;">;
+      </span><span style="color: #0000ff;">this</span><span style="color: #000000;">.unBindEvents();
+      </span><span style="color: #0000ff;">this</span><span style="color: #000000;">.removeSysEvents();
+      </span><span style="color: #0000ff;">this</span>.trigger('onHide'<span style="color: #000000;">);
+    },
+
+    destroy: </span><span style="color: #0000ff;">function</span><span style="color: #000000;"> () {
+      </span><span style="color: #0000ff;">this</span><span style="color: #000000;">.unBindEvents();
+      </span><span style="color: #0000ff;">this</span><span style="color: #000000;">.removeSysEvents();
+      UIContainerUtil.removeItem(</span><span style="color: #0000ff;">this</span><span style="color: #000000;">.id);
+      </span><span style="color: #0000ff;">this</span><span style="color: #000000;">.$el.remove();
+      </span><span style="color: #0000ff;">delete</span> <span style="color: #0000ff;">this</span><span style="color: #000000;">;
+    },
+
+    getViewModel: </span><span style="color: #0000ff;">function</span><span style="color: #000000;"> () {
+      </span><span style="color: #0000ff;">return</span> <span style="color: #0000ff;">this</span><span style="color: #000000;">.datamodel;
+    },
+
+    setzIndexTop: </span><span style="color: #0000ff;">function</span><span style="color: #000000;"> (el, level) {
+      </span><span style="color: #0000ff;">if</span> (!el) el = <span style="color: #0000ff;">this</span><span style="color: #000000;">.$el;
+      </span><span style="color: #0000ff;">if</span> (!level || level &gt; 10) level = 0<span style="color: #000000;">;
+      level </span>= level * 1000<span style="color: #000000;">;
+      el.css(</span>'z-index'<span style="color: #000000;">, getBiggerzIndex(level));
+
+    },
+
+    </span><span style="color: #008000;">/*</span><span style="color: #008000;">*
+    * 解析events，根据events的设置在dom上设置事件
+    </span><span style="color: #008000;">*/</span><span style="color: #000000;">
+    bindEvents: </span><span style="color: #0000ff;">function</span><span style="color: #000000;"> () {
+      </span><span style="color: #0000ff;">var</span> events = <span style="color: #0000ff;">this</span><span style="color: #000000;">.events;
+
+      </span><span style="color: #0000ff;">if</span> (!(events || (events = _.result(<span style="color: #0000ff;">this</span>, 'events')))) <span style="color: #0000ff;">return</span> <span style="color: #0000ff;">this</span><span style="color: #000000;">;
+      </span><span style="color: #0000ff;">this</span><span style="color: #000000;">.unBindEvents();
+
+      </span><span style="color: #008000;">//</span><span style="color: #008000;"> 解析event参数的正则</span>
+      <span style="color: #0000ff;">var</span> delegateEventSplitter = /^(\S+)\s*(.*)$/<span style="color: #000000;">;
+      </span><span style="color: #0000ff;">var</span><span style="color: #000000;"> key, method, match, eventName, selector;
+
+      </span><span style="color: #008000;">//</span><span style="color: #008000;"> 做简单的字符串数据解析</span>
+      <span style="color: #0000ff;">for</span> (key <span style="color: #0000ff;">in</span><span style="color: #000000;"> events) {
+        method </span>=<span style="color: #000000;"> events[key];
+        </span><span style="color: #0000ff;">if</span> (!_.isFunction(method)) method = <span style="color: #0000ff;">this</span><span style="color: #000000;">[events[key]];
+        </span><span style="color: #0000ff;">if</span> (!method) <span style="color: #0000ff;">continue</span><span style="color: #000000;">;
+
+        match </span>=<span style="color: #000000;"> key.match(delegateEventSplitter);
+        eventName </span>= match[1], selector = match[2<span style="color: #000000;">];
+        method </span>= _.bind(method, <span style="color: #0000ff;">this</span><span style="color: #000000;">);
+        eventName </span>+= '.delegateUIEvents' + <span style="color: #0000ff;">this</span><span style="color: #000000;">.id;
+
+        </span><span style="color: #0000ff;">if</span> (selector === ''<span style="color: #000000;">) {
+          </span><span style="color: #0000ff;">this</span><span style="color: #000000;">.$el.on(eventName, method);
+        } </span><span style="color: #0000ff;">else</span><span style="color: #000000;"> {
+          </span><span style="color: #0000ff;">this</span><span style="color: #000000;">.$el.on(eventName, selector, method);
+        }
+      }
+
+      </span><span style="color: #0000ff;">return</span> <span style="color: #0000ff;">this</span><span style="color: #000000;">;
+    },
+
+    </span><span style="color: #008000;">/*</span><span style="color: #008000;">*
+    * 冻结dom上所有元素的所有事件
+    *
+    * @return {object} 执行作用域
+    </span><span style="color: #008000;">*/</span><span style="color: #000000;">
+    unBindEvents: </span><span style="color: #0000ff;">function</span><span style="color: #000000;"> () {
+      </span><span style="color: #0000ff;">this</span>.$el.off('.delegateUIEvents' + <span style="color: #0000ff;">this</span><span style="color: #000000;">.id);
+      </span><span style="color: #0000ff;">return</span> <span style="color: #0000ff;">this</span><span style="color: #000000;">;
+    }
+
+  });
+
+});</span></pre>
+</div>
+<span class="cnblogs_code_collapse">View Code</span></div>
+<p>核心点变成了几个属性：</p>
+<p>① template，根据他生成UI</p>
+<p>② datamodel，根据他生成viewModel提供给template使用</p>
+<p>③ eventArr，业务事件注册点</p>
+<p>这里简单以alert组件做说明：</p>
+<div class="cnblogs_code">
+<pre><span style="color: #008080;"> 1</span> define(['UILayer', getAppUITemplatePath('ui.alert')], <span style="color: #0000ff;">function</span><span style="color: #000000;"> (UILayer, template) {
+</span><span style="color: #008080;"> 2</span> 
+<span style="color: #008080;"> 3</span>   <span style="color: #0000ff;">return</span><span style="color: #000000;"> _.inherit(UILayer, {
+</span><span style="color: #008080;"> 4</span>     propertys: <span style="color: #0000ff;">function</span><span style="color: #000000;"> ($super) {
+</span><span style="color: #008080;"> 5</span> <span style="color: #000000;">      $super();
+</span><span style="color: #008080;"> 6</span> 
+<span style="color: #008080;"> 7</span>       <span style="color: #008000;">//</span><span style="color: #008000;">数据模型</span>
+<span style="color: #008080;"> 8</span>       <span style="color: #0000ff;">this</span>.datamodel =<span style="color: #000000;"> {
+</span><span style="color: #008080;"> 9</span>         title: 'alert'<span style="color: #000000;">,
+</span><span style="color: #008080;">10</span>         content: 'content'<span style="color: #000000;">,
+</span><span style="color: #008080;">11</span> <span style="color: #000000;">        btns: [
+</span><span style="color: #008080;">12</span>           { name: 'cancel', className: 'cui-btns-cancel'<span style="color: #000000;"> },
+</span><span style="color: #008080;">13</span>           { name: 'ok', className: 'cui-btns-ok'<span style="color: #000000;"> }
+</span><span style="color: #008080;">14</span> <span style="color: #000000;">        ]
+</span><span style="color: #008080;">15</span> <span style="color: #000000;">      };
+</span><span style="color: #008080;">16</span> 
+<span style="color: #008080;">17</span>       <span style="color: #008000;">//</span><span style="color: #008000;">html模板</span>
+<span style="color: #008080;">18</span>       <span style="color: #0000ff;">this</span>.template =<span style="color: #000000;"> template;
+</span><span style="color: #008080;">19</span> 
+<span style="color: #008080;">20</span>       <span style="color: #008000;">//</span><span style="color: #008000;">事件机制</span>
+<span style="color: #008080;">21</span>       <span style="color: #0000ff;">this</span>.events =<span style="color: #000000;"> {
+</span><span style="color: #008080;">22</span>         'click .cui-btns-ok': 'okAction'<span style="color: #000000;">,
+</span><span style="color: #008080;">23</span>         'click .cui-btns-cancel': 'cancelAction'
+<span style="color: #008080;">24</span> <span style="color: #000000;">      };
+</span><span style="color: #008080;">25</span> <span style="color: #000000;">    },
+</span><span style="color: #008080;">26</span> 
+<span style="color: #008080;">27</span>     initialize: <span style="color: #0000ff;">function</span><span style="color: #000000;"> ($super, opts) {
+</span><span style="color: #008080;">28</span> <span style="color: #000000;">      $super(opts);
+</span><span style="color: #008080;">29</span> <span style="color: #000000;">    },
+</span><span style="color: #008080;">30</span> 
+<span style="color: #008080;">31</span>     addEvent: <span style="color: #0000ff;">function</span><span style="color: #000000;"> ($super) {
+</span><span style="color: #008080;">32</span> <span style="color: #000000;">      $super();
+</span><span style="color: #008080;">33</span>       <span style="color: #0000ff;">this</span>.on('onCreate', <span style="color: #0000ff;">function</span><span style="color: #000000;"> () {
+</span><span style="color: #008080;">34</span>         <span style="color: #0000ff;">this</span>.$el.addClass('cui-alert'<span style="color: #000000;">);
+</span><span style="color: #008080;">35</span> <span style="color: #000000;">      });
+</span><span style="color: #008080;">36</span>       <span style="color: #0000ff;">this</span>.maskToHide = <span style="color: #0000ff;">false</span><span style="color: #000000;">;
+</span><span style="color: #008080;">37</span> <span style="color: #000000;">    },
+</span><span style="color: #008080;">38</span> 
+<span style="color: #008080;">39</span>     okAction: <span style="color: #0000ff;">function</span><span style="color: #000000;"> () {
+</span><span style="color: #008080;">40</span>       <span style="color: #0000ff;">this</span><span style="color: #000000;">.hide();
+</span><span style="color: #008080;">41</span>       console.log('ok'<span style="color: #000000;">);
+</span><span style="color: #008080;">42</span> <span style="color: #000000;">    },
+</span><span style="color: #008080;">43</span> 
+<span style="color: #008080;">44</span>     cancelAction: <span style="color: #0000ff;">function</span><span style="color: #000000;"> () {
+</span><span style="color: #008080;">45</span>       <span style="color: #0000ff;">this</span><span style="color: #000000;">.hide();
+</span><span style="color: #008080;">46</span>       console.log('cancel'<span style="color: #000000;">);
+</span><span style="color: #008080;">47</span> 
+<span style="color: #008080;">48</span> <span style="color: #000000;">    },
+</span><span style="color: #008080;">49</span> 
+<span style="color: #008080;">50</span>     setDatamodel: <span style="color: #0000ff;">function</span><span style="color: #000000;"> (datamodel, okAction, cancelAction) {
+</span><span style="color: #008080;">51</span>       <span style="color: #0000ff;">if</span> (!datamodel) datamodel =<span style="color: #000000;"> {};
+</span><span style="color: #008080;">52</span>       _.extend(<span style="color: #0000ff;">this</span><span style="color: #000000;">.datamodel, datamodel);
+</span><span style="color: #008080;">53</span>       <span style="color: #0000ff;">this</span>.okAction =<span style="color: #000000;"> okAction;
+</span><span style="color: #008080;">54</span>       <span style="color: #0000ff;">this</span>.cancelAction =<span style="color: #000000;"> cancelAction;
+</span><span style="color: #008080;">55</span>       <span style="color: #0000ff;">this</span><span style="color: #000000;">.refresh();
+</span><span style="color: #008080;">56</span> <span style="color: #000000;">    }
+</span><span style="color: #008080;">57</span> 
+<span style="color: #008080;">58</span> <span style="color: #000000;">  });
+</span><span style="color: #008080;">59</span> 
+<span style="color: #008080;">60</span> });</pre>
+</div>
+<div class="cnblogs_code">
+<pre><span style="color: #0000ff;">&lt;</span><span style="color: #800000;">div </span><span style="color: #ff0000;">class</span><span style="color: #0000ff;">="cui-pop-box"</span><span style="color: #0000ff;">&gt;</span>
+  <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">div </span><span style="color: #ff0000;">class</span><span style="color: #0000ff;">="cui-hd"</span><span style="color: #0000ff;">&gt;</span>
+      <span style="background-color: #ffff00; color: #000000;">&lt;%</span><span style="background-color: #f5f5f5; color: #000000;">=</span><span style="background-color: #f5f5f5; color: #000000;">title</span><span style="background-color: #ffff00; color: #000000;">%&gt;</span>
+  <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">div</span><span style="color: #0000ff;">&gt;</span>
+  <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">div </span><span style="color: #ff0000;">class</span><span style="color: #0000ff;">="cui-bd"</span><span style="color: #0000ff;">&gt;</span>
+    <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">div </span><span style="color: #ff0000;">class</span><span style="color: #0000ff;">="cui-error-tips"</span><span style="color: #0000ff;">&gt;</span>
+      <span style="background-color: #ffff00; color: #000000;">&lt;%</span><span style="background-color: #f5f5f5; color: #000000;">=</span><span style="background-color: #f5f5f5; color: #000000;">content</span><span style="background-color: #ffff00; color: #000000;">%&gt;</span><span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">div</span><span style="color: #0000ff;">&gt;</span>
+    <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">div </span><span style="color: #ff0000;">class</span><span style="color: #0000ff;">="cui-roller-btns"</span><span style="color: #0000ff;">&gt;</span>
+      <span style="background-color: #ffff00; color: #000000;">&lt;%</span> <span style="background-color: #f5f5f5; color: #0000ff;">for</span><span style="background-color: #f5f5f5; color: #000000;">(var i </span><span style="background-color: #f5f5f5; color: #000000;">=</span> <span style="background-color: #f5f5f5; color: #800080;">0</span><span style="background-color: #f5f5f5; color: #000000;">, </span><span style="background-color: #f5f5f5; color: #0000ff;">len</span> <span style="background-color: #f5f5f5; color: #000000;">=</span><span style="background-color: #f5f5f5; color: #000000;"> btns.length; i </span><span style="background-color: #f5f5f5; color: #000000;">&lt;</span> <span style="background-color: #f5f5f5; color: #0000ff;">len</span><span style="background-color: #f5f5f5; color: #000000;">; i</span><span style="background-color: #f5f5f5; color: #000000;">++</span><span style="background-color: #f5f5f5; color: #000000;"> ) {</span><span style="background-color: #ffff00; color: #000000;">%&gt;</span>
+      <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">div </span><span style="color: #ff0000;">class</span><span style="color: #0000ff;">="cui-flexbd &lt;%=btns[i].className%&gt;"</span><span style="color: #0000ff;">&gt;</span>
+        <span style="background-color: #ffff00; color: #000000;">&lt;%</span><span style="background-color: #f5f5f5; color: #000000;">=</span><span style="background-color: #f5f5f5; color: #000000;">btns[i].name</span><span style="background-color: #ffff00; color: #000000;">%&gt;</span><span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">div</span><span style="color: #0000ff;">&gt;</span>
+      <span style="background-color: #ffff00; color: #000000;">&lt;%</span><span style="background-color: #f5f5f5; color: #000000;"> } </span><span style="background-color: #ffff00; color: #000000;">%&gt;</span>
+    <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">div</span><span style="color: #0000ff;">&gt;</span>
+  <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">div</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">div</span><span style="color: #0000ff;">&gt;</span></pre>
+</div>
+<p>实例化时，alert组件会执行基类的方法，最终反正会执行AbstractView的程序逻辑</p>
+<p>首先会根据datamodel以及template生成DOM结构，然后在使用事件代理的方式用eventArr绑定业务事件，具体实现请移步至：</p>
+<p><a href="https://github.com/yexiaochai/blade/tree/master/blade/ui">https://github.com/yexiaochai/blade/tree/master/blade/ui</a></p>
+<h1>结语</h1>
+<p>今天又做了一回标题党，引面试党进来看了看，然后谈了自己对前端MVC、分成的一些理解，最后说了Blade UI一块的设计思路，希望对各位有帮助</p>
+<p>有时候感觉知道了却写不出来，然后本来也想好好的解析下代码却感觉没什么说的，烦劳各位自己看看吧</p>
+<p>最后微博求粉：<a href="http://weibo.com/yiquinian/home?wvr=5">http://weibo.com/yiquinian/home?wvr=5</a></p>
+                </div>
+
+                <div class='span3 sidebar'>
+                    <h2>导航栏</h2>
+                    <ul class="nav nav-tabs nav-stacked">
+                             				<li><a href="http://songboriceboy.github.io/xxoo/html/blade/[zd]bladelrcqyqjryddwebappkfb/index.html">[置顶]【blade利刃出鞘】一起进入移动端webapp开发吧</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/blade/blade04ymxdxdffxjavascripttkdz/index.html">【blade04】用面向对象的方法写javascript坦克大战</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/blade/bladedUIsjljqdMVCyfcsx/index.html">【blade的UI设计】理解前端MVC与分层思想</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/blade/ttwebappdSEOnts/index.html">探讨webapp的SEO难题（上）</a></li>
+    				                                         
+                    </ul>
+                </div>
+            </div>
+
+        </div>
+    </body>
+</html>

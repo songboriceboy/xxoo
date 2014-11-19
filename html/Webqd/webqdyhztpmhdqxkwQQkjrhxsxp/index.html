@@ -1,0 +1,178 @@
+﻿<!DOCTYPE html>
+
+<html lang="zh">
+    <head>
+        <meta charset="utf-8">
+        <meta name="description" content="android,ios" />
+        <meta name="keywords" content="android,ios" />
+
+        <title>叶小钗</title>
+        <style type='text/css'>
+            body {
+                background-color: #CCC;
+            }
+        </style>
+        <link rel="stylesheet" href="../../../css/bootstrap.css" />
+    </head>
+
+    <body>
+        <div class="container">
+
+            <h1>叶小钗</h1>
+
+            <div class='navbar navbar-inverse'>
+                <div class='navbar-inner nav-collapse' style="height: auto;">
+                    <ul class="nav">
+                              				<li><a href="http://songboriceboy.github.io/xxoo/html/blade/index.html">blade</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/css/index.html">css</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/HTML5&CSS3/index.html">HTML5&CSS3</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/index.html">javascript</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Javaxx/index.html">Java学习</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/nodejs/index.html">nodejs</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/requirejs/index.html">requirejs</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/index.html">Web前端</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/xxgw/index.html">学习感悟</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/gzdd/index.html">工作点滴</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/jkxx/index.html">接口学习</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/wfl/index.html">未分类</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/ydkf/index.html">移动开发</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/sjms/index.html">设计模式</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/mst/index.html">面试题</a></li>
+    				                      </ul>
+                </div>
+            </div>
+
+            <div id='content' class='row-fluid'>
+
+                <div class='span9 main'>
+				<div style="color:blue" align=center>【web前端优化之图片模糊到清晰】看我QQ空间如何显示相片</div><br><h1>前言</h1>
+<p>此篇文章估计不会太长，有移除首页的风险，但是老夫（<span style="color: #ff0000;">称老夫是因为我们真正的叶小钗其实都100多岁啦</span>）是不会怕滴。所以，我来了哟！</p>
+<p>题外话：<strong><span style="color: #ff0000;">今天我们一起还看了一道前端的面试题，而后我本来还想多找几道来做做，但是没找到什么合适的，各位有什么好的前端面试题请给我留言哦，我们一起来分析面试题进步哟！</span></strong></p>
+<p><span style="color: #000000;">前端时间，我与我们的产品有一次讨论，是针对图片压缩的，因为我对图片或者说PS这块是个小白，所以当时做了一个广告图片有100来k也直接给传上去了，结果被我们的同事搞起来一压缩，便只有50多k了，此次交流对图片压缩这块有了一点点心得，并且为第二次交流埋下伏笔，第二次便是图片由模糊变清晰的研究了。</span></p>
+<h1><span style="color: #ffffff;">网页图片格式</span></h1>
+<p><span style="color: #000000;">此处我先对我们的图片格式做一下普及吧，参考：</span></p>
+<h1 class="postTitle" style="font: bold 16px/1.5em verdana, 'ms song', 微软雅黑, 宋体, Arial, Helvetica, sans-serif; margin: 0px 0px 10px; padding: 0px 0px 5px 5px; width: 662px; text-align: left; color: #464646; text-transform: none; text-indent: 0px; letter-spacing: normal; clear: both; word-spacing: 0px; border-bottom-color: #dddddd; border-bottom-width: 1px; border-bottom-style: solid; white-space: normal; font-size-adjust: none; font-stretch: normal; background-color: #ffffff; -webkit-text-stroke-width: 0px;"><a id="cb_post_title_url" class="postTitle2" style="margin: 0px; padding: 0px; color: #d84d2d; text-decoration: none;" href="http://www.cnblogs.com/weinan/archive/2012/12/04/2801918.html">【整理】详说JPG,GIF及PNG各类型的图片格式</a></h1>
+<p><strong><span style="color: #000000;">GIF</span></strong></p>
+<p><span style="color: #000000;">透明类型，可以全透明或者全不透明，半透明这种事情就不要找他了，并且这个家伙可以做动画哦</span></p>
+<p><span style="color: #000000;">gif是一种无损耗的图片格式</span></p>
+<p><span style="color: #000000;">gif采用lzw算法进行压缩，当压缩gif过程中像素由上到下进行压缩，也就是说横向的gif图片比纵向的小(500*10比10*500小)</span></p>
+<p><span style="color: #000000;">gif支持可选择性的间隔渐进显示</span></p>
+<p><strong><span style="color: #000000;">JPEG</span></strong></p>
+<p>不支持透明</p>
+<p>不支持动画</p>
+<p>该图片非常容易损耗</p>
+<p>支持隔行渐进显示（ie不支持，ie会再整个图片信息完全到达后再显示）</p>
+<p>jepg尤其适合web上面的摄影图片和数字相册</p>
+<p><strong>PNG</strong></p>
+<p>支持各种透明，但在IE6下有bug需要使用滤镜处理</p>
+<p>不支持动画</p>
+<p>任何操作都不会损耗其质量</p>
+<p>支持间隔渐进增强，但会造成图片尺寸变大：</p>
+<div class="cnblogs_code">
+<pre><span style="color: #800000;">png8(布尔透明)
+相当于静态gif，只有256色，支持索引透明，就是指定一个像素点不是透明
+
+png8(alpha透明)
+可指定像素点的透明度，例如50%透明度
+优点在于比png24/32小，效果一样，缺点为ie6不支持
+
+png24
+不透明，颜色很多不止256色，PS导出的png24事实上为png32
+
+png32<br>和PS里面的PSD一样，包含图层和通道信息</span></pre>
+</div>
+<hr>
+<p>以上是关于图片的一些信息，我们大概了解下便是，其中我要说一说其中的PNG，特别是交错png</p>
+<p><strong style="color: #454545; text-transform: none; line-height: 21px; text-indent: 0px; letter-spacing: normal; font-family: tahoma, helvetica, arial; font-size: 14px; font-style: normal; font-variant: normal; word-spacing: 0px; white-space: normal; background-color: #ffffff; -webkit-text-stroke-width: 0px;">PNG交错</strong><span style="font: 14px/21px tahoma, helvetica, arial; color: #454545; text-transform: none; text-indent: 0px; letter-spacing: normal; word-spacing: 0px; float: none; display: inline !important; white-space: normal; font-size-adjust: none; font-stretch: normal; background-color: #ffffff; -webkit-text-stroke-width: 0px;">在使用浏览器欣赏该图片时就会以由模糊逐渐转为清晰的效果方式渐渐显示出来。PNG先进的交错式方法，使图像得以水平及垂直方式显像在屏幕上，加快了下載的速度，作用：交错可使下载时间感觉更短，并使浏览者确信正在进行下载。PNG无交错、不交错就没这个作用。</span></p>
+<h1>图片的显示</h1>
+<p>我们知道img标签在dom加载时候是不会加载的，而是在dom结构全部出来后并形成了渲染树（布局结束），才开始加载。</p>
+<p>而其加载顺序也是从上而下的加载，意思是图片我们是先看到上面再看到下面，但是很明显这不是一个好的显示方式，我们若是一开始可以看到模糊的图形然后再慢慢变清晰是不是好很多呢？</p>
+<p>肯定好很多啦。。。</p>
+<p>于是我们讨论到如何实现，但是就说到了交错PNG，我当时虽然信了，因为我对此不太了解，但是下来思考下却感觉有点不对劲！</p>
+<h1>用户的疑惑</h1>
+<p>现在我们来想象下QQ空间的做法（<span style="color: #ff0000;">这块纯粹瞎扯</span>），我现在作为一个用户，我上传图片来了</p>
+<p>① 我想将QQ空间作为云存储的地方，上传了我2M的毕业照</p>
+<p>② 空间根据需求生成了一张缩略图与一张大图</p>
+<p>③ 我们首先看到缩略图，而后看到大图，点击原图时候便看到我最初2M的照片</p>
+<p>以上是我以为的逻辑，QQ空间是不是这个逻辑我们不去关注他，因为站在用户角度，我一定是想保留我最初的东西。</p>
+<p>好了事到如今，QQ空间究竟怎么做的呢？？？那个太复杂了，我们也不去关注，我这里说下我是怎么做的。</p>
+<h1>实现图片由模糊到清晰</h1>
+<p>我们的相册显示一般是这个样子的：</p>
+<p><img src="29133617148956.png" alt=""></p>
+<p>上面是缩略图，下面是大图，在这里我们其实可以对其缩略图做文章！！！</p>
+<p>我们在大图显示完之前可以用缩略图&ldquo;代替&rdquo;大图吗，来看看我们的逻辑：</p>
+<p>① 缩略图在相册上方，其最先加载，就算在下方，因为缩略图尺寸很小加载十分迅速</p>
+<p>② 最初将缩略图放到大图显示位置，将其大小设置为大图大小（此尺寸有多种方法可获取，比如上传时候便计算结束）</p>
+<p>② 将大图布局置于缩略图前，因为缩略图已经展示，但是因为过大而显得有点模糊，但大图慢慢加载其由上至下变得清晰给人一种模糊到清晰的错觉</p>
+<p>④ 流程结束</p>
+<p>于是我们来看看我们的QQ空间吧，看之前我们用限速工具，给我们的火狐限速：</p>
+<p>PS：限速后开空间巨慢。。。</p>
+<p><img src="34679148347563.png" alt=""></p>
+<p>怎么样，够慢了的吧！</p>
+<p><img src="44110828064465.png" alt=""></p>
+<p>注意看其由上到下的变化哦，然后我这里找出了证据</p>
+<p>PS：我打开网上限制怎么还是很慢，看来是我网速慢的原因啦。。。</p>
+<p><img src="13933868348059.png" alt=""></p>
+<p>请看我这边用红框圈着的三块地方：</p>
+<p>第一个为相册显示的容器，relative定位的</p>
+<p>第二个为上面的小缩略图，很小的那种哦：</p>
+<p><img src="20025405536471.png" alt=""></p>
+<p>看吧，这里活生生的将人家扯那么大。。。。。</p>
+<p>第三个框便是主角，大图啦：</p>
+<p><img src="149732310395443.png" alt=""></p>
+<p><strong>结论</strong></p>
+<p>从其整个排布来看，与我们思考的一致，他这样做好处多多的有哦，比如我们这里上面的图片导航：</p>
+<p><img src="495517710068144.png" alt=""></p>
+<p>我们看到上面的缩略图早就显示出来了，点击下一张的时候缩略图会展示出来，不会出现空白的断层，然后大图慢慢的显示让用户愿意停在那里。</p>
+<h1>结语</h1>
+<p>好啦，今天我们研究了一道面试题，后面又研究了图片由模糊到清晰的方案，<span style="color: #ff0000;">若是您有更好的解决方案不要藏着哦</span>！</p>
+<p>好啦，若是你有好的web前端面试题也请留下，我最近在做这方面的整理，后面对各位也会有帮助滴，最后留一张老夫的玉照吧！</p>
+<p><img src="88769510235836.png" alt=""></p>
+                </div>
+
+                <div class='span3 sidebar'>
+                    <h2>导航栏</h2>
+                    <ul class="nav nav-tabs nav-stacked">
+                             				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/Fiddlerznqddsq/index.html">Fiddler真乃前端大杀器！！！</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/Requirejs/index.html">Requirejs</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/RequireJSyBackbonejdzh/index.html">RequireJS与Backbone简单整合</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/RequireJSxxbj/index.html">RequireJS学习笔记</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/Webqdyhctxdpzyyqdgsgpng/index.html">Web前端优化初探，小弟抛砖引玉，期待高手共破难关！</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/Webqdlqjrctxsqwpzyyqdgsgpng/index.html">Web前端浏览器兼容初探，小生浅文抛砖引玉，期待高手攻破难关！</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/jqueryfdataListxnyhmbybysxtgxn10bys/index.html">【jquery仿dataList——性能优化】模板预编译思想提高性能10倍以上！！！</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/jqueryfdataListyyzmfigoogledzhtdpxzdhfp/index.html">【jquery仿dataList】应用之——模仿igoogle【定制化、拖动排序，最大化、分屏】</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/jqueryfdatalistdygwtqzszmxxsjlkzDIVdjjbf/index.html">【jquery仿datalist的一个问题，求助】——设置每行显示几列，块状DIV的解决办法</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/jquerymfnetkjcbGridViewmxsxjqjdyy/index.html">【jquery模仿net控件】初步GridView模型实现，及其简单应用</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/jquerymfnetkjjdfykj10fsgridviewsycs/index.html">【jquery模仿net控件】简单分页控件10，附上gridview使用测试</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/jquerymfnetkjjdddatalistkjgxjqjdyy/index.html">【jquery模仿net控件】简单的datalist控件更新，及其简单应用</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/jquerymfnetkjjdddropdownlistydatalist/index.html">【jquery模仿net控件】简单的dropdownlist与datalist</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/jquerybnetkjdropdownlistfymhydjzdzzpz/index.html">【jquery版net控件—dropdownlist】附源码，欢迎大家指点、指正、拍砖！！！</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/positionykyhfzddccyslsbdws/index.html">【position也可以很复杂】当弹出层遇上了鼠标定位（上）</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/positionykyhfzddccyslsbdwx/index.html">【position也可以很复杂】当弹出层遇上了鼠标定位（下）</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/SEOzmlwljnmtsbwmlyqkkSEOb/index.html">【SEO】周末了，为了纪念明天上班，我们来一起看看SEO吧</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/webqdyhqdwyhyrzrz/index.html">【web前端优化】前端无优化，庸人自扰之！</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/webqdyhzreflowjsymdhl/index.html">【web前端优化之reflow】减少页面的回流</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/webqdyhztpycjzctzwbsxwbk/index.html">【web前端优化之图片延迟加载初探】中午不睡，下午崩溃</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/webqdyhztpmhdqxkwQQkjrhxsxp/index.html">【web前端优化之图片模糊到清晰】看我QQ空间如何显示相片</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/webqdpxzqhddphsywmsxdDatalistsmwtb/index.html">【web前端培训之前后端的配合（上）】以我们熟悉的Datalist说明问题吧</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/webqdpxzqhddphzjxzrdgs/index.html">【web前端培训之前后端的配合（中）】继续昨日的故事</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/dyyygybkydbfgqym/index.html">【单页应用】关于博客园的补发（高清有码）。。。</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/xtsstringifysBUGlocalstoragesxxmSafarialertksfycjzym10pxbp/index.html">【小贴士】【stringify神BUG】【localstorage失效】【消灭Safarialert框】【是否延迟加载】【页面10px白屏】</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/dalhdmsthhdsdmstjsh/index.html">【答阿里寒冬面试题】呵呵，大神的面试题就是好！</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/ycsjmstdldgwxxdgjxxdff/index.html">一次上机面试题带来的感悟【学习的感觉、学习的方法】</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/ydmstdldqdyhsxxxdp/index.html">一道面试题带来的前端优化——实现星星点评</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/zysyzjjhfzwebqdbfxlgxmndjjfa/index.html">只言碎语总结，今后发展web前端，并分享两个项目难点解决方案。</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/gwjlytbllbnwmljxwwdbdyzb/index.html">各位加了一天班累了吧？那我们来继续未完的表单验证吧</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/gwzmwlytllbwmyqlzldmstbjstbdy/index.html">各位周末玩了一天累了吧，我们一起来做两道面试题吧（据说淘宝的哟）！</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/jyjQuerydxlcdcjzwsy/index.html">基于jQuery的下拉菜单插件，诸位上眼！！！</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/jyjQuerydxlcdcd02zwsy/index.html">基于jQuery的下拉菜单菜单【02】，诸位上眼！！！</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/gzzpddyxdxdccktfybwjsc/index.html">工作中碰到的一些东西【弹出窗口】【拖放】【异步文件上传】</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/gzlygxqgwydllbnwmyqlbdyzyfb/index.html">工作了一个星期各位一定累了吧，那我们一起来表单验证一番吧！</a></li>
+    				                                         
+                    </ul>
+                </div>
+            </div>
+
+        </div>
+    </body>
+</html>

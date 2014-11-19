@@ -1,0 +1,488 @@
+﻿<!DOCTYPE html>
+
+<html lang="zh">
+    <head>
+        <meta charset="utf-8">
+        <meta name="description" content="android,ios" />
+        <meta name="keywords" content="android,ios" />
+
+        <title>叶小钗</title>
+        <style type='text/css'>
+            body {
+                background-color: #CCC;
+            }
+        </style>
+        <link rel="stylesheet" href="../../../css/bootstrap.css" />
+    </head>
+
+    <body>
+        <div class="container">
+
+            <h1>叶小钗</h1>
+
+            <div class='navbar navbar-inverse'>
+                <div class='navbar-inner nav-collapse' style="height: auto;">
+                    <ul class="nav">
+                              				<li><a href="http://songboriceboy.github.io/xxoo/html/blade/index.html">blade</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/css/index.html">css</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/HTML5&CSS3/index.html">HTML5&CSS3</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/index.html">javascript</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Javaxx/index.html">Java学习</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/nodejs/index.html">nodejs</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/requirejs/index.html">requirejs</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/index.html">Web前端</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/xxgw/index.html">学习感悟</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/gzdd/index.html">工作点滴</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/jkxx/index.html">接口学习</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/wfl/index.html">未分类</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/ydkf/index.html">移动开发</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/sjms/index.html">设计模式</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/mst/index.html">面试题</a></li>
+    				                      </ul>
+                </div>
+            </div>
+
+            <div id='content' class='row-fluid'>
+
+                <div class='span9 main'>
+				<div style="color:blue" align=center>【javascript培训第二天】DOM与BOM</div><br><h1>前言</h1>
+<p>接上一次的话题，我们今天继续学习，对于上一篇文章，有朋友认为这种文章满大街都是（老实说，我也没想到这么多朋友愿意读），想学javascript不如自己买一本javascript高级程序设计来读读，其实这些朋友的想法是正确的。</p>
+<p>但无奈这是上面下的任务，而且我认为学习有两个最为困难的阶段：</p>
+<p>1 入门</p>
+<p>2 飞升</p>
+<p>我所说的飞升到不是说非常非常厉害，也就是我两年后想达到的水平罢了。</p>
+<p>诚然入门不难，认为不难的同学其实是错误的，说他不难只能说你已经入门了，其实入门真的很难的！</p>
+<p>就拿我来说，我入门CSS就花了很大的功夫，连现在我都觉得CSS很精秒。</p>
+<p>我自己js入门没有我没有办法断定。什么程度算是入门，什么程度算是精通，各个人的标准都不相同，有的同学认为我js不错，其实我自己知道我事实上还差得远呢！</p>
+<p>人人都想飞升，人人都想当&ldquo;汤姆大叔&rdquo;，我当然也想当大牛，拿写文章来说，一来想激励自己，二来发文章真的是一种很好的学习方式呢！</p>
+<p>我建议大家多发技术博客，不管好坏都发！回看我两年前的东西，只能用惨不忍睹来形容，我两年后回看现在的博客，也许我仍然会认为惨不忍睹，那时候我便已经成为&ldquo;汤姆大叔&rdquo;也说不定呢，呵呵。</p>
+<p>另外，对于不能入门的同学，迷茫是很大一个因素，二个月前我也非常迷茫，我也希望有同学能尽快找回自己的专注，丢掉他的迷茫，大家共同进步，所以这种博客我还是会发的，而且会坚持发下去。正如我读张鑫旭博客时看到了他的那份专注从而引燃自己的那份执着。</p>
+<p>好了，扯得很远了，继续我们今天的任务吧。</p>
+<h1>DOM</h1>
+<p>有些朋友记忆很差的，很不幸我就是其中之一，我从来就没有把这个家伙事什么记清楚过！于是我就只能用中文读出来，有一次一个朋友用英文读了出来，我硬是不知道是什么东西！他活生生的将我带回了高中时我花了一早上硬是记不住几个单词的痛苦场景！</p>
+<div class="cnblogs_code">
+<pre><span style="color: #800000;">DOM
+Document Object Model 文档对象模型
+一个Window对象有一个document属性引用了Document对象
+Document对象表示窗口内容，他是一个巨大的API中的核心对象，他代表操作文档的内容</span></pre>
+</div>
+<p>了解DOM我们需要了解：</p>
+<p>1 在文档中查询元素</p>
+<p>2 将文档作为节点树来遍历，找的节点的祖先、兄弟和后代</p>
+<p>3 查询和设置文档的属性</p>
+<p>4 查询、更改文档的内容</p>
+<p>5 创建、插入、删除节点来修改文档</p>
+<p>DOM对象模型是表示和操作HTML和XML文档内容的基本API，这个家伙说是不复杂，但是画图要好久呢：</p>
+<div class="cnblogs_code">
+<pre><span style="color: #0000ff;">&lt;</span><span style="color: #800000;">html </span><span style="color: #ff0000;">xmlns</span><span style="color: #0000ff;">="http://www.w3.org/1999/xhtml"</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #0000ff;">&lt;</span><span style="color: #800000;">head</span><span style="color: #0000ff;">&gt;</span>
+    <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">title</span><span style="color: #0000ff;">&gt;</span>刀狂剑痴<span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">title</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">head</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #0000ff;">&lt;</span><span style="color: #800000;">body</span><span style="color: #0000ff;">&gt;</span>
+    <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">h1</span><span style="color: #0000ff;">&gt;</span><span style="color: #000000;">
+        叶小钗</span><span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">h1</span><span style="color: #0000ff;">&gt;</span>
+    <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">p</span><span style="color: #0000ff;">&gt;</span><span style="color: #000000;">
+        叶小钗&middot;</span><span style="color: #0000ff;">&lt;</span><span style="color: #800000;">strong</span><span style="color: #0000ff;">&gt;</span>中原剑圣<span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">strong</span><span style="color: #0000ff;">&gt;&lt;/</span><span style="color: #800000;">p</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">body</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">html</span><span style="color: #0000ff;">&gt;</span></pre>
+</div>
+<p><img src="426175610317794.png" alt=""></p>
+<h1>获取文档元素</h1>
+<p>根据ID选择dom元素每个朋友都知道，这里真心多此一举了，但是jquery出现后却让一切变得不那么明显了：</p>
+<div class="cnblogs_Highlighter">
+<pre class="brush:html;gutter:false;">&lt;html xmlns="http://www.w3.org/1999/xhtml"&gt;
+&lt;head&gt;
+    &lt;title&gt;刀狂剑痴&lt;/title&gt;
+    &lt;script type="text/javascript"&gt;
+        var h = document.getElementById('h');
+        var p = document.getElementById('p');
+        var strong = document.getElementById('strong');
+        var s = '';
+    &lt;/script&gt;
+&lt;/head&gt;
+&lt;body&gt;
+    &lt;h1 id="h"&gt;
+        叶小钗&lt;/h1&gt;
+    &lt;p id="p"&gt;
+        叶小钗&middot;&lt;strong id="strong"&gt;中原剑圣&lt;/strong&gt;&lt;/p&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+</div>
+<p><img src="5870335338924.png" alt=""></p>
+<p>这里我一来就犯了一个错误，在dom还没有生成的情况下去获取，当然获取不到！这里我老老实实将js放到一页尾去了</p>
+<div class="cnblogs_code">
+<pre><span style="color: #0000ff;">&lt;</span><span style="color: #800000;">html </span><span style="color: #ff0000;">xmlns</span><span style="color: #0000ff;">="http://www.w3.org/1999/xhtml"</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #0000ff;">&lt;</span><span style="color: #800000;">head</span><span style="color: #0000ff;">&gt;</span>
+    <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">title</span><span style="color: #0000ff;">&gt;</span>刀狂剑痴<span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">title</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">head</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #0000ff;">&lt;</span><span style="color: #800000;">body</span><span style="color: #0000ff;">&gt;</span>
+    <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">h1 </span><span style="color: #ff0000;">id</span><span style="color: #0000ff;">="h"</span><span style="color: #0000ff;">&gt;</span><span style="color: #000000;">
+        叶小钗</span><span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">h1</span><span style="color: #0000ff;">&gt;</span>
+    <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">p </span><span style="color: #ff0000;">id</span><span style="color: #0000ff;">="p"</span><span style="color: #0000ff;">&gt;</span><span style="color: #000000;">
+        叶小钗&middot;</span><span style="color: #0000ff;">&lt;</span><span style="color: #800000;">strong </span><span style="color: #ff0000;">id</span><span style="color: #0000ff;">="strong"</span><span style="color: #0000ff;">&gt;</span>中原剑圣<span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">strong</span><span style="color: #0000ff;">&gt;&lt;/</span><span style="color: #800000;">p</span><span style="color: #0000ff;">&gt;</span>
+    <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">script </span><span style="color: #ff0000;">type</span><span style="color: #0000ff;">="text/javascript"</span><span style="color: #0000ff;">&gt;</span>
+        <span style="background-color: #f5f5f5; color: #0000ff;">var</span><span style="background-color: #f5f5f5; color: #000000;"> h </span><span style="background-color: #f5f5f5; color: #000000;">=</span><span style="background-color: #f5f5f5; color: #000000;"> document.getElementById(</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">h</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">);
+        </span><span style="background-color: #f5f5f5; color: #0000ff;">var</span><span style="background-color: #f5f5f5; color: #000000;"> p </span><span style="background-color: #f5f5f5; color: #000000;">=</span><span style="background-color: #f5f5f5; color: #000000;"> document.getElementById(</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">p</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">);
+        </span><span style="background-color: #f5f5f5; color: #0000ff;">var</span><span style="background-color: #f5f5f5; color: #000000;"> strong </span><span style="background-color: #f5f5f5; color: #000000;">=</span><span style="background-color: #f5f5f5; color: #000000;"> document.getElementById(</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">strong</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">);
+        </span><span style="background-color: #f5f5f5; color: #0000ff;">var</span><span style="background-color: #f5f5f5; color: #000000;"> s </span><span style="background-color: #f5f5f5; color: #000000;">=</span> <span style="background-color: #f5f5f5; color: #000000;">''</span><span style="background-color: #f5f5f5; color: #000000;">;
+    </span><span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">script</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">body</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">html</span><span style="color: #0000ff;">&gt;</span></pre>
+</div>
+<p><img src="9767698214720.png" alt=""></p>
+<p>于是我们来好好的观察一下这些家伙：</p>
+<p><img src="501762410158398.png" alt=""></p>
+<p><img src="10943697098784.png" alt=""></p>
+<p><img src="52173879471262.png" alt=""></p>
+<p><img src="3713398252212.png" alt=""></p>
+<p>框住的东西都是需要注意的（并且关于样式的东西在IE中还会有兼容的问题），我们一般不必关心这些东西，但是真正用到的时候要知道如何查询才行</p>
+<h1>name选择</h1>
+<div class="cnblogs_Highlighter">
+<pre class="brush:html;gutter:false;">&lt;html xmlns="http://www.w3.org/1999/xhtml"&gt;
+&lt;head&gt;
+    &lt;title&gt;刀狂剑痴&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+    &lt;h1 id="h" name="w"&gt;
+        叶小钗&lt;/h1&gt;
+    &lt;p id="p"&gt;
+        叶小钗&middot;&lt;strong id="strong"&gt;中原剑圣&lt;/strong&gt;&lt;/p&gt;
+    &lt;p name="w"&gt;
+        1&lt;/p&gt;
+    &lt;p name="w"&gt;
+        2&lt;/p&gt;
+    &lt;p name="w"&gt;
+        3&lt;/p&gt;
+    &lt;p name="w"&gt;
+        4&lt;/p&gt;
+    &lt;script type="text/javascript"&gt;
+        var p = document.getElementsByName('w');
+        var s = '';
+    &lt;/script&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+</div>
+<p>根据name可以选择一个群：</p>
+<p><img src="42778428643057.png" alt=""></p>
+<h1>标签选择</h1>
+<div class="cnblogs_code">
+<pre><span style="color: #0000ff;">&lt;</span><span style="color: #800000;">html </span><span style="color: #ff0000;">xmlns</span><span style="color: #0000ff;">="http://www.w3.org/1999/xhtml"</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #0000ff;">&lt;</span><span style="color: #800000;">head</span><span style="color: #0000ff;">&gt;</span>
+    <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">title</span><span style="color: #0000ff;">&gt;</span>刀狂剑痴<span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">title</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">head</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #0000ff;">&lt;</span><span style="color: #800000;">body</span><span style="color: #0000ff;">&gt;</span>
+    <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">h1 </span><span style="color: #ff0000;">id</span><span style="color: #0000ff;">="h"</span><span style="color: #ff0000;"> name</span><span style="color: #0000ff;">="w"</span><span style="color: #0000ff;">&gt;</span><span style="color: #000000;">
+        叶小钗</span><span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">h1</span><span style="color: #0000ff;">&gt;</span>
+    <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">p </span><span style="color: #ff0000;">id</span><span style="color: #0000ff;">="p"</span><span style="color: #0000ff;">&gt;</span><span style="color: #000000;">
+        叶小钗&middot;</span><span style="color: #0000ff;">&lt;</span><span style="color: #800000;">strong </span><span style="color: #ff0000;">id</span><span style="color: #0000ff;">="strong"</span><span style="color: #0000ff;">&gt;</span>中原剑圣<span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">strong</span><span style="color: #0000ff;">&gt;&lt;/</span><span style="color: #800000;">p</span><span style="color: #0000ff;">&gt;</span>
+    <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">p </span><span style="color: #ff0000;">name</span><span style="color: #0000ff;">="w"</span><span style="color: #0000ff;">&gt;</span><span style="color: #000000;">
+        1</span><span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">p</span><span style="color: #0000ff;">&gt;</span>
+    <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">p </span><span style="color: #ff0000;">name</span><span style="color: #0000ff;">="w"</span><span style="color: #0000ff;">&gt;</span><span style="color: #000000;">
+        2</span><span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">p</span><span style="color: #0000ff;">&gt;</span>
+    <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">p </span><span style="color: #ff0000;">name</span><span style="color: #0000ff;">="w"</span><span style="color: #0000ff;">&gt;</span><span style="color: #000000;">
+        3</span><span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">p</span><span style="color: #0000ff;">&gt;</span>
+    <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">p </span><span style="color: #ff0000;">name</span><span style="color: #0000ff;">="w"</span><span style="color: #0000ff;">&gt;</span><span style="color: #000000;">
+        4</span><span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">p</span><span style="color: #0000ff;">&gt;</span>
+    <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">script </span><span style="color: #ff0000;">type</span><span style="color: #0000ff;">="text/javascript"</span><span style="color: #0000ff;">&gt;</span>
+        <span style="background-color: #f5f5f5; color: #0000ff;">var</span><span style="background-color: #f5f5f5; color: #000000;"> p </span><span style="background-color: #f5f5f5; color: #000000;">=</span><span style="background-color: #f5f5f5; color: #000000;"> document.getElementsByTagName(</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">p</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">);
+        </span><span style="background-color: #f5f5f5; color: #0000ff;">var</span><span style="background-color: #f5f5f5; color: #000000;"> s </span><span style="background-color: #f5f5f5; color: #000000;">=</span> <span style="background-color: #f5f5f5; color: #000000;">''</span><span style="background-color: #f5f5f5; color: #000000;">;
+    </span><span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">script</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">body</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">html</span><span style="color: #0000ff;">&gt;</span></pre>
+</div>
+<p>与上面一致，这些看起来都很简单似的，那么我们现在要获取一个东东，在不使用id，不使用jquery其实并不像我们想的那么简单：</p>
+<p>比如：我要获取这么一个东东：</p>
+<div class="cnblogs_code">
+<pre><span style="color: #0000ff;">&lt;</span><span style="color: #800000;">div </span><span style="color: #ff0000;">class</span><span style="color: #0000ff;">="yxc"</span><span style="color: #0000ff;">&gt;</span>
+    <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">h1 </span><span style="color: #ff0000;">id</span><span style="color: #0000ff;">="h"</span><span style="color: #ff0000;"> name</span><span style="color: #0000ff;">="w"</span><span style="color: #0000ff;">&gt;</span><span style="color: #000000;">
+        叶小钗</span><span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">h1</span><span style="color: #0000ff;">&gt;</span>
+    <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">div </span><span style="color: #ff0000;">id</span><span style="color: #0000ff;">="p"</span><span style="color: #0000ff;">&gt;</span><span style="color: #000000;">
+        叶小钗&middot;</span><span style="color: #0000ff;">&lt;</span><span style="color: #800000;">strong </span><span style="color: #ff0000;">id</span><span style="color: #0000ff;">="strong"</span><span style="color: #0000ff;">&gt;</span>中原剑圣<span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">strong</span><span style="color: #0000ff;">&gt;&lt;/</span><span style="color: #800000;">div</span><span style="color: #0000ff;">&gt;</span>
+    <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">div </span><span style="color: #ff0000;">name</span><span style="color: #0000ff;">="w"</span><span style="color: #0000ff;">&gt;</span><span style="color: #000000;">
+        1</span><span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">div</span><span style="color: #0000ff;">&gt;</span>
+    <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">div </span><span style="color: #ff0000;">name</span><span style="color: #0000ff;">="w"</span><span style="color: #0000ff;">&gt;</span>
+        <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">p</span><span style="color: #0000ff;">&gt;</span>
+        <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">p</span><span style="color: #0000ff;">&gt;</span>
+        <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">p </span><span style="color: #ff0000;">class</span><span style="color: #0000ff;">="come"</span><span style="color: #0000ff;">&gt;</span><span style="color: #000000;">
+            来吧，获取我吧，我是你的了1</span><span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">p</span><span style="color: #0000ff;">&gt;</span>
+        <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">p</span><span style="color: #0000ff;">&gt;</span>
+        <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">p</span><span style="color: #0000ff;">&gt;</span>
+        <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">p </span><span style="color: #ff0000;">class</span><span style="color: #0000ff;">="come"</span><span style="color: #0000ff;">&gt;</span><span style="color: #000000;">
+            来吧，获取我吧，我是你的了2</span><span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">p</span><span style="color: #0000ff;">&gt;</span>
+        <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">p </span><span style="color: #ff0000;">class</span><span style="color: #0000ff;">="ccc come"</span><span style="color: #0000ff;">&gt;</span>
+        <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">p</span><span style="color: #0000ff;">&gt;</span>
+        <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">p </span><span style="color: #ff0000;">class</span><span style="color: #0000ff;">="vvv"</span><span style="color: #0000ff;">&gt;</span>
+        <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">p</span><span style="color: #0000ff;">&gt;</span>
+    <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">div</span><span style="color: #0000ff;">&gt;</span>
+    <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">p </span><span style="color: #ff0000;">name</span><span style="color: #0000ff;">="w"</span><span style="color: #0000ff;">&gt;</span><span style="color: #000000;">
+        3</span><span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">p</span><span style="color: #0000ff;">&gt;</span>
+    <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">p </span><span style="color: #ff0000;">name</span><span style="color: #0000ff;">="w"</span><span style="color: #0000ff;">&gt;</span><span style="color: #000000;">
+        4</span><span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">p</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">div</span><span style="color: #0000ff;">&gt;</span></pre>
+</div>
+<p>认为简单的同学去获取他吧，反正就是获取具有come css的元素，不许使用HTML5的东西哦，我不知道你痛苦不，我反正十分痛苦：</p>
+<div class="cnblogs_Highlighter">
+<pre class="brush:javascript;gutter:false;">var dom = [];
+var ps = document.getElementsByTagName('div')[0].children[3].children;
+for (var i = 0, len = ps.length; i &lt; len; i++) {
+    var el = ps[i];
+    for (var j = 0; j &lt; el.classList.length; j++) {
+        if (el.classList[j] == 'come') {
+            dom.push(el);
+            break;
+        }
+    }
+}
+</pre>
+</div>
+<p><img src="43273286822047.png" alt=""></p>
+<h1>属性</h1>
+<p>HTML由一个标签和一组称为属性飞键值对组成，我们一般使用getAttribute与setAttribute来获取与设置属性（使用.的方式也可以，但是这个更标准）。</p>
+<p>因为属性无法使用delete删除，所以还提供了hasAttribute与removeAttribute来判断标签是否含有某属性以及去掉标签的某个属性。</p>
+<p><span style="color: #ff0000;"><strong>自定义属性</strong></span></p>
+<p>我平时定义自定义属性时候五花八门，所以便需要用到set/getAttribute，但是这样却破坏了HTML的有效性，这样并不好。</p>
+<p>HTML5中，提供一种解决方案，任何以data-前缀的自定义属性认为是合法的，所以我们以后的自定义属性还是需要注意的，</p>
+<p>为了支持data-的属性，HTML5特别提供dataset属性获取去掉前缀的属性对象，为了兼容之前的浏览器，估计这个用得不多。</p>
+<h1>获取HTML元素的内容</h1>
+<p>这个东东其实没有什么说的：</p>
+<div class="cnblogs_code">
+<pre><span style="color: #800000;">innerHTML获取元素内部所有文本和标签
+innerText获取元素内部文本
+outerHTML获取标签元素</span></pre>
+</div>
+<p>需要注意的是，在一些浏览器中式不能直接操作tr与table的innerHTML的。</p>
+<h1>创建、插入、删除</h1>
+<p>我们有时候会异步加载js，于是会有以下代码：</p>
+<div class="cnblogs_code">
+<pre><span style="color: #0000ff;">function</span><span style="color: #000000;"> loadAsncJs(url) {
+    </span><span style="color: #0000ff;">var</span> head = document.getElementsByName('head')[0<span style="color: #000000;">];
+    </span><span style="color: #0000ff;">var</span> s = document.createElement('script'<span style="color: #000000;">);
+    s.setAttribute(</span>'src', url); <span style="color: #008000;">//</span><span style="color: #008000;">s.src=url</span>
+<span style="color: #000000;">    head.appendChild(s);
+}</span></pre>
+</div>
+<p>插入节点有两种方法：appendChild与insertBefore</p>
+<div class="cnblogs_code">
+<pre><span style="color: #800000;">insertBefore提供两个参数：
+1 待插入节点
+2 已存在节点
+新节点会插入其前面，第二个参数为空的话，其表现与appendChild一致</span></pre>
+</div>
+<p>删除节点就比较诡异了，因为他能直接删除，而是发生在节点的父元素上：</p>
+<div class="cnblogs_code">
+<pre><span style="color: #008000;">//</span><span style="color: #008000;">比如我们要删除el需要这样做：</span>
+el.parentNode.removeChild(el);</pre>
+</div>
+<p>另外我若是想替换一个节点，可以这样做：</p>
+<div class="cnblogs_code">
+<pre>el.parentNode.replace(newDom);</pre>
+</div>
+<h1>节点坐标与视口坐标</h1>
+<p>节点坐标便是元素相对于left与top的距离；</p>
+<p>而视口坐标便是元素当前在浏览器的位置，比如y坐标本来是200但是滚动了70，那么其视口坐标便是130；</p>
+<p>视口坐标的使用十分普遍，我们经常就会拖动元素，所以还是需要掌握的，但是这里的兼容性问题还是不少的：</p>
+<p><strong>获取窗口滚动条位置</strong></p>
+<div class="cnblogs_code">
+<pre><span style="color: #800000;">Window对象的pageXOffset与pageYOffset基本所有浏览器都支持，当然我们的IE会站出来说&ldquo;不&rdquo;！
+所以我们使用的最常用的还是scrollLeft与scrollTop属性来获取滚动条位置
+但是正常情况下查询文档的跟节点就能获取，怪异模式时候变需要使用到body元素了，这个坑可大了！</span></pre>
+</div>
+<div class="cnblogs_code">
+<pre><span style="color: #0000ff;">function</span><span style="color: #000000;"> getScrollOffset(w) {
+    w </span>= w || window; <span style="color: #008000;">//</span><span style="color: #008000;">可能是iframe</span>
+    <span style="color: #0000ff;">if</span> (w.pageXOffset != <span style="color: #0000ff;">null</span><span style="color: #000000;">) {
+        </span><span style="color: #0000ff;">return</span><span style="color: #000000;"> { x: w.pageXOffset, y: w.pageYOffset };
+    }
+    </span><span style="color: #008000;">//</span><span style="color: #008000;">标准浏览器情况下</span>
+    <span style="color: #0000ff;">var</span> d =<span style="color: #000000;"> w.document;
+    </span><span style="color: #0000ff;">if</span> (document.compatMode == 'CSS1Compat'<span style="color: #000000;">) {
+        </span><span style="color: #0000ff;">return</span><span style="color: #000000;"> { x: d.documentElement.scrollLeft, y: d.documentElement.scrollTop };
+    }
+
+    </span><span style="color: #008000;">//</span><span style="color: #008000;">怪异模式</span>
+    <span style="color: #0000ff;">return</span><span style="color: #000000;"> { x: d.body.scrollLeft, y: d.body.scrollTop };
+}</span></pre>
+</div>
+<h1>查询元素的几何尺寸</h1>
+<p>获取元素的尺寸的应用也非常多，我今天才用到了呢，而且在手机上还错了呢。。。</p>
+<p>有些时候本来你认为比较不好获得的东西，其实他就在那里了，getBoundingClientRect直接告诉了我们答案：</p>
+<div class="cnblogs_code">
+<pre> <span style="color: #0000ff;">var</span> ss = document.getElementById('w').getBoundingClientRect();</pre>
+</div>
+<p><img src="74008810353700.png" alt=""></p>
+<p>其中的width和height有一点兼容性问题，使用时候最好用right-left获取宽度</p>
+<p><span style="color: #ff0000;">注意：需要定位到元素上需要加上滚动距离，并且该方法的兼容性无法确定，我们还是老老实实的使用offsetWidth等属性吧：</span></p>
+<div class="cnblogs_code">
+<pre><span style="color: #800000;">function getOffset(el) </span>{<span style="color: #ff0000;">
+    if (!el) return null;
+    return {
+        x</span>:<span style="color: #0000ff;"> el.offsetLeft,
+        y: el.offsetTop,
+        width: el.offsetWidth,
+        height: el.offsetHeight
+    </span>}<span style="color: #800000;">;
+}</span></pre>
+</div>
+<h1>判断元素是否在某点</h1>
+<p>看到此属性时，我首先想到的就是e属性，典型应用就是判断鼠标点在了什么上：</p>
+<div class="cnblogs_code">
+<pre><span style="color: #800000;">Document的elementFromPoint方法可以判断指定坐标上有什么元素！
+当鼠标信息出现在e中的那一刻，该方法的意义就不大了</span></pre>
+</div>
+<h1>有意思的东东</h1>
+<div class="cnblogs_code">
+<pre><span style="color: #0000ff;">var</span> cookie =<span style="color: #000000;"> document.cookie;
+</span><span style="color: #0000ff;">var</span> domain =<span style="color: #000000;"> document.domain;
+</span><span style="color: #0000ff;">var</span> referrer = document.referrer; <span style="color: #008000;">//</span><span style="color: #008000;">上一文档的url</span>
+<span style="color: #0000ff;">var</span> location = document.location;</pre>
+</div>
+<h1>查询选取文本</h1>
+<p>有时候我们需要判断用户选取了哪些文本，并做处理:</p>
+<div class="cnblogs_code">
+<pre><span style="color: #0000ff;">function</span><span style="color: #000000;"> getSecText() {
+    </span><span style="color: #0000ff;">if</span><span style="color: #000000;"> (window.getSection) {
+        </span><span style="color: #0000ff;">return</span> window.getSelection(); <span style="color: #008000;">//</span><span style="color: #008000;">html5</span>
+    } <span style="color: #0000ff;">else</span> <span style="color: #0000ff;">if</span><span style="color: #000000;"> (document.selection){
+        </span><span style="color: #0000ff;">return</span><span style="color: #000000;"> document.selection.createRange().text;
+    }
+}</span></pre>
+</div>
+<h1>BOM</h1>
+<p>浏览器对象模型 Browser Object Model</p>
+<p>说白点就是window这个东东：表示浏览器的一个实例，是访问浏览器窗口的一个接口，也是ECMAScript规定的Global对象。</p>
+<p>意思是我们定义的所以所有的东西，都与window有关，他是客户端给javascript程序的全局对象。</p>
+<h1>计时器</h1>
+<p>javascript的计时器有setTimeout与setInterval两种，一个是在一定时间后执行，一个是重复执行。</p>
+<p>这两个东西大家应该都很熟悉了，但是在实际应用中，setTimeout却带给了我们不一样的东西，比如优化！</p>
+<p>setTimeout的优化点可以是以下地方：</p>
+<p>① 鼠标移动标签上加载数据（发起http请求），但我们鼠标可能无意义的划过，所以延迟点加载若是无意义请求便取消</p>
+<p>② 无论鼠标事件或者窗口改变事件，我们都可以使用这个家伙</p>
+<p>一个简单的例子：</p>
+<div class="cnblogs_code">
+<pre>(<span style="color: #0000ff;">function</span><span style="color: #000000;"> () {
+    </span><span style="color: #0000ff;">var</span> ajax = $('#ajax'<span style="color: #000000;">);
+    </span><span style="color: #0000ff;">var</span> TIMER = <span style="color: #0000ff;">null</span><span style="color: #000000;">;
+    </span><span style="color: #0000ff;">var</span> TIMER_STEP = 500<span style="color: #000000;">;
+    ajax.mousemove(loadMenu);
+    ajax.mouseout(</span><span style="color: #0000ff;">function</span><span style="color: #000000;"> () {
+        </span><span style="color: #0000ff;">if</span><span style="color: #000000;"> (TIMER) clearTimeout(TIMER);
+    });
+    </span><span style="color: #0000ff;">function</span><span style="color: #000000;"> loadMenu() {
+        </span><span style="color: #0000ff;">if</span><span style="color: #000000;"> (TIMER) clearTimeout(TIMER);
+        TIMER </span>= setTimeout(<span style="color: #0000ff;">function</span><span style="color: #000000;"> () {
+            </span><span style="color: #008000;">//</span><span style="color: #008000;">do someting</span>
+<span style="color: #000000;">        }, TIMER_STEP);
+    } 
+})();</span></pre>
+</div>
+<h1>浏览器的定位和导航</h1>
+<p>对URL的请求总是非常常见的，location对象的获取便可处理之，比如我们经常想获取url 的参数：</p>
+<div class="cnblogs_code">
+<pre><span style="color: #0000ff;">function</span><span style="color: #000000;"> getUrlParam(name) {
+    </span><span style="color: #0000ff;">var</span> args =<span style="color: #000000;"> {};
+    </span><span style="color: #0000ff;">var</span> query = document.location.search.substring(1); <span style="color: #008000;">//</span><span style="color: #008000;">去掉?</span>
+    <span style="color: #0000ff;">var</span> arr_param = query.split('&amp;'<span style="color: #000000;">);
+    </span><span style="color: #0000ff;">for</span> (<span style="color: #0000ff;">var</span> i = 0, len = arr_param.length; i &lt; len; i++<span style="color: #000000;">) {
+        </span><span style="color: #0000ff;">var</span> arr_tmp = arr_param[i].split('='<span style="color: #000000;">);
+        </span><span style="color: #0000ff;">if</span> (arr_tmp.length == 2<span style="color: #000000;">) {
+            args[arr_tmp[</span>0]] = decodeURIComponent(arr_tmp[1<span style="color: #000000;">]);
+        }
+    }
+    </span><span style="color: #0000ff;">if</span> (name &amp;&amp; args[name]) <span style="color: #0000ff;">return</span><span style="color: #000000;"> args[name];
+    </span><span style="color: #0000ff;">return</span><span style="color: #000000;"> args;
+}
+</span><span style="color: #0000ff;">var</span> p = getUrlParam();</pre>
+</div>
+<p><img src="36098058127859.png" alt=""></p>
+<h1>结语</h1>
+<p>今天暂时到这，昨天晚上楼下有几个当兵的喝酒聊天搞到3点钟，我这里确实被搞崩溃了，而且又不敢去说点什么。。。。这里住了几百户人也没人去说下。。。</p>
+<p>当兵的真嚣张啊。。。。我们下次继续吧，若是我不再写博客了就一定当兵去了，大家不要想念我。</p>
+                </div>
+
+                <div class='span3 sidebar'>
+                    <h2>导航栏</h2>
+                    <ul class="nav nav-tabs nav-stacked">
+                             				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/javascriptzdyxhxzsdyjxyzyddf/index.html">javascript中的一些核心知识点以及需要注意的地方</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/[zd]webappdyhzlyzydqdyhdpyjlkkb/index.html">[置顶]【webapp的优化整理】要做移动前端优化的朋友进来看看吧</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/[zd]yddjrwtyjjavascriptsjjzxjsjydjr/index.html">[置顶]【移动端兼容问题研究】javascript事件机制详解（涉及移动兼容）</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/gruntzhb30fzxhsygruntdbqddm/index.html">【grunt整合版】30分钟学会使用grunt打包前端代码</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/gruntdyd30fzxhsygruntdbqddm/index.html">【grunt第一弹】30分钟学会使用grunt打包前端代码</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/gruntdsdgruntzqdsjxmzdyy/index.html">【grunt第三弹】grunt在前端实际项目中的应用</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/gruntded30fzxhsygruntdbqddm02/index.html">【grunt第二弹】30分钟学会使用grunt打包前端代码（02）</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/IScrollsrxxtpyddhadlqs/index.html">【IScroll深入学习】突破移动端黑暗的利器（上）</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/IScrollsrxxjjIScrollynzz/index.html">【IScroll深入学习】解决IScroll疑难杂症</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/iScrollymxx00mniScroll/index.html">【iScroll源码学习00】模拟iScroll</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/iScrollymxx01zbjd/index.html">【iScroll源码学习01】准备阶段</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/iScrollymxx02fjiScrollsghxsjd/index.html">【iScroll源码学习02】分解iScroll三个核心事件点</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/iScrollymxx03iScrollsjjzygdtdsx/index.html">【iScroll源码学习03】iScroll事件机制与滚动条的实现</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/iScrollymxx04flIScrollhx/index.html">【iScroll源码学习04】分离IScroll核心</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/javascriptpxdytyyjc/index.html">【javascript培训第一天】语言基础</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/javascriptpxdstcybl/index.html">【javascript培训第三天】查遗补漏</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/javascriptpxdetDOMyBOM/index.html">【javascript培训第二天】DOM与BOM</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/javascriptjzdsk01mkhbc/index.html">【javascript激增的思考01】模块化编程</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/javascriptjzdsk02mkhyMVC/index.html">【javascript激增的思考02】模块化与MVC</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/javascriptjzdsk03MVVMyKnockout/index.html">【javascript激增的思考03】MVVM与Knockout</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/javascriptjzdsk04MVCyBackbonejs(beta)/index.html">【javascript激增的思考04】MVC与Backbonejs(beta)</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/javascriptmxdxzlrwmyqltkdzb01/index.html">【javascript面向对象之路】让我们一起来坦克大战吧01</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/NodeJSxxbj04xwfbxt/index.html">【NodeJS学习笔记04】新闻发布系统</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/requireJSymxx01ljzgrequireJSdjg/index.html">【requireJS源码学习01】了解整个requireJS的结构</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/requireJSymxx02datamainjzdsx/index.html">【requireJS源码学习02】datamain加载的实现</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/requireJSymxx03xjrequireJSdjzlc/index.html">【requireJS源码学习03】细究requireJS的加载流程</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/UIcjkfygjdrlcjs/index.html">【UI插件】开发一个简单日历插件（上）</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/UIcjjddrlcjxxxMVCsx/index.html">【UI插件】简单的日历插件（下）——学习MVC思想</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/zeptoxxbj01hxff$()/index.html">【zepto学习笔记01】核心方法$()</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/zeptoxxbj01hxff$()b/index.html">【zepto学习笔记01】核心方法$()（补）</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/zeptoxxbj02lsd/index.html">【zepto学习笔记02】零碎点</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/zeptoxxbj03sjjz/index.html">【zepto学习笔记03】事件机制</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/ycmsztjavascriptzdjc/index.html">【一次面试】再谈javascript中的继承</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/ztbackbone01mxModel/index.html">【再探backbone01】模型Model</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/ztbackbone02jhCollection/index.html">【再探backbone02】集合Collection</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/ztbackbone03bkydyyysltgym/index.html">【再探backbone03】博客园单页应用实例（提供源码）</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/ztbackbone04dyyydjslycl/index.html">【再探backbone04】单页应用的基石路由处理</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/ctUnderscorezsmbyq/index.html">【初探Underscore】再说模版引擎</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/ckjavascriptamzAjaxjsxnszddAjax/index.html">【初窥javascript奥秘之Ajax】简述下你所知道的Ajax？</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/ckjavascriptamzsjmpnxnwmyqmdp/index.html">【初窥javascript奥秘之事件冒泡】那些年我们一起冒的泡</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/ckjavascriptamzsjjzldtygdj/index.html">【初窥javascript奥秘之事件机制】论“点透”与“鬼点击”</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/ckjavascriptamzrrzmbddthisnzdxzthiszxnlm/index.html">【初窥javascript奥秘之让人捉摸不定的this】你知道现在this指向哪里吗？？？</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/ckjavascriptamzbbydxbdhlqbcl/index.html">【初窥javascript奥秘之闭包】叶大侠病都好了，求不踩了：）</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/ckjavascriptamzmxdxfzyjc/index.html">【初窥javascript奥秘之面向对象】封装与继承</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/qdmdsjdjgjdnzdljm/index.html">【前端盲点】事件的几个阶段你真的了解么？？？</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/dyyyviewymodelxgsl/index.html">【单页应用】view与model相关梳理</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/dyyyyqldyyybsxjdwbgns/index.html">【单页应用】一起来单页应用吧，实现简单微博功能！（上）</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/dyyyqjkzqappyggxsm/index.html">【单页应用】全局控制器app应该干些什么？</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/dyyywmgrhclkjdcccjgx/index.html">【单页应用】我们该如何处理框架弹出层层级关系？</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/dyyyljMVC/index.html">【单页应用】理解MVC</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/dyyyztxjzviewzjygrhtx/index.html">【单页应用之通信机制】view之间应该如何通信</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/dyyyjkzHistoryxsHistorydgdyyydm/index.html">【单页应用巨坑之History】细数History带给单页应用的噩梦</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/xtszeptofindysyjiosdcjpknrnhtt/index.html">【小贴士】zeptofind元素以及ios弹出键盘可能让你很头疼</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/xtsgytransitionEndanimatedygyqgs/index.html">【小贴士】关于transitionEndanimate的一个有趣故事</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/xtsgzzdbbysjwtdzzmp/index.html">【小贴士】工作中的”闭包“与事件委托的”阻止冒泡“</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/xtstytjavascriptzdreplace/index.html">【小贴士】探一探javascript中的replace</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/xtsxnjpyfixeddgydddt/index.html">【小贴士】虚拟键盘与fixed带给移动端的痛！</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/ttjavascriptsjjzdcsxyl/index.html">【探讨】javascript事件机制底层实现原理</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/mkhbcljrequireJSsxygjddmkjzq/index.html">【模块化编程】理解requireJS实现一个简单的模块加载器</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/zyJavaScriptmfjmtsdqlxkjzbfgndcljz/index.html">【转】【译】JavaScript魔法揭秘探索当前流行框架中部分功能的处理机制</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/zxjavascriptgszl01javascriptcszds/index.html">【追寻javascript高手之路01】javascript参数知多少？</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/zxjavascriptgszl02blzyyzds/index.html">【追寻javascript高手之路02】变量、作用域知多少？</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/zxjavascriptgszl03javascriptdxdld/index.html">【追寻javascript高手之路03】javascript对象大乱斗</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/zxjavascriptgszl04ljprototype/index.html">【追寻javascript高手之路04】理解prototype</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/zxjavascriptgszl05ljsjl/index.html">【追寻javascript高手之路05】理解事件流</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/zgbj04zxzzsj(2)/index.html">【重构笔记04】重新组织数据(2)</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/zgbj05jhtjbds/index.html">【重构笔记05】简化条件表达式</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/zgbj06jhhsdy/index.html">【重构笔记06】简化函数调用</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/ycmshgttbxysjfl/index.html">一次面试回顾——探讨表现与数据分离</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/dhzwebappzdxz/index.html">动画在webapp中的现状</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/ysandriodlqhthdomclicksjqtsxwttj/index.html">原生andriod浏览器回退后dom（click）事件全体失效问题探究</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/scsbdjxysdsbsjytouchsjdnxs/index.html">手持设备点击响应速度，鼠标事件与touch事件的那些事</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/mnbjQueryzeptohxymfx/index.html">迷你版jQuery——zepto核心源码分析</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/dbsgzdlwmlyqxjdddomxzqb/index.html">都别说工资低了，我们来一起写简单的dom选择器吧！</a></li>
+    				                                         
+                    </ul>
+                </div>
+            </div>
+
+        </div>
+    </body>
+</html>

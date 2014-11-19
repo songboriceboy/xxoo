@@ -1,0 +1,373 @@
+﻿<!DOCTYPE html>
+
+<html lang="zh">
+    <head>
+        <meta charset="utf-8">
+        <meta name="description" content="android,ios" />
+        <meta name="keywords" content="android,ios" />
+
+        <title>叶小钗</title>
+        <style type='text/css'>
+            body {
+                background-color: #CCC;
+            }
+        </style>
+        <link rel="stylesheet" href="../../../css/bootstrap.css" />
+    </head>
+
+    <body>
+        <div class="container">
+
+            <h1>叶小钗</h1>
+
+            <div class='navbar navbar-inverse'>
+                <div class='navbar-inner nav-collapse' style="height: auto;">
+                    <ul class="nav">
+                              				<li><a href="http://songboriceboy.github.io/xxoo/html/blade/index.html">blade</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/css/index.html">css</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/HTML5&CSS3/index.html">HTML5&CSS3</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/index.html">javascript</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Javaxx/index.html">Java学习</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/nodejs/index.html">nodejs</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/requirejs/index.html">requirejs</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/index.html">Web前端</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/xxgw/index.html">学习感悟</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/gzdd/index.html">工作点滴</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/jkxx/index.html">接口学习</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/wfl/index.html">未分类</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/ydkf/index.html">移动开发</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/sjms/index.html">设计模式</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/mst/index.html">面试题</a></li>
+    				                      </ul>
+                </div>
+            </div>
+
+            <div id='content' class='row-fluid'>
+
+                <div class='span9 main'>
+				<div style="color:blue" align=center>RequireJS学习笔记</div><br><h1>前言</h1>
+<p>进入移动前端是很不错的选择，这块也是我希望的道路，但是不熟悉啊。。。</p>
+<p>现在项目用的是require+backbone，整个框架被封装了一次，今天看了代码搞不清楚，觉得应该先从源头抓起，所以再看看require了。</p>
+<p>上午是到处搜集的资料，下午我们来看原生的API吧：</p>
+<p><a href="http://www.requirejs.org/docs/api.html#config">http://www.requirejs.org/docs/api.html#config</a></p>
+<p><span style="color: #ff0000;"><strong>PS：我英语很烂，各位将就着看吧，看到红色就说明老夫拿不准......</strong></span></p>
+<h1>加载javascript文件</h1>
+<p>RequireJS采用不同的方法来加载脚本，他鼓励模块化编程，使用RequireJS编程不但可以模块化编程而且他依旧可以运行的很快。</p>
+<p>RequireJS鼓励使用模块ID，而不是像原来那样使用script标签使用url引入。</p>
+<p>RequireJS加载代码时候，其相对路径为baseUrl，baseUrl通常被设置为data-main指定文件的目录：</p>
+<div class="cnblogs_code">
+<pre><span style="color: #008000;">&lt;!--这里讲baseUrl设置为script的话，scripts/main.js便可以写成main了</span><span style="color: #008000;">--&gt;</span>
+<span style="color: #0000ff;">&lt;</span><span style="color: #800000;">script </span><span style="color: #ff0000;">data-main</span><span style="color: #0000ff;">="scripts/main.js"</span><span style="color: #ff0000;"> src</span><span style="color: #0000ff;">="scripts/require.js"</span><span style="color: #0000ff;">&gt;&lt;/</span><span style="color: #800000;">script</span><span style="color: #0000ff;">&gt;</span></pre>
+</div>
+<p>BaseUrl也可以通过设置进行手动配置（通过RequireJS 的 config进行配置），若是没在config中进行配置，并且script标签没有指定data-main的话，<span style="color: #ff0000;">那么默认目录为引入requireJS的HTML页面目录</span>。</p>
+<p>默认情况下不要在模块id上加上.js后缀，requireJS会在运行时自己加上。</p>
+<p>通过设置config中的paths（对象字面量）属性，你能设置一组脚本的位置，如此便能减少我们的js总体配置。</p>
+<p>这里我们来举个例子，且看我们的文档目录：</p>
+<p><img src="44240856401574.png" alt=""></p>
+<p>我们index代码：</p>
+<div class="cnblogs_code">
+<pre><span style="color: #0000ff;">&lt;</span><span style="color: #800000;">script </span><span style="color: #ff0000;">data-main</span><span style="color: #0000ff;">="js/app.js"</span><span style="color: #ff0000;"> src</span><span style="color: #0000ff;">="js/require.js"</span><span style="color: #0000ff;">&gt;&lt;/</span><span style="color: #800000;">script</span><span style="color: #0000ff;">&gt;</span></pre>
+</div>
+<p>app.js为入口函数，其代码为：</p>
+<div class="cnblogs_code">
+<pre><span style="color: #000000;">requirejs.config({
+    </span><span style="color: #008000;">//默认情况下模块所在目录为js/lib</span>
+    baseUrl: 'js/lib'<span style="color: #000000;">,
+    </span><span style="color: #008000;">//当模块id前缀为app时，他便由js/app加载模块文件<br>    //这里设置的路径是相对与baseUrl的，不要包含.js</span>
+<span style="color: #000000;">    paths: {
+        app: </span>'../app'<span style="color: #000000;">
+    }
+});
+
+</span><span style="color: #008000;">//</span><span style="color: #008000;"> 开始逻辑.</span>
+requirejs(['jquery', 'canvas', 'app/sub'<span style="color: #000000;">],
+</span><span style="color: #0000ff;">function</span><span style="color: #000000;">   ($, canvas, sub) {
+    </span><span style="color: #008000;">//</span><span style="color: #008000;">jQuery, canvas and the app/sub module are all</span>
+    <span style="color: #008000;">//</span><span style="color: #008000;">loaded and can be used here now.</span>
+});</pre>
+</div>
+<p>各位请注意，这里的jquery并没有在他们的文件名上加上其版本号，这里推荐加上。</p>
+<p>PS：原因我就不说了，说也不一定说得清楚......</p>
+<p>理想情况下我们加载的脚步都会通过define()函数定义，<span style="color: #ff0000;">但是我们有些脚步会依赖与当前版本不同的版本</span>，你能使用shim配置，来表达其依赖。</p>
+<p>PS：这里有点模糊，我们再来看看<a style="font: 12px/18px Verdana, Geneva, Arial, Helvetica, sans-serif; text-align: left; color: #075db3; text-transform: none; text-indent: 0px; letter-spacing: normal; text-decoration: underline; word-spacing: 0px; white-space: normal; font-size-adjust: none; font-stretch: normal; -webkit-text-stroke-width: 0px;" href="http://home.cnblogs.com/u/snandy/">snandy</a>道友是怎么说的：</p>
+<div class="cnblogs_code">
+<pre><span style="color: #800000;">shim参数解决了使用非AMD方式定义的模块（如jQuery插件）及其载入顺序。
+使用shim参数来取代1.0版本的order插件。其实在1.0版本中就曾经有人开发过use和wrap插件来解决此类问题。
+考虑到很多开发者有此类需求（比如某些JS模块是较早时候其他人开发的，非AMD方式）此次2.0版本直接将其内置其中。</span></pre>
+</div>
+<p>这里是一个使用jQuery插件形式配置的参数，我们知道jQuery插件本质是将命名空间挂在全局jQuery或jQuery.fn上，而非使用define定义的模块。</p>
+<p>jQuery插件皆依赖于jQuery，即在require插件时得保证jQuery先下载：</p>
+<div class="cnblogs_code">
+<pre><span style="color: #008080;">1</span> <span style="color: #000000;">require.config({
+</span><span style="color: #008080;">2</span> <span style="color: #000000;">    shim: {
+</span><span style="color: #008080;">3</span>         'jquery-slide': ['jquery'<span style="color: #000000;">]
+</span><span style="color: #008080;">4</span> <span style="color: #000000;">    }
+</span><span style="color: #008080;">5</span> <span style="color: #000000;">});
+</span><span style="color: #008080;">6</span> require(['jquery-slide']);</pre>
+</div>
+<p>这里便会保证先加载jquery再加载插件。</p>
+<p>PS：对照着园友的解释看看吧，应该会清晰一点，这块后面还会有我们等下再看。</p>
+<h1>模块定义</h1>
+<p>requireJS定义模块与传统一个很大的不同是他可以保证其定义的变量处于某个范围内，从而避免了全局命名污染。</p>
+<p>他能明确的罗列出其依赖，并且在那些依赖上找到处理办法，而不是必须对那些依赖指定全局变量。</p>
+<p>requireJS的模块扩展不需要全局变量与其他模块产生依赖（理解的狗屁不通啊）</p>
+<p>PS：文字读不懂，来一个<strong>简单的键值对</strong>例子吧：</p>
+<div class="cnblogs_code">
+<pre><span style="color: #000000;">define({
+    color: </span>"black"<span style="color: #000000;">,
+    size: </span>"unisize"<span style="color: #000000;">
+});</span></pre>
+</div>
+<p>若是这个模块没有任何依赖，并且他仅仅是一组键值对，那么就传递一个对象就好。</p>
+<p><strong>定义函数</strong></p>
+<div class="cnblogs_code">
+<pre><span style="color: #008000;">//</span><span style="color: #008000;">my/shirt.js now does setup work</span><span style="color: #008000;">
+//</span><span style="color: #008000;">before returning its module definition.</span>
+define(<span style="color: #0000ff;">function</span><span style="color: #000000;"> () {
+    </span><span style="color: #008000;">//</span><span style="color: #008000;">Do setup work here</span>
+
+    <span style="color: #0000ff;">return</span><span style="color: #000000;"> {
+        color: </span>"black"<span style="color: #000000;">,
+        size: </span>"unisize"<span style="color: #000000;">
+    }
+});</span></pre>
+</div>
+<p>若是模块没有依赖，但是需要用一个函数做一些初始化工作，然后定义自己通过define的匿名函数。</p>
+<p><strong>有依赖的模块</strong></p>
+<div class="cnblogs_code">
+<pre><span style="color: #008000;">//</span><span style="color: #008000;">my/shirt.js now has some dependencies, a cart and inventory</span><span style="color: #008000;">
+//</span><span style="color: #008000;">module in the same directory as shirt.js</span>
+define(["./cart", "./inventory"], <span style="color: #0000ff;">function</span><span style="color: #000000;">(cart, inventory) {
+        </span><span style="color: #008000;">//</span><span style="color: #008000;">return an object to define the "my/shirt" module.</span>
+        <span style="color: #0000ff;">return</span><span style="color: #000000;"> {
+            color: </span>"blue"<span style="color: #000000;">,
+            size: </span>"large"<span style="color: #000000;">,
+            addToCart: </span><span style="color: #0000ff;">function</span><span style="color: #000000;">() {
+                inventory.decrement(</span><span style="color: #0000ff;">this</span><span style="color: #000000;">);
+                cart.add(</span><span style="color: #0000ff;">this</span><span style="color: #000000;">);
+            }
+        }
+    }
+);</span></pre>
+</div>
+<p>若是模块具有依赖关系，第一个参数应该是一个数组，其项目为依赖名字，第二个参数是匿名函数</p>
+<p>匿名函数在依赖项加载结束后会立即加载，函数会返回一个对象用以定义这个模块。</p>
+<p>前面的依赖项将以参数的形式传递给函数，顺序与之前一致。</p>
+<p>再看我们的例子，一个球衣模块被创建了（我们返回的是一个衣服模块）</p>
+<p>PS：这里文件命名为shirt.js，所以返回的就是衣服模块了</p>
+<p>最后我们得到的结构式这样的：</p>
+<ul style="font: italic 14px/21px Georgia, 'Times New Roman', Times, serif; margin: 7px 0px 21px; padding: 0px; color: #333333; text-transform: none; text-indent: 0px; letter-spacing: normal; word-spacing: 0px; list-style-type: disc; list-style-position: outside; white-space: normal; box-sizing: border-box; font-size-adjust: none; font-stretch: normal; background-color: #ffffff; -webkit-text-stroke-width: 0px;">
+<li style="margin: 0px; padding: 0px; box-sizing: border-box;">my/cart.js</li>
+<li style="margin: 0px; padding: 0px; box-sizing: border-box;">my/inventory.js</li>
+<li style="margin: 0px; padding: 0px; box-sizing: border-box;">my/shirt.js</li>
+</ul>
+<p>参数调用时的参数与前面依赖项一一对应，</p>
+<p><strong>定义函数模块</strong></p>
+<div class="cnblogs_code">
+<pre><span style="color: #008000;">//</span><span style="color: #008000;">A module definition inside foo/title.js. It uses</span><span style="color: #008000;">
+//</span><span style="color: #008000;">my/cart and my/inventory modules from before,</span><span style="color: #008000;">
+//</span><span style="color: #008000;">but since foo/bar.js is in a different directory than</span><span style="color: #008000;">
+//</span><span style="color: #008000;">the "my" modules, it uses the "my" in the module dependency</span><span style="color: #008000;">
+//</span><span style="color: #008000;">name to find them. The "my" part of the name can be mapped</span><span style="color: #008000;">
+//</span><span style="color: #008000;">to any directory, but by default, it is assumed to be a</span><span style="color: #008000;">
+//</span><span style="color: #008000;">sibling to the "foo" directory.</span>
+define(["my/cart", "my/inventory"<span style="color: #000000;">],
+    </span><span style="color: #0000ff;">function</span><span style="color: #000000;">(cart, inventory) {
+        </span><span style="color: #008000;">//</span><span style="color: #008000;">return a function to define "foo/title".</span>
+        <span style="color: #008000;">//</span><span style="color: #008000;">It gets or sets the window title.</span>
+        <span style="color: #0000ff;">return</span> <span style="color: #0000ff;">function</span><span style="color: #000000;">(title) {
+            </span><span style="color: #0000ff;">return</span> title ? (window.title =<span style="color: #000000;"> title) :
+                   inventory.storeName </span>+ ' ' +<span style="color: #000000;"> cart.name;
+        }
+    }
+);</span></pre>
+</div>
+<p>模块也可以不必返回对象，任何有效的返回都是可以的，比如上面的例子，返回一个函数作为其模块定义。</p>
+<p><strong>带名字的模块</strong></p>
+<div class="cnblogs_code">
+<pre><span style="color: #008000;">//</span><span style="color: #008000;">Explicitly defines the "foo/title" module:</span>
+    define("foo/title"<span style="color: #000000;">,
+        [</span>"my/cart", "my/inventory"<span style="color: #000000;">],
+        </span><span style="color: #0000ff;">function</span><span style="color: #000000;">(cart, inventory) {
+            </span><span style="color: #008000;">//</span><span style="color: #008000;">Define foo/title object in here.</span>
+<span style="color: #000000;">       }
+    );</span></pre>
+</div>
+<p>（？？？）这里明确的定义了foo/title模块，这里其实是一种优化手段，我们这里可以明确的命名模块，但是若是文件目录变化我们就要更改名称了。</p>
+<p><strong>其他说明</strong></p>
+<p>一个js文件应该只定义一个模块，并与文件目录一致，因为最后有个神马优化工具可以优化。。。</p>
+<p>在定义模块时将各个模块关联起来，</p>
+<p>相对模块生产url，你可能需要使用一个相对模块的url：</p>
+<div class="cnblogs_code">
+<pre>define(["require"], <span style="color: #0000ff;">function</span><span style="color: #000000;">(require) {
+    </span><span style="color: #0000ff;">var</span> cssUrl = require.toUrl("./style.css"<span style="color: #000000;">);
+});</span></pre>
+</div>
+<p>PS：<span style="color: #ff0000;">尼玛，我今天才知道我英语有多差</span>。。。</p>
+<p><strong>循环依赖</strong></p>
+<p>我们有时候会定于循环依赖的模块，比如a需要b并且b需要a，在这个情况下当b模块调用时他将会从a获得一个undefined值，b可以通过require方法取得一个比较晚的模块。</p>
+<div class="cnblogs_code">
+<pre><span style="color: #008000;">//</span><span style="color: #008000;">Inside b.js:</span>
+define(["require", "a"<span style="color: #000000;">],
+    </span><span style="color: #0000ff;">function</span><span style="color: #000000;">(require, a) {
+        </span><span style="color: #008000;">//</span><span style="color: #008000;">"a" in this case will be null if a also asked for b,</span>
+        <span style="color: #008000;">//</span><span style="color: #008000;">a circular dependency.</span>
+        <span style="color: #0000ff;">return</span> <span style="color: #0000ff;">function</span><span style="color: #000000;">(title) {
+            </span><span style="color: #0000ff;">return</span> require("a"<span style="color: #000000;">).doSomething();
+        }
+    }
+);</span></pre>
+</div>
+<p>你通常不需要使用require方法获取一个模块，在循环依赖时候需要用到（读不懂了。。。）</p>
+<p><strong>exports</strong></p>
+<div class="cnblogs_code">
+<pre><span style="color: #008000;">//</span><span style="color: #008000;">Inside b.js:</span>
+define(<span style="color: #0000ff;">function</span><span style="color: #000000;">(require, exports, module) {
+    </span><span style="color: #008000;">//</span><span style="color: #008000;">If "a" has used exports, then we have a real</span>
+    <span style="color: #008000;">//</span><span style="color: #008000;">object reference here. However, we cannot use</span>
+    <span style="color: #008000;">//</span><span style="color: #008000;">any of a's properties until after b returns a value.</span>
+    <span style="color: #0000ff;">var</span> a = require("a"<span style="color: #000000;">);
+
+    exports.foo </span>= <span style="color: #0000ff;">function</span><span style="color: #000000;"> () {
+        </span><span style="color: #0000ff;">return</span><span style="color: #000000;"> a.bar();
+    };
+});</span></pre>
+</div>
+<div class="cnblogs_code">
+<pre><span style="color: #008000;">//</span><span style="color: #008000;">Inside b.js:</span>
+define(['a', 'exports'], <span style="color: #0000ff;">function</span><span style="color: #000000;">(a, exports) {
+    </span><span style="color: #008000;">//</span><span style="color: #008000;">If "a" has used exports, then we have a real</span>
+    <span style="color: #008000;">//</span><span style="color: #008000;">object reference here. However, we cannot use</span>
+    <span style="color: #008000;">//</span><span style="color: #008000;">any of a's properties until after b returns a value.</span>
+<span style="color: #000000;">
+    exports.foo </span>= <span style="color: #0000ff;">function</span><span style="color: #000000;"> () {
+        </span><span style="color: #0000ff;">return</span><span style="color: #000000;"> a.bar();
+    };
+});</span></pre>
+</div>
+<h1>配置选项</h1>
+<p>我们可以通过以下方法，对require进行配置：</p>
+<div class="cnblogs_code">
+<pre><span style="color: #0000ff;">&lt;</span><span style="color: #800000;">script </span><span style="color: #ff0000;">src</span><span style="color: #0000ff;">="scripts/require.js"</span><span style="color: #0000ff;">&gt;&lt;/</span><span style="color: #800000;">script</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #0000ff;">&lt;</span><span style="color: #800000;">script</span><span style="color: #0000ff;">&gt;</span><span style="background-color: #f5f5f5; color: #000000;">
+  require.config({
+    baseUrl: </span><span style="background-color: #f5f5f5; color: #000000;">"</span><span style="background-color: #f5f5f5; color: #000000;">/another/path</span><span style="background-color: #f5f5f5; color: #000000;">"</span><span style="background-color: #f5f5f5; color: #000000;">,
+    paths: {
+        </span><span style="background-color: #f5f5f5; color: #000000;">"</span><span style="background-color: #f5f5f5; color: #000000;">some</span><span style="background-color: #f5f5f5; color: #000000;">"</span><span style="background-color: #f5f5f5; color: #000000;">: </span><span style="background-color: #f5f5f5; color: #000000;">"</span><span style="background-color: #f5f5f5; color: #000000;">some/v1.0</span><span style="background-color: #f5f5f5; color: #000000;">"</span><span style="background-color: #f5f5f5; color: #000000;">
+    },
+    waitSeconds: </span><span style="background-color: #f5f5f5; color: #000000;">15</span><span style="background-color: #f5f5f5; color: #000000;">
+  });
+  require( [</span><span style="background-color: #f5f5f5; color: #000000;">"</span><span style="background-color: #f5f5f5; color: #000000;">some/module</span><span style="background-color: #f5f5f5; color: #000000;">"</span><span style="background-color: #f5f5f5; color: #000000;">, </span><span style="background-color: #f5f5f5; color: #000000;">"</span><span style="background-color: #f5f5f5; color: #000000;">my/module</span><span style="background-color: #f5f5f5; color: #000000;">"</span><span style="background-color: #f5f5f5; color: #000000;">, </span><span style="background-color: #f5f5f5; color: #000000;">"</span><span style="background-color: #f5f5f5; color: #000000;">a.js</span><span style="background-color: #f5f5f5; color: #000000;">"</span><span style="background-color: #f5f5f5; color: #000000;">, </span><span style="background-color: #f5f5f5; color: #000000;">"</span><span style="background-color: #f5f5f5; color: #000000;">b.js</span><span style="background-color: #f5f5f5; color: #000000;">"</span><span style="background-color: #f5f5f5; color: #000000;">],
+    </span><span style="background-color: #f5f5f5; color: #0000ff;">function</span><span style="background-color: #f5f5f5; color: #000000;">(someModule,    myModule) {
+        </span><span style="background-color: #f5f5f5; color: #008000;">//</span><span style="background-color: #f5f5f5; color: #008000;">This function will be called when all the dependencies</span>
+        <span style="background-color: #f5f5f5; color: #008000;">//</span><span style="background-color: #f5f5f5; color: #008000;">listed above are loaded. Note that this function could</span>
+        <span style="background-color: #f5f5f5; color: #008000;">//</span><span style="background-color: #f5f5f5; color: #008000;">be called before the page is loaded.</span>
+        <span style="background-color: #f5f5f5; color: #008000;">//</span><span style="background-color: #f5f5f5; color: #008000;">This callback is optional.</span>
+<span style="background-color: #f5f5f5; color: #000000;">    }
+  );
+</span><span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">script</span><span style="color: #0000ff;">&gt;</span></pre>
+</div>
+<p><strong>baseUrl</strong></p>
+<p>模块查找的根目录，默认情况与data-main所赋值处于同一目录</p>
+<p><strong>paths</strong></p>
+<p>该项用于配置那些不在baseUrl下的模块，这个指定的path假定是baseUrl的相对路径，若是以/开头的话就不是了。</p>
+<p>这里的id会自动加上.js，我们要获取一个路径时，一般这个样子干：</p>
+<div class="cnblogs_code">
+<pre> require.toUrl() </pre>
+</div>
+<p><strong>shim</strong></p>
+<p>传统浏览器的全局脚本不使用define去声明依赖关系和模块设置值的依赖。</p>
+<p>Ps：读不懂，还是看代码算了：</p>
+<div class="cnblogs_code">
+<pre><span style="color: #000000;">requirejs.config({
+    shim: {
+        </span>'backbone'<span style="color: #000000;">: {
+            deps: [</span>'underscore', 'jquery'<span style="color: #000000;">],
+            exports: </span>'Backbone'<span style="color: #000000;">
+        },
+        </span>'underscore'<span style="color: #000000;">: {
+            exports: </span>'_'<span style="color: #000000;">
+        },
+        </span>'foo'<span style="color: #000000;">: {
+            deps: [</span>'bar'<span style="color: #000000;">],
+            exports: </span>'Foo'<span style="color: #000000;">,
+            init: </span><span style="color: #0000ff;">function</span><span style="color: #000000;"> (bar) {
+                </span><span style="color: #0000ff;">return</span> <span style="color: #0000ff;">this</span><span style="color: #000000;">.Foo.noConflict();
+            }
+        }
+    }
+});
+
+define([</span>'backbone'], <span style="color: #0000ff;">function</span><span style="color: #000000;"> (Backbone) {
+    </span><span style="color: #0000ff;">return</span><span style="color: #000000;"> Backbone.Model.extend({});
+});</span></pre>
+</div>
+<p>这个例子假定backbone等依赖库已经在baseUrl中，若是没有就需要配置。</p>
+<div class="cnblogs_code">
+<pre><span style="color: #000000;">requirejs.config({
+    shim: {
+        </span>'jquery.colorize'<span style="color: #000000;">: {
+            deps: [</span>'jquery'<span style="color: #000000;">],
+            exports: </span>'jQuery.fn.colorize'<span style="color: #000000;">
+        },
+        </span>'jquery.scroll'<span style="color: #000000;">: {
+            deps: [</span>'jquery'<span style="color: #000000;">],
+            exports: </span>'jQuery.fn.scroll'<span style="color: #000000;">
+        },
+        </span>'backbone.layoutmanager'<span style="color: #000000;">: {
+            deps: [</span>'backbone'<span style="color: #000000;">]
+            exports: </span>'Backbone.LayoutManager'<span style="color: #000000;">
+        }
+    }
+});</span></pre>
+</div>
+<h1>结语</h1>
+<p>读不下去啦，暂时这样吧。。。。。。</p>
+                </div>
+
+                <div class='span3 sidebar'>
+                    <h2>导航栏</h2>
+                    <ul class="nav nav-tabs nav-stacked">
+                             				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/Fiddlerznqddsq/index.html">Fiddler真乃前端大杀器！！！</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/Requirejs/index.html">Requirejs</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/RequireJSyBackbonejdzh/index.html">RequireJS与Backbone简单整合</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/RequireJSxxbj/index.html">RequireJS学习笔记</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/Webqdyhctxdpzyyqdgsgpng/index.html">Web前端优化初探，小弟抛砖引玉，期待高手共破难关！</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/Webqdlqjrctxsqwpzyyqdgsgpng/index.html">Web前端浏览器兼容初探，小生浅文抛砖引玉，期待高手攻破难关！</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/jqueryfdataListxnyhmbybysxtgxn10bys/index.html">【jquery仿dataList——性能优化】模板预编译思想提高性能10倍以上！！！</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/jqueryfdataListyyzmfigoogledzhtdpxzdhfp/index.html">【jquery仿dataList】应用之——模仿igoogle【定制化、拖动排序，最大化、分屏】</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/jqueryfdatalistdygwtqzszmxxsjlkzDIVdjjbf/index.html">【jquery仿datalist的一个问题，求助】——设置每行显示几列，块状DIV的解决办法</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/jquerymfnetkjcbGridViewmxsxjqjdyy/index.html">【jquery模仿net控件】初步GridView模型实现，及其简单应用</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/jquerymfnetkjjdfykj10fsgridviewsycs/index.html">【jquery模仿net控件】简单分页控件10，附上gridview使用测试</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/jquerymfnetkjjdddatalistkjgxjqjdyy/index.html">【jquery模仿net控件】简单的datalist控件更新，及其简单应用</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/jquerymfnetkjjdddropdownlistydatalist/index.html">【jquery模仿net控件】简单的dropdownlist与datalist</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/jquerybnetkjdropdownlistfymhydjzdzzpz/index.html">【jquery版net控件—dropdownlist】附源码，欢迎大家指点、指正、拍砖！！！</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/positionykyhfzddccyslsbdws/index.html">【position也可以很复杂】当弹出层遇上了鼠标定位（上）</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/positionykyhfzddccyslsbdwx/index.html">【position也可以很复杂】当弹出层遇上了鼠标定位（下）</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/SEOzmlwljnmtsbwmlyqkkSEOb/index.html">【SEO】周末了，为了纪念明天上班，我们来一起看看SEO吧</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/webqdyhqdwyhyrzrz/index.html">【web前端优化】前端无优化，庸人自扰之！</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/webqdyhzreflowjsymdhl/index.html">【web前端优化之reflow】减少页面的回流</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/webqdyhztpycjzctzwbsxwbk/index.html">【web前端优化之图片延迟加载初探】中午不睡，下午崩溃</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/webqdyhztpmhdqxkwQQkjrhxsxp/index.html">【web前端优化之图片模糊到清晰】看我QQ空间如何显示相片</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/webqdpxzqhddphsywmsxdDatalistsmwtb/index.html">【web前端培训之前后端的配合（上）】以我们熟悉的Datalist说明问题吧</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/webqdpxzqhddphzjxzrdgs/index.html">【web前端培训之前后端的配合（中）】继续昨日的故事</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/dyyygybkydbfgqym/index.html">【单页应用】关于博客园的补发（高清有码）。。。</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/xtsstringifysBUGlocalstoragesxxmSafarialertksfycjzym10pxbp/index.html">【小贴士】【stringify神BUG】【localstorage失效】【消灭Safarialert框】【是否延迟加载】【页面10px白屏】</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/dalhdmsthhdsdmstjsh/index.html">【答阿里寒冬面试题】呵呵，大神的面试题就是好！</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/ycsjmstdldgwxxdgjxxdff/index.html">一次上机面试题带来的感悟【学习的感觉、学习的方法】</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/ydmstdldqdyhsxxxdp/index.html">一道面试题带来的前端优化——实现星星点评</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/zysyzjjhfzwebqdbfxlgxmndjjfa/index.html">只言碎语总结，今后发展web前端，并分享两个项目难点解决方案。</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/gwjlytbllbnwmljxwwdbdyzb/index.html">各位加了一天班累了吧？那我们来继续未完的表单验证吧</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/gwzmwlytllbwmyqlzldmstbjstbdy/index.html">各位周末玩了一天累了吧，我们一起来做两道面试题吧（据说淘宝的哟）！</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/jyjQuerydxlcdcjzwsy/index.html">基于jQuery的下拉菜单插件，诸位上眼！！！</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/jyjQuerydxlcdcd02zwsy/index.html">基于jQuery的下拉菜单菜单【02】，诸位上眼！！！</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/gzzpddyxdxdccktfybwjsc/index.html">工作中碰到的一些东西【弹出窗口】【拖放】【异步文件上传】</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/gzlygxqgwydllbnwmyqlbdyzyfb/index.html">工作了一个星期各位一定累了吧，那我们一起来表单验证一番吧！</a></li>
+    				                                         
+                    </ul>
+                </div>
+            </div>
+
+        </div>
+    </body>
+</html>

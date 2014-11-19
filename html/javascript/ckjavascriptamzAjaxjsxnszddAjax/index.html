@@ -1,0 +1,440 @@
+﻿<!DOCTYPE html>
+
+<html lang="zh">
+    <head>
+        <meta charset="utf-8">
+        <meta name="description" content="android,ios" />
+        <meta name="keywords" content="android,ios" />
+
+        <title>叶小钗</title>
+        <style type='text/css'>
+            body {
+                background-color: #CCC;
+            }
+        </style>
+        <link rel="stylesheet" href="../../../css/bootstrap.css" />
+    </head>
+
+    <body>
+        <div class="container">
+
+            <h1>叶小钗</h1>
+
+            <div class='navbar navbar-inverse'>
+                <div class='navbar-inner nav-collapse' style="height: auto;">
+                    <ul class="nav">
+                              				<li><a href="http://songboriceboy.github.io/xxoo/html/blade/index.html">blade</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/css/index.html">css</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/HTML5&CSS3/index.html">HTML5&CSS3</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/index.html">javascript</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Javaxx/index.html">Java学习</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/nodejs/index.html">nodejs</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/requirejs/index.html">requirejs</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/index.html">Web前端</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/xxgw/index.html">学习感悟</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/gzdd/index.html">工作点滴</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/jkxx/index.html">接口学习</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/wfl/index.html">未分类</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/ydkf/index.html">移动开发</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/sjms/index.html">设计模式</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/mst/index.html">面试题</a></li>
+    				                      </ul>
+                </div>
+            </div>
+
+            <div id='content' class='row-fluid'>
+
+                <div class='span9 main'>
+				<div style="color:blue" align=center>【初窥javascript奥秘之Ajax】简述下你所知道的Ajax？</div><br><h1>前言</h1>
+<p>ajax已经流行很多年了，现在来说它是否已经晚了呢？？？特别是有这样框架那样框架后，还有几个人认识原生ajax呢？我们每天都会用到的东西你到底对他了解吗？</p>
+<p>在最近一次面试上不幸被问到了，原以为很熟悉的东西你会发现你对他根本不熟悉！要说熟悉AJAX的话你需要毫不犹豫回答以下问题：</p>
+<div class="cnblogs_code">
+<pre><span style="color: #800080;">1</span><span style="color: #000000;"> 不同浏览器下ajax实现上的差异
+</span><span style="color: #800080;">2</span> 一次ajax请求过程中有哪几种状态值,不同状态值之间含义是什么<br>3 <span style="font-family: Courier New; background-color: #f5f5f5;">ajax在跨域的情况下会出现什么状况，以及解决方案</span><br>4 ajax和后台数据交互时会有什么编码问题吗？<br>5 最后可以说说<span style="color: #000000; text-transform: none; text-indent: 0px; letter-spacing: normal; word-spacing: 0px; float: none; display: inline !important; white-space: normal; orphans: 2; widows: 2; -webkit-text-size-adjust: auto; -webkit-text-stroke-width: 0px;">XMLHttpRequest2</span>有什么新东西</pre>
+</div>
+<p>怎么样？各位能轻易的答上以上4点，便可直接忽略此文，若是只能很含糊的说出1、2点的话，便硬着头皮看我这篇水文吧，呵呵。</p>
+<p>由于本文是边写边实验的，所以可能会有点乱，也可能会有我的唧唧歪歪的思考过程，请各位见谅。</p>
+<p>另外，本人水平还很浅，写的东西必定有问题，若是文中有任何错误以及不足，请请一定指出来，多谢！</p>
+<h1>ajax简介</h1>
+<p>水文还是要有水文的样子，我这里还是需要简单介绍一番：</p>
+<p>ajax全称：Asynchronous JavaScript and XML 即传说中的&ldquo;异步JavaScript和XML&rdquo;，他是由html、js、Dom等组成，这一杰出的技术可以将笨拙的web界面变成交互性的ajax应用程序。</p>
+<p>ajax是一种构建网站的强大方法，他让我们桌面上只剩一个浏览器的想法不再是空谈，不再是妄想，虽说不大可能。。。</p>
+<p>曾经我们的页面需要等待，等待服务器响应，等待屏幕刷新，等待请求返回和生成新页面。ajax的出现就让web页面的等待变得不那么明显，虽说只是感觉罢了（跟和美女在一起似的，感觉很爽）。。。</p>
+<p>在一般的web应用程序中，用户提交表单后将整个表单发送到服务器，服务器将它转发给后台脚步（.net,java,php），脚步执行结束后将生成的新的htm页面返回，这个过程中就会出现我们前面所说的等待：屏幕变得一片空白，等待返回数据在重新绘制，这种交互性就跟你和一个美女XXOO每隔10秒才能动一下似的，这种感受，这种交互性怎一个差字了得？？？</p>
+<p>ajax基本就是把js对象XMLHttpRequest对象放在web表单和服务器之间，当用户提交数据时只是将数据提交给js，然后由js发送给服务器并获取返回数据修改页面，过程中不会出现闪烁、消失或者延迟，传说中的异步请求。。。</p>
+<h1>XMLHttpRequest</h1>
+<p>该js对象为ajax的核心，前面说过了XmlHttpRequest是一套可以在Javascript脚本语言中通过http协议传送或接收XML及其他数据的一套API。XmlHttp最大的用处是可以更新网页的部分内容而不需要刷新整个页面。</p>
+<p>首先我们来创建一个xml对象，需要注意兼容，我们先来个管中窥豹：</p>
+<div class="cnblogs_code" onclick="cnblogs_code_show('2ff631bd-8711-4b3f-be41-cc0995982588')"><img id="code_img_closed_2ff631bd-8711-4b3f-be41-cc0995982588" class="code_img_closed" src="43570758473519.gif" alt=""><img id="code_img_opened_2ff631bd-8711-4b3f-be41-cc0995982588" class="code_img_opened" style="display: none;" onclick="cnblogs_code_hide('2ff631bd-8711-4b3f-be41-cc0995982588',event)" src="16365178109279.gif" alt=""><span class="cnblogs_code_collapse">初始化</span>
+<div id="cnblogs_code_open_2ff631bd-8711-4b3f-be41-cc0995982588" class="cnblogs_code_hide">
+<pre><span style="color: #008080;"> 1</span>  <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">script </span><span style="color: #ff0000;">type</span><span style="color: #0000ff;">="text/javascript"</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 2</span>      <span style="background-color: #f5f5f5; color: #0000ff;">var</span><span style="background-color: #f5f5f5; color: #000000;"> xmlHttp </span><span style="background-color: #f5f5f5; color: #000000;">=</span> <span style="background-color: #f5f5f5; color: #0000ff;">false</span><span style="background-color: #f5f5f5; color: #000000;">;
+
+</span><span style="color: #008080;"> 3</span>      <span style="background-color: #f5f5f5; color: #0000ff;">if</span><span style="background-color: #f5f5f5; color: #000000;"> (window.XMLHttpRequest) {
+</span><span style="color: #008080;"> 4</span>          <span style="background-color: #f5f5f5; color: #0000ff;">try</span><span style="background-color: #f5f5f5; color: #000000;"> {
+</span><span style="color: #008080;"> 5</span> <span style="background-color: #f5f5f5; color: #000000;">             xmlHttp </span><span style="background-color: #f5f5f5; color: #000000;">=</span> <span style="background-color: #f5f5f5; color: #0000ff;">new</span><span style="background-color: #f5f5f5; color: #000000;"> XMLHttpRequest();
+</span><span style="color: #008080;"> 6</span> <span style="background-color: #f5f5f5; color: #000000;">         } </span><span style="background-color: #f5f5f5; color: #0000ff;">catch</span><span style="background-color: #f5f5f5; color: #000000;"> (e) {
+</span><span style="color: #008080;"> 7</span> <span style="background-color: #f5f5f5; color: #000000;">             xmlHttp </span><span style="background-color: #f5f5f5; color: #000000;">=</span> <span style="background-color: #f5f5f5; color: #0000ff;">false</span><span style="background-color: #f5f5f5; color: #000000;">;
+</span><span style="color: #008080;"> 8</span> <span style="background-color: #f5f5f5; color: #000000;">         }
+</span><span style="color: #008080;"> 9</span> <span style="background-color: #f5f5f5; color: #000000;"> 　　} </span><span style="background-color: #f5f5f5; color: #0000ff;">else</span><span style="background-color: #f5f5f5; color: #000000;"> {
+</span><span style="color: #008080;">10</span>          <span style="background-color: #f5f5f5; color: #0000ff;">try</span><span style="background-color: #f5f5f5; color: #000000;"> {
+</span><span style="color: #008080;">11</span> <span style="background-color: #f5f5f5; color: #000000;">             xmlHttp </span><span style="background-color: #f5f5f5; color: #000000;">=</span> <span style="background-color: #f5f5f5; color: #0000ff;">new</span><span style="background-color: #f5f5f5; color: #000000;"> ActiveXObject(</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">Msxml2.XMLHTTP</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">);
+</span><span style="color: #008080;">12</span> <span style="background-color: #f5f5f5; color: #000000;">         } </span><span style="background-color: #f5f5f5; color: #0000ff;">catch</span><span style="background-color: #f5f5f5; color: #000000;"> (e) {
+</span><span style="color: #008080;">13</span>              <span style="background-color: #f5f5f5; color: #0000ff;">try</span><span style="background-color: #f5f5f5; color: #000000;"> {
+</span><span style="color: #008080;">14</span> <span style="background-color: #f5f5f5; color: #000000;">                 xmlHttp </span><span style="background-color: #f5f5f5; color: #000000;">=</span> <span style="background-color: #f5f5f5; color: #0000ff;">new</span><span style="background-color: #f5f5f5; color: #000000;"> ActiveXObject(</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">Microsoft.XMLHTTP</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">);
+</span><span style="color: #008080;">15</span> <span style="background-color: #f5f5f5; color: #000000;">             } </span><span style="background-color: #f5f5f5; color: #0000ff;">catch</span><span style="background-color: #f5f5f5; color: #000000;"> (ee) {
+</span><span style="color: #008080;">16</span> <span style="background-color: #f5f5f5; color: #000000;">                 xmlHttp </span><span style="background-color: #f5f5f5; color: #000000;">=</span> <span style="background-color: #f5f5f5; color: #0000ff;">false</span><span style="background-color: #f5f5f5; color: #000000;">;
+</span><span style="color: #008080;">17</span> <span style="background-color: #f5f5f5; color: #000000;">             }
+</span><span style="color: #008080;">18</span> <span style="background-color: #f5f5f5; color: #000000;">         }
+</span><span style="color: #008080;">19</span> <span style="background-color: #f5f5f5; color: #000000;">     }
+</span><span style="color: #008080;">20</span>  
+<span style="color: #008080;">21</span>      <span style="background-color: #f5f5f5; color: #0000ff;">var</span><span style="background-color: #f5f5f5; color: #000000;"> s </span><span style="background-color: #f5f5f5; color: #000000;">=</span> <span style="background-color: #f5f5f5; color: #000000;">''</span><span style="background-color: #f5f5f5; color: #000000;">;
+</span><span style="color: #008080;">22</span>  <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">script</span><span style="color: #0000ff;">&gt;</span></pre>
+</div>
+</div>
+<p><img src="33754945949162.jpg" alt=""></p>
+<h2>ajax的请求响应模型</h2>
+<p>ajax基本流程基本如下：</p>
+<div class="cnblogs_code">
+<pre><span style="color: #000000;">1 从web表单中获取所需数据（不用表单也行）
+2 建立连接url
+3 打开服务器连接
+4 设置数据返回回调函数
+5 发送请求</span></pre>
+</div>
+<div class="cnblogs_code">
+<pre><span style="color: #000000;">xmlHttp.open('GET', url, true);
+xmlHttp.onreadystatechange = function (e) {};
+xmlHttp.send(null)</span></pre>
+</div>
+<p>open时，最后一个参数为true将建立异步连接，false将等待服务器响应</p>
+<p>onreadystatechage 可以指定数据返回时回调函数</p>
+<p>send便是发送请求，参数便是要传的参数，没有参数可以填null</p>
+<p>我们来写段后台程序试试：</p>
+<div class="cnblogs_code" onclick="cnblogs_code_show('55099556-82b5-4193-8c72-e4553e6a3172')"><img id="code_img_closed_55099556-82b5-4193-8c72-e4553e6a3172" class="code_img_closed" src="43570758473519.gif" alt=""><img id="code_img_opened_55099556-82b5-4193-8c72-e4553e6a3172" class="code_img_opened" style="display: none;" onclick="cnblogs_code_hide('55099556-82b5-4193-8c72-e4553e6a3172',event)" src="16365178109279.gif" alt=""><span class="cnblogs_code_collapse">前端</span>
+<div id="cnblogs_code_open_55099556-82b5-4193-8c72-e4553e6a3172" class="cnblogs_code_hide">
+<pre><span style="color: #008080;"> 1</span>  <span style="color: #0000ff;">&lt;!</span><span style="color: #ff00ff;">DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 2</span>  
+<span style="color: #008080;"> 3</span>  <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">html </span><span style="color: #ff0000;">xmlns</span><span style="color: #0000ff;">="http://www.w3.org/1999/xhtml"</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 4</span>  <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">head</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 5</span>      <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">title</span><span style="color: #0000ff;">&gt;&lt;/</span><span style="color: #800000;">title</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 6</span>  <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">head</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 7</span>  <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">body</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 8</span>  
+<span style="color: #008080;"> 9</span>  <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">body</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">10</span>  <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">script </span><span style="color: #ff0000;">type</span><span style="color: #0000ff;">="text/javascript"</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">11</span>      <span style="background-color: #f5f5f5; color: #0000ff;">var</span><span style="background-color: #f5f5f5; color: #000000;"> xmlHttp </span><span style="background-color: #f5f5f5; color: #000000;">=</span> <span style="background-color: #f5f5f5; color: #0000ff;">false</span><span style="background-color: #f5f5f5; color: #000000;">;
+</span><span style="color: #008080;">12</span>      <span style="background-color: #f5f5f5; color: #0000ff;">function</span><span style="background-color: #f5f5f5; color: #000000;"> createXMLHttpRequest() {
+</span><span style="color: #008080;">13</span>          <span style="background-color: #f5f5f5; color: #0000ff;">if</span><span style="background-color: #f5f5f5; color: #000000;"> (window.XMLHttpRequest) {
+</span><span style="color: #008080;">14</span>              <span style="background-color: #f5f5f5; color: #0000ff;">try</span><span style="background-color: #f5f5f5; color: #000000;"> {
+</span><span style="color: #008080;">15</span> <span style="background-color: #f5f5f5; color: #000000;">                 xmlHttp </span><span style="background-color: #f5f5f5; color: #000000;">=</span> <span style="background-color: #f5f5f5; color: #0000ff;">new</span><span style="background-color: #f5f5f5; color: #000000;"> XMLHttpRequest();
+</span><span style="color: #008080;">16</span> <span style="background-color: #f5f5f5; color: #000000;">             } </span><span style="background-color: #f5f5f5; color: #0000ff;">catch</span><span style="background-color: #f5f5f5; color: #000000;"> (e) {
+</span><span style="color: #008080;">17</span> <span style="background-color: #f5f5f5; color: #000000;">                 xmlHttp </span><span style="background-color: #f5f5f5; color: #000000;">=</span> <span style="background-color: #f5f5f5; color: #0000ff;">false</span><span style="background-color: #f5f5f5; color: #000000;">;
+</span><span style="color: #008080;">18</span> <span style="background-color: #f5f5f5; color: #000000;">             }
+</span><span style="color: #008080;">19</span> <span style="background-color: #f5f5f5; color: #000000;">         } </span><span style="background-color: #f5f5f5; color: #0000ff;">else</span><span style="background-color: #f5f5f5; color: #000000;"> {
+</span><span style="color: #008080;">20</span>              <span style="background-color: #f5f5f5; color: #0000ff;">try</span><span style="background-color: #f5f5f5; color: #000000;"> {
+</span><span style="color: #008080;">21</span> <span style="background-color: #f5f5f5; color: #000000;">                 xmlHttp </span><span style="background-color: #f5f5f5; color: #000000;">=</span> <span style="background-color: #f5f5f5; color: #0000ff;">new</span><span style="background-color: #f5f5f5; color: #000000;"> ActiveXObject(</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">Msxml2.XMLHTTP</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">);
+</span><span style="color: #008080;">22</span> <span style="background-color: #f5f5f5; color: #000000;">             } </span><span style="background-color: #f5f5f5; color: #0000ff;">catch</span><span style="background-color: #f5f5f5; color: #000000;"> (e) {
+</span><span style="color: #008080;">23</span>                  <span style="background-color: #f5f5f5; color: #0000ff;">try</span><span style="background-color: #f5f5f5; color: #000000;"> {
+</span><span style="color: #008080;">24</span> <span style="background-color: #f5f5f5; color: #000000;">                     xmlHttp </span><span style="background-color: #f5f5f5; color: #000000;">=</span> <span style="background-color: #f5f5f5; color: #0000ff;">new</span><span style="background-color: #f5f5f5; color: #000000;"> ActiveXObject(</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">Microsoft.XMLHTTP</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">);
+</span><span style="color: #008080;">25</span> <span style="background-color: #f5f5f5; color: #000000;">                 } </span><span style="background-color: #f5f5f5; color: #0000ff;">catch</span><span style="background-color: #f5f5f5; color: #000000;"> (ee) {
+</span><span style="color: #008080;">26</span> <span style="background-color: #f5f5f5; color: #000000;">                     xmlHttp </span><span style="background-color: #f5f5f5; color: #000000;">=</span> <span style="background-color: #f5f5f5; color: #0000ff;">false</span><span style="background-color: #f5f5f5; color: #000000;">;
+</span><span style="color: #008080;">27</span> <span style="background-color: #f5f5f5; color: #000000;">                 }
+</span><span style="color: #008080;">28</span> <span style="background-color: #f5f5f5; color: #000000;">             }
+</span><span style="color: #008080;">29</span> <span style="background-color: #f5f5f5; color: #000000;">         }
+</span><span style="color: #008080;">30</span> <span style="background-color: #f5f5f5; color: #000000;">     }
+</span><span style="color: #008080;">31</span>  
+<span style="color: #008080;">32</span> <span style="background-color: #f5f5f5; color: #000000;">     createXMLHttpRequest();
+</span><span style="color: #008080;">33</span>      <span style="background-color: #f5f5f5; color: #0000ff;">if</span><span style="background-color: #f5f5f5; color: #000000;"> (xmlHttp) {
+</span><span style="color: #008080;">34</span> <span style="background-color: #f5f5f5; color: #000000;">         xmlHttp.open(</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">GET</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">, </span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">ajax.ashx</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">, </span><span style="background-color: #f5f5f5; color: #0000ff;">true</span><span style="background-color: #f5f5f5; color: #000000;">);
+</span><span style="color: #008080;">35</span> <span style="background-color: #f5f5f5; color: #000000;">         xmlHttp.onreadystatechange </span><span style="background-color: #f5f5f5; color: #000000;">=</span> <span style="background-color: #f5f5f5; color: #0000ff;">function</span><span style="background-color: #f5f5f5; color: #000000;"> (e) {
+</span><span style="color: #008080;">36</span>              <span style="background-color: #f5f5f5; color: #0000ff;">var</span><span style="background-color: #f5f5f5; color: #000000;"> tmp </span><span style="background-color: #f5f5f5; color: #000000;">=</span><span style="background-color: #f5f5f5; color: #000000;"> xmlHttp.responseText;
+</span><span style="color: #008080;">37</span>              <span style="background-color: #f5f5f5; color: #0000ff;">var</span><span style="background-color: #f5f5f5; color: #000000;"> s </span><span style="background-color: #f5f5f5; color: #000000;">=</span> <span style="background-color: #f5f5f5; color: #000000;">''</span><span style="background-color: #f5f5f5; color: #000000;">;
+</span><span style="color: #008080;">38</span> <span style="background-color: #f5f5f5; color: #000000;">         }
+</span><span style="color: #008080;">39</span> <span style="background-color: #f5f5f5; color: #000000;">         xmlHttp.send();
+</span><span style="color: #008080;">40</span>  
+<span style="color: #008080;">41</span> <span style="background-color: #f5f5f5; color: #000000;">     }
+</span><span style="color: #008080;">42</span>      
+<span style="color: #008080;">43</span>  
+<span style="color: #008080;">44</span>      <span style="background-color: #f5f5f5; color: #0000ff;">var</span><span style="background-color: #f5f5f5; color: #000000;"> s </span><span style="background-color: #f5f5f5; color: #000000;">=</span> <span style="background-color: #f5f5f5; color: #000000;">''</span><span style="background-color: #f5f5f5; color: #000000;">;
+</span><span style="color: #008080;">45</span>  <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">script</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">46</span>  <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">html</span><span style="color: #0000ff;">&gt;</span></pre>
+</div>
+</div>
+<p>&nbsp;</p>
+<div class="cnblogs_code" onclick="cnblogs_code_show('1c25d3d0-4b02-4935-861b-541cc577ec9d')"><img id="code_img_closed_1c25d3d0-4b02-4935-861b-541cc577ec9d" class="code_img_closed" src="43570758473519.gif" alt=""><img id="code_img_opened_1c25d3d0-4b02-4935-861b-541cc577ec9d" class="code_img_opened" style="display: none;" onclick="cnblogs_code_hide('1c25d3d0-4b02-4935-861b-541cc577ec9d',event)" src="16365178109279.gif" alt=""><span class="cnblogs_code_collapse">服务器端代码</span>
+<div id="cnblogs_code_open_1c25d3d0-4b02-4935-861b-541cc577ec9d" class="cnblogs_code_hide">
+<pre><span style="color: #008080;"> 1</span> &lt;%@ WebHandler Language=<span style="color: #800000;">"</span><span style="color: #800000;">C#</span><span style="color: #800000;">"</span> Class=<span style="color: #800000;">"</span><span style="color: #800000;">ajax</span><span style="color: #800000;">"</span> %&gt;
+<span style="color: #008080;"> 2</span> 
+<span style="color: #008080;"> 3</span> <span style="color: #0000ff;">using</span><span style="color: #000000;"> System;
+</span><span style="color: #008080;"> 4</span> <span style="color: #0000ff;">using</span><span style="color: #000000;"> System.Web;
+</span><span style="color: #008080;"> 5</span> 
+<span style="color: #008080;"> 6</span> <span style="color: #0000ff;">public</span> <span style="color: #0000ff;">class</span><span style="color: #000000;"> ajax : IHttpHandler {
+</span><span style="color: #008080;"> 7</span>     
+<span style="color: #008080;"> 8</span>     <span style="color: #0000ff;">public</span> <span style="color: #0000ff;">void</span><span style="color: #000000;"> ProcessRequest (HttpContext context) {
+</span><span style="color: #008080;"> 9</span>         context.Response.ContentType = <span style="color: #800000;">"</span><span style="color: #800000;">text/plain</span><span style="color: #800000;">"</span><span style="color: #000000;">;
+</span><span style="color: #008080;">10</span>         <span style="color: #0000ff;">string</span> name = context.Request.QueryString[<span style="color: #800000;">"</span><span style="color: #800000;">name</span><span style="color: #800000;">"</span>] == <span style="color: #0000ff;">null</span> ? <span style="color: #800000;">""</span> : context.Request.QueryString[<span style="color: #800000;">"</span><span style="color: #800000;">name</span><span style="color: #800000;">"</span><span style="color: #000000;">].ToString();
+</span><span style="color: #008080;">11</span>         context.Response.Write(<span style="color: #800000;">"</span><span style="color: #800000;">ajax 返回：</span><span style="color: #800000;">"</span> +<span style="color: #000000;"> name);
+</span><span style="color: #008080;">12</span> <span style="color: #000000;">    }
+</span><span style="color: #008080;">13</span>  
+<span style="color: #008080;">14</span>     <span style="color: #0000ff;">public</span> <span style="color: #0000ff;">bool</span><span style="color: #000000;"> IsReusable {
+</span><span style="color: #008080;">15</span>         <span style="color: #0000ff;">get</span><span style="color: #000000;"> {
+</span><span style="color: #008080;">16</span>             <span style="color: #0000ff;">return</span> <span style="color: #0000ff;">false</span><span style="color: #000000;">;
+</span><span style="color: #008080;">17</span> <span style="color: #000000;">        }
+</span><span style="color: #008080;">18</span> <span style="color: #000000;">    }
+</span><span style="color: #008080;">19</span> 
+<span style="color: #008080;">20</span> }</pre>
+</div>
+</div>
+<p>其实我们定义的会函数会被执行三次，状态码依次返回2,3,4，现在我们来看看这个状态码是什么：</p>
+<div class="cnblogs_code">
+<pre><span style="color: #000000;">xmlHttp.readyState:
+0 ：未初始化，还没有调用send()方法 
+1 ：载入，已调用send()方法，正在发送请求 
+2 ：载入完成，send()方法执行完成，已经接收到全部响应内容 
+3 ：交互，正在解析响应内容 
+4 ：完成，响应内容解析完成，可以在客户端调用了</span></pre>
+</div>
+<p>意思是我们只需要关注4便可以了。</p>
+<p><span style="color: #ff0000;">另外几次请求返回数据一致可能是因为浏览器缓存原因，请各位自己加上随机数哟。</span></p>
+<h1>那些年我们一起跨的域</h1>
+<p>ajax也会遇到跨域问题的，我们所说的跨域现在一般都是跨域请求数据，跨域提交数据这种事情好像只有html5的postMessage能做。</p>
+<p>跨域请求数据的原理是，我们先在我们的页面上定义一个js函数，然后以script的方式请求数据，数据返回的字符串便会调用我们定义的方法：</p>
+<div class="cnblogs_code">
+<pre>xmlHttp.open('POST', 'http://localhost:47389/html5%E5%92%8Ccss3/ajax.ashx', true);</pre>
+</div>
+<p>将前面代码url处做一个修改后，请求就没有响应了，我们先看看这个url会输出什么：</p>
+<div class="cnblogs_code" onclick="cnblogs_code_show('4867427d-967c-473c-8a02-d4c687428905')"><img id="code_img_closed_4867427d-967c-473c-8a02-d4c687428905" class="code_img_closed" src="43570758473519.gif" alt=""><img id="code_img_opened_4867427d-967c-473c-8a02-d4c687428905" class="code_img_opened" style="display: none;" onclick="cnblogs_code_hide('4867427d-967c-473c-8a02-d4c687428905',event)" src="16365178109279.gif" alt=""><span class="cnblogs_code_collapse">跨域</span>
+<div id="cnblogs_code_open_4867427d-967c-473c-8a02-d4c687428905" class="cnblogs_code_hide">
+<pre><span style="color: #008080;"> 1</span> &lt;%@ WebHandler Language=<span style="color: #800000;">"</span><span style="color: #800000;">C#</span><span style="color: #800000;">"</span> Class=<span style="color: #800000;">"</span><span style="color: #800000;">ajax</span><span style="color: #800000;">"</span> %&gt;
+<span style="color: #008080;"> 2</span> 
+<span style="color: #008080;"> 3</span> <span style="color: #0000ff;">using</span><span style="color: #000000;"> System;
+</span><span style="color: #008080;"> 4</span> <span style="color: #0000ff;">using</span><span style="color: #000000;"> System.Web;
+</span><span style="color: #008080;"> 5</span> 
+<span style="color: #008080;"> 6</span> <span style="color: #0000ff;">public</span> <span style="color: #0000ff;">class</span><span style="color: #000000;"> ajax : IHttpHandler {
+</span><span style="color: #008080;"> 7</span>     
+<span style="color: #008080;"> 8</span>     <span style="color: #0000ff;">public</span> <span style="color: #0000ff;">void</span><span style="color: #000000;"> ProcessRequest (HttpContext context) {
+</span><span style="color: #008080;"> 9</span>         context.Response.ContentType = <span style="color: #800000;">"</span><span style="color: #800000;">text/plain</span><span style="color: #800000;">"</span><span style="color: #000000;">;
+</span><span style="color: #008080;">10</span>         context.Response.Write(<span style="color: #800000;">"</span><span style="color: #800000;">Hello World</span><span style="color: #800000;">"</span><span style="color: #000000;">);
+</span><span style="color: #008080;">11</span> <span style="color: #000000;">    }
+</span><span style="color: #008080;">12</span>  
+<span style="color: #008080;">13</span>     <span style="color: #0000ff;">public</span> <span style="color: #0000ff;">bool</span><span style="color: #000000;"> IsReusable {
+</span><span style="color: #008080;">14</span>         <span style="color: #0000ff;">get</span><span style="color: #000000;"> {
+</span><span style="color: #008080;">15</span>             <span style="color: #0000ff;">return</span> <span style="color: #0000ff;">false</span><span style="color: #000000;">;
+</span><span style="color: #008080;">16</span> <span style="color: #000000;">        }
+</span><span style="color: #008080;">17</span> <span style="color: #000000;">    }
+</span><span style="color: #008080;">18</span> 
+<span style="color: #008080;">19</span> }</pre>
+</div>
+</div>
+<p><img src="1325127165231.jpg" alt=""></p>
+<p>我们修改下后台代码：</p>
+<div class="cnblogs_code" onclick="cnblogs_code_show('2bae315a-d45b-4e1a-8b98-ca917687c4d1')"><img id="code_img_closed_2bae315a-d45b-4e1a-8b98-ca917687c4d1" class="code_img_closed" src="43570758473519.gif" alt=""><img id="code_img_opened_2bae315a-d45b-4e1a-8b98-ca917687c4d1" class="code_img_opened" style="display: none;" onclick="cnblogs_code_hide('2bae315a-d45b-4e1a-8b98-ca917687c4d1',event)" src="16365178109279.gif" alt=""><span class="cnblogs_code_collapse">修改后</span>
+<div id="cnblogs_code_open_2bae315a-d45b-4e1a-8b98-ca917687c4d1" class="cnblogs_code_hide">
+<pre><span style="color: #008080;"> 1</span> &lt;%@ WebHandler Language=<span style="color: #800000;">"</span><span style="color: #800000;">C#</span><span style="color: #800000;">"</span> Class=<span style="color: #800000;">"</span><span style="color: #800000;">ajax</span><span style="color: #800000;">"</span> %&gt;
+<span style="color: #008080;"> 2</span> 
+<span style="color: #008080;"> 3</span> <span style="color: #0000ff;">using</span><span style="color: #000000;"> System;
+</span><span style="color: #008080;"> 4</span> <span style="color: #0000ff;">using</span><span style="color: #000000;"> System.Web;
+</span><span style="color: #008080;"> 5</span> 
+<span style="color: #008080;"> 6</span> <span style="color: #0000ff;">public</span> <span style="color: #0000ff;">class</span><span style="color: #000000;"> ajax : IHttpHandler {
+</span><span style="color: #008080;"> 7</span>     
+<span style="color: #008080;"> 8</span>     <span style="color: #0000ff;">public</span> <span style="color: #0000ff;">void</span><span style="color: #000000;"> ProcessRequest (HttpContext context) {
+</span><span style="color: #008080;"> 9</span>         context.Response.ContentType = <span style="color: #800000;">"</span><span style="color: #800000;">text/html</span><span style="color: #800000;">"</span><span style="color: #000000;">;
+</span><span style="color: #008080;">10</span>         <span style="color: #0000ff;">string</span> callback = context.Request.QueryString[<span style="color: #800000;">"</span><span style="color: #800000;">callback</span><span style="color: #800000;">"</span>] == <span style="color: #0000ff;">null</span> ? <span style="color: #800000;">"</span><span style="color: #800000;">callback</span><span style="color: #800000;">"</span> : context.Request.QueryString[<span style="color: #800000;">"</span><span style="color: #800000;">callback</span><span style="color: #800000;">"</span><span style="color: #000000;">].ToString();
+</span><span style="color: #008080;">11</span>         context.Response.Write(callback + <span style="color: #800000;">"</span><span style="color: #800000;">();</span><span style="color: #800000;">"</span><span style="color: #000000;">);
+</span><span style="color: #008080;">12</span> <span style="color: #000000;">    }
+</span><span style="color: #008080;">13</span>  
+<span style="color: #008080;">14</span>     <span style="color: #0000ff;">public</span> <span style="color: #0000ff;">bool</span><span style="color: #000000;"> IsReusable {
+</span><span style="color: #008080;">15</span>         <span style="color: #0000ff;">get</span><span style="color: #000000;"> {
+</span><span style="color: #008080;">16</span>             <span style="color: #0000ff;">return</span> <span style="color: #0000ff;">false</span><span style="color: #000000;">;
+</span><span style="color: #008080;">17</span> <span style="color: #000000;">        }
+</span><span style="color: #008080;">18</span> <span style="color: #000000;">    }
+</span><span style="color: #008080;">19</span> 
+<span style="color: #008080;">20</span> }</pre>
+</div>
+</div>
+<p>如此便会返回callback字符，</p>
+<p>其实，说到异步跨域问题，我感觉就和ajax关系不大了，我想的是这样做：</p>
+<div class="cnblogs_code" onclick="cnblogs_code_show('7d837681-c2f9-4c9b-b923-cb842b56dbef')"><img id="code_img_closed_7d837681-c2f9-4c9b-b923-cb842b56dbef" class="code_img_closed" src="43570758473519.gif" alt=""><img id="code_img_opened_7d837681-c2f9-4c9b-b923-cb842b56dbef" class="code_img_opened" style="display: none;" onclick="cnblogs_code_hide('7d837681-c2f9-4c9b-b923-cb842b56dbef',event)" src="16365178109279.gif" alt=""><span class="cnblogs_code_collapse">跨域后台</span>
+<div id="cnblogs_code_open_7d837681-c2f9-4c9b-b923-cb842b56dbef" class="cnblogs_code_hide">
+<pre><span style="color: #008080;"> 1</span> &lt;%@ WebHandler Language=<span style="color: #800000;">"</span><span style="color: #800000;">C#</span><span style="color: #800000;">"</span> Class=<span style="color: #800000;">"</span><span style="color: #800000;">ajax</span><span style="color: #800000;">"</span> %&gt;
+<span style="color: #008080;"> 2</span> 
+<span style="color: #008080;"> 3</span> <span style="color: #0000ff;">using</span><span style="color: #000000;"> System;
+</span><span style="color: #008080;"> 4</span> <span style="color: #0000ff;">using</span><span style="color: #000000;"> System.Web;
+</span><span style="color: #008080;"> 5</span> 
+<span style="color: #008080;"> 6</span> <span style="color: #0000ff;">public</span> <span style="color: #0000ff;">class</span><span style="color: #000000;"> ajax : IHttpHandler {
+</span><span style="color: #008080;"> 7</span>     
+<span style="color: #008080;"> 8</span>     <span style="color: #0000ff;">public</span> <span style="color: #0000ff;">void</span><span style="color: #000000;"> ProcessRequest (HttpContext context) {
+</span><span style="color: #008080;"> 9</span>         context.Response.ContentType = <span style="color: #800000;">"</span><span style="color: #800000;">text/html</span><span style="color: #800000;">"</span><span style="color: #000000;">;
+</span><span style="color: #008080;">10</span>         <span style="color: #0000ff;">string</span> callback = context.Request.QueryString[<span style="color: #800000;">"</span><span style="color: #800000;">callback</span><span style="color: #800000;">"</span>] == <span style="color: #0000ff;">null</span> ? <span style="color: #800000;">"</span><span style="color: #800000;">callback</span><span style="color: #800000;">"</span> : context.Request.QueryString[<span style="color: #800000;">"</span><span style="color: #800000;">callback</span><span style="color: #800000;">"</span><span style="color: #000000;">].ToString();
+</span><span style="color: #008080;">11</span>         context.Response.Write(callback + <span style="color: #800000;">"</span><span style="color: #800000;">({name: '叶小钗'});</span><span style="color: #800000;">"</span><span style="color: #000000;">);
+</span><span style="color: #008080;">12</span> <span style="color: #000000;">    }
+</span><span style="color: #008080;">13</span>  
+<span style="color: #008080;">14</span>     <span style="color: #0000ff;">public</span> <span style="color: #0000ff;">bool</span><span style="color: #000000;"> IsReusable {
+</span><span style="color: #008080;">15</span>         <span style="color: #0000ff;">get</span><span style="color: #000000;"> {
+</span><span style="color: #008080;">16</span>             <span style="color: #0000ff;">return</span> <span style="color: #0000ff;">false</span><span style="color: #000000;">;
+</span><span style="color: #008080;">17</span> <span style="color: #000000;">        }
+</span><span style="color: #008080;">18</span> <span style="color: #000000;">    }
+</span><span style="color: #008080;">19</span> 
+<span style="color: #008080;">20</span> }</pre>
+</div>
+</div>
+<div class="cnblogs_code" onclick="cnblogs_code_show('e0819a26-2321-4cb2-8217-02e430f8eb30')"><img id="code_img_closed_e0819a26-2321-4cb2-8217-02e430f8eb30" class="code_img_closed" src="43570758473519.gif" alt=""><img id="code_img_opened_e0819a26-2321-4cb2-8217-02e430f8eb30" class="code_img_opened" style="display: none;" onclick="cnblogs_code_hide('e0819a26-2321-4cb2-8217-02e430f8eb30',event)" src="16365178109279.gif" alt=""><span class="cnblogs_code_collapse">跨域前台</span>
+<div id="cnblogs_code_open_e0819a26-2321-4cb2-8217-02e430f8eb30" class="cnblogs_code_hide">
+<pre><span style="color: #008080;"> 1</span> &lt;!DOCTYPE html PUBLIC <span style="color: #800000;">"</span><span style="color: #800000;">-//W3C//DTD XHTML 1.0 Transitional//EN</span><span style="color: #800000;">"</span> <span style="color: #800000;">"</span><span style="color: #800000;">http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd</span><span style="color: #800000;">"</span>&gt;
+<span style="color: #008080;"> 2</span> 
+<span style="color: #008080;"> 3</span> &lt;html xmlns=<span style="color: #800000;">"</span><span style="color: #800000;">http://www.w3.org/1999/xhtml</span><span style="color: #800000;">"</span>&gt;
+<span style="color: #008080;"> 4</span> &lt;head&gt;
+<span style="color: #008080;"> 5</span>     &lt;title&gt;&lt;/title&gt;
+<span style="color: #008080;"> 6</span> &lt;/head&gt;
+<span style="color: #008080;"> 7</span> &lt;body&gt;
+<span style="color: #008080;"> 8</span> 
+<span style="color: #008080;"> 9</span> &lt;/body&gt;
+<span style="color: #008080;">10</span> &lt;script type=<span style="color: #800000;">"</span><span style="color: #800000;">text/javascript</span><span style="color: #800000;">"</span>&gt;
+<span style="color: #008080;">11</span> 
+<span style="color: #008080;">12</span> <span style="color: #000000;">    function callback() {
+</span><span style="color: #008080;">13</span>         alert(<span style="color: #800000;">'</span><span style="color: #800000;">函数回调</span><span style="color: #800000;">'</span><span style="color: #000000;">);
+</span><span style="color: #008080;">14</span> <span style="color: #000000;">    }
+</span><span style="color: #008080;">15</span>     <span style="color: #0000ff;">var</span> url = <span style="color: #800000;">'</span><span style="color: #800000;">http://localhost:47389/html5%E5%92%8Ccss3/ajax.ashx</span><span style="color: #800000;">'</span><span style="color: #000000;">;
+</span><span style="color: #008080;">16</span>     <span style="color: #0000ff;">var</span> scpt = document.createElement(<span style="color: #800000;">'</span><span style="color: #800000;">script</span><span style="color: #800000;">'</span><span style="color: #000000;">);
+</span><span style="color: #008080;">17</span>     scpt.setAttribute(<span style="color: #800000;">'</span><span style="color: #800000;">type</span><span style="color: #800000;">'</span>, <span style="color: #800000;">'</span><span style="color: #800000;">text/javascript</span><span style="color: #800000;">'</span><span style="color: #000000;">);
+</span><span style="color: #008080;">18</span>     scpt.setAttribute(<span style="color: #800000;">'</span><span style="color: #800000;">src</span><span style="color: #800000;">'</span><span style="color: #000000;">, url);
+</span><span style="color: #008080;">19</span>     document.getElementsByTagName(<span style="color: #800000;">"</span><span style="color: #800000;">head</span><span style="color: #800000;">"</span>)[<span style="color: #800080;">0</span><span style="color: #000000;">].appendChild(scpt);
+</span><span style="color: #008080;">20</span> 
+<span style="color: #008080;">21</span> &lt;/script&gt;
+<span style="color: #008080;">22</span> &lt;/html&gt;
+<span style="color: #008080;">23</span>  </pre>
+</div>
+</div>
+<p><img src="24448409382743.jpg" alt=""></p>
+<p><img src="33075729935872.jpg" alt=""></p>
+<p>如此一来，便跨域了！</p>
+<p>针对跨域post的处理，一般是以form target指向一个隐藏的iframe实现的，比如我们最初的文件图片上传&ldquo;ajax&rdquo;的实现。</p>
+<h1>编码问题</h1>
+<p>若是页面采用utf-8编码，而服务器采用gbk的话，也许会出现编码问题，甚至引起莫名其妙的BUG：</p>
+<p><img src="49411709352036.jpg" alt=""></p>
+<p>这里便让中文不能解析。</p>
+<h1>HTML5中的XMLHttpRequest</h1>
+<div class="cnblogs_code">
+<pre><span style="color: #000000;"><strong>老版本缺点</strong>：
+只支持文本数据的传送，无法用来读取和上传二进制文件。
+传送和接收数据时，没有进度信息，只能提示有没有完成。
+受到</span><span style="color: #800000;">"</span><span style="color: #800000;">同域限制</span><span style="color: #800000;">"</span>（Same Origin Policy），只能向同一域名的服务器请求数据。</pre>
+</div>
+<div class="cnblogs_code">
+<pre><strong><span style="color: #800080;">2</span></strong><span style="color: #000000;"><strong>.0改进</strong>：<br>可以设置HTTP请求的时限。
+可以使用FormData对象管理表单数据。
+可以上传文件。
+可以请求不同域名下的数据（跨域请求）。
+可以获取服务器端的二进制数据。
+可以获得数据传输的进度信息。</span></pre>
+</div>
+<p>作为XMLHttpRequest的改进版，IE9都还不支持呢，估计最新的IE10应该没问题了。</p>
+<p>XMLHttpRequest Level2 在功能上有了很大的改进，比如2.0版本可以跨域啦！！！</p>
+<p>跨域http请求包含一个origin头部，他为服务器提供http请求源信息，头部由浏览器保护，不能被程序更改，从本质上讲他与跨文档消息通信中消息事件的origin属性作用相同。</p>
+<p>origin头部不同于早先的refer，后者referer是一个包含路径的完整url，路由可能包含敏感信息，浏览器不一定发送referer，但一定会发送origin。</p>
+<p>算了，以上这块是抄的，我完全没有概念，反正意思是按照他的规则玩游戏，你就可以跨域！</p>
+<p>我这里想要表达的重点其实是以下功能点：</p>
+<p><span style="color: #ff0000;">XMLHttpRequest2.0支持了对进度的响应</span>！确实是进度的响应，他让我们上传文件产生进度条变成了可能，之前仅有readystatechage一个事件能给用来响应进度，而且该事件并不兼容，如ie中就不会有状态3，更别说上传通信了，这种情况下要实现进度条是一件无比麻烦的事情：</p>
+<p>我们来看看现在的事件列表</p>
+<div class="cnblogs_code">
+<pre><span style="color: #000000;">loadStart
+传输开始时触发<br>progress
+上传过程中触发，他的e属性会包含很多有用信息哦。<br>abort
+取消上传时触发<br>error
+出错时触发<br>load
+接受完数据触发<br>loadend<br>传输结束触发，无论成功与否</span></pre>
+</div>
+<p>若想查看例子请猛击：&nbsp;<a id="homepage1_HomePageDays_DaysList_DayItem_8_DayList_8_TitleUrl_0" class="postTitle2" href="http://www.cnblogs.com/yexiaochai/archive/2013/04/11/3014404.html">一次上机面试题带来的感悟【学习的感觉、学习的方法】</a></p>
+<p>此段参考资料：<a href="http://www.ruanyifeng.com/blog/2012/09/xmlhttprequest_level_2.html" target="_blank">XMLHttpRequest Level 2 使用指南</a></p>
+<h1>结语</h1>
+<p>今天，我们一起学习了AJAX的相关知识，我感觉还是挺有用的。。。。若是有任何错误请指出哦。</p>
+<p><strong>如果你觉得这篇文章还不错，请帮忙点击一下推荐，谢谢！</strong></p>
+<p>&nbsp;</p>
+                </div>
+
+                <div class='span3 sidebar'>
+                    <h2>导航栏</h2>
+                    <ul class="nav nav-tabs nav-stacked">
+                             				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/javascriptzdyxhxzsdyjxyzyddf/index.html">javascript中的一些核心知识点以及需要注意的地方</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/[zd]webappdyhzlyzydqdyhdpyjlkkb/index.html">[置顶]【webapp的优化整理】要做移动前端优化的朋友进来看看吧</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/[zd]yddjrwtyjjavascriptsjjzxjsjydjr/index.html">[置顶]【移动端兼容问题研究】javascript事件机制详解（涉及移动兼容）</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/gruntzhb30fzxhsygruntdbqddm/index.html">【grunt整合版】30分钟学会使用grunt打包前端代码</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/gruntdyd30fzxhsygruntdbqddm/index.html">【grunt第一弹】30分钟学会使用grunt打包前端代码</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/gruntdsdgruntzqdsjxmzdyy/index.html">【grunt第三弹】grunt在前端实际项目中的应用</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/gruntded30fzxhsygruntdbqddm02/index.html">【grunt第二弹】30分钟学会使用grunt打包前端代码（02）</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/IScrollsrxxtpyddhadlqs/index.html">【IScroll深入学习】突破移动端黑暗的利器（上）</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/IScrollsrxxjjIScrollynzz/index.html">【IScroll深入学习】解决IScroll疑难杂症</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/iScrollymxx00mniScroll/index.html">【iScroll源码学习00】模拟iScroll</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/iScrollymxx01zbjd/index.html">【iScroll源码学习01】准备阶段</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/iScrollymxx02fjiScrollsghxsjd/index.html">【iScroll源码学习02】分解iScroll三个核心事件点</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/iScrollymxx03iScrollsjjzygdtdsx/index.html">【iScroll源码学习03】iScroll事件机制与滚动条的实现</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/iScrollymxx04flIScrollhx/index.html">【iScroll源码学习04】分离IScroll核心</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/javascriptpxdytyyjc/index.html">【javascript培训第一天】语言基础</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/javascriptpxdstcybl/index.html">【javascript培训第三天】查遗补漏</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/javascriptpxdetDOMyBOM/index.html">【javascript培训第二天】DOM与BOM</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/javascriptjzdsk01mkhbc/index.html">【javascript激增的思考01】模块化编程</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/javascriptjzdsk02mkhyMVC/index.html">【javascript激增的思考02】模块化与MVC</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/javascriptjzdsk03MVVMyKnockout/index.html">【javascript激增的思考03】MVVM与Knockout</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/javascriptjzdsk04MVCyBackbonejs(beta)/index.html">【javascript激增的思考04】MVC与Backbonejs(beta)</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/javascriptmxdxzlrwmyqltkdzb01/index.html">【javascript面向对象之路】让我们一起来坦克大战吧01</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/NodeJSxxbj04xwfbxt/index.html">【NodeJS学习笔记04】新闻发布系统</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/requireJSymxx01ljzgrequireJSdjg/index.html">【requireJS源码学习01】了解整个requireJS的结构</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/requireJSymxx02datamainjzdsx/index.html">【requireJS源码学习02】datamain加载的实现</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/requireJSymxx03xjrequireJSdjzlc/index.html">【requireJS源码学习03】细究requireJS的加载流程</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/UIcjkfygjdrlcjs/index.html">【UI插件】开发一个简单日历插件（上）</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/UIcjjddrlcjxxxMVCsx/index.html">【UI插件】简单的日历插件（下）——学习MVC思想</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/zeptoxxbj01hxff$()/index.html">【zepto学习笔记01】核心方法$()</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/zeptoxxbj01hxff$()b/index.html">【zepto学习笔记01】核心方法$()（补）</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/zeptoxxbj02lsd/index.html">【zepto学习笔记02】零碎点</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/zeptoxxbj03sjjz/index.html">【zepto学习笔记03】事件机制</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/ycmsztjavascriptzdjc/index.html">【一次面试】再谈javascript中的继承</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/ztbackbone01mxModel/index.html">【再探backbone01】模型Model</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/ztbackbone02jhCollection/index.html">【再探backbone02】集合Collection</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/ztbackbone03bkydyyysltgym/index.html">【再探backbone03】博客园单页应用实例（提供源码）</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/ztbackbone04dyyydjslycl/index.html">【再探backbone04】单页应用的基石路由处理</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/ctUnderscorezsmbyq/index.html">【初探Underscore】再说模版引擎</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/ckjavascriptamzAjaxjsxnszddAjax/index.html">【初窥javascript奥秘之Ajax】简述下你所知道的Ajax？</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/ckjavascriptamzsjmpnxnwmyqmdp/index.html">【初窥javascript奥秘之事件冒泡】那些年我们一起冒的泡</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/ckjavascriptamzsjjzldtygdj/index.html">【初窥javascript奥秘之事件机制】论“点透”与“鬼点击”</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/ckjavascriptamzrrzmbddthisnzdxzthiszxnlm/index.html">【初窥javascript奥秘之让人捉摸不定的this】你知道现在this指向哪里吗？？？</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/ckjavascriptamzbbydxbdhlqbcl/index.html">【初窥javascript奥秘之闭包】叶大侠病都好了，求不踩了：）</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/ckjavascriptamzmxdxfzyjc/index.html">【初窥javascript奥秘之面向对象】封装与继承</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/qdmdsjdjgjdnzdljm/index.html">【前端盲点】事件的几个阶段你真的了解么？？？</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/dyyyviewymodelxgsl/index.html">【单页应用】view与model相关梳理</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/dyyyyqldyyybsxjdwbgns/index.html">【单页应用】一起来单页应用吧，实现简单微博功能！（上）</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/dyyyqjkzqappyggxsm/index.html">【单页应用】全局控制器app应该干些什么？</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/dyyywmgrhclkjdcccjgx/index.html">【单页应用】我们该如何处理框架弹出层层级关系？</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/dyyyljMVC/index.html">【单页应用】理解MVC</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/dyyyztxjzviewzjygrhtx/index.html">【单页应用之通信机制】view之间应该如何通信</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/dyyyjkzHistoryxsHistorydgdyyydm/index.html">【单页应用巨坑之History】细数History带给单页应用的噩梦</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/xtszeptofindysyjiosdcjpknrnhtt/index.html">【小贴士】zeptofind元素以及ios弹出键盘可能让你很头疼</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/xtsgytransitionEndanimatedygyqgs/index.html">【小贴士】关于transitionEndanimate的一个有趣故事</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/xtsgzzdbbysjwtdzzmp/index.html">【小贴士】工作中的”闭包“与事件委托的”阻止冒泡“</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/xtstytjavascriptzdreplace/index.html">【小贴士】探一探javascript中的replace</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/xtsxnjpyfixeddgydddt/index.html">【小贴士】虚拟键盘与fixed带给移动端的痛！</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/ttjavascriptsjjzdcsxyl/index.html">【探讨】javascript事件机制底层实现原理</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/mkhbcljrequireJSsxygjddmkjzq/index.html">【模块化编程】理解requireJS实现一个简单的模块加载器</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/zyJavaScriptmfjmtsdqlxkjzbfgndcljz/index.html">【转】【译】JavaScript魔法揭秘探索当前流行框架中部分功能的处理机制</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/zxjavascriptgszl01javascriptcszds/index.html">【追寻javascript高手之路01】javascript参数知多少？</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/zxjavascriptgszl02blzyyzds/index.html">【追寻javascript高手之路02】变量、作用域知多少？</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/zxjavascriptgszl03javascriptdxdld/index.html">【追寻javascript高手之路03】javascript对象大乱斗</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/zxjavascriptgszl04ljprototype/index.html">【追寻javascript高手之路04】理解prototype</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/zxjavascriptgszl05ljsjl/index.html">【追寻javascript高手之路05】理解事件流</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/zgbj04zxzzsj(2)/index.html">【重构笔记04】重新组织数据(2)</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/zgbj05jhtjbds/index.html">【重构笔记05】简化条件表达式</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/zgbj06jhhsdy/index.html">【重构笔记06】简化函数调用</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/ycmshgttbxysjfl/index.html">一次面试回顾——探讨表现与数据分离</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/dhzwebappzdxz/index.html">动画在webapp中的现状</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/ysandriodlqhthdomclicksjqtsxwttj/index.html">原生andriod浏览器回退后dom（click）事件全体失效问题探究</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/scsbdjxysdsbsjytouchsjdnxs/index.html">手持设备点击响应速度，鼠标事件与touch事件的那些事</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/mnbjQueryzeptohxymfx/index.html">迷你版jQuery——zepto核心源码分析</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/dbsgzdlwmlyqxjdddomxzqb/index.html">都别说工资低了，我们来一起写简单的dom选择器吧！</a></li>
+    				                                         
+                    </ul>
+                </div>
+            </div>
+
+        </div>
+    </body>
+</html>

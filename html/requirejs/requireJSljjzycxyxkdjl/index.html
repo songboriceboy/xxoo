@@ -1,0 +1,303 @@
+﻿<!DOCTYPE html>
+
+<html lang="zh">
+    <head>
+        <meta charset="utf-8">
+        <meta name="description" content="android,ios" />
+        <meta name="keywords" content="android,ios" />
+
+        <title>叶小钗</title>
+        <style type='text/css'>
+            body {
+                background-color: #CCC;
+            }
+        </style>
+        <link rel="stylesheet" href="../../../css/bootstrap.css" />
+    </head>
+
+    <body>
+        <div class="container">
+
+            <h1>叶小钗</h1>
+
+            <div class='navbar navbar-inverse'>
+                <div class='navbar-inner nav-collapse' style="height: auto;">
+                    <ul class="nav">
+                              				<li><a href="http://songboriceboy.github.io/xxoo/html/blade/index.html">blade</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/css/index.html">css</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/HTML5&CSS3/index.html">HTML5&CSS3</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/index.html">javascript</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Javaxx/index.html">Java学习</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/nodejs/index.html">nodejs</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/requirejs/index.html">requirejs</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/index.html">Web前端</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/xxgw/index.html">学习感悟</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/gzdd/index.html">工作点滴</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/jkxx/index.html">接口学习</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/wfl/index.html">未分类</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/ydkf/index.html">移动开发</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/sjms/index.html">设计模式</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/mst/index.html">面试题</a></li>
+    				                      </ul>
+                </div>
+            </div>
+
+            <div id='content' class='row-fluid'>
+
+                <div class='span9 main'>
+				<div style="color:blue" align=center>【requireJS路径加载】与程序员小卡的交流</div><br><p><span style="line-height: 1.5;">这两天正好看到了程序员小卡同学的一篇博客，里面对requireJS路径的解析做了一些说明，里面有点问题待解决，我这里正好知道一点，所以整理成文，不知对小卡同学是否有帮助。</span></p>
+<p><img src="51833546119974.png" alt=""></p>
+<div><a href="http://www.cnblogs.com/chyingp/p/3677425.html">http://www.cnblogs.com/chyingp/p/3677425.html</a></div>
+<div><a href="http://www.cnblogs.com/chyingp/p/requirejs-path-resolve.html">http://www.cnblogs.com/chyingp/p/requirejs-path-resolve.html</a></div>
+<div>&nbsp;</div>
+<div>首先以其例子为例：</div>
+<div>
+<div class="cnblogs_code">
+<pre><span style="color: #000000;">requirejs.config({
+    baseUrl: </span>'js'<span style="color: #000000;">
+});
+</span><span style="color: #008000;">//</span><span style="color: #008000;"> 依赖lib.js，实际加载的路径是 js/common/lib.js，而lib模块又依赖于util模块('./util')，解析后的实际路径为 js/common/util.js</span>
+require(['common/lib'], <span style="color: #0000ff;">function</span><span style="color: #000000;">(Lib){
+    Lib.say(</span>'hello'<span style="color: #000000;">);
+});</span></pre>
+</div>
+<div class="cnblogs_code">
+<pre><span style="color: #008000;">//</span><span style="color: #008000;"> 依赖util模块</span>
+define(['./util'], <span style="color: #0000ff;">function</span><span style="color: #000000;">(Util){
+    </span><span style="color: #0000ff;">return</span><span style="color: #000000;"> {
+        say: </span><span style="color: #0000ff;">function</span><span style="color: #000000;">(msg){
+            Util.say(msg);
+        }
+    };
+});</span></pre>
+</div>
+<p>若是变个写法，util的目录结构就变了</p>
+<div class="cnblogs_code">
+<pre><span style="color: #000000;">requirejs.config({
+    baseUrl: </span>'js'<span style="color: #000000;">,
+    paths: {
+        lib: </span>'common/lib'<span style="color: #000000;">
+    }
+});
+
+</span><span style="color: #008000;">//</span><span style="color: #008000;"> 实际加载的路径是 js/common/lib.js</span>
+require(['lib'], <span style="color: #0000ff;">function</span><span style="color: #000000;">(Lib){
+    Lib.say(</span>'hello'<span style="color: #000000;">);
+});</span></pre>
+</div>
+<div class="cnblogs_code">
+<pre><span style="color: #008000;">//</span><span style="color: #008000;"> util模块解析后的路径为 js/util.js</span>
+define(['./util'], <span style="color: #0000ff;">function</span><span style="color: #000000;">(Lib){
+    </span><span style="color: #0000ff;">return</span><span style="color: #000000;"> {
+        say: </span><span style="color: #0000ff;">function</span><span style="color: #000000;">(msg){
+            Lib.say(msg);
+        }
+    };
+});</span></pre>
+</div>
+<p>我们今天便一起来学习下这个问题</p>
+<h3>requireJS的basePath</h3>
+</div>
+<div>对于baseUrl的解析需要注意，当满足以下条件，将不会相对baseUrl</div>
+<div>① 以"/"开头</div>
+<div>② 以".js"结尾</div>
+<div>③ 包含各种协议</div>
+<div>不出现以上条件，设置的path，是相对于baseUrl的</div>
+<div><img src="15135097185144.png" alt=""></div>
+<h3>简单requireJS流程</h3>
+<p><img src="2058468027605.png" alt=""></p>
+<div>然后我们这里再简单的整理下requireJS这部分的流程：</div>
+<div>① 通过require加载主干流程，这里就是我们所谓的入口，以上述代码为例，入口是：</div>
+<div>
+<div class="cnblogs_code">
+<pre>require(['common/lib'], <span style="color: #0000ff;">function</span><span style="color: #000000;">(Lib){
+    Lib.say(</span>'hello'<span style="color: #000000;">);
+});</span></pre>
+</div>
+<p>该代码会在require内部执行过程中，具有第一个依赖项，这个依赖项是'common/lib'，<span style="line-height: 1.5;">他的键值便是这个了</span></p>
+</div>
+<p>这里会首先加载器依赖项，common/lib，而此时便会做第一步的解析并且形成一个模块</p>
+<p>在模块加载时，会创建一个script标签，并且为其绑定load事件，这里会有第二个事件的触发</p>
+<p>② 在加载common/lib模块时，有一个关键点需要注意：</p>
+<ul>
+<li>文件加载结束便会马上执行，所以其define方法执行了，并且往globalDefQueue写入了数据</li>
+<li>load事件触发，会创建一个requireJS module，这个时候其依赖项会加载</li>
+</ul>
+<p>上述虽然与本次讨论的东西无关，却是理解整个require的关键，各位可以去看看</p>
+<p>③&nbsp;context.completeLoad(data.id) =&gt;但是这个时候却发现其有一个依赖项，于是便会先加载器依赖项，这里又会进入，main.js中require的逻辑，即这段代码：</p>
+<div class="cnblogs_code">
+<pre><span style="color: #008080;"> 1</span> <span style="color: #008000;">//</span><span style="color: #008000;">Enable each dependency</span>
+<span style="color: #008080;"> 2</span> each(<span style="color: #0000ff;">this</span>.depMaps, bind(<span style="color: #0000ff;">this</span>, <span style="color: #0000ff;">function</span><span style="color: #000000;"> (depMap, i) {
+</span><span style="color: #008080;"> 3</span>   <span style="color: #0000ff;">var</span><span style="color: #000000;"> id, mod, handler;
+</span><span style="color: #008080;"> 4</span>   <span style="color: #0000ff;">if</span> (<span style="color: #0000ff;">typeof</span> depMap === 'string'<span style="color: #000000;">) {
+</span><span style="color: #008080;"> 5</span>     <span style="color: #008000;">//</span><span style="color: #008000;">Dependency needs to be converted to a depMap</span>
+<span style="color: #008080;"> 6</span>     <span style="color: #008000;">//</span><span style="color: #008000;">and wired up to this module.</span>
+<span style="color: #008080;"> 7</span>     depMap =<span style="color: #000000;"> makeModuleMap(depMap,
+</span><span style="color: #008080;"> 8</span>                                   (<span style="color: #0000ff;">this</span>.map.isDefine ? <span style="color: #0000ff;">this</span>.map : <span style="color: #0000ff;">this</span><span style="color: #000000;">.map.parentMap),
+</span><span style="color: #008080;"> 9</span>                                   <span style="color: #0000ff;">false</span><span style="color: #000000;">,
+</span><span style="color: #008080;">10</span>                                   !<span style="color: #0000ff;">this</span><span style="color: #000000;">.skipMap);
+</span><span style="color: #008080;">11</span>     <span style="color: #0000ff;">this</span>.depMaps[i] =<span style="color: #000000;"> depMap;
+</span><span style="color: #008080;">12</span>     handler =<span style="color: #000000;"> getOwn(handlers, depMap.id);
+</span><span style="color: #008080;">13</span>     <span style="color: #0000ff;">if</span><span style="color: #000000;"> (handler) {
+</span><span style="color: #008080;">14</span>       <span style="color: #0000ff;">this</span>.depExports[i] = handler(<span style="color: #0000ff;">this</span><span style="color: #000000;">);
+</span><span style="color: #008080;">15</span>       <span style="color: #0000ff;">return</span><span style="color: #000000;">;
+</span><span style="color: #008080;">16</span> <span style="color: #000000;">    }
+</span><span style="color: #008080;">17</span>     <span style="color: #0000ff;">this</span>.depCount += 1<span style="color: #000000;">;
+</span><span style="color: #008080;">18</span> on(depMap, 'defined', bind(<span style="color: #0000ff;">this</span>, <span style="color: #0000ff;">function</span><span style="color: #000000;"> (depExports) {
+</span><span style="color: #008080;">19</span>   <span style="color: #0000ff;">this</span><span style="color: #000000;">.defineDep(i, depExports);
+</span><span style="color: #008080;">20</span>   <span style="color: #0000ff;">this</span><span style="color: #000000;">.check();
+</span><span style="color: #008080;">21</span> <span style="color: #000000;">}));
+</span><span style="color: #008080;">22</span>     <span style="color: #0000ff;">if</span> (<span style="color: #0000ff;">this</span><span style="color: #000000;">.errback) {
+</span><span style="color: #008080;">23</span>       on(depMap, 'error', bind(<span style="color: #0000ff;">this</span>, <span style="color: #0000ff;">this</span><span style="color: #000000;">.errback));
+</span><span style="color: #008080;">24</span> <span style="color: #000000;">    }
+</span><span style="color: #008080;">25</span> <span style="color: #000000;">  }
+</span><span style="color: #008080;">26</span>   id =<span style="color: #000000;"> depMap.id;
+</span><span style="color: #008080;">27</span>   mod =<span style="color: #000000;"> registry[id];
+</span><span style="color: #008080;">28</span>   <span style="color: #008000;">//</span><span style="color: #008000;">Skip special modules like 'require', 'exports', 'module'</span>
+<span style="color: #008080;">29</span>   <span style="color: #008000;">//</span><span style="color: #008000;">Also, don't call enable if it is already enabled,</span>
+<span style="color: #008080;">30</span>   <span style="color: #008000;">//</span><span style="color: #008000;">important in circular dependency cases.</span>
+<span style="color: #008080;">31</span>   <span style="color: #0000ff;">if</span> (!hasProp(handlers, id) &amp;&amp; mod &amp;&amp; !<span style="color: #000000;">mod.enabled) {
+</span><span style="color: #008080;">32</span>     context.enable(depMap, <span style="color: #0000ff;">this</span><span style="color: #000000;">);
+</span><span style="color: #008080;">33</span> <span style="color: #000000;">  }
+</span><span style="color: #008080;">34</span> }));</pre>
+</div>
+<p>这是非常关键的一段代码，无论里面的depcount还是其中的on defined事件点注册皆十分关键</p>
+<p>从这里开始会加载util相关资源，于是util进入了相关加载流程了，这也是小卡关注的地方</p>
+<p>但是这里有一个不一样的地方是，util模块时具有parentModuleMap的，而common/lib不具有</p>
+<p><span>这里util与lib有一个映射关系lib-&gt;util，所以util的parentName</span><span>就是common/lib</span></p>
+<p><span><span>这个时候就到了解析URL这个步骤了</span></span></p>
+<div class="cnblogs_code">
+<pre><span style="color: #008000;">//</span><span style="color: #008000;">name=&gt;./util; parentName=&gt;common/lib</span>
+normalizedName = normalize(name, parentName, applyMap);</pre>
+</div>
+<p><span>我们要做的事情就是解析这个地址</span></p>
+<div class="cnblogs_code" onclick="cnblogs_code_show('b8da3382-ce39-4da4-8e15-07c3ee849729')"><img id="code_img_closed_b8da3382-ce39-4da4-8e15-07c3ee849729" class="code_img_closed" src="43570758473519.gif" alt=""><img id="code_img_opened_b8da3382-ce39-4da4-8e15-07c3ee849729" class="code_img_opened" style="display: none;" onclick="cnblogs_code_hide('b8da3382-ce39-4da4-8e15-07c3ee849729',event)" src="16365178109279.gif" alt="">
+<div id="cnblogs_code_open_b8da3382-ce39-4da4-8e15-07c3ee849729" class="cnblogs_code_hide">
+<pre><span style="color: #008000;">/*</span><span style="color: #008000;">*
+         * Given a relative module name, like ./something, normalize it to
+         * a real name that can be mapped to a path.
+         * @param {String} name the relative name
+         * @param {String} baseName a real name that the name arg is relative
+         * to.
+         * @param {Boolean} applyMap apply the map config to the value. Should
+         * only be done if this normalization is for a dependency ID.
+         * @returns {String} normalized name
+         </span><span style="color: #008000;">*/</span>
+<span style="color: #0000ff;">function</span><span style="color: #000000;"> normalize(name, baseName, applyMap) {
+  </span><span style="color: #0000ff;">var</span> pkgMain, mapValue, nameParts, i, j, nameSegment, lastIndex, foundMap, foundI, foundStarMap, starI, normalizedBaseParts, baseParts = (baseName &amp;&amp; baseName.split('/'<span style="color: #000000;">)),
+  map </span>=<span style="color: #000000;"> config.map,
+  starMap </span>= map &amp;&amp; map['*'<span style="color: #000000;">];
+
+  </span><span style="color: #008000;">//</span><span style="color: #008000;">Adjust any relative paths.</span>
+  <span style="color: #0000ff;">if</span><span style="color: #000000;"> (name) {
+    name </span>= name.split('/'<span style="color: #000000;">);
+    lastIndex </span>= name.length - 1<span style="color: #000000;">;
+
+    </span><span style="color: #008000;">//</span><span style="color: #008000;"> If wanting node ID compatibility, strip .js from end</span>
+    <span style="color: #008000;">//</span><span style="color: #008000;"> of IDs. Have to do this here, and not in nameToUrl</span>
+    <span style="color: #008000;">//</span><span style="color: #008000;"> because node allows either .js or non .js to map</span>
+    <span style="color: #008000;">//</span><span style="color: #008000;"> to same file.</span>
+    <span style="color: #0000ff;">if</span> (config.nodeIdCompat &amp;&amp;<span style="color: #000000;"> jsSuffixRegExp.test(name[lastIndex])) {
+      name[lastIndex] </span>= name[lastIndex].replace(jsSuffixRegExp, ''<span style="color: #000000;">);
+    }
+
+    </span><span style="color: #008000;">//</span><span style="color: #008000;"> Starts with a '.' so need the baseName</span>
+    <span style="color: #0000ff;">if</span> (name[0].charAt(0) === '.' &amp;&amp;<span style="color: #000000;"> baseParts) {
+      </span><span style="color: #008000;">//</span><span style="color: #008000;">Convert baseName to array, and lop off the last part,</span>
+      <span style="color: #008000;">//</span><span style="color: #008000;">so that . matches that 'directory' and not name of the baseName's</span>
+      <span style="color: #008000;">//</span><span style="color: #008000;">module. For instance, baseName of 'one/two/three', maps to</span>
+      <span style="color: #008000;">//</span><span style="color: #008000;">'one/two/three.js', but we want the directory, 'one/two' for</span>
+      <span style="color: #008000;">//</span><span style="color: #008000;">this normalization.</span>
+      normalizedBaseParts = baseParts.slice(0, baseParts.length - 1<span style="color: #000000;">);
+      name </span>=<span style="color: #000000;"> normalizedBaseParts.concat(name);
+    }
+
+    trimDots(name);
+    name </span>= name.join('/'<span style="color: #000000;">);
+  }
+
+  </span><span style="color: #008000;">//</span><span style="color: #008000;">Apply map config if available.</span>
+  <span style="color: #0000ff;">if</span> (applyMap &amp;&amp; map &amp;&amp; (baseParts ||<span style="color: #000000;"> starMap)) {
+    nameParts </span>= name.split('/'<span style="color: #000000;">);
+
+    outerLoop: </span><span style="color: #0000ff;">for</span> (i = nameParts.length; i &gt; 0; i -= 1<span style="color: #000000;">) {
+      nameSegment </span>= nameParts.slice(0, i).join('/'<span style="color: #000000;">);
+
+      </span><span style="color: #0000ff;">if</span><span style="color: #000000;"> (baseParts) {
+        </span><span style="color: #008000;">//</span><span style="color: #008000;">Find the longest baseName segment match in the config.</span>
+        <span style="color: #008000;">//</span><span style="color: #008000;">So, do joins on the biggest to smallest lengths of baseParts.</span>
+        <span style="color: #0000ff;">for</span> (j = baseParts.length; j &gt; 0; j -= 1<span style="color: #000000;">) {
+          mapValue </span>= getOwn(map, baseParts.slice(0, j).join('/'<span style="color: #000000;">));
+
+          </span><span style="color: #008000;">//</span><span style="color: #008000;">baseName segment has config, find if it has one for</span>
+          <span style="color: #008000;">//</span><span style="color: #008000;">this name.</span>
+          <span style="color: #0000ff;">if</span><span style="color: #000000;"> (mapValue) {
+            mapValue </span>=<span style="color: #000000;"> getOwn(mapValue, nameSegment);
+            </span><span style="color: #0000ff;">if</span><span style="color: #000000;"> (mapValue) {
+              </span><span style="color: #008000;">//</span><span style="color: #008000;">Match, update name to the new value.</span>
+              foundMap =<span style="color: #000000;"> mapValue;
+              foundI </span>=<span style="color: #000000;"> i;
+              </span><span style="color: #0000ff;">break</span><span style="color: #000000;"> outerLoop;
+            }
+          }
+        }
+      }
+
+      </span><span style="color: #008000;">//</span><span style="color: #008000;">Check for a star map match, but just hold on to it,</span>
+      <span style="color: #008000;">//</span><span style="color: #008000;">if there is a shorter segment match later in a matching</span>
+      <span style="color: #008000;">//</span><span style="color: #008000;">config, then favor over this star map.</span>
+      <span style="color: #0000ff;">if</span> (!foundStarMap &amp;&amp; starMap &amp;&amp;<span style="color: #000000;"> getOwn(starMap, nameSegment)) {
+        foundStarMap </span>=<span style="color: #000000;"> getOwn(starMap, nameSegment);
+        starI </span>=<span style="color: #000000;"> i;
+      }
+    }
+
+    </span><span style="color: #0000ff;">if</span> (!foundMap &amp;&amp;<span style="color: #000000;"> foundStarMap) {
+      foundMap </span>=<span style="color: #000000;"> foundStarMap;
+      foundI </span>=<span style="color: #000000;"> starI;
+    }
+
+    </span><span style="color: #0000ff;">if</span><span style="color: #000000;"> (foundMap) {
+      nameParts.splice(</span>0<span style="color: #000000;">, foundI, foundMap);
+      name </span>= nameParts.join('/'<span style="color: #000000;">);
+    }
+  }
+
+  </span><span style="color: #008000;">//</span><span style="color: #008000;"> If the name points to a package's name, use</span>
+  <span style="color: #008000;">//</span><span style="color: #008000;"> the package main instead.</span>
+  pkgMain =<span style="color: #000000;"> getOwn(config.pkgs, name);
+
+  </span><span style="color: #0000ff;">return</span> pkgMain ?<span style="color: #000000;"> pkgMain: name;
+}</span></pre>
+</div>
+<span style="color: #ff0000;"><strong><span class="cnblogs_code_collapse">核心代码</span></strong></span></div>
+<p><span style="line-height: 1.5;">PS：我看requireJS版本，又老了，他的代码又有更新啊！！！</span></p>
+<p>上面这段代码是一个关键</p>
+<div>首先他会将common/lib的目录解析出来，这里是common（'one/two/three.js', but we want the directory, 'one/two' ）</div>
+<div>我们这里首次就直接返回了，这里返回的是<span>common/util</span></div>
+<div>若是我们换一个写法，会同样执行上面逻辑，最后却有所不同，因为这个时候parent的common不见了！</div>
+<div>这个时候便会执行返回util字符串，所以这里两个地址便会有所不同：</div>
+<div>
+<div class="cnblogs_code">
+<pre>main.js=&gt;require(['common/lib'], <span style="color: #0000ff;">function</span> (Lib)=&gt;common/util
+main.js=&gt;require(['lib'], <span style="color: #0000ff;">function</span> (Lib)=&gt;<span style="color: #000000;">util
+main.js</span>=&gt;require(['a/b/c/lib'], <span style="color: #0000ff;">function</span> (Lib)=&gt;a/b/c/util</pre>
+</div>
+<p><span style="line-height: 1.5;">这里util是相对于父级的目录，这个是其地址变化的主要原因</span></p>
+</div>
+<p>所以，现在关于小卡的问题应该得到了解决，至于其map映射关系是如何形成的，这个话题就更加深了</p>
+<p><span style="color: #ff0000;"><strong>小钗requireJS也是初学，很多不懂，不知是不是解决了小卡的问题，这里提出来各位高手一起看看，有误请提出。</strong></span></p>
+                </div>
+
+                <div class='span3 sidebar'>
+                    <h2>导航栏</h2>
+                    <ul class="nav nav-tabs nav-stacked">
+                             				<li><a href="http://songboriceboy.github.io/xxoo/html/requirejs/requireJSljjzycxyxkdjl/index.html">【requireJS路径加载】与程序员小卡的交流</a></li>
+    				                                         
+                    </ul>
+                </div>
+            </div>
+
+        </div>
+    </body>
+</html>

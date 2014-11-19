@@ -1,0 +1,859 @@
+﻿<!DOCTYPE html>
+
+<html lang="zh">
+    <head>
+        <meta charset="utf-8">
+        <meta name="description" content="android,ios" />
+        <meta name="keywords" content="android,ios" />
+
+        <title>叶小钗</title>
+        <style type='text/css'>
+            body {
+                background-color: #CCC;
+            }
+        </style>
+        <link rel="stylesheet" href="../../../css/bootstrap.css" />
+    </head>
+
+    <body>
+        <div class="container">
+
+            <h1>叶小钗</h1>
+
+            <div class='navbar navbar-inverse'>
+                <div class='navbar-inner nav-collapse' style="height: auto;">
+                    <ul class="nav">
+                              				<li><a href="http://songboriceboy.github.io/xxoo/html/blade/index.html">blade</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/css/index.html">css</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/HTML5&CSS3/index.html">HTML5&CSS3</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/index.html">javascript</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Javaxx/index.html">Java学习</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/nodejs/index.html">nodejs</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/requirejs/index.html">requirejs</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/index.html">Web前端</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/xxgw/index.html">学习感悟</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/gzdd/index.html">工作点滴</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/jkxx/index.html">接口学习</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/wfl/index.html">未分类</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/ydkf/index.html">移动开发</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/sjms/index.html">设计模式</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/mst/index.html">面试题</a></li>
+    				                      </ul>
+                </div>
+            </div>
+
+            <div id='content' class='row-fluid'>
+
+                <div class='span9 main'>
+				<div style="color:blue" align=center>【探索HTML5第二弹03】走近地图应用的世界，看我们google地图可以看</div><br><h1>前言</h1>
+<p>昨天，前天都有一些事情了，自己的学习任务有所耽搁，但这不是主要原因，主要原因是昨天和前天都在搞canvas相关东西，这个东东怎么说呢？我是越搞越不能确定自己是否会用到，所以过程中有点纠结，然后慢慢时间就过去了。另外，我本来想重新学习HTML5的，但是发现在走之前的老路，重复的过程就没必要了，我要从新思考一下最近的学习计划。</p>
+<p>最近开始接触了google地图应用，那确实叫一个不错啊！！！可以完成很多事情了，这里用到的是GMaps.js，这里将其简单说下吧！</p>
+<h1>进入Gmaps的世界</h1>
+<p><img src="42917786497695.png" alt=""></p>
+<h1>简单应用</h1>
+<div class="cnblogs_code">
+<pre><span style="color: #008080;"> 1</span> <span style="color: #0000ff;">&lt;!</span><span style="color: #ff00ff;">DOCTYPE html</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 2</span> <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">html </span><span style="color: #ff0000;">xmlns</span><span style="color: #0000ff;">="http://www.w3.org/1999/xhtml"</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 3</span> <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">head</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 4</span>     <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">title</span><span style="color: #0000ff;">&gt;</span>获取当前位置<span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">title</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 5</span>     <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">style </span><span style="color: #ff0000;">type</span><span style="color: #0000ff;">="text/css"</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 6</span> <span style="background-color: #f5f5f5; color: #800000;">        #map </span><span style="background-color: #f5f5f5; color: #000000;">{</span><span style="background-color: #f5f5f5; color: #ff0000;"> width</span><span style="background-color: #f5f5f5; color: #000000;">:</span><span style="background-color: #f5f5f5; color: #0000ff;"> 1000px</span><span style="background-color: #f5f5f5; color: #000000;">;</span><span style="background-color: #f5f5f5; color: #ff0000;"> height</span><span style="background-color: #f5f5f5; color: #000000;">:</span><span style="background-color: #f5f5f5; color: #0000ff;"> 600px</span><span style="background-color: #f5f5f5; color: #000000;">;</span> <span style="background-color: #f5f5f5; color: #000000;">}</span>
+<span style="color: #008080;"> 7</span>     
+<span style="color: #008080;"> 8</span>     <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">style</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 9</span>     <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">script </span><span style="color: #ff0000;">src</span><span style="color: #0000ff;">="js/jquery-1.7.1.js"</span><span style="color: #ff0000;"> type</span><span style="color: #0000ff;">="text/javascript"</span><span style="color: #0000ff;">&gt;&lt;/</span><span style="color: #800000;">script</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">10</span>     <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">script </span><span style="color: #ff0000;">type</span><span style="color: #0000ff;">="text/javascript"</span><span style="color: #ff0000;"> src</span><span style="color: #0000ff;">="http://maps.google.com/maps/api/js?sensor=true"</span><span style="color: #0000ff;">&gt;&lt;/</span><span style="color: #800000;">script</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">11</span>     <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">script </span><span style="color: #ff0000;">src</span><span style="color: #0000ff;">="js/gmaps.js"</span><span style="color: #ff0000;"> type</span><span style="color: #0000ff;">="text/javascript"</span><span style="color: #0000ff;">&gt;&lt;/</span><span style="color: #800000;">script</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">12</span>     <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">script </span><span style="color: #ff0000;">type</span><span style="color: #0000ff;">="text/javascript"</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">13</span> <span style="background-color: #f5f5f5; color: #000000;">        $(document).ready(</span><span style="background-color: #f5f5f5; color: #0000ff;">function</span><span style="background-color: #f5f5f5; color: #000000;"> () {
+</span><span style="color: #008080;">14</span>             <span style="background-color: #f5f5f5; color: #008000;">/*</span>
+<span style="color: #008080;">15</span> <span style="background-color: #f5f5f5; color: #008000;">            el 装载地图容器id
+</span><span style="color: #008080;">16</span> <span style="background-color: #f5f5f5; color: #008000;">            lat 纬度
+</span><span style="color: #008080;">17</span> <span style="background-color: #f5f5f5; color: #008000;">            lng 经度
+</span><span style="color: #008080;">18</span>             <span style="background-color: #f5f5f5; color: #008000;">*/</span>
+<span style="color: #008080;">19</span>             <span style="background-color: #f5f5f5; color: #0000ff;">var</span><span style="background-color: #f5f5f5; color: #000000;"> map </span><span style="background-color: #f5f5f5; color: #000000;">=</span> <span style="background-color: #f5f5f5; color: #0000ff;">new</span><span style="background-color: #f5f5f5; color: #000000;"> GMaps({
+</span><span style="color: #008080;">20</span> <span style="background-color: #f5f5f5; color: #000000;">                el: </span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">#map</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">,
+</span><span style="color: #008080;">21</span> <span style="background-color: #f5f5f5; color: #000000;">                lat: </span><span style="background-color: #f5f5f5; color: #000000;">30.657358499999994</span><span style="background-color: #f5f5f5; color: #000000;">,
+</span><span style="color: #008080;">22</span> <span style="background-color: #f5f5f5; color: #000000;">                lng: </span><span style="background-color: #f5f5f5; color: #000000;">104.049977</span>
+<span style="color: #008080;">23</span> <span style="background-color: #f5f5f5; color: #000000;">            });
+</span><span style="color: #008080;">24</span> <span style="background-color: #f5f5f5; color: #000000;">        });
+</span><span style="color: #008080;">25</span>     <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">script</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">26</span> <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">head</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">27</span> <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">body</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">28</span>     <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">div </span><span style="color: #ff0000;">id</span><span style="color: #0000ff;">="map"</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">29</span>     <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">div</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">30</span>     
+<span style="color: #008080;">31</span> <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">body</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">32</span> <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">html</span><span style="color: #0000ff;">&gt;</span></pre>
+</div>
+<p><img src="226376110055772.png" alt=""></p>
+<p>这就是最简单的应用了，代码上有一定说明，而且官方的api也很详细。</p>
+<h1>动态获取当前位置</h1>
+<p>这里我们与HTML5的Geolocation结合使用，告诉用户当前在哪里，是个不错的选择，借此就可以告诉其周围的酒店什么之类的了。</p>
+<div class="cnblogs_code">
+<pre><span style="color: #0000ff;">&lt;!</span><span style="color: #ff00ff;">DOCTYPE html</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #0000ff;">&lt;</span><span style="color: #800000;">html </span><span style="color: #ff0000;">xmlns</span><span style="color: #0000ff;">="http://www.w3.org/1999/xhtml"</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #0000ff;">&lt;</span><span style="color: #800000;">head</span><span style="color: #0000ff;">&gt;</span>
+    <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">title</span><span style="color: #0000ff;">&gt;</span>获取当前位置<span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">title</span><span style="color: #0000ff;">&gt;</span>
+    <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">style </span><span style="color: #ff0000;">type</span><span style="color: #0000ff;">="text/css"</span><span style="color: #0000ff;">&gt;</span><span style="background-color: #f5f5f5; color: #800000;">
+        #map </span><span style="background-color: #f5f5f5; color: #000000;">{</span><span style="background-color: #f5f5f5; color: #ff0000;"> width</span><span style="background-color: #f5f5f5; color: #000000;">:</span><span style="background-color: #f5f5f5; color: #0000ff;"> 1000px</span><span style="background-color: #f5f5f5; color: #000000;">;</span><span style="background-color: #f5f5f5; color: #ff0000;"> height</span><span style="background-color: #f5f5f5; color: #000000;">:</span><span style="background-color: #f5f5f5; color: #0000ff;"> 600px</span><span style="background-color: #f5f5f5; color: #000000;">;</span> <span style="background-color: #f5f5f5; color: #000000;">}</span>
+    
+    <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">style</span><span style="color: #0000ff;">&gt;</span>
+    <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">script </span><span style="color: #ff0000;">src</span><span style="color: #0000ff;">="js/jquery-1.7.1.js"</span><span style="color: #ff0000;"> type</span><span style="color: #0000ff;">="text/javascript"</span><span style="color: #0000ff;">&gt;&lt;/</span><span style="color: #800000;">script</span><span style="color: #0000ff;">&gt;</span>
+    <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">script </span><span style="color: #ff0000;">type</span><span style="color: #0000ff;">="text/javascript"</span><span style="color: #ff0000;"> src</span><span style="color: #0000ff;">="http://maps.google.com/maps/api/js?sensor=true"</span><span style="color: #0000ff;">&gt;&lt;/</span><span style="color: #800000;">script</span><span style="color: #0000ff;">&gt;</span>
+    <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">script </span><span style="color: #ff0000;">src</span><span style="color: #0000ff;">="js/gmaps.js"</span><span style="color: #ff0000;"> type</span><span style="color: #0000ff;">="text/javascript"</span><span style="color: #0000ff;">&gt;&lt;/</span><span style="color: #800000;">script</span><span style="color: #0000ff;">&gt;</span>
+    <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">script </span><span style="color: #ff0000;">type</span><span style="color: #0000ff;">="text/javascript"</span><span style="color: #0000ff;">&gt;</span><span style="background-color: #f5f5f5; color: #000000;">
+        $(document).ready(</span><span style="background-color: #f5f5f5; color: #0000ff;">function</span><span style="background-color: #f5f5f5; color: #000000;"> () {
+            </span><span style="background-color: #f5f5f5; color: #008000;">/*</span><span style="background-color: #f5f5f5; color: #008000;">
+            el 装载地图容器id
+            lat 纬度
+            lng 经度
+            该应用基于html5，并要求用户共享自身位置
+            </span><span style="background-color: #f5f5f5; color: #008000;">*/</span><span style="background-color: #f5f5f5; color: #000000;">
+            navigator.geolocation.getCurrentPosition(</span><span style="background-color: #f5f5f5; color: #0000ff;">function</span><span style="background-color: #f5f5f5; color: #000000;"> (position) {
+                
+                </span><span style="background-color: #f5f5f5; color: #0000ff;">var</span><span style="background-color: #f5f5f5; color: #000000;"> map </span><span style="background-color: #f5f5f5; color: #000000;">=</span> <span style="background-color: #f5f5f5; color: #0000ff;">new</span><span style="background-color: #f5f5f5; color: #000000;"> GMaps({
+                    el: </span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">#map</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">,
+                    lat: position.coords.latitude,
+                    lng: position.coords.longitude
+                });
+            });
+        });
+    </span><span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">script</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">head</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #0000ff;">&lt;</span><span style="color: #800000;">body</span><span style="color: #0000ff;">&gt;</span>
+    <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">div </span><span style="color: #ff0000;">id</span><span style="color: #0000ff;">="map"</span><span style="color: #0000ff;">&gt;</span>
+    <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">div</span><span style="color: #0000ff;">&gt;</span>
+    
+<span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">body</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">html</span><span style="color: #0000ff;">&gt;</span></pre>
+</div>
+<h1>参数说明</h1>
+<p>&nbsp;这里我们对代码中的一些参数说明，具体见google map api</p>
+<div class="cnblogs_code">
+<pre><span style="color: #0000ff;">&lt;!</span><span style="color: #ff00ff;">DOCTYPE html</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #0000ff;">&lt;</span><span style="color: #800000;">html </span><span style="color: #ff0000;">xmlns</span><span style="color: #0000ff;">="http://www.w3.org/1999/xhtml"</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #0000ff;">&lt;</span><span style="color: #800000;">head</span><span style="color: #0000ff;">&gt;</span>
+    <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">title</span><span style="color: #0000ff;">&gt;</span>获取当前位置<span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">title</span><span style="color: #0000ff;">&gt;</span>
+    <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">style </span><span style="color: #ff0000;">type</span><span style="color: #0000ff;">="text/css"</span><span style="color: #0000ff;">&gt;</span><span style="background-color: #f5f5f5; color: #800000;">
+        #map </span><span style="background-color: #f5f5f5; color: #000000;">{</span><span style="background-color: #f5f5f5; color: #ff0000;"> width</span><span style="background-color: #f5f5f5; color: #000000;">:</span><span style="background-color: #f5f5f5; color: #0000ff;"> 1000px</span><span style="background-color: #f5f5f5; color: #000000;">;</span><span style="background-color: #f5f5f5; color: #ff0000;"> height</span><span style="background-color: #f5f5f5; color: #000000;">:</span><span style="background-color: #f5f5f5; color: #0000ff;"> 600px</span><span style="background-color: #f5f5f5; color: #000000;">;</span> <span style="background-color: #f5f5f5; color: #000000;">}</span>
+    
+    <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">style</span><span style="color: #0000ff;">&gt;</span>
+    <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">script </span><span style="color: #ff0000;">src</span><span style="color: #0000ff;">="js/jquery-1.7.1.js"</span><span style="color: #ff0000;"> type</span><span style="color: #0000ff;">="text/javascript"</span><span style="color: #0000ff;">&gt;&lt;/</span><span style="color: #800000;">script</span><span style="color: #0000ff;">&gt;</span>
+    <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">script </span><span style="color: #ff0000;">type</span><span style="color: #0000ff;">="text/javascript"</span><span style="color: #ff0000;"> src</span><span style="color: #0000ff;">="http://maps.google.com/maps/api/js?sensor=true"</span><span style="color: #0000ff;">&gt;&lt;/</span><span style="color: #800000;">script</span><span style="color: #0000ff;">&gt;</span>
+    <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">script </span><span style="color: #ff0000;">src</span><span style="color: #0000ff;">="js/gmaps.js"</span><span style="color: #ff0000;"> type</span><span style="color: #0000ff;">="text/javascript"</span><span style="color: #0000ff;">&gt;&lt;/</span><span style="color: #800000;">script</span><span style="color: #0000ff;">&gt;</span>
+    <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">script </span><span style="color: #ff0000;">type</span><span style="color: #0000ff;">="text/javascript"</span><span style="color: #0000ff;">&gt;</span><span style="background-color: #f5f5f5; color: #000000;">
+        $(document).ready(</span><span style="background-color: #f5f5f5; color: #0000ff;">function</span><span style="background-color: #f5f5f5; color: #000000;"> () {
+            </span><span style="background-color: #f5f5f5; color: #008000;">/*</span><span style="background-color: #f5f5f5; color: #008000;">
+            el 装载地图容器id
+            lat 纬度
+            lng 经度
+            zoomControl 是否显示缩放控制
+            zoomControlOpt 缩放控制样式定义
+            panControl  是否显示移动容器
+            streetViewControl 是否显示右上角的人，用途不明
+            mapTypeControl 是否显示卫星控制
+            overviewMapControl 右下角预览地图
+            </span><span style="background-color: #f5f5f5; color: #008000;">*/</span>
+            <span style="background-color: #f5f5f5; color: #0000ff;">var</span><span style="background-color: #f5f5f5; color: #000000;"> map </span><span style="background-color: #f5f5f5; color: #000000;">=</span> <span style="background-color: #f5f5f5; color: #0000ff;">new</span><span style="background-color: #f5f5f5; color: #000000;"> GMaps({
+                el: </span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">#map</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">,
+                lat: </span><span style="background-color: #f5f5f5; color: #000000;">30.657358499999994</span><span style="background-color: #f5f5f5; color: #000000;">,
+                lng: </span><span style="background-color: #f5f5f5; color: #000000;">104.049977</span><span style="background-color: #f5f5f5; color: #000000;">,
+                zoomControl: </span><span style="background-color: #f5f5f5; color: #0000ff;">true</span><span style="background-color: #f5f5f5; color: #000000;">,
+                zoomControlOpt: {
+                    style: </span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">BIG</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">,
+                    position: </span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">TOP_RIGHT</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">
+                },
+                panControl: </span><span style="background-color: #f5f5f5; color: #0000ff;">true</span><span style="background-color: #f5f5f5; color: #000000;">,
+                streetViewControl: </span><span style="background-color: #f5f5f5; color: #0000ff;">true</span><span style="background-color: #f5f5f5; color: #000000;">,
+                mapTypeControl: </span><span style="background-color: #f5f5f5; color: #0000ff;">true</span><span style="background-color: #f5f5f5; color: #000000;">,
+                overviewMapControl: </span><span style="background-color: #f5f5f5; color: #0000ff;">true</span><span style="background-color: #f5f5f5; color: #000000;">, 
+            });
+        });
+    </span><span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">script</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">head</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #0000ff;">&lt;</span><span style="color: #800000;">body</span><span style="color: #0000ff;">&gt;</span>
+    <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">div </span><span style="color: #ff0000;">id</span><span style="color: #0000ff;">="map"</span><span style="color: #0000ff;">&gt;</span>
+    <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">div</span><span style="color: #0000ff;">&gt;</span>
+    
+<span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">body</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">html</span><span style="color: #0000ff;">&gt;</span></pre>
+</div>
+<h1>事件回调</h1>
+<p>当鼠标在地图上也会有一定事件的哟，不信试试！</p>
+<div class="cnblogs_code">
+<pre><span style="color: #0000ff;">&lt;!</span><span style="color: #ff00ff;">DOCTYPE html</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #0000ff;">&lt;</span><span style="color: #800000;">html </span><span style="color: #ff0000;">xmlns</span><span style="color: #0000ff;">="http://www.w3.org/1999/xhtml"</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #0000ff;">&lt;</span><span style="color: #800000;">head</span><span style="color: #0000ff;">&gt;</span>
+    <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">title</span><span style="color: #0000ff;">&gt;&lt;/</span><span style="color: #800000;">title</span><span style="color: #0000ff;">&gt;</span>
+    <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">style </span><span style="color: #ff0000;">type</span><span style="color: #0000ff;">="text/css"</span><span style="color: #0000ff;">&gt;</span><span style="background-color: #f5f5f5; color: #800000;">
+        #map </span><span style="background-color: #f5f5f5; color: #000000;">{</span><span style="background-color: #f5f5f5; color: #ff0000;"> width</span><span style="background-color: #f5f5f5; color: #000000;">:</span><span style="background-color: #f5f5f5; color: #0000ff;"> 1000px</span><span style="background-color: #f5f5f5; color: #000000;">;</span><span style="background-color: #f5f5f5; color: #ff0000;"> height</span><span style="background-color: #f5f5f5; color: #000000;">:</span><span style="background-color: #f5f5f5; color: #0000ff;"> 600px</span><span style="background-color: #f5f5f5; color: #000000;">;</span> <span style="background-color: #f5f5f5; color: #000000;">}</span>
+    
+    <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">style</span><span style="color: #0000ff;">&gt;</span>
+    <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">script </span><span style="color: #ff0000;">src</span><span style="color: #0000ff;">="js/jquery-1.7.1.js"</span><span style="color: #ff0000;"> type</span><span style="color: #0000ff;">="text/javascript"</span><span style="color: #0000ff;">&gt;&lt;/</span><span style="color: #800000;">script</span><span style="color: #0000ff;">&gt;</span>
+    <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">script </span><span style="color: #ff0000;">type</span><span style="color: #0000ff;">="text/javascript"</span><span style="color: #ff0000;"> src</span><span style="color: #0000ff;">="http://maps.google.com/maps/api/js?sensor=true"</span><span style="color: #0000ff;">&gt;&lt;/</span><span style="color: #800000;">script</span><span style="color: #0000ff;">&gt;</span>
+    <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">script </span><span style="color: #ff0000;">src</span><span style="color: #0000ff;">="js/gmaps.js"</span><span style="color: #ff0000;"> type</span><span style="color: #0000ff;">="text/javascript"</span><span style="color: #0000ff;">&gt;&lt;/</span><span style="color: #800000;">script</span><span style="color: #0000ff;">&gt;</span>
+    <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">script </span><span style="color: #ff0000;">type</span><span style="color: #0000ff;">="text/javascript"</span><span style="color: #0000ff;">&gt;</span><span style="background-color: #f5f5f5; color: #000000;">
+        $(document).ready(</span><span style="background-color: #f5f5f5; color: #0000ff;">function</span><span style="background-color: #f5f5f5; color: #000000;"> () {
+            </span><span style="background-color: #f5f5f5; color: #008000;">/*</span><span style="background-color: #f5f5f5; color: #008000;">
+            el 装载地图容器id
+            lat 纬度
+            lng 经度
+            zoomControl 是否显示缩放控制
+            zoomControlOpt 缩放控制样式定义
+            panControl  是否显示移动容器
+            streetViewControl 是否显示右上角的人，用途不明
+            mapTypeControl 是否显示卫星控制
+            overviewMapControl 右下角预览地图
+            </span><span style="background-color: #f5f5f5; color: #008000;">*/</span>
+            
+            <span style="background-color: #f5f5f5; color: #008000;">/*</span><span style="background-color: #f5f5f5; color: #008000;">
+            支持以下事件
+            bounds_changed     None     This event is fired when the viewport bounds have changed.
+            center_changed     None     This event is fired when the map center property changes.
+            click     MouseEvent     This event is fired when the user clicks on the map (but not when they click on a marker or infowindow).
+            dblclick     MouseEvent     This event is fired when the user double-clicks on the map. Note that the click event will also fire, right before this one.
+            drag     None     This event is repeatedly fired while the user drags the map.
+            dragend     None     This event is fired when the user stops dragging the map.
+            dragstart     None     This event is fired when the user starts dragging the map.
+            heading_changed     None     This event is fired when the map heading property changes.
+            idle     None     This event is fired when the map becomes idle after panning or zooming.
+            maptypeid_changed     None     This event is fired when the mapTypeId property changes.
+            mousemove     MouseEvent     This event is fired whenever the user's mouse moves over the map container.
+            mouseout     MouseEvent     This event is fired when the user's mouse exits the map container.
+            mouseover     MouseEvent     This event is fired when the user's mouse enters the map container.
+            projection_changed     None     This event is fired when the projection has changed.
+            resize     None     Developers should trigger this event on the map when the div changes size: google.maps.event.trigger(map, 'resize') .
+            rightclick     MouseEvent     This event is fired when the DOM contextmenu event is fired on the map container.
+            tilesloaded     None     This event is fired when the visible tiles have finished loading.
+            tilt_changed     None     This event is fired when the map tilt property changes.
+            zoom_changed     None     This event is fired when the map zoom property changes.
+
+            其中e中包含了地图相关信息
+
+            </span><span style="background-color: #f5f5f5; color: #008000;">*/</span>
+            <span style="background-color: #f5f5f5; color: #0000ff;">var</span><span style="background-color: #f5f5f5; color: #000000;"> map </span><span style="background-color: #f5f5f5; color: #000000;">=</span> <span style="background-color: #f5f5f5; color: #0000ff;">new</span><span style="background-color: #f5f5f5; color: #000000;"> GMaps({
+                el: </span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">#map</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">,
+                lat: </span><span style="background-color: #f5f5f5; color: #000000;">30.657358499999994</span><span style="background-color: #f5f5f5; color: #000000;">,
+                lng: </span><span style="background-color: #f5f5f5; color: #000000;">104.049977</span><span style="background-color: #f5f5f5; color: #000000;">,
+                zoomControl: </span><span style="background-color: #f5f5f5; color: #0000ff;">true</span><span style="background-color: #f5f5f5; color: #000000;">,
+                zoomControlOpt: {
+                    style: </span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">BIG</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">,
+                    position: </span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">TOP_RIGHT</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">
+                },
+                panControl: </span><span style="background-color: #f5f5f5; color: #0000ff;">true</span><span style="background-color: #f5f5f5; color: #000000;">,
+                streetViewControl: </span><span style="background-color: #f5f5f5; color: #0000ff;">true</span><span style="background-color: #f5f5f5; color: #000000;">,
+                mapTypeControl: </span><span style="background-color: #f5f5f5; color: #0000ff;">true</span><span style="background-color: #f5f5f5; color: #000000;">,
+                overviewMapControl: </span><span style="background-color: #f5f5f5; color: #0000ff;">true</span><span style="background-color: #f5f5f5; color: #000000;">,
+                mouseout: </span><span style="background-color: #f5f5f5; color: #0000ff;">function</span><span style="background-color: #f5f5f5; color: #000000;"> (e) {
+
+                    </span><span style="background-color: #f5f5f5; color: #0000ff;">var</span><span style="background-color: #f5f5f5; color: #000000;"> s </span><span style="background-color: #f5f5f5; color: #000000;">=</span> <span style="background-color: #f5f5f5; color: #000000;">''</span><span style="background-color: #f5f5f5; color: #000000;">;
+                }
+
+
+            });
+        });
+    </span><span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">script</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">head</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #0000ff;">&lt;</span><span style="color: #800000;">body</span><span style="color: #0000ff;">&gt;</span>
+    <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">div </span><span style="color: #ff0000;">id</span><span style="color: #0000ff;">="map"</span><span style="color: #0000ff;">&gt;</span>
+    <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">div</span><span style="color: #0000ff;">&gt;</span>
+    
+<span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">body</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">html</span><span style="color: #0000ff;">&gt;</span></pre>
+</div>
+<h1>为自己所在位置打上标记</h1>
+<div class="cnblogs_code" onclick="cnblogs_code_show('13028d8d-0a13-49db-b4f4-711b79008dac')"><img id="code_img_closed_13028d8d-0a13-49db-b4f4-711b79008dac" class="code_img_closed" src="43570758473519.gif" alt=""><img id="code_img_opened_13028d8d-0a13-49db-b4f4-711b79008dac" class="code_img_opened" style="display: none;" onclick="cnblogs_code_hide('13028d8d-0a13-49db-b4f4-711b79008dac',event)" src="16365178109279.gif" alt=""><span class="cnblogs_code_collapse">打标记</span>
+<div id="cnblogs_code_open_13028d8d-0a13-49db-b4f4-711b79008dac" class="cnblogs_code_hide">
+<pre><span style="color: #008080;">  1</span> <span style="color: #0000ff;">&lt;!</span><span style="color: #ff00ff;">DOCTYPE html</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">  2</span> <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">html </span><span style="color: #ff0000;">xmlns</span><span style="color: #0000ff;">="http://www.w3.org/1999/xhtml"</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">  3</span> <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">head</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">  4</span>     <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">title</span><span style="color: #0000ff;">&gt;&lt;/</span><span style="color: #800000;">title</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">  5</span>     <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">style </span><span style="color: #ff0000;">type</span><span style="color: #0000ff;">="text/css"</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">  6</span> <span style="background-color: #f5f5f5; color: #800000;">        #map </span><span style="background-color: #f5f5f5; color: #000000;">{</span><span style="background-color: #f5f5f5; color: #ff0000;"> width</span><span style="background-color: #f5f5f5; color: #000000;">:</span><span style="background-color: #f5f5f5; color: #0000ff;"> 600px</span><span style="background-color: #f5f5f5; color: #000000;">;</span><span style="background-color: #f5f5f5; color: #ff0000;"> height</span><span style="background-color: #f5f5f5; color: #000000;">:</span><span style="background-color: #f5f5f5; color: #0000ff;"> 400px</span><span style="background-color: #f5f5f5; color: #000000;">;</span> <span style="background-color: #f5f5f5; color: #000000;">}</span>
+<span style="color: #008080;">  7</span>     
+<span style="color: #008080;">  8</span>     <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">style</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">  9</span>     <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">script </span><span style="color: #ff0000;">src</span><span style="color: #0000ff;">="js/jquery-1.7.1.js"</span><span style="color: #ff0000;"> type</span><span style="color: #0000ff;">="text/javascript"</span><span style="color: #0000ff;">&gt;&lt;/</span><span style="color: #800000;">script</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 10</span>     <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">script </span><span style="color: #ff0000;">type</span><span style="color: #0000ff;">="text/javascript"</span><span style="color: #ff0000;"> src</span><span style="color: #0000ff;">="http://maps.google.com/maps/api/js?sensor=true"</span><span style="color: #0000ff;">&gt;&lt;/</span><span style="color: #800000;">script</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 11</span>     <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">script </span><span style="color: #ff0000;">src</span><span style="color: #0000ff;">="js/gmaps.js"</span><span style="color: #ff0000;"> type</span><span style="color: #0000ff;">="text/javascript"</span><span style="color: #0000ff;">&gt;&lt;/</span><span style="color: #800000;">script</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 12</span>     <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">script </span><span style="color: #ff0000;">type</span><span style="color: #0000ff;">="text/javascript"</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 13</span> <span style="background-color: #f5f5f5; color: #000000;">        $(document).ready(</span><span style="background-color: #f5f5f5; color: #0000ff;">function</span><span style="background-color: #f5f5f5; color: #000000;"> () {
+</span><span style="color: #008080;"> 14</span>             <span style="background-color: #f5f5f5; color: #008000;">/*</span>
+<span style="color: #008080;"> 15</span> <span style="background-color: #f5f5f5; color: #008000;">            el 装载地图容器id
+</span><span style="color: #008080;"> 16</span> <span style="background-color: #f5f5f5; color: #008000;">            lat 纬度
+</span><span style="color: #008080;"> 17</span> <span style="background-color: #f5f5f5; color: #008000;">            lng 经度
+</span><span style="color: #008080;"> 18</span> <span style="background-color: #f5f5f5; color: #008000;">            zoomControl 是否显示缩放控制
+</span><span style="color: #008080;"> 19</span> <span style="background-color: #f5f5f5; color: #008000;">            zoomControlOpt 缩放控制样式定义
+</span><span style="color: #008080;"> 20</span> <span style="background-color: #f5f5f5; color: #008000;">            panControl  是否显示移动容器
+</span><span style="color: #008080;"> 21</span> <span style="background-color: #f5f5f5; color: #008000;">            streetViewControl 是否显示右上角的人，用途不明
+</span><span style="color: #008080;"> 22</span> <span style="background-color: #f5f5f5; color: #008000;">            mapTypeControl 是否显示卫星控制
+</span><span style="color: #008080;"> 23</span> <span style="background-color: #f5f5f5; color: #008000;">            overviewMapControl 右下角预览地图
+</span><span style="color: #008080;"> 24</span>             <span style="background-color: #f5f5f5; color: #008000;">*/</span>
+<span style="color: #008080;"> 25</span> 
+<span style="color: #008080;"> 26</span>             <span style="background-color: #f5f5f5; color: #008000;">/*</span>
+<span style="color: #008080;"> 27</span> <span style="background-color: #f5f5f5; color: #008000;">            支持以下事件
+</span><span style="color: #008080;"> 28</span> <span style="background-color: #f5f5f5; color: #008000;">            bounds_changed     None     This event is fired when the viewport bounds have changed.
+</span><span style="color: #008080;"> 29</span> <span style="background-color: #f5f5f5; color: #008000;">            center_changed     None     This event is fired when the map center property changes.
+</span><span style="color: #008080;"> 30</span> <span style="background-color: #f5f5f5; color: #008000;">            click     MouseEvent     This event is fired when the user clicks on the map (but not when they click on a marker or infowindow).
+</span><span style="color: #008080;"> 31</span> <span style="background-color: #f5f5f5; color: #008000;">            dblclick     MouseEvent     This event is fired when the user double-clicks on the map. Note that the click event will also fire, right before this one.
+</span><span style="color: #008080;"> 32</span> <span style="background-color: #f5f5f5; color: #008000;">            drag     None     This event is repeatedly fired while the user drags the map.
+</span><span style="color: #008080;"> 33</span> <span style="background-color: #f5f5f5; color: #008000;">            dragend     None     This event is fired when the user stops dragging the map.
+</span><span style="color: #008080;"> 34</span> <span style="background-color: #f5f5f5; color: #008000;">            dragstart     None     This event is fired when the user starts dragging the map.
+</span><span style="color: #008080;"> 35</span> <span style="background-color: #f5f5f5; color: #008000;">            heading_changed     None     This event is fired when the map heading property changes.
+</span><span style="color: #008080;"> 36</span> <span style="background-color: #f5f5f5; color: #008000;">            idle     None     This event is fired when the map becomes idle after panning or zooming.
+</span><span style="color: #008080;"> 37</span> <span style="background-color: #f5f5f5; color: #008000;">            maptypeid_changed     None     This event is fired when the mapTypeId property changes.
+</span><span style="color: #008080;"> 38</span> <span style="background-color: #f5f5f5; color: #008000;">            mousemove     MouseEvent     This event is fired whenever the user's mouse moves over the map container.
+</span><span style="color: #008080;"> 39</span> <span style="background-color: #f5f5f5; color: #008000;">            mouseout     MouseEvent     This event is fired when the user's mouse exits the map container.
+</span><span style="color: #008080;"> 40</span> <span style="background-color: #f5f5f5; color: #008000;">            mouseover     MouseEvent     This event is fired when the user's mouse enters the map container.
+</span><span style="color: #008080;"> 41</span> <span style="background-color: #f5f5f5; color: #008000;">            projection_changed     None     This event is fired when the projection has changed.
+</span><span style="color: #008080;"> 42</span> <span style="background-color: #f5f5f5; color: #008000;">            resize     None     Developers should trigger this event on the map when the div changes size: google.maps.event.trigger(map, 'resize') .
+</span><span style="color: #008080;"> 43</span> <span style="background-color: #f5f5f5; color: #008000;">            rightclick     MouseEvent     This event is fired when the DOM contextmenu event is fired on the map container.
+</span><span style="color: #008080;"> 44</span> <span style="background-color: #f5f5f5; color: #008000;">            tilesloaded     None     This event is fired when the visible tiles have finished loading.
+</span><span style="color: #008080;"> 45</span> <span style="background-color: #f5f5f5; color: #008000;">            tilt_changed     None     This event is fired when the map tilt property changes.
+</span><span style="color: #008080;"> 46</span> <span style="background-color: #f5f5f5; color: #008000;">            zoom_changed     None     This event is fired when the map zoom property changes.
+</span><span style="color: #008080;"> 47</span> 
+<span style="color: #008080;"> 48</span> <span style="background-color: #f5f5f5; color: #008000;">            其中e中包含了地图相关信息
+</span><span style="color: #008080;"> 49</span> 
+<span style="color: #008080;"> 50</span>             <span style="background-color: #f5f5f5; color: #008000;">*/</span>
+<span style="color: #008080;"> 51</span>             <span style="background-color: #f5f5f5; color: #0000ff;">var</span><span style="background-color: #f5f5f5; color: #000000;"> map </span><span style="background-color: #f5f5f5; color: #000000;">=</span> <span style="background-color: #f5f5f5; color: #0000ff;">new</span><span style="background-color: #f5f5f5; color: #000000;"> GMaps({
+</span><span style="color: #008080;"> 52</span> <span style="background-color: #f5f5f5; color: #000000;">                el: </span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">#map</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">,
+</span><span style="color: #008080;"> 53</span> <span style="background-color: #f5f5f5; color: #000000;">                lat: </span><span style="background-color: #f5f5f5; color: #000000;">30.657358499999994</span><span style="background-color: #f5f5f5; color: #000000;">,
+</span><span style="color: #008080;"> 54</span> <span style="background-color: #f5f5f5; color: #000000;">                lng: </span><span style="background-color: #f5f5f5; color: #000000;">104.049977</span><span style="background-color: #f5f5f5; color: #000000;">,
+</span><span style="color: #008080;"> 55</span> <span style="background-color: #f5f5f5; color: #000000;">                zoomControl: </span><span style="background-color: #f5f5f5; color: #0000ff;">true</span><span style="background-color: #f5f5f5; color: #000000;">,
+</span><span style="color: #008080;"> 56</span> <span style="background-color: #f5f5f5; color: #000000;">                zoomControlOpt: {
+</span><span style="color: #008080;"> 57</span> <span style="background-color: #f5f5f5; color: #000000;">                    style: </span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">BIG</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">,
+</span><span style="color: #008080;"> 58</span> <span style="background-color: #f5f5f5; color: #000000;">                    position: </span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">TOP_RIGHT</span><span style="background-color: #f5f5f5; color: #000000;">'</span>
+<span style="color: #008080;"> 59</span> <span style="background-color: #f5f5f5; color: #000000;">                },
+</span><span style="color: #008080;"> 60</span> <span style="background-color: #f5f5f5; color: #000000;">                panControl: </span><span style="background-color: #f5f5f5; color: #0000ff;">true</span><span style="background-color: #f5f5f5; color: #000000;">,
+</span><span style="color: #008080;"> 61</span> <span style="background-color: #f5f5f5; color: #000000;">                streetViewControl: </span><span style="background-color: #f5f5f5; color: #0000ff;">true</span><span style="background-color: #f5f5f5; color: #000000;">,
+</span><span style="color: #008080;"> 62</span> <span style="background-color: #f5f5f5; color: #000000;">                mapTypeControl: </span><span style="background-color: #f5f5f5; color: #0000ff;">true</span><span style="background-color: #f5f5f5; color: #000000;">,
+</span><span style="color: #008080;"> 63</span> <span style="background-color: #f5f5f5; color: #000000;">                overviewMapControl: </span><span style="background-color: #f5f5f5; color: #0000ff;">true</span><span style="background-color: #f5f5f5; color: #000000;">,
+</span><span style="color: #008080;"> 64</span> <span style="background-color: #f5f5f5; color: #000000;">                mouseout: </span><span style="background-color: #f5f5f5; color: #0000ff;">function</span><span style="background-color: #f5f5f5; color: #000000;"> (e) {
+</span><span style="color: #008080;"> 65</span>                     <span style="background-color: #f5f5f5; color: #0000ff;">var</span><span style="background-color: #f5f5f5; color: #000000;"> s </span><span style="background-color: #f5f5f5; color: #000000;">=</span> <span style="background-color: #f5f5f5; color: #000000;">''</span><span style="background-color: #f5f5f5; color: #000000;">;
+</span><span style="color: #008080;"> 66</span> <span style="background-color: #f5f5f5; color: #000000;">                }
+</span><span style="color: #008080;"> 67</span> <span style="background-color: #f5f5f5; color: #000000;">            });
+</span><span style="color: #008080;"> 68</span> 
+<span style="color: #008080;"> 69</span>             <span style="background-color: #f5f5f5; color: #008000;">/*</span>
+<span style="color: #008080;"> 70</span> <span style="background-color: #f5f5f5; color: #008000;">            建立标记需要调用addMarker方法
+</span><span style="color: #008080;"> 71</span> <span style="background-color: #f5f5f5; color: #008000;">            需要提供纬度经度，多余的信息可放置于details对象字面量里面，在事件调用时会用到
+</span><span style="color: #008080;"> 72</span> <span style="background-color: #f5f5f5; color: #008000;">            title为鼠标以上时提示
+</span><span style="color: #008080;"> 73</span> <span style="background-color: #f5f5f5; color: #008000;">            支持事件调用
+</span><span style="color: #008080;"> 74</span> <span style="background-color: #f5f5f5; color: #008000;">            infoWindow 中可使用html标签点击后可以看到内容（若是有点击事件，会先调用）
+</span><span style="color: #008080;"> 75</span> <span style="background-color: #f5f5f5; color: #008000;">            infoWindow 具有以下事件closeclick, content_changed, domready, position_changed and zindex_changed
+</span><span style="color: #008080;"> 76</span> 
+<span style="color: #008080;"> 77</span> <span style="background-color: #f5f5f5; color: #008000;">            addMarkers 可一次调用多个
+</span><span style="color: #008080;"> 78</span>             <span style="background-color: #f5f5f5; color: #008000;">*/</span>
+<span style="color: #008080;"> 79</span> <span style="background-color: #f5f5f5; color: #000000;">            map.addMarker({
+</span><span style="color: #008080;"> 80</span> <span style="background-color: #f5f5f5; color: #000000;">                lat: </span><span style="background-color: #f5f5f5; color: #000000;">30.657358499999994</span><span style="background-color: #f5f5f5; color: #000000;">,
+</span><span style="color: #008080;"> 81</span> <span style="background-color: #f5f5f5; color: #000000;">                lng: </span><span style="background-color: #f5f5f5; color: #000000;">104.049977</span><span style="background-color: #f5f5f5; color: #000000;">,
+</span><span style="color: #008080;"> 82</span> <span style="background-color: #f5f5f5; color: #000000;">                title: </span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">公司位置</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">,
+</span><span style="color: #008080;"> 83</span> <span style="background-color: #f5f5f5; color: #000000;">                details: {
+</span><span style="color: #008080;"> 84</span> <span style="background-color: #f5f5f5; color: #000000;">                    database_id: </span><span style="background-color: #f5f5f5; color: #000000;">42</span><span style="background-color: #f5f5f5; color: #000000;">,
+</span><span style="color: #008080;"> 85</span> <span style="background-color: #f5f5f5; color: #000000;">                    author: </span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">HPNeo</span><span style="background-color: #f5f5f5; color: #000000;">'</span>
+<span style="color: #008080;"> 86</span>                    
+<span style="color: #008080;"> 87</span> <span style="background-color: #f5f5f5; color: #000000;">                },
+</span><span style="color: #008080;"> 88</span> <span style="background-color: #f5f5f5; color: #000000;">                click: </span><span style="background-color: #f5f5f5; color: #0000ff;">function</span><span style="background-color: #f5f5f5; color: #000000;"> (e) {
+</span><span style="color: #008080;"> 89</span> <span style="background-color: #f5f5f5; color: #000000;">                    alert(</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">click:</span><span style="background-color: #f5f5f5; color: #000000;">'</span> <span style="background-color: #f5f5f5; color: #000000;">+</span><span style="background-color: #f5f5f5; color: #000000;"> e);
+</span><span style="color: #008080;"> 90</span> 
+<span style="color: #008080;"> 91</span> <span style="background-color: #f5f5f5; color: #000000;">                }
+</span><span style="color: #008080;"> 92</span> 
+<span style="color: #008080;"> 93</span> <span style="background-color: #f5f5f5; color: #000000;">            })
+</span><span style="color: #008080;"> 94</span> 
+<span style="color: #008080;"> 95</span> <span style="background-color: #f5f5f5; color: #000000;">            map.addMarker({
+</span><span style="color: #008080;"> 96</span> <span style="background-color: #f5f5f5; color: #000000;">                lat: </span><span style="background-color: #f5f5f5; color: #000000;">30.657358499999994</span><span style="background-color: #f5f5f5; color: #000000;">,
+</span><span style="color: #008080;"> 97</span> <span style="background-color: #f5f5f5; color: #000000;">                lng: </span><span style="background-color: #f5f5f5; color: #000000;">104.059977</span><span style="background-color: #f5f5f5; color: #000000;">,
+</span><span style="color: #008080;"> 98</span> <span style="background-color: #f5f5f5; color: #000000;">                title: </span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">另一标记</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">,
+</span><span style="color: #008080;"> 99</span> <span style="background-color: #f5f5f5; color: #000000;">                infoWindow: {
+</span><span style="color: #008080;">100</span> <span style="background-color: #f5f5f5; color: #000000;">                    content: </span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">&lt;p&gt;ddddddddd&lt;/p&gt;</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">,
+</span><span style="color: #008080;">101</span> <span style="background-color: #f5f5f5; color: #000000;">                    closeclick: </span><span style="background-color: #f5f5f5; color: #0000ff;">function</span><span style="background-color: #f5f5f5; color: #000000;"> (e) {
+</span><span style="color: #008080;">102</span> <span style="background-color: #f5f5f5; color: #000000;">                        alert(</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">关闭</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">);
+</span><span style="color: #008080;">103</span> <span style="background-color: #f5f5f5; color: #000000;">                    }
+</span><span style="color: #008080;">104</span> <span style="background-color: #f5f5f5; color: #000000;">                },
+</span><span style="color: #008080;">105</span> <span style="background-color: #f5f5f5; color: #000000;">                click: </span><span style="background-color: #f5f5f5; color: #0000ff;">function</span><span style="background-color: #f5f5f5; color: #000000;"> (e) {
+</span><span style="color: #008080;">106</span> <span style="background-color: #f5f5f5; color: #000000;">                    alert(</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">click:</span><span style="background-color: #f5f5f5; color: #000000;">'</span> <span style="background-color: #f5f5f5; color: #000000;">+</span><span style="background-color: #f5f5f5; color: #000000;"> e);
+</span><span style="color: #008080;">107</span> 
+<span style="color: #008080;">108</span> <span style="background-color: #f5f5f5; color: #000000;">                }
+</span><span style="color: #008080;">109</span> 
+<span style="color: #008080;">110</span> 
+<span style="color: #008080;">111</span> <span style="background-color: #f5f5f5; color: #000000;">            });
+</span><span style="color: #008080;">112</span> 
+<span style="color: #008080;">113</span> 
+<span style="color: #008080;">114</span> <span style="background-color: #f5f5f5; color: #000000;">        });
+</span><span style="color: #008080;">115</span>     <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">script</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">116</span> <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">head</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">117</span> <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">body</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">118</span>     <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">div </span><span style="color: #ff0000;">id</span><span style="color: #0000ff;">="map"</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">119</span>     <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">div</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">120</span>     
+<span style="color: #008080;">121</span> <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">body</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">122</span> <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">html</span><span style="color: #0000ff;">&gt;</span></pre>
+</div>
+</div>
+<div class="cnblogs_code">
+<pre><span style="color: #008080;"> 1</span> <span style="color: #0000ff;">&lt;!</span><span style="color: #ff00ff;">DOCTYPE html</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 2</span> <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">html </span><span style="color: #ff0000;">xmlns</span><span style="color: #0000ff;">="http://www.w3.org/1999/xhtml"</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 3</span> <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">head</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 4</span>     <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">title</span><span style="color: #0000ff;">&gt;&lt;/</span><span style="color: #800000;">title</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 5</span>     <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">style </span><span style="color: #ff0000;">type</span><span style="color: #0000ff;">="text/css"</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 6</span> <span style="background-color: #f5f5f5; color: #800000;">        #map </span><span style="background-color: #f5f5f5; color: #000000;">{</span><span style="background-color: #f5f5f5; color: #ff0000;"> width</span><span style="background-color: #f5f5f5; color: #000000;">:</span><span style="background-color: #f5f5f5; color: #0000ff;"> 600px</span><span style="background-color: #f5f5f5; color: #000000;">;</span><span style="background-color: #f5f5f5; color: #ff0000;"> height</span><span style="background-color: #f5f5f5; color: #000000;">:</span><span style="background-color: #f5f5f5; color: #0000ff;"> 400px</span><span style="background-color: #f5f5f5; color: #000000;">;</span> <span style="background-color: #f5f5f5; color: #000000;">}</span>
+<span style="color: #008080;"> 7</span>     
+<span style="color: #008080;"> 8</span>     <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">style</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 9</span>     <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">script </span><span style="color: #ff0000;">src</span><span style="color: #0000ff;">="js/jquery-1.7.1.js"</span><span style="color: #ff0000;"> type</span><span style="color: #0000ff;">="text/javascript"</span><span style="color: #0000ff;">&gt;&lt;/</span><span style="color: #800000;">script</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">10</span>     <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">script </span><span style="color: #ff0000;">type</span><span style="color: #0000ff;">="text/javascript"</span><span style="color: #ff0000;"> src</span><span style="color: #0000ff;">="http://maps.google.com/maps/api/js?sensor=true"</span><span style="color: #0000ff;">&gt;&lt;/</span><span style="color: #800000;">script</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">11</span>     <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">script </span><span style="color: #ff0000;">src</span><span style="color: #0000ff;">="js/gmaps.js"</span><span style="color: #ff0000;"> type</span><span style="color: #0000ff;">="text/javascript"</span><span style="color: #0000ff;">&gt;&lt;/</span><span style="color: #800000;">script</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">12</span>     <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">script </span><span style="color: #ff0000;">type</span><span style="color: #0000ff;">="text/javascript"</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">13</span> <span style="background-color: #f5f5f5; color: #000000;">        $(document).ready(</span><span style="background-color: #f5f5f5; color: #0000ff;">function</span><span style="background-color: #f5f5f5; color: #000000;"> () {
+</span><span style="color: #008080;">14</span>             <span style="background-color: #f5f5f5; color: #0000ff;">var</span><span style="background-color: #f5f5f5; color: #000000;"> map </span><span style="background-color: #f5f5f5; color: #000000;">=</span> <span style="background-color: #f5f5f5; color: #0000ff;">new</span><span style="background-color: #f5f5f5; color: #000000;"> GMaps({
+</span><span style="color: #008080;">15</span> <span style="background-color: #f5f5f5; color: #000000;">                el: </span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">#map</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">,
+</span><span style="color: #008080;">16</span> <span style="background-color: #f5f5f5; color: #000000;">                lat: </span><span style="background-color: #f5f5f5; color: #000000;">30.657358499999994</span><span style="background-color: #f5f5f5; color: #000000;">,
+</span><span style="color: #008080;">17</span> <span style="background-color: #f5f5f5; color: #000000;">                lng: </span><span style="background-color: #f5f5f5; color: #000000;">104.049977</span>
+<span style="color: #008080;">18</span> 
+<span style="color: #008080;">19</span> <span style="background-color: #f5f5f5; color: #000000;">            });
+</span><span style="color: #008080;">20</span>             <span style="background-color: #f5f5f5; color: #008000;">//</span><span style="background-color: #f5f5f5; color: #008000;">支持html5</span>
+<span style="color: #008080;">21</span> <span style="background-color: #f5f5f5; color: #000000;">            GMaps.geolocate({
+</span><span style="color: #008080;">22</span> <span style="background-color: #f5f5f5; color: #000000;">                success: </span><span style="background-color: #f5f5f5; color: #0000ff;">function</span><span style="background-color: #f5f5f5; color: #000000;"> (position) {
+</span><span style="color: #008080;">23</span>                     <span style="background-color: #f5f5f5; color: #0000ff;">var</span><span style="background-color: #f5f5f5; color: #000000;"> lat </span><span style="background-color: #f5f5f5; color: #000000;">=</span><span style="background-color: #f5f5f5; color: #000000;"> position.coords.latitude, lon </span><span style="background-color: #f5f5f5; color: #000000;">=</span><span style="background-color: #f5f5f5; color: #000000;"> position.coords.longitude;
+</span><span style="color: #008080;">24</span> <span style="background-color: #f5f5f5; color: #000000;">                    map.setCenter(lat, lon);
+</span><span style="color: #008080;">25</span> <span style="background-color: #f5f5f5; color: #000000;">                    map.addMarker({
+</span><span style="color: #008080;">26</span> <span style="background-color: #f5f5f5; color: #000000;">                        lat: </span><span style="background-color: #f5f5f5; color: #000000;">30.657358499999994</span><span style="background-color: #f5f5f5; color: #000000;">,
+</span><span style="color: #008080;">27</span> <span style="background-color: #f5f5f5; color: #000000;">                        lng: </span><span style="background-color: #f5f5f5; color: #000000;">104.049977</span><span style="background-color: #f5f5f5; color: #000000;">,
+</span><span style="color: #008080;">28</span> <span style="background-color: #f5f5f5; color: #000000;">                        title: </span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">您的位置</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">,
+</span><span style="color: #008080;">29</span> <span style="background-color: #f5f5f5; color: #000000;">                        infoWindow: {
+</span><span style="color: #008080;">30</span> <span style="background-color: #f5f5f5; color: #000000;">                            content: </span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">您在这里</span><span style="background-color: #f5f5f5; color: #000000;">'</span>
+<span style="color: #008080;">31</span> <span style="background-color: #f5f5f5; color: #000000;">                        }
+</span><span style="color: #008080;">32</span> <span style="background-color: #f5f5f5; color: #000000;">                    });
+</span><span style="color: #008080;">33</span> <span style="background-color: #f5f5f5; color: #000000;">                },
+</span><span style="color: #008080;">34</span> <span style="background-color: #f5f5f5; color: #000000;">                error: </span><span style="background-color: #f5f5f5; color: #0000ff;">function</span><span style="background-color: #f5f5f5; color: #000000;"> (error) {
+</span><span style="color: #008080;">35</span> <span style="background-color: #f5f5f5; color: #000000;">                    alert(</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">Geolocation failed: </span><span style="background-color: #f5f5f5; color: #000000;">'</span> <span style="background-color: #f5f5f5; color: #000000;">+</span><span style="background-color: #f5f5f5; color: #000000;"> error.message);
+</span><span style="color: #008080;">36</span> <span style="background-color: #f5f5f5; color: #000000;">                },
+</span><span style="color: #008080;">37</span> <span style="background-color: #f5f5f5; color: #000000;">                not_supported: </span><span style="background-color: #f5f5f5; color: #0000ff;">function</span><span style="background-color: #f5f5f5; color: #000000;"> () {
+</span><span style="color: #008080;">38</span> <span style="background-color: #f5f5f5; color: #000000;">                    alert(</span><span style="background-color: #f5f5f5; color: #000000;">"</span><span style="background-color: #f5f5f5; color: #000000;">Your browser does not support geolocation</span><span style="background-color: #f5f5f5; color: #000000;">"</span><span style="background-color: #f5f5f5; color: #000000;">);
+</span><span style="color: #008080;">39</span> <span style="background-color: #f5f5f5; color: #000000;">                },
+</span><span style="color: #008080;">40</span> <span style="background-color: #f5f5f5; color: #000000;">                always: </span><span style="background-color: #f5f5f5; color: #0000ff;">function</span><span style="background-color: #f5f5f5; color: #000000;"> () {
+</span><span style="color: #008080;">41</span> <span style="background-color: #f5f5f5; color: #000000;">                }
+</span><span style="color: #008080;">42</span> <span style="background-color: #f5f5f5; color: #000000;">            });
+</span><span style="color: #008080;">43</span> <span style="background-color: #f5f5f5; color: #000000;">        });
+</span><span style="color: #008080;">44</span>     <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">script</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">45</span> <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">head</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">46</span> <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">body</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">47</span>     <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">div </span><span style="color: #ff0000;">id</span><span style="color: #0000ff;">="map"</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">48</span>     <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">div</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">49</span>     
+<span style="color: #008080;">50</span> <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">body</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">51</span> <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">html</span><span style="color: #0000ff;">&gt;</span></pre>
+</div>
+<p>&nbsp;</p>
+<p><img src="34187995697562.png" alt=""></p>
+<h1>位置检索</h1>
+<p>我们当然可使用搜索技术了，google map api 果然强大！！！</p>
+<div class="cnblogs_code">
+<pre><span style="color: #008080;"> 1</span> <span style="color: #0000ff;">&lt;!</span><span style="color: #ff00ff;">DOCTYPE html</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 2</span> <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">html </span><span style="color: #ff0000;">xmlns</span><span style="color: #0000ff;">="http://www.w3.org/1999/xhtml"</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 3</span> <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">head</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 4</span>     <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">title</span><span style="color: #0000ff;">&gt;&lt;/</span><span style="color: #800000;">title</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 5</span>     <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">style </span><span style="color: #ff0000;">type</span><span style="color: #0000ff;">="text/css"</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 6</span> <span style="background-color: #f5f5f5; color: #800000;">        #map </span><span style="background-color: #f5f5f5; color: #000000;">{</span><span style="background-color: #f5f5f5; color: #ff0000;"> width</span><span style="background-color: #f5f5f5; color: #000000;">:</span><span style="background-color: #f5f5f5; color: #0000ff;"> 600px</span><span style="background-color: #f5f5f5; color: #000000;">;</span><span style="background-color: #f5f5f5; color: #ff0000;"> height</span><span style="background-color: #f5f5f5; color: #000000;">:</span><span style="background-color: #f5f5f5; color: #0000ff;"> 400px</span><span style="background-color: #f5f5f5; color: #000000;">;</span> <span style="background-color: #f5f5f5; color: #000000;">}</span>
+<span style="color: #008080;"> 7</span>     
+<span style="color: #008080;"> 8</span>     <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">style</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 9</span>     <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">script </span><span style="color: #ff0000;">src</span><span style="color: #0000ff;">="js/jquery-1.7.1.js"</span><span style="color: #ff0000;"> type</span><span style="color: #0000ff;">="text/javascript"</span><span style="color: #0000ff;">&gt;&lt;/</span><span style="color: #800000;">script</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">10</span>     <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">script </span><span style="color: #ff0000;">type</span><span style="color: #0000ff;">="text/javascript"</span><span style="color: #ff0000;"> src</span><span style="color: #0000ff;">="http://maps.google.com/maps/api/js?sensor=true"</span><span style="color: #0000ff;">&gt;&lt;/</span><span style="color: #800000;">script</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">11</span>     <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">script </span><span style="color: #ff0000;">src</span><span style="color: #0000ff;">="js/gmaps.js"</span><span style="color: #ff0000;"> type</span><span style="color: #0000ff;">="text/javascript"</span><span style="color: #0000ff;">&gt;&lt;/</span><span style="color: #800000;">script</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">12</span>     <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">script </span><span style="color: #ff0000;">type</span><span style="color: #0000ff;">="text/javascript"</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">13</span> <span style="background-color: #f5f5f5; color: #000000;">        $(document).ready(</span><span style="background-color: #f5f5f5; color: #0000ff;">function</span><span style="background-color: #f5f5f5; color: #000000;"> () {
+</span><span style="color: #008080;">14</span> 
+<span style="color: #008080;">15</span>             <span style="background-color: #f5f5f5; color: #0000ff;">var</span><span style="background-color: #f5f5f5; color: #000000;"> map </span><span style="background-color: #f5f5f5; color: #000000;">=</span> <span style="background-color: #f5f5f5; color: #0000ff;">new</span><span style="background-color: #f5f5f5; color: #000000;"> GMaps({
+</span><span style="color: #008080;">16</span> <span style="background-color: #f5f5f5; color: #000000;">                el: </span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">#map</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">,
+</span><span style="color: #008080;">17</span> <span style="background-color: #f5f5f5; color: #000000;">                lat: </span><span style="background-color: #f5f5f5; color: #000000;">30.657358499999994</span><span style="background-color: #f5f5f5; color: #000000;">,
+</span><span style="color: #008080;">18</span> <span style="background-color: #f5f5f5; color: #000000;">                lng: </span><span style="background-color: #f5f5f5; color: #000000;">104.049977</span>
+<span style="color: #008080;">19</span> <span style="background-color: #f5f5f5; color: #000000;">            });
+</span><span style="color: #008080;">20</span> 
+<span style="color: #008080;">21</span>             <span style="background-color: #f5f5f5; color: #008000;">//</span><span style="background-color: #f5f5f5; color: #008000;">支持html5</span>
+<span style="color: #008080;">22</span> <span style="background-color: #f5f5f5; color: #000000;">            GMaps.geolocate({
+</span><span style="color: #008080;">23</span> <span style="background-color: #f5f5f5; color: #000000;">                success: </span><span style="background-color: #f5f5f5; color: #0000ff;">function</span><span style="background-color: #f5f5f5; color: #000000;"> (position) {
+</span><span style="color: #008080;">24</span>                     <span style="background-color: #f5f5f5; color: #0000ff;">var</span><span style="background-color: #f5f5f5; color: #000000;"> lat </span><span style="background-color: #f5f5f5; color: #000000;">=</span><span style="background-color: #f5f5f5; color: #000000;"> position.coords.latitude, lon </span><span style="background-color: #f5f5f5; color: #000000;">=</span><span style="background-color: #f5f5f5; color: #000000;"> position.coords.longitude;
+</span><span style="color: #008080;">25</span> <span style="background-color: #f5f5f5; color: #000000;">                    map.setCenter(lat, lon);
+</span><span style="color: #008080;">26</span> <span style="background-color: #f5f5f5; color: #000000;">                    map.addMarker({
+</span><span style="color: #008080;">27</span> <span style="background-color: #f5f5f5; color: #000000;">                        lat: </span><span style="background-color: #f5f5f5; color: #000000;">30.657358499999994</span><span style="background-color: #f5f5f5; color: #000000;">,
+</span><span style="color: #008080;">28</span> <span style="background-color: #f5f5f5; color: #000000;">                        lng: </span><span style="background-color: #f5f5f5; color: #000000;">104.049977</span><span style="background-color: #f5f5f5; color: #000000;">,
+</span><span style="color: #008080;">29</span> <span style="background-color: #f5f5f5; color: #000000;">                        title: </span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">您的位置</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">,
+</span><span style="color: #008080;">30</span> <span style="background-color: #f5f5f5; color: #000000;">                        infoWindow: {
+</span><span style="color: #008080;">31</span> <span style="background-color: #f5f5f5; color: #000000;">                            content: </span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">您在这里</span><span style="background-color: #f5f5f5; color: #000000;">'</span>
+<span style="color: #008080;">32</span> <span style="background-color: #f5f5f5; color: #000000;">                        }
+</span><span style="color: #008080;">33</span> <span style="background-color: #f5f5f5; color: #000000;">                    });
+</span><span style="color: #008080;">34</span> <span style="background-color: #f5f5f5; color: #000000;">                },
+</span><span style="color: #008080;">35</span> <span style="background-color: #f5f5f5; color: #000000;">                error: </span><span style="background-color: #f5f5f5; color: #0000ff;">function</span><span style="background-color: #f5f5f5; color: #000000;"> (error) {
+</span><span style="color: #008080;">36</span> <span style="background-color: #f5f5f5; color: #000000;">                    alert(</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">Geolocation failed: </span><span style="background-color: #f5f5f5; color: #000000;">'</span> <span style="background-color: #f5f5f5; color: #000000;">+</span><span style="background-color: #f5f5f5; color: #000000;"> error.message);
+</span><span style="color: #008080;">37</span> <span style="background-color: #f5f5f5; color: #000000;">                },
+</span><span style="color: #008080;">38</span> <span style="background-color: #f5f5f5; color: #000000;">                not_supported: </span><span style="background-color: #f5f5f5; color: #0000ff;">function</span><span style="background-color: #f5f5f5; color: #000000;"> () {
+</span><span style="color: #008080;">39</span> <span style="background-color: #f5f5f5; color: #000000;">                    alert(</span><span style="background-color: #f5f5f5; color: #000000;">"</span><span style="background-color: #f5f5f5; color: #000000;">Your browser does not support geolocation</span><span style="background-color: #f5f5f5; color: #000000;">"</span><span style="background-color: #f5f5f5; color: #000000;">);
+</span><span style="color: #008080;">40</span> <span style="background-color: #f5f5f5; color: #000000;">                },
+</span><span style="color: #008080;">41</span> <span style="background-color: #f5f5f5; color: #000000;">                always: </span><span style="background-color: #f5f5f5; color: #0000ff;">function</span><span style="background-color: #f5f5f5; color: #000000;"> () {
+</span><span style="color: #008080;">42</span> <span style="background-color: #f5f5f5; color: #000000;">                }
+</span><span style="color: #008080;">43</span> <span style="background-color: #f5f5f5; color: #000000;">            });
+</span><span style="color: #008080;">44</span> 
+<span style="color: #008080;">45</span> <span style="background-color: #f5f5f5; color: #000000;">            $(</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">#address</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">).change(</span><span style="background-color: #f5f5f5; color: #0000ff;">function</span><span style="background-color: #f5f5f5; color: #000000;"> (e) {
+</span><span style="color: #008080;">46</span>                 <span style="background-color: #f5f5f5; color: #0000ff;">var</span><span style="background-color: #f5f5f5; color: #000000;"> el </span><span style="background-color: #f5f5f5; color: #000000;">=</span><span style="background-color: #f5f5f5; color: #000000;"> $(</span><span style="background-color: #f5f5f5; color: #0000ff;">this</span><span style="background-color: #f5f5f5; color: #000000;">);
+</span><span style="color: #008080;">47</span> <span style="background-color: #f5f5f5; color: #000000;">                GMaps.geocode({
+</span><span style="color: #008080;">48</span> <span style="background-color: #f5f5f5; color: #000000;">                    address: el.val(),
+</span><span style="color: #008080;">49</span> <span style="background-color: #f5f5f5; color: #000000;">                    callback: </span><span style="background-color: #f5f5f5; color: #0000ff;">function</span><span style="background-color: #f5f5f5; color: #000000;"> (r, s) {
+</span><span style="color: #008080;">50</span>                         <span style="background-color: #f5f5f5; color: #0000ff;">if</span><span style="background-color: #f5f5f5; color: #000000;"> (s </span><span style="background-color: #f5f5f5; color: #000000;">==</span> <span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">OK</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">) {
+</span><span style="color: #008080;">51</span>                             <span style="background-color: #f5f5f5; color: #0000ff;">var</span><span style="background-color: #f5f5f5; color: #000000;"> latlng </span><span style="background-color: #f5f5f5; color: #000000;">=</span><span style="background-color: #f5f5f5; color: #000000;"> r[</span><span style="background-color: #f5f5f5; color: #000000;">0</span><span style="background-color: #f5f5f5; color: #000000;">].geometry.location;
+</span><span style="color: #008080;">52</span> <span style="background-color: #f5f5f5; color: #000000;">                            map.setCenter(latlng.lat(), latlng.lng());
+</span><span style="color: #008080;">53</span> <span style="background-color: #f5f5f5; color: #000000;">                            map.addMarker({
+</span><span style="color: #008080;">54</span> <span style="background-color: #f5f5f5; color: #000000;">                                lat: latlng.lat(),
+</span><span style="color: #008080;">55</span> <span style="background-color: #f5f5f5; color: #000000;">                                lng: latlng.lng(),
+</span><span style="color: #008080;">56</span> <span style="background-color: #f5f5f5; color: #000000;">                                title: el.val()
+</span><span style="color: #008080;">57</span> <span style="background-color: #f5f5f5; color: #000000;">                            });
+</span><span style="color: #008080;">58</span> <span style="background-color: #f5f5f5; color: #000000;">                        }
+</span><span style="color: #008080;">59</span> <span style="background-color: #f5f5f5; color: #000000;">                    }
+</span><span style="color: #008080;">60</span> <span style="background-color: #f5f5f5; color: #000000;">                });
+</span><span style="color: #008080;">61</span> <span style="background-color: #f5f5f5; color: #000000;">            });
+</span><span style="color: #008080;">62</span> 
+<span style="color: #008080;">63</span> 
+<span style="color: #008080;">64</span> <span style="background-color: #f5f5f5; color: #000000;">        });
+</span><span style="color: #008080;">65</span>     <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">script</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">66</span> <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">head</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">67</span> <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">body</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">68</span> <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">input </span><span style="color: #ff0000;">type</span><span style="color: #0000ff;">="text"</span><span style="color: #ff0000;"> value</span><span style="color: #0000ff;">="请输入地址"</span><span style="color: #ff0000;"> id</span><span style="color: #0000ff;">="address"</span> <span style="color: #0000ff;">/&gt;</span>
+<span style="color: #008080;">69</span>     <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">div </span><span style="color: #ff0000;">id</span><span style="color: #0000ff;">="map"</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">70</span>     <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">div</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">71</span>     
+<span style="color: #008080;">72</span> <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">body</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">73</span> <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">html</span><span style="color: #0000ff;">&gt;</span></pre>
+</div>
+<p><img src="35279076345084.png" alt=""></p>
+<h1>在地图上画圈圈！</h1>
+<p>这个功能真是贴心！公安局或者其他系统，在不同地点会有地区作案数预警信息，更具此功能可以将作案频繁的区域圈起来，重点提示！</p>
+<div class="cnblogs_code" onclick="cnblogs_code_show('3fc9eff1-9877-4fd4-97b1-0130d798a90d')"><img id="code_img_closed_3fc9eff1-9877-4fd4-97b1-0130d798a90d" class="code_img_closed" src="43570758473519.gif" alt=""><img id="code_img_opened_3fc9eff1-9877-4fd4-97b1-0130d798a90d" class="code_img_opened" style="display: none;" onclick="cnblogs_code_hide('3fc9eff1-9877-4fd4-97b1-0130d798a90d',event)" src="16365178109279.gif" alt=""><span class="cnblogs_code_collapse">画区域</span>
+<div id="cnblogs_code_open_3fc9eff1-9877-4fd4-97b1-0130d798a90d" class="cnblogs_code_hide">
+<pre><span style="color: #008080;"> 1</span> <span style="color: #0000ff;">&lt;!</span><span style="color: #ff00ff;">DOCTYPE html</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 2</span> <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">html </span><span style="color: #ff0000;">xmlns</span><span style="color: #0000ff;">="http://www.w3.org/1999/xhtml"</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 3</span> <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">head</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 4</span>     <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">title</span><span style="color: #0000ff;">&gt;&lt;/</span><span style="color: #800000;">title</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 5</span>     <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">style </span><span style="color: #ff0000;">type</span><span style="color: #0000ff;">="text/css"</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 6</span> <span style="background-color: #f5f5f5; color: #800000;">        #map </span><span style="background-color: #f5f5f5; color: #000000;">{</span><span style="background-color: #f5f5f5; color: #ff0000;"> width</span><span style="background-color: #f5f5f5; color: #000000;">:</span><span style="background-color: #f5f5f5; color: #0000ff;"> 600px</span><span style="background-color: #f5f5f5; color: #000000;">;</span><span style="background-color: #f5f5f5; color: #ff0000;"> height</span><span style="background-color: #f5f5f5; color: #000000;">:</span><span style="background-color: #f5f5f5; color: #0000ff;"> 400px</span><span style="background-color: #f5f5f5; color: #000000;">;</span> <span style="background-color: #f5f5f5; color: #000000;">}</span>
+<span style="color: #008080;"> 7</span>     
+<span style="color: #008080;"> 8</span>     <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">style</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 9</span>     <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">script </span><span style="color: #ff0000;">src</span><span style="color: #0000ff;">="js/jquery-1.7.1.js"</span><span style="color: #ff0000;"> type</span><span style="color: #0000ff;">="text/javascript"</span><span style="color: #0000ff;">&gt;&lt;/</span><span style="color: #800000;">script</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">10</span>     <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">script </span><span style="color: #ff0000;">type</span><span style="color: #0000ff;">="text/javascript"</span><span style="color: #ff0000;"> src</span><span style="color: #0000ff;">="http://maps.google.com/maps/api/js?sensor=true"</span><span style="color: #0000ff;">&gt;&lt;/</span><span style="color: #800000;">script</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">11</span>     <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">script </span><span style="color: #ff0000;">src</span><span style="color: #0000ff;">="js/gmaps.js"</span><span style="color: #ff0000;"> type</span><span style="color: #0000ff;">="text/javascript"</span><span style="color: #0000ff;">&gt;&lt;/</span><span style="color: #800000;">script</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">12</span>     <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">script </span><span style="color: #ff0000;">type</span><span style="color: #0000ff;">="text/javascript"</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">13</span> <span style="background-color: #f5f5f5; color: #000000;">        $(document).ready(</span><span style="background-color: #f5f5f5; color: #0000ff;">function</span><span style="background-color: #f5f5f5; color: #000000;"> () {
+</span><span style="color: #008080;">14</span>             <span style="background-color: #f5f5f5; color: #0000ff;">var</span><span style="background-color: #f5f5f5; color: #000000;"> path </span><span style="background-color: #f5f5f5; color: #000000;">=</span><span style="background-color: #f5f5f5; color: #000000;"> [];
+</span><span style="color: #008080;">15</span> 
+<span style="color: #008080;">16</span>             <span style="background-color: #f5f5f5; color: #0000ff;">var</span><span style="background-color: #f5f5f5; color: #000000;"> map </span><span style="background-color: #f5f5f5; color: #000000;">=</span> <span style="background-color: #f5f5f5; color: #0000ff;">new</span><span style="background-color: #f5f5f5; color: #000000;"> GMaps({
+</span><span style="color: #008080;">17</span> <span style="background-color: #f5f5f5; color: #000000;">                el: </span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">#map</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">,
+</span><span style="color: #008080;">18</span> <span style="background-color: #f5f5f5; color: #000000;">                lat: </span><span style="background-color: #f5f5f5; color: #000000;">30.657358499999994</span><span style="background-color: #f5f5f5; color: #000000;">,
+</span><span style="color: #008080;">19</span> <span style="background-color: #f5f5f5; color: #000000;">                lng: </span><span style="background-color: #f5f5f5; color: #000000;">104.049977</span>
+<span style="color: #008080;">20</span> <span style="background-color: #f5f5f5; color: #000000;">            });
+</span><span style="color: #008080;">21</span> 
+<span style="color: #008080;">22</span>             <span style="background-color: #f5f5f5; color: #008000;">//</span><span style="background-color: #f5f5f5; color: #008000;">支持html5</span>
+<span style="color: #008080;">23</span> <span style="background-color: #f5f5f5; color: #000000;">            GMaps.geolocate({
+</span><span style="color: #008080;">24</span> <span style="background-color: #f5f5f5; color: #000000;">                success: </span><span style="background-color: #f5f5f5; color: #0000ff;">function</span><span style="background-color: #f5f5f5; color: #000000;"> (position) {
+</span><span style="color: #008080;">25</span>                     <span style="background-color: #f5f5f5; color: #0000ff;">var</span><span style="background-color: #f5f5f5; color: #000000;"> lat </span><span style="background-color: #f5f5f5; color: #000000;">=</span><span style="background-color: #f5f5f5; color: #000000;"> position.coords.latitude, lon </span><span style="background-color: #f5f5f5; color: #000000;">=</span><span style="background-color: #f5f5f5; color: #000000;"> position.coords.longitude;
+</span><span style="color: #008080;">26</span>                     <span style="background-color: #f5f5f5; color: #0000ff;">var</span><span style="background-color: #f5f5f5; color: #000000;"> tmp </span><span style="background-color: #f5f5f5; color: #000000;">=</span><span style="background-color: #f5f5f5; color: #000000;"> [];
+</span><span style="color: #008080;">27</span> <span style="background-color: #f5f5f5; color: #000000;">                    tmp.push(lat);
+</span><span style="color: #008080;">28</span> <span style="background-color: #f5f5f5; color: #000000;">                    tmp.push(lon);
+</span><span style="color: #008080;">29</span> <span style="background-color: #f5f5f5; color: #000000;">                    path.push(tmp);
+</span><span style="color: #008080;">30</span> <span style="background-color: #f5f5f5; color: #000000;">                    map.setCenter(lat, lon);
+</span><span style="color: #008080;">31</span> <span style="background-color: #f5f5f5; color: #000000;">                    map.addMarker({
+</span><span style="color: #008080;">32</span> <span style="background-color: #f5f5f5; color: #000000;">                        lat: </span><span style="background-color: #f5f5f5; color: #000000;">30.657358499999994</span><span style="background-color: #f5f5f5; color: #000000;">,
+</span><span style="color: #008080;">33</span> <span style="background-color: #f5f5f5; color: #000000;">                        lng: </span><span style="background-color: #f5f5f5; color: #000000;">104.049977</span><span style="background-color: #f5f5f5; color: #000000;">,
+</span><span style="color: #008080;">34</span> <span style="background-color: #f5f5f5; color: #000000;">                        title: </span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">您的位置</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">,
+</span><span style="color: #008080;">35</span> <span style="background-color: #f5f5f5; color: #000000;">                        infoWindow: {
+</span><span style="color: #008080;">36</span> <span style="background-color: #f5f5f5; color: #000000;">                            content: </span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">您在这里</span><span style="background-color: #f5f5f5; color: #000000;">'</span>
+<span style="color: #008080;">37</span> <span style="background-color: #f5f5f5; color: #000000;">                        }
+</span><span style="color: #008080;">38</span> <span style="background-color: #f5f5f5; color: #000000;">                    });
+</span><span style="color: #008080;">39</span> <span style="background-color: #f5f5f5; color: #000000;">                },
+</span><span style="color: #008080;">40</span> <span style="background-color: #f5f5f5; color: #000000;">                error: </span><span style="background-color: #f5f5f5; color: #0000ff;">function</span><span style="background-color: #f5f5f5; color: #000000;"> (error) {
+</span><span style="color: #008080;">41</span> <span style="background-color: #f5f5f5; color: #000000;">                    alert(</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">Geolocation failed: </span><span style="background-color: #f5f5f5; color: #000000;">'</span> <span style="background-color: #f5f5f5; color: #000000;">+</span><span style="background-color: #f5f5f5; color: #000000;"> error.message);
+</span><span style="color: #008080;">42</span> <span style="background-color: #f5f5f5; color: #000000;">                },
+</span><span style="color: #008080;">43</span> <span style="background-color: #f5f5f5; color: #000000;">                not_supported: </span><span style="background-color: #f5f5f5; color: #0000ff;">function</span><span style="background-color: #f5f5f5; color: #000000;"> () {
+</span><span style="color: #008080;">44</span> <span style="background-color: #f5f5f5; color: #000000;">                    alert(</span><span style="background-color: #f5f5f5; color: #000000;">"</span><span style="background-color: #f5f5f5; color: #000000;">Your browser does not support geolocation</span><span style="background-color: #f5f5f5; color: #000000;">"</span><span style="background-color: #f5f5f5; color: #000000;">);
+</span><span style="color: #008080;">45</span> <span style="background-color: #f5f5f5; color: #000000;">                },
+</span><span style="color: #008080;">46</span> <span style="background-color: #f5f5f5; color: #000000;">                always: </span><span style="background-color: #f5f5f5; color: #0000ff;">function</span><span style="background-color: #f5f5f5; color: #000000;"> () {
+</span><span style="color: #008080;">47</span> <span style="background-color: #f5f5f5; color: #000000;">                }
+</span><span style="color: #008080;">48</span> <span style="background-color: #f5f5f5; color: #000000;">            });
+</span><span style="color: #008080;">49</span> 
+<span style="color: #008080;">50</span> <span style="background-color: #f5f5f5; color: #000000;">            $(</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">#address</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">).change(</span><span style="background-color: #f5f5f5; color: #0000ff;">function</span><span style="background-color: #f5f5f5; color: #000000;"> (e) {
+</span><span style="color: #008080;">51</span>                 <span style="background-color: #f5f5f5; color: #0000ff;">var</span><span style="background-color: #f5f5f5; color: #000000;"> el </span><span style="background-color: #f5f5f5; color: #000000;">=</span><span style="background-color: #f5f5f5; color: #000000;"> $(</span><span style="background-color: #f5f5f5; color: #0000ff;">this</span><span style="background-color: #f5f5f5; color: #000000;">);
+</span><span style="color: #008080;">52</span> <span style="background-color: #f5f5f5; color: #000000;">                GMaps.geocode({
+</span><span style="color: #008080;">53</span> <span style="background-color: #f5f5f5; color: #000000;">                    address: el.val(),
+</span><span style="color: #008080;">54</span> <span style="background-color: #f5f5f5; color: #000000;">                    callback: </span><span style="background-color: #f5f5f5; color: #0000ff;">function</span><span style="background-color: #f5f5f5; color: #000000;"> (r, s) {
+</span><span style="color: #008080;">55</span>                         <span style="background-color: #f5f5f5; color: #0000ff;">if</span><span style="background-color: #f5f5f5; color: #000000;"> (s </span><span style="background-color: #f5f5f5; color: #000000;">==</span> <span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">OK</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">) {
+</span><span style="color: #008080;">56</span>                             <span style="background-color: #f5f5f5; color: #0000ff;">var</span><span style="background-color: #f5f5f5; color: #000000;"> latlng </span><span style="background-color: #f5f5f5; color: #000000;">=</span><span style="background-color: #f5f5f5; color: #000000;"> r[</span><span style="background-color: #f5f5f5; color: #000000;">0</span><span style="background-color: #f5f5f5; color: #000000;">].geometry.location;
+</span><span style="color: #008080;">57</span> <span style="background-color: #f5f5f5; color: #000000;">                            map.setCenter(latlng.lat(), latlng.lng());
+</span><span style="color: #008080;">58</span> <span style="background-color: #f5f5f5; color: #000000;">                            map.addMarker({
+</span><span style="color: #008080;">59</span> <span style="background-color: #f5f5f5; color: #000000;">                                lat: latlng.lat(),
+</span><span style="color: #008080;">60</span> <span style="background-color: #f5f5f5; color: #000000;">                                lng: latlng.lng(),
+</span><span style="color: #008080;">61</span> <span style="background-color: #f5f5f5; color: #000000;">                                title: el.val()
+</span><span style="color: #008080;">62</span> <span style="background-color: #f5f5f5; color: #000000;">                            });
+</span><span style="color: #008080;">63</span>                             <span style="background-color: #f5f5f5; color: #0000ff;">var</span><span style="background-color: #f5f5f5; color: #000000;"> tmp </span><span style="background-color: #f5f5f5; color: #000000;">=</span><span style="background-color: #f5f5f5; color: #000000;"> [];
+</span><span style="color: #008080;">64</span> <span style="background-color: #f5f5f5; color: #000000;">                            tmp.push(latlng.lat());
+</span><span style="color: #008080;">65</span> <span style="background-color: #f5f5f5; color: #000000;">                            tmp.push(latlng.lng());
+</span><span style="color: #008080;">66</span> <span style="background-color: #f5f5f5; color: #000000;">                            path.push(tmp);
+</span><span style="color: #008080;">67</span> 
+<span style="color: #008080;">68</span> <span style="background-color: #f5f5f5; color: #000000;">                            map.drawPolyline({
+</span><span style="color: #008080;">69</span> <span style="background-color: #f5f5f5; color: #000000;">                                path: path,
+</span><span style="color: #008080;">70</span> <span style="background-color: #f5f5f5; color: #000000;">                                strokeColor: </span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">red</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">,
+</span><span style="color: #008080;">71</span> <span style="background-color: #f5f5f5; color: #000000;">                                strokeOpacity: </span><span style="background-color: #f5f5f5; color: #000000;">0.6</span><span style="background-color: #f5f5f5; color: #000000;">,
+</span><span style="color: #008080;">72</span> <span style="background-color: #f5f5f5; color: #000000;">                                strokeWeight: </span><span style="background-color: #f5f5f5; color: #000000;">2</span>
+<span style="color: #008080;">73</span> <span style="background-color: #f5f5f5; color: #000000;">                            });
+</span><span style="color: #008080;">74</span> 
+<span style="color: #008080;">75</span> 
+<span style="color: #008080;">76</span> <span style="background-color: #f5f5f5; color: #000000;">                        }
+</span><span style="color: #008080;">77</span> <span style="background-color: #f5f5f5; color: #000000;">                    }
+</span><span style="color: #008080;">78</span> <span style="background-color: #f5f5f5; color: #000000;">                });
+</span><span style="color: #008080;">79</span> <span style="background-color: #f5f5f5; color: #000000;">            });
+</span><span style="color: #008080;">80</span> 
+<span style="color: #008080;">81</span> 
+<span style="color: #008080;">82</span> <span style="background-color: #f5f5f5; color: #000000;">        });
+</span><span style="color: #008080;">83</span>     <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">script</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">84</span> <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">head</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">85</span> <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">body</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">86</span> <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">input </span><span style="color: #ff0000;">type</span><span style="color: #0000ff;">="text"</span><span style="color: #ff0000;"> value</span><span style="color: #0000ff;">="请输入地址"</span><span style="color: #ff0000;"> id</span><span style="color: #0000ff;">="address"</span> <span style="color: #0000ff;">/&gt;</span>
+<span style="color: #008080;">87</span>     <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">div </span><span style="color: #ff0000;">id</span><span style="color: #0000ff;">="map"</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">88</span>     <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">div</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">89</span>     
+<span style="color: #008080;">90</span> <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">body</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">91</span> <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">html</span><span style="color: #0000ff;">&gt;</span></pre>
+</div>
+</div>
+<p><img src="40723959768193.png" alt=""></p>
+<h1>区域高亮显示</h1>
+<p>我们可以指定某个区域，比如我们的学校，然后在上面浮动一个div写上学校介绍，可以与css共同使用：</p>
+<div class="cnblogs_code">
+<pre><span style="color: #008080;"> 1</span> <span style="color: #0000ff;">&lt;!</span><span style="color: #ff00ff;">DOCTYPE html</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 2</span> <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">html </span><span style="color: #ff0000;">xmlns</span><span style="color: #0000ff;">="http://www.w3.org/1999/xhtml"</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 3</span> <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">head</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 4</span>     <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">title</span><span style="color: #0000ff;">&gt;&lt;/</span><span style="color: #800000;">title</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 5</span>     <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">style </span><span style="color: #ff0000;">type</span><span style="color: #0000ff;">="text/css"</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 6</span> <span style="background-color: #f5f5f5; color: #800000;">        #map </span><span style="background-color: #f5f5f5; color: #000000;">{</span><span style="background-color: #f5f5f5; color: #ff0000;"> width</span><span style="background-color: #f5f5f5; color: #000000;">:</span><span style="background-color: #f5f5f5; color: #0000ff;"> 600px</span><span style="background-color: #f5f5f5; color: #000000;">;</span><span style="background-color: #f5f5f5; color: #ff0000;"> height</span><span style="background-color: #f5f5f5; color: #000000;">:</span><span style="background-color: #f5f5f5; color: #0000ff;"> 400px</span><span style="background-color: #f5f5f5; color: #000000;">;</span> <span style="background-color: #f5f5f5; color: #000000;">}</span>
+<span style="color: #008080;"> 7</span>     
+<span style="color: #008080;"> 8</span>     <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">style</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 9</span>     <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">script </span><span style="color: #ff0000;">src</span><span style="color: #0000ff;">="js/jquery-1.7.1.js"</span><span style="color: #ff0000;"> type</span><span style="color: #0000ff;">="text/javascript"</span><span style="color: #0000ff;">&gt;&lt;/</span><span style="color: #800000;">script</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">10</span>     <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">script </span><span style="color: #ff0000;">type</span><span style="color: #0000ff;">="text/javascript"</span><span style="color: #ff0000;"> src</span><span style="color: #0000ff;">="http://maps.google.com/maps/api/js?sensor=true"</span><span style="color: #0000ff;">&gt;&lt;/</span><span style="color: #800000;">script</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">11</span>     <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">script </span><span style="color: #ff0000;">src</span><span style="color: #0000ff;">="js/gmaps.js"</span><span style="color: #ff0000;"> type</span><span style="color: #0000ff;">="text/javascript"</span><span style="color: #0000ff;">&gt;&lt;/</span><span style="color: #800000;">script</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">12</span>     <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">script </span><span style="color: #ff0000;">type</span><span style="color: #0000ff;">="text/javascript"</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">13</span> <span style="background-color: #f5f5f5; color: #000000;">        $(document).ready(</span><span style="background-color: #f5f5f5; color: #0000ff;">function</span><span style="background-color: #f5f5f5; color: #000000;"> () {
+</span><span style="color: #008080;">14</span>             <span style="background-color: #f5f5f5; color: #0000ff;">var</span><span style="background-color: #f5f5f5; color: #000000;"> path </span><span style="background-color: #f5f5f5; color: #000000;">=</span><span style="background-color: #f5f5f5; color: #000000;"> [];
+</span><span style="color: #008080;">15</span> 
+<span style="color: #008080;">16</span>             <span style="background-color: #f5f5f5; color: #0000ff;">var</span><span style="background-color: #f5f5f5; color: #000000;"> map </span><span style="background-color: #f5f5f5; color: #000000;">=</span> <span style="background-color: #f5f5f5; color: #0000ff;">new</span><span style="background-color: #f5f5f5; color: #000000;"> GMaps({
+</span><span style="color: #008080;">17</span> <span style="background-color: #f5f5f5; color: #000000;">                el: </span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">#map</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">,
+</span><span style="color: #008080;">18</span> <span style="background-color: #f5f5f5; color: #000000;">                lat: </span><span style="background-color: #f5f5f5; color: #000000;">30.657358499999994</span><span style="background-color: #f5f5f5; color: #000000;">,
+</span><span style="color: #008080;">19</span> <span style="background-color: #f5f5f5; color: #000000;">                lng: </span><span style="background-color: #f5f5f5; color: #000000;">104.049977</span>
+<span style="color: #008080;">20</span> <span style="background-color: #f5f5f5; color: #000000;">            });
+</span><span style="color: #008080;">21</span> 
+<span style="color: #008080;">22</span>             <span style="background-color: #f5f5f5; color: #008000;">//</span><span style="background-color: #f5f5f5; color: #008000;">支持html5</span>
+<span style="color: #008080;">23</span> <span style="background-color: #f5f5f5; color: #000000;">            GMaps.geolocate({
+</span><span style="color: #008080;">24</span> <span style="background-color: #f5f5f5; color: #000000;">                success: </span><span style="background-color: #f5f5f5; color: #0000ff;">function</span><span style="background-color: #f5f5f5; color: #000000;"> (position) {
+</span><span style="color: #008080;">25</span>                     <span style="background-color: #f5f5f5; color: #0000ff;">var</span><span style="background-color: #f5f5f5; color: #000000;"> lat </span><span style="background-color: #f5f5f5; color: #000000;">=</span><span style="background-color: #f5f5f5; color: #000000;"> position.coords.latitude, lng </span><span style="background-color: #f5f5f5; color: #000000;">=</span><span style="background-color: #f5f5f5; color: #000000;"> position.coords.longitude;
+</span><span style="color: #008080;">26</span>                     <span style="background-color: #f5f5f5; color: #0000ff;">var</span><span style="background-color: #f5f5f5; color: #000000;"> tmp </span><span style="background-color: #f5f5f5; color: #000000;">=</span><span style="background-color: #f5f5f5; color: #000000;"> [];
+</span><span style="color: #008080;">27</span> <span style="background-color: #f5f5f5; color: #000000;">                    map.setCenter(lat, lng);
+</span><span style="color: #008080;">28</span> <span style="background-color: #f5f5f5; color: #000000;">                    map.drawOverlay({
+</span><span style="color: #008080;">29</span> <span style="background-color: #f5f5f5; color: #000000;">                        lat: lat,
+</span><span style="color: #008080;">30</span> <span style="background-color: #f5f5f5; color: #000000;">                        lng: lng,
+</span><span style="color: #008080;">31</span> <span style="background-color: #f5f5f5; color: #000000;">                        layer: </span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">overlayLayer</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">,
+</span><span style="color: #008080;">32</span> <span style="background-color: #f5f5f5; color: #000000;">                        content: </span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">&lt;div style="border: 1px solid black; color: red;"&gt;高亮哦&lt;/div&gt;</span><span style="background-color: #f5f5f5; color: #000000;">'</span>
+<span style="color: #008080;">33</span> <span style="background-color: #f5f5f5; color: #000000;">                    });
+</span><span style="color: #008080;">34</span> <span style="background-color: #f5f5f5; color: #000000;">                },
+</span><span style="color: #008080;">35</span> <span style="background-color: #f5f5f5; color: #000000;">                error: </span><span style="background-color: #f5f5f5; color: #0000ff;">function</span><span style="background-color: #f5f5f5; color: #000000;"> (error) {
+</span><span style="color: #008080;">36</span> <span style="background-color: #f5f5f5; color: #000000;">                    alert(</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">Geolocation failed: </span><span style="background-color: #f5f5f5; color: #000000;">'</span> <span style="background-color: #f5f5f5; color: #000000;">+</span><span style="background-color: #f5f5f5; color: #000000;"> error.message);
+</span><span style="color: #008080;">37</span> <span style="background-color: #f5f5f5; color: #000000;">                },
+</span><span style="color: #008080;">38</span> <span style="background-color: #f5f5f5; color: #000000;">                not_supported: </span><span style="background-color: #f5f5f5; color: #0000ff;">function</span><span style="background-color: #f5f5f5; color: #000000;"> () {
+</span><span style="color: #008080;">39</span> <span style="background-color: #f5f5f5; color: #000000;">                    alert(</span><span style="background-color: #f5f5f5; color: #000000;">"</span><span style="background-color: #f5f5f5; color: #000000;">Your browser does not support geolocation</span><span style="background-color: #f5f5f5; color: #000000;">"</span><span style="background-color: #f5f5f5; color: #000000;">);
+</span><span style="color: #008080;">40</span> <span style="background-color: #f5f5f5; color: #000000;">                },
+</span><span style="color: #008080;">41</span> <span style="background-color: #f5f5f5; color: #000000;">                always: </span><span style="background-color: #f5f5f5; color: #0000ff;">function</span><span style="background-color: #f5f5f5; color: #000000;"> () {
+</span><span style="color: #008080;">42</span> <span style="background-color: #f5f5f5; color: #000000;">                }
+</span><span style="color: #008080;">43</span> <span style="background-color: #f5f5f5; color: #000000;">            });
+</span><span style="color: #008080;">44</span> 
+<span style="color: #008080;">45</span> 
+<span style="color: #008080;">46</span> <span style="background-color: #f5f5f5; color: #000000;">        });
+</span><span style="color: #008080;">47</span>     <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">script</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">48</span> <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">head</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">49</span> <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">body</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">50</span> <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">input </span><span style="color: #ff0000;">type</span><span style="color: #0000ff;">="text"</span><span style="color: #ff0000;"> value</span><span style="color: #0000ff;">="请输入地址"</span><span style="color: #ff0000;"> id</span><span style="color: #0000ff;">="address"</span> <span style="color: #0000ff;">/&gt;</span>
+<span style="color: #008080;">51</span>     <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">div </span><span style="color: #ff0000;">id</span><span style="color: #0000ff;">="map"</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">52</span>     <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">div</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">53</span>     
+<span style="color: #008080;">54</span> <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">body</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">55</span> <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">html</span><span style="color: #0000ff;">&gt;</span></pre>
+</div>
+<p><img src="13620245845918.png" alt=""></p>
+<h1>右键菜单</h1>
+<p>我们还可以在地图上搞菜单，搞事件哦！！！</p>
+<div class="cnblogs_code" onclick="cnblogs_code_show('66ce2d38-0c41-4e74-a256-0395df343e64')"><img id="code_img_closed_66ce2d38-0c41-4e74-a256-0395df343e64" class="code_img_closed" src="43570758473519.gif" alt=""><img id="code_img_opened_66ce2d38-0c41-4e74-a256-0395df343e64" class="code_img_opened" style="display: none;" onclick="cnblogs_code_hide('66ce2d38-0c41-4e74-a256-0395df343e64',event)" src="16365178109279.gif" alt=""><span class="cnblogs_code_collapse">右键菜单</span>
+<div id="cnblogs_code_open_66ce2d38-0c41-4e74-a256-0395df343e64" class="cnblogs_code_hide">
+<pre><span style="color: #008080;"> 1</span> <span style="color: #0000ff;">&lt;!</span><span style="color: #ff00ff;">DOCTYPE html</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 2</span> <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">html </span><span style="color: #ff0000;">xmlns</span><span style="color: #0000ff;">="http://www.w3.org/1999/xhtml"</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 3</span> <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">head</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 4</span>     <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">title</span><span style="color: #0000ff;">&gt;&lt;/</span><span style="color: #800000;">title</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 5</span>     <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">style </span><span style="color: #ff0000;">type</span><span style="color: #0000ff;">="text/css"</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 6</span> <span style="background-color: #f5f5f5; color: #800000;">        #map </span><span style="background-color: #f5f5f5; color: #000000;">{</span><span style="background-color: #f5f5f5; color: #ff0000;"> width</span><span style="background-color: #f5f5f5; color: #000000;">:</span><span style="background-color: #f5f5f5; color: #0000ff;"> 600px</span><span style="background-color: #f5f5f5; color: #000000;">;</span><span style="background-color: #f5f5f5; color: #ff0000;"> height</span><span style="background-color: #f5f5f5; color: #000000;">:</span><span style="background-color: #f5f5f5; color: #0000ff;"> 400px</span><span style="background-color: #f5f5f5; color: #000000;">;</span> <span style="background-color: #f5f5f5; color: #000000;">}</span>
+<span style="color: #008080;"> 7</span>     
+<span style="color: #008080;"> 8</span>     <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">style</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 9</span>     <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">script </span><span style="color: #ff0000;">src</span><span style="color: #0000ff;">="js/jquery-1.7.1.js"</span><span style="color: #ff0000;"> type</span><span style="color: #0000ff;">="text/javascript"</span><span style="color: #0000ff;">&gt;&lt;/</span><span style="color: #800000;">script</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">10</span>     <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">script </span><span style="color: #ff0000;">type</span><span style="color: #0000ff;">="text/javascript"</span><span style="color: #ff0000;"> src</span><span style="color: #0000ff;">="http://maps.google.com/maps/api/js?sensor=true"</span><span style="color: #0000ff;">&gt;&lt;/</span><span style="color: #800000;">script</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">11</span>     <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">script </span><span style="color: #ff0000;">src</span><span style="color: #0000ff;">="js/gmaps.js"</span><span style="color: #ff0000;"> type</span><span style="color: #0000ff;">="text/javascript"</span><span style="color: #0000ff;">&gt;&lt;/</span><span style="color: #800000;">script</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">12</span>     <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">script </span><span style="color: #ff0000;">type</span><span style="color: #0000ff;">="text/javascript"</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">13</span> <span style="background-color: #f5f5f5; color: #000000;">        $(document).ready(</span><span style="background-color: #f5f5f5; color: #0000ff;">function</span><span style="background-color: #f5f5f5; color: #000000;"> () {
+</span><span style="color: #008080;">14</span>             <span style="background-color: #f5f5f5; color: #0000ff;">var</span><span style="background-color: #f5f5f5; color: #000000;"> path </span><span style="background-color: #f5f5f5; color: #000000;">=</span><span style="background-color: #f5f5f5; color: #000000;"> [];
+</span><span style="color: #008080;">15</span> 
+<span style="color: #008080;">16</span>             <span style="background-color: #f5f5f5; color: #0000ff;">var</span><span style="background-color: #f5f5f5; color: #000000;"> map </span><span style="background-color: #f5f5f5; color: #000000;">=</span> <span style="background-color: #f5f5f5; color: #0000ff;">new</span><span style="background-color: #f5f5f5; color: #000000;"> GMaps({
+</span><span style="color: #008080;">17</span> <span style="background-color: #f5f5f5; color: #000000;">                el: </span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">#map</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">,
+</span><span style="color: #008080;">18</span> <span style="background-color: #f5f5f5; color: #000000;">                lat: </span><span style="background-color: #f5f5f5; color: #000000;">30.657358499999994</span><span style="background-color: #f5f5f5; color: #000000;">,
+</span><span style="color: #008080;">19</span> <span style="background-color: #f5f5f5; color: #000000;">                lng: </span><span style="background-color: #f5f5f5; color: #000000;">104.049977</span>
+<span style="color: #008080;">20</span> <span style="background-color: #f5f5f5; color: #000000;">            });
+</span><span style="color: #008080;">21</span> 
+<span style="color: #008080;">22</span>             <span style="background-color: #f5f5f5; color: #008000;">//</span><span style="background-color: #f5f5f5; color: #008000;">支持html5</span>
+<span style="color: #008080;">23</span> <span style="background-color: #f5f5f5; color: #000000;">            GMaps.geolocate({
+</span><span style="color: #008080;">24</span> <span style="background-color: #f5f5f5; color: #000000;">                success: </span><span style="background-color: #f5f5f5; color: #0000ff;">function</span><span style="background-color: #f5f5f5; color: #000000;"> (position) {
+</span><span style="color: #008080;">25</span>                     <span style="background-color: #f5f5f5; color: #0000ff;">var</span><span style="background-color: #f5f5f5; color: #000000;"> lat </span><span style="background-color: #f5f5f5; color: #000000;">=</span><span style="background-color: #f5f5f5; color: #000000;"> position.coords.latitude, lon </span><span style="background-color: #f5f5f5; color: #000000;">=</span><span style="background-color: #f5f5f5; color: #000000;"> position.coords.longitude;
+</span><span style="color: #008080;">26</span>                     <span style="background-color: #f5f5f5; color: #0000ff;">var</span><span style="background-color: #f5f5f5; color: #000000;"> tmp </span><span style="background-color: #f5f5f5; color: #000000;">=</span><span style="background-color: #f5f5f5; color: #000000;"> [];
+</span><span style="color: #008080;">27</span> <span style="background-color: #f5f5f5; color: #000000;">                    tmp.push(lat);
+</span><span style="color: #008080;">28</span> <span style="background-color: #f5f5f5; color: #000000;">                    tmp.push(lon);
+</span><span style="color: #008080;">29</span> <span style="background-color: #f5f5f5; color: #000000;">                    path.push(tmp);
+</span><span style="color: #008080;">30</span> <span style="background-color: #f5f5f5; color: #000000;">                    map.setCenter(lat, lon);
+</span><span style="color: #008080;">31</span> <span style="background-color: #f5f5f5; color: #000000;">                    map.addMarker({
+</span><span style="color: #008080;">32</span> <span style="background-color: #f5f5f5; color: #000000;">                        lat: </span><span style="background-color: #f5f5f5; color: #000000;">30.657358499999994</span><span style="background-color: #f5f5f5; color: #000000;">,
+</span><span style="color: #008080;">33</span> <span style="background-color: #f5f5f5; color: #000000;">                        lng: </span><span style="background-color: #f5f5f5; color: #000000;">104.049977</span><span style="background-color: #f5f5f5; color: #000000;">,
+</span><span style="color: #008080;">34</span> <span style="background-color: #f5f5f5; color: #000000;">                        title: </span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">您的位置</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">,
+</span><span style="color: #008080;">35</span> <span style="background-color: #f5f5f5; color: #000000;">                        infoWindow: {
+</span><span style="color: #008080;">36</span> <span style="background-color: #f5f5f5; color: #000000;">                            content: </span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">您在这里</span><span style="background-color: #f5f5f5; color: #000000;">'</span>
+<span style="color: #008080;">37</span> <span style="background-color: #f5f5f5; color: #000000;">                        }
+</span><span style="color: #008080;">38</span> <span style="background-color: #f5f5f5; color: #000000;">                    });
+</span><span style="color: #008080;">39</span> <span style="background-color: #f5f5f5; color: #000000;">                },
+</span><span style="color: #008080;">40</span> <span style="background-color: #f5f5f5; color: #000000;">                error: </span><span style="background-color: #f5f5f5; color: #0000ff;">function</span><span style="background-color: #f5f5f5; color: #000000;"> (error) {
+</span><span style="color: #008080;">41</span> <span style="background-color: #f5f5f5; color: #000000;">                    alert(</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">Geolocation failed: </span><span style="background-color: #f5f5f5; color: #000000;">'</span> <span style="background-color: #f5f5f5; color: #000000;">+</span><span style="background-color: #f5f5f5; color: #000000;"> error.message);
+</span><span style="color: #008080;">42</span> <span style="background-color: #f5f5f5; color: #000000;">                },
+</span><span style="color: #008080;">43</span> <span style="background-color: #f5f5f5; color: #000000;">                not_supported: </span><span style="background-color: #f5f5f5; color: #0000ff;">function</span><span style="background-color: #f5f5f5; color: #000000;"> () {
+</span><span style="color: #008080;">44</span> <span style="background-color: #f5f5f5; color: #000000;">                    alert(</span><span style="background-color: #f5f5f5; color: #000000;">"</span><span style="background-color: #f5f5f5; color: #000000;">Your browser does not support geolocation</span><span style="background-color: #f5f5f5; color: #000000;">"</span><span style="background-color: #f5f5f5; color: #000000;">);
+</span><span style="color: #008080;">45</span> <span style="background-color: #f5f5f5; color: #000000;">                },
+</span><span style="color: #008080;">46</span> <span style="background-color: #f5f5f5; color: #000000;">                always: </span><span style="background-color: #f5f5f5; color: #0000ff;">function</span><span style="background-color: #f5f5f5; color: #000000;"> () {
+</span><span style="color: #008080;">47</span> <span style="background-color: #f5f5f5; color: #000000;">                }
+</span><span style="color: #008080;">48</span> <span style="background-color: #f5f5f5; color: #000000;">            });
+</span><span style="color: #008080;">49</span> 
+<span style="color: #008080;">50</span> <span style="background-color: #f5f5f5; color: #000000;">            map.setContextMenu({
+</span><span style="color: #008080;">51</span> <span style="background-color: #f5f5f5; color: #000000;">                control: </span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">map</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">,
+</span><span style="color: #008080;">52</span> <span style="background-color: #f5f5f5; color: #000000;">                options: [{
+</span><span style="color: #008080;">53</span> <span style="background-color: #f5f5f5; color: #000000;">                    title: </span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">增加锚点</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">,
+</span><span style="color: #008080;">54</span> <span style="background-color: #f5f5f5; color: #000000;">                    name: </span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">addMarker</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">,
+</span><span style="color: #008080;">55</span> <span style="background-color: #f5f5f5; color: #000000;">                    action: </span><span style="background-color: #f5f5f5; color: #0000ff;">function</span><span style="background-color: #f5f5f5; color: #000000;"> (e) {
+</span><span style="color: #008080;">56</span>                         <span style="background-color: #f5f5f5; color: #0000ff;">this</span><span style="background-color: #f5f5f5; color: #000000;">.addMarker({
+</span><span style="color: #008080;">57</span> <span style="background-color: #f5f5f5; color: #000000;">                            lat: e.latLng.lat(),
+</span><span style="color: #008080;">58</span> <span style="background-color: #f5f5f5; color: #000000;">                            lng: e.latLng.lng(),
+</span><span style="color: #008080;">59</span> <span style="background-color: #f5f5f5; color: #000000;">                            title: </span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">新增锚点</span><span style="background-color: #f5f5f5; color: #000000;">'</span>
+<span style="color: #008080;">60</span> <span style="background-color: #f5f5f5; color: #000000;">                        });
+</span><span style="color: #008080;">61</span>                         <span style="background-color: #f5f5f5; color: #0000ff;">this</span><span style="background-color: #f5f5f5; color: #000000;">.hideContextMenu();
+</span><span style="color: #008080;">62</span> <span style="background-color: #f5f5f5; color: #000000;">                        alert(</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">弹出菜单执行操作</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">);
+</span><span style="color: #008080;">63</span> <span style="background-color: #f5f5f5; color: #000000;">                    }
+</span><span style="color: #008080;">64</span> <span style="background-color: #f5f5f5; color: #000000;">                }]
+</span><span style="color: #008080;">65</span> 
+<span style="color: #008080;">66</span> <span style="background-color: #f5f5f5; color: #000000;">            });
+</span><span style="color: #008080;">67</span> <span style="background-color: #f5f5f5; color: #000000;">        });
+</span><span style="color: #008080;">68</span>     <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">script</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">69</span> <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">head</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">70</span> <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">body</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">71</span> <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">input </span><span style="color: #ff0000;">type</span><span style="color: #0000ff;">="text"</span><span style="color: #ff0000;"> value</span><span style="color: #0000ff;">="请输入地址"</span><span style="color: #ff0000;"> id</span><span style="color: #0000ff;">="address"</span> <span style="color: #0000ff;">/&gt;</span>
+<span style="color: #008080;">72</span>     <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">div </span><span style="color: #ff0000;">id</span><span style="color: #0000ff;">="map"</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">73</span>     <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">div</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">74</span>     
+<span style="color: #008080;">75</span> <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">body</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">76</span> <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">html</span><span style="color: #0000ff;">&gt;</span></pre>
+</div>
+</div>
+<p><img src="38835219231894.png" alt=""></p>
+<h1>锚点群</h1>
+<p>最后，我们来看一个非常有用的功能</p>
+<div class="cnblogs_code">
+<pre><span style="color: #008080;"> 1</span> <span style="color: #0000ff;">&lt;!</span><span style="color: #ff00ff;">DOCTYPE html</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 2</span> <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">html </span><span style="color: #ff0000;">xmlns</span><span style="color: #0000ff;">="http://www.w3.org/1999/xhtml"</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 3</span> <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">head</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 4</span>     <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">title</span><span style="color: #0000ff;">&gt;&lt;/</span><span style="color: #800000;">title</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 5</span>     <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">style </span><span style="color: #ff0000;">type</span><span style="color: #0000ff;">="text/css"</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 6</span> <span style="background-color: #f5f5f5; color: #800000;">        #map </span><span style="background-color: #f5f5f5; color: #000000;">{</span><span style="background-color: #f5f5f5; color: #ff0000;"> width</span><span style="background-color: #f5f5f5; color: #000000;">:</span><span style="background-color: #f5f5f5; color: #0000ff;"> 600px</span><span style="background-color: #f5f5f5; color: #000000;">;</span><span style="background-color: #f5f5f5; color: #ff0000;"> height</span><span style="background-color: #f5f5f5; color: #000000;">:</span><span style="background-color: #f5f5f5; color: #0000ff;"> 400px</span><span style="background-color: #f5f5f5; color: #000000;">;</span> <span style="background-color: #f5f5f5; color: #000000;">}</span>
+<span style="color: #008080;"> 7</span>     
+<span style="color: #008080;"> 8</span>     <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">style</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 9</span>     <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">script </span><span style="color: #ff0000;">src</span><span style="color: #0000ff;">="js/jquery-1.7.1.js"</span><span style="color: #ff0000;"> type</span><span style="color: #0000ff;">="text/javascript"</span><span style="color: #0000ff;">&gt;&lt;/</span><span style="color: #800000;">script</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">10</span>     <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">script </span><span style="color: #ff0000;">type</span><span style="color: #0000ff;">="text/javascript"</span><span style="color: #ff0000;"> src</span><span style="color: #0000ff;">="http://maps.google.com/maps/api/js?sensor=true"</span><span style="color: #0000ff;">&gt;&lt;/</span><span style="color: #800000;">script</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">11</span>     <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">script </span><span style="color: #ff0000;">src</span><span style="color: #0000ff;">="js/gmaps.js"</span><span style="color: #ff0000;"> type</span><span style="color: #0000ff;">="text/javascript"</span><span style="color: #0000ff;">&gt;&lt;/</span><span style="color: #800000;">script</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">12</span>       <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">script </span><span style="color: #ff0000;">type</span><span style="color: #0000ff;">="text/javascript"</span><span style="color: #ff0000;"> src</span><span style="color: #0000ff;">="http://google-maps-utility-library-v3.googlecode.com/svn/tags/markerclusterer/1.0/src/markerclusterer.js"</span><span style="color: #0000ff;">&gt;&lt;/</span><span style="color: #800000;">script</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">13</span>     <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">script </span><span style="color: #ff0000;">type</span><span style="color: #0000ff;">="text/javascript"</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">14</span> <span style="background-color: #f5f5f5; color: #000000;">        $(document).ready(</span><span style="background-color: #f5f5f5; color: #0000ff;">function</span><span style="background-color: #f5f5f5; color: #000000;"> () {
+</span><span style="color: #008080;">15</span>             <span style="background-color: #f5f5f5; color: #0000ff;">var</span><span style="background-color: #f5f5f5; color: #000000;"> path </span><span style="background-color: #f5f5f5; color: #000000;">=</span><span style="background-color: #f5f5f5; color: #000000;"> [];
+</span><span style="color: #008080;">16</span>             <span style="background-color: #f5f5f5; color: #0000ff;">var</span><span style="background-color: #f5f5f5; color: #000000;"> map </span><span style="background-color: #f5f5f5; color: #000000;">=</span> <span style="background-color: #f5f5f5; color: #0000ff;">new</span><span style="background-color: #f5f5f5; color: #000000;"> GMaps({
+</span><span style="color: #008080;">17</span> <span style="background-color: #f5f5f5; color: #000000;">                div: </span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">#map</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">,
+</span><span style="color: #008080;">18</span> <span style="background-color: #f5f5f5; color: #000000;">                lat: </span><span style="background-color: #f5f5f5; color: #000000;">30.657358499999994</span><span style="background-color: #f5f5f5; color: #000000;">,
+</span><span style="color: #008080;">19</span> <span style="background-color: #f5f5f5; color: #000000;">                lng: </span><span style="background-color: #f5f5f5; color: #000000;">104.049977</span><span style="background-color: #f5f5f5; color: #000000;">,
+</span><span style="color: #008080;">20</span> <span style="background-color: #f5f5f5; color: #000000;">                markerClusterer: </span><span style="background-color: #f5f5f5; color: #0000ff;">function</span><span style="background-color: #f5f5f5; color: #000000;"> (map) {
+</span><span style="color: #008080;">21</span>                     <span style="background-color: #f5f5f5; color: #0000ff;">return</span> <span style="background-color: #f5f5f5; color: #0000ff;">new</span><span style="background-color: #f5f5f5; color: #000000;"> MarkerClusterer(map);
+</span><span style="color: #008080;">22</span> <span style="background-color: #f5f5f5; color: #000000;">                }
+</span><span style="color: #008080;">23</span> <span style="background-color: #f5f5f5; color: #000000;">            });
+</span><span style="color: #008080;">24</span>             <span style="background-color: #f5f5f5; color: #0000ff;">var</span><span style="background-color: #f5f5f5; color: #000000;"> lat_span </span><span style="background-color: #f5f5f5; color: #000000;">=</span> <span style="background-color: #f5f5f5; color: #000000;">30.657358499999994</span><span style="background-color: #f5f5f5; color: #000000;">;
+</span><span style="color: #008080;">25</span>             <span style="background-color: #f5f5f5; color: #0000ff;">var</span><span style="background-color: #f5f5f5; color: #000000;"> lng_span </span><span style="background-color: #f5f5f5; color: #000000;">=</span> <span style="background-color: #f5f5f5; color: #000000;">104.049977</span><span style="background-color: #f5f5f5; color: #000000;">;
+</span><span style="color: #008080;">26</span>             <span style="background-color: #f5f5f5; color: #0000ff;">for</span><span style="background-color: #f5f5f5; color: #000000;"> (</span><span style="background-color: #f5f5f5; color: #0000ff;">var</span><span style="background-color: #f5f5f5; color: #000000;"> i </span><span style="background-color: #f5f5f5; color: #000000;">=</span> <span style="background-color: #f5f5f5; color: #000000;">0</span><span style="background-color: #f5f5f5; color: #000000;">; i </span><span style="background-color: #f5f5f5; color: #000000;">&lt;</span> <span style="background-color: #f5f5f5; color: #000000;">100</span><span style="background-color: #f5f5f5; color: #000000;">; i</span><span style="background-color: #f5f5f5; color: #000000;">++</span><span style="background-color: #f5f5f5; color: #000000;">) {
+</span><span style="color: #008080;">27</span>                 <span style="background-color: #f5f5f5; color: #0000ff;">var</span><span style="background-color: #f5f5f5; color: #000000;"> latitude </span><span style="background-color: #f5f5f5; color: #000000;">=</span><span style="background-color: #f5f5f5; color: #000000;"> Math.random()</span><span style="background-color: #f5f5f5; color: #000000;">*</span><span style="background-color: #f5f5f5; color: #000000;">0.01</span>  <span style="background-color: #f5f5f5; color: #000000;">+</span> <span style="background-color: #f5f5f5; color: #000000;">30.657358499999994</span><span style="background-color: #f5f5f5; color: #000000;">;
+</span><span style="color: #008080;">28</span>                 <span style="background-color: #f5f5f5; color: #0000ff;">var</span><span style="background-color: #f5f5f5; color: #000000;"> longitude </span><span style="background-color: #f5f5f5; color: #000000;">=</span><span style="background-color: #f5f5f5; color: #000000;"> Math.random()</span><span style="background-color: #f5f5f5; color: #000000;">*</span><span style="background-color: #f5f5f5; color: #000000;">0.01</span> <span style="background-color: #f5f5f5; color: #000000;">+</span> <span style="background-color: #f5f5f5; color: #000000;">104.049977</span><span style="background-color: #f5f5f5; color: #000000;">;
+</span><span style="color: #008080;">29</span> 
+<span style="color: #008080;">30</span> <span style="background-color: #f5f5f5; color: #000000;">                map.addMarker({
+</span><span style="color: #008080;">31</span> <span style="background-color: #f5f5f5; color: #000000;">                    lat: latitude,
+</span><span style="color: #008080;">32</span> <span style="background-color: #f5f5f5; color: #000000;">                    lng: longitude,
+</span><span style="color: #008080;">33</span> <span style="background-color: #f5f5f5; color: #000000;">                    title: </span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">Marker #</span><span style="background-color: #f5f5f5; color: #000000;">'</span> <span style="background-color: #f5f5f5; color: #000000;">+</span><span style="background-color: #f5f5f5; color: #000000;"> i
+</span><span style="color: #008080;">34</span> <span style="background-color: #f5f5f5; color: #000000;">                });
+</span><span style="color: #008080;">35</span> <span style="background-color: #f5f5f5; color: #000000;">            }
+</span><span style="color: #008080;">36</span> <span style="background-color: #f5f5f5; color: #000000;">        });
+</span><span style="color: #008080;">37</span>     <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">script</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">38</span> <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">head</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">39</span> <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">body</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">40</span> <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">input </span><span style="color: #ff0000;">type</span><span style="color: #0000ff;">="text"</span><span style="color: #ff0000;"> value</span><span style="color: #0000ff;">="请输入地址"</span><span style="color: #ff0000;"> id</span><span style="color: #0000ff;">="address"</span> <span style="color: #0000ff;">/&gt;</span>
+<span style="color: #008080;">41</span>     <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">div </span><span style="color: #ff0000;">id</span><span style="color: #0000ff;">="map"</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">42</span>     <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">div</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">43</span>     
+<span style="color: #008080;">44</span> <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">body</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">45</span> <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">html</span><span style="color: #0000ff;">&gt;</span></pre>
+</div>
+<p><img src="6385545724852.png" alt=""></p>
+<p>大家看到了，根据此功能可以完成复杂的应用哦！！！</p>
+<h1>结语</h1>
+<p>好了，今天就到这了，经过这次的学习，我想关于地图的应用应该都不在话下了。<span style="color: #ff0000;"><strong>需要源码直接搜索GMaps.js里面去看吧</strong></span>，我这个都是抄袭哦。</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+                </div>
+
+                <div class='span3 sidebar'>
+                    <h2>导航栏</h2>
+                    <ul class="nav nav-tabs nav-stacked">
+                             				<li><a href="http://songboriceboy.github.io/xxoo/html/HTML5&CSS3/CSS3ctzMediaQuerieszywcldCSS3wmlgzzzj/index.html">【CSS3初探之MediaQueries】终于完成了的CSS3，我们来个终章总结！</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/HTML5&CSS3/CSS3ctzbxydhlrjtdCSS3/index.html">【CSS3初探之变形与动画】令人惊叹的CSS3</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/HTML5&CSS3/CSS3ctzztwbxgrrkblsdCSS3/index.html">【CSS3初探之字体、文本相关】让人开不了始的CSS3。。。</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/HTML5&CSS3/CSS3ctzhxgyswmyrygk/index.html">【CSS3初探之盒相关样式】我们一人一个框。。。</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/HTML5&CSS3/CSS3ctzbjbkxgqdyldclyjqdwfzofferqdyt/index.html">【CSS3初探之背景边框相关】奇葩的与老大吵了一架，奇葩的五分钟offer，奇葩的一天。。。</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/HTML5&CSS3/HTML5&CSS3jjxx02HeaderdsxCSSzdbj/index.html">【HTML5&CSS3进阶学习02】Header的实现·CSS中的布局</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/HTML5&CSS3/HTML5ctzformbqjfbdyzzjwjscjctf/index.html">【HTML5初探之form标签】解放表单验证、增加文件上传、集成拖放</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/HTML5&CSS3/HTML5ctzGeolocationAPIrwmhqnsddz/index.html">【HTML5初探之GeolocationAPI】让我们获取女神的地址</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/HTML5&CSS3/HTML5ctzWebWorkerswyyndxc/index.html">【HTML5初探之WebWorkers】网页也能多线程</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/HTML5&CSS3/HTML5ctzdmtysspbfHTML5Flashscswd/index.html">【HTML5初探之多媒体元素】视频播放HTML5、Flash谁才是王道？</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/HTML5&CSS3/HTML5ctzbdccrgmysjk/index.html">【HTML5初探之本地存储】如果没有数据库。。。</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/HTML5&CSS3/HTML5ctzlxyyrhdzlqqwlldwz/index.html">【HTML5初探之离线应用】如何打造零请求、无流量的网站？</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/HTML5&CSS3/HTML5ctzhztxskwcanvasysylxydwebym/index.html">【HTML5初探之绘制图像（上）】看我canvas元素引领下一代web页面</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/HTML5&CSS3/HTML5ctzhztxxkwcanvasysylxydwebym/index.html">【HTML5初探之绘制图像（下）】看我canvas元素引领下一代web页面</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/HTML5&CSS3/HTML5ctztxAPIkymjbzgsjtsbsm/index.html">【HTML5初探之通信API】跨域门槛不再高、数据推送不是梦</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/HTML5&CSS3/xpldbkrwmdbkgjplrwmdbkzcxysbj/index.html">【写漂亮的博客】让我们的博客更加漂亮，让我们的博客支持响应式布局！</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/HTML5&CSS3/ctHTML5zsyxbqbjyhtml5bjwdbky/index.html">【初探HTML5之使用新标签布局】用html5布局我的博客页！</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/HTML5&CSS3/szHTML5yCSS3mfzzwkymlfym/index.html">【实战HTML5与CSS3】免费制作威客页面啦（附源码）</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/HTML5&CSS3/szHTML5yCSS3yHTML5hCSS3zzyms/index.html">【实战HTML5与CSS3】用HTML5和CSS3制作页面（上）</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/HTML5&CSS3/szHTML5yCSS3dypctssmlddhxldtpbz/index.html">【实战HTML5与CSS3第一篇】初探水深，美丽的导航，绚丽的图片爆炸！！</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/HTML5&CSS3/szHTML5yCSS3dspwdygHTML5wydsl(tgym)/index.html">【实战HTML5与CSS3第三篇】我第一个HTML5网页诞生了(提供源码)</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/HTML5&CSS3/szHTML5yCSS3depxldksdh/index.html">【实战HTML5与CSS3第二篇】绚丽的快速导航！</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/HTML5&CSS3/tsHTML5ded01HTML5dqsjsyjls/index.html">【探索HTML5第二弹01】HTML5的前世今生以及来世</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/HTML5&CSS3/tsHTML5ded03zjdtyydsjkwmgoogledtkykxsm/index.html">【探索HTML5第二弹03】走近地图应用的世界，看我们google地图可以看些什么！</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/HTML5&CSS3/tsHTML5ded04xysbjsrwmyqlxysbjb/index.html">【探索HTML5第二弹04】响应式布局（上），让我们一起来响应式布局吧</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/HTML5&CSS3/tsHTML5ded05xysbjzybybxysbj/index.html">【探索HTML5第二弹05】响应式布局（中），一步一步响应式布局</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/HTML5&CSS3/rhtzCSS3ddh/index.html">如何停止CSS3的动画？</a></li>
+    				                                         
+                    </ul>
+                </div>
+            </div>
+
+        </div>
+    </body>
+</html>

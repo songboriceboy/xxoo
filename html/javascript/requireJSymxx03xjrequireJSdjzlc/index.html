@@ -1,0 +1,757 @@
+﻿<!DOCTYPE html>
+
+<html lang="zh">
+    <head>
+        <meta charset="utf-8">
+        <meta name="description" content="android,ios" />
+        <meta name="keywords" content="android,ios" />
+
+        <title>叶小钗</title>
+        <style type='text/css'>
+            body {
+                background-color: #CCC;
+            }
+        </style>
+        <link rel="stylesheet" href="../../../css/bootstrap.css" />
+    </head>
+
+    <body>
+        <div class="container">
+
+            <h1>叶小钗</h1>
+
+            <div class='navbar navbar-inverse'>
+                <div class='navbar-inner nav-collapse' style="height: auto;">
+                    <ul class="nav">
+                              				<li><a href="http://songboriceboy.github.io/xxoo/html/blade/index.html">blade</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/css/index.html">css</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/HTML5&CSS3/index.html">HTML5&CSS3</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/index.html">javascript</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Javaxx/index.html">Java学习</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/nodejs/index.html">nodejs</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/requirejs/index.html">requirejs</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/index.html">Web前端</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/xxgw/index.html">学习感悟</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/gzdd/index.html">工作点滴</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/jkxx/index.html">接口学习</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/wfl/index.html">未分类</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/ydkf/index.html">移动开发</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/sjms/index.html">设计模式</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/mst/index.html">面试题</a></li>
+    				                      </ul>
+                </div>
+            </div>
+
+            <div id='content' class='row-fluid'>
+
+                <div class='span9 main'>
+				<div style="color:blue" align=center>【requireJS源码学习03】细究requireJS的加载流程</div><br><h1>前言</h1>
+<p>这个星期折腾了一周，中间没有什么时间学习，周末又干了些其它事情，这个时候正好有时间，我们一起来继续学习requireJS吧</p>
+<p>还是那句话，小钗觉得requireJS本身还是有点难度的，估计完全吸收这个月就过去了，等requireJS学习结束后，我们的学习流程可能就朝两个方向走</p>
+<p>① 单页应用框架/UI库整理</p>
+<p>② UML文档相关/重构思想相关（软性素质）</p>
+<p>然后以上的估计估计会持续3、4个月时间，希望学习下来自己能有不一样的提高，成为一个合格的前端，于是我们继续今天的内容吧</p>
+<h1>requireJS中的队列</h1>
+<p>经过之前的学习，我们队requireJS的大概结构以及工作有了一定认识，但是，我们对于其中一些细节点事实上还是不太清晰的，比如里面的队列相关</p>
+<p>requireJS中有几种队列，每种队列是干神马的，这些是我们需要挖掘的，而且也是真正理解requireJS实现原理的难点</p>
+<p>首先，requireJS有两个队列：</p>
+<p>①&nbsp;globalDefQueue / 全局</p>
+<p>② defQueue / newContext 闭包</p>
+<p>这个队列事实上是一个数组，他们具体干了什么我们还不得而知，但是我下意识觉得他比较关键......</p>
+<p>我们这里来简单的理一理这两个队列</p>
+<h2>globalDefQueue&nbsp;</h2>
+<p>这个是全局性的队列，与之相关的第一个函数为takeGlobalQueue</p>
+<h3>takeGlobalQueue</h3>
+<div class="cnblogs_code">
+<pre><span style="color: #008000;">/*</span><span style="color: #008000;">*
+* Internal method to transfer globalQueue items to this context's
+* defQueue.
+</span><span style="color: #008000;">*/</span>
+<span style="color: #0000ff;">function</span><span style="color: #000000;"> takeGlobalQueue() {
+  </span><span style="color: #008000;">//</span><span style="color: #008000;">Push all the globalDefQueue items into the context's defQueue</span>
+  <span style="color: #0000ff;">if</span><span style="color: #000000;"> (globalDefQueue.length) {
+    </span><span style="color: #008000;">//</span><span style="color: #008000;">Array splice in the values since the context code has a</span>
+    <span style="color: #008000;">//</span><span style="color: #008000;">local var ref to defQueue, so cannot just reassign the one</span>
+    <span style="color: #008000;">//</span><span style="color: #008000;">on context.</span>
+<span style="color: #000000;">    apsp.apply(defQueue, [defQueue.length </span>- 1, 0<span style="color: #000000;">].concat(globalDefQueue));
+    globalDefQueue </span>=<span style="color: #000000;"> [];
+  }
+}</span></pre>
+</div>
+<p>这个函数中涉及到了defQueue中的的操作，每一次有效操作后都会将全局队列清空，其中有一个apsp方法这个是数组的splice方法</p>
+<p>该函数主要用于将globalDefQueue中的数据导入defQueue，而globalDefQueue只会有可能在define函数出被压入数据，具体原因还得往后看</p>
+<p>所以这里的takeGlobalQueue其实就如注释所说，将全局队列中的项目转入context defQueue中</p>
+<h3>define</h3>
+<p><span style="line-height: 1.5;">第二个涉及globalDefQueue函数为</span><span style="line-height: 1.5;">define</span></p>
+<div class="cnblogs_code" onclick="cnblogs_code_show('b60bc5ec-6e21-41c5-8fcd-05f945dd507f')"><img id="code_img_closed_b60bc5ec-6e21-41c5-8fcd-05f945dd507f" class="code_img_closed" src="43570758473519.gif" alt=""><img id="code_img_opened_b60bc5ec-6e21-41c5-8fcd-05f945dd507f" class="code_img_opened" style="display: none;" onclick="cnblogs_code_hide('b60bc5ec-6e21-41c5-8fcd-05f945dd507f',event)" src="16365178109279.gif" alt="">
+<div id="cnblogs_code_open_b60bc5ec-6e21-41c5-8fcd-05f945dd507f" class="cnblogs_code_hide">
+<pre><span style="color: #008000;">/*</span><span style="color: #008000;">*
+* The function that handles definitions of modules. Differs from
+* require() in that a string for the module should be the first argument,
+* and the function to execute after dependencies are loaded should
+* return a value to define the module corresponding to the first argument's
+* name.
+</span><span style="color: #008000;">*/</span><span style="color: #000000;">
+define </span>= <span style="color: #0000ff;">function</span><span style="color: #000000;"> (name, deps, callback) {
+  </span><span style="color: #0000ff;">var</span><span style="color: #000000;"> node, context;
+
+  </span><span style="color: #008000;">//</span><span style="color: #008000;">Allow for anonymous modules</span>
+  <span style="color: #0000ff;">if</span> (<span style="color: #0000ff;">typeof</span> name !== 'string'<span style="color: #000000;">) {
+    </span><span style="color: #008000;">//</span><span style="color: #008000;">Adjust args appropriately</span>
+    callback =<span style="color: #000000;"> deps;
+    deps </span>=<span style="color: #000000;"> name;
+    name </span>= <span style="color: #0000ff;">null</span><span style="color: #000000;">;
+  }
+
+  </span><span style="color: #008000;">//</span><span style="color: #008000;">This module may not have dependencies</span>
+  <span style="color: #0000ff;">if</span> (!<span style="color: #000000;">isArray(deps)) {
+    callback </span>=<span style="color: #000000;"> deps;
+    deps </span>= <span style="color: #0000ff;">null</span><span style="color: #000000;">;
+  }
+
+  </span><span style="color: #008000;">//</span><span style="color: #008000;">If no name, and callback is a function, then figure out if it a</span>
+  <span style="color: #008000;">//</span><span style="color: #008000;">CommonJS thing with dependencies.</span>
+  <span style="color: #0000ff;">if</span> (!deps &amp;&amp;<span style="color: #000000;"> isFunction(callback)) {
+    deps </span>=<span style="color: #000000;"> [];
+    </span><span style="color: #008000;">//</span><span style="color: #008000;">Remove comments from the callback string,</span>
+    <span style="color: #008000;">//</span><span style="color: #008000;">look for require calls, and pull them into the dependencies,</span>
+    <span style="color: #008000;">//</span><span style="color: #008000;">but only if there are function args.</span>
+    <span style="color: #0000ff;">if</span><span style="color: #000000;"> (callback.length) {
+      callback
+                  .toString()
+                  .replace(commentRegExp, </span>''<span style="color: #000000;">)
+                  .replace(cjsRequireRegExp, </span><span style="color: #0000ff;">function</span><span style="color: #000000;"> (match, dep) {
+                    deps.push(dep);
+                  });
+
+      </span><span style="color: #008000;">//</span><span style="color: #008000;">May be a CommonJS thing even without require calls, but still</span>
+      <span style="color: #008000;">//</span><span style="color: #008000;">could use exports, and module. Avoid doing exports and module</span>
+      <span style="color: #008000;">//</span><span style="color: #008000;">work though if it just needs require.</span>
+      <span style="color: #008000;">//</span><span style="color: #008000;">REQUIRES the function to expect the CommonJS variables in the</span>
+      <span style="color: #008000;">//</span><span style="color: #008000;">order listed below.</span>
+      deps = (callback.length === 1 ? ['require'] : ['require', 'exports', 'module'<span style="color: #000000;">]).concat(deps);
+    }
+  }
+
+  </span><span style="color: #008000;">//</span><span style="color: #008000;">If in IE 6-8 and hit an anonymous define() call, do the interactive</span>
+  <span style="color: #008000;">//</span><span style="color: #008000;">work.</span>
+  <span style="color: #0000ff;">if</span><span style="color: #000000;"> (useInteractive) {
+    node </span>= currentlyAddingScript ||<span style="color: #000000;"> getInteractiveScript();
+    </span><span style="color: #0000ff;">if</span><span style="color: #000000;"> (node) {
+      </span><span style="color: #0000ff;">if</span> (!<span style="color: #000000;">name) {
+        name </span>= node.getAttribute('data-requiremodule'<span style="color: #000000;">);
+      }
+      context </span>= contexts[node.getAttribute('data-requirecontext'<span style="color: #000000;">)];
+    }
+  }
+
+  </span><span style="color: #008000;">//</span><span style="color: #008000;">Always save off evaluating the def call until the script onload handler.</span>
+  <span style="color: #008000;">//</span><span style="color: #008000;">This allows multiple modules to be in a file without prematurely</span>
+  <span style="color: #008000;">//</span><span style="color: #008000;">tracing dependencies, and allows for anonymous module support,</span>
+  <span style="color: #008000;">//</span><span style="color: #008000;">where the module name is not known until the script onload event</span>
+  <span style="color: #008000;">//</span><span style="color: #008000;">occurs. If no context, use the global queue, and get it processed</span>
+  <span style="color: #008000;">//</span><span style="color: #008000;">in the onscript load callback.</span>
+  (context ?<span style="color: #000000;"> context.defQueue : globalDefQueue).push([name, deps, callback]);
+};</span></pre>
+</div>
+<span class="cnblogs_code_collapse">View Code</span></div>
+<p>他会根据context是否初始化决定当前键值标识存于哪个队列，据代码看来，如果是标准浏览器应该都会先走globalDefQueue队列</p>
+<p>然后就没有然后了，我们接下来再看看吧</p>
+<h2>defQueue&nbsp;</h2>
+<p>首先defQueue处于newContext闭包环境中，按照之前的知识来看，newContext每次也只会执行一次，所以这个defQueue以后会被各个函数共享</p>
+<p>操作defQueue的第一个函数为</p>
+<h3>intakeDefines</h3>
+<div class="cnblogs_code">
+<pre><span style="color: #0000ff;">function</span><span style="color: #000000;"> intakeDefines() {
+  </span><span style="color: #0000ff;">var</span><span style="color: #000000;"> args;
+  </span><span style="color: #008000;">//</span><span style="color: #008000;">Any defined modules in the global queue, intake them now.</span>
+<span style="color: #000000;">  takeGlobalQueue();
+  </span><span style="color: #008000;">//</span><span style="color: #008000;">Make sure any remaining defQueue items get properly processed.</span>
+  <span style="color: #0000ff;">while</span><span style="color: #000000;"> (defQueue.length) {
+    args </span>=<span style="color: #000000;"> defQueue.shift();
+    </span><span style="color: #0000ff;">if</span> (args[0] === <span style="color: #0000ff;">null</span><span style="color: #000000;">) {
+      </span><span style="color: #0000ff;">return</span> onError(makeError('mismatch', 'Mismatched anonymous define() module: ' + args[args.length - 1<span style="color: #000000;">]));
+    } </span><span style="color: #0000ff;">else</span><span style="color: #000000;"> {
+      </span><span style="color: #008000;">//</span><span style="color: #008000;">args are id, deps, factory. Should be normalized by the</span>
+      <span style="color: #008000;">//</span><span style="color: #008000;">define() function.</span>
+<span style="color: #000000;">      callGetModule(args);
+    }
+  }
+}</span></pre>
+</div>
+<p>引入定义，第一件事情就是将globalDefQueue中的项目移入defQueue中，而后将其中的项目一个个取出并执行callGetModule方法，但是我这里好像都没有效果，这块先忽略之</p>
+<p>第二个函数为completeLoad</p>
+<h3>completeLoad</h3>
+<div class="cnblogs_code" onclick="cnblogs_code_show('16477b13-17a3-477d-a152-9a73f8781d96')"><img id="code_img_closed_16477b13-17a3-477d-a152-9a73f8781d96" class="code_img_closed" src="43570758473519.gif" alt=""><img id="code_img_opened_16477b13-17a3-477d-a152-9a73f8781d96" class="code_img_opened" style="display: none;" onclick="cnblogs_code_hide('16477b13-17a3-477d-a152-9a73f8781d96',event)" src="16365178109279.gif" alt="">
+<div id="cnblogs_code_open_16477b13-17a3-477d-a152-9a73f8781d96" class="cnblogs_code_hide">
+<pre><span style="color: #008000;">/*</span><span style="color: #008000;">*
+* Internal method used by environment adapters to complete a load event.
+* A load event could be a script load or just a load pass from a synchronous
+* load call.
+* @param {String} moduleName the name of the module to potentially complete.
+</span><span style="color: #008000;">*/</span><span style="color: #000000;">
+completeLoad: </span><span style="color: #0000ff;">function</span><span style="color: #000000;"> (moduleName) {
+  </span><span style="color: #0000ff;">var</span><span style="color: #000000;"> found, args, mod,
+              shim </span>= getOwn(config.shim, moduleName) ||<span style="color: #000000;"> {},
+              shExports </span>=<span style="color: #000000;"> shim.exports;
+
+  takeGlobalQueue();
+
+  </span><span style="color: #0000ff;">while</span><span style="color: #000000;"> (defQueue.length) {
+    args </span>=<span style="color: #000000;"> defQueue.shift();
+    </span><span style="color: #0000ff;">if</span> (args[0] === <span style="color: #0000ff;">null</span><span style="color: #000000;">) {
+      args[</span>0] =<span style="color: #000000;"> moduleName;
+      </span><span style="color: #008000;">//</span><span style="color: #008000;">If already found an anonymous module and bound it</span>
+      <span style="color: #008000;">//</span><span style="color: #008000;">to this name, then this is some other anon module</span>
+      <span style="color: #008000;">//</span><span style="color: #008000;">waiting for its completeLoad to fire.</span>
+      <span style="color: #0000ff;">if</span><span style="color: #000000;"> (found) {
+        </span><span style="color: #0000ff;">break</span><span style="color: #000000;">;
+      }
+      found </span>= <span style="color: #0000ff;">true</span><span style="color: #000000;">;
+    } </span><span style="color: #0000ff;">else</span> <span style="color: #0000ff;">if</span> (args[0] ===<span style="color: #000000;"> moduleName) {
+      </span><span style="color: #008000;">//</span><span style="color: #008000;">Found matching define call for this script!</span>
+      found = <span style="color: #0000ff;">true</span><span style="color: #000000;">;
+    }
+
+    callGetModule(args);
+  }
+
+  </span><span style="color: #008000;">//</span><span style="color: #008000;">Do this after the cycle of callGetModule in case the result</span>
+  <span style="color: #008000;">//</span><span style="color: #008000;">of those calls/init calls changes the registry.</span>
+  mod =<span style="color: #000000;"> getOwn(registry, moduleName);
+
+  </span><span style="color: #0000ff;">if</span> (!found &amp;&amp; !hasProp(defined, moduleName) &amp;&amp; mod &amp;&amp; !<span style="color: #000000;">mod.inited) {
+    </span><span style="color: #0000ff;">if</span> (config.enforceDefine &amp;&amp; (!shExports || !<span style="color: #000000;">getGlobal(shExports))) {
+      </span><span style="color: #0000ff;">if</span><span style="color: #000000;"> (hasPathFallback(moduleName)) {
+        </span><span style="color: #0000ff;">return</span><span style="color: #000000;">;
+      } </span><span style="color: #0000ff;">else</span><span style="color: #000000;"> {
+        </span><span style="color: #0000ff;">return</span> onError(makeError('nodefine'<span style="color: #000000;">,
+                                        </span>'No define call for ' +<span style="color: #000000;"> moduleName,
+                                        </span><span style="color: #0000ff;">null</span><span style="color: #000000;">,
+                                        [moduleName]));
+      }
+    } </span><span style="color: #0000ff;">else</span><span style="color: #000000;"> {
+      </span><span style="color: #008000;">//</span><span style="color: #008000;">A script that does not call define(), so just simulate</span>
+      <span style="color: #008000;">//</span><span style="color: #008000;">the call for it.</span>
+      callGetModule([moduleName, (shim.deps ||<span style="color: #000000;"> []), shim.exportsFn]);
+    }
+  }
+
+  checkLoaded();
+},</span></pre>
+</div>
+<span class="cnblogs_code_collapse">View Code</span></div>
+<p>这个会将globalDefQueue中的队列项搞到defQueue中，然后处理一下就调用callgetModule方法，其中参数是这样的</p>
+<p><img src="27113658283044.png" alt="">&nbsp;<img src="37663757965517.png" alt=""></p>
+<p><strong>callGetModule</strong></p>
+<div class="cnblogs_code">
+<pre><span style="color: #0000ff;">function</span><span style="color: #000000;"> callGetModule(args) {
+  </span><span style="color: #008000;">//</span><span style="color: #008000;">Skip modules already defined.</span>
+  <span style="color: #0000ff;">if</span> (!hasProp(defined, args[0<span style="color: #000000;">])) {
+    getModule(makeModuleMap(args[</span>0], <span style="color: #0000ff;">null</span>, <span style="color: #0000ff;">true</span>)).init(args[1], args[2<span style="color: #000000;">]);
+  }
+}</span></pre>
+</div>
+<p>这个时候就会由全局registry中获取当前的模块了，然后执行他的init方法，这里会加载script标签，将其依赖项载入，这里还会涉及到registry的操作，我们放到后面来学习</p>
+<p><span style="line-height: 1.5;">而completeLoad是在script标签加载结束后调用的方法</span></p>
+<div class="cnblogs_code">
+<pre><span style="color: #008000;">/*</span><span style="color: #008000;">*
+* callback for script loads, used to check status of loading.
+*
+* @param {Event} evt the event from the browser for the script
+* that was loaded.
+</span><span style="color: #008000;">*/</span><span style="color: #000000;">
+onScriptLoad: </span><span style="color: #0000ff;">function</span><span style="color: #000000;"> (evt) {
+  </span><span style="color: #008000;">//</span><span style="color: #008000;">Using currentTarget instead of target for Firefox 2.0's sake. Not</span>
+  <span style="color: #008000;">//</span><span style="color: #008000;">all old browsers will be supported, but this one was easy enough</span>
+  <span style="color: #008000;">//</span><span style="color: #008000;">to support and still makes sense.</span>
+  <span style="color: #0000ff;">if</span> (evt.type === 'load' ||<span style="color: #000000;">
+            (readyRegExp.test((evt.currentTarget </span>||<span style="color: #000000;"> evt.srcElement).readyState))) {
+    </span><span style="color: #008000;">//</span><span style="color: #008000;">Reset interactive script so a script node is not held onto for</span>
+    <span style="color: #008000;">//</span><span style="color: #008000;">to long.</span>
+    interactiveScript = <span style="color: #0000ff;">null</span><span style="color: #000000;">;
+
+    </span><span style="color: #008000;">//</span><span style="color: #008000;">Pull out the name of the module and the context.</span>
+    <span style="color: #0000ff;">var</span> data =<span style="color: #000000;"> getScriptData(evt);
+    context.completeLoad(data.id);
+  }
+},</span></pre>
+</div>
+<p>所以我们这里来重新整理下requireJS的执行流程(可能有误)</p>
+<p>① 引入requireJS标签后，首先执行一些初始化操作</p>
+<p>② 执行req({})初始化newContext，并且保存至contexts对象中</p>
+<p>③ 执行req(cfg)，将读取的data-main属性并且封装为参数实例化模块</p>
+<p>④ 执行main.js中的逻辑，执行require时候，会一次加载name与say</p>
+<p>⑤ 调用依赖时候会根据define进行设置将加载好的标签引入键值对应关系，执行点是load事件</p>
+<p>所以关键点再次回到了main.js加载之后做的事情</p>
+<h1><span style="line-height: 1.5;">require方法</span></h1>
+<p><span style="line-height: 1.5;">经过之前的学习，面对requireJS我们大概知道了以下事情</span></p>
+<p><span style="line-height: 1.5;">① require是先将依赖项加载结束，然后再执行后面的函数回调</span></p>
+<p><span style="line-height: 1.5;">首先第一个就是一个难点，因为require现在是采用script标签的方式引入各个模块，所以我们不能确定何时加载结束，所以这里存在一个复杂的判断以及缓存</span></p>
+<p><span style="line-height: 1.5;">② 依赖列表以映射的方式保存对应的模块，事实上返回的是一个执行后的代码，返回可能是对象可能是函数，可能什么也没有（不标准）</span></p>
+<p><span style="line-height: 1.5;">这个也是一块比较烦的地方，意味着，每一个define模块都会维护一个闭包，而且多数时候这个闭包是无法释放的，所以真正大模块的单页应用有可能越用越卡</span></p>
+<p>面对这一问题，一般采用将大项目分频道的方式，以免首次加载过多的资源，防止内存占用过度问题</p>
+<p>③ 加载模块时候会创建script标签，这里为其绑定了onload事件判断是否加载结束，若是加载结束，会在原来的缓存模块中找到对应模块并且为其赋值，这里又是一个复杂的过程</p>
+<p>require的整体理解之所以难，我觉得就是难在异步加载与循环依赖一块，异步加载导致程序比较晦涩</p>
+<p>所以我们再次进入程序看看，这一切是如何发生的，这里先以main.js为例</p>
+<h2>再说main模块的加载</h2>
+<p>经过之前的学习，main模块加载之前会经历如下步骤</p>
+<p>① require调用req({})初始化一个上下文环境（newContext）</p>
+<p>② 解析页面script标签，碰到具有data-main属性的标签便停下，并且解析他形成第一个配置项调用req(cfg)</p>
+<p>③ 内部调用统一入口requirejs，并取出上文实例化后的上下文环境（context），执行其require方法</p>
+<p>④ 内部调用localRequire(makeRequire)方法，这里干了比较重要的事情实例化模块</p>
+<p>⑤ 模块的实例化发生在localRequire中，这里的步骤比较关键</p>
+<p>首先，这里会调用nextTick实际去创建加载各个模块的操作，但是这里有一个settimeout就比较麻烦了，所有的操作会抛出主干流程之外</p>
+<p>这样做的意义我暂时不能了解，可能这段逻辑会异步加载script标签，若是不抛到主干流程外会有问题吧，若是您知道请告知</p>
+<p><span style="color: #ff0000;"><strong>nextTick使用 settimeout 的原因不明，待解决/经测试不加延时可能导致加载顺序错乱</strong></span></p>
+<p><span style="line-height: 1.5;">我们这里干一件不合理的事情，将nexttick的延时给去掉试试整个逻辑</span></p>
+<div class="cnblogs_code">
+<pre>req.nextTick = <span style="color: #0000ff;">typeof</span> setTimeout !== 'undefined' ? <span style="color: #0000ff;">function</span><span style="color: #000000;"> (fn) {
+  setTimeout(fn, </span>4<span style="color: #000000;">);
+} : </span><span style="color: #0000ff;">function</span><span style="color: #000000;"> (fn) { fn(); };
+
+req.nextTick </span>= <span style="color: #0000ff;">function</span> (fn){ fn();};</pre>
+</div>
+<p><span style="line-height: 1.5;">如此，除了script加载一块就不再具有异步的问题了，这里我们来从新理一理</span></p>
+<h3><span style="line-height: 1.5;">深入req(cfg)</span></h3>
+<p>第一步调用req(cfg)</p>
+<p><img src="49402175733421.png" alt=""></p>
+<p>第二步处理参数并且调用require</p>
+<p><img src="7493835997593.png" alt=""></p>
+<p>可以看到，经过require.config(config)的处理，相关的参数已经放到了实例里面</p>
+<p>第三步调用localRequire，并且进入nextTick流程，一个要注意的地方是<strong>这里的this指向的是context</strong></p>
+<p>第四步执行intakeDefines，将全局的依赖装入，这里是没有的</p>
+<p><strong>第五步</strong>实例化模块（makeModuleMap），建立映射关系，最后会返回类似这样的东西</p>
+<p><img src="1784225785644.png" alt=""></p>
+<p><strong>第六步</strong>便将此映射关系传入getModule建立相关模块，<span style="line-height: 1.5;">然后传入该映射关系对象建立模块，Module类根据参数对象作简单初始化便返回</span></p>
+<p><span style="line-height: 1.5;">第七步调用mod的init方法真正操作该模块，这里会执行加载逻辑Module的init方法，最后会到context的load方法加载script标签，值得注意的是加载结束后这里会绑定onScriptLoad方法</span></p>
+<p><span style="line-height: 1.5;">第八步加载成功后会调用context.completeLoad(data.id)方法</span></p>
+<p><span style="line-height: 1.5;">因为之前定义过该模块了，这里只是将其取出（mod = getOwn(registry, moduleName)）然后再调用其模块init方法又会走一连串逻辑，最后再check一块结束</span></p>
+<div class="cnblogs_code">
+<pre><span style="color: #0000ff;">if</span> (<span style="color: #0000ff;">this</span>.map.isDefine &amp;&amp; !<span style="color: #0000ff;">this</span><span style="color: #000000;">.ignore) {
+  defined[id] </span>=<span style="color: #000000;"> exports;
+
+  </span><span style="color: #0000ff;">if</span><span style="color: #000000;"> (req.onResourceLoad) {
+    req.onResourceLoad(context, </span><span style="color: #0000ff;">this</span>.map, <span style="color: #0000ff;">this</span><span style="color: #000000;">.depMaps);
+  }
+}</span></pre>
+</div>
+<p><span style="line-height: 1.5;">因为每一个加载模块都会定义一个事件，在其实际加载结束后会执行之</span></p>
+<div class="cnblogs_code">
+<pre><span style="color: #0000ff;">if</span> (<span style="color: #0000ff;">this</span>.defined &amp;&amp; !<span style="color: #0000ff;">this</span><span style="color: #000000;">.defineEmitted) {
+  </span><span style="color: #0000ff;">this</span>.defineEmitted = <span style="color: #0000ff;">true</span><span style="color: #000000;">;
+  </span><span style="color: #0000ff;">this</span>.emit('defined', <span style="color: #0000ff;">this</span><span style="color: #000000;">.exports);
+  </span><span style="color: #0000ff;">this</span>.defineEmitComplete = <span style="color: #0000ff;">true</span><span style="color: #000000;">;
+}</span></pre>
+</div>
+<p>最后会调用checkLoaded检查是否还有未加载的模块，总之这步结束后基本上就main.js就加载结束了，这个由全局contexts中的defined对象可以看出</p>
+<p>这里仍然有一块比较难，因为在main.js加载结束前还未执行其load事件，其下一步的require流程又开始了</p>
+<p><img src="14986467847837.png" alt=""></p>
+<div class="cnblogs_code">
+<pre><span style="color: #000000;">contexts._.defined
+Object {}</span></pre>
+</div>
+<p>这个时候全局的defined还没有东西呢，所以他这里会有一个状态机做判断，否则最后不会只是main.js中的fn</p>
+<div class="cnblogs_code">
+<pre>require(['name', 'say'], <span style="color: #0000ff;">function</span><span style="color: #000000;"> (name, say) {
+  say(name);
+});</span></pre>
+</div>
+<p>他们判断的方式就是不停的check，不停的check，直到加载成功结束</p>
+<h1><span style="line-height: 1.5;">main.js中的require</span></h1>
+<p><span style="line-height: 1.5;">因为main模块并不具有模块，所以其执行逻辑还是稍有不同的，我们现在将关注点放到main.js中的require相关逻辑</span></p>
+<div class="cnblogs_code">
+<pre>require(['name', 'say'], <span style="color: #0000ff;">function</span><span style="color: #000000;"> (name, say) {
+  say(name);
+});</span></pre>
+</div>
+<p><span style="line-height: 1.5;">首次进入这个逻辑时候事实上main.js的onload事件并未执行，所以全局<span>contexts._.defined对象依旧为空，这里进入了实际模块的加载逻辑既有依赖项又有回调</span></span></p>
+<p><span style="line-height: 1.5;"><span>PS：这里有一个比较有意思的做法就是将原来的nextTick的settimeout干掉这里的情况会有所不同</span></span></p>
+<p><span style="line-height: 1.5;">依旧进入context.require流程</span></p>
+<div class="cnblogs_code">
+<pre> <span style="color: #0000ff;">return</span> context.require(deps, callback, errback);</pre>
+</div>
+<p>期间会碰到main.js onload事件触发，并导致</p>
+<div class="cnblogs_code">
+<pre><span style="color: #000000;">contexts._.defined =&gt; Object {main: undefined}</span></pre>
+</div>
+<p>第二步便是这里的会创建一个模块，这个与，而后调用其init方法，这里需要注意的是传入了deps(name, say)依赖，所以这里的depMaps便不为空了</p>
+<p>并且这里将当前回调传给factory，并且将依赖的name与say模块保存</p>
+<p>&nbsp;</p>
+<div class="cnblogs_code">
+<pre><span style="color: #0000ff;">this</span>.factory = factory;</pre>
+</div>
+<div class="cnblogs_code">
+<pre><span style="color: #0000ff;">this</span>.depMaps = depMaps &amp;&amp; depMaps.slice(0);</pre>
+</div>
+<p>进入enable流程，首先注册当前对象之闭包(newContext)enableRegistry中</p>
+<p>这里有一个操作是如果具有依赖关系，我们这里便依赖于say以及name会执行一个逻辑</p>
+<div class="cnblogs_code">
+<pre><span style="color: #008000;">//</span><span style="color: #008000;">Enable each dependency</span>
+each(<span style="color: #0000ff;">this</span>.depMaps, bind(<span style="color: #0000ff;">this</span>, <span style="color: #0000ff;">function</span><span style="color: #000000;"> (depMap, i) {
+  </span><span style="color: #0000ff;">var</span><span style="color: #000000;"> id, mod, handler;
+
+  </span><span style="color: #0000ff;">if</span> (<span style="color: #0000ff;">typeof</span> depMap === 'string'<span style="color: #000000;">) {
+    </span><span style="color: #008000;">//</span><span style="color: #008000;">Dependency needs to be converted to a depMap</span>
+    <span style="color: #008000;">//</span><span style="color: #008000;">and wired up to this module.</span>
+    depMap =<span style="color: #000000;"> makeModuleMap(depMap,
+                                  (</span><span style="color: #0000ff;">this</span>.map.isDefine ? <span style="color: #0000ff;">this</span>.map : <span style="color: #0000ff;">this</span><span style="color: #000000;">.map.parentMap),
+                                  </span><span style="color: #0000ff;">false</span><span style="color: #000000;">,
+                                  </span>!<span style="color: #0000ff;">this</span><span style="color: #000000;">.skipMap);
+    </span><span style="color: #0000ff;">this</span>.depMaps[i] =<span style="color: #000000;"> depMap;
+
+    handler </span>=<span style="color: #000000;"> getOwn(handlers, depMap.id);
+
+    </span><span style="color: #0000ff;">if</span><span style="color: #000000;"> (handler) {
+      </span><span style="color: #0000ff;">this</span>.depExports[i] = handler(<span style="color: #0000ff;">this</span><span style="color: #000000;">);
+      </span><span style="color: #0000ff;">return</span><span style="color: #000000;">;
+    }
+
+    </span><span style="color: #0000ff;">this</span>.depCount += 1<span style="color: #000000;">;
+
+    on(depMap, </span>'defined', bind(<span style="color: #0000ff;">this</span>, <span style="color: #0000ff;">function</span><span style="color: #000000;"> (depExports) {
+      </span><span style="color: #0000ff;">this</span><span style="color: #000000;">.defineDep(i, depExports);
+      </span><span style="color: #0000ff;">this</span><span style="color: #000000;">.check();
+    }));
+
+    </span><span style="color: #0000ff;">if</span> (<span style="color: #0000ff;">this</span><span style="color: #000000;">.errback) {
+      on(depMap, </span>'error', bind(<span style="color: #0000ff;">this</span>, <span style="color: #0000ff;">this</span><span style="color: #000000;">.errback));
+    }
+  }
+
+  id </span>=<span style="color: #000000;"> depMap.id;
+  mod </span>=<span style="color: #000000;"> registry[id];
+
+  </span><span style="color: #008000;">//</span><span style="color: #008000;">Skip special modules like 'require', 'exports', 'module'</span>
+  <span style="color: #008000;">//</span><span style="color: #008000;">Also, don't call enable if it is already enabled,</span>
+  <span style="color: #008000;">//</span><span style="color: #008000;">important in circular dependency cases.</span>
+  <span style="color: #0000ff;">if</span> (!hasProp(handlers, id) &amp;&amp; mod &amp;&amp; !<span style="color: #000000;">mod.enabled) {
+    context.enable(depMap, </span><span style="color: #0000ff;">this</span><span style="color: #000000;">);
+  }
+}));</span></pre>
+</div>
+<p>循环的载入其依赖项，并形成模块，这里都会搞进enableRegistry中，比如这段逻辑结束前后有所不同</p>
+<p><img src="31599998938662.png" alt=""></p>
+<p>事实上对应模块初始化已经结束，进入了script待加载逻辑，只不过暂时卡到这里了......</p>
+<p><img src="30914147780539.png" alt=""></p>
+<p>然后这里会进入其check逻辑，由于这里defineDep等于2所以不会执行函数回调，而直接跳出，这里有一个关键便是我们的Registry未被清理</p>
+<p>以上逻辑只是在main.js中require方法执行后所执行的逻辑，确切的说是这段代码所执行的逻辑</p>
+<div class="cnblogs_code">
+<pre><span style="color: #000000;">requireMod.init(deps, callback, errback, {
+  enabled: </span><span style="color: #0000ff;">true</span><span style="color: #000000;">
+});</span></pre>
+</div>
+<p>然后会执行一个checkLoaded方法检测enabledRegistry中未加载完成的模块并且进行清理，这段逻辑比较关键</p>
+<div class="cnblogs_code">
+<pre><span style="color: #0000ff;">function</span><span style="color: #000000;"> checkLoaded() {
+  </span><span style="color: #0000ff;">var</span><span style="color: #000000;"> map, modId, err, usingPathFallback,
+            waitInterval </span>= config.waitSeconds * 1000<span style="color: #000000;">,
+  </span><span style="color: #008000;">//</span><span style="color: #008000;">It is possible to disable the wait interval by using waitSeconds of 0.</span>
+            expired = waitInterval &amp;&amp; (context.startTime + waitInterval) &lt; <span style="color: #0000ff;">new</span><span style="color: #000000;"> Date().getTime(),
+            noLoads </span>=<span style="color: #000000;"> [],
+            reqCalls </span>=<span style="color: #000000;"> [],
+            stillLoading </span>= <span style="color: #0000ff;">false</span><span style="color: #000000;">,
+            needCycleCheck </span>= <span style="color: #0000ff;">true</span><span style="color: #000000;">;
+
+  </span><span style="color: #008000;">//</span><span style="color: #008000;">Do not bother if this call was a result of a cycle break.</span>
+  <span style="color: #0000ff;">if</span><span style="color: #000000;"> (inCheckLoaded) {
+    </span><span style="color: #0000ff;">return</span><span style="color: #000000;">;
+  }
+
+  inCheckLoaded </span>= <span style="color: #0000ff;">true</span><span style="color: #000000;">;
+
+  </span><span style="color: #008000;">//</span><span style="color: #008000;">Figure out the state of all the modules.</span>
+  eachProp(enabledRegistry, <span style="color: #0000ff;">function</span><span style="color: #000000;"> (mod) {
+    map </span>=<span style="color: #000000;"> mod.map;
+    modId </span>=<span style="color: #000000;"> map.id;
+
+    </span><span style="color: #008000;">//</span><span style="color: #008000;">Skip things that are not enabled or in error state.</span>
+    <span style="color: #0000ff;">if</span> (!<span style="color: #000000;">mod.enabled) {
+      </span><span style="color: #0000ff;">return</span><span style="color: #000000;">;
+    }
+
+    </span><span style="color: #0000ff;">if</span> (!<span style="color: #000000;">map.isDefine) {
+      reqCalls.push(mod);
+    }
+
+    </span><span style="color: #0000ff;">if</span> (!<span style="color: #000000;">mod.error) {
+      </span><span style="color: #008000;">//</span><span style="color: #008000;">If the module should be executed, and it has not</span>
+      <span style="color: #008000;">//</span><span style="color: #008000;">been inited and time is up, remember it.</span>
+      <span style="color: #0000ff;">if</span> (!mod.inited &amp;&amp;<span style="color: #000000;"> expired) {
+        </span><span style="color: #0000ff;">if</span><span style="color: #000000;"> (hasPathFallback(modId)) {
+          usingPathFallback </span>= <span style="color: #0000ff;">true</span><span style="color: #000000;">;
+          stillLoading </span>= <span style="color: #0000ff;">true</span><span style="color: #000000;">;
+        } </span><span style="color: #0000ff;">else</span><span style="color: #000000;"> {
+          noLoads.push(modId);
+          removeScript(modId);
+        }
+      } </span><span style="color: #0000ff;">else</span> <span style="color: #0000ff;">if</span> (!mod.inited &amp;&amp; mod.fetched &amp;&amp;<span style="color: #000000;"> map.isDefine) {
+        stillLoading </span>= <span style="color: #0000ff;">true</span><span style="color: #000000;">;
+        </span><span style="color: #0000ff;">if</span> (!<span style="color: #000000;">map.prefix) {
+          </span><span style="color: #008000;">//</span><span style="color: #008000;">No reason to keep looking for unfinished</span>
+          <span style="color: #008000;">//</span><span style="color: #008000;">loading. If the only stillLoading is a</span>
+          <span style="color: #008000;">//</span><span style="color: #008000;">plugin resource though, keep going,</span>
+          <span style="color: #008000;">//</span><span style="color: #008000;">because it may be that a plugin resource</span>
+          <span style="color: #008000;">//</span><span style="color: #008000;">is waiting on a non-plugin cycle.</span>
+          <span style="color: #0000ff;">return</span> (needCycleCheck = <span style="color: #0000ff;">false</span><span style="color: #000000;">);
+        }
+      }
+    }
+  });
+
+  </span><span style="color: #0000ff;">if</span> (expired &amp;&amp;<span style="color: #000000;"> noLoads.length) {
+    </span><span style="color: #008000;">//</span><span style="color: #008000;">If wait time expired, throw error of unloaded modules.</span>
+    err = makeError('timeout', 'Load timeout for modules: ' + noLoads, <span style="color: #0000ff;">null</span><span style="color: #000000;">, noLoads);
+    err.contextName </span>=<span style="color: #000000;"> context.contextName;
+    </span><span style="color: #0000ff;">return</span><span style="color: #000000;"> onError(err);
+  }
+
+  </span><span style="color: #008000;">//</span><span style="color: #008000;">Not expired, check for a cycle.</span>
+  <span style="color: #0000ff;">if</span><span style="color: #000000;"> (needCycleCheck) {
+    each(reqCalls, </span><span style="color: #0000ff;">function</span><span style="color: #000000;"> (mod) {
+      breakCycle(mod, {}, {});
+    });
+  }
+
+  </span><span style="color: #008000;">//</span><span style="color: #008000;">If still waiting on loads, and the waiting load is something</span>
+  <span style="color: #008000;">//</span><span style="color: #008000;">other than a plugin resource, or there are still outstanding</span>
+  <span style="color: #008000;">//</span><span style="color: #008000;">scripts, then just try back later.</span>
+  <span style="color: #0000ff;">if</span> ((!expired || usingPathFallback) &amp;&amp;<span style="color: #000000;"> stillLoading) {
+    </span><span style="color: #008000;">//</span><span style="color: #008000;">Something is still waiting to load. Wait for it, but only</span>
+    <span style="color: #008000;">//</span><span style="color: #008000;">if a timeout is not already in effect.</span>
+    <span style="color: #0000ff;">if</span> ((isBrowser || isWebWorker) &amp;&amp; !<span style="color: #000000;">checkLoadedTimeoutId) {
+      checkLoadedTimeoutId </span>= setTimeout(<span style="color: #0000ff;">function</span><span style="color: #000000;"> () {
+        checkLoadedTimeoutId </span>= 0<span style="color: #000000;">;
+        checkLoaded();
+      }, </span>50<span style="color: #000000;">);
+    }
+  }
+
+  inCheckLoaded </span>= <span style="color: #0000ff;">false</span><span style="color: #000000;">;
+}</span></pre>
+</div>
+<p>他首先会遍历enableRegistry取出其中定义的模块，并且将没有加载成功的模块标识注入noLoads数组，如果过期了这里就会报错</p>
+<p>如果上述没问题还会做循环依赖的判断，主要逻辑在breakCycle中，因为我们这里不存在循环依赖便跳出了，但还未结束</p>
+<p>我们这里开始了递归检测依赖是否载入</p>
+<div class="cnblogs_code">
+<pre><span style="color: #0000ff;">if</span> ((!expired || usingPathFallback) &amp;&amp;<span style="color: #000000;"> stillLoading) {
+  </span><span style="color: #008000;">//</span><span style="color: #008000;">Something is still waiting to load. Wait for it, but only</span>
+  <span style="color: #008000;">//</span><span style="color: #008000;">if a timeout is not already in effect.</span>
+  <span style="color: #0000ff;">if</span> ((isBrowser || isWebWorker) &amp;&amp; !<span style="color: #000000;">checkLoadedTimeoutId) {
+    checkLoadedTimeoutId </span>= setTimeout(<span style="color: #0000ff;">function</span><span style="color: #000000;"> () {
+      checkLoadedTimeoutId </span>= 0<span style="color: #000000;">;
+      checkLoaded();
+    }, </span>50<span style="color: #000000;">);
+  }
+}</span></pre>
+</div>
+<p>如果模块没有载入，这里就会一直继续，直到所有模块加载结束，其判断点又在各个define方法中，define方法会根据键值改变对应模块的标识值</p>
+<p><span style="line-height: 1.5;">几个关键判断点为：</span></p>
+<p><span style="line-height: 1.5;">①&nbsp;checkLoadedTimeoutId</span></p>
+<p><span style="line-height: 1.5;">②&nbsp;inCheckLoaded</span></p>
+<p><span style="line-height: 1.5;">③&nbsp;stillLoading</span></p>
+<p><span style="line-height: 1.5;">但是最终的判断点事实上来源与mod的mod.<span style="color: #ff0000;">inited</span>/<span style="color: #ff0000;">fetched</span>/<span style="color: #ff0000;">isDefine</span>等属性，所以我们这里需要来理一理</span></p>
+<p><span style="line-height: 1.5;">首次模块执行init方法时会执行</span></p>
+<div class="cnblogs_code">
+<pre> <span style="color: #0000ff;">this</span>.inited = <span style="color: #0000ff;">true</span>;</pre>
+</div>
+<p>因为初始化时候动态的传入了enabled为true所以首次会执行enable逻辑</p>
+<div class="cnblogs_code">
+<pre><span style="color: #008000;">//</span><span style="color: #008000;">nextTick</span>
+<span style="color: #000000;">requireMod.init(deps, callback, errback, {
+  enabled: </span><span style="color: #0000ff;">true</span><span style="color: #000000;">
+});
+
+</span><span style="color: #0000ff;">if</span> (options.enabled || <span style="color: #0000ff;">this</span><span style="color: #000000;">.enabled) {
+  </span><span style="color: #008000;">//</span><span style="color: #008000;">Enable this module and dependencies.</span>
+  <span style="color: #008000;">//</span><span style="color: #008000;">Will call this.check()</span>
+  <span style="color: #0000ff;">this</span><span style="color: #000000;">.enable();
+} </span><span style="color: #0000ff;">else</span><span style="color: #000000;"> {
+  </span><span style="color: #0000ff;">this</span><span style="color: #000000;">.check();
+}</span></pre>
+</div>
+<p>于是达成<span style="color: #ff0000;">enabled为true</span>的条件，这里并且会为该模块的依赖执行enable操作，并且为其支持defined事件在加载结束后会触发之</p>
+<div class="cnblogs_code">
+<pre>each(<span style="color: #0000ff;">this</span>.depMaps, bind(<span style="color: #0000ff;">this</span>, <span style="color: #0000ff;">function</span><span style="color: #000000;"> (depMap, i) {
+  </span><span style="color: #0000ff;">var</span><span style="color: #000000;"> id, mod, handler;
+
+  </span><span style="color: #0000ff;">if</span> (<span style="color: #0000ff;">typeof</span> depMap === 'string'<span style="color: #000000;">) {
+    </span><span style="color: #008000;">//</span><span style="color: #008000;">Dependency needs to be converted to a depMap</span>
+    <span style="color: #008000;">//</span><span style="color: #008000;">and wired up to this module.</span>
+    depMap =<span style="color: #000000;"> makeModuleMap(depMap,
+                                  (</span><span style="color: #0000ff;">this</span>.map.isDefine ? <span style="color: #0000ff;">this</span>.map : <span style="color: #0000ff;">this</span><span style="color: #000000;">.map.parentMap),
+                                  </span><span style="color: #0000ff;">false</span><span style="color: #000000;">,
+                                  </span>!<span style="color: #0000ff;">this</span><span style="color: #000000;">.skipMap);
+    </span><span style="color: #0000ff;">this</span>.depMaps[i] =<span style="color: #000000;"> depMap;
+
+    handler </span>=<span style="color: #000000;"> getOwn(handlers, depMap.id);
+
+    </span><span style="color: #0000ff;">if</span><span style="color: #000000;"> (handler) {
+      </span><span style="color: #0000ff;">this</span>.depExports[i] = handler(<span style="color: #0000ff;">this</span><span style="color: #000000;">);
+      </span><span style="color: #0000ff;">return</span><span style="color: #000000;">;
+    }
+
+    </span><span style="color: #0000ff;">this</span>.depCount += 1<span style="color: #000000;">;
+
+    on(depMap, </span>'defined', bind(<span style="color: #0000ff;">this</span>, <span style="color: #0000ff;">function</span><span style="color: #000000;"> (depExports) {
+      </span><span style="color: #0000ff;">this</span><span style="color: #000000;">.defineDep(i, depExports);
+      </span><span style="color: #0000ff;">this</span><span style="color: #000000;">.check();
+    }));
+
+    </span><span style="color: #0000ff;">if</span> (<span style="color: #0000ff;">this</span><span style="color: #000000;">.errback) {
+      on(depMap, </span>'error', bind(<span style="color: #0000ff;">this</span>, <span style="color: #0000ff;">this</span><span style="color: #000000;">.errback));
+    }
+  }
+
+  id </span>=<span style="color: #000000;"> depMap.id;
+  mod </span>=<span style="color: #000000;"> registry[id];
+
+  </span><span style="color: #008000;">//</span><span style="color: #008000;">Skip special modules like 'require', 'exports', 'module'</span>
+  <span style="color: #008000;">//</span><span style="color: #008000;">Also, don't call enable if it is already enabled,</span>
+  <span style="color: #008000;">//</span><span style="color: #008000;">important in circular dependency cases.</span>
+  <span style="color: #0000ff;">if</span> (!hasProp(handlers, id) &amp;&amp; mod &amp;&amp; !<span style="color: #000000;">mod.enabled) {
+    context.enable(depMap, </span><span style="color: #0000ff;">this</span><span style="color: #000000;">);
+  }
+}));</span></pre>
+</div>
+<p>这里的逻辑比较关键，而后才执行该模块的check方法</p>
+<p>PS：读到这里，才大概对requireJS的逻辑有一定认识了</p>
+<p>跳入check方法后便会将defining设置为true因为这里的依赖项未载入结束，所以这里的depCount为2，所以不会触发</p>
+<div class="cnblogs_code">
+<pre><span style="color: #0000ff;">this</span>.defined = <span style="color: #0000ff;">true</span>;</pre>
+</div>
+<p>所以下面的递归settimeout会一直执行，直到成功或者超时，这里我们进入define相关流程</p>
+<h2><span style="line-height: 1.5;">define方法</span></h2>
+<p><span style="line-height: 1.5;">这里以say为例，在加载文件结束时候会触发其define方法，这里主要向globalDefQueue中插入当前模块的队列，而这里上面做过介绍</span></p>
+<p><span style="line-height: 1.5;">而这里的关键会在script标签执行onload事件时候将全局队列的东西载入context.defQueue</span></p>
+<p><span style="line-height: 1.5;">而这个时候又会根据相关的映射id（由event参数获取），实例化相关模块（事实上是取得当前模块，之前已经实例化），这个时候又会进入check逻辑，这个时候是say模块的check逻辑</span></p>
+<p><span style="line-height: 1.5;">say无依赖，并且加载结束，这里会将当前模块与其返回值做依赖，这里是一个函数，这里factory与exports的关系是</span></p>
+<p><span style="line-height: 1.5;"><img src="50676096171505.png" alt=""></span></p>
+<p><span style="line-height: 1.5;">然后会将当前键值右Registry相关删除，完了便会进入下面的逻辑，值得注意的是这里会触发前面为say模块注册的defined事件</span></p>
+<p><span style="line-height: 1.5;">PS：这里一定要注意，这里的say模块里面定义的家伙被执行了！！！</span></p>
+<div class="cnblogs_code">
+<pre><span style="color: #008000;">//</span><span style="color: #008000;">注册点</span>
+on(depMap, 'defined', bind(<span style="color: #0000ff;">this</span>, <span style="color: #0000ff;">function</span><span style="color: #000000;"> (depExports) {
+  </span><span style="color: #0000ff;">this</span><span style="color: #000000;">.defineDep(i, depExports);
+  </span><span style="color: #0000ff;">this</span><span style="color: #000000;">.check();
+}));
+
+</span><span style="color: #008000;">//</span><span style="color: #008000;">触发点</span>
+<span style="color: #0000ff;">this</span>.emit('defined', <span style="color: #0000ff;">this</span><span style="color: #000000;">.exports);
+
+</span><span style="color: #008000;">//</span><span style="color: #008000;">关键点，用于消除依赖</span>
+<span style="color: #0000ff;">this</span>.defineDep(i, depExports);</pre>
+</div>
+<p>所以，我们的整体逻辑基本出来了</p>
+<h1>结语</h1>
+<p><span style="line-height: 1.5;">最后，我们来一次总结，对初次的requireJS学习画下一个初步的句点</span></p>
+<p><span style="line-height: 1.5;">① requireJS会初始化一个默认上下文出来</span></p>
+<p><span style="line-height: 1.5;">req({}) =&gt; newContext</span></p>
+<p><span style="line-height: 1.5;">② 加载main.js，main.js与基本模块不太一致，加载结束便会执行里面逻辑对主干流程没有太大影响</span></p>
+<p><span style="line-height: 1.5;">③ 执行main.js中的require.config配置，最后调用require方法</span></p>
+<p><span style="line-height: 1.5;">④ 调用时候会将数组中的依赖项载入，并且实例化一个匿名模块出来（mod）</span></p>
+<p><span style="line-height: 1.5;">因为主干（匿名）模块依赖于say与name，所以会在enable中实例化两个模块并且将当前实例depCount设置为2</span></p>
+<p><span style="line-height: 1.5;">⑤ 各个依赖模块也会执行加载操作，say以及name，若是有依赖关系会循环执行enable</span></p>
+<p><span style="line-height: 1.5;">⑥ 会执行主干模块的check操作由于depCount为2便执行其它逻辑，这里为其注册了defined事件</span></p>
+<p><span style="line-height: 1.5;">⑦ 执行checkLoaded方法，这里会开始递归的检查模块是否加载结束，一定要在主干模块depCount为0 时候才会执行其回调，并且会传入say与name返回值做参数</span></p>
+<p><span style="line-height: 1.5;">⑧ 当模块加载结束后会触发其onScriptLoad =&gt;&nbsp;completeLoad事件</span></p>
+<p><span style="line-height: 1.5;">⑨ 因为各个define模块会想全局队列压入标识的值，并且会根据他获取相关模块并且执行其init事件</span></p>
+<p>10 这个时候会执行模块的实例化init方法，并且会检测该模块的依赖，say没有依赖便继续向下，将其factory方法执行回指exports（具有参数，参数是依赖项）</p>
+<p>PS:其依赖项是在解除依赖时候注入的defineDep</p>
+<p><span style="line-height: 1.5;">11 最后所有依赖模块加载时候，最后主干的depCount也就变成了0了，这个时候便会执行类似say的逻辑触发回调</span></p>
+<p><span style="line-height: 1.5;">这里的关键就是，加载主干模块时候会检查器依赖项，并且为每一个依赖项注册defined事件，其事件又会执行check方法</span></p>
+<p><span style="line-height: 1.5;">这也意味着，每一个依赖模块检查成功事实上都有可能执行主干流程的回调，其条件是主干的depCount为0，这块就是整个requireJS的难点所在......</span></p>
+<p><span style="line-height: 1.5;">几个关键便是</span></p>
+<p><span style="line-height: 1.5;">① require时候的模块定义以及为其注册事件</span></p>
+<p><span style="line-height: 1.5;">② 文件加载结束define将该模块压入全局队列</span></p>
+<p><span style="line-height: 1.5;">③ script加载成功后触发全局队列的检查</span></p>
+<p><span style="line-height: 1.5;">④ 各个子模块加载结束，并且接触主模块依赖执，并且将自我返回值赋予行主模块实例数组depExports</span></p>
+<p><span style="line-height: 1.5;">⑤ 当主模块depCount为0 时候终于便可以触发了，于是逻辑结束</span></p>
+<p><span style="line-height: 1.5;">最后，小钗浑浑噩噩的初步学习requireJS结束，感觉有点小难，等后面技术有所提高后便再学习吧</span></p>
+                </div>
+
+                <div class='span3 sidebar'>
+                    <h2>导航栏</h2>
+                    <ul class="nav nav-tabs nav-stacked">
+                             				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/javascriptzdyxhxzsdyjxyzyddf/index.html">javascript中的一些核心知识点以及需要注意的地方</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/[zd]webappdyhzlyzydqdyhdpyjlkkb/index.html">[置顶]【webapp的优化整理】要做移动前端优化的朋友进来看看吧</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/[zd]yddjrwtyjjavascriptsjjzxjsjydjr/index.html">[置顶]【移动端兼容问题研究】javascript事件机制详解（涉及移动兼容）</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/gruntzhb30fzxhsygruntdbqddm/index.html">【grunt整合版】30分钟学会使用grunt打包前端代码</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/gruntdyd30fzxhsygruntdbqddm/index.html">【grunt第一弹】30分钟学会使用grunt打包前端代码</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/gruntdsdgruntzqdsjxmzdyy/index.html">【grunt第三弹】grunt在前端实际项目中的应用</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/gruntded30fzxhsygruntdbqddm02/index.html">【grunt第二弹】30分钟学会使用grunt打包前端代码（02）</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/IScrollsrxxtpyddhadlqs/index.html">【IScroll深入学习】突破移动端黑暗的利器（上）</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/IScrollsrxxjjIScrollynzz/index.html">【IScroll深入学习】解决IScroll疑难杂症</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/iScrollymxx00mniScroll/index.html">【iScroll源码学习00】模拟iScroll</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/iScrollymxx01zbjd/index.html">【iScroll源码学习01】准备阶段</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/iScrollymxx02fjiScrollsghxsjd/index.html">【iScroll源码学习02】分解iScroll三个核心事件点</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/iScrollymxx03iScrollsjjzygdtdsx/index.html">【iScroll源码学习03】iScroll事件机制与滚动条的实现</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/iScrollymxx04flIScrollhx/index.html">【iScroll源码学习04】分离IScroll核心</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/javascriptpxdytyyjc/index.html">【javascript培训第一天】语言基础</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/javascriptpxdstcybl/index.html">【javascript培训第三天】查遗补漏</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/javascriptpxdetDOMyBOM/index.html">【javascript培训第二天】DOM与BOM</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/javascriptjzdsk01mkhbc/index.html">【javascript激增的思考01】模块化编程</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/javascriptjzdsk02mkhyMVC/index.html">【javascript激增的思考02】模块化与MVC</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/javascriptjzdsk03MVVMyKnockout/index.html">【javascript激增的思考03】MVVM与Knockout</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/javascriptjzdsk04MVCyBackbonejs(beta)/index.html">【javascript激增的思考04】MVC与Backbonejs(beta)</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/javascriptmxdxzlrwmyqltkdzb01/index.html">【javascript面向对象之路】让我们一起来坦克大战吧01</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/NodeJSxxbj04xwfbxt/index.html">【NodeJS学习笔记04】新闻发布系统</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/requireJSymxx01ljzgrequireJSdjg/index.html">【requireJS源码学习01】了解整个requireJS的结构</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/requireJSymxx02datamainjzdsx/index.html">【requireJS源码学习02】datamain加载的实现</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/requireJSymxx03xjrequireJSdjzlc/index.html">【requireJS源码学习03】细究requireJS的加载流程</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/UIcjkfygjdrlcjs/index.html">【UI插件】开发一个简单日历插件（上）</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/UIcjjddrlcjxxxMVCsx/index.html">【UI插件】简单的日历插件（下）——学习MVC思想</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/zeptoxxbj01hxff$()/index.html">【zepto学习笔记01】核心方法$()</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/zeptoxxbj01hxff$()b/index.html">【zepto学习笔记01】核心方法$()（补）</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/zeptoxxbj02lsd/index.html">【zepto学习笔记02】零碎点</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/zeptoxxbj03sjjz/index.html">【zepto学习笔记03】事件机制</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/ycmsztjavascriptzdjc/index.html">【一次面试】再谈javascript中的继承</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/ztbackbone01mxModel/index.html">【再探backbone01】模型Model</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/ztbackbone02jhCollection/index.html">【再探backbone02】集合Collection</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/ztbackbone03bkydyyysltgym/index.html">【再探backbone03】博客园单页应用实例（提供源码）</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/ztbackbone04dyyydjslycl/index.html">【再探backbone04】单页应用的基石路由处理</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/ctUnderscorezsmbyq/index.html">【初探Underscore】再说模版引擎</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/ckjavascriptamzAjaxjsxnszddAjax/index.html">【初窥javascript奥秘之Ajax】简述下你所知道的Ajax？</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/ckjavascriptamzsjmpnxnwmyqmdp/index.html">【初窥javascript奥秘之事件冒泡】那些年我们一起冒的泡</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/ckjavascriptamzsjjzldtygdj/index.html">【初窥javascript奥秘之事件机制】论“点透”与“鬼点击”</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/ckjavascriptamzrrzmbddthisnzdxzthiszxnlm/index.html">【初窥javascript奥秘之让人捉摸不定的this】你知道现在this指向哪里吗？？？</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/ckjavascriptamzbbydxbdhlqbcl/index.html">【初窥javascript奥秘之闭包】叶大侠病都好了，求不踩了：）</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/ckjavascriptamzmxdxfzyjc/index.html">【初窥javascript奥秘之面向对象】封装与继承</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/qdmdsjdjgjdnzdljm/index.html">【前端盲点】事件的几个阶段你真的了解么？？？</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/dyyyviewymodelxgsl/index.html">【单页应用】view与model相关梳理</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/dyyyyqldyyybsxjdwbgns/index.html">【单页应用】一起来单页应用吧，实现简单微博功能！（上）</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/dyyyqjkzqappyggxsm/index.html">【单页应用】全局控制器app应该干些什么？</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/dyyywmgrhclkjdcccjgx/index.html">【单页应用】我们该如何处理框架弹出层层级关系？</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/dyyyljMVC/index.html">【单页应用】理解MVC</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/dyyyztxjzviewzjygrhtx/index.html">【单页应用之通信机制】view之间应该如何通信</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/dyyyjkzHistoryxsHistorydgdyyydm/index.html">【单页应用巨坑之History】细数History带给单页应用的噩梦</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/xtszeptofindysyjiosdcjpknrnhtt/index.html">【小贴士】zeptofind元素以及ios弹出键盘可能让你很头疼</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/xtsgytransitionEndanimatedygyqgs/index.html">【小贴士】关于transitionEndanimate的一个有趣故事</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/xtsgzzdbbysjwtdzzmp/index.html">【小贴士】工作中的”闭包“与事件委托的”阻止冒泡“</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/xtstytjavascriptzdreplace/index.html">【小贴士】探一探javascript中的replace</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/xtsxnjpyfixeddgydddt/index.html">【小贴士】虚拟键盘与fixed带给移动端的痛！</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/ttjavascriptsjjzdcsxyl/index.html">【探讨】javascript事件机制底层实现原理</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/mkhbcljrequireJSsxygjddmkjzq/index.html">【模块化编程】理解requireJS实现一个简单的模块加载器</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/zyJavaScriptmfjmtsdqlxkjzbfgndcljz/index.html">【转】【译】JavaScript魔法揭秘探索当前流行框架中部分功能的处理机制</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/zxjavascriptgszl01javascriptcszds/index.html">【追寻javascript高手之路01】javascript参数知多少？</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/zxjavascriptgszl02blzyyzds/index.html">【追寻javascript高手之路02】变量、作用域知多少？</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/zxjavascriptgszl03javascriptdxdld/index.html">【追寻javascript高手之路03】javascript对象大乱斗</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/zxjavascriptgszl04ljprototype/index.html">【追寻javascript高手之路04】理解prototype</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/zxjavascriptgszl05ljsjl/index.html">【追寻javascript高手之路05】理解事件流</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/zgbj04zxzzsj(2)/index.html">【重构笔记04】重新组织数据(2)</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/zgbj05jhtjbds/index.html">【重构笔记05】简化条件表达式</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/zgbj06jhhsdy/index.html">【重构笔记06】简化函数调用</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/ycmshgttbxysjfl/index.html">一次面试回顾——探讨表现与数据分离</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/dhzwebappzdxz/index.html">动画在webapp中的现状</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/ysandriodlqhthdomclicksjqtsxwttj/index.html">原生andriod浏览器回退后dom（click）事件全体失效问题探究</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/scsbdjxysdsbsjytouchsjdnxs/index.html">手持设备点击响应速度，鼠标事件与touch事件的那些事</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/mnbjQueryzeptohxymfx/index.html">迷你版jQuery——zepto核心源码分析</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/dbsgzdlwmlyqxjdddomxzqb/index.html">都别说工资低了，我们来一起写简单的dom选择器吧！</a></li>
+    				                                         
+                    </ul>
+                </div>
+            </div>
+
+        </div>
+    </body>
+</html>

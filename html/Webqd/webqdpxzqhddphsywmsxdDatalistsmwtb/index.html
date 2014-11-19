@@ -1,0 +1,492 @@
+﻿<!DOCTYPE html>
+
+<html lang="zh">
+    <head>
+        <meta charset="utf-8">
+        <meta name="description" content="android,ios" />
+        <meta name="keywords" content="android,ios" />
+
+        <title>叶小钗</title>
+        <style type='text/css'>
+            body {
+                background-color: #CCC;
+            }
+        </style>
+        <link rel="stylesheet" href="../../../css/bootstrap.css" />
+    </head>
+
+    <body>
+        <div class="container">
+
+            <h1>叶小钗</h1>
+
+            <div class='navbar navbar-inverse'>
+                <div class='navbar-inner nav-collapse' style="height: auto;">
+                    <ul class="nav">
+                              				<li><a href="http://songboriceboy.github.io/xxoo/html/blade/index.html">blade</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/css/index.html">css</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/HTML5&CSS3/index.html">HTML5&CSS3</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/index.html">javascript</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Javaxx/index.html">Java学习</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/nodejs/index.html">nodejs</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/requirejs/index.html">requirejs</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/index.html">Web前端</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/xxgw/index.html">学习感悟</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/gzdd/index.html">工作点滴</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/jkxx/index.html">接口学习</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/wfl/index.html">未分类</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/ydkf/index.html">移动开发</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/sjms/index.html">设计模式</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/mst/index.html">面试题</a></li>
+    				                      </ul>
+                </div>
+            </div>
+
+            <div id='content' class='row-fluid'>
+
+                <div class='span9 main'>
+				<div style="color:blue" align=center>【web前端培训之前后端的配合（上）】以我们熟悉的Datalist说明问题吧</div><br><h1>前言</h1>
+<p>白天的时间我们一起学习了bootstrap，虽然是刚开始学习，但是我们还是不得不承认他做得好，其中就我们到底是否使用一些朋友提出了自己的想法，我在讨论之中也受益啦！</p>
+<p>所以感谢各位的留言，我们不管用不用，还是得学习的，所以后面我们应该还会继续一起学习bootstrap。</p>
+<p>好了，进入今天的正题吧，我这边前端培训的时间被再次压缩了，压缩到只有6天啦，我是这么想的：</p>
+<p>第一天介绍CSS</p>
+<p>第二天介绍JS</p>
+<p>第三天介绍jquery</p>
+<p>第四天介绍jquery easyui</p>
+<p>第五天介绍ajax，并逐步将之前的成果形成最后的实例</p>
+<p>第六天便直接进行实例讲解，也就是今天的内容</p>
+<p>因为我们的后端同事是搞.net的，所以我这里搬出了大家都比较熟悉的datalist作为切入点，然后逐步讲解我们前后端如何配合以及为什么不使用服务器控件。</p>
+<p>我这里是边学习边写的，最后肯定有很多没考虑到，各位要提出来哟！</p>
+<h1>Datalist&middot;我是标题党:)</h1>
+<p>呵呵，我绝对是一个优秀的标题党，因为前端怎么会有datalist呢？所以我们这里来模拟一个看看呢（其实我原来也写过，但是那时候写的不够好）。</p>
+<p>有一段时间没有关注过后端开发了，甚至都忘了后端代码怎么写了呢，我们看datalist事实上就是：</p>
+<p>1 给定一个html片段，里面具有数据表字段标志</p>
+<p>2 数据绑定，将html片段中的变量与数据表进行替换</p>
+<p>3 结束</p>
+<p><img src="454963810478397.png" alt=""></p>
+<p>于是我们按照这个思路来试试看呢！</p>
+<h1>DataItem</h1>
+<p>第一步我们当然是定义DataItem了呢，来来，我这里是这样写的：</p>
+<p><span style="color: #ff0000;">PS：为了方便与后端同事交流，我这里尽量和服务器控件靠齐，所以写法会和一般插件写法有所不一致</span>。</p>
+<div class="cnblogs_code">
+<pre><span style="color: #008080;"> 1</span> <span style="color: #0000ff;">var</span> DataItem =<span style="color: #000000;"> function () {
+</span><span style="color: #008080;"> 2</span>     <span style="color: #0000ff;">this</span>.data = <span style="color: #0000ff;">null</span><span style="color: #000000;">;
+</span><span style="color: #008080;"> 3</span>     <span style="color: #0000ff;">this</span>.template = <span style="color: #800000;">''</span><span style="color: #000000;">;
+</span><span style="color: #008080;"> 4</span>     <span style="color: #0000ff;">this</span>.el = <span style="color: #0000ff;">null</span><span style="color: #000000;">;
+</span><span style="color: #008080;"> 5</span>     <span style="color: #0000ff;">this</span>.id = <span style="color: #800000;">''</span><span style="color: #000000;">;
+</span><span style="color: #008080;"> 6</span>     <span style="color: #0000ff;">this</span>.parentObj = <span style="color: #0000ff;">null</span><span style="color: #000000;">;
+</span><span style="color: #008080;"> 7</span>     <span style="color: #0000ff;">this</span>.idPrefix = <span style="color: #800000;">'</span><span style="color: #800000;">item_</span><span style="color: #800000;">'</span>; <span style="color: #008000;">//</span><span style="color: #008000;">id前缀</span>
+<span style="color: #008080;"> 8</span>     <span style="color: #0000ff;">this</span>.className = <span style="color: #800000;">''</span><span style="color: #000000;">;
+</span><span style="color: #008080;"> 9</span>     <span style="color: #0000ff;">this</span>.<span style="color: #0000ff;">event</span> =<span style="color: #000000;"> {};
+</span><span style="color: #008080;">10</span>     <span style="color: #0000ff;">this</span>.elementEvent =<span style="color: #000000;"> {};
+</span><span style="color: #008080;">11</span> };</pre>
+</div>
+<p>PS：一来就发现个问题，那个event是关键字，我居然就这么用了，罪过罪过啊！！！</p>
+<p>我们简单看看他的定义，其实没有多少东西的：</p>
+<p>1 首先每个dataitem项需要数据源</p>
+<p>2 每个item会依赖于为其设置的html片段生成最后的代码</p>
+<p>3 后面的那些基本可以忽略不计了，我们用到的时候在说</p>
+<p>第一步结束了，我们就沿着上面的逻辑写代码吧</p>
+<h1>根据数据表生成item</h1>
+<p>我们做的第一步就是根据数据表中的数据，注意我们数据表是一行一行的，所以我们每一行都会生成一个html片段：</p>
+<div class="cnblogs_code">
+<pre><span style="color: #008080;"> 1</span> DataItem.prototype.load = <span style="color: #0000ff;">function</span><span style="color: #000000;"> (index, data) {
+</span><span style="color: #008080;"> 2</span>     <span style="color: #0000ff;">this</span>.data =<span style="color: #000000;"> data;
+</span><span style="color: #008080;"> 3</span>     <span style="color: #0000ff;">var</span> parentEl = <span style="color: #0000ff;">this</span>.parentObj.el; <span style="color: #008000;">//</span><span style="color: #008000;">注意此处是parent已经赋值</span>
+<span style="color: #008080;"> 4</span>     <span style="color: #0000ff;">var</span> parentId = <span style="color: #0000ff;">this</span><span style="color: #000000;">.parentObj.id
+</span><span style="color: #008080;"> 5</span>     <span style="color: #0000ff;">var</span> id = parentId + <span style="color: #0000ff;">this</span>.idPrefix + index; <span style="color: #008000;">//</span><span style="color: #008000;">生成唯一id</span>
+<span style="color: #008080;"> 6</span>     <span style="color: #0000ff;">this</span>.id =<span style="color: #000000;"> id;
+</span><span style="color: #008080;"> 7</span>     <span style="color: #008000;">//</span><span style="color: #008000;">注意啦，这里根据html片段开始生成最终数据了哦</span>
+<span style="color: #008080;"> 8</span>     <span style="color: #0000ff;">var</span> templateObj = <span style="color: #0000ff;">this</span>.templateObj; <span style="color: #008000;">//</span><span style="color: #008000;">此处的膜拜已经过处理</span>
+<span style="color: #008080;"> 9</span>     <span style="color: #0000ff;">var</span> tmpHtm = ''<span style="color: #000000;">;
+</span><span style="color: #008080;">10</span>     $.each(templateObj, <span style="color: #0000ff;">function</span><span style="color: #000000;"> (i, item) {
+</span><span style="color: #008080;">11</span>         <span style="color: #0000ff;">if</span><span style="color: #000000;"> (item.field) {
+</span><span style="color: #008080;">12</span>             tmpHtm = tmpHtm + item.html +<span style="color: #000000;"> data[item.field]
+</span><span style="color: #008080;">13</span>         } <span style="color: #0000ff;">else</span><span style="color: #000000;"> {
+</span><span style="color: #008080;">14</span>             tmpHtm = tmpHtm +<span style="color: #000000;"> item.html;
+</span><span style="color: #008080;">15</span> <span style="color: #000000;">        }
+</span><span style="color: #008080;">16</span> <span style="color: #000000;">    });
+</span><span style="color: #008080;">17</span>     <span style="color: #0000ff;">var</span> el = $(tmpHtm); <span style="color: #008000;">//</span><span style="color: #008000;">形成dom</span>
+<span style="color: #008080;">18</span>     <span style="color: #008000;">//</span><span style="color: #008000;">为了避免id重复，这里对id必须进行处理，我们同时不允许为元素设置id</span>
+<span style="color: #008080;">19</span>     el.attr('id'<span style="color: #000000;">, id);
+</span><span style="color: #008080;">20</span>     <span style="color: #0000ff;">if</span> (<span style="color: #0000ff;">this</span><span style="color: #000000;">.className)
+</span><span style="color: #008080;">21</span>         <span style="color: #0000ff;">this</span>.el.attr("class", <span style="color: #0000ff;">this</span><span style="color: #000000;">.className);
+</span><span style="color: #008080;">22</span> <span style="color: #000000;">    parentEl.append(el);
+</span><span style="color: #008080;">23</span> }</pre>
+</div>
+<p>我们来看看这些代码，其实整个代码不难：</p>
+<p>1 index是数据表的行索引，data是那一行形成的json数据</p>
+<p>当然，我们现在不知道templateObj是从哪里来的，不要着急嘛，我们马上就到这一块了，既然有了dataitem，怎么少得了主角datalist呢？</p>
+<h1>伪Datalist</h1>
+<p>根据item我们现在要写datalist就相对比较轻松了，直接根据我们需要的东东来吧（安装后端的写法来哟）</p>
+<div class="cnblogs_code">
+<pre><span style="color: #008080;"> 1</span> <span style="color: #0000ff;">var</span> Datalist = <span style="color: #0000ff;">function</span><span style="color: #000000;"> () {
+</span><span style="color: #008080;"> 2</span>     <span style="color: #0000ff;">this</span>.id = <span style="color: #0000ff;">new</span><span style="color: #000000;"> Date().getTime().toString();
+</span><span style="color: #008080;"> 3</span>     <span style="color: #0000ff;">this</span>.items = []; <span style="color: #008000;">//</span><span style="color: #008000;">所具有的dataitem的项目</span>
+<span style="color: #008080;"> 4</span>     <span style="color: #0000ff;">this</span>.dataSource = <span style="color: #0000ff;">null</span>; <span style="color: #008000;">//</span><span style="color: #008000;">各位对他熟悉吧</span>
+<span style="color: #008080;"> 5</span>     <span style="color: #0000ff;">this</span>.container = $("body"); <span style="color: #008000;">//</span><span style="color: #008000;">我们的datalist的容器，没有指定的话就放在body里面</span>
+<span style="color: #008080;"> 6</span>     <span style="color: #0000ff;">this</span>.style = {}; <span style="color: #008000;">//</span><span style="color: #008000;">可以为其设置样式这里考虑的好像有点多了</span>
+<span style="color: #008080;"> 7</span>     <span style="color: #0000ff;">this</span>.attribute = {}; <span style="color: #008000;">//</span><span style="color: #008000;">为其设置属性</span>
+<span style="color: #008080;"> 8</span>     <span style="color: #0000ff;">this</span>.className = ''<span style="color: #000000;">;
+</span><span style="color: #008080;"> 9</span>     <span style="color: #0000ff;">this</span>.template = ''; <span style="color: #008000;">//</span><span style="color: #008000;">可以在此设置，也可以指定容器id，然后由容器寻找</span>
+<span style="color: #008080;">10</span> };</pre>
+</div>
+<p>初略一看，感觉这个样子就差不多了，我们现在来做一件很重要的事情！！！格式化模板！</p>
+<h1>格式化模板htm</h1>
+<p>所谓格式化模板htm哎，说的不够给力直接上代码吧，看demo：</p>
+<div class="cnblogs_code">
+<pre><span style="color: #008080;"> 1</span> <span style="color: #0000ff;">var</span> template = '&lt;dl&gt;&lt;dt&gt;&lt;span class="span2" &gt;&lt;/span&gt;&lt;a href="#"&gt;{%title%}&lt;/a&gt;&lt;p class="summary"&gt;{%summary%}&lt;/p&gt;&lt;/dt&gt;&lt;/dl&gt;'<span style="color: #000000;">;
+</span><span style="color: #008080;"> 2</span> <span style="color: #0000ff;">var</span> reg = /\{%[\w]*\%}/<span style="color: #000000;">;
+</span><span style="color: #008080;"> 3</span> <span style="color: #0000ff;">var</span> para =<span style="color: #000000;"> reg.exec(template);
+</span><span style="color: #008080;"> 4</span> <span style="color: #0000ff;">var</span> html =<span style="color: #000000;"> template;
+</span><span style="color: #008080;"> 5</span> <span style="color: #0000ff;">var</span> templateObj =<span style="color: #000000;"> [];
+</span><span style="color: #008080;"> 6</span> <span style="color: #0000ff;">while</span> (para &amp;&amp; para.length &gt; 0<span style="color: #000000;">) {
+</span><span style="color: #008080;"> 7</span>     <span style="color: #0000ff;">var</span> len =<span style="color: #000000;"> para.index;
+</span><span style="color: #008080;"> 8</span>     <span style="color: #0000ff;">var</span> tmp =<span style="color: #000000;"> {};
+</span><span style="color: #008080;"> 9</span>     tmp.html = html.substr(0<span style="color: #000000;">, len);
+</span><span style="color: #008080;">10</span>     tmp.field = para[0].substr(2, para[0].length - 4<span style="color: #000000;">);
+</span><span style="color: #008080;">11</span> <span style="color: #000000;">    templateObj.push(tmp);
+</span><span style="color: #008080;">12</span>     html = html.substr(len + para[0<span style="color: #000000;">].length);
+</span><span style="color: #008080;">13</span>     para =<span style="color: #000000;"> reg.exec(html);
+</span><span style="color: #008080;">14</span> <span style="color: #000000;">}
+</span><span style="color: #008080;">15</span> tmp =<span style="color: #000000;"> {};
+</span><span style="color: #008080;">16</span> tmp.html =<span style="color: #000000;"> html;
+</span><span style="color: #008080;">17</span> <span style="color: #000000;">templateObj.push(tmp);
+</span><span style="color: #008080;">18</span> <span style="color: #0000ff;">var</span> s = '';</pre>
+</div>
+<p><img src="19529667296951.png" alt=""></p>
+<p>我们这个家伙事干什么的大家一下就看出来了，若是不知道怎么实现的同学可以去看看js的正则我这里就不拓宽了，回到我们的代码。</p>
+<p>我们为datalist增加一个方法，用于格式化模板，以便后面数据的遍历：</p>
+<div class="cnblogs_code">
+<pre><span style="color: #008080;"> 1</span> Datalist.prototype.formatTemplate = <span style="color: #0000ff;">function</span><span style="color: #000000;"> () {
+</span><span style="color: #008080;"> 2</span>     <span style="color: #0000ff;">var</span> template = <span style="color: #0000ff;">this</span><span style="color: #000000;">.template;
+</span><span style="color: #008080;"> 3</span>     <span style="color: #0000ff;">var</span> reg = /\{%[\w]*\%}/<span style="color: #000000;">;
+</span><span style="color: #008080;"> 4</span>     <span style="color: #0000ff;">var</span> para =<span style="color: #000000;"> reg.exec(template);
+</span><span style="color: #008080;"> 5</span>     <span style="color: #0000ff;">var</span> html =<span style="color: #000000;"> template;
+</span><span style="color: #008080;"> 6</span>     <span style="color: #0000ff;">var</span> templateObj =<span style="color: #000000;"> [];
+</span><span style="color: #008080;"> 7</span>     <span style="color: #0000ff;">while</span> (para &amp;&amp; para.length &gt; 0<span style="color: #000000;">) {
+</span><span style="color: #008080;"> 8</span>         <span style="color: #0000ff;">var</span> len =<span style="color: #000000;"> para.index;
+</span><span style="color: #008080;"> 9</span>         <span style="color: #0000ff;">var</span> tmp =<span style="color: #000000;"> {};
+</span><span style="color: #008080;">10</span>         tmp.html = html.substr(0<span style="color: #000000;">, len);
+</span><span style="color: #008080;">11</span>         tmp.field = para[0].substr(2, para[0].length - 4<span style="color: #000000;">);
+</span><span style="color: #008080;">12</span> <span style="color: #000000;">        templateObj.push(tmp);
+</span><span style="color: #008080;">13</span>         html = html.substr(len + para[0<span style="color: #000000;">].length);
+</span><span style="color: #008080;">14</span>         para =<span style="color: #000000;"> reg.exec(html);
+</span><span style="color: #008080;">15</span> <span style="color: #000000;">    }
+</span><span style="color: #008080;">16</span>     tmp =<span style="color: #000000;"> {};
+</span><span style="color: #008080;">17</span>     tmp.html =<span style="color: #000000;"> html;
+</span><span style="color: #008080;">18</span> <span style="color: #000000;">    templateObj.push(tmp);
+</span><span style="color: #008080;">19</span>     <span style="color: #0000ff;">this</span>.templateObj = templateObj;<span style="color: #008000;">//</span><span style="color: #008000;">注意我们的datalist多了一个东西了哦</span>
+<span style="color: #008080;">20</span> };</pre>
+</div>
+<p>接下来，我们上一个重量级方法，databind！</p>
+<h1>伪databind</h1>
+<p>我们知道，这个家伙一调用，我们的数据可就出来了哦：</p>
+<p>次要代码：</p>
+<div class="cnblogs_code" onclick="cnblogs_code_show('30d70fa5-7a93-4244-9c98-43cd0fe38f8f')"><img id="code_img_closed_30d70fa5-7a93-4244-9c98-43cd0fe38f8f" class="code_img_closed" src="43570758473519.gif" alt=""><img id="code_img_opened_30d70fa5-7a93-4244-9c98-43cd0fe38f8f" class="code_img_opened" style="display: none;" onclick="cnblogs_code_hide('30d70fa5-7a93-4244-9c98-43cd0fe38f8f',event)" src="16365178109279.gif" alt="">
+<div id="cnblogs_code_open_30d70fa5-7a93-4244-9c98-43cd0fe38f8f" class="cnblogs_code_hide">
+<pre>Datalist.prototype.initElement = <span style="color: #0000ff;">function</span><span style="color: #000000;"> () {
+    </span><span style="color: #0000ff;">var</span> el = $("&lt;div&gt;&lt;/div&gt;"<span style="color: #000000;">);
+    </span><span style="color: #0000ff;">this</span>.el =<span style="color: #000000;"> el;
+    </span><span style="color: #0000ff;">this</span><span style="color: #000000;">.initAttribute();
+    </span><span style="color: #0000ff;">this</span><span style="color: #000000;">.initStyle();
+};
+
+Datalist.prototype.initAttribute </span>= <span style="color: #0000ff;">function</span><span style="color: #000000;"> () {
+    </span><span style="color: #0000ff;">var</span> scope = <span style="color: #0000ff;">this</span><span style="color: #000000;">;
+    </span><span style="color: #0000ff;">var</span> element =<span style="color: #000000;"> scope.el;
+    $.each(scope.attribute, </span><span style="color: #0000ff;">function</span><span style="color: #000000;"> (key, value) {
+        </span><span style="color: #0000ff;">if</span> (<span style="color: #0000ff;">typeof</span> (value) == "string"<span style="color: #000000;">)
+            </span><span style="color: #0000ff;">if</span> (value &amp;&amp; value.length &gt; 0<span style="color: #000000;">) {
+                element.attr(key, value);
+            }
+    });
+};
+
+Datalist.prototype.initStyle </span>= <span style="color: #0000ff;">function</span><span style="color: #000000;"> () {
+    </span><span style="color: #0000ff;">var</span> scope = <span style="color: #0000ff;">this</span><span style="color: #000000;">;
+    </span><span style="color: #0000ff;">var</span> element =<span style="color: #000000;"> attribute.el;
+    </span><span style="color: #0000ff;">var</span> style =<span style="color: #000000;"> attribute.style;
+    $.each(style, </span><span style="color: #0000ff;">function</span><span style="color: #000000;"> (key, value) {
+        </span><span style="color: #0000ff;">if</span> (value &amp;&amp; value.length &gt; 0<span style="color: #000000;">) {
+            element.css(key, value);
+        }
+    });
+};</span></pre>
+</div>
+<span class="cnblogs_code_collapse">次要代码</span></div>
+<p>主要代码：</p>
+<div class="cnblogs_code">
+<pre><span style="color: #008080;"> 1</span> Datalist.prototype.bind = <span style="color: #0000ff;">function</span><span style="color: #000000;"> () {
+</span><span style="color: #008080;"> 2</span>     <span style="color: #008000;">//</span><span style="color: #008000;">初始化属性等操作，我们暂时忽略之</span>
+<span style="color: #008080;"> 3</span>     <span style="color: #008000;">//</span><span style="color: #008000;">...............</span>
+<span style="color: #008080;"> 4</span>     <span style="color: #0000ff;">this</span>.initElement(); <span style="color: #008000;">//</span><span style="color: #008000;">初始化元素</span>
+<span style="color: #008080;"> 5</span>     <span style="color: #0000ff;">var</span> scope = <span style="color: #0000ff;">this</span><span style="color: #000000;">;
+</span><span style="color: #008080;"> 6</span>     <span style="color: #0000ff;">var</span> itemIndex = 0<span style="color: #000000;">;
+</span><span style="color: #008080;"> 7</span>     <span style="color: #0000ff;">var</span> container = <span style="color: #0000ff;">this</span><span style="color: #000000;">.container;
+</span><span style="color: #008080;"> 8</span>     container.append(<span style="color: #0000ff;">this</span>.el); <span style="color: #008000;">//</span><span style="color: #008000;">将datalist装入容器</span>
+<span style="color: #008080;"> 9</span> 
+<span style="color: #008080;">10</span>     $.each(<span style="color: #0000ff;">this</span>.dataSouce, <span style="color: #0000ff;">function</span><span style="color: #000000;"> (k, v) {
+</span><span style="color: #008080;">11</span>         <span style="color: #0000ff;">var</span> item = <span style="color: #0000ff;">new</span> DataItem(); <span style="color: #008000;">//</span><span style="color: #008000;">实例化了一个item了哦</span>
+<span style="color: #008080;">12</span>         item.parentObj =<span style="color: #000000;"> scope;
+</span><span style="color: #008080;">13</span>         item.templateObj =<span style="color: #000000;"> scope.templateObj;
+</span><span style="color: #008080;">14</span> <span style="color: #000000;">        item.load(itemIndex, v);
+</span><span style="color: #008080;">15</span> <span style="color: #000000;">        scope.items.push(item);
+</span><span style="color: #008080;">16</span>         itemIndex++<span style="color: #000000;">;
+</span><span style="color: #008080;">17</span> <span style="color: #000000;">    });
+</span><span style="color: #008080;">18</span> };</pre>
+</div>
+<p>我们看到，我们会遍历我们的数据表，然后每一行会实例化一个item并装入东西，好了我们来试试他行不行了。</p>
+<h1>初步测试</h1>
+<p>先看看我们获取到的数据：</p>
+<div class="cnblogs_code">
+<pre>[{"id":1,"title":"电脑"},{"id":2,"title":"书籍"},{"id":3,"title":"手机"},{"id":4,"title":"照相机"},{"id":5,"title":"洗衣机"}]</pre>
+</div>
+<p><span style="color: #ff0000;">好了上代码，注意我这里js修改过哦</span>：</p>
+<div class="cnblogs_code" onclick="cnblogs_code_show('1fe587a5-11a6-477c-a068-945bb7199700')"><img id="code_img_closed_1fe587a5-11a6-477c-a068-945bb7199700" class="code_img_closed" src="43570758473519.gif" alt=""><img id="code_img_opened_1fe587a5-11a6-477c-a068-945bb7199700" class="code_img_opened" style="display: none;" onclick="cnblogs_code_hide('1fe587a5-11a6-477c-a068-945bb7199700',event)" src="16365178109279.gif" alt="">
+<div id="cnblogs_code_open_1fe587a5-11a6-477c-a068-945bb7199700" class="cnblogs_code_hide">
+<pre><span style="color: #008080;">  1</span> <span style="color: #008000;">//</span><span style="color: #008000;">/ &lt;reference path="jquery-1.7.1.min.js" /&gt;</span>
+<span style="color: #008080;">  2</span> <span style="color: #0000ff;">var</span> DataItem = <span style="color: #0000ff;">function</span><span style="color: #000000;"> () {
+</span><span style="color: #008080;">  3</span>     <span style="color: #0000ff;">this</span>.data = <span style="color: #0000ff;">null</span><span style="color: #000000;">;
+</span><span style="color: #008080;">  4</span>     <span style="color: #0000ff;">this</span>.el = <span style="color: #0000ff;">null</span><span style="color: #000000;">;
+</span><span style="color: #008080;">  5</span>     <span style="color: #0000ff;">this</span>.id = ''<span style="color: #000000;">;
+</span><span style="color: #008080;">  6</span>     <span style="color: #0000ff;">this</span>.parentObj = <span style="color: #0000ff;">null</span><span style="color: #000000;">;
+</span><span style="color: #008080;">  7</span>     <span style="color: #0000ff;">this</span>.idPrefix = 'item_'; <span style="color: #008000;">//</span><span style="color: #008000;">id前缀</span>
+<span style="color: #008080;">  8</span>     <span style="color: #0000ff;">this</span>.className = ''<span style="color: #000000;">;
+</span><span style="color: #008080;">  9</span>     <span style="color: #0000ff;">this</span>.event =<span style="color: #000000;"> {};
+</span><span style="color: #008080;"> 10</span>     <span style="color: #0000ff;">this</span>.elementEvent =<span style="color: #000000;"> {};
+</span><span style="color: #008080;"> 11</span> <span style="color: #000000;">};
+</span><span style="color: #008080;"> 12</span> 
+<span style="color: #008080;"> 13</span> DataItem.prototype.load = <span style="color: #0000ff;">function</span><span style="color: #000000;"> (index, data) {
+</span><span style="color: #008080;"> 14</span>     <span style="color: #0000ff;">this</span>.data =<span style="color: #000000;"> data;
+</span><span style="color: #008080;"> 15</span>     <span style="color: #0000ff;">var</span> parentEl = <span style="color: #0000ff;">this</span>.parentObj.el; <span style="color: #008000;">//</span><span style="color: #008000;">注意此处是parent已经赋值</span>
+<span style="color: #008080;"> 16</span>     <span style="color: #0000ff;">var</span> parentId = <span style="color: #0000ff;">this</span><span style="color: #000000;">.parentObj.id
+</span><span style="color: #008080;"> 17</span>     <span style="color: #0000ff;">var</span> id = parentId + <span style="color: #0000ff;">this</span>.idPrefix + index; <span style="color: #008000;">//</span><span style="color: #008000;">生成唯一id</span>
+<span style="color: #008080;"> 18</span>     <span style="color: #0000ff;">this</span>.id =<span style="color: #000000;"> id;
+</span><span style="color: #008080;"> 19</span>     <span style="color: #008000;">//</span><span style="color: #008000;">注意啦，这里根据html片段开始生成最终数据了哦</span>
+<span style="color: #008080;"> 20</span>     <span style="color: #0000ff;">var</span> templateObj = <span style="color: #0000ff;">this</span>.templateObj; <span style="color: #008000;">//</span><span style="color: #008000;">此处的膜拜已经过处理</span>
+<span style="color: #008080;"> 21</span>     <span style="color: #0000ff;">var</span> tmpHtm = ''<span style="color: #000000;">;
+</span><span style="color: #008080;"> 22</span>     $.each(templateObj, <span style="color: #0000ff;">function</span><span style="color: #000000;"> (i, item) {
+</span><span style="color: #008080;"> 23</span>         <span style="color: #0000ff;">if</span><span style="color: #000000;"> (item.field) {
+</span><span style="color: #008080;"> 24</span>             tmpHtm = tmpHtm + item.html +<span style="color: #000000;"> data[item.field]
+</span><span style="color: #008080;"> 25</span>         } <span style="color: #0000ff;">else</span><span style="color: #000000;"> {
+</span><span style="color: #008080;"> 26</span>             tmpHtm = tmpHtm +<span style="color: #000000;"> item.html;
+</span><span style="color: #008080;"> 27</span> <span style="color: #000000;">        }
+</span><span style="color: #008080;"> 28</span> <span style="color: #000000;">    });
+</span><span style="color: #008080;"> 29</span>     <span style="color: #0000ff;">var</span> el = $('&lt;div&gt;&lt;/div&gt;'); <span style="color: #008000;">//</span><span style="color: #008000;">形成dom</span>
+<span style="color: #008080;"> 30</span>     <span style="color: #008000;">//</span><span style="color: #008000;">为了避免id重复，这里对id必须进行处理，我们同时不允许为元素设置id</span>
+<span style="color: #008080;"> 31</span>     el.attr('id'<span style="color: #000000;">, id);
+</span><span style="color: #008080;"> 32</span> <span style="color: #000000;">    el.html(tmpHtm);
+</span><span style="color: #008080;"> 33</span>     <span style="color: #0000ff;">if</span> (<span style="color: #0000ff;">this</span><span style="color: #000000;">.className)
+</span><span style="color: #008080;"> 34</span>         <span style="color: #0000ff;">this</span>.el.attr("class", <span style="color: #0000ff;">this</span><span style="color: #000000;">.className);
+</span><span style="color: #008080;"> 35</span> <span style="color: #000000;">    parentEl.append(el);
+</span><span style="color: #008080;"> 36</span> <span style="color: #000000;">};
+</span><span style="color: #008080;"> 37</span> 
+<span style="color: #008080;"> 38</span> <span style="color: #0000ff;">var</span> Datalist = <span style="color: #0000ff;">function</span><span style="color: #000000;"> () {
+</span><span style="color: #008080;"> 39</span>     <span style="color: #0000ff;">this</span>.id = <span style="color: #0000ff;">new</span><span style="color: #000000;"> Date().getTime().toString();
+</span><span style="color: #008080;"> 40</span>     <span style="color: #0000ff;">this</span>.items = []; <span style="color: #008000;">//</span><span style="color: #008000;">所具有的dataitem的项目</span>
+<span style="color: #008080;"> 41</span>     <span style="color: #0000ff;">this</span>.dataSource = <span style="color: #0000ff;">null</span>; <span style="color: #008000;">//</span><span style="color: #008000;">各位对他熟悉吧</span>
+<span style="color: #008080;"> 42</span>     <span style="color: #0000ff;">this</span>.container = $("body"); <span style="color: #008000;">//</span><span style="color: #008000;">我们的datalist的容器，没有指定的话就放在body里面</span>
+<span style="color: #008080;"> 43</span>     <span style="color: #0000ff;">this</span>.style = {}; <span style="color: #008000;">//</span><span style="color: #008000;">可以为其设置样式这里考虑的好像有点多了</span>
+<span style="color: #008080;"> 44</span>     <span style="color: #0000ff;">this</span>.attribute = {}; <span style="color: #008000;">//</span><span style="color: #008000;">为其设置属性</span>
+<span style="color: #008080;"> 45</span>     <span style="color: #0000ff;">this</span>.className = ''<span style="color: #000000;">;
+</span><span style="color: #008080;"> 46</span>     <span style="color: #0000ff;">this</span>.itemClass = ''; <span style="color: #008000;">//</span><span style="color: #008000;">子元素的class</span>
+<span style="color: #008080;"> 47</span> 
+<span style="color: #008080;"> 48</span>     <span style="color: #0000ff;">this</span>.template = ''; <span style="color: #008000;">//</span><span style="color: #008000;">可以在此设置，也可以指定容器id，然后由容器寻找</span>
+<span style="color: #008080;"> 49</span> <span style="color: #000000;">};
+</span><span style="color: #008080;"> 50</span> 
+<span style="color: #008080;"> 51</span> <span style="color: #008000;">//</span><span style="color: #008000;">好了，我们第一步需要</span>
+<span style="color: #008080;"> 52</span> Datalist.prototype.formatTemplate = <span style="color: #0000ff;">function</span><span style="color: #000000;"> () {
+</span><span style="color: #008080;"> 53</span>     <span style="color: #0000ff;">var</span> template = <span style="color: #0000ff;">this</span><span style="color: #000000;">.template;
+</span><span style="color: #008080;"> 54</span>     <span style="color: #0000ff;">var</span> reg = /\{%[\w]*\%}/<span style="color: #000000;">;
+</span><span style="color: #008080;"> 55</span>     <span style="color: #0000ff;">var</span> para =<span style="color: #000000;"> reg.exec(template);
+</span><span style="color: #008080;"> 56</span>     <span style="color: #0000ff;">var</span> html =<span style="color: #000000;"> template;
+</span><span style="color: #008080;"> 57</span>     <span style="color: #0000ff;">var</span> templateObj =<span style="color: #000000;"> [];
+</span><span style="color: #008080;"> 58</span>     <span style="color: #0000ff;">while</span> (para &amp;&amp; para.length &gt; 0<span style="color: #000000;">) {
+</span><span style="color: #008080;"> 59</span>         <span style="color: #0000ff;">var</span> len =<span style="color: #000000;"> para.index;
+</span><span style="color: #008080;"> 60</span>         <span style="color: #0000ff;">var</span> tmp =<span style="color: #000000;"> {};
+</span><span style="color: #008080;"> 61</span>         tmp.html = html.substr(0<span style="color: #000000;">, len);
+</span><span style="color: #008080;"> 62</span>         tmp.field = para[0].substr(2, para[0].length - 4<span style="color: #000000;">);
+</span><span style="color: #008080;"> 63</span> <span style="color: #000000;">        templateObj.push(tmp);
+</span><span style="color: #008080;"> 64</span>         html = html.substr(len + para[0<span style="color: #000000;">].length);
+</span><span style="color: #008080;"> 65</span>         para =<span style="color: #000000;"> reg.exec(html);
+</span><span style="color: #008080;"> 66</span> <span style="color: #000000;">    }
+</span><span style="color: #008080;"> 67</span>     tmp =<span style="color: #000000;"> {};
+</span><span style="color: #008080;"> 68</span>     tmp.html =<span style="color: #000000;"> html;
+</span><span style="color: #008080;"> 69</span> <span style="color: #000000;">    templateObj.push(tmp);
+</span><span style="color: #008080;"> 70</span>     <span style="color: #0000ff;">this</span>.templateObj = templateObj;<span style="color: #008000;">//</span><span style="color: #008000;">注意我们的datalist多了一个东西了哦</span>
+<span style="color: #008080;"> 71</span> <span style="color: #000000;">};
+</span><span style="color: #008080;"> 72</span> 
+<span style="color: #008080;"> 73</span> Datalist.prototype.bind = <span style="color: #0000ff;">function</span><span style="color: #000000;"> () {
+</span><span style="color: #008080;"> 74</span>     <span style="color: #008000;">//</span><span style="color: #008000;">初始化属性等操作，我们暂时忽略之</span>
+<span style="color: #008080;"> 75</span>     <span style="color: #008000;">//</span><span style="color: #008000;">...............</span>
+<span style="color: #008080;"> 76</span>     <span style="color: #0000ff;">this</span>.initElement(); <span style="color: #008000;">//</span><span style="color: #008000;">初始化元素</span>
+<span style="color: #008080;"> 77</span>     <span style="color: #0000ff;">this</span><span style="color: #000000;">.formatTemplate();
+</span><span style="color: #008080;"> 78</span>     <span style="color: #0000ff;">var</span> scope = <span style="color: #0000ff;">this</span><span style="color: #000000;">;
+</span><span style="color: #008080;"> 79</span>     <span style="color: #0000ff;">var</span> itemIndex = 0<span style="color: #000000;">;
+</span><span style="color: #008080;"> 80</span>     <span style="color: #0000ff;">var</span> container = <span style="color: #0000ff;">this</span><span style="color: #000000;">.container;
+</span><span style="color: #008080;"> 81</span>     container.append(<span style="color: #0000ff;">this</span>.el); <span style="color: #008000;">//</span><span style="color: #008000;">将datalist装入容器</span>
+<span style="color: #008080;"> 82</span> 
+<span style="color: #008080;"> 83</span>     $.each(<span style="color: #0000ff;">this</span>.dataSource, <span style="color: #0000ff;">function</span><span style="color: #000000;"> (k, v) {
+</span><span style="color: #008080;"> 84</span>         <span style="color: #0000ff;">var</span> item = <span style="color: #0000ff;">new</span> DataItem(); <span style="color: #008000;">//</span><span style="color: #008000;">实例化了一个item了哦</span>
+<span style="color: #008080;"> 85</span>         item.parentObj =<span style="color: #000000;"> scope;
+</span><span style="color: #008080;"> 86</span>         item.templateObj =<span style="color: #000000;"> scope.templateObj;
+</span><span style="color: #008080;"> 87</span> <span style="color: #000000;">        item.load(itemIndex, v);
+</span><span style="color: #008080;"> 88</span> <span style="color: #000000;">        scope.items.push(item);
+</span><span style="color: #008080;"> 89</span>         itemIndex++<span style="color: #000000;">;
+</span><span style="color: #008080;"> 90</span> <span style="color: #000000;">    });
+</span><span style="color: #008080;"> 91</span> <span style="color: #000000;">};
+</span><span style="color: #008080;"> 92</span> 
+<span style="color: #008080;"> 93</span> Datalist.prototype.initElement = <span style="color: #0000ff;">function</span><span style="color: #000000;"> () {
+</span><span style="color: #008080;"> 94</span>     <span style="color: #0000ff;">var</span> el = $('&lt;div id="' + <span style="color: #0000ff;">this</span>.id + '"&gt;&lt;/div&gt;'<span style="color: #000000;">);
+</span><span style="color: #008080;"> 95</span>     <span style="color: #0000ff;">this</span>.el =<span style="color: #000000;"> el;
+</span><span style="color: #008080;"> 96</span>     <span style="color: #0000ff;">this</span><span style="color: #000000;">.initAttribute();
+</span><span style="color: #008080;"> 97</span>     <span style="color: #0000ff;">this</span><span style="color: #000000;">.initStyle();
+</span><span style="color: #008080;"> 98</span> <span style="color: #000000;">};
+</span><span style="color: #008080;"> 99</span> 
+<span style="color: #008080;">100</span> Datalist.prototype.initAttribute = <span style="color: #0000ff;">function</span><span style="color: #000000;"> () {
+</span><span style="color: #008080;">101</span>     <span style="color: #0000ff;">var</span> scope = <span style="color: #0000ff;">this</span><span style="color: #000000;">;
+</span><span style="color: #008080;">102</span>     <span style="color: #0000ff;">var</span> element =<span style="color: #000000;"> scope.el;
+</span><span style="color: #008080;">103</span>     $.each(scope.attribute, <span style="color: #0000ff;">function</span><span style="color: #000000;"> (key, value) {
+</span><span style="color: #008080;">104</span>         <span style="color: #0000ff;">if</span> (<span style="color: #0000ff;">typeof</span> (value) == "string"<span style="color: #000000;">)
+</span><span style="color: #008080;">105</span>             <span style="color: #0000ff;">if</span> (value &amp;&amp; value.length &gt; 0<span style="color: #000000;">) {
+</span><span style="color: #008080;">106</span> <span style="color: #000000;">                element.attr(key, value);
+</span><span style="color: #008080;">107</span> <span style="color: #000000;">            }
+</span><span style="color: #008080;">108</span> <span style="color: #000000;">    });
+</span><span style="color: #008080;">109</span> <span style="color: #000000;">};
+</span><span style="color: #008080;">110</span> 
+<span style="color: #008080;">111</span> Datalist.prototype.initStyle = <span style="color: #0000ff;">function</span><span style="color: #000000;"> () {
+</span><span style="color: #008080;">112</span>     <span style="color: #0000ff;">var</span> scope = <span style="color: #0000ff;">this</span><span style="color: #000000;">;
+</span><span style="color: #008080;">113</span>     <span style="color: #0000ff;">var</span> element = <span style="color: #0000ff;">this</span><span style="color: #000000;">.el;
+</span><span style="color: #008080;">114</span>     <span style="color: #0000ff;">var</span> style = <span style="color: #0000ff;">this</span><span style="color: #000000;">.style;
+</span><span style="color: #008080;">115</span>     $.each(style, <span style="color: #0000ff;">function</span><span style="color: #000000;"> (key, value) {
+</span><span style="color: #008080;">116</span>         <span style="color: #0000ff;">if</span> (value &amp;&amp; value.length &gt; 0<span style="color: #000000;">) {
+</span><span style="color: #008080;">117</span> <span style="color: #000000;">            element.css(key, value);
+</span><span style="color: #008080;">118</span> <span style="color: #000000;">        }
+</span><span style="color: #008080;">119</span> <span style="color: #000000;">    });
+</span><span style="color: #008080;">120</span> };</pre>
+</div>
+<span class="cnblogs_code_collapse">View Code </span></div>
+<div class="cnblogs_code">
+<pre><span style="color: #008080;"> 1</span> <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">html </span><span style="color: #ff0000;">xmlns</span><span style="color: #0000ff;">="http://www.w3.org/1999/xhtml"</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 2</span> <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">head</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 3</span>     <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">title</span><span style="color: #0000ff;">&gt;&lt;/</span><span style="color: #800000;">title</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 4</span>     <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">script </span><span style="color: #ff0000;">src</span><span style="color: #0000ff;">="js/jquery-1.7.1.min.js"</span><span style="color: #ff0000;"> type</span><span style="color: #0000ff;">="text/javascript"</span><span style="color: #0000ff;">&gt;&lt;/</span><span style="color: #800000;">script</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 5</span>     <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">script </span><span style="color: #ff0000;">src</span><span style="color: #0000ff;">="js/Datalist.js"</span><span style="color: #ff0000;"> type</span><span style="color: #0000ff;">="text/javascript"</span><span style="color: #0000ff;">&gt;&lt;/</span><span style="color: #800000;">script</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 6</span>     <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">script </span><span style="color: #ff0000;">type</span><span style="color: #0000ff;">="text/javascript"</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 7</span> <span style="background-color: #f5f5f5; color: #000000;">        $(document).ready(</span><span style="background-color: #f5f5f5; color: #0000ff;">function</span><span style="background-color: #f5f5f5; color: #000000;"> () {
+</span><span style="color: #008080;"> 8</span>             <span style="background-color: #f5f5f5; color: #0000ff;">var</span><span style="background-color: #f5f5f5; color: #000000;"> _url </span><span style="background-color: #f5f5f5; color: #000000;">=</span> <span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">Ajax.aspx?sql=select * from bigType</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">;
+</span><span style="color: #008080;"> 9</span> <span style="background-color: #f5f5f5; color: #000000;">            $.getJSON(_url, </span><span style="background-color: #f5f5f5; color: #0000ff;">function</span><span style="background-color: #f5f5f5; color: #000000;"> (data) {
+</span><span style="color: #008080;">10</span>                 <span style="background-color: #f5f5f5; color: #0000ff;">var</span><span style="background-color: #f5f5f5; color: #000000;"> d </span><span style="background-color: #f5f5f5; color: #000000;">=</span> <span style="background-color: #f5f5f5; color: #0000ff;">new</span><span style="background-color: #f5f5f5; color: #000000;"> Datalist();
+</span><span style="color: #008080;">11</span> <span style="background-color: #f5f5f5; color: #000000;">                d.template </span><span style="background-color: #f5f5f5; color: #000000;">=</span> <span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">id:{%id%},title{%title%}</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">;
+</span><span style="color: #008080;">12</span> <span style="background-color: #f5f5f5; color: #000000;">                d.dataSource </span><span style="background-color: #f5f5f5; color: #000000;">=</span><span style="background-color: #f5f5f5; color: #000000;"> data;
+</span><span style="color: #008080;">13</span> <span style="background-color: #f5f5f5; color: #000000;">                d.bind();
+</span><span style="color: #008080;">14</span> <span style="background-color: #f5f5f5; color: #000000;">            });
+</span><span style="color: #008080;">15</span> <span style="background-color: #f5f5f5; color: #000000;">        });
+</span><span style="color: #008080;">16</span>     <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">script</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">17</span> <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">head</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">18</span> <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">body</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">19</span> <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">body</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">20</span> <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">html</span><span style="color: #0000ff;">&gt;</span></pre>
+</div>
+<p><img src="11146979099659.png" alt=""></p>
+<p><img src="24406107169500.png" alt=""></p>
+<p>别说，他还真把我们的东西读了出来呢！一个非常不好的地方就是他多了一个div并且多了一个id！！！现在我们将之拓宽一点：</p>
+<div class="cnblogs_code">
+<pre><span style="color: #008080;"> 1</span> <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">html </span><span style="color: #ff0000;">xmlns</span><span style="color: #0000ff;">="http://www.w3.org/1999/xhtml"</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 2</span> <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">head</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 3</span>     <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">title</span><span style="color: #0000ff;">&gt;&lt;/</span><span style="color: #800000;">title</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 4</span>     <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">style </span><span style="color: #ff0000;">type</span><span style="color: #0000ff;">="text/css"</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 5</span> <span style="background-color: #f5f5f5; color: #800000;">        .box </span><span style="background-color: #f5f5f5; color: #000000;">{</span><span style="background-color: #f5f5f5; color: #ff0000;"> margin</span><span style="background-color: #f5f5f5; color: #000000;">:</span><span style="background-color: #f5f5f5; color: #0000ff;"> 10px</span><span style="background-color: #f5f5f5; color: #000000;">;</span><span style="background-color: #f5f5f5; color: #ff0000;"> padding</span><span style="background-color: #f5f5f5; color: #000000;">:</span><span style="background-color: #f5f5f5; color: #0000ff;"> 10px</span><span style="background-color: #f5f5f5; color: #000000;">;</span><span style="background-color: #f5f5f5; color: #ff0000;"> border</span><span style="background-color: #f5f5f5; color: #000000;">:</span><span style="background-color: #f5f5f5; color: #0000ff;"> 1px solid gray</span><span style="background-color: #f5f5f5; color: #000000;">;</span><span style="background-color: #f5f5f5; color: #ff0000;"> display</span><span style="background-color: #f5f5f5; color: #000000;">:</span><span style="background-color: #f5f5f5; color: #0000ff;"> inline-block</span><span style="background-color: #f5f5f5; color: #000000;">;</span> <span style="background-color: #f5f5f5; color: #000000;">}</span>
+<span style="color: #008080;"> 6</span>     <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">style</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 7</span>     <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">script </span><span style="color: #ff0000;">src</span><span style="color: #0000ff;">="js/jquery-1.7.1.min.js"</span><span style="color: #ff0000;"> type</span><span style="color: #0000ff;">="text/javascript"</span><span style="color: #0000ff;">&gt;&lt;/</span><span style="color: #800000;">script</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 8</span>     <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">script </span><span style="color: #ff0000;">src</span><span style="color: #0000ff;">="js/Datalist.js"</span><span style="color: #ff0000;"> type</span><span style="color: #0000ff;">="text/javascript"</span><span style="color: #0000ff;">&gt;&lt;/</span><span style="color: #800000;">script</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 9</span>     <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">script </span><span style="color: #ff0000;">type</span><span style="color: #0000ff;">="text/javascript"</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">10</span> <span style="background-color: #f5f5f5; color: #000000;">        $(document).ready(</span><span style="background-color: #f5f5f5; color: #0000ff;">function</span><span style="background-color: #f5f5f5; color: #000000;"> () {
+</span><span style="color: #008080;">11</span>             <span style="background-color: #f5f5f5; color: #0000ff;">var</span><span style="background-color: #f5f5f5; color: #000000;"> _url </span><span style="background-color: #f5f5f5; color: #000000;">=</span> <span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">Ajax.aspx?sql=select * from bigType</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">;
+</span><span style="color: #008080;">12</span> <span style="background-color: #f5f5f5; color: #000000;">            $.getJSON(_url, </span><span style="background-color: #f5f5f5; color: #0000ff;">function</span><span style="background-color: #f5f5f5; color: #000000;"> (data) {
+</span><span style="color: #008080;">13</span>                 <span style="background-color: #f5f5f5; color: #0000ff;">var</span><span style="background-color: #f5f5f5; color: #000000;"> d </span><span style="background-color: #f5f5f5; color: #000000;">=</span> <span style="background-color: #f5f5f5; color: #0000ff;">new</span><span style="background-color: #f5f5f5; color: #000000;"> Datalist();
+</span><span style="color: #008080;">14</span> <span style="background-color: #f5f5f5; color: #000000;">                d.template </span><span style="background-color: #f5f5f5; color: #000000;">=</span> <span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">tmp</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">;
+</span><span style="color: #008080;">15</span> <span style="background-color: #f5f5f5; color: #000000;">                d.dataSource </span><span style="background-color: #f5f5f5; color: #000000;">=</span><span style="background-color: #f5f5f5; color: #000000;"> data;
+</span><span style="color: #008080;">16</span> <span style="background-color: #f5f5f5; color: #000000;">                d.bind();
+</span><span style="color: #008080;">17</span> <span style="background-color: #f5f5f5; color: #000000;">            });
+</span><span style="color: #008080;">18</span> <span style="background-color: #f5f5f5; color: #000000;">        });
+</span><span style="color: #008080;">19</span>     <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">script</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">20</span> <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">head</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">21</span> <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">body</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">22</span>     <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">textarea </span><span style="color: #ff0000;">id</span><span style="color: #0000ff;">="tmp"</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">23</span> <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">div </span><span style="color: #ff0000;">class</span><span style="color: #0000ff;">="box"</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">24</span>         <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">h3</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">25</span>             {%title%}<span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">h3</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">26</span>  
+<span style="color: #008080;">27</span>         <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">dl</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">28</span>             <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">dt</span><span style="color: #0000ff;">&gt;</span>{%id%}<span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">dt</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">29</span>             <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">dd</span><span style="color: #0000ff;">&gt;</span><span style="color: #000000;">{%title%}
+</span><span style="color: #008080;">30</span>             <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">dd</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">31</span>         <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">dl</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">32</span>     <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">div</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">33</span> <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">textarea</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">34</span> <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">body</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">35</span> <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">html</span><span style="color: #0000ff;">&gt;</span></pre>
+</div>
+<p>&nbsp;</p>
+<p><img src="2608108532390.png" alt=""></p>
+<p>我们看见我们将模板写在了文本域里面（这样可以避免id重复神马的带来的不方便）</p>
+<h1>结语</h1>
+<p>好吧，今天已经很晚啦，我们明天继续，结束这一章的东西，明天会解决以下问题（或者说尝试解决。。。）</p>
+<p>1 datalist的嵌套</p>
+<p>2 datalist的事件绑定</p>
+<p>3 尝试减少多余的div</p>
+<p>4 后端配合之拖动排序</p>
+<p>5 后端配合之分屏</p>
+<p>6 后端配合之移动</p>
+<p>......</p>
+<p>好啦好啦，我们睡觉吧。</p>
+                </div>
+
+                <div class='span3 sidebar'>
+                    <h2>导航栏</h2>
+                    <ul class="nav nav-tabs nav-stacked">
+                             				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/Fiddlerznqddsq/index.html">Fiddler真乃前端大杀器！！！</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/Requirejs/index.html">Requirejs</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/RequireJSyBackbonejdzh/index.html">RequireJS与Backbone简单整合</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/RequireJSxxbj/index.html">RequireJS学习笔记</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/Webqdyhctxdpzyyqdgsgpng/index.html">Web前端优化初探，小弟抛砖引玉，期待高手共破难关！</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/Webqdlqjrctxsqwpzyyqdgsgpng/index.html">Web前端浏览器兼容初探，小生浅文抛砖引玉，期待高手攻破难关！</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/jqueryfdataListxnyhmbybysxtgxn10bys/index.html">【jquery仿dataList——性能优化】模板预编译思想提高性能10倍以上！！！</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/jqueryfdataListyyzmfigoogledzhtdpxzdhfp/index.html">【jquery仿dataList】应用之——模仿igoogle【定制化、拖动排序，最大化、分屏】</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/jqueryfdatalistdygwtqzszmxxsjlkzDIVdjjbf/index.html">【jquery仿datalist的一个问题，求助】——设置每行显示几列，块状DIV的解决办法</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/jquerymfnetkjcbGridViewmxsxjqjdyy/index.html">【jquery模仿net控件】初步GridView模型实现，及其简单应用</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/jquerymfnetkjjdfykj10fsgridviewsycs/index.html">【jquery模仿net控件】简单分页控件10，附上gridview使用测试</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/jquerymfnetkjjdddatalistkjgxjqjdyy/index.html">【jquery模仿net控件】简单的datalist控件更新，及其简单应用</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/jquerymfnetkjjdddropdownlistydatalist/index.html">【jquery模仿net控件】简单的dropdownlist与datalist</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/jquerybnetkjdropdownlistfymhydjzdzzpz/index.html">【jquery版net控件—dropdownlist】附源码，欢迎大家指点、指正、拍砖！！！</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/positionykyhfzddccyslsbdws/index.html">【position也可以很复杂】当弹出层遇上了鼠标定位（上）</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/positionykyhfzddccyslsbdwx/index.html">【position也可以很复杂】当弹出层遇上了鼠标定位（下）</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/SEOzmlwljnmtsbwmlyqkkSEOb/index.html">【SEO】周末了，为了纪念明天上班，我们来一起看看SEO吧</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/webqdyhqdwyhyrzrz/index.html">【web前端优化】前端无优化，庸人自扰之！</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/webqdyhzreflowjsymdhl/index.html">【web前端优化之reflow】减少页面的回流</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/webqdyhztpycjzctzwbsxwbk/index.html">【web前端优化之图片延迟加载初探】中午不睡，下午崩溃</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/webqdyhztpmhdqxkwQQkjrhxsxp/index.html">【web前端优化之图片模糊到清晰】看我QQ空间如何显示相片</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/webqdpxzqhddphsywmsxdDatalistsmwtb/index.html">【web前端培训之前后端的配合（上）】以我们熟悉的Datalist说明问题吧</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/webqdpxzqhddphzjxzrdgs/index.html">【web前端培训之前后端的配合（中）】继续昨日的故事</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/dyyygybkydbfgqym/index.html">【单页应用】关于博客园的补发（高清有码）。。。</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/xtsstringifysBUGlocalstoragesxxmSafarialertksfycjzym10pxbp/index.html">【小贴士】【stringify神BUG】【localstorage失效】【消灭Safarialert框】【是否延迟加载】【页面10px白屏】</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/dalhdmsthhdsdmstjsh/index.html">【答阿里寒冬面试题】呵呵，大神的面试题就是好！</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/ycsjmstdldgwxxdgjxxdff/index.html">一次上机面试题带来的感悟【学习的感觉、学习的方法】</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/ydmstdldqdyhsxxxdp/index.html">一道面试题带来的前端优化——实现星星点评</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/zysyzjjhfzwebqdbfxlgxmndjjfa/index.html">只言碎语总结，今后发展web前端，并分享两个项目难点解决方案。</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/gwjlytbllbnwmljxwwdbdyzb/index.html">各位加了一天班累了吧？那我们来继续未完的表单验证吧</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/gwzmwlytllbwmyqlzldmstbjstbdy/index.html">各位周末玩了一天累了吧，我们一起来做两道面试题吧（据说淘宝的哟）！</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/jyjQuerydxlcdcjzwsy/index.html">基于jQuery的下拉菜单插件，诸位上眼！！！</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/jyjQuerydxlcdcd02zwsy/index.html">基于jQuery的下拉菜单菜单【02】，诸位上眼！！！</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/gzzpddyxdxdccktfybwjsc/index.html">工作中碰到的一些东西【弹出窗口】【拖放】【异步文件上传】</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/gzlygxqgwydllbnwmyqlbdyzyfb/index.html">工作了一个星期各位一定累了吧，那我们一起来表单验证一番吧！</a></li>
+    				                                         
+                    </ul>
+                </div>
+            </div>
+
+        </div>
+    </body>
+</html>

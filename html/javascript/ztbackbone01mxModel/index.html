@@ -1,0 +1,1118 @@
+﻿<!DOCTYPE html>
+
+<html lang="zh">
+    <head>
+        <meta charset="utf-8">
+        <meta name="description" content="android,ios" />
+        <meta name="keywords" content="android,ios" />
+
+        <title>叶小钗</title>
+        <style type='text/css'>
+            body {
+                background-color: #CCC;
+            }
+        </style>
+        <link rel="stylesheet" href="../../../css/bootstrap.css" />
+    </head>
+
+    <body>
+        <div class="container">
+
+            <h1>叶小钗</h1>
+
+            <div class='navbar navbar-inverse'>
+                <div class='navbar-inner nav-collapse' style="height: auto;">
+                    <ul class="nav">
+                              				<li><a href="http://songboriceboy.github.io/xxoo/html/blade/index.html">blade</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/css/index.html">css</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/HTML5&CSS3/index.html">HTML5&CSS3</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/index.html">javascript</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Javaxx/index.html">Java学习</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/nodejs/index.html">nodejs</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/requirejs/index.html">requirejs</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/index.html">Web前端</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/xxgw/index.html">学习感悟</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/gzdd/index.html">工作点滴</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/jkxx/index.html">接口学习</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/wfl/index.html">未分类</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/ydkf/index.html">移动开发</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/sjms/index.html">设计模式</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/mst/index.html">面试题</a></li>
+    				                      </ul>
+                </div>
+            </div>
+
+            <div id='content' class='row-fluid'>
+
+                <div class='span9 main'>
+				<div style="color:blue" align=center>【再探backbone01】模型Model</div><br><h1>前言</h1>
+<p><span style="color: #ff0000;">点保存时候不注意发出来了，有需要的朋友将就看吧，还在更新......</span></p>
+<p>几个月前学习了一下backbone，这段时间也用了下，感觉之前对backbone的学习很是基础，前几天有个园友问我如何将路由的#改为其他</p>
+<p>我其实想说这个不能乱改，又怕不熟悉误人子弟，所以今天我们来一起重新学习下他，看看会不会带来不一样的感觉</p>
+<p>我在博客园<a href="http://home.cnblogs.com/u/nuysoft/">nuysoft</a>的博客看到了backbone的分析，可惜没有写完，不失为一个遗憾，希望作者坚持下去，水平高得贡献出来哟（@nuysoft）</p>
+<p>然后，网上backbone基础用法的学习文章很多，感觉就nuysoft的深入，只不过多是点一下有点可惜，再次希望作者坚持下去......</p>
+<p>Web应用越来越关注前端，现在一个服务器端可能要对付五个前端，前端的业务逻辑复杂，各种问题层出不穷，现实对javascript程序的重用性、健壮性提出了更高的要求</p>
+<p>要求提高了，但是并不会给你更多的时间，反而为了抢占移动市场份额而拉快开发速度，现在的前端不可谓不难</p>
+<p><span style="color: #ff0000;">PS：如果你的公司是互联网公司且不重视前端的话，你可以来我们公司啊......</span></p>
+<p>Backbone是一个基于MVC模式的架构，本身强依赖与underscore，所以上个星期我们初略的学习了下underscore，有了一个大概印象</p>
+<p>非强制依赖于jquery/zepto，然后require是一个很好的基友，建议不要放过</p>
+<p>backbone据我使用来看，有几个优点：</p>
+<p>① 模板引擎避免js中嵌入过多html代码，这是一种结构数据分离的体现，但是他要归功于underscore了</p>
+<p>然后他的优点我用的时候就没有了......</p>
+<p>以上说法其实有点坑爹，我们为了减少backbone的size，所以对backbone做了删除，最后只用到了其中的view（事件处理），控制器我们自己实现了</p>
+<p>所以，我应该还未学习到backbone的精华，好了，前面扯多了，我们正式开始学习吧，这里附上之前的学习博客：</p>
+<p><a href="http://www.cnblogs.com/yexiaochai/p/3219402.html">http://www.cnblogs.com/yexiaochai/p/3219402.html</a></p>
+<p><a href="http://www.cnblogs.com/yexiaochai/p/3221081.html">http://www.cnblogs.com/yexiaochai/p/3221081.html</a></p>
+<p>例子参考：<a href="http://www.ibm.com/developerworks/cn/web/wa-backbonejs/">http://www.ibm.com/developerworks/cn/web/wa-backbonejs/</a></p>
+<h1>简单例子</h1>
+<p>我们今天首先做一个简单的例子，然后通过例子去读backbone的源码，明天再整体进行学习，这个例子当然就是我们伟大的官方例子了......</p>
+<h2>第一步，页面结构</h2>
+<div class="cnblogs_code" onclick="cnblogs_code_show('835b8950-0d20-46f2-944d-ae48d213838d')"><img id="code_img_closed_835b8950-0d20-46f2-944d-ae48d213838d" class="code_img_closed" src="43570758473519.gif" alt=""><img id="code_img_opened_835b8950-0d20-46f2-944d-ae48d213838d" class="code_img_opened" style="display: none;" onclick="cnblogs_code_hide('835b8950-0d20-46f2-944d-ae48d213838d',event)" src="16365178109279.gif" alt="">
+<div id="cnblogs_code_open_835b8950-0d20-46f2-944d-ae48d213838d" class="cnblogs_code_hide">
+<pre><span style="color: #008080;"> 1</span> <span style="color: #0000ff;">&lt;!</span><span style="color: #ff00ff;">DOCTYPE html</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 2</span> <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">html </span><span style="color: #ff0000;">lang</span><span style="color: #0000ff;">="en"</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 3</span> <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">head</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 4</span>   <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">meta </span><span style="color: #ff0000;">charset</span><span style="color: #0000ff;">="utf-8"</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 5</span>   <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">title</span><span style="color: #0000ff;">&gt;</span>Backbone.js Todos<span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">title</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 6</span>   <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">link </span><span style="color: #ff0000;">rel</span><span style="color: #0000ff;">="stylesheet"</span><span style="color: #ff0000;"> href</span><span style="color: #0000ff;">="todos.css"</span> <span style="color: #0000ff;">/&gt;</span>
+<span style="color: #008080;"> 7</span> <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">head</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 8</span> <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">body</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 9</span>   <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">div </span><span style="color: #ff0000;">id</span><span style="color: #0000ff;">="todoapp"</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">10</span>     <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">header</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">11</span>       <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">h1</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">12</span>         Todos<span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">h1</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">13</span>       <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">input </span><span style="color: #ff0000;">id</span><span style="color: #0000ff;">="new-todo"</span><span style="color: #ff0000;"> type</span><span style="color: #0000ff;">="text"</span><span style="color: #ff0000;"> placeholder</span><span style="color: #0000ff;">="What needs to be done?"</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">14</span>     <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">header</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">15</span>     <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">section </span><span style="color: #ff0000;">id</span><span style="color: #0000ff;">="main"</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">16</span>       <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">input </span><span style="color: #ff0000;">id</span><span style="color: #0000ff;">="toggle-all"</span><span style="color: #ff0000;"> type</span><span style="color: #0000ff;">="checkbox"</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">17</span>       <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">label </span><span style="color: #ff0000;">for</span><span style="color: #0000ff;">="toggle-all"</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">18</span>         Mark all as complete<span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">label</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">19</span>       <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">ul </span><span style="color: #ff0000;">id</span><span style="color: #0000ff;">="todo-list"</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">20</span>       <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">ul</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">21</span>     <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">section</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">22</span>     <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">footer</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">23</span>       <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">a </span><span style="color: #ff0000;">id</span><span style="color: #0000ff;">="clear-completed"</span><span style="color: #0000ff;">&gt;</span>Clear completed<span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">a</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">24</span>       <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">div </span><span style="color: #ff0000;">id</span><span style="color: #0000ff;">="todo-count"</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">25</span>       <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">div</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">26</span>     <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">footer</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">27</span>   <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">div</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">28</span>   <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">div </span><span style="color: #ff0000;">id</span><span style="color: #0000ff;">="instructions"</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">29</span> <span style="color: #000000;">    Double-click to edit a todo.
+</span><span style="color: #008080;">30</span>   <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">div</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">31</span>   <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">div </span><span style="color: #ff0000;">id</span><span style="color: #0000ff;">="credits"</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">32</span> <span style="color: #000000;">    Created by
+</span><span style="color: #008080;">33</span>     <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">br </span><span style="color: #0000ff;">/&gt;</span>
+<span style="color: #008080;">34</span>     <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">a </span><span style="color: #ff0000;">href</span><span style="color: #0000ff;">="http://jgn.me/"</span><span style="color: #0000ff;">&gt;</span>J<span style="color: #ff0000;">&amp;eacute;</span>r<span style="color: #ff0000;">&amp;ocirc;</span>me Gravel-Niquet<span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">a</span><span style="color: #0000ff;">&gt;</span><span style="color: #000000;">.
+</span><span style="color: #008080;">35</span>     <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">br </span><span style="color: #0000ff;">/&gt;</span>
+<span style="color: #008080;">36</span>     Rewritten by: <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">a </span><span style="color: #ff0000;">href</span><span style="color: #0000ff;">="http://addyosmani.github.com/todomvc"</span><span style="color: #0000ff;">&gt;</span>TodoMVC<span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">a</span><span style="color: #0000ff;">&gt;</span><span style="color: #000000;">.
+</span><span style="color: #008080;">37</span>   <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">div</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">38</span>   <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">script </span><span style="color: #ff0000;">src</span><span style="color: #0000ff;">="../../test/vendor/json2.js"</span><span style="color: #0000ff;">&gt;&lt;/</span><span style="color: #800000;">script</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">39</span>   <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">script </span><span style="color: #ff0000;">src</span><span style="color: #0000ff;">="../../test/vendor/jquery.js"</span><span style="color: #0000ff;">&gt;&lt;/</span><span style="color: #800000;">script</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">40</span>   <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">script </span><span style="color: #ff0000;">src</span><span style="color: #0000ff;">="../../test/vendor/underscore.js"</span><span style="color: #0000ff;">&gt;&lt;/</span><span style="color: #800000;">script</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">41</span>   <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">script </span><span style="color: #ff0000;">src</span><span style="color: #0000ff;">="../../backbone.js"</span><span style="color: #0000ff;">&gt;&lt;/</span><span style="color: #800000;">script</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">42</span>   <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">script </span><span style="color: #ff0000;">src</span><span style="color: #0000ff;">="../backbone.localStorage.js"</span><span style="color: #0000ff;">&gt;&lt;/</span><span style="color: #800000;">script</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">43</span>   <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">script </span><span style="color: #ff0000;">src</span><span style="color: #0000ff;">="todos.js"</span><span style="color: #0000ff;">&gt;&lt;/</span><span style="color: #800000;">script</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">44</span>   <span style="color: #008000;">&lt;!--</span><span style="color: #008000;"> Templates </span><span style="color: #008000;">--&gt;</span>
+<span style="color: #008080;">45</span>   <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">script </span><span style="color: #ff0000;">type</span><span style="color: #0000ff;">="text/template"</span><span style="color: #ff0000;"> id</span><span style="color: #0000ff;">="item-template"</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">46</span>     <span style="background-color: #f5f5f5; color: #000000;">&lt;</span><span style="background-color: #f5f5f5; color: #000000;">div class</span><span style="background-color: #f5f5f5; color: #000000;">=</span><span style="background-color: #f5f5f5; color: #000000;">"</span><span style="background-color: #f5f5f5; color: #000000;">view</span><span style="background-color: #f5f5f5; color: #000000;">"</span><span style="background-color: #f5f5f5; color: #000000;">&gt;</span>
+<span style="color: #008080;">47</span>       <span style="background-color: #f5f5f5; color: #000000;">&lt;</span><span style="background-color: #f5f5f5; color: #000000;">input class</span><span style="background-color: #f5f5f5; color: #000000;">=</span><span style="background-color: #f5f5f5; color: #000000;">"</span><span style="background-color: #f5f5f5; color: #000000;">toggle</span><span style="background-color: #f5f5f5; color: #000000;">"</span><span style="background-color: #f5f5f5; color: #000000;"> type</span><span style="background-color: #f5f5f5; color: #000000;">=</span><span style="background-color: #f5f5f5; color: #000000;">"</span><span style="background-color: #f5f5f5; color: #000000;">checkbox</span><span style="background-color: #f5f5f5; color: #000000;">"</span> <span style="background-color: #f5f5f5; color: #000000;">&lt;%=</span><span style="background-color: #f5f5f5; color: #000000;"> done </span><span style="background-color: #f5f5f5; color: #000000;">?</span> <span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">checked="checked"</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;"> : </span><span style="background-color: #f5f5f5; color: #000000;">''</span> <span style="background-color: #f5f5f5; color: #000000;">%&gt;</span> <span style="background-color: #f5f5f5; color: #000000;">/</span><span style="background-color: #f5f5f5; color: #000000;">&gt;</span>
+<span style="color: #008080;">48</span>       <span style="background-color: #f5f5f5; color: #000000;">&lt;</span><span style="background-color: #f5f5f5; color: #000000;">label</span><span style="background-color: #f5f5f5; color: #000000;">&gt;&lt;%-</span><span style="background-color: #f5f5f5; color: #000000;"> title </span><span style="background-color: #f5f5f5; color: #000000;">%&gt;&lt;</span><span style="background-color: #f5f5f5; color: #000000;">/</span><span style="background-color: #f5f5f5; color: #000000;">label&gt;</span>
+<span style="color: #008080;">49</span>       <span style="background-color: #f5f5f5; color: #000000;">&lt;</span><span style="background-color: #f5f5f5; color: #000000;">a class</span><span style="background-color: #f5f5f5; color: #000000;">=</span><span style="background-color: #f5f5f5; color: #000000;">"</span><span style="background-color: #f5f5f5; color: #000000;">destroy</span><span style="background-color: #f5f5f5; color: #000000;">"</span><span style="background-color: #f5f5f5; color: #000000;">&gt;&lt;</span><span style="background-color: #f5f5f5; color: #000000;">/</span><span style="background-color: #f5f5f5; color: #000000;">a&gt;</span>
+<span style="color: #008080;">50</span>     <span style="background-color: #f5f5f5; color: #000000;">&lt;</span><span style="background-color: #f5f5f5; color: #000000;">/</span><span style="background-color: #f5f5f5; color: #000000;">div&gt;</span>
+<span style="color: #008080;">51</span>     <span style="background-color: #f5f5f5; color: #000000;">&lt;</span><span style="background-color: #f5f5f5; color: #000000;">input class</span><span style="background-color: #f5f5f5; color: #000000;">=</span><span style="background-color: #f5f5f5; color: #000000;">"</span><span style="background-color: #f5f5f5; color: #000000;">edit</span><span style="background-color: #f5f5f5; color: #000000;">"</span><span style="background-color: #f5f5f5; color: #000000;"> type</span><span style="background-color: #f5f5f5; color: #000000;">=</span><span style="background-color: #f5f5f5; color: #000000;">"</span><span style="background-color: #f5f5f5; color: #000000;">text</span><span style="background-color: #f5f5f5; color: #000000;">"</span><span style="background-color: #f5f5f5; color: #000000;"> value</span><span style="background-color: #f5f5f5; color: #000000;">=</span><span style="background-color: #f5f5f5; color: #000000;">"</span><span style="background-color: #f5f5f5; color: #000000;">&lt;%- title %&gt;</span><span style="background-color: #f5f5f5; color: #000000;">"</span> <span style="background-color: #f5f5f5; color: #000000;">/</span><span style="background-color: #f5f5f5; color: #000000;">&gt;</span>
+<span style="color: #008080;">52</span>   <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">script</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">53</span>   <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">script </span><span style="color: #ff0000;">type</span><span style="color: #0000ff;">="text/template"</span><span style="color: #ff0000;"> id</span><span style="color: #0000ff;">="stats-template"</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">54</span>     <span style="background-color: #f5f5f5; color: #000000;">&lt;%</span> <span style="background-color: #f5f5f5; color: #0000ff;">if</span><span style="background-color: #f5f5f5; color: #000000;"> (done) { </span><span style="background-color: #f5f5f5; color: #000000;">%&gt;</span>
+<span style="color: #008080;">55</span>       <span style="background-color: #f5f5f5; color: #000000;">&lt;</span><span style="background-color: #f5f5f5; color: #000000;">a id</span><span style="background-color: #f5f5f5; color: #000000;">=</span><span style="background-color: #f5f5f5; color: #000000;">"</span><span style="background-color: #f5f5f5; color: #000000;">clear-completed</span><span style="background-color: #f5f5f5; color: #000000;">"</span><span style="background-color: #f5f5f5; color: #000000;">&gt;</span><span style="background-color: #f5f5f5; color: #000000;">Clear </span><span style="background-color: #f5f5f5; color: #000000;">&lt;%=</span><span style="background-color: #f5f5f5; color: #000000;"> done </span><span style="background-color: #f5f5f5; color: #000000;">%&gt;</span><span style="background-color: #f5f5f5; color: #000000;"> completed </span><span style="background-color: #f5f5f5; color: #000000;">&lt;%=</span><span style="background-color: #f5f5f5; color: #000000;"> done </span><span style="background-color: #f5f5f5; color: #000000;">==</span> <span style="background-color: #f5f5f5; color: #000000;">1</span> <span style="background-color: #f5f5f5; color: #000000;">?</span> <span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">item</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;"> : </span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">items</span><span style="background-color: #f5f5f5; color: #000000;">'</span> <span style="background-color: #f5f5f5; color: #000000;">%&gt;&lt;</span><span style="background-color: #f5f5f5; color: #000000;">/</span><span style="background-color: #f5f5f5; color: #000000;">a&gt;</span>
+<span style="color: #008080;">56</span>     <span style="background-color: #f5f5f5; color: #000000;">&lt;%</span><span style="background-color: #f5f5f5; color: #000000;"> } </span><span style="background-color: #f5f5f5; color: #000000;">%&gt;</span>
+<span style="color: #008080;">57</span>     <span style="background-color: #f5f5f5; color: #000000;">&lt;</span><span style="background-color: #f5f5f5; color: #000000;">div class</span><span style="background-color: #f5f5f5; color: #000000;">=</span><span style="background-color: #f5f5f5; color: #000000;">"</span><span style="background-color: #f5f5f5; color: #000000;">todo-count</span><span style="background-color: #f5f5f5; color: #000000;">"</span><span style="background-color: #f5f5f5; color: #000000;">&gt;&lt;</span><span style="background-color: #f5f5f5; color: #000000;">b</span><span style="background-color: #f5f5f5; color: #000000;">&gt;&lt;%=</span><span style="background-color: #f5f5f5; color: #000000;"> remaining </span><span style="background-color: #f5f5f5; color: #000000;">%&gt;&lt;</span><span style="background-color: #f5f5f5; color: #000000;">/</span><span style="background-color: #f5f5f5; color: #000000;">b&gt; &lt;%= remaining == 1 ? 'item' : 'items' %&gt; left&lt;</span><span style="background-color: #f5f5f5; color: #000000;">/</span><span style="background-color: #f5f5f5; color: #000000;">div</span><span style="background-color: #f5f5f5; color: #000000;">&gt;</span>
+<span style="color: #008080;">58</span>   <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">script</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">59</span> <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">body</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">60</span> <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">html</span><span style="color: #0000ff;">&gt;</span></pre>
+</div>
+<span class="cnblogs_code_collapse">View Code </span></div>
+<p>页面结构比较简单，其实就只有一个文本框，然后下面有一个用于显示的列表，当然页面中有我们用到的模板</p>
+<p><img src="15287786201774.png" alt=""></p>
+<h2>第二步，定义model</h2>
+<p>然后我们需要定义我们备忘录的model了</p>
+<div class="cnblogs_code">
+<pre><span style="color: #008080;"> 1</span> <span style="color: #008000;">//</span><span style="color: #008000;"> Our basic **Todo** model has `title`, `order`, and `done` attributes.</span>
+<span style="color: #008080;"> 2</span> <span style="color: #0000ff;">var</span> Todo =<span style="color: #000000;"> Backbone.Model.extend({
+</span><span style="color: #008080;"> 3</span> 
+<span style="color: #008080;"> 4</span>   <span style="color: #008000;">//</span><span style="color: #008000;"> Default attributes for the todo item.</span>
+<span style="color: #008080;"> 5</span>   defaults: <span style="color: #0000ff;">function</span><span style="color: #000000;"> () {
+</span><span style="color: #008080;"> 6</span>     <span style="color: #0000ff;">return</span><span style="color: #000000;"> {
+</span><span style="color: #008080;"> 7</span>       title: "empty todo..."<span style="color: #000000;">,
+</span><span style="color: #008080;"> 8</span> <span style="color: #000000;">      order: Todos.nextOrder(),
+</span><span style="color: #008080;"> 9</span>       done: <span style="color: #0000ff;">false</span>
+<span style="color: #008080;">10</span> <span style="color: #000000;">    };
+</span><span style="color: #008080;">11</span> <span style="color: #000000;">  },
+</span><span style="color: #008080;">12</span>   <span style="color: #008000;">//</span><span style="color: #008000;"> Toggle the `done` state of this todo item.</span>
+<span style="color: #008080;">13</span>   toggle: <span style="color: #0000ff;">function</span><span style="color: #000000;"> () {
+</span><span style="color: #008080;">14</span>     <span style="color: #0000ff;">this</span>.save({ done: !<span style="color: #0000ff;">this</span>.get("done"<span style="color: #000000;">) });
+</span><span style="color: #008080;">15</span> <span style="color: #000000;">  }
+</span><span style="color: #008080;">16</span> });</pre>
+</div>
+<p>这里需要注意他这种写法，我们后面会详细说明，这里先简单来看看这个实例化的结果</p>
+<p><img src="27822965640188.png" alt=""></p>
+<p>我们看到一个Model实例化后有以上属性，主要注意点是title与down，事实上我们可以使用model的get/set去操作这些属性，model的主要工作其实就是维护他的属性</p>
+<p>model维护的属性可能还会与服务器端发生通信，通信时会用到save方法，我们这里不予关注</p>
+<div class="cnblogs_code">
+<pre><span style="color: #008080;"> 1</span> <span style="color: #008000;">//</span><span style="color: #008000;"> "name" attribute is set into the model</span>
+<span style="color: #008080;"> 2</span> <span style="color: #0000ff;">var</span> team1 = <span style="color: #0000ff;">new</span><span style="color: #000000;"> App.Models.Team({
+</span><span style="color: #008080;"> 3</span>     name : "name1"
+<span style="color: #008080;"> 4</span> <span style="color: #000000;">});
+</span><span style="color: #008080;"> 5</span> console.log(team1.get("name")); <span style="color: #008000;">//</span><span style="color: #008000;"> prints "name1"</span>
+<span style="color: #008080;"> 6</span> 
+<span style="color: #008080;"> 7</span> <span style="color: #008000;">//</span><span style="color: #008000;"> "name" attribute is set with a new value</span>
+<span style="color: #008080;"> 8</span> <span style="color: #000000;">team1.set({
+</span><span style="color: #008080;"> 9</span>     name : "name2"
+<span style="color: #008080;">10</span> <span style="color: #000000;">});
+</span><span style="color: #008080;">11</span> console.log(team1.get("name")); <span style="color: #008000;">//</span><span style="color: #008000;">prints "name2"</span></pre>
+</div>
+<p><span style="line-height: 1.5;">这里需要注意的一点是，数据变化时候会引发Model的change方法，如果在change方法中，绑定对dom的操作，那么model变化页面就会自动发生变化，这就是model这点小九九干的事情</span></p>
+<p><span style="line-height: 1.5;">代码内部具体干什么的我们暂时不管，继续往下看，有了model后就会有集合</span></p>
+<h2>第三步，集合</h2>
+<div class="cnblogs_code">
+<pre><span style="color: #008080;"> 1</span> <span style="color: #0000ff;">var</span> TodoList =<span style="color: #000000;"> Backbone.Collection.extend({
+</span><span style="color: #008080;"> 2</span>   <span style="color: #008000;">//</span><span style="color: #008000;"> Reference to this collection's model.</span>
+<span style="color: #008080;"> 3</span> <span style="color: #000000;">  model: Todo,
+</span><span style="color: #008080;"> 4</span>   <span style="color: #008000;">//</span><span style="color: #008000;"> Save all of the todo items under the `"todos-backbone"` namespace.</span>
+<span style="color: #008080;"> 5</span>   localStorage: <span style="color: #0000ff;">new</span> Backbone.LocalStorage("todos-backbone"<span style="color: #000000;">),
+</span><span style="color: #008080;"> 6</span>   <span style="color: #008000;">//</span><span style="color: #008000;"> Filter down the list of all todo items that are finished.</span>
+<span style="color: #008080;"> 7</span>   done: <span style="color: #0000ff;">function</span><span style="color: #000000;"> () {
+</span><span style="color: #008080;"> 8</span>     <span style="color: #0000ff;">return</span> <span style="color: #0000ff;">this</span>.where({ done: <span style="color: #0000ff;">true</span><span style="color: #000000;"> });
+</span><span style="color: #008080;"> 9</span> <span style="color: #000000;">  },
+</span><span style="color: #008080;">10</span>   <span style="color: #008000;">//</span><span style="color: #008000;"> Filter down the list to only todo items that are still not finished.</span>
+<span style="color: #008080;">11</span>   remaining: <span style="color: #0000ff;">function</span><span style="color: #000000;"> () {
+</span><span style="color: #008080;">12</span>     <span style="color: #0000ff;">return</span> <span style="color: #0000ff;">this</span>.without.apply(<span style="color: #0000ff;">this</span>, <span style="color: #0000ff;">this</span><span style="color: #000000;">.done());
+</span><span style="color: #008080;">13</span> <span style="color: #000000;">  },
+</span><span style="color: #008080;">14</span>   <span style="color: #008000;">//</span><span style="color: #008000;"> We keep the Todos in sequential order, despite being saved by unordered</span>
+<span style="color: #008080;">15</span>   <span style="color: #008000;">//</span><span style="color: #008000;"> GUID in the database. This generates the next order number for new items.</span>
+<span style="color: #008080;">16</span>   nextOrder: <span style="color: #0000ff;">function</span><span style="color: #000000;"> () {
+</span><span style="color: #008080;">17</span>     <span style="color: #0000ff;">if</span> (!<span style="color: #0000ff;">this</span>.length) <span style="color: #0000ff;">return</span> 1<span style="color: #000000;">;
+</span><span style="color: #008080;">18</span>     <span style="color: #0000ff;">return</span> <span style="color: #0000ff;">this</span>.last().get('order') + 1<span style="color: #000000;">;
+</span><span style="color: #008080;">19</span> <span style="color: #000000;">  },
+</span><span style="color: #008080;">20</span>   <span style="color: #008000;">//</span><span style="color: #008000;"> Todos are sorted by their original insertion order.</span>
+<span style="color: #008080;">21</span>   comparator: 'order'
+<span style="color: #008080;">22</span> });</pre>
+</div>
+<p>这里对集合与之前定义的Model做了一个映射关系，他这个集合有何作用已经如何发生变化的我们后面详细说明</p>
+<p>这里我只能说，这个集合时保存Model的列表，并在内部定义了一些操作model的方法</p>
+<p><img src="47417729768984.png" alt=""></p>
+<p>集合与model息息相关，事实上每个model内部都有一个collection的映射对象，一旦发生映射，那么model变化collection内部也会发生变化，这里的细节我们后面点说</p>
+<h2>第四步，TodoView</h2>
+<div class="cnblogs_code" onclick="cnblogs_code_show('d7950151-5ad2-46e0-a88c-802d5d956f59')"><img id="code_img_closed_d7950151-5ad2-46e0-a88c-802d5d956f59" class="code_img_closed" src="43570758473519.gif" alt=""><img id="code_img_opened_d7950151-5ad2-46e0-a88c-802d5d956f59" class="code_img_opened" style="display: none;" onclick="cnblogs_code_hide('d7950151-5ad2-46e0-a88c-802d5d956f59',event)" src="16365178109279.gif" alt="">
+<div id="cnblogs_code_open_d7950151-5ad2-46e0-a88c-802d5d956f59" class="cnblogs_code_hide">
+<pre><span style="color: #008080;"> 1</span> <span style="color: #0000ff;">var</span> TodoView =<span style="color: #000000;"> Backbone.View.extend({
+</span><span style="color: #008080;"> 2</span> 
+<span style="color: #008080;"> 3</span>   <span style="color: #008000;">//</span><span style="color: #008000;">... is a list tag.</span>
+<span style="color: #008080;"> 4</span>   tagName: "li"<span style="color: #000000;">,
+</span><span style="color: #008080;"> 5</span> 
+<span style="color: #008080;"> 6</span>   <span style="color: #008000;">//</span><span style="color: #008000;"> Cache the template function for a single item.</span>
+<span style="color: #008080;"> 7</span>   template: _.template($('#item-template'<span style="color: #000000;">).html()),
+</span><span style="color: #008080;"> 8</span> 
+<span style="color: #008080;"> 9</span>   <span style="color: #008000;">//</span><span style="color: #008000;"> The DOM events specific to an item.</span>
+<span style="color: #008080;">10</span> <span style="color: #000000;">  events: {
+</span><span style="color: #008080;">11</span>     "click .toggle": "toggleDone"<span style="color: #000000;">,
+</span><span style="color: #008080;">12</span>     "dblclick .view": "edit"<span style="color: #000000;">,
+</span><span style="color: #008080;">13</span>     "click a.destroy": "clear"<span style="color: #000000;">,
+</span><span style="color: #008080;">14</span>     "keypress .edit": "updateOnEnter"<span style="color: #000000;">,
+</span><span style="color: #008080;">15</span>     "blur .edit": "close"
+<span style="color: #008080;">16</span> <span style="color: #000000;">  },
+</span><span style="color: #008080;">17</span> 
+<span style="color: #008080;">18</span>   <span style="color: #008000;">//</span><span style="color: #008000;"> The TodoView listens for changes to its model, re-rendering. Since there's</span>
+<span style="color: #008080;">19</span>   <span style="color: #008000;">//</span><span style="color: #008000;"> a one-to-one correspondence between a **Todo** and a **TodoView** in this</span>
+<span style="color: #008080;">20</span>   <span style="color: #008000;">//</span><span style="color: #008000;"> app, we set a direct reference on the model for convenience.</span>
+<span style="color: #008080;">21</span>   initialize: <span style="color: #0000ff;">function</span><span style="color: #000000;"> () {
+</span><span style="color: #008080;">22</span>     <span style="color: #0000ff;">this</span>.listenTo(<span style="color: #0000ff;">this</span>.model, 'change', <span style="color: #0000ff;">this</span><span style="color: #000000;">.render);
+</span><span style="color: #008080;">23</span>     <span style="color: #0000ff;">this</span>.listenTo(<span style="color: #0000ff;">this</span>.model, 'destroy', <span style="color: #0000ff;">this</span><span style="color: #000000;">.remove);
+</span><span style="color: #008080;">24</span> <span style="color: #000000;">  },
+</span><span style="color: #008080;">25</span> 
+<span style="color: #008080;">26</span>   <span style="color: #008000;">//</span><span style="color: #008000;"> Re-render the titles of the todo item.</span>
+<span style="color: #008080;">27</span>   render: <span style="color: #0000ff;">function</span><span style="color: #000000;"> () {
+</span><span style="color: #008080;">28</span>     <span style="color: #0000ff;">this</span>.$el.html(<span style="color: #0000ff;">this</span>.template(<span style="color: #0000ff;">this</span><span style="color: #000000;">.model.toJSON()));
+</span><span style="color: #008080;">29</span>     <span style="color: #0000ff;">this</span>.$el.toggleClass('done', <span style="color: #0000ff;">this</span>.model.get('done'<span style="color: #000000;">));
+</span><span style="color: #008080;">30</span>     <span style="color: #0000ff;">this</span>.input = <span style="color: #0000ff;">this</span>.$('.edit'<span style="color: #000000;">);
+</span><span style="color: #008080;">31</span>     <span style="color: #0000ff;">return</span> <span style="color: #0000ff;">this</span><span style="color: #000000;">;
+</span><span style="color: #008080;">32</span> <span style="color: #000000;">  },
+</span><span style="color: #008080;">33</span> 
+<span style="color: #008080;">34</span>   <span style="color: #008000;">//</span><span style="color: #008000;"> Toggle the `"done"` state of the model.</span>
+<span style="color: #008080;">35</span>   toggleDone: <span style="color: #0000ff;">function</span><span style="color: #000000;"> () {
+</span><span style="color: #008080;">36</span>     <span style="color: #0000ff;">this</span><span style="color: #000000;">.model.toggle();
+</span><span style="color: #008080;">37</span> <span style="color: #000000;">  },
+</span><span style="color: #008080;">38</span> 
+<span style="color: #008080;">39</span>   <span style="color: #008000;">//</span><span style="color: #008000;"> Switch this view into `"editing"` mode, displaying the input field.</span>
+<span style="color: #008080;">40</span>   edit: <span style="color: #0000ff;">function</span><span style="color: #000000;"> () {
+</span><span style="color: #008080;">41</span>     <span style="color: #0000ff;">this</span>.$el.addClass("editing"<span style="color: #000000;">);
+</span><span style="color: #008080;">42</span>     <span style="color: #0000ff;">this</span><span style="color: #000000;">.input.focus();
+</span><span style="color: #008080;">43</span> <span style="color: #000000;">  },
+</span><span style="color: #008080;">44</span> 
+<span style="color: #008080;">45</span>   <span style="color: #008000;">//</span><span style="color: #008000;"> Close the `"editing"` mode, saving changes to the todo.</span>
+<span style="color: #008080;">46</span>   close: <span style="color: #0000ff;">function</span><span style="color: #000000;"> () {
+</span><span style="color: #008080;">47</span>     <span style="color: #0000ff;">var</span> value = <span style="color: #0000ff;">this</span><span style="color: #000000;">.input.val();
+</span><span style="color: #008080;">48</span>     <span style="color: #0000ff;">if</span> (!<span style="color: #000000;">value) {
+</span><span style="color: #008080;">49</span>       <span style="color: #0000ff;">this</span><span style="color: #000000;">.clear();
+</span><span style="color: #008080;">50</span>     } <span style="color: #0000ff;">else</span><span style="color: #000000;"> {
+</span><span style="color: #008080;">51</span>       <span style="color: #0000ff;">this</span><span style="color: #000000;">.model.save({ title: value });
+</span><span style="color: #008080;">52</span>       <span style="color: #0000ff;">this</span>.$el.removeClass("editing"<span style="color: #000000;">);
+</span><span style="color: #008080;">53</span> <span style="color: #000000;">    }
+</span><span style="color: #008080;">54</span> <span style="color: #000000;">  },
+</span><span style="color: #008080;">55</span> 
+<span style="color: #008080;">56</span>   <span style="color: #008000;">//</span><span style="color: #008000;"> If you hit `enter`, we're through editing the item.</span>
+<span style="color: #008080;">57</span>   updateOnEnter: <span style="color: #0000ff;">function</span><span style="color: #000000;"> (e) {
+</span><span style="color: #008080;">58</span>     <span style="color: #0000ff;">if</span> (e.keyCode == 13) <span style="color: #0000ff;">this</span><span style="color: #000000;">.close();
+</span><span style="color: #008080;">59</span> <span style="color: #000000;">  },
+</span><span style="color: #008080;">60</span> 
+<span style="color: #008080;">61</span>   <span style="color: #008000;">//</span><span style="color: #008000;"> Remove the item, destroy the model.</span>
+<span style="color: #008080;">62</span>   clear: <span style="color: #0000ff;">function</span><span style="color: #000000;"> () {
+</span><span style="color: #008080;">63</span>     <span style="color: #0000ff;">this</span><span style="color: #000000;">.model.destroy();
+</span><span style="color: #008080;">64</span> <span style="color: #000000;">  }
+</span><span style="color: #008080;">65</span> 
+<span style="color: #008080;">66</span> });</pre>
+</div>
+<span class="cnblogs_code_collapse">View Code </span></div>
+<p>熟悉backbone的朋友一定对这段代码尤其熟悉（因为我们只用到了view，model与control全部自己写的，所以我最熟悉的就是这个......）</p>
+<p>上面的代码会形成一个view，view实例化时会执行initialize中的方法，需要显示则需要执行render方法（重写）</p>
+<p>render结束后页面的交互全部放到了events里面，各位既然用到了backbone，就不要自己随意以on的形式绑定事件了</p>
+<p>在view可以为el指定dom结构，新建的view形成的dom就会往里面装</p>
+<p>总而言之，View的重点是模板引擎与事件绑定，这里的view不是入口方法，我们看下一个view</p>
+<h2>第五步，入口AppView</h2>
+<div class="cnblogs_code" onclick="cnblogs_code_show('3dfad1a9-1845-49ab-b892-6db01fc1d8df')"><img id="code_img_closed_3dfad1a9-1845-49ab-b892-6db01fc1d8df" class="code_img_closed" src="43570758473519.gif" alt=""><img id="code_img_opened_3dfad1a9-1845-49ab-b892-6db01fc1d8df" class="code_img_opened" style="display: none;" onclick="cnblogs_code_hide('3dfad1a9-1845-49ab-b892-6db01fc1d8df',event)" src="16365178109279.gif" alt="">
+<div id="cnblogs_code_open_3dfad1a9-1845-49ab-b892-6db01fc1d8df" class="cnblogs_code_hide">
+<pre><span style="color: #008080;"> 1</span> <span style="color: #0000ff;">var</span> AppView =<span style="color: #000000;"> Backbone.View.extend({
+</span><span style="color: #008080;"> 2</span> 
+<span style="color: #008080;"> 3</span>   <span style="color: #008000;">//</span><span style="color: #008000;"> Instead of generating a new element, bind to the existing skeleton of</span>
+<span style="color: #008080;"> 4</span>   <span style="color: #008000;">//</span><span style="color: #008000;"> the App already present in the HTML.</span>
+<span style="color: #008080;"> 5</span>   el: $("#todoapp"<span style="color: #000000;">),
+</span><span style="color: #008080;"> 6</span> 
+<span style="color: #008080;"> 7</span>   <span style="color: #008000;">//</span><span style="color: #008000;"> Our template for the line of statistics at the bottom of the app.</span>
+<span style="color: #008080;"> 8</span>   statsTemplate: _.template($('#stats-template'<span style="color: #000000;">).html()),
+</span><span style="color: #008080;"> 9</span> 
+<span style="color: #008080;">10</span>   <span style="color: #008000;">//</span><span style="color: #008000;"> Delegated events for creating new items, and clearing completed ones.</span>
+<span style="color: #008080;">11</span> <span style="color: #000000;">  events: {
+</span><span style="color: #008080;">12</span>     "keypress #new-todo": "createOnEnter"<span style="color: #000000;">,
+</span><span style="color: #008080;">13</span>     "click #clear-completed": "clearCompleted"<span style="color: #000000;">,
+</span><span style="color: #008080;">14</span>     "click #toggle-all": "toggleAllComplete"
+<span style="color: #008080;">15</span> <span style="color: #000000;">  },
+</span><span style="color: #008080;">16</span> 
+<span style="color: #008080;">17</span>   <span style="color: #008000;">//</span><span style="color: #008000;"> At initialization we bind to the relevant events on the `Todos`</span>
+<span style="color: #008080;">18</span>   <span style="color: #008000;">//</span><span style="color: #008000;"> collection, when items are added or changed. Kick things off by</span>
+<span style="color: #008080;">19</span>   <span style="color: #008000;">//</span><span style="color: #008000;"> loading any preexisting todos that might be saved in *localStorage*.</span>
+<span style="color: #008080;">20</span>   initialize: <span style="color: #0000ff;">function</span><span style="color: #000000;"> () {
+</span><span style="color: #008080;">21</span> 
+<span style="color: #008080;">22</span>     <span style="color: #0000ff;">this</span>.input = <span style="color: #0000ff;">this</span>.$("#new-todo"<span style="color: #000000;">);
+</span><span style="color: #008080;">23</span>     <span style="color: #0000ff;">this</span>.allCheckbox = <span style="color: #0000ff;">this</span>.$("#toggle-all")[0<span style="color: #000000;">];
+</span><span style="color: #008080;">24</span> 
+<span style="color: #008080;">25</span>     <span style="color: #0000ff;">this</span>.listenTo(Todos, 'add', <span style="color: #0000ff;">this</span><span style="color: #000000;">.addOne);
+</span><span style="color: #008080;">26</span>     <span style="color: #0000ff;">this</span>.listenTo(Todos, 'reset', <span style="color: #0000ff;">this</span><span style="color: #000000;">.addAll);
+</span><span style="color: #008080;">27</span>     <span style="color: #0000ff;">this</span>.listenTo(Todos, 'all', <span style="color: #0000ff;">this</span><span style="color: #000000;">.render);
+</span><span style="color: #008080;">28</span> 
+<span style="color: #008080;">29</span>     <span style="color: #0000ff;">this</span>.footer = <span style="color: #0000ff;">this</span>.$('footer'<span style="color: #000000;">);
+</span><span style="color: #008080;">30</span>     <span style="color: #0000ff;">this</span>.main = $('#main'<span style="color: #000000;">);
+</span><span style="color: #008080;">31</span> 
+<span style="color: #008080;">32</span> <span style="color: #000000;">    Todos.fetch();
+</span><span style="color: #008080;">33</span> <span style="color: #000000;">  },
+</span><span style="color: #008080;">34</span> 
+<span style="color: #008080;">35</span>   <span style="color: #008000;">//</span><span style="color: #008000;"> Re-rendering the App just means refreshing the statistics -- the rest</span>
+<span style="color: #008080;">36</span>   <span style="color: #008000;">//</span><span style="color: #008000;"> of the app doesn't change.</span>
+<span style="color: #008080;">37</span>   render: <span style="color: #0000ff;">function</span><span style="color: #000000;"> () {
+</span><span style="color: #008080;">38</span>     <span style="color: #0000ff;">var</span> done =<span style="color: #000000;"> Todos.done().length;
+</span><span style="color: #008080;">39</span>     <span style="color: #0000ff;">var</span> remaining =<span style="color: #000000;"> Todos.remaining().length;
+</span><span style="color: #008080;">40</span> 
+<span style="color: #008080;">41</span>     <span style="color: #0000ff;">if</span><span style="color: #000000;"> (Todos.length) {
+</span><span style="color: #008080;">42</span>       <span style="color: #0000ff;">this</span><span style="color: #000000;">.main.show();
+</span><span style="color: #008080;">43</span>       <span style="color: #0000ff;">this</span><span style="color: #000000;">.footer.show();
+</span><span style="color: #008080;">44</span>       <span style="color: #0000ff;">this</span>.footer.html(<span style="color: #0000ff;">this</span><span style="color: #000000;">.statsTemplate({ done: done, remaining: remaining }));
+</span><span style="color: #008080;">45</span>     } <span style="color: #0000ff;">else</span><span style="color: #000000;"> {
+</span><span style="color: #008080;">46</span>       <span style="color: #0000ff;">this</span><span style="color: #000000;">.main.hide();
+</span><span style="color: #008080;">47</span>       <span style="color: #0000ff;">this</span><span style="color: #000000;">.footer.hide();
+</span><span style="color: #008080;">48</span> <span style="color: #000000;">    }
+</span><span style="color: #008080;">49</span> 
+<span style="color: #008080;">50</span>     <span style="color: #0000ff;">this</span>.allCheckbox.checked = !<span style="color: #000000;">remaining;
+</span><span style="color: #008080;">51</span> <span style="color: #000000;">  },
+</span><span style="color: #008080;">52</span> 
+<span style="color: #008080;">53</span>   <span style="color: #008000;">//</span><span style="color: #008000;"> Add a single todo item to the list by creating a view for it, and</span>
+<span style="color: #008080;">54</span>   <span style="color: #008000;">//</span><span style="color: #008000;"> appending its element to the `&lt;ul&gt;`.</span>
+<span style="color: #008080;">55</span>   addOne: <span style="color: #0000ff;">function</span><span style="color: #000000;"> (todo) {
+</span><span style="color: #008080;">56</span>     <span style="color: #0000ff;">var</span> view = <span style="color: #0000ff;">new</span><span style="color: #000000;"> TodoView({ model: todo });
+</span><span style="color: #008080;">57</span>     <span style="color: #0000ff;">this</span>.$("#todo-list"<span style="color: #000000;">).append(view.render().el);
+</span><span style="color: #008080;">58</span> <span style="color: #000000;">  },
+</span><span style="color: #008080;">59</span> 
+<span style="color: #008080;">60</span>   <span style="color: #008000;">//</span><span style="color: #008000;"> Add all items in the **Todos** collection at once.</span>
+<span style="color: #008080;">61</span>   addAll: <span style="color: #0000ff;">function</span><span style="color: #000000;"> () {
+</span><span style="color: #008080;">62</span>     Todos.each(<span style="color: #0000ff;">this</span>.addOne, <span style="color: #0000ff;">this</span><span style="color: #000000;">);
+</span><span style="color: #008080;">63</span> <span style="color: #000000;">  },
+</span><span style="color: #008080;">64</span> 
+<span style="color: #008080;">65</span>   <span style="color: #008000;">//</span><span style="color: #008000;"> If you hit return in the main input field, create new **Todo** model,</span>
+<span style="color: #008080;">66</span>   <span style="color: #008000;">//</span><span style="color: #008000;"> persisting it to *localStorage*.</span>
+<span style="color: #008080;">67</span>   createOnEnter: <span style="color: #0000ff;">function</span><span style="color: #000000;"> (e) {
+</span><span style="color: #008080;">68</span>     <span style="color: #0000ff;">if</span> (e.keyCode != 13) <span style="color: #0000ff;">return</span><span style="color: #000000;">;
+</span><span style="color: #008080;">69</span>     <span style="color: #0000ff;">if</span> (!<span style="color: #0000ff;">this</span>.input.val()) <span style="color: #0000ff;">return</span><span style="color: #000000;">;
+</span><span style="color: #008080;">70</span> 
+<span style="color: #008080;">71</span>     Todos.create({ title: <span style="color: #0000ff;">this</span><span style="color: #000000;">.input.val() });
+</span><span style="color: #008080;">72</span>     <span style="color: #0000ff;">this</span>.input.val(''<span style="color: #000000;">);
+</span><span style="color: #008080;">73</span> <span style="color: #000000;">  },
+</span><span style="color: #008080;">74</span> 
+<span style="color: #008080;">75</span>   <span style="color: #008000;">//</span><span style="color: #008000;"> Clear all done todo items, destroying their models.</span>
+<span style="color: #008080;">76</span>   clearCompleted: <span style="color: #0000ff;">function</span><span style="color: #000000;"> () {
+</span><span style="color: #008080;">77</span>     _.invoke(Todos.done(), 'destroy'<span style="color: #000000;">);
+</span><span style="color: #008080;">78</span>     <span style="color: #0000ff;">return</span> <span style="color: #0000ff;">false</span><span style="color: #000000;">;
+</span><span style="color: #008080;">79</span> <span style="color: #000000;">  },
+</span><span style="color: #008080;">80</span> 
+<span style="color: #008080;">81</span>   toggleAllComplete: <span style="color: #0000ff;">function</span><span style="color: #000000;"> () {
+</span><span style="color: #008080;">82</span>     <span style="color: #0000ff;">var</span> done = <span style="color: #0000ff;">this</span><span style="color: #000000;">.allCheckbox.checked;
+</span><span style="color: #008080;">83</span>     Todos.each(<span style="color: #0000ff;">function</span> (todo) { todo.save({ 'done'<span style="color: #000000;">: done }); });
+</span><span style="color: #008080;">84</span> <span style="color: #000000;">  }
+</span><span style="color: #008080;">85</span> 
+<span style="color: #008080;">86</span> });</pre>
+</div>
+<span class="cnblogs_code_collapse">View Code </span></div>
+<p>很遗憾的是，这个代码没有用到路由相关的知识，至此就结束了，因为路由相关的知识是单页应用的一大重点，但是对我们学习来说够了</p>
+<p>这里定义了AppView后便实例化了，我们这里来详细读读这个入口函数</p>
+<p>① 初始化操作</p>
+<div class="cnblogs_code">
+<pre><span style="color: #008080;"> 1</span>   initialize: <span style="color: #0000ff;">function</span><span style="color: #000000;"> () {
+</span><span style="color: #008080;"> 2</span> 
+<span style="color: #008080;"> 3</span>     <span style="color: #0000ff;">this</span>.input = <span style="color: #0000ff;">this</span>.$("#new-todo"<span style="color: #000000;">);
+</span><span style="color: #008080;"> 4</span>     <span style="color: #0000ff;">this</span>.allCheckbox = <span style="color: #0000ff;">this</span>.$("#toggle-all")[0<span style="color: #000000;">];
+</span><span style="color: #008080;"> 5</span> 
+<span style="color: #008080;"> 6</span>     <span style="color: #0000ff;">this</span>.listenTo(Todos, 'add', <span style="color: #0000ff;">this</span><span style="color: #000000;">.addOne);
+</span><span style="color: #008080;"> 7</span>     <span style="color: #0000ff;">this</span>.listenTo(Todos, 'reset', <span style="color: #0000ff;">this</span><span style="color: #000000;">.addAll);
+</span><span style="color: #008080;"> 8</span>     <span style="color: #0000ff;">this</span>.listenTo(Todos, 'all', <span style="color: #0000ff;">this</span><span style="color: #000000;">.render);
+</span><span style="color: #008080;"> 9</span> 
+<span style="color: #008080;">10</span>     <span style="color: #0000ff;">this</span>.footer = <span style="color: #0000ff;">this</span>.$('footer'<span style="color: #000000;">);
+</span><span style="color: #008080;">11</span>     <span style="color: #0000ff;">this</span>.main = $('#main'<span style="color: #000000;">);
+</span><span style="color: #008080;">12</span> 
+<span style="color: #008080;">13</span> <span style="color: #000000;">    Todos.fetch();
+</span><span style="color: #008080;">14</span>   },</pre>
+</div>
+<p>首先这里做了初始化操作，在这里，我们可以开开心心定义一些后面会用到的dom，这里有一个比较有意思的方法：</p>
+<div class="cnblogs_code">
+<pre><span style="color: #0000ff;">this</span>.$();<span style="color: #008000;">//</span><span style="color: #008000;">其实是this.root.find()，这个可以保证你找到正确的元素</span></pre>
+</div>
+<p>在单页应用中，id的唯一性收到了吹残，所以获得元素的方式得到了便会，以上是一种，不明白以上方法的同学喜欢用：</p>
+<div class="cnblogs_code">
+<pre><span style="color: #0000ff;">this</span>.$el.find();<span style="color: #008000;">//</span><span style="color: #008000;">$el事实上就是根元素</span></pre>
+</div>
+<p>fetch方法用于初始化集合数据，意思是Todos.fetch();执行结束后，集合就被model给填充了（这里在localstorage中读取了数据）</p>
+<p>Todos填充数据后，便会调用本身的render方法将数据以dom形式呈现在我们眼前</p>
+<div class="cnblogs_code">
+<pre><span style="color: #008080;">1</span> <span style="color: #0000ff;">this</span>.listenTo(Todos, 'add', <span style="color: #0000ff;">this</span><span style="color: #000000;">.addOne);
+</span><span style="color: #008080;">2</span> <span style="color: #0000ff;">this</span>.listenTo(Todos, 'reset', <span style="color: #0000ff;">this</span><span style="color: #000000;">.addAll);
+</span><span style="color: #008080;">3</span> <span style="color: #0000ff;">this</span>.listenTo(Todos, 'all', <span style="color: #0000ff;">this</span>.render);</pre>
+</div>
+<p>这里的的listenTo事实上是一种自定义事件的写法，fetch时候触发了其中的all事件，所以执行了render方法渲染页面</p>
+<p><img src="9267276688369.png" alt=""></p>
+<p><img src="40759069469911.png" alt=""></p>
+<p>这里页面初始化完成了，当然，一开始我们列表其实是空的</p>
+<p>② 增加操作</p>
+<p>增加操作简单说一下即可，这里为<span>new-todo（文本框）绑定了keypress事件，事件会触发createOnEnter函数</span></p>
+<div class="cnblogs_code">
+<pre><span style="color: #008080;">1</span> createOnEnter: <span style="color: #0000ff;">function</span><span style="color: #000000;"> (e) {
+</span><span style="color: #008080;">2</span>   <span style="color: #0000ff;">if</span> (e.keyCode != 13) <span style="color: #0000ff;">return</span><span style="color: #000000;">;
+</span><span style="color: #008080;">3</span>   <span style="color: #0000ff;">if</span> (!<span style="color: #0000ff;">this</span>.input.val()) <span style="color: #0000ff;">return</span><span style="color: #000000;">;
+</span><span style="color: #008080;">4</span> 
+<span style="color: #008080;">5</span>   Todos.create({ title: <span style="color: #0000ff;">this</span><span style="color: #000000;">.input.val() });
+</span><span style="color: #008080;">6</span>   <span style="color: #0000ff;">this</span>.input.val(''<span style="color: #000000;">);
+</span><span style="color: #008080;">7</span> },</pre>
+</div>
+<p>这里愉快的使用集合create方法创建了一个model，当然他触发自己绑定的add事件，于是执行了</p>
+<div class="cnblogs_code">
+<pre><span style="color: #008080;">1</span> addOne: <span style="color: #0000ff;">function</span><span style="color: #000000;"> (todo) {
+</span><span style="color: #008080;">2</span>   <span style="color: #0000ff;">var</span> view = <span style="color: #0000ff;">new</span><span style="color: #000000;"> TodoView({ model: todo });
+</span><span style="color: #008080;">3</span>   <span style="color: #0000ff;">this</span>.$("#todo-list"<span style="color: #000000;">).append(view.render().el);
+</span><span style="color: #008080;">4</span> },</pre>
+</div>
+<p>这个操作自然不是省油的灯，他本身也是绑定了change事件的，于是高高兴兴在页面中新增了一条数据：</p>
+<div class="cnblogs_code">
+<pre><span style="color: #008080;"> 1</span> initialize: <span style="color: #0000ff;">function</span><span style="color: #000000;"> () {
+</span><span style="color: #008080;"> 2</span>   <span style="color: #0000ff;">this</span>.listenTo(<span style="color: #0000ff;">this</span>.model, 'change', <span style="color: #0000ff;">this</span><span style="color: #000000;">.render);
+</span><span style="color: #008080;"> 3</span>   <span style="color: #0000ff;">this</span>.listenTo(<span style="color: #0000ff;">this</span>.model, 'destroy', <span style="color: #0000ff;">this</span><span style="color: #000000;">.remove);
+</span><span style="color: #008080;"> 4</span> <span style="color: #000000;">},
+</span><span style="color: #008080;"> 5</span> 
+<span style="color: #008080;"> 6</span> <span style="color: #008000;">//</span><span style="color: #008000;"> Re-render the titles of the todo item.</span>
+<span style="color: #008080;"> 7</span> render: <span style="color: #0000ff;">function</span><span style="color: #000000;"> () {
+</span><span style="color: #008080;"> 8</span>   <span style="color: #0000ff;">this</span>.$el.html(<span style="color: #0000ff;">this</span>.template(<span style="color: #0000ff;">this</span><span style="color: #000000;">.model.toJSON()));
+</span><span style="color: #008080;"> 9</span>   <span style="color: #0000ff;">this</span>.$el.toggleClass('done', <span style="color: #0000ff;">this</span>.model.get('done'<span style="color: #000000;">));
+</span><span style="color: #008080;">10</span>   <span style="color: #0000ff;">this</span>.input = <span style="color: #0000ff;">this</span>.$('.edit'<span style="color: #000000;">);
+</span><span style="color: #008080;">11</span>   <span style="color: #0000ff;">return</span> <span style="color: #0000ff;">this</span><span style="color: #000000;">;
+</span><span style="color: #008080;">12</span> },</pre>
+</div>
+<p>至此整个逻辑基本结束，其它方面我这里暂时不涉及，这个模式比较好的是，我们就只需要关注model数据变化即可，页面上显示的东西就不管了</p>
+<p>PS：说是不管，其实一开始就管完了，只是需要触发事件即可</p>
+<p>至此，我们基本例子分析结束，我们下面带着这个例子去学习下backbone的源码，这里又不得不叹息，这里未使用路由（控制器）功能</p>
+<h1>实现继承-extend</h1>
+<p><span style="line-height: 1.5;">我们无论定义Model还是View时候都是这样干的：</span></p>
+<div class="cnblogs_code">
+<pre><span style="color: #0000ff;">var</span> Todo =<span style="color: #000000;"> Backbone.Model.extend({})
+</span><span style="color: #0000ff;">var</span> TodoList =<span style="color: #000000;"> Backbone.Collection.extend({})
+</span><span style="color: #0000ff;">var</span> TodoView = Backbone.View.extend({})</pre>
+</div>
+<p>其实这个extend着实使人疑惑，因为在underscore学习时候，我们知道他是这样的：</p>
+<div class="cnblogs_code">
+<pre><span style="color: #008080;"> 1</span> <span style="color: #008000;">//</span><span style="color: #008000;"> 将一个或多个对象的属性(包含原型链中的属性), 复制到obj对象, 如果存在同名属性则覆盖</span>
+<span style="color: #008080;"> 2</span> _.extend = <span style="color: #0000ff;">function</span><span style="color: #000000;">(obj) {
+</span><span style="color: #008080;"> 3</span>     <span style="color: #008000;">//</span><span style="color: #008000;"> each循环参数中的一个或多个对象</span>
+<span style="color: #008080;"> 4</span>     each(slice.call(arguments, 1), <span style="color: #0000ff;">function</span><span style="color: #000000;">(source) {
+</span><span style="color: #008080;"> 5</span>         <span style="color: #008000;">//</span><span style="color: #008000;"> 将对象中的全部属性复制或覆盖到obj对象</span>
+<span style="color: #008080;"> 6</span>         <span style="color: #0000ff;">for</span>(<span style="color: #0000ff;">var</span> prop <span style="color: #0000ff;">in</span><span style="color: #000000;"> source) {
+</span><span style="color: #008080;"> 7</span>             obj[prop] =<span style="color: #000000;"> source[prop];
+</span><span style="color: #008080;"> 8</span> <span style="color: #000000;">        }
+</span><span style="color: #008080;"> 9</span> <span style="color: #000000;">    });
+</span><span style="color: #008080;">10</span>     <span style="color: #0000ff;">return</span><span style="color: #000000;"> obj;
+</span><span style="color: #008080;">11</span> };</pre>
+</div>
+<p>这个东西和上述实现差了一大截，于是进入源码一看，事实上我们看到的应该是inherits方法，但是1.0灭掉了inherits方法，只剩下了extend了</p>
+<div class="cnblogs_code">
+<pre><span style="color: #008080;"> 1</span> <span style="color: #0000ff;">var</span> extend = <span style="color: #0000ff;">function</span><span style="color: #000000;">(protoProps, staticProps) {
+</span><span style="color: #008080;"> 2</span>   <span style="color: #0000ff;">var</span> parent = <span style="color: #0000ff;">this</span><span style="color: #000000;">;
+</span><span style="color: #008080;"> 3</span>   <span style="color: #0000ff;">var</span><span style="color: #000000;"> child;
+</span><span style="color: #008080;"> 4</span> 
+<span style="color: #008080;"> 5</span>   <span style="color: #008000;">//</span><span style="color: #008000;"> The constructor function for the new subclass is either defined by you</span>
+<span style="color: #008080;"> 6</span>   <span style="color: #008000;">//</span><span style="color: #008000;"> (the "constructor" property in your `extend` definition), or defaulted</span>
+<span style="color: #008080;"> 7</span>   <span style="color: #008000;">//</span><span style="color: #008000;"> by us to simply call the parent's constructor.</span>
+<span style="color: #008080;"> 8</span>   <span style="color: #0000ff;">if</span> (protoProps &amp;&amp; _.has(protoProps, 'constructor'<span style="color: #000000;">)) {
+</span><span style="color: #008080;"> 9</span>     child =<span style="color: #000000;"> protoProps.constructor;
+</span><span style="color: #008080;">10</span>   } <span style="color: #0000ff;">else</span><span style="color: #000000;"> {
+</span><span style="color: #008080;">11</span>     child = <span style="color: #0000ff;">function</span>(){ <span style="color: #0000ff;">return</span> parent.apply(<span style="color: #0000ff;">this</span><span style="color: #000000;">, arguments); };
+</span><span style="color: #008080;">12</span> <span style="color: #000000;">  }
+</span><span style="color: #008080;">13</span> 
+<span style="color: #008080;">14</span>   <span style="color: #008000;">//</span><span style="color: #008000;"> Add static properties to the constructor function, if supplied.</span>
+<span style="color: #008080;">15</span> <span style="color: #000000;">  _.extend(child, parent, staticProps);
+</span><span style="color: #008080;">16</span> 
+<span style="color: #008080;">17</span>   <span style="color: #008000;">//</span><span style="color: #008000;"> Set the prototype chain to inherit from `parent`, without calling</span>
+<span style="color: #008080;">18</span>   <span style="color: #008000;">//</span><span style="color: #008000;"> `parent`'s constructor function.</span>
+<span style="color: #008080;">19</span>   <span style="color: #0000ff;">var</span> Surrogate = <span style="color: #0000ff;">function</span>(){ <span style="color: #0000ff;">this</span>.constructor =<span style="color: #000000;"> child; };
+</span><span style="color: #008080;">20</span>   Surrogate.prototype =<span style="color: #000000;"> parent.prototype;
+</span><span style="color: #008080;">21</span>   child.prototype = <span style="color: #0000ff;">new</span><span style="color: #000000;"> Surrogate;
+</span><span style="color: #008080;">22</span> 
+<span style="color: #008080;">23</span>   <span style="color: #008000;">//</span><span style="color: #008000;"> Add prototype properties (instance properties) to the subclass,</span>
+<span style="color: #008080;">24</span>   <span style="color: #008000;">//</span><span style="color: #008000;"> if supplied.</span>
+<span style="color: #008080;">25</span>   <span style="color: #0000ff;">if</span><span style="color: #000000;"> (protoProps) _.extend(child.prototype, protoProps);
+</span><span style="color: #008080;">26</span> 
+<span style="color: #008080;">27</span>   <span style="color: #008000;">//</span><span style="color: #008000;"> Set a convenience property in case the parent's prototype is needed</span>
+<span style="color: #008080;">28</span>   <span style="color: #008000;">//</span><span style="color: #008000;"> later.</span>
+<span style="color: #008080;">29</span>   child.__super__ =<span style="color: #000000;"> parent.prototype;
+</span><span style="color: #008080;">30</span> 
+<span style="color: #008080;">31</span>   <span style="color: #0000ff;">return</span><span style="color: #000000;"> child;
+</span><span style="color: #008080;">32</span> <span style="color: #000000;">};
+</span><span style="color: #008080;">33</span> 
+<span style="color: #008080;">34</span> <span style="color: #008000;">//</span><span style="color: #008000;"> Set up inheritance for the model, collection, router, view and history.</span>
+<span style="color: #008080;">35</span> Model.extend = Collection.extend = Router.extend = View.extend = History.extend = extend;</pre>
+</div>
+<p>这个家伙又是如何实现继承的，我们这里详细来看看，首先我们将这段代码分离出来：</p>
+<div class="cnblogs_code" onclick="cnblogs_code_show('e837ee52-1a28-4742-88f4-b2a8df9db1fc')"><img id="code_img_closed_e837ee52-1a28-4742-88f4-b2a8df9db1fc" class="code_img_closed" src="43570758473519.gif" alt=""><img id="code_img_opened_e837ee52-1a28-4742-88f4-b2a8df9db1fc" class="code_img_opened" style="display: none;" onclick="cnblogs_code_hide('e837ee52-1a28-4742-88f4-b2a8df9db1fc',event)" src="16365178109279.gif" alt="">
+<div id="cnblogs_code_open_e837ee52-1a28-4742-88f4-b2a8df9db1fc" class="cnblogs_code_hide">
+<pre><span style="color: #008080;"> 1</span> <span style="color: #0000ff;">var</span> hasOwnProperty =<span style="color: #000000;"> Object.prototype.hasOwnProperty;
+</span><span style="color: #008080;"> 2</span> <span style="color: #0000ff;">var</span> slice =<span style="color: #000000;"> Array.prototype.slice;
+</span><span style="color: #008080;"> 3</span> <span style="color: #0000ff;">var</span> nativeForEach =<span style="color: #000000;"> Array.prototype.forEach;
+</span><span style="color: #008080;"> 4</span> <span style="color: #0000ff;">var</span> _ =<span style="color: #000000;"> {};
+</span><span style="color: #008080;"> 5</span> 
+<span style="color: #008080;"> 6</span> <span style="color: #0000ff;">var</span> each = _.each = _.forEach = <span style="color: #0000ff;">function</span><span style="color: #000000;"> (obj, iterator, context) {
+</span><span style="color: #008080;"> 7</span>   <span style="color: #0000ff;">if</span> (obj == <span style="color: #0000ff;">null</span><span style="color: #000000;">)
+</span><span style="color: #008080;"> 8</span>     <span style="color: #0000ff;">return</span><span style="color: #000000;">;
+</span><span style="color: #008080;"> 9</span>   <span style="color: #0000ff;">if</span> (nativeForEach &amp;&amp; obj.forEach ===<span style="color: #000000;"> nativeForEach) {
+</span><span style="color: #008080;">10</span> <span style="color: #000000;">    obj.forEach(iterator, context);
+</span><span style="color: #008080;">11</span>   } <span style="color: #0000ff;">else</span> <span style="color: #0000ff;">if</span> (obj.length === +<span style="color: #000000;">obj.length) {
+</span><span style="color: #008080;">12</span>     <span style="color: #0000ff;">for</span> (<span style="color: #0000ff;">var</span> i = 0, l = obj.length; i &lt; l; i++<span style="color: #000000;">) {
+</span><span style="color: #008080;">13</span>       <span style="color: #0000ff;">if</span> (i <span style="color: #0000ff;">in</span> obj &amp;&amp; iterator.call(context, obj[i], i, obj) ===<span style="color: #000000;"> breaker)
+</span><span style="color: #008080;">14</span>         <span style="color: #0000ff;">return</span><span style="color: #000000;">;
+</span><span style="color: #008080;">15</span> <span style="color: #000000;">    }
+</span><span style="color: #008080;">16</span>   } <span style="color: #0000ff;">else</span><span style="color: #000000;"> {
+</span><span style="color: #008080;">17</span>     <span style="color: #0000ff;">for</span> (<span style="color: #0000ff;">var</span> key <span style="color: #0000ff;">in</span><span style="color: #000000;"> obj) {
+</span><span style="color: #008080;">18</span>       <span style="color: #0000ff;">if</span><span style="color: #000000;"> (_.has(obj, key)) {
+</span><span style="color: #008080;">19</span>         <span style="color: #0000ff;">if</span> (iterator.call(context, obj[key], key, obj) ===<span style="color: #000000;"> breaker)
+</span><span style="color: #008080;">20</span>           <span style="color: #0000ff;">return</span><span style="color: #000000;">;
+</span><span style="color: #008080;">21</span> <span style="color: #000000;">      }
+</span><span style="color: #008080;">22</span> <span style="color: #000000;">    }
+</span><span style="color: #008080;">23</span> <span style="color: #000000;">  }
+</span><span style="color: #008080;">24</span> <span style="color: #000000;">}
+</span><span style="color: #008080;">25</span> 
+<span style="color: #008080;">26</span> _.has = <span style="color: #0000ff;">function</span><span style="color: #000000;"> (obj, key) {
+</span><span style="color: #008080;">27</span>   <span style="color: #0000ff;">return</span><span style="color: #000000;"> hasOwnProperty.call(obj, key);
+</span><span style="color: #008080;">28</span> <span style="color: #000000;">};
+</span><span style="color: #008080;">29</span> 
+<span style="color: #008080;">30</span> _.extend = <span style="color: #0000ff;">function</span><span style="color: #000000;"> (obj) {
+</span><span style="color: #008080;">31</span>   each(slice.call(arguments, 1), <span style="color: #0000ff;">function</span><span style="color: #000000;"> (source) {
+</span><span style="color: #008080;">32</span>     <span style="color: #0000ff;">for</span> (<span style="color: #0000ff;">var</span> prop <span style="color: #0000ff;">in</span><span style="color: #000000;"> source) {
+</span><span style="color: #008080;">33</span>       obj[prop] =<span style="color: #000000;"> source[prop];
+</span><span style="color: #008080;">34</span> <span style="color: #000000;">    }
+</span><span style="color: #008080;">35</span> <span style="color: #000000;">  });
+</span><span style="color: #008080;">36</span>   <span style="color: #0000ff;">return</span><span style="color: #000000;"> obj;
+</span><span style="color: #008080;">37</span> <span style="color: #000000;">};
+</span><span style="color: #008080;">38</span> 
+<span style="color: #008080;">39</span> <span style="color: #0000ff;">var</span> extend = <span style="color: #0000ff;">function</span><span style="color: #000000;"> (protoProps, staticProps) {
+</span><span style="color: #008080;">40</span>   <span style="color: #0000ff;">var</span> parent = <span style="color: #0000ff;">this</span><span style="color: #000000;">;
+</span><span style="color: #008080;">41</span>   <span style="color: #0000ff;">var</span><span style="color: #000000;"> child;
+</span><span style="color: #008080;">42</span>   <span style="color: #0000ff;">if</span> (protoProps &amp;&amp; _.has(protoProps, 'constructor'<span style="color: #000000;">)) {
+</span><span style="color: #008080;">43</span>     child =<span style="color: #000000;"> protoProps.constructor;
+</span><span style="color: #008080;">44</span>   } <span style="color: #0000ff;">else</span><span style="color: #000000;"> {
+</span><span style="color: #008080;">45</span>     child = <span style="color: #0000ff;">function</span> () { <span style="color: #0000ff;">return</span> parent.apply(<span style="color: #0000ff;">this</span><span style="color: #000000;">, arguments); };
+</span><span style="color: #008080;">46</span> <span style="color: #000000;">  }
+</span><span style="color: #008080;">47</span> <span style="color: #000000;">  _.extend(child, parent, staticProps);
+</span><span style="color: #008080;">48</span>   <span style="color: #0000ff;">var</span> Surrogate = <span style="color: #0000ff;">function</span> () { <span style="color: #0000ff;">this</span>.constructor =<span style="color: #000000;"> child; };
+</span><span style="color: #008080;">49</span>   Surrogate.prototype =<span style="color: #000000;"> parent.prototype;
+</span><span style="color: #008080;">50</span>   child.prototype = <span style="color: #0000ff;">new</span><span style="color: #000000;"> Surrogate;
+</span><span style="color: #008080;">51</span>   <span style="color: #0000ff;">if</span><span style="color: #000000;"> (protoProps) _.extend(child.prototype, protoProps);
+</span><span style="color: #008080;">52</span>   child.__super__ =<span style="color: #000000;"> parent.prototype;
+</span><span style="color: #008080;">53</span>   <span style="color: #0000ff;">return</span><span style="color: #000000;"> child;
+</span><span style="color: #008080;">54</span> <span style="color: #000000;">};
+</span><span style="color: #008080;">55</span> 
+<span style="color: #008080;">56</span> 
+<span style="color: #008080;">57</span> <span style="color: #0000ff;">var</span> P = <span style="color: #0000ff;">function</span><span style="color: #000000;"> () {
+</span><span style="color: #008080;">58</span>   <span style="color: #0000ff;">this</span>.a = 1<span style="color: #000000;">;
+</span><span style="color: #008080;">59</span>   <span style="color: #0000ff;">this</span>.b = 2<span style="color: #000000;">;
+</span><span style="color: #008080;">60</span> <span style="color: #000000;">};
+</span><span style="color: #008080;">61</span> 
+<span style="color: #008080;">62</span> P.prototype.aa = <span style="color: #0000ff;">function</span><span style="color: #000000;"> () {
+</span><span style="color: #008080;">63</span>   alert(<span style="color: #0000ff;">this</span><span style="color: #000000;">.a);
+</span><span style="color: #008080;">64</span> <span style="color: #000000;">}
+</span><span style="color: #008080;">65</span> 
+<span style="color: #008080;">66</span> P.extend =<span style="color: #000000;"> extend;
+</span><span style="color: #008080;">67</span> 
+<span style="color: #008080;">68</span> <span style="color: #0000ff;">var</span> C =<span style="color: #000000;"> P.extend({
+</span><span style="color: #008080;">69</span>   c: 3<span style="color: #000000;">,
+</span><span style="color: #008080;">70</span>   cc: <span style="color: #0000ff;">function</span><span style="color: #000000;"> () {
+</span><span style="color: #008080;">71</span>     alert(<span style="color: #0000ff;">this</span><span style="color: #000000;">.c);
+</span><span style="color: #008080;">72</span> <span style="color: #000000;">  }
+</span><span style="color: #008080;">73</span> <span style="color: #000000;">});
+</span><span style="color: #008080;">74</span> 
+<span style="color: #008080;">75</span> <span style="color: #0000ff;">var</span> s = '';</pre>
+</div>
+<span class="cnblogs_code_collapse">View Code </span></div>
+<div class="cnblogs_code">
+<pre><span style="color: #008080;">1</span> <span style="color: #0000ff;">var</span> c = <span style="color: #0000ff;">new</span><span style="color: #000000;"> C;
+</span><span style="color: #008080;">2</span> c.cc();<span style="color: #008000;">//</span><span style="color: #008000;">3</span>
+<span style="color: #008080;">3</span> c.aa();<span style="color: #008000;">//</span><span style="color: #008000;">1</span></pre>
+</div>
+<p><img src="2663629362631.png" alt=""></p>
+<p>backbone实现的继承以最基础的继承，因为他只支持一层的继承，要再多可能这个做法就不好使了，原来inherits其实可以多层继承的......</p>
+<p>反正，我们来读一读extend代码</p>
+<p>① parent=this</p>
+<p>这个代码其实是保留当前函数，比如View或者Model，后面的child会继承他的方法</p>
+<p>②&nbsp;protoProps</p>
+<p>protoProps实际上是原型方法，如果具有constactor属性，变直接继承之，否则重新定义一个函数，函数初始化（构造函数）时会调用parent的构造函数</p>
+<p>PS：而这里parent会执行一些初始化操作，然后调用this.initialize.apply(this, arguments); 所以我们代码中的initialize一定会执行</p>
+<p>③ 复制静态属性</p>
+<p>然后使用将parent静态属性一一收入成自己的</p>
+<div class="cnblogs_code">
+<pre>_.extend(child, parent, staticProps);</pre>
+</div>
+<p><span style="line-height: 1.5;">④ 经典继承法</span></p>
+<div class="cnblogs_code">
+<pre><span style="color: #008080;">1</span> <span style="color: #0000ff;">var</span> Surrogate = <span style="color: #0000ff;">function</span> () { <span style="color: #0000ff;">this</span>.constructor =<span style="color: #000000;"> child; };
+</span><span style="color: #008080;">2</span> Surrogate.prototype =<span style="color: #000000;"> parent.prototype;
+</span><span style="color: #008080;">3</span> child.prototype = <span style="color: #0000ff;">new</span><span style="color: #000000;"> Surrogate;
+</span><span style="color: #008080;">4</span> <span style="color: #0000ff;">if</span><span style="color: #000000;"> (protoProps) _.extend(child.prototype, protoProps);
+</span><span style="color: #008080;">5</span> child.__super__ = parent.prototype;</pre>
+</div>
+<p>然后使用此经典的方法实现继承，最终返回给我们child，注意其中的_.extend(child.prototype, protoProps);我们增加的属性全部给加到了原型链上了</p>
+<p>至此，backbone的基本继承，我们阅读完毕，现在看到以下代码要清除发生了什么事才行</p>
+<div class="cnblogs_code">
+<pre><span style="color: #0000ff;">var</span> TodoView = Backbone.View.extend({}）</pre>
+</div>
+<p>下面我们来看看backbone的事件机制</p>
+<h1><span style="line-height: 1.5;">事件机制-Events</span></h1>
+<p><span style="line-height: 1.5;">backbone事件一块就只放出了三个接口：</span><span style="line-height: 1.5;">bind、</span><span style="line-height: 1.5;">unbind、</span><span style="line-height: 1.5;">trigger</span></p>
+<p><span style="line-height: 1.5;"><strong>Events</strong><span>&nbsp;是一个可以被mix到任意对象的模块，它拥有让对象绑定和触发自定义事件的能力。 </span></span></p>
+<p><span style="line-height: 1.5;"><span>事件在被绑定之前是不需要事先声明的，还可以携带参数。我们通过一个例子来看：</span></span></p>
+<div class="cnblogs_code">
+<pre><span style="color: #0000ff;">var</span> object =<span style="color: #000000;"> {};
+_.extend(object, Backbone.Events);
+
+object.bind(</span>"alert", <span style="color: #0000ff;">function</span><span style="color: #000000;">(msg) {
+  alert(</span>"Triggered " +<span style="color: #000000;"> msg);
+});
+
+object.trigger(</span>"alert", "www.csser.com");</pre>
+</div>
+<p>bind用于注册事件，unbind注销事件，trigger触发事件，但是内部的事件一块远不止如此</p>
+<p><strong><span style="color: #ff0000;">PS：老夫突然发现我看的中文api是0.5.3的版本！！！fuck me!!!&nbsp;1.1放出了这么多的接口，额......</span></strong></p>
+<p><img src="45259125299047.png" alt=""></p>
+<p>首先我们来看一看他Events的源码：</p>
+<div class="cnblogs_code">
+<pre><span style="color: #008080;"> 1</span> <span style="color: #0000ff;">var</span> Events = Backbone.Events =<span style="color: #000000;"> {
+</span><span style="color: #008080;"> 2</span> 
+<span style="color: #008080;"> 3</span>   <span style="color: #008000;">//</span><span style="color: #008000;"> Bind an event to a `callback` function. Passing `"all"` will bind</span>
+<span style="color: #008080;"> 4</span>   <span style="color: #008000;">//</span><span style="color: #008000;"> the callback to all events fired.</span>
+<span style="color: #008080;"> 5</span>   on: <span style="color: #0000ff;">function</span><span style="color: #000000;">(name, callback, context) {
+</span><span style="color: #008080;"> 6</span>     <span style="color: #0000ff;">if</span> (!eventsApi(<span style="color: #0000ff;">this</span>, 'on', name, [callback, context]) || !callback) <span style="color: #0000ff;">return</span> <span style="color: #0000ff;">this</span><span style="color: #000000;">;
+</span><span style="color: #008080;"> 7</span>     <span style="color: #0000ff;">this</span>._events || (<span style="color: #0000ff;">this</span>._events =<span style="color: #000000;"> {});
+</span><span style="color: #008080;"> 8</span>     <span style="color: #0000ff;">var</span> events = <span style="color: #0000ff;">this</span>._events[name] || (<span style="color: #0000ff;">this</span>._events[name] =<span style="color: #000000;"> []);
+</span><span style="color: #008080;"> 9</span>     events.push({callback: callback, context: context, ctx: context || <span style="color: #0000ff;">this</span><span style="color: #000000;">});
+</span><span style="color: #008080;">10</span>     <span style="color: #0000ff;">return</span> <span style="color: #0000ff;">this</span><span style="color: #000000;">;
+</span><span style="color: #008080;">11</span> <span style="color: #000000;">  },
+</span><span style="color: #008080;">12</span> 
+<span style="color: #008080;">13</span>   <span style="color: #008000;">//</span><span style="color: #008000;"> Bind an event to only be triggered a single time. After the first time</span>
+<span style="color: #008080;">14</span>   <span style="color: #008000;">//</span><span style="color: #008000;"> the callback is invoked, it will be removed.</span>
+<span style="color: #008080;">15</span>   once: <span style="color: #0000ff;">function</span><span style="color: #000000;">(name, callback, context) {
+</span><span style="color: #008080;">16</span>     <span style="color: #0000ff;">if</span> (!eventsApi(<span style="color: #0000ff;">this</span>, 'once', name, [callback, context]) || !callback) <span style="color: #0000ff;">return</span> <span style="color: #0000ff;">this</span><span style="color: #000000;">;
+</span><span style="color: #008080;">17</span>     <span style="color: #0000ff;">var</span> self = <span style="color: #0000ff;">this</span><span style="color: #000000;">;
+</span><span style="color: #008080;">18</span>     <span style="color: #0000ff;">var</span> once = _.once(<span style="color: #0000ff;">function</span><span style="color: #000000;">() {
+</span><span style="color: #008080;">19</span> <span style="color: #000000;">      self.off(name, once);
+</span><span style="color: #008080;">20</span>       callback.apply(<span style="color: #0000ff;">this</span><span style="color: #000000;">, arguments);
+</span><span style="color: #008080;">21</span> <span style="color: #000000;">    });
+</span><span style="color: #008080;">22</span>     once._callback =<span style="color: #000000;"> callback;
+</span><span style="color: #008080;">23</span>     <span style="color: #0000ff;">return</span> <span style="color: #0000ff;">this</span><span style="color: #000000;">.on(name, once, context);
+</span><span style="color: #008080;">24</span> <span style="color: #000000;">  },
+</span><span style="color: #008080;">25</span> 
+<span style="color: #008080;">26</span>   <span style="color: #008000;">//</span><span style="color: #008000;"> Remove one or many callbacks. If `context` is null, removes all</span>
+<span style="color: #008080;">27</span>   <span style="color: #008000;">//</span><span style="color: #008000;"> callbacks with that function. If `callback` is null, removes all</span>
+<span style="color: #008080;">28</span>   <span style="color: #008000;">//</span><span style="color: #008000;"> callbacks for the event. If `name` is null, removes all bound</span>
+<span style="color: #008080;">29</span>   <span style="color: #008000;">//</span><span style="color: #008000;"> callbacks for all events.</span>
+<span style="color: #008080;">30</span>   off: <span style="color: #0000ff;">function</span><span style="color: #000000;">(name, callback, context) {
+</span><span style="color: #008080;">31</span>     <span style="color: #0000ff;">var</span><span style="color: #000000;"> retain, ev, events, names, i, l, j, k;
+</span><span style="color: #008080;">32</span>     <span style="color: #0000ff;">if</span> (!<span style="color: #0000ff;">this</span>._events || !eventsApi(<span style="color: #0000ff;">this</span>, 'off', name, [callback, context])) <span style="color: #0000ff;">return</span> <span style="color: #0000ff;">this</span><span style="color: #000000;">;
+</span><span style="color: #008080;">33</span>     <span style="color: #0000ff;">if</span> (!name &amp;&amp; !callback &amp;&amp; !<span style="color: #000000;">context) {
+</span><span style="color: #008080;">34</span>       <span style="color: #0000ff;">this</span>._events =<span style="color: #000000;"> {};
+</span><span style="color: #008080;">35</span>       <span style="color: #0000ff;">return</span> <span style="color: #0000ff;">this</span><span style="color: #000000;">;
+</span><span style="color: #008080;">36</span> <span style="color: #000000;">    }
+</span><span style="color: #008080;">37</span> 
+<span style="color: #008080;">38</span>     names = name ? [name] : _.keys(<span style="color: #0000ff;">this</span><span style="color: #000000;">._events);
+</span><span style="color: #008080;">39</span>     <span style="color: #0000ff;">for</span> (i = 0, l = names.length; i &lt; l; i++<span style="color: #000000;">) {
+</span><span style="color: #008080;">40</span>       name =<span style="color: #000000;"> names[i];
+</span><span style="color: #008080;">41</span>       <span style="color: #0000ff;">if</span> (events = <span style="color: #0000ff;">this</span><span style="color: #000000;">._events[name]) {
+</span><span style="color: #008080;">42</span>         <span style="color: #0000ff;">this</span>._events[name] = retain =<span style="color: #000000;"> [];
+</span><span style="color: #008080;">43</span>         <span style="color: #0000ff;">if</span> (callback ||<span style="color: #000000;"> context) {
+</span><span style="color: #008080;">44</span>           <span style="color: #0000ff;">for</span> (j = 0, k = events.length; j &lt; k; j++<span style="color: #000000;">) {
+</span><span style="color: #008080;">45</span>             ev =<span style="color: #000000;"> events[j];
+</span><span style="color: #008080;">46</span>             <span style="color: #0000ff;">if</span> ((callback &amp;&amp; callback !== ev.callback &amp;&amp; callback !== ev.callback._callback) ||
+<span style="color: #008080;">47</span>                 (context &amp;&amp; context !==<span style="color: #000000;"> ev.context)) {
+</span><span style="color: #008080;">48</span> <span style="color: #000000;">              retain.push(ev);
+</span><span style="color: #008080;">49</span> <span style="color: #000000;">            }
+</span><span style="color: #008080;">50</span> <span style="color: #000000;">          }
+</span><span style="color: #008080;">51</span> <span style="color: #000000;">        }
+</span><span style="color: #008080;">52</span>         <span style="color: #0000ff;">if</span> (!retain.length) <span style="color: #0000ff;">delete</span> <span style="color: #0000ff;">this</span><span style="color: #000000;">._events[name];
+</span><span style="color: #008080;">53</span> <span style="color: #000000;">      }
+</span><span style="color: #008080;">54</span> <span style="color: #000000;">    }
+</span><span style="color: #008080;">55</span> 
+<span style="color: #008080;">56</span>     <span style="color: #0000ff;">return</span> <span style="color: #0000ff;">this</span><span style="color: #000000;">;
+</span><span style="color: #008080;">57</span> <span style="color: #000000;">  },
+</span><span style="color: #008080;">58</span> 
+<span style="color: #008080;">59</span>   <span style="color: #008000;">//</span><span style="color: #008000;"> Trigger one or many events, firing all bound callbacks. Callbacks are</span>
+<span style="color: #008080;">60</span>   <span style="color: #008000;">//</span><span style="color: #008000;"> passed the same arguments as `trigger` is, apart from the event name</span>
+<span style="color: #008080;">61</span>   <span style="color: #008000;">//</span><span style="color: #008000;"> (unless you're listening on `"all"`, which will cause your callback to</span>
+<span style="color: #008080;">62</span>   <span style="color: #008000;">//</span><span style="color: #008000;"> receive the true name of the event as the first argument).</span>
+<span style="color: #008080;">63</span>   trigger: <span style="color: #0000ff;">function</span><span style="color: #000000;">(name) {
+</span><span style="color: #008080;">64</span>     <span style="color: #0000ff;">if</span> (!<span style="color: #0000ff;">this</span>._events) <span style="color: #0000ff;">return</span> <span style="color: #0000ff;">this</span><span style="color: #000000;">;
+</span><span style="color: #008080;">65</span>     <span style="color: #0000ff;">var</span> args = slice.call(arguments, 1<span style="color: #000000;">);
+</span><span style="color: #008080;">66</span>     <span style="color: #0000ff;">if</span> (!eventsApi(<span style="color: #0000ff;">this</span>, 'trigger', name, args)) <span style="color: #0000ff;">return</span> <span style="color: #0000ff;">this</span><span style="color: #000000;">;
+</span><span style="color: #008080;">67</span>     <span style="color: #0000ff;">var</span> events = <span style="color: #0000ff;">this</span><span style="color: #000000;">._events[name];
+</span><span style="color: #008080;">68</span>     <span style="color: #0000ff;">var</span> allEvents = <span style="color: #0000ff;">this</span><span style="color: #000000;">._events.all;
+</span><span style="color: #008080;">69</span>     <span style="color: #0000ff;">if</span><span style="color: #000000;"> (events) triggerEvents(events, args);
+</span><span style="color: #008080;">70</span>     <span style="color: #0000ff;">if</span><span style="color: #000000;"> (allEvents) triggerEvents(allEvents, arguments);
+</span><span style="color: #008080;">71</span>     <span style="color: #0000ff;">return</span> <span style="color: #0000ff;">this</span><span style="color: #000000;">;
+</span><span style="color: #008080;">72</span> <span style="color: #000000;">  },
+</span><span style="color: #008080;">73</span> 
+<span style="color: #008080;">74</span>   <span style="color: #008000;">//</span><span style="color: #008000;"> Tell this object to stop listening to either specific events ... or</span>
+<span style="color: #008080;">75</span>   <span style="color: #008000;">//</span><span style="color: #008000;"> to every object it's currently listening to.</span>
+<span style="color: #008080;">76</span>   stopListening: <span style="color: #0000ff;">function</span><span style="color: #000000;">(obj, name, callback) {
+</span><span style="color: #008080;">77</span>     <span style="color: #0000ff;">var</span> listeners = <span style="color: #0000ff;">this</span><span style="color: #000000;">._listeners;
+</span><span style="color: #008080;">78</span>     <span style="color: #0000ff;">if</span> (!listeners) <span style="color: #0000ff;">return</span> <span style="color: #0000ff;">this</span><span style="color: #000000;">;
+</span><span style="color: #008080;">79</span>     <span style="color: #0000ff;">var</span> deleteListener = !name &amp;&amp; !<span style="color: #000000;">callback;
+</span><span style="color: #008080;">80</span>     <span style="color: #0000ff;">if</span> (<span style="color: #0000ff;">typeof</span> name === 'object') callback = <span style="color: #0000ff;">this</span><span style="color: #000000;">;
+</span><span style="color: #008080;">81</span>     <span style="color: #0000ff;">if</span> (obj) (listeners = {})[obj._listenerId] =<span style="color: #000000;"> obj;
+</span><span style="color: #008080;">82</span>     <span style="color: #0000ff;">for</span> (<span style="color: #0000ff;">var</span> id <span style="color: #0000ff;">in</span><span style="color: #000000;"> listeners) {
+</span><span style="color: #008080;">83</span>       listeners[id].off(name, callback, <span style="color: #0000ff;">this</span><span style="color: #000000;">);
+</span><span style="color: #008080;">84</span>       <span style="color: #0000ff;">if</span> (deleteListener) <span style="color: #0000ff;">delete</span> <span style="color: #0000ff;">this</span><span style="color: #000000;">._listeners[id];
+</span><span style="color: #008080;">85</span> <span style="color: #000000;">    }
+</span><span style="color: #008080;">86</span>     <span style="color: #0000ff;">return</span> <span style="color: #0000ff;">this</span><span style="color: #000000;">;
+</span><span style="color: #008080;">87</span> <span style="color: #000000;">  }
+</span><span style="color: #008080;">88</span> 
+<span style="color: #008080;">89</span> };</pre>
+</div>
+<p>这里统一使用了eventApi这个函数：</p>
+<div class="cnblogs_code">
+<pre><span style="color: #008080;"> 1</span> <span style="color: #008000;">//</span><span style="color: #008000;"> Regular expression used to split event strings.</span>
+<span style="color: #008080;"> 2</span> <span style="color: #0000ff;">var</span> eventSplitter = /\s+/<span style="color: #000000;">;
+</span><span style="color: #008080;"> 3</span> 
+<span style="color: #008080;"> 4</span> <span style="color: #008000;">//</span><span style="color: #008000;"> Implement fancy features of the Events API such as multiple event</span>
+<span style="color: #008080;"> 5</span> <span style="color: #008000;">//</span><span style="color: #008000;"> names `"change blur"` and jQuery-style event maps `{change: action}`</span>
+<span style="color: #008080;"> 6</span> <span style="color: #008000;">//</span><span style="color: #008000;"> in terms of the existing API.</span>
+<span style="color: #008080;"> 7</span> <span style="color: #0000ff;">var</span> eventsApi = <span style="color: #0000ff;">function</span><span style="color: #000000;">(obj, action, name, rest) {
+</span><span style="color: #008080;"> 8</span>   <span style="color: #0000ff;">if</span> (!name) <span style="color: #0000ff;">return</span> <span style="color: #0000ff;">true</span><span style="color: #000000;">;
+</span><span style="color: #008080;"> 9</span> 
+<span style="color: #008080;">10</span>   <span style="color: #008000;">//</span><span style="color: #008000;"> Handle event maps.</span>
+<span style="color: #008080;">11</span>   <span style="color: #0000ff;">if</span> (<span style="color: #0000ff;">typeof</span> name === 'object'<span style="color: #000000;">) {
+</span><span style="color: #008080;">12</span>     <span style="color: #0000ff;">for</span> (<span style="color: #0000ff;">var</span> key <span style="color: #0000ff;">in</span><span style="color: #000000;"> name) {
+</span><span style="color: #008080;">13</span> <span style="color: #000000;">      obj[action].apply(obj, [key, name[key]].concat(rest));
+</span><span style="color: #008080;">14</span> <span style="color: #000000;">    }
+</span><span style="color: #008080;">15</span>     <span style="color: #0000ff;">return</span> <span style="color: #0000ff;">false</span><span style="color: #000000;">;
+</span><span style="color: #008080;">16</span> <span style="color: #000000;">  }
+</span><span style="color: #008080;">17</span> 
+<span style="color: #008080;">18</span>   <span style="color: #008000;">//</span><span style="color: #008000;"> Handle space separated event names.</span>
+<span style="color: #008080;">19</span>   <span style="color: #0000ff;">if</span><span style="color: #000000;"> (eventSplitter.test(name)) {
+</span><span style="color: #008080;">20</span>     <span style="color: #0000ff;">var</span> names =<span style="color: #000000;"> name.split(eventSplitter);
+</span><span style="color: #008080;">21</span>     <span style="color: #0000ff;">for</span> (<span style="color: #0000ff;">var</span> i = 0, l = names.length; i &lt; l; i++<span style="color: #000000;">) {
+</span><span style="color: #008080;">22</span> <span style="color: #000000;">      obj[action].apply(obj, [names[i]].concat(rest));
+</span><span style="color: #008080;">23</span> <span style="color: #000000;">    }
+</span><span style="color: #008080;">24</span>     <span style="color: #0000ff;">return</span> <span style="color: #0000ff;">false</span><span style="color: #000000;">;
+</span><span style="color: #008080;">25</span> <span style="color: #000000;">  }
+</span><span style="color: #008080;">26</span> 
+<span style="color: #008080;">27</span>   <span style="color: #0000ff;">return</span> <span style="color: #0000ff;">true</span><span style="color: #000000;">;
+</span><span style="color: #008080;">28</span> };</pre>
+</div>
+<p>① 第一个参数为一个对象，其实指向的是调用者，因为Events对象都是被作为 继承/扩展 者使用</p>
+<p>② 第二个参数为你的具体操作（on/off/trigger）</p>
+<p><span style="line-height: 1.5;">③ name可算是这个对象注册的这个事件的唯一标识了，注册事件后后面会用他来读取</span></p>
+<p><span style="line-height: 1.5;">④ 最后是传入的回调函数，并且带有作用域</span></p>
+<p><span style="line-height: 1.5;">而上述调用点又在其它地方，我们这里将上述代码连起来：</span></p>
+<p><span style="line-height: 1.5;">① 首先一个对象继承了Events对象</span></p>
+<div class="cnblogs_code">
+<pre><span style="color: #0000ff;">var</span> obj =<span style="color: #000000;"> {};
+_.extend(obj, Backbone.Events)</span></pre>
+</div>
+<p><img src="2663666275721.png" alt=""></p>
+<p>② 其次我们为他注册一个alert事件</p>
+<div class="cnblogs_code">
+<pre>obj.on('alert', <span style="color: #0000ff;">function</span><span style="color: #000000;"> (msg) {
+  alert(msg);
+});</span></pre>
+</div>
+<p>此时会调用由Events继承而来的方法on，并且传入两个参数：alert与回调函数，而后会调用eventApi（私有方法）处理这个event对象</p>
+<p><span style="line-height: 1.5;">PS：此处传入的那么不是对象也没有任何复杂应用所以直接返回true了，像那么包含&ldquo;:&rdquo;，或者包含空格就会做特殊处理，我们这里暂时不管</span></p>
+<p><span style="line-height: 1.5;">③ 定义对象的events属性，该属性用于存储该对象保存的所有事件</span></p>
+<div class="cnblogs_code">
+<pre><span style="color: #008080;">1</span> on: <span style="color: #0000ff;">function</span><span style="color: #000000;">(name, callback, context) {
+</span><span style="color: #008080;">2</span>   <span style="color: #0000ff;">if</span> (!eventsApi(<span style="color: #0000ff;">this</span>, 'on', name, [callback, context]) || !callback) <span style="color: #0000ff;">return</span> <span style="color: #0000ff;">this</span><span style="color: #000000;">;
+</span><span style="color: #008080;">3</span>   <span style="color: #0000ff;">this</span>._events || (<span style="color: #0000ff;">this</span>._events =<span style="color: #000000;"> {});
+</span><span style="color: #008080;">4</span>   <span style="color: #0000ff;">var</span> events = <span style="color: #0000ff;">this</span>._events[name] || (<span style="color: #0000ff;">this</span>._events[name] =<span style="color: #000000;"> []);
+</span><span style="color: #008080;">5</span>   events.push({callback: callback, context: context, ctx: context || <span style="color: #0000ff;">this</span><span style="color: #000000;">});
+</span><span style="color: #008080;">6</span>   <span style="color: #0000ff;">return</span> <span style="color: #0000ff;">this</span><span style="color: #000000;">;
+</span><span style="color: #008080;">7</span> },</pre>
+</div>
+<p>处理结束后，这里便会多出一个对象了：</p>
+<p><img src="35031146178955.png" alt=""></p>
+<p>③ 触发事件，触发事件相对比较简单，可以选择传入参数</p>
+<div class="cnblogs_code">
+<pre>obj.trigger("alert", "an event");</pre>
+</div>
+<p>触发事件，当然是调用的trigger方法：</p>
+<div class="cnblogs_code">
+<pre><span style="color: #008080;"> 1</span> trigger: <span style="color: #0000ff;">function</span><span style="color: #000000;">(name) {
+</span><span style="color: #008080;"> 2</span>   <span style="color: #0000ff;">if</span> (!<span style="color: #0000ff;">this</span>._events) <span style="color: #0000ff;">return</span> <span style="color: #0000ff;">this</span><span style="color: #000000;">;
+</span><span style="color: #008080;"> 3</span>   <span style="color: #0000ff;">var</span> args = slice.call(arguments, 1<span style="color: #000000;">);
+</span><span style="color: #008080;"> 4</span>   <span style="color: #0000ff;">if</span> (!eventsApi(<span style="color: #0000ff;">this</span>, 'trigger', name, args)) <span style="color: #0000ff;">return</span> <span style="color: #0000ff;">this</span><span style="color: #000000;">;
+</span><span style="color: #008080;"> 5</span>   <span style="color: #0000ff;">var</span> events = <span style="color: #0000ff;">this</span><span style="color: #000000;">._events[name];
+</span><span style="color: #008080;"> 6</span>   <span style="color: #0000ff;">var</span> allEvents = <span style="color: #0000ff;">this</span><span style="color: #000000;">._events.all;
+</span><span style="color: #008080;"> 7</span>   <span style="color: #0000ff;">if</span><span style="color: #000000;"> (events) triggerEvents(events, args);
+</span><span style="color: #008080;"> 8</span>   <span style="color: #0000ff;">if</span><span style="color: #000000;"> (allEvents) triggerEvents(allEvents, arguments);
+</span><span style="color: #008080;"> 9</span>   <span style="color: #0000ff;">return</span> <span style="color: #0000ff;">this</span><span style="color: #000000;">;
+</span><span style="color: #008080;">10</span> },</pre>
+</div>
+<p>这里会通过name在events属性中获取当前对象，调用triggerEvents局部函数调用之，这里有两点需要注意：</p>
+<div class="cnblogs_code">
+<pre><span style="color: #800000;">1 这里的args是除，name以外传入的参数
+2 这里会触发name为all的事件，无论如何都会触发，各位这里要回想起来前面集合的listenerTo方法哦</span></pre>
+</div>
+<div class="cnblogs_code">
+<pre><span style="color: #008080;"> 1</span> <span style="color: #0000ff;">var</span> triggerEvents = <span style="color: #0000ff;">function</span><span style="color: #000000;">(events, args) {
+</span><span style="color: #008080;"> 2</span>   <span style="color: #0000ff;">var</span> ev, i = -1, l = events.length, a1 = args[0], a2 = args[1], a3 = args[2<span style="color: #000000;">];
+</span><span style="color: #008080;"> 3</span>   <span style="color: #0000ff;">switch</span><span style="color: #000000;"> (args.length) {
+</span><span style="color: #008080;"> 4</span>     <span style="color: #0000ff;">case</span> 0: <span style="color: #0000ff;">while</span> (++i &lt; l) (ev = events[i]).callback.call(ev.ctx); <span style="color: #0000ff;">return</span><span style="color: #000000;">;
+</span><span style="color: #008080;"> 5</span>     <span style="color: #0000ff;">case</span> 1: <span style="color: #0000ff;">while</span> (++i &lt; l) (ev = events[i]).callback.call(ev.ctx, a1); <span style="color: #0000ff;">return</span><span style="color: #000000;">;
+</span><span style="color: #008080;"> 6</span>     <span style="color: #0000ff;">case</span> 2: <span style="color: #0000ff;">while</span> (++i &lt; l) (ev = events[i]).callback.call(ev.ctx, a1, a2); <span style="color: #0000ff;">return</span><span style="color: #000000;">;
+</span><span style="color: #008080;"> 7</span>     <span style="color: #0000ff;">case</span> 3: <span style="color: #0000ff;">while</span> (++i &lt; l) (ev = events[i]).callback.call(ev.ctx, a1, a2, a3); <span style="color: #0000ff;">return</span><span style="color: #000000;">;
+</span><span style="color: #008080;"> 8</span>     <span style="color: #0000ff;">default</span>: <span style="color: #0000ff;">while</span> (++i &lt; l) (ev =<span style="color: #000000;"> events[i]).callback.apply(ev.ctx, args);
+</span><span style="color: #008080;"> 9</span> <span style="color: #000000;">  }
+</span><span style="color: #008080;">10</span> };</pre>
+</div>
+<p>然后这里做了下简单的处理，高高兴兴将我们定义的事件执行了，于是backbone事件机制的第一段讲解也结束了，较详细的讲解后面点再来</p>
+<p><span style="line-height: 1.5;">在此我们可以看到，backbone内部的事件机制，其实与javascript事件绑定那块没什么联系，只不过是自己内部的实现而已，这里最后补充一点：</span></p>
+<div class="cnblogs_code">
+<pre><span style="color: #008080;"> 1</span> <span style="color: #0000ff;">var</span> listenMethods = { listenTo: 'on', listenToOnce: 'once'<span style="color: #000000;"> };
+</span><span style="color: #008080;"> 2</span> 
+<span style="color: #008080;"> 3</span> <span style="color: #008000;">//</span><span style="color: #008000;"> Inversion-of-control versions of `on` and `once`. Tell *this* object to</span>
+<span style="color: #008080;"> 4</span> <span style="color: #008000;">//</span><span style="color: #008000;"> listen to an event in another object ... keeping track of what it's</span>
+<span style="color: #008080;"> 5</span> <span style="color: #008000;">//</span><span style="color: #008000;"> listening to.</span>
+<span style="color: #008080;"> 6</span> _.each(listenMethods, <span style="color: #0000ff;">function</span><span style="color: #000000;"> (implementation, method) {
+</span><span style="color: #008080;"> 7</span>   Events[method] = <span style="color: #0000ff;">function</span><span style="color: #000000;"> (obj, name, callback) {
+</span><span style="color: #008080;"> 8</span>     <span style="color: #0000ff;">var</span> listeners = <span style="color: #0000ff;">this</span>._listeners || (<span style="color: #0000ff;">this</span>._listeners =<span style="color: #000000;"> {});
+</span><span style="color: #008080;"> 9</span>     <span style="color: #0000ff;">var</span> id = obj._listenerId || (obj._listenerId = _.uniqueId('l'<span style="color: #000000;">));
+</span><span style="color: #008080;">10</span>     listeners[id] =<span style="color: #000000;"> obj;
+</span><span style="color: #008080;">11</span>     <span style="color: #0000ff;">if</span> (<span style="color: #0000ff;">typeof</span> name === 'object') callback = <span style="color: #0000ff;">this</span><span style="color: #000000;">;
+</span><span style="color: #008080;">12</span>     obj[implementation](name, callback, <span style="color: #0000ff;">this</span><span style="color: #000000;">);
+</span><span style="color: #008080;">13</span>     <span style="color: #0000ff;">return</span> <span style="color: #0000ff;">this</span><span style="color: #000000;">;
+</span><span style="color: #008080;">14</span> <span style="color: #000000;">  };
+</span><span style="color: #008080;">15</span> });</pre>
+</div>
+<p>页面上调用的listenTo其实就是on方法</p>
+<h1>模型-Model</h1>
+<h2>构造函数</h2>
+<p><span style="line-height: 1.5;">Model在服务器端来说很是关键，记得前几年老夫还在搞.net最先干的事情就是建造实体，不知道现在怎么样了......</span></p>
+<p><span style="line-height: 1.5;">首先看看其继承源码：</span></p>
+<div class="cnblogs_code">
+<pre><span style="color: #008080;"> 1</span> <span style="color: #0000ff;">var</span> Model = Backbone.Model = <span style="color: #0000ff;">function</span><span style="color: #000000;"> (attributes, options) {
+</span><span style="color: #008080;"> 2</span>   <span style="color: #0000ff;">var</span><span style="color: #000000;"> defaults;
+</span><span style="color: #008080;"> 3</span>   <span style="color: #0000ff;">var</span> attrs = attributes ||<span style="color: #000000;"> {};
+</span><span style="color: #008080;"> 4</span>   options || (options =<span style="color: #000000;"> {});
+</span><span style="color: #008080;"> 5</span>   <span style="color: #0000ff;">this</span>.cid = _.uniqueId('c'<span style="color: #000000;">);
+</span><span style="color: #008080;"> 6</span>   <span style="color: #0000ff;">this</span>.attributes =<span style="color: #000000;"> {};
+</span><span style="color: #008080;"> 7</span>   _.extend(<span style="color: #0000ff;">this</span><span style="color: #000000;">, _.pick(options, modelOptions));
+</span><span style="color: #008080;"> 8</span>   <span style="color: #0000ff;">if</span> (options.parse) attrs = <span style="color: #0000ff;">this</span>.parse(attrs, options) ||<span style="color: #000000;"> {};
+</span><span style="color: #008080;"> 9</span>   <span style="color: #0000ff;">if</span> (defaults = _.result(<span style="color: #0000ff;">this</span>, 'defaults'<span style="color: #000000;">)) {
+</span><span style="color: #008080;">10</span>     attrs =<span style="color: #000000;"> _.defaults({}, attrs, defaults);
+</span><span style="color: #008080;">11</span> <span style="color: #000000;">  }
+</span><span style="color: #008080;">12</span>   <span style="color: #0000ff;">this</span><span style="color: #000000;">.set(attrs, options);
+</span><span style="color: #008080;">13</span>   <span style="color: #0000ff;">this</span>.changed =<span style="color: #000000;"> {};
+</span><span style="color: #008080;">14</span>   <span style="color: #0000ff;">this</span>.initialize.apply(<span style="color: #0000ff;">this</span><span style="color: #000000;">, arguments);
+</span><span style="color: #008080;">15</span> };</pre>
+</div>
+<p>构造函数中本身没有干太多事情：</p>
+<p>① 首先为该model定义了唯一的cid（其中的uniqueId方法内部维护着一个id，这个闭包知识点，各位自己去看吧）</p>
+<p>② 初始化model默认的属性，比如collection就是必须拥有的，如果定义了的话就直接搞给对象</p>
+<p>③&nbsp;parse是为了兼容不是json数据时候需要做的处理，我们这里直接忽略不要json的场景</p>
+<p>④ 获取defaults对象（如果是函数需要返回对象）</p>
+<p>⑤ 调用原型链中的set方法，将默认的属性搞到对象中去，set干的事情比较多，我们后面点说</p>
+<p>反正他产生的结果就是对象默认会多一些属性值</p>
+<p><span style="line-height: 1.5;">然后开始调用underscore的exentd扩展对象的原型链了（尼玛，backbone确实强依赖underscore啊，压根搞不掉）</span></p>
+<h2><span style="line-height: 1.5;">扩展原型链</span></h2>
+<p><span style="line-height: 1.5;">下面开始扩展Model原型链了，其实这样读下来，backbone的代码是很有调理的，很好读，我们这里捡几个重要的说（我不知道哪个重要只能挑我知道的）</span></p>
+<h3><span style="line-height: 1.5;">①&nbsp;changed</span></h3>
+<p><span style="line-height: 1.5;">changed属性记录了每次调用set方法时, 被改变数据的key集合</span></p>
+<h3><span style="line-height: 1.5;">②&nbsp;validationError</span></h3>
+<p><span style="line-height: 1.5;">set model 时候会执行validate方法，如果验证失败便会将结果返回该变量</span></p>
+<h3><span style="line-height: 1.5;">③&nbsp;idAttribute</span></h3>
+<p><span style="line-height: 1.5;">每个模型的唯一标识属性(默认为"id", 通过修改idAttribute可自定义id属性名)</span></p>
+<p>如果在设置数据时包含了id属性, 则id将会覆盖模型的id，id用于在Collection集合中查找和标识模型, 与后台接口通信时也会以id作为一条记录的标识</p>
+<div class="cnblogs_code">
+<pre><span style="color: #0000ff;">var</span> Meal =<span style="color: #000000;"> Backbone.Model.extend({
+  idAttribute: </span>"_id"<span style="color: #000000;">
+});
+
+</span><span style="color: #0000ff;">var</span> cake = <span style="color: #0000ff;">new</span> Meal({ _id: 1, name: "Cake"<span style="color: #000000;"> });
+alert(</span>"Cake id: " + cake.id);</pre>
+</div>
+<p>这里就将标识符搞到了_id属性上，但是一般不建议这么干，真心不太好......</p>
+<h3>④ <span style="color: #ff0000;">initialize</span></h3>
+<p>这个方法比较关键，本身没有意义，用于子对象复写，会在实例化时候执行</p>
+<h3>⑤ get</h3>
+<p>返回相关属性的值</p>
+<h3>⑥ <span style="color: #ff0000;"><strong>set(key, value, options)</strong></span></h3>
+<p>这个方法很关键，我们这里来详细说下</p>
+<div class="cnblogs_code">
+<pre><span style="color: #008080;"> 1</span> set: <span style="color: #0000ff;">function</span><span style="color: #000000;"> (key, val, options) {
+</span><span style="color: #008080;"> 2</span>   <span style="color: #0000ff;">var</span><span style="color: #000000;"> attr, attrs, unset, changes, silent, changing, prev, current;
+</span><span style="color: #008080;"> 3</span>   <span style="color: #0000ff;">if</span> (key == <span style="color: #0000ff;">null</span>) <span style="color: #0000ff;">return</span> <span style="color: #0000ff;">this</span><span style="color: #000000;">;
+</span><span style="color: #008080;"> 4</span> 
+<span style="color: #008080;"> 5</span>   <span style="color: #008000;">//</span><span style="color: #008000;"> Handle both `"key", value` and `{key: value}` -style arguments.</span>
+<span style="color: #008080;"> 6</span>   <span style="color: #0000ff;">if</span> (<span style="color: #0000ff;">typeof</span> key === 'object'<span style="color: #000000;">) {
+</span><span style="color: #008080;"> 7</span>     attrs =<span style="color: #000000;"> key;
+</span><span style="color: #008080;"> 8</span>     options =<span style="color: #000000;"> val;
+</span><span style="color: #008080;"> 9</span>   } <span style="color: #0000ff;">else</span><span style="color: #000000;"> {
+</span><span style="color: #008080;">10</span>     (attrs = {})[key] =<span style="color: #000000;"> val;
+</span><span style="color: #008080;">11</span> <span style="color: #000000;">  }
+</span><span style="color: #008080;">12</span> 
+<span style="color: #008080;">13</span>   options || (options =<span style="color: #000000;"> {});
+</span><span style="color: #008080;">14</span> 
+<span style="color: #008080;">15</span>   <span style="color: #008000;">//</span><span style="color: #008000;"> Run validation.</span>
+<span style="color: #008080;">16</span>   <span style="color: #0000ff;">if</span> (!<span style="color: #0000ff;">this</span>._validate(attrs, options)) <span style="color: #0000ff;">return</span> <span style="color: #0000ff;">false</span><span style="color: #000000;">;
+</span><span style="color: #008080;">17</span> 
+<span style="color: #008080;">18</span>   <span style="color: #008000;">//</span><span style="color: #008000;"> Extract attributes and options.</span>
+<span style="color: #008080;">19</span>   unset =<span style="color: #000000;"> options.unset;
+</span><span style="color: #008080;">20</span>   silent =<span style="color: #000000;"> options.silent;
+</span><span style="color: #008080;">21</span>   changes =<span style="color: #000000;"> [];
+</span><span style="color: #008080;">22</span>   changing = <span style="color: #0000ff;">this</span><span style="color: #000000;">._changing;
+</span><span style="color: #008080;">23</span>   <span style="color: #0000ff;">this</span>._changing = <span style="color: #0000ff;">true</span><span style="color: #000000;">;
+</span><span style="color: #008080;">24</span> 
+<span style="color: #008080;">25</span>   <span style="color: #0000ff;">if</span> (!<span style="color: #000000;">changing) {
+</span><span style="color: #008080;">26</span>     <span style="color: #0000ff;">this</span>._previousAttributes = _.clone(<span style="color: #0000ff;">this</span><span style="color: #000000;">.attributes);
+</span><span style="color: #008080;">27</span>     <span style="color: #0000ff;">this</span>.changed =<span style="color: #000000;"> {};
+</span><span style="color: #008080;">28</span> <span style="color: #000000;">  }
+</span><span style="color: #008080;">29</span>   current = <span style="color: #0000ff;">this</span>.attributes, prev = <span style="color: #0000ff;">this</span><span style="color: #000000;">._previousAttributes;
+</span><span style="color: #008080;">30</span> 
+<span style="color: #008080;">31</span>   <span style="color: #008000;">//</span><span style="color: #008000;"> Check for changes of `id`.</span>
+<span style="color: #008080;">32</span>   <span style="color: #0000ff;">if</span> (<span style="color: #0000ff;">this</span>.idAttribute <span style="color: #0000ff;">in</span> attrs) <span style="color: #0000ff;">this</span>.id = attrs[<span style="color: #0000ff;">this</span><span style="color: #000000;">.idAttribute];
+</span><span style="color: #008080;">33</span> 
+<span style="color: #008080;">34</span>   <span style="color: #008000;">//</span><span style="color: #008000;"> For each `set` attribute, update or delete the current value.</span>
+<span style="color: #008080;">35</span>   <span style="color: #0000ff;">for</span> (attr <span style="color: #0000ff;">in</span><span style="color: #000000;"> attrs) {
+</span><span style="color: #008080;">36</span>     val =<span style="color: #000000;"> attrs[attr];
+</span><span style="color: #008080;">37</span>     <span style="color: #0000ff;">if</span> (!<span style="color: #000000;">_.isEqual(current[attr], val)) changes.push(attr);
+</span><span style="color: #008080;">38</span>     <span style="color: #0000ff;">if</span> (!<span style="color: #000000;">_.isEqual(prev[attr], val)) {
+</span><span style="color: #008080;">39</span>       <span style="color: #0000ff;">this</span>.changed[attr] =<span style="color: #000000;"> val;
+</span><span style="color: #008080;">40</span>     } <span style="color: #0000ff;">else</span><span style="color: #000000;"> {
+</span><span style="color: #008080;">41</span>       <span style="color: #0000ff;">delete</span> <span style="color: #0000ff;">this</span><span style="color: #000000;">.changed[attr];
+</span><span style="color: #008080;">42</span> <span style="color: #000000;">    }
+</span><span style="color: #008080;">43</span>     unset ? <span style="color: #0000ff;">delete</span> current[attr] : current[attr] =<span style="color: #000000;"> val;
+</span><span style="color: #008080;">44</span> <span style="color: #000000;">  }
+</span><span style="color: #008080;">45</span> 
+<span style="color: #008080;">46</span>   <span style="color: #008000;">//</span><span style="color: #008000;"> Trigger all relevant attribute changes.</span>
+<span style="color: #008080;">47</span>   <span style="color: #0000ff;">if</span> (!<span style="color: #000000;">silent) {
+</span><span style="color: #008080;">48</span>     <span style="color: #0000ff;">if</span> (changes.length) <span style="color: #0000ff;">this</span>._pending = <span style="color: #0000ff;">true</span><span style="color: #000000;">;
+</span><span style="color: #008080;">49</span>     <span style="color: #0000ff;">for</span> (<span style="color: #0000ff;">var</span> i = 0, l = changes.length; i &lt; l; i++<span style="color: #000000;">) {
+</span><span style="color: #008080;">50</span>       <span style="color: #0000ff;">this</span>.trigger('change:' + changes[i], <span style="color: #0000ff;">this</span><span style="color: #000000;">, current[changes[i]], options);
+</span><span style="color: #008080;">51</span> <span style="color: #000000;">    }
+</span><span style="color: #008080;">52</span> <span style="color: #000000;">  }
+</span><span style="color: #008080;">53</span> 
+<span style="color: #008080;">54</span>   <span style="color: #008000;">//</span><span style="color: #008000;"> You might be wondering why there's a `while` loop here. Changes can</span>
+<span style="color: #008080;">55</span>   <span style="color: #008000;">//</span><span style="color: #008000;"> be recursively nested within `"change"` events.</span>
+<span style="color: #008080;">56</span>   <span style="color: #0000ff;">if</span> (changing) <span style="color: #0000ff;">return</span> <span style="color: #0000ff;">this</span><span style="color: #000000;">;
+</span><span style="color: #008080;">57</span>   <span style="color: #0000ff;">if</span> (!<span style="color: #000000;">silent) {
+</span><span style="color: #008080;">58</span>     <span style="color: #0000ff;">while</span> (<span style="color: #0000ff;">this</span><span style="color: #000000;">._pending) {
+</span><span style="color: #008080;">59</span>       <span style="color: #0000ff;">this</span>._pending = <span style="color: #0000ff;">false</span><span style="color: #000000;">;
+</span><span style="color: #008080;">60</span>       <span style="color: #0000ff;">this</span>.trigger('change', <span style="color: #0000ff;">this</span><span style="color: #000000;">, options);
+</span><span style="color: #008080;">61</span> <span style="color: #000000;">    }
+</span><span style="color: #008080;">62</span> <span style="color: #000000;">  }
+</span><span style="color: #008080;">63</span>   <span style="color: #0000ff;">this</span>._pending = <span style="color: #0000ff;">false</span><span style="color: #000000;">;
+</span><span style="color: #008080;">64</span>   <span style="color: #0000ff;">this</span>._changing = <span style="color: #0000ff;">false</span><span style="color: #000000;">;
+</span><span style="color: #008080;">65</span>   <span style="color: #0000ff;">return</span> <span style="color: #0000ff;">this</span><span style="color: #000000;">;
+</span><span style="color: #008080;">66</span> },</pre>
+</div>
+<div class="cnblogs_code">
+<pre>model.set(attributes, [options]) </pre>
+</div>
+<p>这里第一个参数可以为对象或者字符串，最简单的情况当然是：</p>
+<div class="cnblogs_code">
+<pre><span style="color: #0000ff;">var</span> m = <span style="color: #0000ff;">new</span><span style="color: #000000;"> Model();
+m.set(</span>'name', '叶小钗');</pre>
+</div>
+<p>这样会开开心心执行个对象就结束，当然也可以这样：</p>
+<div class="cnblogs_code">
+<pre>m.set({'name'： '叶小钗'});</pre>
+</div>
+<p>于是，第二个参数的意义就不大了......</p>
+<div class="cnblogs_code">
+<pre>{<span style="color: #ff0000;">silent</span>:<span style="color: #0000ff;"> true</span>}<span style="color: #800000;">的情况下不会触发change事件</span></pre>
+</div>
+<p>1 首先，做了简单的参数检查，将对象放入了attrs变量</p>
+<p>2 其次，执行了一次验证操作，如果验证不成立，这里会直接退出去</p>
+<p>3 然后，操作传入的options（必须是对象）</p>
+<p><span style="color: #ff0000;">这里我有点不太理解：</span></p>
+<p>如果options设置了unset属性，则将attrs的所有值设置为undefined</p>
+<p>如果options没有指定silent属性, 则直接设置changes属性中当前数据为已改变状态</p>
+<p>4 进行操作前_previousAttributes会保存改变前的属性值，这里有个changing值得注意，他用于检测一次set触发时执行才change方法是否结束，没有结束的话便不能执行</p>
+<p>5 遍历时候如果要设置的属性与当前值不等，则将该key值压入changes数组，如果与之前的不等，则在changed对象中赋值（changed记录了每次set时候改变的键值）</p>
+<p>如果被相等的话，就将他移除changed对象，如果设置了unset属性，则需要删除当前属性否则就赋值</p>
+<p><span style="color: #ff0000;">PS：尼玛，这里在干什么，我没搞明白，先放放吧</span></p>
+<p>6 下面如果没有设置silent，的话会将上面设置的changes中的数据提出来，并触发相关事件（比如触发changename事件，但是我们并未定义）</p>
+<p>然后触发整个model的change事件，这个我们应该会绑定，最后做一点结尾处理就跳出来了，我的结论就我没太看懂......后面再看看吧</p>
+<h3>⑦ unset</h3>
+<p>删除属性</p>
+<div class="cnblogs_code">
+<pre><span style="color: #0000ff;">return</span> <span style="color: #0000ff;">this</span>.set(attr, <span style="color: #0000ff;">void</span> 0, _.extend({}, options, { unset: <span style="color: #0000ff;">true</span> }));</pre>
+</div>
+<p>看着unset，我突然好像知道set下面干了写什么事情了......原来他删除与添加都写到了一起了</p>
+<h3><span style="line-height: 1.5;">⑧ &nbsp;fetch</span></h3>
+<p><span style="line-height: 1.5;">据说是由服务器端获取数据，然后使用set方法初始化model数据，</span></p>
+<div class="cnblogs_code">
+<pre><span style="color: #008080;"> 1</span> fetch: <span style="color: #0000ff;">function</span><span style="color: #000000;"> (options) {
+</span><span style="color: #008080;"> 2</span>   options = options ?<span style="color: #000000;"> _.clone(options) : {};
+</span><span style="color: #008080;"> 3</span>   <span style="color: #0000ff;">if</span> (options.parse === <span style="color: #0000ff;">void</span> 0) options.parse = <span style="color: #0000ff;">true</span><span style="color: #000000;">;
+</span><span style="color: #008080;"> 4</span>   <span style="color: #0000ff;">var</span> model = <span style="color: #0000ff;">this</span><span style="color: #000000;">;
+</span><span style="color: #008080;"> 5</span>   <span style="color: #0000ff;">var</span> success =<span style="color: #000000;"> options.success;
+</span><span style="color: #008080;"> 6</span>   options.success = <span style="color: #0000ff;">function</span><span style="color: #000000;"> (resp) {
+</span><span style="color: #008080;"> 7</span>     <span style="color: #0000ff;">if</span> (!model.set(model.parse(resp, options), options)) <span style="color: #0000ff;">return</span> <span style="color: #0000ff;">false</span><span style="color: #000000;">;
+</span><span style="color: #008080;"> 8</span>     <span style="color: #0000ff;">if</span><span style="color: #000000;"> (success) success(model, resp, options);
+</span><span style="color: #008080;"> 9</span>     model.trigger('sync'<span style="color: #000000;">, model, resp, options);
+</span><span style="color: #008080;">10</span> <span style="color: #000000;">  };
+</span><span style="color: #008080;">11</span>   wrapError(<span style="color: #0000ff;">this</span><span style="color: #000000;">, options);
+</span><span style="color: #008080;">12</span>   <span style="color: #0000ff;">return</span> <span style="color: #0000ff;">this</span>.sync('read', <span style="color: #0000ff;">this</span><span style="color: #000000;">, options);
+</span><span style="color: #008080;">13</span> },</pre>
+</div>
+<div class="cnblogs_code">
+<pre><span style="color: #800000;">从服务器重置模型状态。这对模型尚未填充数据，或者服务器端已有最新状态的情况很有用处。 如果服务器端状态与当前属性不同，则触发 "change" 事件。 <br>选项的散列表参数接受 success 和 error 回调函数， 回调函数中可以传入 (model,response) 作为参数。</span></pre>
+</div>
+<p>这里具体使用了sync事件由服务器端获取数据，这个sync实际上封装了ajax操作，会使用model设置的url，键值为id，所以此处我们就不关注了</p>
+<h3>⑨&nbsp;_validate</h3>
+<div class="cnblogs_code">
+<pre><span style="color: #008080;">1</span> _validate: <span style="color: #0000ff;">function</span><span style="color: #000000;"> (attrs, options) {
+</span><span style="color: #008080;">2</span>   <span style="color: #0000ff;">if</span> (!options.validate || !<span style="color: #0000ff;">this</span>.validate) <span style="color: #0000ff;">return</span> <span style="color: #0000ff;">true</span><span style="color: #000000;">;
+</span><span style="color: #008080;">3</span>   attrs = _.extend({}, <span style="color: #0000ff;">this</span><span style="color: #000000;">.attributes, attrs);
+</span><span style="color: #008080;">4</span>   <span style="color: #0000ff;">var</span> error = <span style="color: #0000ff;">this</span>.validationError = <span style="color: #0000ff;">this</span>.validate(attrs, options) || <span style="color: #0000ff;">null</span><span style="color: #000000;">;
+</span><span style="color: #008080;">5</span>   <span style="color: #0000ff;">if</span> (!error) <span style="color: #0000ff;">return</span> <span style="color: #0000ff;">true</span><span style="color: #000000;">;
+</span><span style="color: #008080;">6</span>   <span style="color: #0000ff;">this</span>.trigger('invalid', <span style="color: #0000ff;">this</span>, error, _.extend(options ||<span style="color: #000000;"> {}, { validationError: error }));
+</span><span style="color: #008080;">7</span>   <span style="color: #0000ff;">return</span> <span style="color: #0000ff;">false</span><span style="color: #000000;">;
+</span><span style="color: #008080;">8</span> }</pre>
+</div>
+<p><span style="line-height: 1.5;">用于验证属性的函数，如果为属性定义了validate验证方法，这里就会被调用，如果调用失败还会触发一个事件，</span><span style="line-height: 1.5;">Model一块我们暂时就结束了，详细的下面点分析</span></p>
+<p><span style="line-height: 1.5;">PS：肚子有点饿，战斗力不行了</span></p>
+<h1><span style="line-height: 1.5;">结语</span></h1>
+<p>下次我们继续学习集合</p>
+                </div>
+
+                <div class='span3 sidebar'>
+                    <h2>导航栏</h2>
+                    <ul class="nav nav-tabs nav-stacked">
+                             				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/javascriptzdyxhxzsdyjxyzyddf/index.html">javascript中的一些核心知识点以及需要注意的地方</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/[zd]webappdyhzlyzydqdyhdpyjlkkb/index.html">[置顶]【webapp的优化整理】要做移动前端优化的朋友进来看看吧</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/[zd]yddjrwtyjjavascriptsjjzxjsjydjr/index.html">[置顶]【移动端兼容问题研究】javascript事件机制详解（涉及移动兼容）</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/gruntzhb30fzxhsygruntdbqddm/index.html">【grunt整合版】30分钟学会使用grunt打包前端代码</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/gruntdyd30fzxhsygruntdbqddm/index.html">【grunt第一弹】30分钟学会使用grunt打包前端代码</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/gruntdsdgruntzqdsjxmzdyy/index.html">【grunt第三弹】grunt在前端实际项目中的应用</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/gruntded30fzxhsygruntdbqddm02/index.html">【grunt第二弹】30分钟学会使用grunt打包前端代码（02）</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/IScrollsrxxtpyddhadlqs/index.html">【IScroll深入学习】突破移动端黑暗的利器（上）</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/IScrollsrxxjjIScrollynzz/index.html">【IScroll深入学习】解决IScroll疑难杂症</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/iScrollymxx00mniScroll/index.html">【iScroll源码学习00】模拟iScroll</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/iScrollymxx01zbjd/index.html">【iScroll源码学习01】准备阶段</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/iScrollymxx02fjiScrollsghxsjd/index.html">【iScroll源码学习02】分解iScroll三个核心事件点</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/iScrollymxx03iScrollsjjzygdtdsx/index.html">【iScroll源码学习03】iScroll事件机制与滚动条的实现</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/iScrollymxx04flIScrollhx/index.html">【iScroll源码学习04】分离IScroll核心</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/javascriptpxdytyyjc/index.html">【javascript培训第一天】语言基础</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/javascriptpxdstcybl/index.html">【javascript培训第三天】查遗补漏</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/javascriptpxdetDOMyBOM/index.html">【javascript培训第二天】DOM与BOM</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/javascriptjzdsk01mkhbc/index.html">【javascript激增的思考01】模块化编程</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/javascriptjzdsk02mkhyMVC/index.html">【javascript激增的思考02】模块化与MVC</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/javascriptjzdsk03MVVMyKnockout/index.html">【javascript激增的思考03】MVVM与Knockout</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/javascriptjzdsk04MVCyBackbonejs(beta)/index.html">【javascript激增的思考04】MVC与Backbonejs(beta)</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/javascriptmxdxzlrwmyqltkdzb01/index.html">【javascript面向对象之路】让我们一起来坦克大战吧01</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/NodeJSxxbj04xwfbxt/index.html">【NodeJS学习笔记04】新闻发布系统</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/requireJSymxx01ljzgrequireJSdjg/index.html">【requireJS源码学习01】了解整个requireJS的结构</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/requireJSymxx02datamainjzdsx/index.html">【requireJS源码学习02】datamain加载的实现</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/requireJSymxx03xjrequireJSdjzlc/index.html">【requireJS源码学习03】细究requireJS的加载流程</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/UIcjkfygjdrlcjs/index.html">【UI插件】开发一个简单日历插件（上）</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/UIcjjddrlcjxxxMVCsx/index.html">【UI插件】简单的日历插件（下）——学习MVC思想</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/zeptoxxbj01hxff$()/index.html">【zepto学习笔记01】核心方法$()</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/zeptoxxbj01hxff$()b/index.html">【zepto学习笔记01】核心方法$()（补）</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/zeptoxxbj02lsd/index.html">【zepto学习笔记02】零碎点</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/zeptoxxbj03sjjz/index.html">【zepto学习笔记03】事件机制</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/ycmsztjavascriptzdjc/index.html">【一次面试】再谈javascript中的继承</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/ztbackbone01mxModel/index.html">【再探backbone01】模型Model</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/ztbackbone02jhCollection/index.html">【再探backbone02】集合Collection</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/ztbackbone03bkydyyysltgym/index.html">【再探backbone03】博客园单页应用实例（提供源码）</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/ztbackbone04dyyydjslycl/index.html">【再探backbone04】单页应用的基石路由处理</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/ctUnderscorezsmbyq/index.html">【初探Underscore】再说模版引擎</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/ckjavascriptamzAjaxjsxnszddAjax/index.html">【初窥javascript奥秘之Ajax】简述下你所知道的Ajax？</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/ckjavascriptamzsjmpnxnwmyqmdp/index.html">【初窥javascript奥秘之事件冒泡】那些年我们一起冒的泡</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/ckjavascriptamzsjjzldtygdj/index.html">【初窥javascript奥秘之事件机制】论“点透”与“鬼点击”</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/ckjavascriptamzrrzmbddthisnzdxzthiszxnlm/index.html">【初窥javascript奥秘之让人捉摸不定的this】你知道现在this指向哪里吗？？？</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/ckjavascriptamzbbydxbdhlqbcl/index.html">【初窥javascript奥秘之闭包】叶大侠病都好了，求不踩了：）</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/ckjavascriptamzmxdxfzyjc/index.html">【初窥javascript奥秘之面向对象】封装与继承</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/qdmdsjdjgjdnzdljm/index.html">【前端盲点】事件的几个阶段你真的了解么？？？</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/dyyyviewymodelxgsl/index.html">【单页应用】view与model相关梳理</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/dyyyyqldyyybsxjdwbgns/index.html">【单页应用】一起来单页应用吧，实现简单微博功能！（上）</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/dyyyqjkzqappyggxsm/index.html">【单页应用】全局控制器app应该干些什么？</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/dyyywmgrhclkjdcccjgx/index.html">【单页应用】我们该如何处理框架弹出层层级关系？</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/dyyyljMVC/index.html">【单页应用】理解MVC</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/dyyyztxjzviewzjygrhtx/index.html">【单页应用之通信机制】view之间应该如何通信</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/dyyyjkzHistoryxsHistorydgdyyydm/index.html">【单页应用巨坑之History】细数History带给单页应用的噩梦</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/xtszeptofindysyjiosdcjpknrnhtt/index.html">【小贴士】zeptofind元素以及ios弹出键盘可能让你很头疼</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/xtsgytransitionEndanimatedygyqgs/index.html">【小贴士】关于transitionEndanimate的一个有趣故事</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/xtsgzzdbbysjwtdzzmp/index.html">【小贴士】工作中的”闭包“与事件委托的”阻止冒泡“</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/xtstytjavascriptzdreplace/index.html">【小贴士】探一探javascript中的replace</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/xtsxnjpyfixeddgydddt/index.html">【小贴士】虚拟键盘与fixed带给移动端的痛！</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/ttjavascriptsjjzdcsxyl/index.html">【探讨】javascript事件机制底层实现原理</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/mkhbcljrequireJSsxygjddmkjzq/index.html">【模块化编程】理解requireJS实现一个简单的模块加载器</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/zyJavaScriptmfjmtsdqlxkjzbfgndcljz/index.html">【转】【译】JavaScript魔法揭秘探索当前流行框架中部分功能的处理机制</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/zxjavascriptgszl01javascriptcszds/index.html">【追寻javascript高手之路01】javascript参数知多少？</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/zxjavascriptgszl02blzyyzds/index.html">【追寻javascript高手之路02】变量、作用域知多少？</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/zxjavascriptgszl03javascriptdxdld/index.html">【追寻javascript高手之路03】javascript对象大乱斗</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/zxjavascriptgszl04ljprototype/index.html">【追寻javascript高手之路04】理解prototype</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/zxjavascriptgszl05ljsjl/index.html">【追寻javascript高手之路05】理解事件流</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/zgbj04zxzzsj(2)/index.html">【重构笔记04】重新组织数据(2)</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/zgbj05jhtjbds/index.html">【重构笔记05】简化条件表达式</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/zgbj06jhhsdy/index.html">【重构笔记06】简化函数调用</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/ycmshgttbxysjfl/index.html">一次面试回顾——探讨表现与数据分离</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/dhzwebappzdxz/index.html">动画在webapp中的现状</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/ysandriodlqhthdomclicksjqtsxwttj/index.html">原生andriod浏览器回退后dom（click）事件全体失效问题探究</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/scsbdjxysdsbsjytouchsjdnxs/index.html">手持设备点击响应速度，鼠标事件与touch事件的那些事</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/mnbjQueryzeptohxymfx/index.html">迷你版jQuery——zepto核心源码分析</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/dbsgzdlwmlyqxjdddomxzqb/index.html">都别说工资低了，我们来一起写简单的dom选择器吧！</a></li>
+    				                                         
+                    </ul>
+                </div>
+            </div>
+
+        </div>
+    </body>
+</html>

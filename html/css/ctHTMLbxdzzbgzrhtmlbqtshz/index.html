@@ -1,0 +1,458 @@
+﻿<!DOCTYPE html>
+
+<html lang="zh">
+    <head>
+        <meta charset="utf-8">
+        <meta name="description" content="android,ios" />
+        <meta name="keywords" content="android,ios" />
+
+        <title>叶小钗</title>
+        <style type='text/css'>
+            body {
+                background-color: #CCC;
+            }
+        </style>
+        <link rel="stylesheet" href="../../../css/bootstrap.css" />
+    </head>
+
+    <body>
+        <div class="container">
+
+            <h1>叶小钗</h1>
+
+            <div class='navbar navbar-inverse'>
+                <div class='navbar-inner nav-collapse' style="height: auto;">
+                    <ul class="nav">
+                              				<li><a href="http://songboriceboy.github.io/xxoo/html/blade/index.html">blade</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/css/index.html">css</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/HTML5&CSS3/index.html">HTML5&CSS3</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/index.html">javascript</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Javaxx/index.html">Java学习</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/nodejs/index.html">nodejs</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/requirejs/index.html">requirejs</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/index.html">Web前端</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/xxgw/index.html">学习感悟</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/gzdd/index.html">工作点滴</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/jkxx/index.html">接口学习</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/wfl/index.html">未分类</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/ydkf/index.html">移动开发</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/sjms/index.html">设计模式</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/mst/index.html">面试题</a></li>
+    				                      </ul>
+                </div>
+            </div>
+
+            <div id='content' class='row-fluid'>
+
+                <div class='span9 main'>
+				<div style="color:blue" align=center>【初探HTML本相】道之真谛不过自然，html标签脱俗还真</div><br><h1>前言</h1>
+<p><strong>须弥般若有无空，阴阳道化真虚同；洗尽前恩本非相，还吾面目下九重。</strong></p>
+<p>咳咳，其实老夫对佛教文化有点点研究啦，说以我们这里来了一点很有哲理的东西，因为我这里准备干一件很<span style="color: #ff0000;">戳</span>的事情，我准备来看看我们的html标签没有样式时候的表现，为什么要做这件事呢？</p>
+<p>当然不是无聊了，我今天突然意识到，不同的标签表现有所不一样，他们这样也是有意义的，当CSS不存在时候，他们的表现你知道吗？？？</p>
+<p>所以我们一起来研究研究吧，看看能不能有什么收获。</p>
+<h1>常用元素</h1>
+<p>到底有多少元素，我这里也说不清，因为我记忆力有点差啦，我甚至现在都记不得substr怎么用！！！所以我们上资料吧。</p>
+<p>PS：我这里列出来的就是我们后面会研究的，若是没有列出来就暂时不关注啦。</p>
+<p><strong>HTML</strong></p>
+<p>该元素告诉浏览器其自身是一个HTML文档，该标记一旦出现就等于告诉了浏览器出现网页啦。</p>
+<p><strong>body</strong></p>
+<p>元素定义的文档主体，也是我们的可见区域，但是他与我们的HTML有说不清道不明的关系</p>
+<p>比如我们的document到底是谁呢？我们jquery操作时候有什么异同，我们后面需要探讨。</p>
+<p>&nbsp;</p>
+<p>以上是我们外部必定会用到的，除此之外，我们来看看我们的块级元素吧</p>
+<h2>常用块级元素</h2>
+<p><strong>P</strong></p>
+<p>paragraph，段落，用得非常多的元素</p>
+<p><strong>div</strong></p>
+<p>division/section(HTML5新增元素)，该标签用于将文档分割为不同部分</p>
+<p><strong>br</strong></p>
+<p>换行，br是空标签，他常常被无用做p，我们后面需要介绍他与p的区别，并且说说他与闭合浮动之间的关系。</p>
+<p><strong>h1&mdash;&mdash;h6 一级标题到六级标题</strong></p>
+<p>heading，我们需要了解在各个浏览器中各个h的margin、padding、font-size</p>
+<p><strong>ul ol li</strong></p>
+<p>无序、有序列表</p>
+<p><strong>dl dt dd</strong></p>
+<p>定义列表相当于词典里面词的解释就可以用这种列表</p>
+<p><strong>hr</strong></p>
+<p>表示主体结束，而不完全是水平线</p>
+<p>&nbsp;</p>
+<h2>常用行内元素</h2>
+<p><strong>a</strong></p>
+<p>anchor，链接（锚点），我们可以研究下a标签在各个阶段的样式啦</p>
+<p><strong>span</strong></p>
+<p>常用于包裹我们的行内元素</p>
+<p><strong>em strong</strong></p>
+<p>内容强调，em（emphasize）是做强调的，strong是用作重点强调的</p>
+<p><strong>b</strong></p>
+<p>bold 粗体，没强调的意思</p>
+<p><strong>i</strong></p>
+<p><span class="web-item">italic </span>单纯的斜体</p>
+<p><strong>u</strong></p>
+<p><span style="color: #000000; text-transform: none; text-indent: 0px; letter-spacing: normal; word-spacing: 0px; float: none; display: inline !important; white-space: normal; background-color: #ffffff; -webkit-text-stroke-width: 0px;">underline</span>，单纯的加下划线</p>
+<p><strong>select option</strong></p>
+<p>创建可单选或多选的菜单</p>
+<p><strong>img</strong></p>
+<p>图片标签</p>
+<p><strong>input text</strong></p>
+<p>文本</p>
+<p><strong>input radio checkbox</strong></p>
+<p>单选框、多选框</p>
+<p><strong>input submit button</strong></p>
+<p>按钮</p>
+<p><strong>table</strong></p>
+<p>用于展示表格类数据</p>
+<h1>为什么要语义化标签</h1>
+<p>有时候我就在想我为什么要研究这个，为什么要语义化标签，一个比较俗气的现实就是：</p>
+<p>你了解语义化标签才能找到好工作！</p>
+<p>但是作为一个有一点理想的前端，我们是应该了解这些东西的</p>
+<p>因为我们的html才是基本结构，css相当于一种装饰，装饰在的时候我们的页面光鲜，那么装饰去除的时候，我们也不能太丑！！！</p>
+<p>这就是一个美女化妆与穿衣服的原理了，传了惊艳四座，不穿至少需要惊艳到个人吧。</p>
+<p>而且对于SEO，对于移动设备，对于盲人阅读器都会更好，所以我们有必要研究下我们标签的本来面目。</p>
+<p>中国人最怕认真，今天让我们来认真一次。</p>
+<h1>HTML与Body</h1>
+<p>html标签与body是一对好基友，以致于我有时候都分不清他们谁是谁，先上一段代码吧</p>
+<div class="cnblogs_code">
+<pre><span style="color: #008080;"> 1</span> <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">html </span><span style="color: #ff0000;">xmlns</span><span style="color: #0000ff;">="http://www.w3.org/1999/xhtml"</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 2</span> <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">head</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 3</span>     <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">title</span><span style="color: #0000ff;">&gt;&lt;/</span><span style="color: #800000;">title</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 4</span>     <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">style </span><span style="color: #ff0000;">type</span><span style="color: #0000ff;">="text/css"</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 5</span> <span style="background-color: #f5f5f5; color: #800000;">        html </span><span style="background-color: #f5f5f5; color: #000000;">{</span><span style="background-color: #f5f5f5; color: #ff0000;"> background-color</span><span style="background-color: #f5f5f5; color: #000000;">:</span><span style="background-color: #f5f5f5; color: #0000ff;"> Orange</span><span style="background-color: #f5f5f5; color: #000000;">;</span> <span style="background-color: #f5f5f5; color: #000000;">}</span>
+<span style="color: #008080;"> 6</span> <span style="background-color: #f5f5f5; color: #800000;">        body </span><span style="background-color: #f5f5f5; color: #000000;">{</span><span style="background-color: #f5f5f5; color: #ff0000;"> background-color</span><span style="background-color: #f5f5f5; color: #000000;">:</span><span style="background-color: #f5f5f5; color: #0000ff;"> Gray</span><span style="background-color: #f5f5f5; color: #000000;">;</span><span style="background-color: #f5f5f5; color: #ff0000;"> border</span><span style="background-color: #f5f5f5; color: #000000;">:</span><span style="background-color: #f5f5f5; color: #0000ff;"> 1px solid black</span><span style="background-color: #f5f5f5; color: #000000;">;</span><span style="background-color: #f5f5f5; color: #ff0000;"> margin</span><span style="background-color: #f5f5f5; color: #000000;">:</span><span style="background-color: #f5f5f5; color: #0000ff;"> 100px</span><span style="background-color: #f5f5f5; color: #000000;">;</span> <span style="background-color: #f5f5f5; color: #000000;">}</span>
+<span style="color: #008080;"> 7</span>     <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">style</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 8</span> <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">head</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 9</span> <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">body</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">10</span> <span style="color: #000000;">    我是文字
+</span><span style="color: #008080;">11</span> <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">body</span><span style="color: #0000ff;">&gt;</span></pre>
+</div>
+<p><img src="50161848340417.png" alt=""></p>
+<p>我不知道这张图能不能颠覆你一点点思维，我们这个代码与图至少证明：</p>
+<p>① HTML是可以设置背景色的</p>
+<p>② body是实际内容点，可以设置padding与margin</p>
+<p>③ HTML也可以设置margin与padding</p>
+<p>这里我们做一点点变化，将html的背景去掉：</p>
+<p><img src="10518955836409.png" alt=""></p>
+<p>这种情况下body就不只是内容区域的颜色了，而是浏览器的。</p>
+<p>好了，我们稍微研究了下html与body的背景色问题，我们现在来看看我们的body在默认情况下的表现。</p>
+<div class="cnblogs_code">
+<pre><span style="color: #008080;"> 1</span> <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">html </span><span style="color: #ff0000;">xmlns</span><span style="color: #0000ff;">="http://www.w3.org/1999/xhtml"</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 2</span> <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">head</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 3</span>     <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">title</span><span style="color: #0000ff;">&gt;&lt;/</span><span style="color: #800000;">title</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 4</span>     <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">style </span><span style="color: #ff0000;">type</span><span style="color: #0000ff;">="text/css"</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 5</span> <span style="background-color: #f5f5f5; color: #800000;">        body </span><span style="background-color: #f5f5f5; color: #000000;">{</span><span style="background-color: #f5f5f5; color: #ff0000;"> background-color</span><span style="background-color: #f5f5f5; color: #000000;">:</span><span style="background-color: #f5f5f5; color: #0000ff;"> Gray</span><span style="background-color: #f5f5f5; color: #000000;">;</span><span style="background-color: #f5f5f5; color: #ff0000;"> border</span><span style="background-color: #f5f5f5; color: #000000;">:</span><span style="background-color: #f5f5f5; color: #0000ff;"> 1px solid black</span><span style="background-color: #f5f5f5; color: #000000;">;</span><span style="background-color: #f5f5f5; color: #000000;">}</span>
+<span style="color: #008080;"> 6</span>     <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">style</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 7</span> <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">head</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 8</span> <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">body</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 9</span> <span style="color: #000000;">    我是文字
+</span><span style="color: #008080;">10</span> <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">body</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">11</span> <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">html</span><span style="color: #0000ff;">&gt;</span></pre>
+</div>
+<p><img src="33710026489733.png" alt=""></p>
+<p>firefox</p>
+<p><img src="132058710155399.png" alt=""></p>
+<p>IE9</p>
+<p><img src="5092817128124.png" alt=""></p>
+<p>IE8，各位注意，这个和我们前面的已经有变化了，<span style="color: #ff0000;">你们发现边框多了一点东西了吗</span>？？？</p>
+<p><img src="31200668615396.png" alt=""></p>
+<p>IE7，好家伙滚动条也出来了，这玩笑开大了。</p>
+<p><img src="41655788003523.png" alt=""></p>
+<p>混杂模式下，边框全局化啦。</p>
+<p>经过我们的简单研究，其它莫名其妙的东西我们先不管，我们就说IE8下多出来那个边框家伙（灰色的）是什么？？？</p>
+<p>PS：这个是我们设置margin： 0都消除不了的哦</p>
+<div class="cnblogs_code">
+<pre><span style="color: #008080;"> 1</span> <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">html </span><span style="color: #ff0000;">xmlns</span><span style="color: #0000ff;">="http://www.w3.org/1999/xhtml"</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 2</span> <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">head</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 3</span>     <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">title</span><span style="color: #0000ff;">&gt;&lt;/</span><span style="color: #800000;">title</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 4</span>     <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">style </span><span style="color: #ff0000;">type</span><span style="color: #0000ff;">="text/css"</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 5</span> <span style="background-color: #f5f5f5; color: #800000;">        html </span><span style="background-color: #f5f5f5; color: #000000;">{</span><span style="background-color: #f5f5f5; color: #ff0000;"> background-color</span><span style="background-color: #f5f5f5; color: #000000;">:</span><span style="background-color: #f5f5f5; color: #0000ff;"> Orange</span><span style="background-color: #f5f5f5; color: #000000;">;</span>  <span style="background-color: #f5f5f5; color: #000000;">}</span>
+<span style="color: #008080;"> 6</span> <span style="background-color: #f5f5f5; color: #800000;">        body </span><span style="background-color: #f5f5f5; color: #000000;">{</span><span style="background-color: #f5f5f5; color: #ff0000;"> background-color</span><span style="background-color: #f5f5f5; color: #000000;">:</span><span style="background-color: #f5f5f5; color: #0000ff;"> Gray</span><span style="background-color: #f5f5f5; color: #000000;">;</span> <span style="background-color: #f5f5f5; color: #000000;">}</span>
+<span style="color: #008080;"> 7</span>     <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">style</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 8</span> <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">head</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 9</span> <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">body</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">10</span> <span style="color: #000000;">    我是文字
+</span><span style="color: #008080;">11</span> <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">body</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">12</span> <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">html</span><span style="color: #0000ff;">&gt;</span></pre>
+</div>
+<p>我们看在这种情况下的截图：</p>
+<p><img src="11659359295465.png" alt=""></p>
+<p>好吧，我就只好认为这是浏览器本身的问题了吧，先暂时不管他，因为我们要研究下其他问题。</p>
+<h2>body默认情况下的margin、padding、font-size</h2>
+<p>不知道这个各位研究过没，我反正没有研究过，所以来试试吧</p>
+<p>经过研究我得到以下结论（<span style="color: #ff0000;">有不对请一定指出</span>）：</p>
+<p><img src="49413835923459.png" alt=""></p>
+<div class="cnblogs_code">
+<pre><span style="color: #800000;">① body的padding为0
+
+② body字体为16px（firefox）
+
+③ 关于margin的值较麻烦一点
+
+IE8/9 firefox google margin默认值为8px
+
+在IE7下margin-left为10px，margintop为15px</span></pre>
+</div>
+<p>所以我们需要设置margin: 0，作为css reset</p>
+<p>PS：<span style="color: #ff0000;">若是您想知道我是怎么测试的话可以看这段代码</span></p>
+<div class="cnblogs_code" onclick="cnblogs_code_show('bb287cb3-12cf-4e72-a448-6db6f7e91a4b')"><img id="code_img_closed_bb287cb3-12cf-4e72-a448-6db6f7e91a4b" class="code_img_closed" src="43570758473519.gif" alt=""><img id="code_img_opened_bb287cb3-12cf-4e72-a448-6db6f7e91a4b" class="code_img_opened" style="display: none;" onclick="cnblogs_code_hide('bb287cb3-12cf-4e72-a448-6db6f7e91a4b',event)" src="16365178109279.gif" alt="">
+<div id="cnblogs_code_open_bb287cb3-12cf-4e72-a448-6db6f7e91a4b" class="cnblogs_code_hide">
+<pre><span style="color: #008080;"> 1</span> <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">html </span><span style="color: #ff0000;">xmlns</span><span style="color: #0000ff;">="http://www.w3.org/1999/xhtml"</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 2</span> <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">head</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 3</span>     <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">title</span><span style="color: #0000ff;">&gt;&lt;/</span><span style="color: #800000;">title</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 4</span>     <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">style </span><span style="color: #ff0000;">type</span><span style="color: #0000ff;">="text/css"</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 5</span> <span style="background-color: #f5f5f5; color: #800000;">        html </span><span style="background-color: #f5f5f5; color: #000000;">{</span><span style="background-color: #f5f5f5; color: #ff0000;"> background-color</span><span style="background-color: #f5f5f5; color: #000000;">:</span><span style="background-color: #f5f5f5; color: #0000ff;"> Orange</span><span style="background-color: #f5f5f5; color: #000000;">;</span> <span style="background-color: #f5f5f5; color: #000000;">}</span>
+<span style="color: #008080;"> 6</span> <span style="background-color: #f5f5f5; color: #800000;">        body </span><span style="background-color: #f5f5f5; color: #000000;">{</span><span style="background-color: #f5f5f5; color: #ff0000;"> background-color</span><span style="background-color: #f5f5f5; color: #000000;">:</span><span style="background-color: #f5f5f5; color: #0000ff;"> Gray</span><span style="background-color: #f5f5f5; color: #000000;">;</span> <span style="background-color: #f5f5f5; color: #000000;">}</span>
+<span style="color: #008080;"> 7</span> <span style="background-color: #f5f5f5; color: #800000;">        div </span><span style="background-color: #f5f5f5; color: #000000;">{</span><span style="background-color: #f5f5f5; color: #ff0000;"> background</span><span style="background-color: #f5f5f5; color: #000000;">:</span><span style="background-color: #f5f5f5; color: #0000ff;"> none repeat scroll 0 0 white</span><span style="background-color: #f5f5f5; color: #000000;">;</span><span style="background-color: #f5f5f5; color: #ff0000;"> left</span><span style="background-color: #f5f5f5; color: #000000;">:</span><span style="background-color: #f5f5f5; color: #0000ff;"> 8px</span><span style="background-color: #f5f5f5; color: #000000;">;</span><span style="background-color: #f5f5f5; color: #ff0000;"> margin</span><span style="background-color: #f5f5f5; color: #000000;">:</span><span style="background-color: #f5f5f5; color: #0000ff;"> 0</span><span style="background-color: #f5f5f5; color: #000000;">;</span><span style="background-color: #f5f5f5; color: #ff0000;"> position</span><span style="background-color: #f5f5f5; color: #000000;">:</span><span style="background-color: #f5f5f5; color: #0000ff;"> absolute</span><span style="background-color: #f5f5f5; color: #000000;">;</span><span style="background-color: #f5f5f5; color: #ff0000;"> top</span><span style="background-color: #f5f5f5; color: #000000;">:</span><span style="background-color: #f5f5f5; color: #0000ff;"> 8px</span><span style="background-color: #f5f5f5; color: #000000;">;</span> <span style="background-color: #f5f5f5; color: #000000;">}</span>
+<span style="color: #008080;"> 8</span>     <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">style</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 9</span> <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">head</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">10</span> <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">script </span><span style="color: #ff0000;">src</span><span style="color: #0000ff;">="../../jquery-1.7.1.js"</span><span style="color: #ff0000;"> type</span><span style="color: #0000ff;">="text/javascript"</span><span style="color: #0000ff;">&gt;&lt;/</span><span style="color: #800000;">script</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">11</span> <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">script </span><span style="color: #ff0000;">type</span><span style="color: #0000ff;">="text/javascript"</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">12</span> <span style="background-color: #f5f5f5; color: #000000;">    $(document).ready(</span><span style="background-color: #f5f5f5; color: #0000ff;">function</span><span style="background-color: #f5f5f5; color: #000000;"> () {
+</span><span style="color: #008080;">13</span>         <span style="background-color: #f5f5f5; color: #0000ff;">var</span><span style="background-color: #f5f5f5; color: #000000;"> dom </span><span style="background-color: #f5f5f5; color: #000000;">=</span><span style="background-color: #f5f5f5; color: #000000;"> $(</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">body</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">);
+</span><span style="color: #008080;">14</span>         
+<span style="color: #008080;">15</span>         <span style="background-color: #f5f5f5; color: #0000ff;">var</span><span style="background-color: #f5f5f5; color: #000000;"> s </span><span style="background-color: #f5f5f5; color: #000000;">=</span> <span style="background-color: #f5f5f5; color: #000000;">''</span><span style="background-color: #f5f5f5; color: #000000;">;
+</span><span style="color: #008080;">16</span> 
+<span style="color: #008080;">17</span> <span style="background-color: #f5f5f5; color: #000000;">    });
+</span><span style="color: #008080;">18</span> 
+<span style="color: #008080;">19</span> <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">script</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">20</span> <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">body</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">21</span> <span style="color: #000000;">    我是文字
+</span><span style="color: #008080;">22</span>     <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">div</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">23</span>         我是文字<span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">div</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">24</span> <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">body</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">25</span> <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">html</span><span style="color: #0000ff;">&gt;</span></pre>
+</div>
+<span class="cnblogs_code_collapse">测试研究</span></div>
+<p>我设置了一个绝对定位的div，然后慢慢定位其top与left，或者设置font-size一一对比</p>
+<h1>p与br</h1>
+<div class="cnblogs_code">
+<pre><span style="color: #800000;">p是用于标记段落的，我们有一段话就应该使用p，而br单纯用于换行使用，不可与p同日而语<br>br默认margin、padding、width等全部为0</span></pre>
+</div>
+<p>&nbsp;</p>
+<div class="cnblogs_code">
+<pre><span style="color: #008080;"> 1</span> <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">html </span><span style="color: #ff0000;">xmlns</span><span style="color: #0000ff;">="http://www.w3.org/1999/xhtml"</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 2</span> <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">head</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 3</span>     <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">title</span><span style="color: #0000ff;">&gt;&lt;/</span><span style="color: #800000;">title</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 4</span>     <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">style </span><span style="color: #ff0000;">type</span><span style="color: #0000ff;">="text/css"</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 5</span> <span style="background-color: #f5f5f5; color: #800000;">        body </span><span style="background-color: #f5f5f5; color: #000000;">{</span><span style="background-color: #f5f5f5; color: #ff0000;"> margin</span><span style="background-color: #f5f5f5; color: #000000;">:</span><span style="background-color: #f5f5f5; color: #0000ff;"> 0</span><span style="background-color: #f5f5f5; color: #000000;">;</span> <span style="background-color: #f5f5f5; color: #000000;">}</span>
+<span style="color: #008080;"> 6</span> <span style="background-color: #f5f5f5; color: #800000;">        p </span><span style="background-color: #f5f5f5; color: #000000;">{</span><span style="background-color: #f5f5f5; color: #ff0000;"> border</span><span style="background-color: #f5f5f5; color: #000000;">:</span><span style="background-color: #f5f5f5; color: #0000ff;"> 1px solid black</span><span style="background-color: #f5f5f5; color: #000000;">;</span> <span style="background-color: #f5f5f5; color: #000000;">}</span>
+<span style="color: #008080;"> 7</span> <span style="background-color: #f5f5f5; color: #800000;">        div </span><span style="background-color: #f5f5f5; color: #000000;">{</span><span style="background-color: #f5f5f5; color: #ff0000;"> background</span><span style="background-color: #f5f5f5; color: #000000;">:</span><span style="background-color: #f5f5f5; color: #0000ff;"> white</span><span style="background-color: #f5f5f5; color: #000000;">;</span><span style="background-color: #f5f5f5; color: #ff0000;"> left</span><span style="background-color: #f5f5f5; color: #000000;">:</span><span style="background-color: #f5f5f5; color: #0000ff;"> 100px</span><span style="background-color: #f5f5f5; color: #000000;">;</span><span style="background-color: #f5f5f5; color: #ff0000;"> margin</span><span style="background-color: #f5f5f5; color: #000000;">:</span><span style="background-color: #f5f5f5; color: #0000ff;"> 0</span><span style="background-color: #f5f5f5; color: #000000;">;</span><span style="background-color: #f5f5f5; color: #ff0000;"> position</span><span style="background-color: #f5f5f5; color: #000000;">:</span><span style="background-color: #f5f5f5; color: #0000ff;"> absolute</span><span style="background-color: #f5f5f5; color: #000000;">;</span><span style="background-color: #f5f5f5; color: #ff0000;"> top</span><span style="background-color: #f5f5f5; color: #000000;">:</span><span style="background-color: #f5f5f5; color: #0000ff;"> 100px</span><span style="background-color: #f5f5f5; color: #000000;">;</span> <span style="background-color: #f5f5f5; color: #000000;">}</span>
+<span style="color: #008080;"> 8</span>     <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">style</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 9</span> <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">head</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">10</span> <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">body</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">11</span> <span style="color: #000000;">    刀狂剑痴叶小钗
+</span><span style="color: #008080;">12</span>     <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">p</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">13</span> <span style="color: #000000;">        刀狂剑痴叶小钗
+</span><span style="color: #008080;">14</span>     <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">p</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">15</span>     <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">div</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">16</span>         刀狂剑痴叶小钗<span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">div</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">17</span> <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">body</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">18</span> <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">html</span><span style="color: #0000ff;">&gt;</span></pre>
+</div>
+<p>先来简单的看看我们p标签的表现吧：</p>
+<p><img src="5915428260925.png" alt=""></p>
+<p>我这里基本可以得出一个结论，就是这个家伙只有margin值啦，于是经过测试我们知道了：</p>
+<p><img src="4455777818702.png" alt=""></p>
+<div class="cnblogs_code">
+<pre><span style="color: #800000;">① p标签padding为0
+② margin-left与margin-right为0，上下外边距为16px</span></pre>
+</div>
+<p>PS：<strong><span style="color: #ff0000;">我这里可耻的发现了我找到了一个更好的东西佐证我的想法</span></strong>：就是本身提供的盒子模型啦。。。。</p>
+<h2>p的最小高度</h2>
+<p><img src="36944875252651.png" alt=""></p>
+<p><img src="46963595654835.png" alt=""></p>
+<div class="cnblogs_code">
+<pre><span style="color: #800000;">p应该是默认设置了min-height为2px啦</span></pre>
+</div>
+<p>&nbsp;</p>
+<h2>关于IE7下的z-index</h2>
+<p>我们的z-index在IE7以下容易出错，但是为什么呢？也许这里可以给你答案：</p>
+<p><img src="17443567541356.png" alt=""></p>
+<p><img src="14357037448417.png" alt=""></p>
+<p>IE8+的浏览器z-index是auto，不会参与计算的，但是ie7以下就变成0啦。。。。</p>
+<h1>h1&mdash;&mdash;h6</h1>
+<div class="cnblogs_code">
+<pre><span style="color: #008080;"> 1</span> <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">html </span><span style="color: #ff0000;">xmlns</span><span style="color: #0000ff;">="http://www.w3.org/1999/xhtml"</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 2</span> <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">head</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 3</span>     <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">title</span><span style="color: #0000ff;">&gt;&lt;/</span><span style="color: #800000;">title</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 4</span>     <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">style </span><span style="color: #ff0000;">type</span><span style="color: #0000ff;">="text/css"</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 5</span> <span style="background-color: #f5f5f5; color: #800000;">        div </span><span style="background-color: #f5f5f5; color: #000000;">{</span><span style="background-color: #f5f5f5; color: #ff0000;"> background</span><span style="background-color: #f5f5f5; color: #000000;">:</span><span style="background-color: #f5f5f5; color: #0000ff;"> white</span><span style="background-color: #f5f5f5; color: #000000;">;</span><span style="background-color: #f5f5f5; color: #ff0000;"> left</span><span style="background-color: #f5f5f5; color: #000000;">:</span><span style="background-color: #f5f5f5; color: #0000ff;"> 100px</span><span style="background-color: #f5f5f5; color: #000000;">;</span><span style="background-color: #f5f5f5; color: #ff0000;"> margin</span><span style="background-color: #f5f5f5; color: #000000;">:</span><span style="background-color: #f5f5f5; color: #0000ff;"> 0</span><span style="background-color: #f5f5f5; color: #000000;">;</span><span style="background-color: #f5f5f5; color: #ff0000;"> position</span><span style="background-color: #f5f5f5; color: #000000;">:</span><span style="background-color: #f5f5f5; color: #0000ff;"> absolute</span><span style="background-color: #f5f5f5; color: #000000;">;</span><span style="background-color: #f5f5f5; color: #ff0000;"> top</span><span style="background-color: #f5f5f5; color: #000000;">:</span><span style="background-color: #f5f5f5; color: #0000ff;"> 100px</span><span style="background-color: #f5f5f5; color: #000000;">;</span> <span style="background-color: #f5f5f5; color: #000000;">}</span>
+<span style="color: #008080;"> 6</span>     <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">style</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 7</span> <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">head</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 8</span> <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">body</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 9</span> 
+<span style="color: #008080;">10</span> <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">h1</span><span style="color: #0000ff;">&gt;</span>刀狂剑痴叶小钗<span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">h1</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">11</span> <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">h2</span><span style="color: #0000ff;">&gt;</span>刀狂剑痴叶小钗<span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">h2</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">12</span> <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">h3</span><span style="color: #0000ff;">&gt;</span>刀狂剑痴叶小钗<span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">h3</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">13</span> <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">h4</span><span style="color: #0000ff;">&gt;</span>刀狂剑痴叶小钗<span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">h4</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">14</span> <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">h5</span><span style="color: #0000ff;">&gt;</span>刀狂剑痴叶小钗<span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">h5</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">15</span> <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">h6</span><span style="color: #0000ff;">&gt;</span>刀狂剑痴叶小钗<span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">h6</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">16</span>     <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">div</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">17</span>         刀狂剑痴叶小钗<span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">div</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">18</span> <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">body</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">19</span> <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">html</span><span style="color: #0000ff;">&gt;</span></pre>
+</div>
+<p><img src="19861936324885.png" alt=""></p>
+<p>整个h标签标签在各个浏览器表现很不一致，这里我们一定要给其设置默认值，否则肯定会悲剧</p>
+<h2>h1</h2>
+<p>firefox：</p>
+<p><img src="2800725715270.png" alt=""></p>
+<p>google：</p>
+<p><img src="42392048974533.png" alt=""></p>
+<p>IE9：</p>
+<p><img src="31809567698689.png" alt=""></p>
+<p>IE8：</p>
+<p><img src="50821296203411.png" alt=""></p>
+<p>IE7（IE7更加悲剧，上面的margin就没显示出来）：</p>
+<p><img src="10803846054947.png" alt=""></p>
+<p><img src="506330510409192.png" alt=""></p>
+<p>我们看到了就单单一个h1，的表现，从ie7到ie9，再到firefox到chrome都不一样，所以这个东西我们就不研究了，直接CSS RESET吧。。。</p>
+<h1>继续昨天的话题</h1>
+<p><strong>一性圆通一切性，一法遍含一切法，一月普现一切水，一切水月一切摄。</strong></p>
+<p>我们接着昨天的写，昨天我们写到了h1&mdash;&mdash;h6，然后单单一个h1各个浏览器就有所不同，然后把6个一起加起来的话......</p>
+<p>6 * 5（IE6/IE7/IE89/firefox/chrome）就可能会出现30钟变化，所以研究他不吃好，我们碰到h后就直接CSS重置吧。</p>
+<p>所以我们继续我们的学习吧</p>
+<h1>ul ol li</h1>
+<h2><strong>在firefox下，我们看看我们ul的表现：</strong></h2>
+<div class="cnblogs_code">
+<pre><span> 1</span> <span>&lt;</span><span>html </span><span>xmlns</span><span>="http://www.w3.org/1999/xhtml"</span><span>&gt;</span>
+<span> 2</span> <span>&lt;</span><span>head</span><span>&gt;</span>
+<span> 3</span>     <span>&lt;</span><span>title</span><span>&gt;&lt;/</span><span>title</span><span>&gt;</span>
+<span> 4</span>     <span>&lt;</span><span>style </span><span>type</span><span>="text/css"</span><span>&gt;</span>
+<span> 5</span> <span>        ul </span><span>{</span><span> border</span><span>:</span><span> 1px solid black</span><span>;</span> <span>}</span>
+<span> 6</span> <span>        body </span><span>{</span><span> margin</span><span>:</span><span> 0</span><span>;</span> <span>}</span>
+<span> 7</span> <span>        div </span><span>{</span><span> background</span><span>:</span><span> white</span><span>;</span><span> left</span><span>:</span><span> 100px</span><span>;</span><span> margin</span><span>:</span><span> 0</span><span>;</span><span> position</span><span>:</span><span> absolute</span><span>;</span><span> top</span><span>:</span><span> 100px</span><span>;</span> <span>}</span>
+<span> 8</span>     <span>&lt;/</span><span>style</span><span>&gt;</span>
+<span> 9</span> <span>&lt;/</span><span>head</span><span>&gt;</span>
+<span>10</span> <span>&lt;</span><span>body</span><span>&gt;</span>
+<span>11</span>     <span>&lt;</span><span>ul</span><span>&gt;</span>
+<span>12</span>         <span>&lt;</span><span>li</span><span>&gt;</span>刀狂剑痴叶小钗<span>&lt;/</span><span>li</span><span>&gt;</span>
+<span>13</span>         <span>&lt;</span><span>li</span><span>&gt;</span><span>刀狂剑痴叶小钗
+</span><span>14</span>             <span>&lt;</span><span>ul</span><span>&gt;</span>
+<span>15</span>                 <span>&lt;</span><span>li</span><span>&gt;</span>刀狂剑痴叶小钗<span>&lt;/</span><span>li</span><span>&gt;</span>
+<span>16</span>                 <span>&lt;</span><span>li</span><span>&gt;</span>刀狂剑痴叶小钗<span>&lt;/</span><span>li</span><span>&gt;</span>
+<span>17</span>             <span>&lt;/</span><span>ul</span><span>&gt;</span>
+<span>18</span>         <span>&lt;/</span><span>li</span><span>&gt;</span>
+<span>19</span>         <span>&lt;</span><span>li</span><span>&gt;</span>刀狂剑痴叶小钗<span>&lt;/</span><span>li</span><span>&gt;</span>
+<span>20</span>         <span>&lt;</span><span>li</span><span>&gt;</span>刀狂剑痴叶小钗<span>&lt;/</span><span>li</span><span>&gt;</span>
+<span>21</span>     <span>&lt;/</span><span>ul</span><span>&gt;</span>
+<span>22</span> <span>&lt;/</span><span>body</span><span>&gt;</span>
+<span>23</span> <span>&lt;/</span><span>html</span><span>&gt;</span></pre>
+</div>
+<p><img src="481069010149521.png" alt=""></p>
+<p><img src="51466407391711.png" alt=""></p>
+<div class="cnblogs_code">
+<pre><span>① 最外层外边距（margin）上下外边距16px<br>② padding-left为40px<br>③ 内层ul上下外边距就没有了，但是padding-left仍然是40px<br>④ li有list-type，其显示前面有一点点原点或者方块<br>⑤ li高为17px（这里font-size为16px，所以上下外边距的显示是0.5，在其他浏览器不太一致）<br><br>PS：<br>我认为li的line-height为17px</span></pre>
+</div>
+<h2>我们现在来看看chrome的表现：</h2>
+<p><img src="25272168185100.png" alt=""></p>
+<div class="cnblogs_code">
+<pre><span>① 最外层margin上下边距为16px
+② padding-left 为40px<br><br>兼容点：<br>① li line-height为18px<br>② 这里的ul完全是内部撑开的</span></pre>
+</div>
+<h2>现在我们来看看IE9：</h2>
+<p><img src="12427177876631.png" alt=""></p>
+<p>大家看到了，我们的不同点就是li所撑开的高度了，IE9的line-height应该是18.84</p>
+<h2>IE8：</h2>
+<p><img src="24072927564977.png" alt=""></p>
+<p>IE8的表现与IE9一致，但是li的line-height有所不同，说实话我都不知道他的20px哪里来的。。。</p>
+<h2>IE7</h2>
+<p><img src="3694599558564.png" alt=""></p>
+<p><img src="39829968227524.png" alt=""></p>
+<p>这个有两个地方不同：</p>
+<p>① margin的外边距为0</p>
+<p>② li的line-height为19px</p>
+<h2>总结</h2>
+<p>ol与ul表现一致，便不单独说了：</p>
+<div class="cnblogs_code">
+<pre><span>① 最外层外边距（margin）上下外边距16px
+② padding-left为40px
+③ 内层ul上下外边距就没有了，但是padding-left仍然是40px
+④ li有list-type，其显示前面有一点点原点或者方块<br><br>差异：<br>① IE7下margin上下边距为0<br>② IE7下li 的line-height为19px<br>IE8下为20px<br>IE9为18.84<br>firefox为17<br>chrome为18</span></pre>
+</div>
+<h1>a标签/span</h1>
+<p>本来前面还想说hr标签的，想下先算了，因为平时很少用到，于是我们来看看我们的a吧(span与之表现完全一致)</p>
+<p>他的尺寸意义不大，我们来看看其简单特性</p>
+<div class="cnblogs_code">
+<pre><span>未被访问的链接带有下划线而且是蓝色的
+已被访问的链接带有下划线而且是紫色的
+活动链接带有下划线而且是红色的
+
+a伪类的顺序一般为：a:link、a:visited、a:hover、a:active：
+
+a:link </span>{<span>text-decoration</span>:<span> none</span>;<span>color</span>:<span> #FFFFFF</span>}<span>
+
+a:visited </span>{<span> text-decoration</span>:<span> none</span>;<span>color</span>:<span> #FFFFFF</span>}<span>
+
+a:hover </span>{<span> text-decoration</span>:<span>none</span>;<span>color</span>:<span> #000000</span>}<span>
+
+a:active </span>{<span>text-decoration</span>:<span>none</span>;<span>color</span>:<span> #000000</span>}<span>
+a:link - 普通的、未被访问的链接
+a:visited - 用户已访问的链接
+a:hover - 鼠标指针位于链接的上方
+a:active - 链接被点击的时刻</span></pre>
+</div>
+<p>记住我们的顺序是lvha，直译为lv（名牌包包），ha（好hao）</p>
+<h1>select option</h1>
+<p><img src="27271905336218.png" alt=""></p>
+<p><img src="27739177132444.png" alt=""></p>
+<p>我们看到select默认高有所不同：</p>
+<p>firefox：19px</p>
+<p>chrome： 18px</p>
+<p>IE9:17.33</p>
+<p>IE8:20px</p>
+<p>IE7：所占高度就变22px了</p>
+<p>PS：<span>其它浏览器边框表现一致，IE7边框颜色有所变化并且其边框为2px</span></p>
+<p>&nbsp;</p>
+<p>select内部的字体也不同：</p>
+<p>firefox默认为16px</p>
+<p>但是chrome看不出是多少，接近14px</p>
+<p><img src="20392167542174.png" alt=""></p>
+<p>IE下是14px</p>
+<p>select所占的整个尺寸差距不大，所占高度加上边框所占尺寸都相差不大，但是这个还是必须CSS RESET处理</p>
+<h1>img标签</h1>
+<p>经测试，各个浏览器其表现差不多，我们先不管他了。</p>
+<h1>input相关</h1>
+<p><img src="24347156146526.png" alt=""></p>
+<p>我们简单看看这些东西</p>
+<p>关于文本框，他的border为2px，各个border的颜色不太一样。</p>
+<p>padding 左右为1px 上下为0</p>
+<p>对于checkbox，尺寸为13px，margin-left为4px，其它为3px</p>
+<p>radio又有所不同，margin-left为5px，尺寸也是13px</p>
+<p>按钮上又会有兼容性问题：</p>
+<div class="cnblogs_code">
+<pre><span>firefox外边距为0，边框为2px，内边距为6px，而chrome有所不同，其外边距全部是2px
+
+而且firefox内边距上下为0，chrome为1<br><br>对于IE，莫名其妙的东西就更多了：<br>① 除去边框不说，checkbox与radio的外边距都为0<br>② padding的尺寸也各不相同，所以需要CSS RESET啦。。。</span></pre>
+</div>
+<h1>table</h1>
+<p>后面补上。。。。。。</p>
+<p>&nbsp;</p>
+<h1>结语</h1>
+<p>想不到这个博客的篇幅这么长，还比较耗费时间，今天拉肚子，坚持不住了，后面点补齐吧。。。。</p>
+<p><span style="color: #ff0000;"><strong>若是文中有任何不足，请您指出。。</strong></span></p>
+<p><span style="line-height: 1.5;">&nbsp;</span></p>
+                </div>
+
+                <div class='span3 sidebar'>
+                    <h2>导航栏</h2>
+                    <ul class="nav nav-tabs nav-stacked">
+                             				<li><a href="http://songboriceboy.github.io/xxoo/html/css/HTML5&CSS3jj03JseryCsserrhyqykdfxlzj/index.html">【HTML5&CSS3进阶03】Jser与Csser如何一起愉快的翻新老组件</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/css/HTML5&CSS3jj04CSS3dhygrhzwebappzyy/index.html">【HTML5&CSS3进阶04】CSS3动画应该如何在webapp中运用</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/css/HTML5&CSS3jjxx01qpzjdsx/index.html">【HTML5&CSS3进阶学习01】气泡组件的实现</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/css/ctHTMLbxdzzbgzrhtmlbqtshz/index.html">【初探HTML本相】道之真谛不过自然，html标签脱俗还真</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/css/qdmdDOMsjllzCSShmxsfjyhd/index.html">【前端盲点】DOM事件流论证CSS盒模型是否具有厚度</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/css/zsCSS02inlineylineheightfloatabsolutedgs/index.html">【正视CSS02】inline与lineheight、float、absolute的故事</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/css/zsCSS03blockypositioncmzwdpydwjkl/index.html">【正视CSS03】block与position，出门在外的朋友端午节快乐</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/css/zsCSS05wmcglxsmwhyx/index.html">【正视CSS05】我们错过了些什么，为何叶小钗？</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/css/zsCSS06gjwmzjdsjg/index.html">【正视CSS06】构建我们自己的世界观！</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/css/zsCSS07zkverticalalign/index.html">【正视CSS07】再看verticalalign</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/css/zsCSS08fdwzfloatnwsmyttwdys/index.html">【正视CSS08】巅峰对武之float你为什么要坍塌我的元素！！！</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/css/zsCSStszykyzBzxsmargin/index.html">【正视CSS】他山之玉可以装B之细说margin</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/css/gwzmjshdllbnwmyqlkkhddmstbjsaldy/index.html">各位周末结束后都累了吧，那我们一起来看看【寒冬】的面试题吧（据说阿里的哟）</a></li>
+    				                                         
+                    </ul>
+                </div>
+            </div>
+
+        </div>
+    </body>
+</html>

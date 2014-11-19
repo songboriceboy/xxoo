@@ -1,0 +1,475 @@
+﻿<!DOCTYPE html>
+
+<html lang="zh">
+    <head>
+        <meta charset="utf-8">
+        <meta name="description" content="android,ios" />
+        <meta name="keywords" content="android,ios" />
+
+        <title>叶小钗</title>
+        <style type='text/css'>
+            body {
+                background-color: #CCC;
+            }
+        </style>
+        <link rel="stylesheet" href="../../../css/bootstrap.css" />
+    </head>
+
+    <body>
+        <div class="container">
+
+            <h1>叶小钗</h1>
+
+            <div class='navbar navbar-inverse'>
+                <div class='navbar-inner nav-collapse' style="height: auto;">
+                    <ul class="nav">
+                              				<li><a href="http://songboriceboy.github.io/xxoo/html/blade/index.html">blade</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/css/index.html">css</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/HTML5&CSS3/index.html">HTML5&CSS3</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/index.html">javascript</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Javaxx/index.html">Java学习</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/nodejs/index.html">nodejs</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/requirejs/index.html">requirejs</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/index.html">Web前端</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/xxgw/index.html">学习感悟</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/gzdd/index.html">工作点滴</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/jkxx/index.html">接口学习</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/wfl/index.html">未分类</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/ydkf/index.html">移动开发</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/sjms/index.html">设计模式</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/mst/index.html">面试题</a></li>
+    				                      </ul>
+                </div>
+            </div>
+
+            <div id='content' class='row-fluid'>
+
+                <div class='span9 main'>
+				<div style="color:blue" align=center>【模块化编程】理解requireJS实现一个简单的模块加载器</div><br><p>在前文中我们不止一次强调过模块化编程的重要性，以及其可以解决的问题：</p>
+<p>① 解决单文件变量命名冲突问题</p>
+<p>② 解决前端多人协作问题</p>
+<p>③ 解决文件依赖问题</p>
+<p>④ 按需加载（这个说法其实很假了）</p>
+<p>⑤ ......</p>
+<p>为了深入了解加载器，中间阅读过一点requireJS的源码，但对于很多同学来说，对加载器的实现依旧不太清楚</p>
+<p>事实上不通过代码实现，单单凭阅读想理解一个库或者框架只能达到一知半解的地步，所以今天便来实现一个简单的加载器</p>
+<h1>加载器原理分析</h1>
+<h2>分与合</h2>
+<p>事实上，一个程序运行需要完整的模块，以下代码为例：</p>
+<div class="cnblogs_code">
+<pre><span style="color: #008080;"> 1</span>   <span style="color: #008000;">//</span><span style="color: #008000;">求得绩效系数</span>
+<span style="color: #008080;"> 2</span>   <span style="color: #0000ff;">var</span> performanceCoefficient = <span style="color: #0000ff;">function</span><span style="color: #000000;"> () {
+</span><span style="color: #008080;"> 3</span>     <span style="color: #0000ff;">return</span> 0.2<span style="color: #000000;">;
+</span><span style="color: #008080;"> 4</span> <span style="color: #000000;">  };
+</span><span style="color: #008080;"> 5</span> 
+<span style="color: #008080;"> 6</span>   <span style="color: #008000;">//</span><span style="color: #008000;">住房公积金计算方式</span>
+<span style="color: #008080;"> 7</span>   <span style="color: #0000ff;">var</span> companyReserve = <span style="color: #0000ff;">function</span><span style="color: #000000;"> (salary) {
+</span><span style="color: #008080;"> 8</span>     <span style="color: #0000ff;">return</span> salary * 0.2<span style="color: #000000;">;
+</span><span style="color: #008080;"> 9</span> <span style="color: #000000;">  };
+</span><span style="color: #008080;">10</span> 
+<span style="color: #008080;">11</span>   <span style="color: #008000;">//</span><span style="color: #008000;">个人所得税</span>
+<span style="color: #008080;">12</span>   <span style="color: #0000ff;">var</span> incomeTax = <span style="color: #0000ff;">function</span><span style="color: #000000;"> (salary) {
+</span><span style="color: #008080;">13</span>     <span style="color: #0000ff;">return</span> salary * 0.2<span style="color: #000000;">;
+</span><span style="color: #008080;">14</span> <span style="color: #000000;">  };
+</span><span style="color: #008080;">15</span> 
+<span style="color: #008080;">16</span>   <span style="color: #008000;">//</span><span style="color: #008000;">基本工资</span>
+<span style="color: #008080;">17</span>   <span style="color: #0000ff;">var</span> salary = 1000<span style="color: #000000;">;
+</span><span style="color: #008080;">18</span> 
+<span style="color: #008080;">19</span>   <span style="color: #008000;">//</span><span style="color: #008000;">最终工资</span>
+<span style="color: #008080;">20</span>   <span style="color: #0000ff;">var</span> mySalary = salary + salary *<span style="color: #000000;"> performanceCoefficient();
+</span><span style="color: #008080;">21</span>   mySalary = mySalary - companyReserve(mySalary) - incomeTax(mySalary -<span style="color: #000000;"> companyReserve(mySalary));
+</span><span style="color: #008080;">22</span>   console.log(mySalary);</pre>
+</div>
+<p>我一份完整的工资来说，公司会有绩效奖励，但是其算法可能非常复杂，其中可能涉及到出勤率，完成度什么的，这里暂时不管</p>
+<p>而有增便有减，所以我们会交住房公积金，也会扣除个人所得税，最终才是我的工资</p>
+<p>对于完整的程序来说上面的流程缺一不可，但是各个函数中却有可能异常的复杂，跟钱有关系的东西都复杂，所以单单是公司绩效便有可能超过1000行代码</p>
+<p>于是我们这边便会开始分：</p>
+<p><img src="450808410339435.png" alt=""></p>
+<div class="cnblogs_code">
+<pre><span style="color: #008080;"> 1</span> <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">script </span><span style="color: #ff0000;">src</span><span style="color: #0000ff;">="companyReserve.js"</span><span style="color: #ff0000;"> type</span><span style="color: #0000ff;">="text/javascript"</span><span style="color: #0000ff;">&gt;&lt;/</span><span style="color: #800000;">script</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 2</span> <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">script </span><span style="color: #ff0000;">src</span><span style="color: #0000ff;">="incomeTax.js"</span><span style="color: #ff0000;"> type</span><span style="color: #0000ff;">="text/javascript"</span><span style="color: #0000ff;">&gt;&lt;/</span><span style="color: #800000;">script</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 3</span> <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">script </span><span style="color: #ff0000;">src</span><span style="color: #0000ff;">="performanceCoefficient.js"</span><span style="color: #ff0000;"> type</span><span style="color: #0000ff;">="text/javascript"</span><span style="color: #0000ff;">&gt;&lt;/</span><span style="color: #800000;">script</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 4</span> <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">script </span><span style="color: #ff0000;">type</span><span style="color: #0000ff;">="text/javascript"</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 5</span> 
+<span style="color: #008080;"> 6</span>   <span style="background-color: #f5f5f5; color: #008000;">//</span><span style="background-color: #f5f5f5; color: #008000;">基本工资</span>
+<span style="color: #008080;"> 7</span>   <span style="background-color: #f5f5f5; color: #0000ff;">var</span><span style="background-color: #f5f5f5; color: #000000;"> salary </span><span style="background-color: #f5f5f5; color: #000000;">=</span> <span style="background-color: #f5f5f5; color: #000000;">1000</span><span style="background-color: #f5f5f5; color: #000000;">;
+</span><span style="color: #008080;"> 8</span> 
+<span style="color: #008080;"> 9</span>   <span style="background-color: #f5f5f5; color: #008000;">//</span><span style="background-color: #f5f5f5; color: #008000;">最终工资</span>
+<span style="color: #008080;">10</span>   <span style="background-color: #f5f5f5; color: #0000ff;">var</span><span style="background-color: #f5f5f5; color: #000000;"> mySalary </span><span style="background-color: #f5f5f5; color: #000000;">=</span><span style="background-color: #f5f5f5; color: #000000;"> salary </span><span style="background-color: #f5f5f5; color: #000000;">+</span><span style="background-color: #f5f5f5; color: #000000;"> salary </span><span style="background-color: #f5f5f5; color: #000000;">*</span><span style="background-color: #f5f5f5; color: #000000;"> performanceCoefficient();
+</span><span style="color: #008080;">11</span> <span style="background-color: #f5f5f5; color: #000000;">  mySalary </span><span style="background-color: #f5f5f5; color: #000000;">=</span><span style="background-color: #f5f5f5; color: #000000;"> mySalary </span><span style="background-color: #f5f5f5; color: #000000;">-</span><span style="background-color: #f5f5f5; color: #000000;"> companyReserve(mySalary) </span><span style="background-color: #f5f5f5; color: #000000;">-</span><span style="background-color: #f5f5f5; color: #000000;"> incomeTax(mySalary </span><span style="background-color: #f5f5f5; color: #000000;">-</span><span style="background-color: #f5f5f5; color: #000000;"> companyReserve(mySalary));
+</span><span style="color: #008080;">12</span> <span style="background-color: #f5f5f5; color: #000000;">  console.log(mySalary);
+</span><span style="color: #008080;">13</span> 
+<span style="color: #008080;">14</span> <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">script</span><span style="color: #0000ff;">&gt;</span></pre>
+</div>
+<p>上面的代码表明上是&ldquo;分&rdquo;开了，事实上也造成了&ldquo;合&rdquo;的问题，我要如何才能很好的把它们重新合到一起呢，毕竟其中的文件可能还涉及到依赖，这里便进入我们的require与define</p>
+<h2>require与define</h2>
+<p>事实上，上面的方案仍然是以文件划分，而不是以模块划分的，若是文件名发生变化，页面会涉及到改变，其实这里应该有一个路径的映射处理这个问题</p>
+<div class="cnblogs_code">
+<pre><span style="color: #0000ff;">var</span> pathCfg =<span style="color: #000000;"> {
+  </span>'companyReserve': 'companyReserve'<span style="color: #000000;">,
+  </span>'incomeTax': 'incomeTax'<span style="color: #000000;">,
+  </span>'performanceCoefficient': 'performanceCoefficient'<span style="color: #000000;">
+};</span></pre>
+</div>
+<p>于是我们一个模块便对应了一个路径js文件，剩下的便是将之对应模块的加载了，因为前端模块涉及到请求。所以这种写法：</p>
+<div class="cnblogs_code">
+<pre>companyReserve = requile('companyReserve');</pre>
+</div>
+<p>对于前端来说是不适用的，就算你在哪里看到这样做了，也一定是其中做了一些&ldquo;手脚&rdquo;，这里我们便需要依据AMD规范了：</p>
+<div class="cnblogs_code">
+<pre><span style="color: #008080;"> 1</span> <span style="color: #000000;">require.config({
+</span><span style="color: #008080;"> 2</span>   'companyReserve': 'companyReserve'<span style="color: #000000;">,
+</span><span style="color: #008080;"> 3</span>   'incomeTax': 'incomeTax'<span style="color: #000000;">,
+</span><span style="color: #008080;"> 4</span>   'performanceCoefficient': 'performanceCoefficient'
+<span style="color: #008080;"> 5</span> <span style="color: #000000;">});
+</span><span style="color: #008080;"> 6</span> 
+<span style="color: #008080;"> 7</span> require(['companyReserve', 'incomeTax', 'performanceCoefficient'], <span style="color: #0000ff;">function</span><span style="color: #000000;"> (companyReserve, incomeTax, performanceCoefficient) {
+</span><span style="color: #008080;"> 8</span>   <span style="color: #008000;">//</span><span style="color: #008000;">基本工资</span>
+<span style="color: #008080;"> 9</span>   <span style="color: #0000ff;">var</span> salary = 1000<span style="color: #000000;">;
+</span><span style="color: #008080;">10</span> 
+<span style="color: #008080;">11</span>   <span style="color: #008000;">//</span><span style="color: #008000;">最终工资</span>
+<span style="color: #008080;">12</span>   <span style="color: #0000ff;">var</span> mySalary = salary + salary *<span style="color: #000000;"> performanceCoefficient();
+</span><span style="color: #008080;">13</span>   mySalary = mySalary - companyReserve(mySalary) - incomeTax(mySalary -<span style="color: #000000;"> companyReserve(mySalary));
+</span><span style="color: #008080;">14</span> <span style="color: #000000;">  console.log(mySalary);
+</span><span style="color: #008080;">15</span> });</pre>
+</div>
+<p>这里便是一个标准的requireJS的写法了，首先定义模块以及其路径映射，其中定义依赖项</p>
+<div class="cnblogs_code">
+<pre>require(depArr, callback)</pre>
+</div>
+<p>一个简单完整的模块加载器基本就是这个样子了，首先是一个依赖的数组，其次是一个回调，回调要求依赖项全部加载才能运行，并且回调的参数便是依赖项执行的结果，所以一般要求define模块具有一个返回值</p>
+<p>方案有了，那么如何实现呢？</p>
+<h2>实现方案</h2>
+<p>说到模块加载，人们第一反应都是ajax，因为无论何时，能拿到模块文件的内容，都是模块化的基本，但是采用ajax的方式是不行的，因为ajax有跨域的问题</p>
+<p>而模块化方案又不可避免的要处理跨域的问题，所以使用动态创建script标签加载js文件便成为了首选，但是，不使用ajax的方案，对于实现难度来说还是有要求</p>
+<p>PS：我们实际工作中还会有加载html模板文件的场景，这个稍候再说</p>
+<p>通常我们是这样做的，require作为程序入口，调度javascript资源，而加载到各个define模块后，各个模块便悄无声息的创建script标签加载</p>
+<p>加载结束后便往require模块队列报告自己加载结束了，当require中多有依赖模块皆加载结束时，便执行其回调</p>
+<p>原理大致如此，剩下的只是具体实现，而后在论证这个理论是否靠谱即可</p>
+<h1>加载器阉割实现</h1>
+<h2>核心模块</h2>
+<p>根据以上理论，我们由整体来说，首先以入口三个基本函数来说</p>
+<div class="cnblogs_code">
+<pre><span style="color: #0000ff;">var</span> require = <span style="color: #0000ff;">function</span><span style="color: #000000;"> () {
+};
+require.config </span>= <span style="color: #0000ff;">function</span><span style="color: #000000;"> () {
+};
+require.define </span>= <span style="color: #0000ff;">function</span><span style="color: #000000;"> () {
+};</span></pre>
+</div>
+<p>这三个模块比不可少：</p>
+<p>① config用以配置模块与路径的映射，或者还有其他用处</p>
+<p>② require为程序入口</p>
+<p>③ define设计各个模块，响应require的调度</p>
+<p>然后我们这里会有一个创建script标签的方法，并且会监听其onLoad事件</p>
+<p>④ loadScript</p>
+<p>其次我们加载script标签后，应该有一个全局的模块对象，用于存储已经加载好的模块，于是这里提出了两个需求：</p>
+<p>⑤ require.moduleObj 模块存储对象</p>
+<p>⑥ Module，模块的构造函数</p>
+<p>有了以上核心模块，我们形成了如下代码：</p>
+<div class="cnblogs_code">
+<pre><span style="color: #008080;"> 1</span> (<span style="color: #0000ff;">function</span><span style="color: #000000;"> () {
+</span><span style="color: #008080;"> 2</span> 
+<span style="color: #008080;"> 3</span>   <span style="color: #0000ff;">var</span> Module = <span style="color: #0000ff;">function</span><span style="color: #000000;"> () {
+</span><span style="color: #008080;"> 4</span>     <span style="color: #0000ff;">this</span>.status = 'loading'; <span style="color: #008000;">//</span><span style="color: #008000;">只具有loading与loaded两个状态</span>
+<span style="color: #008080;"> 5</span>     <span style="color: #0000ff;">this</span>.depCount = 0; <span style="color: #008000;">//</span><span style="color: #008000;">模块依赖项</span>
+<span style="color: #008080;"> 6</span>     <span style="color: #0000ff;">this</span>.value = <span style="color: #0000ff;">null</span>; <span style="color: #008000;">//</span><span style="color: #008000;">define函数回调执行的返回</span>
+<span style="color: #008080;"> 7</span> <span style="color: #000000;">  };
+</span><span style="color: #008080;"> 8</span> 
+<span style="color: #008080;"> 9</span> 
+<span style="color: #008080;">10</span>   <span style="color: #0000ff;">var</span> loadScript = <span style="color: #0000ff;">function</span><span style="color: #000000;"> (url, callback) {
+</span><span style="color: #008080;">11</span> 
+<span style="color: #008080;">12</span> <span style="color: #000000;">  };
+</span><span style="color: #008080;">13</span> 
+<span style="color: #008080;">14</span>   <span style="color: #0000ff;">var</span> config = <span style="color: #0000ff;">function</span><span style="color: #000000;"> () {
+</span><span style="color: #008080;">15</span> 
+<span style="color: #008080;">16</span> <span style="color: #000000;">  };
+</span><span style="color: #008080;">17</span> 
+<span style="color: #008080;">18</span>   <span style="color: #0000ff;">var</span> require = <span style="color: #0000ff;">function</span><span style="color: #000000;"> (deps, callback) {
+</span><span style="color: #008080;">19</span> 
+<span style="color: #008080;">20</span> <span style="color: #000000;">  };
+</span><span style="color: #008080;">21</span> 
+<span style="color: #008080;">22</span>   require.config = <span style="color: #0000ff;">function</span><span style="color: #000000;"> (cfg) {
+</span><span style="color: #008080;">23</span> 
+<span style="color: #008080;">24</span> <span style="color: #000000;">  };
+</span><span style="color: #008080;">25</span> 
+<span style="color: #008080;">26</span>   <span style="color: #0000ff;">var</span> define = <span style="color: #0000ff;">function</span><span style="color: #000000;"> (deps, callback) {
+</span><span style="color: #008080;">27</span> 
+<span style="color: #008080;">28</span> <span style="color: #000000;">  };
+</span><span style="color: #008080;">29</span> 
+<span style="color: #008080;">30</span> })();</pre>
+</div>
+<p>于是接下来便是具体实现，然后在实现过程中补足不具备的接口与细节，往往在最后的实现与最初的设计没有半毛钱关系......</p>
+<h2>代码实现</h2>
+<p>这块最初实现时，本来想直接参考requireJS的实现，但是我们老大笑眯眯的拿出了一个他写的加载器，我一看不得不承认有点妖</p>
+<p>于是这里便借鉴了其实现，做了简单改造：</p>
+<div class="cnblogs_code" onclick="cnblogs_code_show('3081fe03-d944-4067-809a-f3d2752c9860')"><img id="code_img_closed_3081fe03-d944-4067-809a-f3d2752c9860" class="code_img_closed" src="43570758473519.gif" alt=""><img id="code_img_opened_3081fe03-d944-4067-809a-f3d2752c9860" class="code_img_opened" style="display: none;" onclick="cnblogs_code_hide('3081fe03-d944-4067-809a-f3d2752c9860',event)" src="16365178109279.gif" alt="">
+<div id="cnblogs_code_open_3081fe03-d944-4067-809a-f3d2752c9860" class="cnblogs_code_hide">
+<pre><span style="color: #008080;">  1</span> (<span style="color: #0000ff;">function</span><span style="color: #000000;"> () {
+</span><span style="color: #008080;">  2</span> 
+<span style="color: #008080;">  3</span>   <span style="color: #008000;">//</span><span style="color: #008000;">存储已经加载好的模块</span>
+<span style="color: #008080;">  4</span>   <span style="color: #0000ff;">var</span> moduleCache =<span style="color: #000000;"> {};
+</span><span style="color: #008080;">  5</span> 
+<span style="color: #008080;">  6</span>   <span style="color: #0000ff;">var</span> require = <span style="color: #0000ff;">function</span><span style="color: #000000;"> (deps, callback) {
+</span><span style="color: #008080;">  7</span>     <span style="color: #0000ff;">var</span> params =<span style="color: #000000;"> [];
+</span><span style="color: #008080;">  8</span>     <span style="color: #0000ff;">var</span> depCount = 0<span style="color: #000000;">;
+</span><span style="color: #008080;">  9</span>     <span style="color: #0000ff;">var</span> i, len, isEmpty = <span style="color: #0000ff;">false</span><span style="color: #000000;">, modName;
+</span><span style="color: #008080;"> 10</span> 
+<span style="color: #008080;"> 11</span>     <span style="color: #008000;">//</span><span style="color: #008000;">获取当前正在执行的js代码段，这个在onLoad事件之前执行</span>
+<span style="color: #008080;"> 12</span>     modName = document.currentScript &amp;&amp; document.currentScript.id || 'REQUIRE_MAIN'<span style="color: #000000;">;
+</span><span style="color: #008080;"> 13</span> 
+<span style="color: #008080;"> 14</span>     <span style="color: #008000;">//</span><span style="color: #008000;">简单实现，这里未做参数检查，只考虑数组的情况</span>
+<span style="color: #008080;"> 15</span>     <span style="color: #0000ff;">if</span><span style="color: #000000;"> (deps.length) {
+</span><span style="color: #008080;"> 16</span>       <span style="color: #0000ff;">for</span> (i = 0, len = deps.length; i &lt; len; i++<span style="color: #000000;">) {
+</span><span style="color: #008080;"> 17</span>         (<span style="color: #0000ff;">function</span><span style="color: #000000;"> (i) {
+</span><span style="color: #008080;"> 18</span>           <span style="color: #008000;">//</span><span style="color: #008000;">依赖加一</span>
+<span style="color: #008080;"> 19</span>           depCount++<span style="color: #000000;">;
+</span><span style="color: #008080;"> 20</span>           <span style="color: #008000;">//</span><span style="color: #008000;">这块回调很关键</span>
+<span style="color: #008080;"> 21</span>           loadMod(deps[i], <span style="color: #0000ff;">function</span><span style="color: #000000;"> (param) {
+</span><span style="color: #008080;"> 22</span>             params[i] =<span style="color: #000000;"> param;
+</span><span style="color: #008080;"> 23</span>             depCount--<span style="color: #000000;">;
+</span><span style="color: #008080;"> 24</span>             <span style="color: #0000ff;">if</span> (depCount == 0<span style="color: #000000;">) {
+</span><span style="color: #008080;"> 25</span> <span style="color: #000000;">              saveModule(modName, params, callback);
+</span><span style="color: #008080;"> 26</span> <span style="color: #000000;">            }
+</span><span style="color: #008080;"> 27</span> <span style="color: #000000;">          });
+</span><span style="color: #008080;"> 28</span> <span style="color: #000000;">        })(i);
+</span><span style="color: #008080;"> 29</span> <span style="color: #000000;">      }
+</span><span style="color: #008080;"> 30</span>     } <span style="color: #0000ff;">else</span><span style="color: #000000;"> {
+</span><span style="color: #008080;"> 31</span>       isEmpty = <span style="color: #0000ff;">true</span><span style="color: #000000;">;
+</span><span style="color: #008080;"> 32</span> <span style="color: #000000;">    }
+</span><span style="color: #008080;"> 33</span> 
+<span style="color: #008080;"> 34</span>     <span style="color: #0000ff;">if</span><span style="color: #000000;"> (isEmpty) {
+</span><span style="color: #008080;"> 35</span>       setTimeout(<span style="color: #0000ff;">function</span><span style="color: #000000;"> () {
+</span><span style="color: #008080;"> 36</span>         saveModule(modName, <span style="color: #0000ff;">null</span><span style="color: #000000;">, callback);
+</span><span style="color: #008080;"> 37</span>       }, 0<span style="color: #000000;">);
+</span><span style="color: #008080;"> 38</span> <span style="color: #000000;">    }
+</span><span style="color: #008080;"> 39</span> 
+<span style="color: #008080;"> 40</span> <span style="color: #000000;">  };
+</span><span style="color: #008080;"> 41</span> 
+<span style="color: #008080;"> 42</span>   <span style="color: #008000;">//</span><span style="color: #008000;">考虑最简单逻辑即可</span>
+<span style="color: #008080;"> 43</span>   <span style="color: #0000ff;">var</span> _getPathUrl = <span style="color: #0000ff;">function</span><span style="color: #000000;"> (modName) {
+</span><span style="color: #008080;"> 44</span>     <span style="color: #0000ff;">var</span> url =<span style="color: #000000;"> modName;
+</span><span style="color: #008080;"> 45</span>     <span style="color: #008000;">//</span><span style="color: #008000;">不严谨</span>
+<span style="color: #008080;"> 46</span>     <span style="color: #0000ff;">if</span> (url.indexOf('.js') == -1) url = url + '.js'<span style="color: #000000;">;
+</span><span style="color: #008080;"> 47</span>     <span style="color: #0000ff;">return</span><span style="color: #000000;"> url;
+</span><span style="color: #008080;"> 48</span> <span style="color: #000000;">  };
+</span><span style="color: #008080;"> 49</span> 
+<span style="color: #008080;"> 50</span>   <span style="color: #008000;">//</span><span style="color: #008000;">模块加载</span>
+<span style="color: #008080;"> 51</span>   <span style="color: #0000ff;">var</span> loadMod = <span style="color: #0000ff;">function</span><span style="color: #000000;"> (modName, callback) {
+</span><span style="color: #008080;"> 52</span>     <span style="color: #0000ff;">var</span> url =<span style="color: #000000;"> _getPathUrl(modName), fs, mod;
+</span><span style="color: #008080;"> 53</span> 
+<span style="color: #008080;"> 54</span>     <span style="color: #008000;">//</span><span style="color: #008000;">如果该模块已经被加载</span>
+<span style="color: #008080;"> 55</span>     <span style="color: #0000ff;">if</span><span style="color: #000000;"> (moduleCache[modName]) {
+</span><span style="color: #008080;"> 56</span>       mod =<span style="color: #000000;"> moduleCache[modName];
+</span><span style="color: #008080;"> 57</span>       <span style="color: #0000ff;">if</span> (mod.status == 'loaded'<span style="color: #000000;">) {
+</span><span style="color: #008080;"> 58</span>         setTimeout(callback(<span style="color: #0000ff;">this</span>.params), 0<span style="color: #000000;">);
+</span><span style="color: #008080;"> 59</span>       } <span style="color: #0000ff;">else</span><span style="color: #000000;"> {
+</span><span style="color: #008080;"> 60</span>         <span style="color: #008000;">//</span><span style="color: #008000;">如果未到加载状态直接往onLoad插入值，在依赖项加载好后会解除依赖</span>
+<span style="color: #008080;"> 61</span> <span style="color: #000000;">        mod.onload.push(callback);
+</span><span style="color: #008080;"> 62</span> <span style="color: #000000;">      }
+</span><span style="color: #008080;"> 63</span>     } <span style="color: #0000ff;">else</span><span style="color: #000000;"> {
+</span><span style="color: #008080;"> 64</span> 
+<span style="color: #008080;"> 65</span>       <span style="color: #008000;">/*</span>
+<span style="color: #008080;"> 66</span> <span style="color: #008000;">      这里重点说一下Module对象
+</span><span style="color: #008080;"> 67</span> <span style="color: #008000;">      status代表模块状态
+</span><span style="color: #008080;"> 68</span> <span style="color: #008000;">      onLoad事实上对应requireJS的事件回调，该模块被引用多少次变化执行多少次回调，通知被依赖项解除依赖
+</span><span style="color: #008080;"> 69</span>       <span style="color: #008000;">*/</span>
+<span style="color: #008080;"> 70</span>       mod = moduleCache[modName] =<span style="color: #000000;"> {
+</span><span style="color: #008080;"> 71</span> <span style="color: #000000;">        modName: modName,
+</span><span style="color: #008080;"> 72</span>         status: 'loading'<span style="color: #000000;">,
+</span><span style="color: #008080;"> 73</span>         export: <span style="color: #0000ff;">null</span><span style="color: #000000;">,
+</span><span style="color: #008080;"> 74</span> <span style="color: #000000;">        onload: [callback]
+</span><span style="color: #008080;"> 75</span> <span style="color: #000000;">      };
+</span><span style="color: #008080;"> 76</span> 
+<span style="color: #008080;"> 77</span>       _script = document.createElement('script'<span style="color: #000000;">);
+</span><span style="color: #008080;"> 78</span>       _script.id =<span style="color: #000000;"> modName;
+</span><span style="color: #008080;"> 79</span>       _script.type = 'text/javascript'<span style="color: #000000;">;
+</span><span style="color: #008080;"> 80</span>       _script.charset = 'utf-8'<span style="color: #000000;">;
+</span><span style="color: #008080;"> 81</span>       _script.async = <span style="color: #0000ff;">true</span><span style="color: #000000;">;
+</span><span style="color: #008080;"> 82</span>       _script.src =<span style="color: #000000;"> url;
+</span><span style="color: #008080;"> 83</span> 
+<span style="color: #008080;"> 84</span>       <span style="color: #008000;">//</span><span style="color: #008000;">这段代码在这个场景中意义不大，注释了</span>
+<span style="color: #008080;"> 85</span>       <span style="color: #008000;">//</span><span style="color: #008000;">      _script.onload = function (e) {};</span>
+<span style="color: #008080;"> 86</span> 
+<span style="color: #008080;"> 87</span>       fs = document.getElementsByTagName('script')[0<span style="color: #000000;">];
+</span><span style="color: #008080;"> 88</span> <span style="color: #000000;">      fs.parentNode.insertBefore(_script, fs);
+</span><span style="color: #008080;"> 89</span> 
+<span style="color: #008080;"> 90</span> <span style="color: #000000;">    }
+</span><span style="color: #008080;"> 91</span> <span style="color: #000000;">  };
+</span><span style="color: #008080;"> 92</span> 
+<span style="color: #008080;"> 93</span>   <span style="color: #0000ff;">var</span> saveModule = <span style="color: #0000ff;">function</span><span style="color: #000000;"> (modName, params, callback) {
+</span><span style="color: #008080;"> 94</span>     <span style="color: #0000ff;">var</span><span style="color: #000000;"> mod, fn;
+</span><span style="color: #008080;"> 95</span> 
+<span style="color: #008080;"> 96</span>     <span style="color: #0000ff;">if</span><span style="color: #000000;"> (moduleCache.hasOwnProperty(modName)) {
+</span><span style="color: #008080;"> 97</span>       mod =<span style="color: #000000;"> moduleCache[modName];
+</span><span style="color: #008080;"> 98</span>       mod.status = 'loaded'<span style="color: #000000;">;
+</span><span style="color: #008080;"> 99</span>       <span style="color: #008000;">//</span><span style="color: #008000;">输出项</span>
+<span style="color: #008080;">100</span>       mod.export = callback ? callback(params) : <span style="color: #0000ff;">null</span><span style="color: #000000;">;
+</span><span style="color: #008080;">101</span> 
+<span style="color: #008080;">102</span>       <span style="color: #008000;">//</span><span style="color: #008000;">解除父类依赖，这里事实上使用事件监听较好</span>
+<span style="color: #008080;">103</span>       <span style="color: #0000ff;">while</span> (fn =<span style="color: #000000;"> mod.onload.shift()) {
+</span><span style="color: #008080;">104</span> <span style="color: #000000;">        fn(mod.export);
+</span><span style="color: #008080;">105</span> <span style="color: #000000;">      }
+</span><span style="color: #008080;">106</span>     } <span style="color: #0000ff;">else</span><span style="color: #000000;"> {
+</span><span style="color: #008080;">107</span>       callback &amp;&amp;<span style="color: #000000;"> callback.apply(window, params);
+</span><span style="color: #008080;">108</span> <span style="color: #000000;">    }
+</span><span style="color: #008080;">109</span> <span style="color: #000000;">  };
+</span><span style="color: #008080;">110</span> 
+<span style="color: #008080;">111</span>   window.require =<span style="color: #000000;"> require;
+</span><span style="color: #008080;">112</span>   window.define =<span style="color: #000000;"> require;
+</span><span style="color: #008080;">113</span> 
+<span style="color: #008080;">114</span> })();</pre>
+</div>
+<span class="cnblogs_code_collapse">View Code</span></div>
+<p>首先这段代码有一些问题：</p>
+<p>没有处理参数问题，字符串之类皆未处理</p>
+<p>未处理循环依赖问题</p>
+<p>未处理CMD写法</p>
+<p>未处理html模板加载相关</p>
+<p>未处理参数配置，baseUrl什么都没有搞</p>
+<p>基于此想实现打包文件也不可能</p>
+<p>......</p>
+<p>但就是这100行代码，便是加载器的核心，代码很短，对各位理解加载器很有帮助，里面有两点需要注意：</p>
+<p>① requireJS是使用事件监听处理本身依赖，这里直接将之放到了onLoad数组中了</p>
+<p>② 这里有一个很有意思的东西</p>
+<div class="cnblogs_code">
+<pre>document.currentScript</pre>
+</div>
+<p>这个可以获取当前执行的代码段</p>
+<p>requireJS是在onLoad中处理各个模块的，这里就用了一个不一样的实现，每个js文件加载后，都会执行require（define）方法</p>
+<p>执行后便取到当前正在执行的文件，并且取到文件名加载之，正因为如此，连script的onLoad事件都省了......</p>
+<h3>demo实现</h3>
+<div class="cnblogs_code">
+<pre><span style="color: #008080;"> 1</span> <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">html </span><span style="color: #ff0000;">xmlns</span><span style="color: #0000ff;">="http://www.w3.org/1999/xhtml"</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 2</span> <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">head</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 3</span>   <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">title</span><span style="color: #0000ff;">&gt;&lt;/</span><span style="color: #800000;">title</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 4</span> <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">head</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 5</span> <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">body</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 6</span> <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">body</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 7</span> <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">script </span><span style="color: #ff0000;">src</span><span style="color: #0000ff;">="require.js"</span><span style="color: #ff0000;"> type</span><span style="color: #0000ff;">="text/javascript"</span><span style="color: #0000ff;">&gt;&lt;/</span><span style="color: #800000;">script</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 8</span> <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">script </span><span style="color: #ff0000;">type</span><span style="color: #0000ff;">="text/javascript"</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 9</span> <span style="background-color: #f5f5f5; color: #000000;">  require([</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">util</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">, </span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">math</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">, </span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">num</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">], </span><span style="background-color: #f5f5f5; color: #0000ff;">function</span><span style="background-color: #f5f5f5; color: #000000;"> (util, math, num) {
+</span><span style="color: #008080;">10</span> 
+<span style="color: #008080;">11</span> <span style="background-color: #f5f5f5; color: #000000;">    num </span><span style="background-color: #f5f5f5; color: #000000;">=</span><span style="background-color: #f5f5f5; color: #000000;"> math.getRadom() </span><span style="background-color: #f5f5f5; color: #000000;">+</span> <span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">_</span><span style="background-color: #f5f5f5; color: #000000;">'</span> <span style="background-color: #f5f5f5; color: #000000;">+</span><span style="background-color: #f5f5f5; color: #000000;"> num;
+</span><span style="color: #008080;">12</span> <span style="background-color: #f5f5f5; color: #000000;">    num </span><span style="background-color: #f5f5f5; color: #000000;">=</span><span style="background-color: #f5f5f5; color: #000000;"> util.formatNum(num);
+</span><span style="color: #008080;">13</span> <span style="background-color: #f5f5f5; color: #000000;">    console.log(num);
+</span><span style="color: #008080;">14</span> <span style="background-color: #f5f5f5; color: #000000;">  });
+</span><span style="color: #008080;">15</span> <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">script</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">16</span> <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">html</span><span style="color: #0000ff;">&gt;</span></pre>
+</div>
+<div class="cnblogs_code">
+<pre><span style="color: #008080;">1</span> <span style="color: #008000;">//</span><span style="color: #008000;">util</span>
+<span style="color: #008080;">2</span> define([], <span style="color: #0000ff;">function</span><span style="color: #000000;"> () {
+</span><span style="color: #008080;">3</span>   <span style="color: #0000ff;">return</span><span style="color: #000000;"> {
+</span><span style="color: #008080;">4</span>     formatNum: <span style="color: #0000ff;">function</span><span style="color: #000000;"> (n) {
+</span><span style="color: #008080;">5</span>       <span style="color: #0000ff;">if</span> (n &lt; 10) <span style="color: #0000ff;">return</span> '0' +<span style="color: #000000;"> n;
+</span><span style="color: #008080;">6</span>       <span style="color: #0000ff;">return</span><span style="color: #000000;"> n;
+</span><span style="color: #008080;">7</span> <span style="color: #000000;">    }
+</span><span style="color: #008080;">8</span> <span style="color: #000000;">  };
+</span><span style="color: #008080;">9</span> });</pre>
+</div>
+<div class="cnblogs_code">
+<pre><span style="color: #008080;">1</span> <span style="color: #008000;">//</span><span style="color: #008000;">math</span>
+<span style="color: #008080;">2</span> define(['num'], <span style="color: #0000ff;">function</span><span style="color: #000000;"> (num) {
+</span><span style="color: #008080;">3</span>   <span style="color: #0000ff;">return</span><span style="color: #000000;"> {
+</span><span style="color: #008080;">4</span>     getRadom: <span style="color: #0000ff;">function</span><span style="color: #000000;"> () {
+</span><span style="color: #008080;">5</span>       <span style="color: #0000ff;">return</span> parseInt(Math.random() *<span style="color: #000000;"> num);
+</span><span style="color: #008080;">6</span> <span style="color: #000000;">    }
+</span><span style="color: #008080;">7</span> <span style="color: #000000;">  };
+</span><span style="color: #008080;">8</span> });</pre>
+</div>
+<div class="cnblogs_code">
+<pre><span style="color: #008080;">1</span> <span style="color: #008000;">//</span><span style="color: #008000;">num</span>
+<span style="color: #008080;">2</span> define([], <span style="color: #0000ff;">function</span><span style="color: #000000;"> () {
+</span><span style="color: #008080;">3</span>   <span style="color: #0000ff;">return</span> 10<span style="color: #000000;">;
+</span><span style="color: #008080;">4</span> });</pre>
+</div>
+<h3>小结</h3>
+<p>今天我们实现了一个简单的模块加载器，通过他希望可以帮助各位了解requireJS或者seaJS，最后顺利进入模块化编程的行列</p>
+                </div>
+
+                <div class='span3 sidebar'>
+                    <h2>导航栏</h2>
+                    <ul class="nav nav-tabs nav-stacked">
+                             				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/javascriptzdyxhxzsdyjxyzyddf/index.html">javascript中的一些核心知识点以及需要注意的地方</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/[zd]webappdyhzlyzydqdyhdpyjlkkb/index.html">[置顶]【webapp的优化整理】要做移动前端优化的朋友进来看看吧</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/[zd]yddjrwtyjjavascriptsjjzxjsjydjr/index.html">[置顶]【移动端兼容问题研究】javascript事件机制详解（涉及移动兼容）</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/gruntzhb30fzxhsygruntdbqddm/index.html">【grunt整合版】30分钟学会使用grunt打包前端代码</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/gruntdyd30fzxhsygruntdbqddm/index.html">【grunt第一弹】30分钟学会使用grunt打包前端代码</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/gruntdsdgruntzqdsjxmzdyy/index.html">【grunt第三弹】grunt在前端实际项目中的应用</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/gruntded30fzxhsygruntdbqddm02/index.html">【grunt第二弹】30分钟学会使用grunt打包前端代码（02）</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/IScrollsrxxtpyddhadlqs/index.html">【IScroll深入学习】突破移动端黑暗的利器（上）</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/IScrollsrxxjjIScrollynzz/index.html">【IScroll深入学习】解决IScroll疑难杂症</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/iScrollymxx00mniScroll/index.html">【iScroll源码学习00】模拟iScroll</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/iScrollymxx01zbjd/index.html">【iScroll源码学习01】准备阶段</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/iScrollymxx02fjiScrollsghxsjd/index.html">【iScroll源码学习02】分解iScroll三个核心事件点</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/iScrollymxx03iScrollsjjzygdtdsx/index.html">【iScroll源码学习03】iScroll事件机制与滚动条的实现</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/iScrollymxx04flIScrollhx/index.html">【iScroll源码学习04】分离IScroll核心</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/javascriptpxdytyyjc/index.html">【javascript培训第一天】语言基础</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/javascriptpxdstcybl/index.html">【javascript培训第三天】查遗补漏</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/javascriptpxdetDOMyBOM/index.html">【javascript培训第二天】DOM与BOM</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/javascriptjzdsk01mkhbc/index.html">【javascript激增的思考01】模块化编程</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/javascriptjzdsk02mkhyMVC/index.html">【javascript激增的思考02】模块化与MVC</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/javascriptjzdsk03MVVMyKnockout/index.html">【javascript激增的思考03】MVVM与Knockout</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/javascriptjzdsk04MVCyBackbonejs(beta)/index.html">【javascript激增的思考04】MVC与Backbonejs(beta)</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/javascriptmxdxzlrwmyqltkdzb01/index.html">【javascript面向对象之路】让我们一起来坦克大战吧01</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/NodeJSxxbj04xwfbxt/index.html">【NodeJS学习笔记04】新闻发布系统</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/requireJSymxx01ljzgrequireJSdjg/index.html">【requireJS源码学习01】了解整个requireJS的结构</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/requireJSymxx02datamainjzdsx/index.html">【requireJS源码学习02】datamain加载的实现</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/requireJSymxx03xjrequireJSdjzlc/index.html">【requireJS源码学习03】细究requireJS的加载流程</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/UIcjkfygjdrlcjs/index.html">【UI插件】开发一个简单日历插件（上）</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/UIcjjddrlcjxxxMVCsx/index.html">【UI插件】简单的日历插件（下）——学习MVC思想</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/zeptoxxbj01hxff$()/index.html">【zepto学习笔记01】核心方法$()</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/zeptoxxbj01hxff$()b/index.html">【zepto学习笔记01】核心方法$()（补）</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/zeptoxxbj02lsd/index.html">【zepto学习笔记02】零碎点</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/zeptoxxbj03sjjz/index.html">【zepto学习笔记03】事件机制</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/ycmsztjavascriptzdjc/index.html">【一次面试】再谈javascript中的继承</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/ztbackbone01mxModel/index.html">【再探backbone01】模型Model</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/ztbackbone02jhCollection/index.html">【再探backbone02】集合Collection</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/ztbackbone03bkydyyysltgym/index.html">【再探backbone03】博客园单页应用实例（提供源码）</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/ztbackbone04dyyydjslycl/index.html">【再探backbone04】单页应用的基石路由处理</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/ctUnderscorezsmbyq/index.html">【初探Underscore】再说模版引擎</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/ckjavascriptamzAjaxjsxnszddAjax/index.html">【初窥javascript奥秘之Ajax】简述下你所知道的Ajax？</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/ckjavascriptamzsjmpnxnwmyqmdp/index.html">【初窥javascript奥秘之事件冒泡】那些年我们一起冒的泡</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/ckjavascriptamzsjjzldtygdj/index.html">【初窥javascript奥秘之事件机制】论“点透”与“鬼点击”</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/ckjavascriptamzrrzmbddthisnzdxzthiszxnlm/index.html">【初窥javascript奥秘之让人捉摸不定的this】你知道现在this指向哪里吗？？？</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/ckjavascriptamzbbydxbdhlqbcl/index.html">【初窥javascript奥秘之闭包】叶大侠病都好了，求不踩了：）</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/ckjavascriptamzmxdxfzyjc/index.html">【初窥javascript奥秘之面向对象】封装与继承</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/qdmdsjdjgjdnzdljm/index.html">【前端盲点】事件的几个阶段你真的了解么？？？</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/dyyyviewymodelxgsl/index.html">【单页应用】view与model相关梳理</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/dyyyyqldyyybsxjdwbgns/index.html">【单页应用】一起来单页应用吧，实现简单微博功能！（上）</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/dyyyqjkzqappyggxsm/index.html">【单页应用】全局控制器app应该干些什么？</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/dyyywmgrhclkjdcccjgx/index.html">【单页应用】我们该如何处理框架弹出层层级关系？</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/dyyyljMVC/index.html">【单页应用】理解MVC</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/dyyyztxjzviewzjygrhtx/index.html">【单页应用之通信机制】view之间应该如何通信</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/dyyyjkzHistoryxsHistorydgdyyydm/index.html">【单页应用巨坑之History】细数History带给单页应用的噩梦</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/xtszeptofindysyjiosdcjpknrnhtt/index.html">【小贴士】zeptofind元素以及ios弹出键盘可能让你很头疼</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/xtsgytransitionEndanimatedygyqgs/index.html">【小贴士】关于transitionEndanimate的一个有趣故事</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/xtsgzzdbbysjwtdzzmp/index.html">【小贴士】工作中的”闭包“与事件委托的”阻止冒泡“</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/xtstytjavascriptzdreplace/index.html">【小贴士】探一探javascript中的replace</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/xtsxnjpyfixeddgydddt/index.html">【小贴士】虚拟键盘与fixed带给移动端的痛！</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/ttjavascriptsjjzdcsxyl/index.html">【探讨】javascript事件机制底层实现原理</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/mkhbcljrequireJSsxygjddmkjzq/index.html">【模块化编程】理解requireJS实现一个简单的模块加载器</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/zyJavaScriptmfjmtsdqlxkjzbfgndcljz/index.html">【转】【译】JavaScript魔法揭秘探索当前流行框架中部分功能的处理机制</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/zxjavascriptgszl01javascriptcszds/index.html">【追寻javascript高手之路01】javascript参数知多少？</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/zxjavascriptgszl02blzyyzds/index.html">【追寻javascript高手之路02】变量、作用域知多少？</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/zxjavascriptgszl03javascriptdxdld/index.html">【追寻javascript高手之路03】javascript对象大乱斗</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/zxjavascriptgszl04ljprototype/index.html">【追寻javascript高手之路04】理解prototype</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/zxjavascriptgszl05ljsjl/index.html">【追寻javascript高手之路05】理解事件流</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/zgbj04zxzzsj(2)/index.html">【重构笔记04】重新组织数据(2)</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/zgbj05jhtjbds/index.html">【重构笔记05】简化条件表达式</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/zgbj06jhhsdy/index.html">【重构笔记06】简化函数调用</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/ycmshgttbxysjfl/index.html">一次面试回顾——探讨表现与数据分离</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/dhzwebappzdxz/index.html">动画在webapp中的现状</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/ysandriodlqhthdomclicksjqtsxwttj/index.html">原生andriod浏览器回退后dom（click）事件全体失效问题探究</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/scsbdjxysdsbsjytouchsjdnxs/index.html">手持设备点击响应速度，鼠标事件与touch事件的那些事</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/mnbjQueryzeptohxymfx/index.html">迷你版jQuery——zepto核心源码分析</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/dbsgzdlwmlyqxjdddomxzqb/index.html">都别说工资低了，我们来一起写简单的dom选择器吧！</a></li>
+    				                                         
+                    </ul>
+                </div>
+            </div>
+
+        </div>
+    </body>
+</html>

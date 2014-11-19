@@ -1,0 +1,326 @@
+﻿<!DOCTYPE html>
+
+<html lang="zh">
+    <head>
+        <meta charset="utf-8">
+        <meta name="description" content="android,ios" />
+        <meta name="keywords" content="android,ios" />
+
+        <title>叶小钗</title>
+        <style type='text/css'>
+            body {
+                background-color: #CCC;
+            }
+        </style>
+        <link rel="stylesheet" href="../../../css/bootstrap.css" />
+    </head>
+
+    <body>
+        <div class="container">
+
+            <h1>叶小钗</h1>
+
+            <div class='navbar navbar-inverse'>
+                <div class='navbar-inner nav-collapse' style="height: auto;">
+                    <ul class="nav">
+                              				<li><a href="http://songboriceboy.github.io/xxoo/html/blade/index.html">blade</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/css/index.html">css</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/HTML5&CSS3/index.html">HTML5&CSS3</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/index.html">javascript</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Javaxx/index.html">Java学习</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/nodejs/index.html">nodejs</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/requirejs/index.html">requirejs</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/index.html">Web前端</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/xxgw/index.html">学习感悟</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/gzdd/index.html">工作点滴</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/jkxx/index.html">接口学习</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/wfl/index.html">未分类</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/ydkf/index.html">移动开发</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/sjms/index.html">设计模式</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/mst/index.html">面试题</a></li>
+    				                      </ul>
+                </div>
+            </div>
+
+            <div id='content' class='row-fluid'>
+
+                <div class='span9 main'>
+				<div style="color:blue" align=center>[置顶]【webapp的优化整理】要做移动前端优化的朋友进来看看吧</div><br><h1>单页or多页</h1>
+<p><span style="color: #ff0000;"><strong>本文仅代表个人观点，不足请见谅，欢迎赐教。</strong></span></p>
+<h2>webapp</h2>
+<p>小钗从事单页相关的开发一年有余，期间无比的推崇webapp的网站模式，也整理了很多移动开发的知识点，但是现在回过头来看，webapp究竟是好还是不好真是一言难尽哟！</p>
+<p>webapp使用JavaScript修改页面；紧接着再从服务器传递更多数据然后再修改页面，如此循环。</p>
+<p>从性能的角度看，在现代浏览器中单页面Web App已经能够和普通native应用程序相媲美，而且几乎所有的操作系统都支持现代的浏览器。</p>
+<p>所以，很多人认为webapp是HTML5流行过程中最大的赢家，那么他有哪些特定呢？</p>
+<p>SPA（single page application），即单页webapp，它具有以下优点：</p>
+<p align="left">用户体验，对于内容的改动不需要加载整个页面。这样不会出现白页情况，页面与页面无缝切换，甚至带有一定动画效果。</p>
+<p align="left">请求量少，请求内容无需服务器解析，对服务器压力较小，消耗更少的带宽，比如每次不需要接收完整的html结构，而只需要json数据。</p>
+<p>当然，单页应用也不是完美无瑕的，他也具有以下问题：</p>
+<p>由于历史原因，单页应用对SEO支持不是太好，需要对SEO做特殊处理。</p>
+<p>首次加载量过大，首屏加载慢，所以首屏需要做特殊处理。</p>
+<p>本身入门门槛就高，加之view编码需要释放资源，以免heap值过高，对编码人员的要求较高。</p>
+<h2>现状</h2>
+<p>传说中的webapp<strong>足以</strong>媲美native app，事实上这个足以还有很大的距离，小钗预计这个&ldquo;足以&rdquo;需要用2-3年时间填平，所以事实是什么呢？</p>
+<p>事实上移动端的webapp模式的网站很少很少，一淘半年前还是，这两天一看又变回来了，小钗虽然对webapp抱有信心，但是信心从何而来呢？</p>
+<p>携程webapp独树一帜，去哪儿ipad介入webapp，但是国内主流网站依旧是传统网站，主要原因不过有二：</p>
+<p>① SEO</p>
+<p>② 不想吃螃蟹</p>
+<p>所以，携程的webapp在国内，何其可贵，说到这里，我都要哭出来了......</p>
+<h2>优劣之分</h2>
+<p>孰优孰劣非是小钗可以论断，求稳，webapp不比传统网站；求SEO，webapp需要其它解决方案；说垃圾收集，webapp需要自己释放资源。</p>
+<p>说体验，webapp需要考虑首屏加载；说动画，webapp要考虑低端手机，所以webapp还有很长一段路需要走！</p>
+<p>小钗相信，现在的webapp效果不可媲美native app，总有一天，当webapp不再制约于网络、设备，那么webapp的春天不会远。</p>
+<p>虽说如此，现阶段webapp也会有许多优化心得、奇技淫巧可以拿出来说说的，这里小钗做一次分享，希望可以对webapp的同学有所帮助。&nbsp;</p>
+<h1>网络传输优化</h1>
+<h2>综述</h2>
+<p>前端优化分为两个切入点：网络传输与DOM操作，而网络传输是制约一个网站速度的主要因素。</p>
+<p>网络传输的优化要点是，<span style="color: #ff0000;">零请求，无流量</span>，其意是最大程度的减少请求数，降低请求量。</p>
+<p>对webapp模式的应用来说，<span style="color: #ff0000;">首屏加载慢是一个不可避免的问题</span>，所以提升webapp首屏加载速度是提升整体网站速度的关键。</p>
+<h2>fake页-首屏加速</h2>
+<p><img src="161308510049621.png" alt=""></p>
+<p><img style="line-height: 1.5;" src="38792706230587.png" alt=""></p>
+<p>以上是一个网站首页的加载时间，我们分别取其150kb与30kb网速的加载速度，可以看出会慢！若他是webapp，我们可以做一些优化</p>
+<p>我们应该避免页面长时间白页，这个时候便提出了fake页的概念。页面渲染只需要完整的HTML以及CSS，这个便是第一个优化点。</p>
+<p>从数据请求数以及请求量来说，webapp首页的响应应该比较慢，若是任由js加载完成再渲染页面，用户很有可能失去耐心。</p>
+<p>但是从DOMContentLoaded来看，首页事实上页面响应比较迅速，所以这个加载结束后页面第一屏便渲染结束，然后再异步加载js，当js改变后再动态改变dom结构中的一些关键点</p>
+<p>这个时候一个静态HTML页面，装载首屏的基本内容，让首页快速显示</p>
+<p>然后js加载结束后会马上重新渲染整个页面，这个样子，用户就可以很快的看到页面响应，给用户一个快的错觉，<span style="line-height: 1.5;">给人感觉快得多。</span></p>
+<h2>降低请求数</h2>
+<p>由webapp首页来说，不可避免的使用的js文件较多，这些文件分为两类：</p>
+<p>① 框架js-css</p>
+<p>② 各个业务团队js-css</p>
+<p>所以可以限定每个业务团队只会加载这四个文件，以最小降低请求数，这里又涉及到并行加载，数量与容量有一个临界值，如何取这个临界值需要各位自己去实验&nbsp;</p>
+<h2>降低请求量</h2>
+<p>虽说图片压缩是不必说的事情，但是总会有些时候你会发现一些网站的图片尺寸很大，这个需要处理，而且必须处理。</p>
+<p>以框架库为例，除了核心包以外，不需要的UI或者功能库可以剔除，用到了再动态加载，减少首次加载量，这个一开始就得做好，做不好后期就不好改</p>
+<p>以业务团队为例，首次加载的js与html模板会将常用的几个页面压缩合并，其它页面访问时再请求，若是想提升首屏加载便可以只下载需要的页面文件。</p>
+<p>另外，以下两点尤其需要<span style="color: #ff0000;">注意</span>：</p>
+<p>① 若是你们是要的还是jQuery库的话，可以考虑换成zepto了</p>
+<p>② 勿胡乱引用第三方库，若是要引用一定是读懂源码的情况下重写使用之，这样的好处是，吃得透，万一有问题，能改，而不是没办法又换库</p>
+<h2>缓存Ajax/localstorage</h2>
+<p>该方案的原理与前面类似，我们发送Ajax请求时候，应该缓存一些非实时数据，比如城市信息和常用联系人，但是我们<span style="color: #ff0000;">只能缓存非敏感信息</span>，</p>
+<p>产品搜索页至列表页的请求数据会缓存30s-60s，若是过期时间内用户回到列表页的话不会重新请求数据</p>
+<p>这对服务器压力，页面响应皆是有利的，<span style="line-height: 1.5;">这个在30s内事实上意义不大，可以减少一次请求。</span></p>
+<p>另外，对于get和post的效率，曾经有人做过一次测试：</p>
+<p>get100次平均耗时323ms；post100次平均耗时589ms，所以post方式是比get慢的，但post请求的优点是安全，并且参数没有长度限制。</p>
+<p>是选择post还是选择get，皆需要处理，避免截断url，或者处处post。-</p>
+<h3>lazyload</h3>
+<p>只显示首屏页面，其它内容需要时再加载，比如列表页、图片lazyload，皆需要做</p>
+<h1>DOM操作优化</h1>
+<h2>综述</h2>
+<p>DOM操作主要分为页面渲染与资源清理（heap控制），两者之间又相辅相成，若是DOM操作一块处理不好，其产生的感觉就不再是慢，而是卡</p>
+<p>所以DOM操作优化的主要目的就是消灭页面卡的问题，这个在移动端尤为重要。</p>
+<h2><strong style="font-size: 1.17em; line-height: 1.5;">关于页面渲染</strong></h2>
+<p>浏览器会解析三个东西：HTML、Javascript、CSS</p>
+<p>浏览器首先会根据HTML生成DOM Tree，其次会根据CSS生成CSS Rule Tree，javascript可以通过DOM API与CSS API操作DOM Tree与CSS Rule Tree，从而引起页面变化。</p>
+<p>浏览器解析结束会通过DOM Tree与CSS Rule Tree形成render tree，<span style="color: #ff0000;">只有display不为none的元素才会形成render Tree</span>，render Tree形成后浏览器会调用GUI绘制页面，在此之前做的一件事情便是layout或者说reflow。上面的描述简单而言可以分为以下流程：</p>
+<p>l&nbsp; 生成DOM树</p>
+<p>l&nbsp; 计算CSS样式</p>
+<p>l&nbsp; 构建render tree</p>
+<p>l&nbsp; reflow，定位元素位置大小</p>
+<p>l&nbsp; 绘制页面</p>
+<p>在这个过程中，若是javascript动态改变DOM Tree便会引起reflow</p>
+<p>页面中的元素改变，只要不影响尺寸，比如只是颜色改变只会引起repaint不会引起回流</p>
+<p>否则，reflow不可避免，这个时候便需要重新计算形成render Tree</p>
+<p>reflow分为局部回流与全局回流，会影响下面的，不会影响上面的元素</p>
+<p>reflow耗用的系统资源较大，DOM Tree中受到影响的节点皆会reflow，然后影响其子节点最坏的情况是所有节点reflow，该问题引发的现象便是低性能的电脑风扇不停的转，手机变得很热，并且非常耗电，以下操作可能引起reflow</p>
+<p>l&nbsp; 操作dom结构</p>
+<p>l&nbsp; 动画</p>
+<p>l&nbsp; DOM样式修改</p>
+<p>l&nbsp; 获取元素尺寸的API</p>
+<h2><span style="font-size: 1.17em; line-height: 1.5;">减少使用定位属性（fixed/absolute）</span></h2>
+<p>static元素处于文档流中，其渲染速度是最快的，我们做过一个测试：</p>
+<p>100个absolute元素与100个static元素渲染时差在0.01-0.007ms</p>
+<p>100000个元素渲染差距便增至30ms左右，这个微小的时差在移动端变得尤为明显，比如：</p>
+<p>小米/三星手机（1000左右），便存在明显的渲染问题，具体表现为：</p>
+<p>l&nbsp; 定位元素在手机上不能显示。</p>
+<p>l&nbsp; 定位元素动画效果失效。</p>
+<p>以上问题便是UI渲染失效多导致，最好的解决方案是减少使用定位元素，否则只能引起强烈reflow才能解决。</p>
+<p>另外，产品经常会有fixed的相关需求，比如支付按钮一直出现在低端，这个需求会造成两个问题：</p>
+<p>l&nbsp; fixed元素遭遇文本框时失效，可能会飘到页面中间阻挡输入</p>
+<p>l&nbsp; 影响效率</p>
+<p>问题一原因与移动端的实现有关，暂时没有完美的解决方案，问题二便与渲染直接关联</p>
+<p>滚屏时，页面上所有的像素会跟着滚动，显卡对全屏幕上下移动的处理很快，但是若是出现一个fixed元素或者有元素不跟着一起滚动，那么滚动对手机浏览器来说就是一个负担，这种滚动的性能甚至体现在了iphone 4s，因为滚动可能会造成reflow，这个现象体现在：</p>
+<p>使用absolute配合javascript模拟fixed效果时，会有断片的效果，该问题在iphone5s便不会出现这个问题。</p>
+<p><img src="1389976480090.png" alt=""></p>
+<h2><strong>奇技淫巧</strong></h2>
+<p>当然，我们不能忽略产品的需求，fixed类需求应该在技术上得到解决，还用户一个良好的体验。</p>
+<p><strong>虚拟键盘导致</strong><strong>fixed</strong><strong>元素错位</strong></p>
+<p>fixed元素一定会伴随虚拟键盘的出现，但是虚拟键盘只是&ldquo;贴&rdquo;在了viewport上，表面上不会对dom产生&ldquo;任何&rdquo;影响，但是这个时候fixed元素表现却变得怪异起来，会错位。</p>
+<p>应用层面解决问题方案是，虚拟键盘弹出时将fixed元素设置为static，虚拟键盘消失时候设置回来。</p>
+<p>由于虚拟键盘出现并未抛出事件，而检测scroll或者resize事件，皆会有一定延迟，会出现闪烁现象，所以现有最好的方案是setinterval定时器监控当前获取焦点元素是否为文本元素，若是是的话便需要处理，如此便可解决fixed元素错误问题。</p>
+<p><strong>fixed</strong><strong>元素滑动惯性平滑度</strong></p>
+<p>我们常常遇到这种产品需求，tab标签栏开始固定，当滚动向下超过该标签栏后便会变成fixed元素，一直出现在头部，这样的需求在电脑上没有问题，但是在iPhone5s以下的手机常常会出现小范围错位或者快速移动大范围错位的问题。</p>
+<p>这个时候我们可以引起reflow迫使浏览器重绘以解决这个问题，这里推荐一个奇怪的hack写法：同时设置三个image元素的src属性，便可以全范围解决该难题，&nbsp; 该方案被团队证实并得到应用。</p>
+<p align="left">//三图片src，引发reflow，处理fixed方案惯性问题</p>
+<p align="left">var el = this.els.ctlc.find('img');</p>
+<p align="left">$(el[0]).attr("src", 'http://res.m.ctrip.com/html5/Content/images/144.png');</p>
+<p align="left">$(el[1]).attr("src", 'http://res.m.ctrip.com/html5/Content/images/144.png');</p>
+<p align="left">$(el[2]).attr("src", 'http://res.m.ctrip.com/html5/Content/images/144.png');</p>
+<p>另外，上图中的tab标签下面的蓝线具有动画，但是在小米或者三星手机上可能不会移动，这个时候也可以动态引起reflow解决这个BUG。</p>
+<h3>其它</h3>
+<p>l&nbsp; CSS选择器尽量使用id与class，避免过度层叠</p>
+<p>l&nbsp; 避免使用数值，比如：border: none不会引起渲染，而boder: 0会</p>
+<p>l&nbsp; 动画时候让元素脱离文档流，以免导致大量reflow</p>
+<p>l&nbsp; 避免逐条修改DOM样式，改以className实现同样功能</p>
+<p>l&nbsp; 操作DOM时将display设置为none，因为这种元素不会影响渲染，或者操作fragment对象取代操作显示在页面上的DOM</p>
+<p>l&nbsp; 避免将获取DOM样式属性的操作写在循环中，可能引起重复reflow</p>
+<h2><span style="font-size: 1.5em; line-height: 1.5;">内存资源优化</span></h2>
+<h3>移动端的javascript</h3>
+<p>首先，移动端的性能与PC端的性能完全不在一个数量级上，比如，我哥做过一个测试，使用innerHTML绘制大段，之后想获取HTML的ID节点，事实上是获取不到的，这种问题在单页模拟多页，动态创建DOM会经常发生</p>
+<p align="left">var element&nbsp;&nbsp; = $('&lt;div id = "test"&gt;...大量结构...&lt;/div&gt;');</p>
+<p align="left">$(root).html(element)</p>
+<p align="left">$('#test)&nbsp; //为空</p>
+<p align="left">这类问题匪夷所思，因为页面UI渲染与DOM操作是互斥的，但是就算出现了这个问题，一个解决方案是使用settimeout，更好的方案是使用DOMNodeRemoved事件监控页面DOM改变，将我们的DOM操作回调放入以确保渲染结束。</p>
+<p>以上问题只是为了说明移动端的性能问题，这类性能问题会导致很多莫名其妙的问题，而且很多与渲染有关。但是这也从侧面说明了移动端资源的紧缺，若是heap值过大，会导致操作出现卡的现象，更有甚者，会引起页面假死直接退出。</p>
+<p>webapp的模式，完全依赖于浏览器的垃圾回收，基本就是作死，因为传统页面一旦刷新页面整个资源完全释放，而webapp没有刷新这类操作，只有一个状态到两一个状态，不相关的内存会保留，资源必须手动释放，或者说，框架必须提供垃圾释放的机制。</p>
+<p>这个由图表heap值变化可以清晰看出。</p>
+<p>而view切换过程中，不用的资源若是不手动设置为null会导致变量得不到回收便脱离框架控制而失控了。所以我们在webapp的过程中需要注意：</p>
+<p>l&nbsp; 释放没有使用的闭包</p>
+<p>l&nbsp; 观察者需要得到清理</p>
+<p>l&nbsp; 释放定时器</p>
+<p>l&nbsp; view切换过程中，在destroy中释放view相关资源</p>
+<p style="text-align: right;">&mdash;&mdash;感谢<span style="color: #ff0000;">艾伦</span>友情支援</p>
+<h3>闭包陷阱</h3>
+<p>在我们工作过程中，滥用局部变量极有可能引起闭包陷阱，这个问题不止是性能问题，在逻辑上会引起错误，而且不易发现，比如，在AMD闭包中使用一个局部变量</p>
+<p align="left">var _attributes = {};</p>
+<p align="left">callback ($.extend(_attributes, opts));</p>
+<p>如此操作，会改变_ attributes对象，若是一个实例还无问题，但是两个实例的话便会发生变量污染。</p>
+<p>这只是一个例子，但是在代码中滥用局部变量可能会引起不必要的隐忧，戒之慎之。</p>
+<h3>webapp资源释放</h3>
+<p>根据前面的描述，我们可以得出一个结论：</p>
+<p>无论是view还是UI组件我们得提供统一的destroy接口，以便让用户继承释放资源。</p>
+<p>若是view的资源得不到释放导致heap值过高，webapp模式的网站其价值大减。这里有几点可以考虑：</p>
+<p>l &nbsp;webapp中view实例保存不超过5个，多了便释放dom结构以及内存引用（<span style="color: #ff0000;">临界值自己判断最优</span>）</p>
+<p>l&nbsp; view隐藏时释放内部资源，解除DOM事件句柄</p>
+<p>l&nbsp; UI组件与view相同，需要统一释放机制</p>
+<p>但是单页应用由于页面不会刷新，总有一些资源得不到释放，此问题任重道远，平时编写过程可以做以下优化：</p>
+<p>l&nbsp; 使用函数替换逻辑</p>
+<p>让我们的函数产生一个返回值替换函数中的大段逻辑，这样的第一个好处便是逻辑清晰，第二个好处是这些函数在不同的函数中，这个函数被使用后便会自动得到释放。</p>
+<p>l&nbsp; 清理闭包引用</p>
+<p>当一个闭包函数或者什么使用结束后，若不会再使用，便需要手动清理该变量，以便解除闭包之间的引用关系，从而释放资源。</p>
+<p>l&nbsp; 使用对象属性或者方法</p>
+<p>一个对象可以引用其他对象的属性或者方法，比如obj.foo = thatObj;这种情况下，我们可以随时删除对象解除引用关系，然后便可以清理资源。</p>
+<h3>动画与假死</h3>
+<p>动画而言建议采用CSS3实现动画，CSS3中又推荐采用最新的接口，比如使用transform取代top/lelf操作，这样操作效率搞得多。</p>
+<p>若是采用动画可以将对应元素设置为absolute以减少回流，另外最关键一点还是</p>
+<p>避免移动DOM树过多的节点，这个时候需要驳回产品无理需求，比如：</p>
+<p>产品要求日期滚屏组件，显示半年的数据，这半年的数据便是180个DOM树</p>
+<p>这个级别的DOM一旦移动整个手机会直接卡死，甚至构建DOM树，渲染页面也会出现假死现象，该问题需要规避。</p>
+<h3><span style="font-size: 1.17em; line-height: 1.5;">Application Cache</span></h3>
+<p>Application Cache是HTML5为webapp离线使用而增加的API，与localstorage、cookie等不同，Application Cache存储的是一系列请求资源允许浏览器在请求资源时不必通过网络，设计得当的话可以实现离线应用。</p>
+<p>使用Application Cache主要是在网络性能上提升，有效降低了网络延迟，提升请求加速</p>
+<p>&nbsp;<img style="font-size: 16px; line-height: 24.56999969482422px;" src="8088968890822.png" alt=""></p>
+<p>但是也会有一些问题<span style="line-height: 1.5;">，比如新版本缓存不立刻生效；manifest中的请求路径相对于manifest文件，而非加载页面；更新/回滚等问题，所以使用与否还得论证。</span></p>
+<h1>体验优化</h1>
+<h2>区域滚动</h2>
+<p>移动端经常需要实现区域滚动的需求，成熟的也有IScroll解决方案，但是方案却不理想。</p>
+<p><img src="37027049052536.png" alt=""></p>
+<p>就官方的例子便会出现以下问题：</p>
+<p>l&nbsp; 头部消失</p>
+<p>l&nbsp; 偶尔不能显示文本框焦点，或者焦点错位</p>
+<p>若是以上问题可忽略，但是<span style="color: #ff0000;">文本框不见了</span>这种事情，我是不会接受的</p>
+<p>导致的原因与组织浏览器默认事件有关，所以，我这里不太推荐各位大范围的使用区域滚动，而改在区域使用，</p>
+<p>就去哪儿的ipad版本在一个具有文本框的地方使用了IScroll，其提高的用户体验与导致的问题一样引人入胜。</p>
+<p>事实上，小钗及其推崇IScroll库，虽说他有这样那样问题，但是，<span style="color: #ff0000;"><strong>IScroll是最有可能带来移动端革命的库</strong></span>，因为他可以：</p>
+<p>① 解决webapp区域滚动</p>
+<p>② 变相解决fixed问题</p>
+<p>③ 解决动画过程带来的长短页问题</p>
+<p>总而言之，IScroll方案的提出，是让webapp媲美native app靠近了一大步，真正的平起平坐还需要浏览器的支援</p>
+<h2 align="left">点击响应</h2>
+<p><span>click本身在移动端响应是没有问题的，但是我们点击下来300ms 的延迟却是事实，这种事实造成的原因就是</span></p>
+<p><strong><span>手机需要知道你是不是想双击放大网页内容</span></strong></p>
+<p><span>所以click点击响应慢，而touch却不会有这样的限制，于是移动端的touch相当受欢迎，至于鼠标慢，他究竟有多慢，我会告诉你每次会慢300ms</span></p>
+<p><span><img src="45410427210419.png" alt=""></span></p>
+<p><img src="20762068768344.png" alt="" width="371" height="557"></p>
+<p><img src="285871810232493.png" alt=""></p>
+<p>所以该问题需要处理，具体见：http://www.cnblogs.com/yexiaochai/p/3462657.html#_h2_7</p>
+<h1>结语</h1>
+<p>webapp不是一天两天的事情，总有一天，webapp会绽放其应有的风采！</p>
+                </div>
+
+                <div class='span3 sidebar'>
+                    <h2>导航栏</h2>
+                    <ul class="nav nav-tabs nav-stacked">
+                             				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/javascriptzdyxhxzsdyjxyzyddf/index.html">javascript中的一些核心知识点以及需要注意的地方</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/[zd]webappdyhzlyzydqdyhdpyjlkkb/index.html">[置顶]【webapp的优化整理】要做移动前端优化的朋友进来看看吧</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/[zd]yddjrwtyjjavascriptsjjzxjsjydjr/index.html">[置顶]【移动端兼容问题研究】javascript事件机制详解（涉及移动兼容）</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/gruntzhb30fzxhsygruntdbqddm/index.html">【grunt整合版】30分钟学会使用grunt打包前端代码</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/gruntdyd30fzxhsygruntdbqddm/index.html">【grunt第一弹】30分钟学会使用grunt打包前端代码</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/gruntdsdgruntzqdsjxmzdyy/index.html">【grunt第三弹】grunt在前端实际项目中的应用</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/gruntded30fzxhsygruntdbqddm02/index.html">【grunt第二弹】30分钟学会使用grunt打包前端代码（02）</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/IScrollsrxxtpyddhadlqs/index.html">【IScroll深入学习】突破移动端黑暗的利器（上）</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/IScrollsrxxjjIScrollynzz/index.html">【IScroll深入学习】解决IScroll疑难杂症</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/iScrollymxx00mniScroll/index.html">【iScroll源码学习00】模拟iScroll</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/iScrollymxx01zbjd/index.html">【iScroll源码学习01】准备阶段</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/iScrollymxx02fjiScrollsghxsjd/index.html">【iScroll源码学习02】分解iScroll三个核心事件点</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/iScrollymxx03iScrollsjjzygdtdsx/index.html">【iScroll源码学习03】iScroll事件机制与滚动条的实现</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/iScrollymxx04flIScrollhx/index.html">【iScroll源码学习04】分离IScroll核心</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/javascriptpxdytyyjc/index.html">【javascript培训第一天】语言基础</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/javascriptpxdstcybl/index.html">【javascript培训第三天】查遗补漏</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/javascriptpxdetDOMyBOM/index.html">【javascript培训第二天】DOM与BOM</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/javascriptjzdsk01mkhbc/index.html">【javascript激增的思考01】模块化编程</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/javascriptjzdsk02mkhyMVC/index.html">【javascript激增的思考02】模块化与MVC</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/javascriptjzdsk03MVVMyKnockout/index.html">【javascript激增的思考03】MVVM与Knockout</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/javascriptjzdsk04MVCyBackbonejs(beta)/index.html">【javascript激增的思考04】MVC与Backbonejs(beta)</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/javascriptmxdxzlrwmyqltkdzb01/index.html">【javascript面向对象之路】让我们一起来坦克大战吧01</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/NodeJSxxbj04xwfbxt/index.html">【NodeJS学习笔记04】新闻发布系统</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/requireJSymxx01ljzgrequireJSdjg/index.html">【requireJS源码学习01】了解整个requireJS的结构</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/requireJSymxx02datamainjzdsx/index.html">【requireJS源码学习02】datamain加载的实现</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/requireJSymxx03xjrequireJSdjzlc/index.html">【requireJS源码学习03】细究requireJS的加载流程</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/UIcjkfygjdrlcjs/index.html">【UI插件】开发一个简单日历插件（上）</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/UIcjjddrlcjxxxMVCsx/index.html">【UI插件】简单的日历插件（下）——学习MVC思想</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/zeptoxxbj01hxff$()/index.html">【zepto学习笔记01】核心方法$()</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/zeptoxxbj01hxff$()b/index.html">【zepto学习笔记01】核心方法$()（补）</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/zeptoxxbj02lsd/index.html">【zepto学习笔记02】零碎点</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/zeptoxxbj03sjjz/index.html">【zepto学习笔记03】事件机制</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/ycmsztjavascriptzdjc/index.html">【一次面试】再谈javascript中的继承</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/ztbackbone01mxModel/index.html">【再探backbone01】模型Model</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/ztbackbone02jhCollection/index.html">【再探backbone02】集合Collection</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/ztbackbone03bkydyyysltgym/index.html">【再探backbone03】博客园单页应用实例（提供源码）</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/ztbackbone04dyyydjslycl/index.html">【再探backbone04】单页应用的基石路由处理</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/ctUnderscorezsmbyq/index.html">【初探Underscore】再说模版引擎</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/ckjavascriptamzAjaxjsxnszddAjax/index.html">【初窥javascript奥秘之Ajax】简述下你所知道的Ajax？</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/ckjavascriptamzsjmpnxnwmyqmdp/index.html">【初窥javascript奥秘之事件冒泡】那些年我们一起冒的泡</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/ckjavascriptamzsjjzldtygdj/index.html">【初窥javascript奥秘之事件机制】论“点透”与“鬼点击”</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/ckjavascriptamzrrzmbddthisnzdxzthiszxnlm/index.html">【初窥javascript奥秘之让人捉摸不定的this】你知道现在this指向哪里吗？？？</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/ckjavascriptamzbbydxbdhlqbcl/index.html">【初窥javascript奥秘之闭包】叶大侠病都好了，求不踩了：）</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/ckjavascriptamzmxdxfzyjc/index.html">【初窥javascript奥秘之面向对象】封装与继承</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/qdmdsjdjgjdnzdljm/index.html">【前端盲点】事件的几个阶段你真的了解么？？？</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/dyyyviewymodelxgsl/index.html">【单页应用】view与model相关梳理</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/dyyyyqldyyybsxjdwbgns/index.html">【单页应用】一起来单页应用吧，实现简单微博功能！（上）</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/dyyyqjkzqappyggxsm/index.html">【单页应用】全局控制器app应该干些什么？</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/dyyywmgrhclkjdcccjgx/index.html">【单页应用】我们该如何处理框架弹出层层级关系？</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/dyyyljMVC/index.html">【单页应用】理解MVC</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/dyyyztxjzviewzjygrhtx/index.html">【单页应用之通信机制】view之间应该如何通信</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/dyyyjkzHistoryxsHistorydgdyyydm/index.html">【单页应用巨坑之History】细数History带给单页应用的噩梦</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/xtszeptofindysyjiosdcjpknrnhtt/index.html">【小贴士】zeptofind元素以及ios弹出键盘可能让你很头疼</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/xtsgytransitionEndanimatedygyqgs/index.html">【小贴士】关于transitionEndanimate的一个有趣故事</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/xtsgzzdbbysjwtdzzmp/index.html">【小贴士】工作中的”闭包“与事件委托的”阻止冒泡“</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/xtstytjavascriptzdreplace/index.html">【小贴士】探一探javascript中的replace</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/xtsxnjpyfixeddgydddt/index.html">【小贴士】虚拟键盘与fixed带给移动端的痛！</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/ttjavascriptsjjzdcsxyl/index.html">【探讨】javascript事件机制底层实现原理</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/mkhbcljrequireJSsxygjddmkjzq/index.html">【模块化编程】理解requireJS实现一个简单的模块加载器</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/zyJavaScriptmfjmtsdqlxkjzbfgndcljz/index.html">【转】【译】JavaScript魔法揭秘探索当前流行框架中部分功能的处理机制</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/zxjavascriptgszl01javascriptcszds/index.html">【追寻javascript高手之路01】javascript参数知多少？</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/zxjavascriptgszl02blzyyzds/index.html">【追寻javascript高手之路02】变量、作用域知多少？</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/zxjavascriptgszl03javascriptdxdld/index.html">【追寻javascript高手之路03】javascript对象大乱斗</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/zxjavascriptgszl04ljprototype/index.html">【追寻javascript高手之路04】理解prototype</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/zxjavascriptgszl05ljsjl/index.html">【追寻javascript高手之路05】理解事件流</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/zgbj04zxzzsj(2)/index.html">【重构笔记04】重新组织数据(2)</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/zgbj05jhtjbds/index.html">【重构笔记05】简化条件表达式</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/zgbj06jhhsdy/index.html">【重构笔记06】简化函数调用</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/ycmshgttbxysjfl/index.html">一次面试回顾——探讨表现与数据分离</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/dhzwebappzdxz/index.html">动画在webapp中的现状</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/ysandriodlqhthdomclicksjqtsxwttj/index.html">原生andriod浏览器回退后dom（click）事件全体失效问题探究</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/scsbdjxysdsbsjytouchsjdnxs/index.html">手持设备点击响应速度，鼠标事件与touch事件的那些事</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/mnbjQueryzeptohxymfx/index.html">迷你版jQuery——zepto核心源码分析</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/dbsgzdlwmlyqxjdddomxzqb/index.html">都别说工资低了，我们来一起写简单的dom选择器吧！</a></li>
+    				                                         
+                    </ul>
+                </div>
+            </div>
+
+        </div>
+    </body>
+</html>

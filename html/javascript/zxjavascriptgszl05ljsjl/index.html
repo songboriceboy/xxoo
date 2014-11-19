@@ -1,0 +1,450 @@
+﻿<!DOCTYPE html>
+
+<html lang="zh">
+    <head>
+        <meta charset="utf-8">
+        <meta name="description" content="android,ios" />
+        <meta name="keywords" content="android,ios" />
+
+        <title>叶小钗</title>
+        <style type='text/css'>
+            body {
+                background-color: #CCC;
+            }
+        </style>
+        <link rel="stylesheet" href="../../../css/bootstrap.css" />
+    </head>
+
+    <body>
+        <div class="container">
+
+            <h1>叶小钗</h1>
+
+            <div class='navbar navbar-inverse'>
+                <div class='navbar-inner nav-collapse' style="height: auto;">
+                    <ul class="nav">
+                              				<li><a href="http://songboriceboy.github.io/xxoo/html/blade/index.html">blade</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/css/index.html">css</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/HTML5&CSS3/index.html">HTML5&CSS3</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/index.html">javascript</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Javaxx/index.html">Java学习</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/nodejs/index.html">nodejs</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/requirejs/index.html">requirejs</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/index.html">Web前端</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/xxgw/index.html">学习感悟</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/gzdd/index.html">工作点滴</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/jkxx/index.html">接口学习</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/wfl/index.html">未分类</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/ydkf/index.html">移动开发</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/sjms/index.html">设计模式</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/mst/index.html">面试题</a></li>
+    				                      </ul>
+                </div>
+            </div>
+
+            <div id='content' class='row-fluid'>
+
+                <div class='span9 main'>
+				<div style="color:blue" align=center>【追寻javascript高手之路05】理解事件流</div><br><h1>前言</h1>
+<p>新的一天又开始了，我们对今天对未来抱有很大期待，所以开始我们今天的学习吧，在此之前来点题外话，还是爱好问题。</p>
+<p>周三的面试虽然失败，但是也是很有启迪的，比如之前我就从来没有想过爱好问题，我发现我的爱好如下：</p>
+<p>① 霹雳布袋戏</p>
+<p>完了就米有什么爱好了，其实我完全可以说自己爱好旅游什么的，我也确实爱好旅游，只不过比较穷，走的地方不多罢了，这里又扯出一个话题：</p>
+<p>学习工作与生活</p>
+<p>我们为了理想需要学习需要工作，工作完了需要生活，现在是前者分量掩盖了后者，所以以后的世界要注意了。</p>
+<p>好了进入今天的学习吧，我们今天来看看javascript里面的事件吧。</p>
+<h1>事件交互</h1>
+<div class="cnblogs_code">
+<pre><span style="color: #800000;">javascript与html之间的交互是通过事件实现的，我们使用侦听器注册事件，
+在事件发生时候便执行相关的代码，这就是传说中的观察者模式</span></pre>
+</div>
+<h2>事件流</h2>
+<p>事件捕获与冒泡的出现十分有意思，当浏览器发展到第四代时（IE4），出现了一个小意思的问题：</p>
+<p>页面的哪一部分有什么事件？浏览器开发团队也不知道了，想象我们页面的元素：</p>
+<div class="cnblogs_code">
+<pre><span style="color: #008080;">1</span> <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">div</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">2</span>     <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">a</span><span style="color: #0000ff;">&gt;</span>刀狂剑痴<span style="color: #0000ff;">&lt;</span><span style="color: #800000;">span</span><span style="color: #0000ff;">&gt;</span>叶小钗<span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">span</span><span style="color: #0000ff;">&gt;</span> <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">a</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">3</span> <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">div</span><span style="color: #0000ff;">&gt;</span></pre>
+</div>
+<p><img src="355888217387.x-png" alt=""></p>
+<p>我们点击span时候是不是也点击了a呢？点击a是不是也点击了div呢，依次上升到body与html</p>
+<div class="cnblogs_code">
+<pre><span style="color: #800000;">事件流描述的是从页面中接收事件的顺序
+IE采用事件冒泡流
+标准采用事件捕获流
+最后addEventLister给出了第三个参数同时支持冒泡与捕获</span></pre>
+</div>
+<p><strong>事件冒泡</strong></p>
+<p>由span开始一直传播至document</p>
+<p><strong>事件捕获</strong></p>
+<p>由document向下传播至span</p>
+<h2>事件处理程序</h2>
+<div class="cnblogs_code">
+<pre><span style="color: #800000;">事件就是用户或者浏览器自身执行某种动作，比如click、load、mouseover。
+而响应某个事件的函数就叫做事件处理程序（事件监听器），事件处理程序的名字以on开头，click=&gt;onclick、load=&gt;onload</span></pre>
+</div>
+<div class="cnblogs_code">
+<pre><span style="color: #008080;">1</span> el.addEventListener(eventType, <span style="color: #0000ff;">function</span><span style="color: #000000;"> () {
+</span><span style="color: #008080;">2</span> 
+<span style="color: #008080;">3</span> }, <span style="color: #0000ff;">false</span><span style="color: #000000;">);
+</span><span style="color: #008080;">4</span> 
+<span style="color: #008080;">5</span> <span style="color: #000000;">该方法应用至dom节点
+</span><span style="color: #008080;">6</span> <span style="color: #000000;">第一个参数为事件名
+</span><span style="color: #008080;">7</span> <span style="color: #000000;">第二个为事件处理程序
+</span><span style="color: #008080;">8</span> 第三个为布尔值，true便是事件捕获，false为事件冒泡</pre>
+</div>
+<p>既然都说到了addEventLister，我们来看一看这段代码吧：</p>
+<div class="cnblogs_code">
+<pre><span style="color: #008080;"> 1</span> <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">html </span><span style="color: #ff0000;">xmlns</span><span style="color: #0000ff;">="http://www.w3.org/1999/xhtml"</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 2</span> <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">head</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 3</span>     <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">title</span><span style="color: #0000ff;">&gt;&lt;/</span><span style="color: #800000;">title</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 4</span> <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">head</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 5</span> <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">body</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 6</span>     <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">div</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 7</span>         <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">a</span><span style="color: #0000ff;">&gt;</span>刀狂剑痴<span style="color: #0000ff;">&lt;</span><span style="color: #800000;">span </span><span style="color: #ff0000;">id</span><span style="color: #0000ff;">="el"</span><span style="color: #0000ff;">&gt;</span>叶小钗<span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">span</span><span style="color: #0000ff;">&gt;</span> <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">a</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 8</span>     <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">div</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 9</span>     <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">script </span><span style="color: #ff0000;">type</span><span style="color: #0000ff;">="text/javascript"</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">10</span>         <span style="background-color: #f5f5f5; color: #0000ff;">var</span><span style="background-color: #f5f5f5; color: #000000;"> el </span><span style="background-color: #f5f5f5; color: #000000;">=</span><span style="background-color: #f5f5f5; color: #000000;"> document.getElementById(</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">el</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">);
+</span><span style="color: #008080;">11</span> <span style="background-color: #f5f5f5; color: #000000;">        el.addEventListener(</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">click</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">, </span><span style="background-color: #f5f5f5; color: #0000ff;">function</span><span style="background-color: #f5f5f5; color: #000000;"> () {
+</span><span style="color: #008080;">12</span> <span style="background-color: #f5f5f5; color: #000000;">            alert(</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">冒泡</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">);
+</span><span style="color: #008080;">13</span> <span style="background-color: #f5f5f5; color: #000000;">        }, </span><span style="background-color: #f5f5f5; color: #0000ff;">false</span><span style="background-color: #f5f5f5; color: #000000;">);
+</span><span style="color: #008080;">14</span> <span style="background-color: #f5f5f5; color: #000000;">        el.addEventListener(</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">click</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">, </span><span style="background-color: #f5f5f5; color: #0000ff;">function</span><span style="background-color: #f5f5f5; color: #000000;"> () {
+</span><span style="color: #008080;">15</span> <span style="background-color: #f5f5f5; color: #000000;">            alert(</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">捕获</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">);
+</span><span style="color: #008080;">16</span> <span style="background-color: #f5f5f5; color: #000000;">        }, </span><span style="background-color: #f5f5f5; color: #0000ff;">true</span><span style="background-color: #f5f5f5; color: #000000;">);
+</span><span style="color: #008080;">17</span>     <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">script</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">18</span> <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">body</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">19</span> <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">html</span><span style="color: #0000ff;">&gt;</span></pre>
+</div>
+<p>我们同时给一个dom绑定了click事件，并且一个是冒泡，一个是捕获，我们的执行顺序是怎么样的呢？</p>
+<p>答案一：先冒泡再捕获</p>
+<p>但是答案真的是这样的吗？我们将代码改下：</p>
+<div class="cnblogs_code">
+<pre><span style="color: #008080;">1</span> <span style="color: #0000ff;">var</span> el = document.getElementById('el'<span style="color: #000000;">);
+</span><span style="color: #008080;">2</span> el.addEventListener('click', <span style="color: #0000ff;">function</span><span style="color: #000000;"> () {
+</span><span style="color: #008080;">3</span>     alert('捕获'<span style="color: #000000;">);
+</span><span style="color: #008080;">4</span> }, <span style="color: #0000ff;">true</span><span style="color: #000000;">);
+</span><span style="color: #008080;">5</span> el.addEventListener('click', <span style="color: #0000ff;">function</span><span style="color: #000000;"> () {
+</span><span style="color: #008080;">6</span>     alert('冒泡'<span style="color: #000000;">);
+</span><span style="color: #008080;">7</span> }, <span style="color: #0000ff;">false</span>);</pre>
+</div>
+<p>如此一来便是先捕获再冒泡了，我想说这道题真的好耍赖啊。。。。</p>
+<p>那么现在我们是离真相近了还是远了呢？其实真相依旧扑所迷离：</p>
+<div class="cnblogs_code">
+<pre><span style="color: #008080;"> 1</span> <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">html </span><span style="color: #ff0000;">xmlns</span><span style="color: #0000ff;">="http://www.w3.org/1999/xhtml"</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 2</span> <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">head</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 3</span>     <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">title</span><span style="color: #0000ff;">&gt;&lt;/</span><span style="color: #800000;">title</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 4</span> <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">head</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 5</span> <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">body</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 6</span>     <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">div</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 7</span>         <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">a </span><span style="color: #ff0000;">id</span><span style="color: #0000ff;">="p"</span><span style="color: #0000ff;">&gt;</span>刀狂剑痴<span style="color: #0000ff;">&lt;</span><span style="color: #800000;">span </span><span style="color: #ff0000;">id</span><span style="color: #0000ff;">="el"</span><span style="color: #0000ff;">&gt;</span>叶小钗<span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">span</span><span style="color: #0000ff;">&gt;</span> <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">a</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 8</span>     <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">div</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 9</span>     <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">script </span><span style="color: #ff0000;">type</span><span style="color: #0000ff;">="text/javascript"</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">10</span>         <span style="background-color: #f5f5f5; color: #0000ff;">var</span><span style="background-color: #f5f5f5; color: #000000;"> el </span><span style="background-color: #f5f5f5; color: #000000;">=</span><span style="background-color: #f5f5f5; color: #000000;"> document.getElementById(</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">el</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">);
+</span><span style="color: #008080;">11</span>         <span style="background-color: #f5f5f5; color: #0000ff;">var</span><span style="background-color: #f5f5f5; color: #000000;"> p </span><span style="background-color: #f5f5f5; color: #000000;">=</span><span style="background-color: #f5f5f5; color: #000000;"> document.getElementById(</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">p</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">);
+</span><span style="color: #008080;">12</span> <span style="background-color: #f5f5f5; color: #008000;">//</span><span style="background-color: #f5f5f5; color: #008000;">el.addEventListener('click', function () {</span>
+<span style="color: #008080;">13</span> <span style="background-color: #f5f5f5; color: #008000;">//</span><span style="background-color: #f5f5f5; color: #008000;">    alert('捕获');</span>
+<span style="color: #008080;">14</span> <span style="background-color: #f5f5f5; color: #008000;">//</span><span style="background-color: #f5f5f5; color: #008000;">}, true);</span>
+<span style="color: #008080;">15</span> <span style="background-color: #f5f5f5; color: #008000;">//</span><span style="background-color: #f5f5f5; color: #008000;">el.addEventListener('click', function () {</span>
+<span style="color: #008080;">16</span> <span style="background-color: #f5f5f5; color: #008000;">//</span><span style="background-color: #f5f5f5; color: #008000;">    alert('冒泡');</span>
+<span style="color: #008080;">17</span> <span style="background-color: #f5f5f5; color: #008000;">//</span><span style="background-color: #f5f5f5; color: #008000;">}, false);</span>
+<span style="color: #008080;">18</span> <span style="background-color: #f5f5f5; color: #000000;">p.addEventListener(</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">click</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">, </span><span style="background-color: #f5f5f5; color: #0000ff;">function</span><span style="background-color: #f5f5f5; color: #000000;"> () {
+</span><span style="color: #008080;">19</span> <span style="background-color: #f5f5f5; color: #000000;">    alert(</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">父级 冒泡</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">);
+</span><span style="color: #008080;">20</span> <span style="background-color: #f5f5f5; color: #000000;">}, </span><span style="background-color: #f5f5f5; color: #0000ff;">false</span><span style="background-color: #f5f5f5; color: #000000;">);
+</span><span style="color: #008080;">21</span> <span style="background-color: #f5f5f5; color: #000000;">p.addEventListener(</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">click</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">, </span><span style="background-color: #f5f5f5; color: #0000ff;">function</span><span style="background-color: #f5f5f5; color: #000000;"> () {
+</span><span style="color: #008080;">22</span> <span style="background-color: #f5f5f5; color: #000000;">    alert(</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">父级 捕获</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">);
+</span><span style="color: #008080;">23</span> <span style="background-color: #f5f5f5; color: #000000;">}, </span><span style="background-color: #f5f5f5; color: #0000ff;">true</span><span style="background-color: #f5f5f5; color: #000000;">);
+</span><span style="color: #008080;">24</span>     <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">script</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">25</span> <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">body</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">26</span> <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">html</span><span style="color: #0000ff;">&gt;</span></pre>
+</div>
+<p>此处会出现两种情况：</p>
+<p>① 直接点击a标签，便与之前逻辑一致，哪个定义到前面哪个先执行</p>
+<p>② 点击span标签情况会有所不同！！！</p>
+<p>我们来理一理：</p>
+<p>因为我们span标签没有注册事件，我们点击时候他虽然没有反应，但是他也会向上传递的：</p>
+<div class="cnblogs_code">
+<pre><span style="color: #008080;"> 1</span> <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">html </span><span style="color: #ff0000;">xmlns</span><span style="color: #0000ff;">="http://www.w3.org/1999/xhtml"</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 2</span> <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">head</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 3</span>     <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">title</span><span style="color: #0000ff;">&gt;&lt;/</span><span style="color: #800000;">title</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 4</span> <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">head</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 5</span> <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">body</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 6</span>     <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">div</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 7</span>         <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">a </span><span style="color: #ff0000;">id</span><span style="color: #0000ff;">="p"</span><span style="color: #0000ff;">&gt;</span>刀狂剑痴<span style="color: #0000ff;">&lt;</span><span style="color: #800000;">span </span><span style="color: #ff0000;">id</span><span style="color: #0000ff;">="el"</span><span style="color: #ff0000;"> onclick</span><span style="color: #0000ff;">="alert('点击');"</span><span style="color: #0000ff;">&gt;</span>叶小钗<span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">span</span><span style="color: #0000ff;">&gt;</span> <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">a</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 8</span>     <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">div</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 9</span>     <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">script </span><span style="color: #ff0000;">type</span><span style="color: #0000ff;">="text/javascript"</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">10</span>         <span style="background-color: #f5f5f5; color: #0000ff;">var</span><span style="background-color: #f5f5f5; color: #000000;"> el </span><span style="background-color: #f5f5f5; color: #000000;">=</span><span style="background-color: #f5f5f5; color: #000000;"> document.getElementById(</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">el</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">);
+</span><span style="color: #008080;">11</span>         <span style="background-color: #f5f5f5; color: #0000ff;">var</span><span style="background-color: #f5f5f5; color: #000000;"> p </span><span style="background-color: #f5f5f5; color: #000000;">=</span><span style="background-color: #f5f5f5; color: #000000;"> document.getElementById(</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">p</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">);
+</span><span style="color: #008080;">12</span> 
+<span style="color: #008080;">13</span> <span style="background-color: #f5f5f5; color: #000000;">        p.addEventListener(</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">click</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">, </span><span style="background-color: #f5f5f5; color: #0000ff;">function</span><span style="background-color: #f5f5f5; color: #000000;"> () {
+</span><span style="color: #008080;">14</span> <span style="background-color: #f5f5f5; color: #000000;">            alert(</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">父级 冒泡</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">);
+</span><span style="color: #008080;">15</span> <span style="background-color: #f5f5f5; color: #000000;">        }, </span><span style="background-color: #f5f5f5; color: #0000ff;">false</span><span style="background-color: #f5f5f5; color: #000000;">);
+</span><span style="color: #008080;">16</span> <span style="background-color: #f5f5f5; color: #000000;">        p.addEventListener(</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">click</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">, </span><span style="background-color: #f5f5f5; color: #0000ff;">function</span><span style="background-color: #f5f5f5; color: #000000;"> () {
+</span><span style="color: #008080;">17</span> <span style="background-color: #f5f5f5; color: #000000;">            alert(</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">父级 捕获</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">);
+</span><span style="color: #008080;">18</span> <span style="background-color: #f5f5f5; color: #000000;">        }, </span><span style="background-color: #f5f5f5; color: #0000ff;">true</span><span style="background-color: #f5f5f5; color: #000000;">);
+</span><span style="color: #008080;">19</span> 
+<span style="color: #008080;">20</span>         <span style="background-color: #f5f5f5; color: #008000;">//</span><span style="background-color: #f5f5f5; color: #008000;">el.addEventListener('click', function () {</span>
+<span style="color: #008080;">21</span>         <span style="background-color: #f5f5f5; color: #008000;">//</span><span style="background-color: #f5f5f5; color: #008000;">    alert('捕获');</span>
+<span style="color: #008080;">22</span>         <span style="background-color: #f5f5f5; color: #008000;">//</span><span style="background-color: #f5f5f5; color: #008000;">}, true);</span>
+<span style="color: #008080;">23</span>         <span style="background-color: #f5f5f5; color: #008000;">//</span><span style="background-color: #f5f5f5; color: #008000;">el.addEventListener('click', function () {</span>
+<span style="color: #008080;">24</span>         <span style="background-color: #f5f5f5; color: #008000;">//</span><span style="background-color: #f5f5f5; color: #008000;">    alert('冒泡');</span>
+<span style="color: #008080;">25</span>         <span style="background-color: #f5f5f5; color: #008000;">//</span><span style="background-color: #f5f5f5; color: #008000;">}, false);</span>
+<span style="color: #008080;">26</span>     <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">script</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">27</span> <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">body</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">28</span> <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">html</span><span style="color: #0000ff;">&gt;</span></pre>
+</div>
+<p>我们这个代码执行的顺序是：父级捕获=&gt;点击=&gt;父级冒泡</p>
+<p>说明，点击span引发的事件便与事件注册程序的先后无关了，我这里斗胆的<span style="color: #ff0000;"><strong>猜测一下整个逻辑</strong></span>：</p>
+<div class="cnblogs_code">
+<pre><span style="color: #800000;">标准浏览器默认采用捕获方式，所以：
+我们点击span时候，事实上市先点击document然后到span，中间经过了a标签便先执行其逻辑（将事件写到标签中不合适）</span></pre>
+</div>
+<div class="cnblogs_code">
+<pre><span style="color: #008080;"> 1</span> <span style="color: #0000ff;">var</span> el = document.getElementById('el'<span style="color: #000000;">);
+</span><span style="color: #008080;"> 2</span> <span style="color: #0000ff;">var</span> p = document.getElementById('p'<span style="color: #000000;">);
+</span><span style="color: #008080;"> 3</span> 
+<span style="color: #008080;"> 4</span> p.addEventListener('click', <span style="color: #0000ff;">function</span><span style="color: #000000;"> () {
+</span><span style="color: #008080;"> 5</span>     alert('父级 冒泡'<span style="color: #000000;">);
+</span><span style="color: #008080;"> 6</span> }, <span style="color: #0000ff;">false</span><span style="color: #000000;">);
+</span><span style="color: #008080;"> 7</span> p.addEventListener('click', <span style="color: #0000ff;">function</span><span style="color: #000000;"> () {
+</span><span style="color: #008080;"> 8</span>     alert('父级 捕获'<span style="color: #000000;">);
+</span><span style="color: #008080;"> 9</span> }, <span style="color: #0000ff;">true</span><span style="color: #000000;">);
+</span><span style="color: #008080;">10</span> el.addEventListener('click', <span style="color: #0000ff;">function</span><span style="color: #000000;"> () {
+</span><span style="color: #008080;">11</span>     alert('冒泡'<span style="color: #000000;">);
+</span><span style="color: #008080;">12</span> }, <span style="color: #0000ff;">false</span><span style="color: #000000;">);
+</span><span style="color: #008080;">13</span> el.addEventListener('click', <span style="color: #0000ff;">function</span><span style="color: #000000;"> () {
+</span><span style="color: #008080;">14</span>     alert('捕获'<span style="color: #000000;">);
+</span><span style="color: #008080;">15</span> }, <span style="color: #0000ff;">true</span>);</pre>
+</div>
+<p>这段javascript的执行顺序是（点击span）：父级捕获=&gt;冒泡=&gt;捕获=&gt;父级冒泡</p>
+<p>各位看看这段东西有问题没有，上次要答好寒冬老师这个问题是不可能的。。。</p>
+<p>这个问题暂时到这里，若是后面讨论的朋友多我们再研究吧。</p>
+<p><a id="cb_post_title_url" class="postTitle2" href="http://www.cnblogs.com/yexiaochai/archive/2013/04/23/3037064.html">【初窥javascript奥秘之事件冒泡】那些年我们一起冒的泡</a></p>
+<p><span style="color: #ff0000;"><strong>请使用高版本浏览器</strong></span></p>
+<p><iframe style="line-height: 1.5;" src="19911799202446.jpg" width="80%" height="500"></iframe></p>
+<h2>兼容性处理</h2>
+<p>我们知道这块的兼容性有一点问题，所以我们一般都会封装下的，但是里面的event对象已经target的获取各位就自己想办法处理下吧：</p>
+<div class="cnblogs_code">
+<pre><span style="color: #008080;"> 1</span> <span style="color: #0000ff;">var</span> EventUtil =<span style="color: #000000;"> {
+</span><span style="color: #008080;"> 2</span>     addHandler: <span style="color: #0000ff;">function</span><span style="color: #000000;"> (el, type, handler) {
+</span><span style="color: #008080;"> 3</span>         <span style="color: #0000ff;">if</span><span style="color: #000000;"> (el.addEventListener) {
+</span><span style="color: #008080;"> 4</span>             el.addEventListener(type, handler, <span style="color: #0000ff;">false</span><span style="color: #000000;">);
+</span><span style="color: #008080;"> 5</span>         } <span style="color: #0000ff;">else</span><span style="color: #000000;"> {
+</span><span style="color: #008080;"> 6</span>             el.attachEvent('on' +<span style="color: #000000;"> type, handler);
+</span><span style="color: #008080;"> 7</span> <span style="color: #000000;">        }
+</span><span style="color: #008080;"> 8</span> <span style="color: #000000;">    },
+</span><span style="color: #008080;"> 9</span>     removeHandler: <span style="color: #0000ff;">function</span><span style="color: #000000;"> (el, type, handler) {
+</span><span style="color: #008080;">10</span>         <span style="color: #0000ff;">if</span><span style="color: #000000;"> (el.removeEventListener) {
+</span><span style="color: #008080;">11</span>             el.removeEventListerner(type, handler, <span style="color: #0000ff;">false</span><span style="color: #000000;">);
+</span><span style="color: #008080;">12</span>         } <span style="color: #0000ff;">else</span><span style="color: #000000;"> {
+</span><span style="color: #008080;">13</span>             el.detachEvent('on' +<span style="color: #000000;"> type, handler);
+</span><span style="color: #008080;">14</span> <span style="color: #000000;">        }
+</span><span style="color: #008080;">15</span> <span style="color: #000000;">    }
+</span><span style="color: #008080;">16</span> };</pre>
+</div>
+<p>按道理说，我们本来可以使用call方法将this指向以及event传进去，彻底解决这块兼容问题，但是又涉及到删除时候删不掉而导致性能问题，我们还是老老实实用jquery吧。</p>
+<p>真的能写自己框架的话，这块到可以好好研究一番！</p>
+<h2>事件对象</h2>
+<p>我们前面经常提到事件对象event，那么他是什么呢？</p>
+<div class="cnblogs_code">
+<pre><span style="color: #800000;">触发dom上某个事件时，会产生一个事件对象event，这个对象包含着与事件有关的信息
+① 导致事件的元素
+② 事件类型
+③ 特定信息（鼠标信息，键盘信息）<br>......</span></pre>
+</div>
+<p>这个对象包含太多信息，我这里也记不住，于是挑几个重要的来说吧：</p>
+<p>① currentTarget dom 事件处理程序当前正在处理事件的那个元素（始终等于this）</p>
+<p>② preventDefault function 取消事件默认行为</p>
+<p>③ stopPropagation function 取消事件冒泡</p>
+<p>④ target dom 事件的目标（这个与currentTarget不是很好区分哦，currentTarget可能发生变化target却不会）</p>
+<p>这里关于currentTarget与target可能有些朋友没有分清楚，我们上个代码吧：</p>
+<div class="cnblogs_code">
+<pre><span style="color: #008080;">1</span> EventUtil.addHandler(document, 'click', <span style="color: #0000ff;">function</span><span style="color: #000000;"> (e) {
+</span><span style="color: #008080;">2</span>     e = window.event ||<span style="color: #000000;"> e;
+</span><span style="color: #008080;">3</span>     <span style="color: #0000ff;">var</span> target = e.target ||<span style="color: #000000;"> e.srcElement;
+</span><span style="color: #008080;">4</span>     <span style="color: #008000;">//</span><span style="color: #008000;">操作</span>
+<span style="color: #008080;">5</span>     <span style="color: #008000;">//</span><span style="color: #008000;">此处currentTarget便等于this</span>
+<span style="color: #008080;">6</span>     <span style="color: #008000;">//</span><span style="color: #008000;">target便是我们点击的元素</span>
+<span style="color: #008080;">7</span>     alert(e.currentTarget); <span style="color: #008000;">//</span><span style="color: #008000;">HTMLDocument</span>
+<span style="color: #008080;">8</span>     alert(target); <span style="color: #008000;">//</span><span style="color: #008000;">HTMLSpanElement</span>
+<span style="color: #008080;">9</span> });</pre>
+</div>
+<p>来吧搞点兼容的代码，反正不吃亏：</p>
+<div class="cnblogs_code">
+<pre><span style="color: #008080;"> 1</span> <span style="color: #0000ff;">var</span> EventUtil =<span style="color: #000000;"> {
+</span><span style="color: #008080;"> 2</span>     addHandler: <span style="color: #0000ff;">function</span><span style="color: #000000;"> (el, type, handler) {
+</span><span style="color: #008080;"> 3</span>         <span style="color: #0000ff;">if</span><span style="color: #000000;"> (el.addEventListener) {
+</span><span style="color: #008080;"> 4</span>             el.addEventListener(type, handler, <span style="color: #0000ff;">false</span><span style="color: #000000;">);
+</span><span style="color: #008080;"> 5</span>         } <span style="color: #0000ff;">else</span> <span style="color: #0000ff;">if</span><span style="color: #000000;"> (el.attachEvent) {
+</span><span style="color: #008080;"> 6</span>             el.attachEvent('on' +<span style="color: #000000;"> type, handler);
+</span><span style="color: #008080;"> 7</span>         } <span style="color: #0000ff;">else</span><span style="color: #000000;"> {
+</span><span style="color: #008080;"> 8</span>             el['on' + type] =<span style="color: #000000;"> handler;
+</span><span style="color: #008080;"> 9</span> <span style="color: #000000;">        }
+</span><span style="color: #008080;">10</span> <span style="color: #000000;">    },
+</span><span style="color: #008080;">11</span>     removeHandler: <span style="color: #0000ff;">function</span><span style="color: #000000;"> (el, type, handler) {
+</span><span style="color: #008080;">12</span>         <span style="color: #0000ff;">if</span><span style="color: #000000;"> (el.removeEventListener) {
+</span><span style="color: #008080;">13</span>             el.removeEventListerner(type, handler, <span style="color: #0000ff;">false</span><span style="color: #000000;">);
+</span><span style="color: #008080;">14</span>         } <span style="color: #0000ff;">else</span> <span style="color: #0000ff;">if</span><span style="color: #000000;"> (el.detachEvent) {
+</span><span style="color: #008080;">15</span>             el.detachEvent('on' +<span style="color: #000000;"> type, handler);
+</span><span style="color: #008080;">16</span>         } <span style="color: #0000ff;">else</span><span style="color: #000000;"> {
+</span><span style="color: #008080;">17</span>             el['on' + type] = <span style="color: #0000ff;">null</span><span style="color: #000000;">;
+</span><span style="color: #008080;">18</span> <span style="color: #000000;">        }
+</span><span style="color: #008080;">19</span> <span style="color: #000000;">    },
+</span><span style="color: #008080;">20</span>     getEvent: <span style="color: #0000ff;">function</span><span style="color: #000000;"> (e) {
+</span><span style="color: #008080;">21</span>         <span style="color: #0000ff;">return</span> e ?<span style="color: #000000;"> e : window.event;
+</span><span style="color: #008080;">22</span> <span style="color: #000000;">    },
+</span><span style="color: #008080;">23</span>     getTarget: <span style="color: #0000ff;">function</span><span style="color: #000000;"> (e) {
+</span><span style="color: #008080;">24</span>         <span style="color: #0000ff;">return</span> e.target ?<span style="color: #000000;"> e.target : e.srcElement;
+</span><span style="color: #008080;">25</span> <span style="color: #000000;">    },
+</span><span style="color: #008080;">26</span>     preventDefault: <span style="color: #0000ff;">function</span><span style="color: #000000;"> (e) {
+</span><span style="color: #008080;">27</span>         <span style="color: #0000ff;">if</span><span style="color: #000000;"> (e.preventDefault) {
+</span><span style="color: #008080;">28</span> <span style="color: #000000;">            e.preventDefault();
+</span><span style="color: #008080;">29</span>         } <span style="color: #0000ff;">else</span><span style="color: #000000;"> {
+</span><span style="color: #008080;">30</span>             e.returnValue = <span style="color: #0000ff;">false</span><span style="color: #000000;">;
+</span><span style="color: #008080;">31</span> <span style="color: #000000;">        }
+</span><span style="color: #008080;">32</span> <span style="color: #000000;">    },
+</span><span style="color: #008080;">33</span>     stopPropagation: <span style="color: #0000ff;">function</span><span style="color: #000000;"> (e) {
+</span><span style="color: #008080;">34</span>         <span style="color: #0000ff;">if</span><span style="color: #000000;"> (e.stopPropagation) {
+</span><span style="color: #008080;">35</span> <span style="color: #000000;">            e.stopPropagation();
+</span><span style="color: #008080;">36</span>         } <span style="color: #0000ff;">else</span><span style="color: #000000;"> {
+</span><span style="color: #008080;">37</span>             e.cancelBubble = <span style="color: #0000ff;">true</span><span style="color: #000000;">;
+</span><span style="color: #008080;">38</span> <span style="color: #000000;">        }
+</span><span style="color: #008080;">39</span> <span style="color: #000000;">    }
+</span><span style="color: #008080;">40</span> };</pre>
+</div>
+<h1>事件类型</h1>
+<p>我们一般有这几类事件：</p>
+<div class="cnblogs_code">
+<pre><span style="color: #800000;">① UI用户界面事件
+当用户与页面上元素发生交互时触发
+
+② 焦点事件
+当元素获取/失去焦点时触发
+
+③ 鼠标事件
+鼠标操作引发的事件
+
+④ 滚轮事件
+鼠标滚轮引起的事件，类似的也算
+
+⑤ 文本事件
+text类型的操作
+
+⑥ 键盘事件
+......</span></pre>
+</div>
+<p>我们下面来看看我们的各个事件吧。</p>
+<h2>UI事件</h2>
+<p><strong>load事件</strong></p>
+<p>当页面全部加载后在window上触发，当所有框架都加载完毕时在框架集上触发，当img加载结束后在img上触发。</p>
+<p>javascript中这个家伙非常常见，页面<strong>完全</strong>加载后（图片、js、css）就会触发，来一个图片加载结束后的提示吧：</p>
+<div class="cnblogs_code">
+<pre><span style="color: #008080;">1</span> EventUtil.addHandler(img, 'load', <span style="color: #0000ff;">function</span><span style="color: #000000;"> (e) {
+</span><span style="color: #008080;">2</span>     e =<span style="color: #000000;"> EventUtil.getEvent(e);
+</span><span style="color: #008080;">3</span>     alert(EventUtil.getTarget(e).src + ' 加载结束'<span style="color: #000000;">);
+</span><span style="color: #008080;">4</span> });</pre>
+</div>
+<p>PS：此处的加载与我们jquery的document.ready有所不同，一个是图片全部加载结束执行，一个是dom与css形成render树便开始执行，后者是我们希望的。</p>
+<p><strong>unload</strong></p>
+<p>这个事件与load对应，我们却用到不多，在文档完全卸载后触发（页面切换也会触发）。</p>
+<p>这个家伙一般用于释放资源的，我们一般不需要关注。</p>
+<p><strong>resize</strong></p>
+<p>这个事件我们也用得很多，当浏览器高度或者宽度变化时就会触发（这个时候也会引起页面回流reflow哦），事件在window上触发。</p>
+<p>这个事件中的代码可能会被频繁执行，所以定义时候一定要注意。</p>
+<p><strong>scroll</strong></p>
+<p>滚动条滚动时候触发</p>
+<p><strong>焦点事件</strong></p>
+<p>① blur: 事情焦点时候触发，不会冒泡</p>
+<p>② focus: 获取焦点时候触发，不会冒泡</p>
+<p>其它的略去</p>
+<p><strong>鼠标事件</strong></p>
+<p>事件很多......</p>
+<p>后面还有很多新增的事件，我这里先不管啦。。。等接触到移动开发再研究吧，今天暂时这样。</p>
+<h1>结语</h1>
+<p>今天我们一起学习了javascript的事件流，各位有所得么？</p>
+                </div>
+
+                <div class='span3 sidebar'>
+                    <h2>导航栏</h2>
+                    <ul class="nav nav-tabs nav-stacked">
+                             				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/javascriptzdyxhxzsdyjxyzyddf/index.html">javascript中的一些核心知识点以及需要注意的地方</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/[zd]webappdyhzlyzydqdyhdpyjlkkb/index.html">[置顶]【webapp的优化整理】要做移动前端优化的朋友进来看看吧</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/[zd]yddjrwtyjjavascriptsjjzxjsjydjr/index.html">[置顶]【移动端兼容问题研究】javascript事件机制详解（涉及移动兼容）</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/gruntzhb30fzxhsygruntdbqddm/index.html">【grunt整合版】30分钟学会使用grunt打包前端代码</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/gruntdyd30fzxhsygruntdbqddm/index.html">【grunt第一弹】30分钟学会使用grunt打包前端代码</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/gruntdsdgruntzqdsjxmzdyy/index.html">【grunt第三弹】grunt在前端实际项目中的应用</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/gruntded30fzxhsygruntdbqddm02/index.html">【grunt第二弹】30分钟学会使用grunt打包前端代码（02）</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/IScrollsrxxtpyddhadlqs/index.html">【IScroll深入学习】突破移动端黑暗的利器（上）</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/IScrollsrxxjjIScrollynzz/index.html">【IScroll深入学习】解决IScroll疑难杂症</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/iScrollymxx00mniScroll/index.html">【iScroll源码学习00】模拟iScroll</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/iScrollymxx01zbjd/index.html">【iScroll源码学习01】准备阶段</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/iScrollymxx02fjiScrollsghxsjd/index.html">【iScroll源码学习02】分解iScroll三个核心事件点</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/iScrollymxx03iScrollsjjzygdtdsx/index.html">【iScroll源码学习03】iScroll事件机制与滚动条的实现</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/iScrollymxx04flIScrollhx/index.html">【iScroll源码学习04】分离IScroll核心</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/javascriptpxdytyyjc/index.html">【javascript培训第一天】语言基础</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/javascriptpxdstcybl/index.html">【javascript培训第三天】查遗补漏</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/javascriptpxdetDOMyBOM/index.html">【javascript培训第二天】DOM与BOM</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/javascriptjzdsk01mkhbc/index.html">【javascript激增的思考01】模块化编程</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/javascriptjzdsk02mkhyMVC/index.html">【javascript激增的思考02】模块化与MVC</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/javascriptjzdsk03MVVMyKnockout/index.html">【javascript激增的思考03】MVVM与Knockout</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/javascriptjzdsk04MVCyBackbonejs(beta)/index.html">【javascript激增的思考04】MVC与Backbonejs(beta)</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/javascriptmxdxzlrwmyqltkdzb01/index.html">【javascript面向对象之路】让我们一起来坦克大战吧01</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/NodeJSxxbj04xwfbxt/index.html">【NodeJS学习笔记04】新闻发布系统</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/requireJSymxx01ljzgrequireJSdjg/index.html">【requireJS源码学习01】了解整个requireJS的结构</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/requireJSymxx02datamainjzdsx/index.html">【requireJS源码学习02】datamain加载的实现</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/requireJSymxx03xjrequireJSdjzlc/index.html">【requireJS源码学习03】细究requireJS的加载流程</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/UIcjkfygjdrlcjs/index.html">【UI插件】开发一个简单日历插件（上）</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/UIcjjddrlcjxxxMVCsx/index.html">【UI插件】简单的日历插件（下）——学习MVC思想</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/zeptoxxbj01hxff$()/index.html">【zepto学习笔记01】核心方法$()</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/zeptoxxbj01hxff$()b/index.html">【zepto学习笔记01】核心方法$()（补）</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/zeptoxxbj02lsd/index.html">【zepto学习笔记02】零碎点</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/zeptoxxbj03sjjz/index.html">【zepto学习笔记03】事件机制</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/ycmsztjavascriptzdjc/index.html">【一次面试】再谈javascript中的继承</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/ztbackbone01mxModel/index.html">【再探backbone01】模型Model</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/ztbackbone02jhCollection/index.html">【再探backbone02】集合Collection</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/ztbackbone03bkydyyysltgym/index.html">【再探backbone03】博客园单页应用实例（提供源码）</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/ztbackbone04dyyydjslycl/index.html">【再探backbone04】单页应用的基石路由处理</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/ctUnderscorezsmbyq/index.html">【初探Underscore】再说模版引擎</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/ckjavascriptamzAjaxjsxnszddAjax/index.html">【初窥javascript奥秘之Ajax】简述下你所知道的Ajax？</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/ckjavascriptamzsjmpnxnwmyqmdp/index.html">【初窥javascript奥秘之事件冒泡】那些年我们一起冒的泡</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/ckjavascriptamzsjjzldtygdj/index.html">【初窥javascript奥秘之事件机制】论“点透”与“鬼点击”</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/ckjavascriptamzrrzmbddthisnzdxzthiszxnlm/index.html">【初窥javascript奥秘之让人捉摸不定的this】你知道现在this指向哪里吗？？？</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/ckjavascriptamzbbydxbdhlqbcl/index.html">【初窥javascript奥秘之闭包】叶大侠病都好了，求不踩了：）</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/ckjavascriptamzmxdxfzyjc/index.html">【初窥javascript奥秘之面向对象】封装与继承</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/qdmdsjdjgjdnzdljm/index.html">【前端盲点】事件的几个阶段你真的了解么？？？</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/dyyyviewymodelxgsl/index.html">【单页应用】view与model相关梳理</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/dyyyyqldyyybsxjdwbgns/index.html">【单页应用】一起来单页应用吧，实现简单微博功能！（上）</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/dyyyqjkzqappyggxsm/index.html">【单页应用】全局控制器app应该干些什么？</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/dyyywmgrhclkjdcccjgx/index.html">【单页应用】我们该如何处理框架弹出层层级关系？</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/dyyyljMVC/index.html">【单页应用】理解MVC</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/dyyyztxjzviewzjygrhtx/index.html">【单页应用之通信机制】view之间应该如何通信</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/dyyyjkzHistoryxsHistorydgdyyydm/index.html">【单页应用巨坑之History】细数History带给单页应用的噩梦</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/xtszeptofindysyjiosdcjpknrnhtt/index.html">【小贴士】zeptofind元素以及ios弹出键盘可能让你很头疼</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/xtsgytransitionEndanimatedygyqgs/index.html">【小贴士】关于transitionEndanimate的一个有趣故事</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/xtsgzzdbbysjwtdzzmp/index.html">【小贴士】工作中的”闭包“与事件委托的”阻止冒泡“</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/xtstytjavascriptzdreplace/index.html">【小贴士】探一探javascript中的replace</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/xtsxnjpyfixeddgydddt/index.html">【小贴士】虚拟键盘与fixed带给移动端的痛！</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/ttjavascriptsjjzdcsxyl/index.html">【探讨】javascript事件机制底层实现原理</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/mkhbcljrequireJSsxygjddmkjzq/index.html">【模块化编程】理解requireJS实现一个简单的模块加载器</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/zyJavaScriptmfjmtsdqlxkjzbfgndcljz/index.html">【转】【译】JavaScript魔法揭秘探索当前流行框架中部分功能的处理机制</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/zxjavascriptgszl01javascriptcszds/index.html">【追寻javascript高手之路01】javascript参数知多少？</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/zxjavascriptgszl02blzyyzds/index.html">【追寻javascript高手之路02】变量、作用域知多少？</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/zxjavascriptgszl03javascriptdxdld/index.html">【追寻javascript高手之路03】javascript对象大乱斗</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/zxjavascriptgszl04ljprototype/index.html">【追寻javascript高手之路04】理解prototype</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/zxjavascriptgszl05ljsjl/index.html">【追寻javascript高手之路05】理解事件流</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/zgbj04zxzzsj(2)/index.html">【重构笔记04】重新组织数据(2)</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/zgbj05jhtjbds/index.html">【重构笔记05】简化条件表达式</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/zgbj06jhhsdy/index.html">【重构笔记06】简化函数调用</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/ycmshgttbxysjfl/index.html">一次面试回顾——探讨表现与数据分离</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/dhzwebappzdxz/index.html">动画在webapp中的现状</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/ysandriodlqhthdomclicksjqtsxwttj/index.html">原生andriod浏览器回退后dom（click）事件全体失效问题探究</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/scsbdjxysdsbsjytouchsjdnxs/index.html">手持设备点击响应速度，鼠标事件与touch事件的那些事</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/mnbjQueryzeptohxymfx/index.html">迷你版jQuery——zepto核心源码分析</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/dbsgzdlwmlyqxjdddomxzqb/index.html">都别说工资低了，我们来一起写简单的dom选择器吧！</a></li>
+    				                                         
+                    </ul>
+                </div>
+            </div>
+
+        </div>
+    </body>
+</html>

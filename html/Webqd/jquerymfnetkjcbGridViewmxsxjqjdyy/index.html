@@ -1,0 +1,820 @@
+﻿<!DOCTYPE html>
+
+<html lang="zh">
+    <head>
+        <meta charset="utf-8">
+        <meta name="description" content="android,ios" />
+        <meta name="keywords" content="android,ios" />
+
+        <title>叶小钗</title>
+        <style type='text/css'>
+            body {
+                background-color: #CCC;
+            }
+        </style>
+        <link rel="stylesheet" href="../../../css/bootstrap.css" />
+    </head>
+
+    <body>
+        <div class="container">
+
+            <h1>叶小钗</h1>
+
+            <div class='navbar navbar-inverse'>
+                <div class='navbar-inner nav-collapse' style="height: auto;">
+                    <ul class="nav">
+                              				<li><a href="http://songboriceboy.github.io/xxoo/html/blade/index.html">blade</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/css/index.html">css</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/HTML5&CSS3/index.html">HTML5&CSS3</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/index.html">javascript</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Javaxx/index.html">Java学习</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/nodejs/index.html">nodejs</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/requirejs/index.html">requirejs</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/index.html">Web前端</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/xxgw/index.html">学习感悟</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/gzdd/index.html">工作点滴</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/jkxx/index.html">接口学习</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/wfl/index.html">未分类</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/ydkf/index.html">移动开发</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/sjms/index.html">设计模式</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/mst/index.html">面试题</a></li>
+    				                      </ul>
+                </div>
+            </div>
+
+            <div id='content' class='row-fluid'>
+
+                <div class='span9 main'>
+				<div style="color:blue" align=center>【jquery模仿net控件】初步GridView模型实现，及其简单应用</div><br><p>最近日子不好过，主要原因是要毕业了，学校那边的毕业论文让人很头痛，就跟写八股文似的，个人非常头疼并且厌恨这种</p>
+<p>对我无意义的东西，哎！！！体制啊，既然无法改变，何不将之做好呢！！！对，于是我还是不想写论文，拖着吧，到哪天确实</p>
+<p>拖不下去了再说；加之公司项目也非常紧，又要写论文，虽说没写，心里就是一个不舒服啊！！！所以平时抽了点时间模拟了下</p>
+<p>gridview，个人是菜鸟自不必多说，但是这几个月来，模拟写着写着感觉学到了不少东西哟！！！</p>
+<p>算了....扯远了，进入正文。</p>
+<p>&nbsp;</p>
+<h1>前期工作</h1>
+<hr>
+<p>之前主要模拟了一次datalist，基本上以它为基础将igoogle功能完全实现，并且应用到项目中去了，控件不好，但也不是完全没有意义，</p>
+<p>过程中需要类似gridview的功能，索性也就写了一下，思路与datalist差距不大。</p>
+<p>因为马上要写论文了，而且是不完全版本这里就不画图什么的了，以后发完整版本再说吧：</p>
+<p>&nbsp;</p>
+<h1>效果图</h1>
+<hr>
+<p><img src="38457499021969.png" alt=""></p>
+<p><img src="34910218032308.png" alt=""></p>
+<p><img src="15078178299914.png" alt=""></p>
+<p><img src="7343099358660.png" alt=""></p>
+<p>&nbsp;</p>
+<h1>简单说明</h1>
+<hr>
+<p>该简单应用也是我第一次做测试，有一下几个事件：</p>
+<p>① 鼠标滑动时变色事件</p>
+<p>② 点击大类选取小类事件</p>
+<p>③ 点击获取时候全部获取事件</p>
+<p>④ 当然，不能忘了行绑定事件，初期只是绑定了大类，小类根据大类id作出的加载</p>
+<p>&nbsp;</p>
+<h1>核心代码</h1>
+<hr>
+<div class="cnblogs_Highlighter">
+<pre class="brush:javascript;gutter:false;">&lt;!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"&gt;
+&lt;html xmlns="http://www.w3.org/1999/xhtml"&gt;
+&lt;head&gt;
+    &lt;title&gt;&lt;/title&gt;
+    &lt;script src="../js/jquery-1.7.1.min.js" type="text/javascript"&gt;&lt;/script&gt;
+    &lt;script src="http://www.cnblogs.com/../scripts/jquery-1.7.1.js" type="text/javascript"&gt;&lt;/script&gt;
+    &lt;script src="../js/GridViewBase.js" type="text/javascript"&gt;&lt;/script&gt;
+    &lt;script src="../js/GridColum.js" type="text/javascript"&gt;&lt;/script&gt;
+    &lt;script src="../js/GridRow.js" type="text/javascript"&gt;&lt;/script&gt;
+    &lt;script src="../js/GridView.js" type="text/javascript"&gt;&lt;/script&gt;
+    &lt;script src="http://www.cnblogs.com/../scripts/jquery.cookie.js" type="text/javascript"&gt;&lt;/script&gt;
+    &lt;script type="text/javascript"&gt;
+        $(document).ready(function () {
+            var url = '../Ajax.aspx?sql=select * from bigType  ';
+            $.getJSON(url, function (data) {
+                var g = new GridView();
+
+                $("#www").click(function () {
+                    var rows = g.rows;
+                    var str = "";
+                    $.each(rows, function (i, row) {
+                        var checks = row.getEl("input:checkbox");
+                        checks.each(function (ii, jj) {
+                            if ($(this).attr("checked")) {
+                                str += $(this).val() + "  ,  "
+                            }
+                        });
+
+                    });
+                    alert(str);
+                });
+
+
+                g.style.width = "500px";
+                g.colModel = [{
+                    'th': { 'title': '大类' },
+                    'td': { 'template': '{%title%}&lt;input  value="{%id%}" type="checkbox" class="bigId"  /&gt;', 'attribute': {}, 'style': {} }
+                }, {
+                    'th': { 'title': '小类' },
+                    'td': { 'template': '&lt;div class="type"&gt;&lt;/div&gt;', 'attribute': {}, 'style': {} }
+                }
+        ];
+                g.trEvent = [
+                 {
+                    eventType: 'ready',
+                    func: function (param, e) {
+                        var scope = this;
+                        var tr = scope.el;
+                        var back = tr.css('background-color');
+                        tr.unbind('mousemove');
+                        tr.bind('mousemove', function () {
+                            tr.css('background-color', '#efefef');
+                        });
+                        tr.unbind('mouseout');
+                        tr.bind('mouseout', function () {
+                            tr.css('background-color', back);
+                        });
+
+                    }
+                },
+                 {
+                     eventType: 'ready',
+                     func: function (param, e) {
+                         var scope = this;
+                         var type = scope.getEl(".type");
+                         var id = param.id;
+                         var _url = "../Ajax.aspx?sql=select * from smallType where bigTypeId='" + id + "'  "
+                         $.getJSON(_url, function (data) {
+                             $.each(data, function (i, item) {
+                                 var html = '  ' + item.title + '&lt;input  value="' + item.id + '" type="checkbox" class="sId" disabled="disabled" /&gt;';
+                                 type.append(html);
+                             });
+
+
+                             var bigId = scope.getEl(".bigId");
+                             bigId.unbind("change");
+                             bigId.bind("change", function () {
+                                 var smallTyle = scope.getEl(".sId");
+                                 if (bigId.attr('checked') == 'checked') {
+                                     smallTyle.attr("checked", "checked");
+                                     smallTyle.removeAttr('disabled');
+                                 } else {
+                                     smallTyle.removeAttr('checked');
+                                     smallTyle.attr('disabled', 'disabled');
+                                 }
+
+                             });
+                         });
+                     }
+                 }
+    ];
+                g.dataSource = data;
+                g.render();
+
+
+            });
+
+
+
+
+
+        });
+    
+    &lt;/script&gt;
+&lt;/head&gt;
+&lt;body&gt;
+    &lt;input type="button" value="获取" id="www" /&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+</div>
+<p>&nbsp;</p>
+<div class="cnblogs_Highlighter">
+<pre class="brush:javascript;gutter:false;">/// &lt;reference path='jquery-1.7.1.min.js' /&gt;
+/// &lt;reference path='GridViewBase.js' /&gt;
+/// &lt;reference path='GridColum.js' /&gt;
+/// &lt;reference path='GridRow.js' /&gt;
+
+
+/*
+控件生成流程：
+1 先初始化表格每列的【列头】以及【body信息】，最好可指定列id，用于后期检索
+2 赋予控件二维数据（但控件字段最好可支持多维数据获取）
+3 初始化外围table，并赋予其属性样式,最外层结束
+4 根据二维数据依次初始化每行数据，【其实可在此处初始化表头，因为若是没有数据表头将不初始化】
+5 每行获得其数据源，先形成tr，然后将数据源直接赋予单元行进行初始化
+6 单元化格式化单元模板，生成html标签
+
+*/
+
+
+var GridView = function (id) {
+    var scope = this;
+    this.style = {};
+    this.attribute = {
+        id: id &amp;&amp; id.length &gt; 0 ? id : new Date().getTime().toString(),
+        className: 'wl'
+    };
+    this.id = this.attribute.id;
+    this.thId = this.id + '_header';
+    this.dataSource = [];
+    this.header = null;
+    this.rows = [];
+    this.el = null;
+    this.parentData = null;
+
+    this.thEvent = [
+     {
+         func: function (rows, e) {
+             var scope = this;
+             var select = scope.getThEl('.th_select');
+             select.unbind('click');
+             select.bind('click', function (e) {
+                 var th_s = select.attr('checked');
+                 $.each(rows, function (i, row) {
+                     var td_select = row.getEl('.td_select');
+                     //                     var td_s = td_select.attr('checked');
+                     if (th_s &amp;&amp; th_s == 'checked') {
+                         td_select.attr('checked', 'checked');
+                     } else {
+                         td_select.removeAttr('checked');
+                     }
+
+                 });
+             });
+         }
+     }
+    ];
+    this.trEvent = [
+    {
+        eventType: 'ready',
+        func: function (param, e) {
+            var scope = this;
+            var tr = scope.el;
+            var back = tr.css('background-color');
+            tr.unbind('mousemove');
+            tr.bind('mousemove', function () {
+                tr.css('background-color', '#efefef');
+            });
+            tr.unbind('mouseout');
+            tr.bind('mouseout', function () {
+                tr.css('background-color', back);
+            });
+
+        }
+    },
+    {
+        eventType: 'ready',
+        func: function (param, e) {
+            var scope = this;
+            var edit = scope.getEl('.td_edit');
+            edit.unbind('click');
+            edit.bind('click', function (ee) {
+                var div = scope.getEl('div');
+                div.hide();
+
+            });
+        }
+    }
+    ];
+    this.tdEvent = [
+     {
+     //         eventType: 'click',
+     //         func: function (param, e) {
+     //             var scope = this;
+     //             var td = scope.el;
+     //             var input = $('&lt;input style="width:100%;height:100%;" value="' + td.text() + '" /&gt;');
+     //             td.html(input);
+     //         }
+ }
+    ];
+
+    this.preInit = new EventHandler();
+    this.initComplete = new EventHandler();
+    this.preLoad = new EventHandler();
+    this.loadComplete = new EventHandler();
+
+    this.parentEl = $('body');
+    this.colModel = [{
+        'th': { 'title': '&lt;input  value="" type="checkbox" class="th_select" /&gt;', 'attribute': {}, 'style': {} },
+        'td': { 'type': '', 'value': '', 'template': '&lt;input  value="{%title%}" type="checkbox"class="td_select"  /&gt;', 'attribute': {}, 'style': {} }
+    }, {
+        'th': { 'title': '111', 'attribute': {}, 'style': {} },
+        'td': { 'type': '', 'value': '', 'template': '&lt;input style="display:none;" value="{%title%}" /&gt;&lt;div class="td_title"&gt;{%title%}&lt;/div&gt;', 'attribute': { className: 'wlR' }, 'style': { 'color': 'Blue'} }
+    }, {
+        'th': { 'title': '222', 'attribute': {}, 'style': {} },
+        'td': { 'type': '', 'value': '', 'template': '&lt;textarea style="display:none;" &gt;{%summary%}&lt;/textarea&gt;&lt;div class="td_summary"&gt;{%summary%}&lt;/div&gt;', 'attribute': {}, 'style': {} }
+    }, {
+        'th': { 'title': '编辑', 'attribute': {}, 'style': {} },
+        'td': { 'type': '', 'value': '', 'template': '&lt;input type="button" value="编辑" class="td_edit" /&gt;', 'attribute': {}, 'style': {} }
+    }
+        ];
+
+
+};
+GridView.prototype.render = function () {
+    var scope = this;
+    scope.onInit();
+    scope.onLoad();
+    scope.eventBind();
+
+};
+
+GridView.prototype.onInit = function () {
+    var scope = this;
+    scope.preInit.invoke();
+    scope.initHtml();
+    scope.initAttr();
+    scope.initStyle();
+    scope.initComplete.invoke();
+
+};
+GridView.prototype.initHtml = function () {
+    var scope = this;
+    var el = $('&lt;table&gt;&lt;/table&gt;');
+    scope.el = el;
+    var parentEl = scope.parentEl;
+    parentEl.append(el);
+    scope.initHeader();
+};
+GridView.prototype.initHeader = function () {
+    var scope = this;
+    var header = $('&lt;tr&gt;&lt;/tr&gt;');
+    header.attr('id', scope.thId);
+    var model = scope.colModel;
+    $.each(model, function (i, col) {
+        var th = col['th'];
+        if (th) {
+            var val = th['title'];
+            var td = $('&lt;th&gt;' + val + '&lt;/th&gt;');
+            header.append(td);
+        }
+    });
+    scope.header = header;
+    var table = scope.el;
+    table.append(header);
+};
+GridView.prototype.initAttr = function () {
+    utils.initAttr(this);
+};
+GridView.prototype.initStyle = function () {
+    utils.initStyle(this);
+};
+
+GridView.prototype.onLoad = function () {
+    var scope = this;
+    scope.preLoad.invoke();
+    scope.loadHtml();
+    scope.loadRows();
+    scope.loadComplete.invoke();
+};
+GridView.prototype.loadHtml = function () {
+    utils.loadhtml(this);
+};
+GridView.prototype.loadRows = function () {
+    var scope = this;
+    var dataSource = scope.dataSource;
+    $.each(dataSource, function (index, item) {
+        var gridRow = new GridRow();
+        gridRow.parentObj = scope;
+        gridRow.dataSource = item;
+        gridRow.rowIndex = index;
+        gridRow.event = scope.trEvent;
+        gridRow.tdEvent = scope.tdEvent;
+
+        gridRow.colModel = scope.colModel;
+
+        gridRow.render();
+        scope.rows.push(gridRow);
+    });
+
+};
+GridView.prototype.eventBind = function () {
+    var scope = this;
+    scope.headerEventBind();
+};
+
+GridView.prototype.headerEventBind = function () {
+    var scope = this;
+    var el = scope.el;
+    var thEvent = scope.thEvent;
+    $.each(thEvent, function (i, item) {
+        var func = item.func;
+        el.ready(function (e) {
+            func.call(scope, scope.rows, e);
+        });
+
+
+    });
+};
+
+GridView.prototype.getThEl = function (elementKey) {
+    var scope = this;
+    var thId = scope.thId;
+    var id = "#" + thId + " " + elementKey;
+    var element = $(id);
+    return element;
+};
+</pre>
+</div>
+<p>&nbsp;</p>
+<div class="cnblogs_Highlighter">
+<pre class="brush:javascript;gutter:false;">// &lt;reference path="jquery-1.7.1.min.js" /&gt;
+/// &lt;reference path="GridViewBase.js" /&gt;
+/// &lt;reference path="GridColum.js" /&gt;
+
+
+
+var GridRow = function () {
+    var scope = this;
+    this.parentObj = null;
+
+    this.el = null;
+    this.style = {};
+    this.attribute = {};
+    this.dataSource = [];
+    this.columns = [];
+    this.rowIndex;
+    this.colModel = null;
+
+    this.id = "";
+    this.event = [];
+    this.preInit = new EventHandler();
+    this.initComplete = new EventHandler();
+    this.preLoad = new EventHandler();
+    this.loadComplete = new EventHandler();
+
+};
+GridRow.prototype.render = function () {
+    var scope = this;
+    scope.onInit();
+    scope.onLoad();
+    scope.eventBind();
+};
+
+GridRow.prototype.onInit = function () {
+    var scope = this;
+    scope.parentEl = scope.parentObj.el;
+    scope.parentId = scope.parentObj.id;
+
+    scope.preInit.invoke();
+    scope.initHtml();
+    scope.initAttr();
+    scope.initStyle();
+    scope.initComplete.invoke();
+
+};
+GridRow.prototype.initHtml = function () {
+    var scope = this;
+    var el = $('&lt;tr&gt;&lt;/tr&gt;');
+    scope.el = el;
+    var parentEl = scope.parentEl;
+    parentEl.append(el);
+};
+GridRow.prototype.initAttr = function () {
+    var scope = this;
+    utils.initAttr(this);
+    var el = scope.el;
+    var parentId = scope.parentId;
+    var rowIndex = scope.rowIndex;
+    var id = parentId + "_row_" + rowIndex;
+    scope.id = id;
+    scope.attribute.id = id;
+    el.attr("id", id);
+};
+GridRow.prototype.initStyle = function () {
+    utils.initStyle(this);
+};
+
+GridRow.prototype.onLoad = function () {
+    var scope = this;
+    scope.preLoad.invoke();
+    scope.loadHtml();
+    scope.loadCols();
+    scope.loadComplete.invoke();
+};
+GridRow.prototype.loadHtml = function () {
+    utils.loadhtml(this);
+};
+
+GridRow.prototype.loadCols = function () {
+    var scope = this;
+    var dataSource = scope.dataSource;
+    var colModel = scope.colModel;
+    utils.formatColTemplate(this);
+
+    $.each(colModel, function (i, model) {
+        var td = model.td;
+        var gridColumn = new GridColumn();
+        gridColumn.parentObj = scope;
+        gridColumn.dataSource = dataSource;
+        gridColumn.colIndex = i;
+        gridColumn.model = model;
+        gridColumn.attribute = td.attribute;
+        gridColumn.style = td.style;
+        gridColumn.event = scope.tdEvent;
+        gridColumn.render();
+        scope.columns.push(gridColumn);
+    });
+
+};
+
+GridRow.prototype.eventBind = function () {
+    utils.eventBind(this, this.dataSource);
+};
+
+
+GridRow.prototype.getEl = function (elementKey) {
+    var scope = this;
+    var id = scope.id;
+    var id = "#" + id + " " + elementKey;
+    var element = $(id);
+    return element;
+};
+</pre>
+</div>
+<p>&nbsp;</p>
+<div class="cnblogs_Highlighter">
+<pre class="brush:javascript;gutter:false;">/// &lt;reference path="jquery-1.7.1.min.js" /&gt;
+/// &lt;reference path="GridViewBase.js" /&gt;
+
+
+
+var GridColumn = function (cfg) {
+    var scope = this;
+    this.parentObj = null;
+    this.el = null;
+    this.style = {};
+    this.attribute = {};
+    this.type = 'field'; //暂时提供filed数据字段、template模板两种
+    this.model = {};
+    this.colIndex;
+    this.dataSource = null;
+    this.event = [];
+    this.preInit = new EventHandler();
+    this.initComplete = new EventHandler();
+    this.preLoad = new EventHandler();
+    this.loadComplete = new EventHandler();
+    
+};
+GridColumn.prototype.render = function () {
+    var scope = this;
+    scope.onInit();
+    scope.onLoad();
+    scope.eventBind();
+};
+
+GridColumn.prototype.onInit = function () {
+    var scope = this;
+    scope.parentEl = scope.parentObj.el;
+    scope.parentId = scope.parentObj.attribute.id;
+    scope.preInit.invoke();
+    scope.initHtml();
+    scope.initAttr();
+    scope.initStyle();
+    scope.initComplete.invoke();
+
+};
+
+GridColumn.prototype.initBody = function (td, dataSource) {
+    var scope = this;
+    var parentEl = scope.parentEl;
+    var templateObj = td['templateObj'];
+    var tempHtm = "";
+    $.each(templateObj, function (i, item) {
+        if (item.field) {
+            tempHtm = tempHtm + item.html + dataSource[item.field];
+        } else {
+            tempHtm = tempHtm + item.html;
+        }
+    });
+    var newHtm = tempHtm;
+    var reg = /\[%(.*?)%\]/;
+    var para = reg.exec(newHtm);
+    while (para &amp;&amp; para.length &gt; 0) {
+        var len = para.index;
+        var comStr = para[0].substr(2, para[0].length - 4);
+        var s1 = newHtm.substr(0, len);
+        var s2 = newHtm.substr(len + para[0].length);
+        newHtm = s1 + eval(comStr) + s2;
+        para = reg.exec(newHtm);
+    }
+    tempHtm = newHtm;
+    var td = $('&lt;td&gt;' + tempHtm + '&lt;/td&gt;');
+    scope.el = td;
+    parentEl.append(td);
+
+};
+GridColumn.prototype.initHtml = function () {
+    var scope = this;
+    var dataSource = scope.dataSource;
+    var col = scope.model;
+
+    var td = col['td'];
+    scope.initBody(td, dataSource);
+
+};
+
+GridColumn.prototype.initAttr = function () {
+    var scope = this;
+    var el = scope.el;
+    var parentId = scope.parentId;
+    var id = parentId + "_"+scope.colIndex;
+    scope.id = id;
+    scope.attribute.id = id;
+    utils.initAttr(this);
+    el.attr("id", id);
+   
+};
+
+GridColumn.prototype.initStyle = function () {
+    utils.initStyle(this);
+};
+
+GridColumn.prototype.onLoad = function () {
+    var scope = this;
+    scope.preLoad.invoke();
+    scope.loadHtml();
+    scope.loadComplete.invoke();
+};
+GridColumn.prototype.loadHtml = function () {
+
+};
+GridColumn.prototype.eventBind = function () {
+    utils.eventBind(this, this.dataSource);
+};
+</pre>
+</div>
+<p>&nbsp;</p>
+<div class="cnblogs_Highlighter">
+<pre class="brush:javascript;gutter:false;">/// &lt;reference path="jquery-1.7.1.min.js" /&gt;
+
+
+var Delegate = function (func, sender, param) {
+    this.target = sender;
+    this.method = func;
+    this.invoke = function () {
+        if (func &amp;&amp; typeof (func) == "function") {
+            func.call(sender, param);
+        };
+    };
+};
+
+var EventHandler = function () {
+    this.delegate = [];
+    this.add = function (func, sender, param) {
+        var delegate = new Delegate(func, sender, param);
+        this.delegate.push(delegate);
+    };
+    this.remove = function (func) {
+        for (var i = 0, len = this.delegate.length; i &lt; len; i++) {
+            if (this.delegate[i][func] == func) {
+                this.delegate[func] = null;
+            }
+        }
+    };
+    this.invoke = function () {
+        for (var i = 0, len = this.delegate.length; i &lt; len; i++) {
+            this.delegate[i].invoke();
+        }
+    };
+};
+
+var GridViewUtils = function () { };
+GridViewUtils.prototype.initStyle = function (sender) {
+    var scope = sender;
+    var el = scope.el;
+    $.each(scope.style, function (key, value) {
+        if (typeof (key) == 'string' &amp;&amp; key.length &gt; 0) {
+            el.css(key, value);
+        }
+    });
+};
+GridViewUtils.prototype.initAttr = function (sender) {
+    var scope = sender;
+    var el = scope.el;
+    $.each(scope.attribute, function (key, value) {
+        if (typeof (key) == 'string' &amp;&amp; key.length &gt; 0) {
+            if (key == 'className')
+                key = 'class';
+            el.attr(key, value);
+        }
+    });
+};
+GridViewUtils.prototype.eventBind = function (sender,param) {
+    var scope = sender;
+    var el = scope.el;
+    $.each(scope.event, function (i, item) {
+        var func = item.func;
+        var eventType = item.eventType;
+        if (eventType == "ready") {
+            el.ready(function (e) {
+                func.call(scope, param, e);
+            });
+        } else {
+            el.unbind(eventType);
+            el.bind(eventType, function (e) {
+                func.call(scope, param, e);
+            });
+        }
+
+    });
+};
+GridViewUtils.prototype.loadhtml = function (sender) {
+    //    var scope = sender;
+    //    var parentEl = scope.parentEl;
+    //    var el = scope.el;
+    //    parentEl.append(el);
+};
+GridViewUtils.prototype.formatColTemplate = function (sender) {
+    var scope = sender;
+    var model = scope.colModel;
+    var reg = /\{%[\w]*\%}/;
+    $.each(model, function (i, v) {
+        model[i]['td']['templateObj'] = [];
+        var template = v['td']['template'];
+        var para = reg.exec(template);
+        var tempHtml = template;
+        while (para &amp;&amp; para.length &gt; 0) {
+            var len = para.index;
+            var temp = {};
+            temp.html = tempHtml.substr(0, len);
+            temp.field = para[0].substr(2, para[0].length - 4);
+            model[i]['td']['templateObj'].push(temp);
+            tempHtml = tempHtml.substr(len + para[0].length);
+            para = reg.exec(tempHtml);
+        }
+        var end = {};
+        end.html = tempHtml;
+        model[i]['td']['templateObj'].push(end);
+        var sss = "";
+    });
+};
+var utils = new GridViewUtils();
+</pre>
+</div>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<h1>后续</h1>
+<hr>
+<p>做的过程中，想模拟.net控件的生命周期，并且实现委托那种高级东西，只不过自己学的太浅了，有点不够力啊。</p>
+<p>详细请看下个版本吧，此版本欢迎拍砖</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+                </div>
+
+                <div class='span3 sidebar'>
+                    <h2>导航栏</h2>
+                    <ul class="nav nav-tabs nav-stacked">
+                             				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/Fiddlerznqddsq/index.html">Fiddler真乃前端大杀器！！！</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/Requirejs/index.html">Requirejs</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/RequireJSyBackbonejdzh/index.html">RequireJS与Backbone简单整合</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/RequireJSxxbj/index.html">RequireJS学习笔记</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/Webqdyhctxdpzyyqdgsgpng/index.html">Web前端优化初探，小弟抛砖引玉，期待高手共破难关！</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/Webqdlqjrctxsqwpzyyqdgsgpng/index.html">Web前端浏览器兼容初探，小生浅文抛砖引玉，期待高手攻破难关！</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/jqueryfdataListxnyhmbybysxtgxn10bys/index.html">【jquery仿dataList——性能优化】模板预编译思想提高性能10倍以上！！！</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/jqueryfdataListyyzmfigoogledzhtdpxzdhfp/index.html">【jquery仿dataList】应用之——模仿igoogle【定制化、拖动排序，最大化、分屏】</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/jqueryfdatalistdygwtqzszmxxsjlkzDIVdjjbf/index.html">【jquery仿datalist的一个问题，求助】——设置每行显示几列，块状DIV的解决办法</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/jquerymfnetkjcbGridViewmxsxjqjdyy/index.html">【jquery模仿net控件】初步GridView模型实现，及其简单应用</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/jquerymfnetkjjdfykj10fsgridviewsycs/index.html">【jquery模仿net控件】简单分页控件10，附上gridview使用测试</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/jquerymfnetkjjdddatalistkjgxjqjdyy/index.html">【jquery模仿net控件】简单的datalist控件更新，及其简单应用</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/jquerymfnetkjjdddropdownlistydatalist/index.html">【jquery模仿net控件】简单的dropdownlist与datalist</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/jquerybnetkjdropdownlistfymhydjzdzzpz/index.html">【jquery版net控件—dropdownlist】附源码，欢迎大家指点、指正、拍砖！！！</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/positionykyhfzddccyslsbdws/index.html">【position也可以很复杂】当弹出层遇上了鼠标定位（上）</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/positionykyhfzddccyslsbdwx/index.html">【position也可以很复杂】当弹出层遇上了鼠标定位（下）</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/SEOzmlwljnmtsbwmlyqkkSEOb/index.html">【SEO】周末了，为了纪念明天上班，我们来一起看看SEO吧</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/webqdyhqdwyhyrzrz/index.html">【web前端优化】前端无优化，庸人自扰之！</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/webqdyhzreflowjsymdhl/index.html">【web前端优化之reflow】减少页面的回流</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/webqdyhztpycjzctzwbsxwbk/index.html">【web前端优化之图片延迟加载初探】中午不睡，下午崩溃</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/webqdyhztpmhdqxkwQQkjrhxsxp/index.html">【web前端优化之图片模糊到清晰】看我QQ空间如何显示相片</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/webqdpxzqhddphsywmsxdDatalistsmwtb/index.html">【web前端培训之前后端的配合（上）】以我们熟悉的Datalist说明问题吧</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/webqdpxzqhddphzjxzrdgs/index.html">【web前端培训之前后端的配合（中）】继续昨日的故事</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/dyyygybkydbfgqym/index.html">【单页应用】关于博客园的补发（高清有码）。。。</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/xtsstringifysBUGlocalstoragesxxmSafarialertksfycjzym10pxbp/index.html">【小贴士】【stringify神BUG】【localstorage失效】【消灭Safarialert框】【是否延迟加载】【页面10px白屏】</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/dalhdmsthhdsdmstjsh/index.html">【答阿里寒冬面试题】呵呵，大神的面试题就是好！</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/ycsjmstdldgwxxdgjxxdff/index.html">一次上机面试题带来的感悟【学习的感觉、学习的方法】</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/ydmstdldqdyhsxxxdp/index.html">一道面试题带来的前端优化——实现星星点评</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/zysyzjjhfzwebqdbfxlgxmndjjfa/index.html">只言碎语总结，今后发展web前端，并分享两个项目难点解决方案。</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/gwjlytbllbnwmljxwwdbdyzb/index.html">各位加了一天班累了吧？那我们来继续未完的表单验证吧</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/gwzmwlytllbwmyqlzldmstbjstbdy/index.html">各位周末玩了一天累了吧，我们一起来做两道面试题吧（据说淘宝的哟）！</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/jyjQuerydxlcdcjzwsy/index.html">基于jQuery的下拉菜单插件，诸位上眼！！！</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/jyjQuerydxlcdcd02zwsy/index.html">基于jQuery的下拉菜单菜单【02】，诸位上眼！！！</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/gzzpddyxdxdccktfybwjsc/index.html">工作中碰到的一些东西【弹出窗口】【拖放】【异步文件上传】</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/gzlygxqgwydllbnwmyqlbdyzyfb/index.html">工作了一个星期各位一定累了吧，那我们一起来表单验证一番吧！</a></li>
+    				                                         
+                    </ul>
+                </div>
+            </div>
+
+        </div>
+    </body>
+</html>

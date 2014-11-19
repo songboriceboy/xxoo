@@ -1,0 +1,673 @@
+﻿<!DOCTYPE html>
+
+<html lang="zh">
+    <head>
+        <meta charset="utf-8">
+        <meta name="description" content="android,ios" />
+        <meta name="keywords" content="android,ios" />
+
+        <title>叶小钗</title>
+        <style type='text/css'>
+            body {
+                background-color: #CCC;
+            }
+        </style>
+        <link rel="stylesheet" href="../../../css/bootstrap.css" />
+    </head>
+
+    <body>
+        <div class="container">
+
+            <h1>叶小钗</h1>
+
+            <div class='navbar navbar-inverse'>
+                <div class='navbar-inner nav-collapse' style="height: auto;">
+                    <ul class="nav">
+                              				<li><a href="http://songboriceboy.github.io/xxoo/html/blade/index.html">blade</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/css/index.html">css</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/HTML5&CSS3/index.html">HTML5&CSS3</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/index.html">javascript</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Javaxx/index.html">Java学习</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/nodejs/index.html">nodejs</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/requirejs/index.html">requirejs</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/index.html">Web前端</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/xxgw/index.html">学习感悟</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/gzdd/index.html">工作点滴</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/jkxx/index.html">接口学习</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/wfl/index.html">未分类</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/ydkf/index.html">移动开发</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/sjms/index.html">设计模式</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/mst/index.html">面试题</a></li>
+    				                      </ul>
+                </div>
+            </div>
+
+            <div id='content' class='row-fluid'>
+
+                <div class='span9 main'>
+				<div style="color:blue" align=center>【转】【译】JavaScript魔法揭秘探索当前流行框架中部分功能的处理机制</div><br><p><span style="color: #ff0000;"><strong>推荐语：</strong></span></p>
+<p><span style="color: #ff0000;"><strong>今天推荐一篇华为同事的同事翻译的一篇文章，推荐的主要原因是作为一个华为员工居然晚上还能写文章，由不得小钗不佩服！！！</strong></span></p>
+<p><span style="color: #ff0000;"><strong>其中的jQuery、angular、react皆是十分优秀的框架，各有特点，各位可以看看</strong></span></p>
+<p>编辑:<a href="https://github.com/jnotnull/JavaScript-Sturcture/wiki/JavaScript%E9%AD%94%E6%B3%95%E6%8F%AD%E7%A7%98">github</a>&nbsp;原文链接：<a href="http://www.sitepoint.com/revealing-magic-javascript/">Revealing the Magic of JavaScript</a></p>
+<p><span class="author vcard item"><a class="value url fn" href="http://www.html-js.com/user/2605" rel="author">jnotnull&nbsp;</a>发布在&nbsp;<a class="value" href="http://www.html-js.com/article/column/198">JavaScript译文</a><span class="item"><span class="index"><span class="value"><br></span></span></span></span></p>
+<blockquote>
+<p>我们每天都在使用大量的工具，不同的库和框架已经成为我们日常工作的一部分。我们使用他们是因为我们不想重新造轮子，虽然我们可能并不知道这些框架的原理。在这篇文章中，我们将揭开当前流行框架中那些魔法处理机制。</p>
+
+</blockquote>
+<p><strong>通过字符串来创建DOM节点</strong></p>
+<p>随着单页应用的兴起，我们已经可以使用JS来做越来越多的事情了，业务的大部分逻辑都将移到前台。我们以下面创建页面元素为例：</p>
+<div class="cnblogs_code">
+<pre><span style="color: #0000ff;">var</span> text = $('&lt;div&gt;Simple text&lt;/div&gt;'<span style="color: #000000;">);
+
+$(</span>'body').append(text);</pre>
+</div>
+<p><span style="line-height: 1.5;">运行结果是：在当前页面中新增了一个div元素。使用jquery，这个只需要一行代码就搞定了，如果不用jquery，可能会多几行代码：</span></p>
+<div class="cnblogs_code">
+<pre><span style="color: #0000ff;">var</span> stringToDom = <span style="color: #0000ff;">function</span><span style="color: #000000;">(str) {
+  </span><span style="color: #0000ff;">var</span> temp = document.createElement('div'<span style="color: #000000;">);
+
+  temp.innerHTML </span>=<span style="color: #000000;"> str;
+  </span><span style="color: #0000ff;">return</span> temp.childNodes[0<span style="color: #000000;">];
+}
+</span><span style="color: #0000ff;">var</span> text = stringToDom('&lt;div&gt;Simple text&lt;/div&gt;'<span style="color: #000000;">);
+
+document.querySelector(</span>'body').appendChild(text);</pre>
+</div>
+<p><span style="line-height: 1.5;">我们定义了一个自己的工具方法stringToDom，这个方法做了如下事情：首先创建一个临时div元素，然后设定它的innerTHML属性，然后返回该DIV元素的第一个节点。同样的写法，下面的代码会获得不同的结果：</span></p>
+<div class="cnblogs_code">
+<pre><span style="color: #0000ff;">var</span> tableRow = $('&lt;tr&gt;&lt;td&gt;Simple text&lt;/td&gt;&lt;/tr&gt;'<span style="color: #000000;">);
+$(</span>'body'<span style="color: #000000;">).append(tableRow);
+
+</span><span style="color: #0000ff;">var</span> tableRow = stringToDom('&lt;tr&gt;&lt;td&gt;Simple text&lt;/td&gt;&lt;/tr&gt;'<span style="color: #000000;">);
+document.querySelector(</span>'body').appendChild(tableRow);</pre>
+</div>
+<p><span style="line-height: 1.5;">从这个页面的表面上看，没有什么不同。但是我们通过chrome的开发工具查看生成的HTML标记的话，会得到一个有趣的结果，创建了一个文本元素。</span></p>
+<p>貌似我们的stringToDom 只创建了一个文本节点而不是tr标签。但是jquery却不知何故可以正常运行。问题的原因是在浏览器端是通过解析器来解析含有HTML元素的字符串的。解析器会忽略掉那些放错上下文位置的标记，因此我们只获得了文本节点。row标签没有包含在正确的table标签中，这对浏览器的解析器来说就是不合法的。</p>
+<p>jquery通过创建正确的上下文后然后做些转换，可以成功的解决这个问题。如果我们深入到源码中可以看到下面的一个映射：</p>
+<div class="cnblogs_code">
+<pre> <span style="color: #0000ff;">var</span> wrapMap =<span style="color: #000000;"> {
+   option: [</span>1, '&lt;select multiple="multiple"&gt;', '&lt;/select&gt;'<span style="color: #000000;">],
+   legend: [</span>1, '&lt;fieldset&gt;', '&lt;/fieldset&gt;'<span style="color: #000000;">],
+   area: [</span>1, '&lt;map&gt;', '&lt;/map&gt;'<span style="color: #000000;">],
+   param: [</span>1, '&lt;object&gt;', '&lt;/object&gt;'<span style="color: #000000;">],
+   thead: [</span>1, '&lt;table&gt;', '&lt;/table&gt;'<span style="color: #000000;">],
+   tr: [</span>2, '&lt;table&gt;&lt;tbody&gt;', '&lt;/tbody&gt;&lt;/table&gt;'<span style="color: #000000;">],
+   col: [</span>2, '&lt;table&gt;&lt;tbody&gt;&lt;/tbody&gt;&lt;colgroup&gt;', '&lt;/colgroup&gt;&lt;/table&gt;'<span style="color: #000000;">],
+   td: [</span>3, '&lt;table&gt;&lt;tbody&gt;&lt;tr&gt;', '&lt;/tr&gt;&lt;/tbody&gt;&lt;/table&gt;'<span style="color: #000000;">],
+   _default: [</span>1, '&lt;div&gt;', '&lt;/div&gt;'<span style="color: #000000;">]
+ };
+ wrapMap.optgroup </span>=<span style="color: #000000;"> wrapMap.option;
+ wrapMap.tbody </span>= wrapMap.tfoot = wrapMap.colgroup = wrapMap.caption =<span style="color: #000000;"> wrapMap.thead;
+ wrapMap.th </span>= wrapMap.td;</pre>
+</div>
+<p><span style="line-height: 1.5;">任何一个需要特殊处理的元素都对应到一个数组中，目的就是为了构建一个正确的DOM节点。例如，对于tr元素，我们要创建一个带有tbody的table中，需要包裹两层。</span></p>
+<p>虽然有了map，但是我们还是得先去查找到字符串中的结束标签是啥。下面的代码可以从<code class=" language-javascript"><span class="token operator">&lt;tr<span class="token operator">&gt;<span class="token operator">&lt;td<span class="token operator">&gt;Simple text<span class="token operator">&lt;<span class="token operator">/td<span class="token operator">&gt;<span class="token operator">&lt;<span class="token operator">/tr<span class="token operator">&gt;</span></span></span></span></span></span></span></span></span></span></code>抽取出tr标签。</p>
+<div class="cnblogs_code">
+<pre><span style="color: #0000ff;">var</span> match = /&lt;\s*\w.*?&gt;/<span style="color: #000000;">g.exec(str);
+</span><span style="color: #0000ff;">var</span> tag = match[0].replace(/&lt;/g, '').replace(/&gt;/g, '');</pre>
+</div>
+<p><span style="line-height: 1.5;">剩下来要做的就是找到属性上下文，然后返回DOM元素。下面是stringToDom方法的最终版本：</span></p>
+<div class="cnblogs_code">
+<pre><span style="color: #0000ff;">var</span> stringToDom = <span style="color: #0000ff;">function</span><span style="color: #000000;">(str) {
+  </span><span style="color: #0000ff;">var</span> wrapMap =<span style="color: #000000;"> {
+    option: [</span>1, '&lt;select multiple="multiple"&gt;', '&lt;/select&gt;'<span style="color: #000000;">],
+    legend: [</span>1, '&lt;fieldset&gt;', '&lt;/fieldset&gt;'<span style="color: #000000;">],
+    area: [</span>1, '&lt;map&gt;', '&lt;/map&gt;'<span style="color: #000000;">],
+    param: [</span>1, '&lt;object&gt;', '&lt;/object&gt;'<span style="color: #000000;">],
+    thead: [</span>1, '&lt;table&gt;', '&lt;/table&gt;'<span style="color: #000000;">],
+    tr: [</span>2, '&lt;table&gt;&lt;tbody&gt;', '&lt;/tbody&gt;&lt;/table&gt;'<span style="color: #000000;">],
+    col: [</span>2, '&lt;table&gt;&lt;tbody&gt;&lt;/tbody&gt;&lt;colgroup&gt;', '&lt;/colgroup&gt;&lt;/table&gt;'<span style="color: #000000;">],
+    td: [</span>3, '&lt;table&gt;&lt;tbody&gt;&lt;tr&gt;', '&lt;/tr&gt;&lt;/tbody&gt;&lt;/table&gt;'<span style="color: #000000;">],
+    _default: [</span>1, '&lt;div&gt;', '&lt;/div&gt;'<span style="color: #000000;">]
+  };
+  wrapMap.optgroup </span>=<span style="color: #000000;"> wrapMap.option;
+  wrapMap.tbody </span>= wrapMap.tfoot = wrapMap.colgroup = wrapMap.caption =<span style="color: #000000;"> wrapMap.thead;
+  wrapMap.th </span>=<span style="color: #000000;"> wrapMap.td;
+  </span><span style="color: #0000ff;">var</span> element = document.createElement('div'<span style="color: #000000;">);
+  </span><span style="color: #0000ff;">var</span> match = /&lt;\s*\w.*?&gt;/<span style="color: #000000;">g.exec(str);
+
+  </span><span style="color: #0000ff;">if</span>(match != <span style="color: #0000ff;">null</span><span style="color: #000000;">) {
+    </span><span style="color: #0000ff;">var</span> tag = match[0].replace(/&lt;/g, '').replace(/&gt;/g, ''<span style="color: #000000;">);
+    </span><span style="color: #0000ff;">var</span> map = wrapMap[tag] ||<span style="color: #000000;"> wrapMap._default, element;
+    str </span>= map[1] + str + map[2<span style="color: #000000;">];
+    element.innerHTML </span>=<span style="color: #000000;"> str;
+    </span><span style="color: #008000;">//</span><span style="color: #008000;"> Descend through wrappers to the right content</span>
+    <span style="color: #0000ff;">var</span> j = map[0]+1<span style="color: #000000;">;
+    </span><span style="color: #0000ff;">while</span>(j--<span style="color: #000000;">) {
+      element </span>=<span style="color: #000000;"> element.lastChild;
+    }
+  } </span><span style="color: #0000ff;">else</span><span style="color: #000000;"> {
+    </span><span style="color: #008000;">//</span><span style="color: #008000;"> if only text is passed</span>
+    element.innerHTML =<span style="color: #000000;"> str;
+    element </span>=<span style="color: #000000;"> element.lastChild;
+  }
+  </span><span style="color: #0000ff;">return</span><span style="color: #000000;"> element;
+}</span></pre>
+</div>
+<p><span style="line-height: 1.5;">注意下，我们有个判断 match != null条件用于判断string中是否有tag标签，如果没有我们只是简单的返回文本节点。这里我们传入了正确的标签，所以浏览器能够创建一个正常的DOM节点了。在代码的最后部分可以看到，通过使用一个while循环，我们一直深入到我们想要的那个tag节点后返回给了调用者。</span></p>
+<p>下面让我们窥探下AngularJS中经常的依赖注入。</p>
+<p><strong>揭秘AngularJS中的依赖注入</strong></p>
+<p>当我们第一次使用AngularJS的时候，我们肯定对它的双向数据绑定留下了深刻的影响，那第二个值得关注的就是它那魔法般的依赖注入。下面看下简单的例子：</p>
+<div class="cnblogs_code">
+<pre><span style="color: #0000ff;">function</span><span style="color: #000000;"> TodoCtrl($scope, $http) {
+  $http.get(</span>'users/users.json').success(<span style="color: #0000ff;">function</span><span style="color: #000000;">(data) {
+    $scope.users </span>=<span style="color: #000000;"> data;
+  });
+}</span></pre>
+</div>
+<p><span style="line-height: 1.5;">这是非常经典的AngularJS控制器。它通过一个http请求来获取一个json文件中的数据，然后放把数据放到当前的scope中。我们不只是TodoCtrl 方法-我们也没有任何机会去传递参数。但是框架做到了。那$scope和$http变量时从哪里来的呢？这真实一个超级酷的特性，简直就是一个神奇的魔法。让我们来看下它的工作原理。</span></p>
+<p>假如我们系统中需要一个展示用户列表的JS函数。我们需要一个可以把生成的HTML设置到DOM节点的方法，一个封装了获得数据的Ajax请求的对象。为了简化例子，我们mock了数据和http请求。</p>
+<div class="cnblogs_code">
+<pre><span style="color: #0000ff;">var</span> dataMockup = ['John', 'Steve', 'David'<span style="color: #000000;">];
+</span><span style="color: #0000ff;">var</span> body = document.querySelector('body'<span style="color: #000000;">);
+</span><span style="color: #0000ff;">var</span> ajaxWrapper =<span style="color: #000000;"> {
+  get: </span><span style="color: #0000ff;">function</span><span style="color: #000000;">(path, cb) {
+    console.log(path </span>+ ' requested'<span style="color: #000000;">);
+    cb(dataMockup);
+  }
+}</span></pre>
+</div>
+<p><span style="line-height: 1.5;">我们将使用body标签来承载内容。ajaxWrapper是一个触发请求的对象，dataMockup 是包含数据的数组。看下我们怎么使用它：</span></p>
+<div class="cnblogs_code">
+<pre><span style="color: #0000ff;">var</span> displayUsers = <span style="color: #0000ff;">function</span><span style="color: #000000;">(domEl, ajax) {
+  ajax.get(</span>'/api/users', <span style="color: #0000ff;">function</span><span style="color: #000000;">(users) {
+    </span><span style="color: #0000ff;">var</span> html = ''<span style="color: #000000;">;
+    </span><span style="color: #0000ff;">for</span>(<span style="color: #0000ff;">var</span> i=0; i &lt; users.length; i++<span style="color: #000000;">) {
+      html </span>+= '&lt;p&gt;' + users[i] + '&lt;/p&gt;'<span style="color: #000000;">;
+    }
+    domEl.innerHTML </span>=<span style="color: #000000;"> html;
+  });
+}</span></pre>
+</div>
+<p><span style="line-height: 1.5;">当然，如果我们运行displayUsers(body, ajaxWrapper)我们应该可以看到3个名字展示在页面上，同时在控制台上应该会输出/api/users这个log。我们可以说我们的方法依赖两个东东：body和ajaxWrapper。但是现在我们的目标是在不传递参数的情况下也能正常工作，我们希望的只通过调用displayUsers()也能得到相同的结果。如果我们直接使用如上的方法进行调用，会看到如下结果：</span></p>
+<blockquote>
+<p>Uncaught TypeError: Cannot read property &lsquo;get&rsquo; of undefined</p>
+</blockquote>
+<p>这是因为ajax参数没有被定义。</p>
+<p>大多数提供依赖注入机制的框架都会有一个injector。如果使用了那个依赖，那我们需要在injector中注册下。</p>
+<p>让我们来创建我们自己的injector：</p>
+<div class="cnblogs_code">
+<pre><span style="color: #0000ff;">var</span> injector =<span style="color: #000000;"> {
+  storage: {},
+  register: </span><span style="color: #0000ff;">function</span><span style="color: #000000;">(name, resource) {
+    </span><span style="color: #0000ff;">this</span>.storage[name] =<span style="color: #000000;"> resource;
+  },
+  resolve: </span><span style="color: #0000ff;">function</span><span style="color: #000000;">(target) {
+
+  }
+};</span></pre>
+</div>
+<p><span style="line-height: 1.5;">我们只需要两个方法。第一个就是register，他接收依赖然后存储起来。第二个方法resolve接收一个有依赖模块的函数target作为参数。这里的一个关键点是我们要控制好不能让注入器调用我们的方法。resolve方法中返回了一个包含target()的闭包。看下代码：</span></p>
+<div class="cnblogs_code">
+<pre>resolve: <span style="color: #0000ff;">function</span><span style="color: #000000;">(target) {
+  </span><span style="color: #0000ff;">return</span> <span style="color: #0000ff;">function</span><span style="color: #000000;">() {
+    target();
+  };
+}</span></pre>
+</div>
+<p><span style="line-height: 1.5;">这样我们就有可以在不改变应用流程的情况下去访问函数了。injector当前还是一个独立的而且不包含任何逻辑的方法。</span></p>
+<p>当然，把displayUsers 传递给resove函数还是不行</p>
+<div class="cnblogs_code">
+<pre>displayUsers =<span style="color: #000000;"> injector.resolve(displayUsers);
+displayUsers();</span></pre>
+</div>
+<p><span style="line-height: 1.5;">还是报错。下一步就是找出target参数到底需要什么，是否都是它的依赖？这里我们可以参考下AngularJS。同样我自己深入看了下源码找到了下面这段代码：</span></p>
+<div class="cnblogs_code">
+<pre><span style="color: #0000ff;">var</span> FN_ARGS = /^function\s*[^\(]*\(\s*([^\)]*)\)/<span style="color: #000000;">m;
+</span><span style="color: #0000ff;">var</span> STRIP_COMMENTS = /((\/\/.*$)|(\/\*[\s\S]*?\*\/))/<span style="color: #000000;">mg;
+...
+</span><span style="color: #0000ff;">function</span><span style="color: #000000;"> annotate(fn) {
+  ...
+  fnText </span>= fn.toString().replace(STRIP_COMMENTS, ''<span style="color: #000000;">);
+  argDecl </span>=<span style="color: #000000;"> fnText.match(FN_ARGS);
+  ...
+}</span></pre>
+</div>
+<p><span style="line-height: 1.5;">我们忽略掉一些细节代码，只看我们需要的。annotate方法和我们的resolve方法很像。它转换传递过去的target为字符串，删除掉注释代码，然后抽取其中的参数。让我们看下它的执行结果：</span></p>
+<div class="cnblogs_code">
+<pre>resolve: <span style="color: #0000ff;">function</span><span style="color: #000000;">(target) {
+  </span><span style="color: #0000ff;">var</span> FN_ARGS = /^function\s*[^\(]*\(\s*([^\)]*)\)/<span style="color: #000000;">m;
+  </span><span style="color: #0000ff;">var</span> STRIP_COMMENTS = /((\/\/.*$)|(\/\*[\s\S]*?\*\/))/<span style="color: #000000;">mg;
+  fnText </span>= target.toString().replace(STRIP_COMMENTS, ''<span style="color: #000000;">);
+  argDecl </span>=<span style="color: #000000;"> fnText.match(FN_ARGS);
+  console.log(argDecl);
+  </span><span style="color: #0000ff;">return</span> <span style="color: #0000ff;">function</span><span style="color: #000000;">() {
+    target();
+  }
+}</span></pre>
+</div>
+<p><span style="line-height: 1.5;">下面是输出结果</span></p>
+<p><img style="line-height: 1.5;" title="Revealing the AngularJS dependency injection" src="28991796196267.jpg" alt="Revealing the AngularJS dependency injection" width="756" height="130"></p>
+<p>如果我们去查看第二个元素argDecl数组的话，我们会看到它所需要依赖对象。这正是我们需要的，因为通过名字我们就能从storage中查到依赖的资源了。下面的这个版本能够完成我们的目标：</p>
+<div class="cnblogs_code">
+<pre>resolve: <span style="color: #0000ff;">function</span><span style="color: #000000;">(target) {
+  </span><span style="color: #0000ff;">var</span> FN_ARGS = /^function\s*[^\(]*\(\s*([^\)]*)\)/<span style="color: #000000;">m;
+  </span><span style="color: #0000ff;">var</span> STRIP_COMMENTS = /((\/\/.*$)|(\/\*[\s\S]*?\*\/))/<span style="color: #000000;">mg;
+  fnText </span>= target.toString().replace(STRIP_COMMENTS, ''<span style="color: #000000;">);
+  argDecl </span>= fnText.match(FN_ARGS)[1].split(/, ?/<span style="color: #000000;">g);
+  </span><span style="color: #0000ff;">var</span> args =<span style="color: #000000;"> [];
+  </span><span style="color: #0000ff;">for</span>(<span style="color: #0000ff;">var</span> i=0; i&lt;argDecl.length; i++<span style="color: #000000;">) {
+    </span><span style="color: #0000ff;">if</span>(<span style="color: #0000ff;">this</span><span style="color: #000000;">.storage[argDecl[i]]) {
+      args.push(</span><span style="color: #0000ff;">this</span><span style="color: #000000;">.storage[argDecl[i]]);
+    }
+  }
+  </span><span style="color: #0000ff;">return</span> <span style="color: #0000ff;">function</span><span style="color: #000000;">() {
+    target.apply({}, args);
+  }
+}</span></pre>
+</div>
+<p><span style="line-height: 1.5;">注意我们使用了.split(/, ?/g)把字符串domEl、ajax转换成了数组。接下来我们来校验依赖是否注册了，如果注册的话我们把它传递给target函数作为参数。注入器的代码应该是这样的：</span></p>
+<div class="cnblogs_code">
+<pre>injector.register('domEl'<span style="color: #000000;">, body);
+injector.register(</span>'ajax'<span style="color: #000000;">, ajaxWrapper);
+
+displayUsers </span>=<span style="color: #000000;"> injector.resolve(displayUsers);
+displayUsers();</span></pre>
+</div>
+<p><span style="line-height: 1.5;">这样实现的好处是我们能够可以吧DOM和ajaxWrapper注入到更多的方法中。这不需要把一个对象从一个类传递到另一个类，它只有register和resolve方法。</span></p>
+<p>当然我们的injector还不够完美，还有提升的空间，比如支持scope定义。target函数当前是一旦被调用时候就会创建一个新的scope，但是通常我们希望可以传递我们自己的scope。我们还可以让依赖支持用户自定义的参数。</p>
+<p>如果想我们的代码在最小化之后也能正常工作的话，那injector会变的更加复杂。我们知道，最小化工具会替换函数、变量甚至方法参数的名字。而我们的逻辑都是依赖这些名字的，所以我们应该考虑下。我们从AngularJS中找到了一个解决方案：</p>
+<div class="cnblogs_code">
+<pre>displayUsers = injector.resolve(['domEl', 'ajax', displayUsers]);</pre>
+</div>
+<p><span style="line-height: 1.5;">我们不只传递displayUsers，我们还传递依赖对象的名字。</span></p>
+<p><strong>使用Ember的计算属性</strong></p>
+<p>Ember是当前最流行框架之一。它有很多有用的特性。其中计算属性非常有趣。计算属性就是用一个函数来充当属性。让我们来看下Ember文档中的一个简单例子：</p>
+<div class="cnblogs_code">
+<pre>App.Person =<span style="color: #000000;"> Ember.Object.extend({
+  firstName: </span><span style="color: #0000ff;">null</span><span style="color: #000000;">,
+  lastName: </span><span style="color: #0000ff;">null</span><span style="color: #000000;">,
+  fullName: </span><span style="color: #0000ff;">function</span><span style="color: #000000;">() {
+    </span><span style="color: #0000ff;">return</span> <span style="color: #0000ff;">this</span>.get('firstName') + ' ' + <span style="color: #0000ff;">this</span>.get('lastName'<span style="color: #000000;">);
+  }.property(</span>'firstName', 'lastName'<span style="color: #000000;">)
+});
+</span><span style="color: #0000ff;">var</span> ironMan =<span style="color: #000000;"> App.Person.create({
+  firstName: </span>"Tony"<span style="color: #000000;">,
+  lastName:  </span>"Stark"<span style="color: #000000;">
+});
+ironMan.get(</span>'fullName') <span style="color: #008000;">//</span><span style="color: #008000;"> "Tony Stark"</span></pre>
+</div>
+<p><span style="line-height: 1.5;">这里有一个类定义了firstName和lastName属性。计算属性fullName返回一个组装后的人的全名字符串。这里比较陌生的的地方是我们使用.property方法跟着函数后面赋值给fullName。我个人从没有在哪里看到过这种写法。同样，我从源码中找到了答案：</span></p>
+<div class="cnblogs_code">
+<pre>Function.prototype.property = <span style="color: #0000ff;">function</span><span style="color: #000000;">() {
+  </span><span style="color: #0000ff;">var</span> ret = Ember.computed(<span style="color: #0000ff;">this</span><span style="color: #000000;">);
+  </span><span style="color: #008000;">//</span><span style="color: #008000;"> ComputedProperty.prototype.property expands properties; no need for us to</span>
+  <span style="color: #008000;">//</span><span style="color: #008000;"> do so here.</span>
+  <span style="color: #0000ff;">return</span><span style="color: #000000;"> ret.property.apply(ret, arguments);
+};</span></pre>
+</div>
+<p><span style="line-height: 1.5;">这里我们看到它在Function的原型对象中增加了一个新的属性property。这对于定义一个类来说，是一个非常好的运行逻辑的途径。</span></p>
+<p>Ember使用get、set来操作对象属性。这简化了计算属性的实现，因为在我们操作中间忽略掉了一个封装层。但是更加有趣的是我们是否可以在JS原生对象上使用计算属性呢。看下面的例子：</p>
+<div class="cnblogs_code">
+<pre><span style="color: #0000ff;">var</span> User =<span style="color: #000000;"> {
+  firstName: </span>'Tony'<span style="color: #000000;">,
+  lastName: </span>'Stark'<span style="color: #000000;">,
+  name: </span><span style="color: #0000ff;">function</span><span style="color: #000000;">() {
+    </span><span style="color: #008000;">//</span><span style="color: #008000;"> getter + setter</span>
+<span style="color: #000000;">  }
+};
+
+console.log(User.name); </span><span style="color: #008000;">//</span><span style="color: #008000;"> Tony Stark</span>
+User.name = 'John Doe'<span style="color: #000000;">;
+console.log(User.firstName); </span><span style="color: #008000;">//</span><span style="color: #008000;"> John</span>
+console.log(User.lastName); <span style="color: #008000;">//</span><span style="color: #008000;"> Doe</span></pre>
+</div>
+<p><span style="line-height: 1.5;">name是一个普通的对象属性，但是这里被赋予了一个方法，可以设定或者获取到firstName和lastName。</span></p>
+<p>JS值有个内置的特性可以帮助我们实现我们的想法。接着看下面的代码：</p>
+<div class="cnblogs_code">
+<pre><span style="color: #0000ff;">var</span> User =<span style="color: #000000;"> {
+  firstName: </span>'Tony'<span style="color: #000000;">,
+  lastName: </span>'Stark'<span style="color: #000000;">
+};
+Object.defineProperty(User, </span>"name"<span style="color: #000000;">, {
+  get: </span><span style="color: #0000ff;">function</span><span style="color: #000000;">() { 
+    </span><span style="color: #0000ff;">return</span> <span style="color: #0000ff;">this</span>.firstName + ' ' + <span style="color: #0000ff;">this</span><span style="color: #000000;">.lastName;
+  },
+  set: </span><span style="color: #0000ff;">function</span><span style="color: #000000;">(value) { 
+    </span><span style="color: #0000ff;">var</span> parts = value.toString().split(/ /);
+    <span style="color: #0000ff;">this</span>.firstName = parts[0<span style="color: #000000;">];
+    </span><span style="color: #0000ff;">this</span>.lastName = parts[1] ? parts[1] : <span style="color: #0000ff;">this</span><span style="color: #000000;">.lastName;
+  }
+});</span></pre>
+</div>
+<p><span style="line-height: 1.5;">Object.defineProperty方法接受一个上下文、属性名称以及get/set方法。我们要做的就是实现里面的两个方法，仅此而已。我们将运行上面的代码并且能够获得到期望的结果：</span></p>
+<div class="cnblogs_code">
+<pre>console.log(User.name); <span style="color: #008000;">//</span><span style="color: #008000;"> Tony Stark</span>
+User.name = 'John Doe'<span style="color: #000000;">;
+console.log(User.firstName); </span><span style="color: #008000;">//</span><span style="color: #008000;"> John</span>
+console.log(User.lastName); <span style="color: #008000;">//</span><span style="color: #008000;"> Doe</span></pre>
+</div>
+<p><span style="line-height: 1.5;">Object.defineProperty确实是我们需要的，但是我们不想强制每个开发者每次都重写这个方法。我们需要提供一个原生支持的逻辑代码，就类似于Ember的接口。我们只需要一个定义类的方法，在这里，我们会写一个使用函数Computize用来把对象中的函数中传递的名称转换成对象中属性的名称。</span></p>
+<div class="cnblogs_code">
+<pre><span style="color: #0000ff;">var</span> Computize = <span style="color: #0000ff;">function</span><span style="color: #000000;">(obj) {
+  </span><span style="color: #0000ff;">return</span><span style="color: #000000;"> obj;
+}
+</span><span style="color: #0000ff;">var</span> User =<span style="color: #000000;"> Computize({
+  firstName: </span>'Tony'<span style="color: #000000;">,
+  lastName: </span>'Stark'<span style="color: #000000;">,
+  name: </span><span style="color: #0000ff;">function</span><span style="color: #000000;">() {
+    ...
+  }
+});</span></pre>
+</div>
+<p><span style="line-height: 1.5;">我们想使用set来设定名称，同时使用get来获取名称。这和Ember的计算属性非常类似。</span></p>
+<p>现在就让我们增加我们的逻辑代码到函数的原型中吧：</p>
+<div class="cnblogs_code">
+<pre>Function.prototype.computed = <span style="color: #0000ff;">function</span><span style="color: #000000;">() {
+  </span><span style="color: #0000ff;">return</span> { computed: <span style="color: #0000ff;">true</span>, func: <span style="color: #0000ff;">this</span><span style="color: #000000;"> };
+};</span></pre>
+</div>
+<p><span style="line-height: 1.5;">一旦我们增加了上面的代码，我们就会为每个函数增加了一个.computed()方法了。</span></p>
+<div class="cnblogs_code">
+<pre>name: <span style="color: #0000ff;">function</span><span style="color: #000000;">() {
+  ...
+}.computed()</span></pre>
+</div>
+<p><span style="line-height: 1.5;">结果就是name属性不在是函数了，而是一个拥有computed为true的属性和一个func属性的对象。真正的魔法发生在自定义辅助方法的实现上，它贯穿于整个对象的属性上。我们会在计算属性上使用Object.defineProperty：</span></p>
+<div class="cnblogs_code">
+<pre><span style="color: #0000ff;">var</span> Computize = <span style="color: #0000ff;">function</span><span style="color: #000000;">(obj) {
+  </span><span style="color: #0000ff;">for</span>(<span style="color: #0000ff;">var</span> prop <span style="color: #0000ff;">in</span><span style="color: #000000;"> obj) {
+    </span><span style="color: #0000ff;">if</span>(<span style="color: #0000ff;">typeof</span> obj[prop] == 'object' &amp;&amp; obj[prop].computed === <span style="color: #0000ff;">true</span><span style="color: #000000;">) {
+      </span><span style="color: #0000ff;">var</span> func =<span style="color: #000000;"> obj[prop].func;
+      </span><span style="color: #0000ff;">delete</span><span style="color: #000000;"> obj[prop];
+      Object.defineProperty(obj, prop, {
+        get: func,
+        set: func
+      });
+    }
+  }
+  </span><span style="color: #0000ff;">return</span><span style="color: #000000;"> obj;
+}</span></pre>
+</div>
+<p><span style="line-height: 1.5;">注意我们删除了原生的属性名称。在一些浏览器中Object.defineProperty只运行于还没有存在的属性上。</span></p>
+<p>下面是一个使用.computed()方法最终版本的User对象。</p>
+<div class="cnblogs_code">
+<pre><span style="color: #0000ff;">var</span> User =<span style="color: #000000;"> Computize({
+  firstName: </span>'Tony'<span style="color: #000000;">,
+  lastName: </span>'Stark'<span style="color: #000000;">,
+  name: </span><span style="color: #0000ff;">function</span><span style="color: #000000;">() {
+    </span><span style="color: #0000ff;">if</span>(arguments.length &gt; 0<span style="color: #000000;">) {
+      </span><span style="color: #0000ff;">var</span> parts = arguments[0].toString().split(/ /);
+      <span style="color: #0000ff;">this</span>.firstName = parts[0<span style="color: #000000;">];
+      </span><span style="color: #0000ff;">this</span>.lastName = parts[1] ? parts[1] : <span style="color: #0000ff;">this</span><span style="color: #000000;">.lastName;
+    }
+    </span><span style="color: #0000ff;">return</span> <span style="color: #0000ff;">this</span>.firstName + ' ' + <span style="color: #0000ff;">this</span><span style="color: #000000;">.lastName;
+  }.computed()
+});</span></pre>
+</div>
+<p><span style="line-height: 1.5;">在这个返回全名的函数中可以观察到firstName和lastName的变化。在这里判断是否判断了参数，如果传了参数则把他们分设到firstName和lastName中。</span></p>
+<p>我们已经提过期望的接口，但是我们再来看下：</p>
+<div class="cnblogs_code">
+<pre>console.log(User.name); <span style="color: #008000;">//</span><span style="color: #008000;"> Tony Stark</span>
+User.name = 'John Doe'<span style="color: #000000;">;
+console.log(User.firstName); </span><span style="color: #008000;">//</span><span style="color: #008000;"> John</span>
+console.log(User.lastName); <span style="color: #008000;">//</span><span style="color: #008000;"> Doe</span>
+console.log(User.name); <span style="color: #008000;">//</span><span style="color: #008000;"> John Doe</span></pre>
+</div>
+<p><span style="line-height: 1.5;">下面是CodePen中运行的结果：</span></p>
+<p><strong>疯狂的React模板</strong></p>
+<p>你可能听说过Facebook的框架React。它的构建思想就是一切都是组件。其中感兴趣的就是关于组件的定义。让我们看下如下例子：</p>
+<div class="cnblogs_code">
+<pre><span style="color: #0000ff;">&lt;</span><span style="color: #800000;">script </span><span style="color: #ff0000;">type</span><span style="color: #0000ff;">="text/jsx"</span><span style="color: #0000ff;">&gt;</span><span style="background-color: #f5f5f5; color: #000000;">;
+  </span><span style="background-color: #f5f5f5; color: #008000;">/*</span><span style="background-color: #f5f5f5; color: #008000;">* @jsx React.DOM </span><span style="background-color: #f5f5f5; color: #008000;">*/</span>
+  <span style="background-color: #f5f5f5; color: #0000ff;">var</span><span style="background-color: #f5f5f5; color: #000000;"> HelloMessage </span><span style="background-color: #f5f5f5; color: #000000;">=</span><span style="background-color: #f5f5f5; color: #000000;"> React.createClass({
+    render: </span><span style="background-color: #f5f5f5; color: #0000ff;">function</span><span style="background-color: #f5f5f5; color: #000000;">() {
+      </span><span style="background-color: #f5f5f5; color: #0000ff;">return</span> <span style="background-color: #f5f5f5; color: #000000;">&lt;</span><span style="background-color: #f5f5f5; color: #000000;">div</span><span style="background-color: #f5f5f5; color: #000000;">&gt;</span><span style="background-color: #f5f5f5; color: #000000;">Hello {</span><span style="background-color: #f5f5f5; color: #0000ff;">this</span><span style="background-color: #f5f5f5; color: #000000;">.props.name}</span><span style="background-color: #f5f5f5; color: #000000;">&lt;</span><span style="background-color: #f5f5f5; color: #000000;">/</span><span style="background-color: #f5f5f5; color: #000000;">div&gt;;</span>
+<span style="background-color: #f5f5f5; color: #000000;">    }
+  });
+</span><span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">script</span><span style="color: #0000ff;">&gt;</span>;</pre>
+</div>
+<p><span style="line-height: 1.5;">我看看到这段代码的时候我们会想到这是JS，但是不是合法的，这里的render方法可能会报错。但是这里的手段是这段代码放在了script标签中，同时赋值给了定义的变量中。浏览器不会处理它意味着我们的代码是安全的。React有它自己的解析器，会把定义好的代码转换成合法的JS代码。Facebook的开发者称这种解析器为JSX。JSX解析器大约390k、12000行代码。因此它还是比较复杂的。在本节中，我们将创建一个非常简单，但是功能强大的东东：一个以React风格解析HTML模板的JS类。</span></p>
+<p>Facebook采取的方式是混合使用JS代码和HTML标签。现在假如我们有如下的模板：</p>
+<div class="cnblogs_code">
+<pre><span style="color: #0000ff;">&lt;</span><span style="color: #800000;">script </span><span style="color: #ff0000;">type</span><span style="color: #0000ff;">="text/template"</span><span style="color: #ff0000;"> id</span><span style="color: #0000ff;">="my-content"</span><span style="color: #0000ff;">&gt;</span><span style="background-color: #f5f5f5; color: #000000;">;
+  </span><span style="background-color: #f5f5f5; color: #000000;">&lt;</span><span style="background-color: #f5f5f5; color: #000000;">div class</span><span style="background-color: #f5f5f5; color: #000000;">=</span><span style="background-color: #f5f5f5; color: #000000;">"</span><span style="background-color: #f5f5f5; color: #000000;">content</span><span style="background-color: #f5f5f5; color: #000000;">"</span><span style="background-color: #f5f5f5; color: #000000;">&gt;</span><span style="background-color: #f5f5f5; color: #000000;">;
+    </span><span style="background-color: #f5f5f5; color: #000000;">&lt;</span><span style="background-color: #f5f5f5; color: #000000;">h1</span><span style="background-color: #f5f5f5; color: #000000;">&gt;</span><span style="background-color: #f5f5f5; color: #000000;">;</span><span style="background-color: #f5f5f5; color: #000000;">&lt;%</span><span style="background-color: #f5f5f5; color: #000000;"> title </span><span style="background-color: #f5f5f5; color: #000000;">%&gt;</span><span style="background-color: #f5f5f5; color: #000000;">;</span><span style="background-color: #f5f5f5; color: #000000;">&lt;</span><span style="background-color: #f5f5f5; color: #000000;">/</span><span style="background-color: #f5f5f5; color: #000000;">h1&gt;;</span>
+  <span style="background-color: #f5f5f5; color: #000000;">&lt;</span><span style="background-color: #f5f5f5; color: #000000;">/</span><span style="background-color: #f5f5f5; color: #000000;">div&gt;;</span>
+<span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">script</span><span style="color: #0000ff;">&gt;</span>;</pre>
+</div>
+<p><span style="line-height: 1.5;">增加一个组件：</span></p>
+<div class="cnblogs_code">
+<pre><span style="color: #0000ff;">var</span> Component =<span style="color: #000000;"> {
+  title: </span>'Awesome template'<span style="color: #000000;">,
+  render: </span>'#my-content'<span style="color: #000000;">
+}</span></pre>
+</div>
+<p><span style="line-height: 1.5;">想法是我们指定template id，然后定义要被应用的数据。剩下的就是我们的实现了：连接两个元素的引擎。我们称之为Engine，它应该是这样的：</span></p>
+<div class="cnblogs_code">
+<pre><span style="color: #0000ff;">var</span> Engine = <span style="color: #0000ff;">function</span><span style="color: #000000;">(comp) {
+  </span><span style="color: #0000ff;">var</span> parse = <span style="color: #0000ff;">function</span><span style="color: #000000;">(tplHTML) {
+    </span><span style="color: #008000;">//</span><span style="color: #008000;"> ... magic</span>
+<span style="color: #000000;">  }
+  </span><span style="color: #0000ff;">var</span> tpl =<span style="color: #000000;"> document.querySelector(comp.render);
+  </span><span style="color: #0000ff;">if</span><span style="color: #000000;">(tpl) {
+    </span><span style="color: #0000ff;">var</span> html =<span style="color: #000000;"> parse(tpl.innerHTML);
+    </span><span style="color: #0000ff;">return</span><span style="color: #000000;"> stringToDom(html);
+  }
+}
+</span><span style="color: #0000ff;">var</span> el = Engine(Component);</pre>
+</div>
+<p><span style="line-height: 1.5;">我们将获得script标签里面的内容，然后解析它后生成HTML字符串。在转换HTML为DOM元素之后，把它作为结果返回结束。注意我们用了stringToDom函数，我们在第一节中已经见过了。</span></p>
+<p>现在让我们开始写parse函数。我们首要任务是从表达式中区分出HTML标记。表达式中我们要查找&lt;%和%&gt;之间的字符串。我们使用正则表达式去遍历查找他们：</p>
+<div class="cnblogs_code">
+<pre><span style="color: #0000ff;">var</span> parse = <span style="color: #0000ff;">function</span><span style="color: #000000;">(tplHTML) {
+  </span><span style="color: #0000ff;">var</span> re = /&lt;%([^%&gt;]+)?%&gt;/<span style="color: #000000;">g;
+  </span><span style="color: #0000ff;">while</span>(match =<span style="color: #000000;"> re.exec(tplHTML)) {
+    console.log(match);
+  }
+}</span></pre>
+</div>
+<p><span style="line-height: 1.5;">上述代码的之行结果如下：</span></p>
+<div class="cnblogs_code">
+<pre><span style="color: #000000;">[
+    </span>"&lt;% title %&gt;"<span style="color: #000000;">, 
+    </span>"title"<span style="color: #000000;">, 
+    index: </span>55<span style="color: #000000;">, 
+    input: </span>"&lt;div class="content"&gt;&lt;h1&gt;&lt;% title %&gt;&lt;/h1&gt;&lt;/div&gt;"<span style="color: #000000;">
+]</span></pre>
+</div>
+<p><span style="line-height: 1.5;">这里只有一个表达式，里面的内容是title。比较直观的方法是我们使用JS的replace函数去替换&lt;% title %&gt;为comp 对象中的数据。但是，这种方式只能运行于简单的属性。如果有嵌套对象甚至要使用函数，比如下面的例子：</span></p>
+<div class="cnblogs_code">
+<pre><span style="color: #0000ff;">var</span> Component =<span style="color: #000000;"> {
+  data: {
+    title: </span>'Awesome template'<span style="color: #000000;">,
+    subtitle: </span><span style="color: #0000ff;">function</span><span style="color: #000000;">() {
+      </span><span style="color: #0000ff;">return</span> 'Second title'<span style="color: #000000;">;
+    }
+  },
+  render: </span>'#my-content'<span style="color: #000000;">
+}</span></pre>
+</div>
+<p><span style="line-height: 1.5;">我们不用复杂的解析器，也不用发明一种新的语言，我们只用原生JS。我们要用的就是只有new Function语法。</span></p>
+<div class="cnblogs_code">
+<pre><span style="color: #0000ff;">var</span> fn = <span style="color: #0000ff;">new</span> Function('arg', 'console.log(arg + 1);'<span style="color: #000000;">);
+fn(</span>2); <span style="color: #008000;">//</span><span style="color: #008000;"> outputs 3</span></pre>
+</div>
+<p><span style="line-height: 1.5;">我们能够通过它来创建函数体，而且可以在以后去运行。因此我们需要知道表达式的位置以及它前面的元素。那如果我们使用一个临时的数组和一个游标，那代码应该是这样的：</span></p>
+<div class="cnblogs_code">
+<pre><span style="color: #0000ff;">var</span> parse = <span style="color: #0000ff;">function</span><span style="color: #000000;">(tplHTML) {
+  </span><span style="color: #0000ff;">var</span> re = /&lt;%([^%&gt;]+)?%&gt;/<span style="color: #000000;">g;
+  </span><span style="color: #0000ff;">var</span> code = [], cursor = 0<span style="color: #000000;">;
+  </span><span style="color: #0000ff;">while</span>(match =<span style="color: #000000;"> re.exec(tplHTML)) {
+    code.push(tplHTML.slice(cursor, match.index));
+    code.push({code: match[</span>1]}); <span style="color: #008000;">//</span><span style="color: #008000;"> &lt;-- expression</span>
+    cursor = match.index + match[0<span style="color: #000000;">].length;
+  }
+  code.push(tplHTML.substr(cursor, tplHTML.length </span>-<span style="color: #000000;"> cursor));
+  console.log(code);
+}</span></pre>
+</div>
+<p><span style="line-height: 1.5;">代码的输出结果如下：</span></p>
+<div class="cnblogs_code">
+<pre><span style="color: #000000;">[
+  </span>"&lt;div class="content"&gt;&lt;h1&gt;"<span style="color: #000000;">, 
+  { code: </span>"title"<span style="color: #000000;"> },
+  </span>"&lt;/h1&gt;&lt;/div&gt;"<span style="color: #000000;">
+]</span></pre>
+</div>
+<p><span style="line-height: 1.5;">代码数据数组将会被转换成字符串来作为函数体。举例：</span></p>
+<pre class=" language-javascript"><code class=" language-javascript"><span class="token keyword">return <span class="token string">"&lt;div class=\"content\"&gt;&lt;h1&gt;" <span class="token operator">+ title <span class="token operator">+ <span class="token string">"&lt;/h1&gt;&lt;/div&gt;"<span class="token punctuation">;
+</span></span></span></span></span></span></code></pre>
+<p>输出这个结果还是非常容易的。我们可以写一个循环来遍历代码数据的元素来判断它是字符串还是对象。但是这只能覆盖部分情况。如果我们有如下的模板该咋办呢：</p>
+<div class="cnblogs_code">
+<pre><span style="color: #008000;">//</span><span style="color: #008000;"> component</span>
+<span style="color: #0000ff;">var</span> Component =<span style="color: #000000;"> {
+  title: </span>'Awesome template'<span style="color: #000000;">,
+  colors: [</span>'read', 'green', 'blue'<span style="color: #000000;">],
+  render: </span>'#my-content'<span style="color: #000000;">
+}
+
+</span><span style="color: #008000;">//</span><span style="color: #008000;"> template</span>
+&lt;script type="text/template" id="my-content"&gt;
+    &lt;div class="content"&gt;
+        &lt;h1&gt;&lt;% title %&gt;&lt;/h1&gt;
+        &lt;% <span style="color: #0000ff;">while</span>(c = colors.shift()) { %&gt;
+            &lt;p&gt;&lt;% c %&gt;&lt;/p&gt;
+        &lt;% } %&gt;
+    &lt;/div&gt;
+&lt;/script&gt;</pre>
+</div>
+<p><span style="line-height: 1.5;">我们不能只是连接表达式就能获得颜色列表。因此，我们不用字符串连接字符串，我们要把它们手机起来放到数组中。下面是更新版本的parse函数：</span></p>
+<div class="cnblogs_code">
+<pre><span style="color: #0000ff;">var</span> parse = <span style="color: #0000ff;">function</span><span style="color: #000000;">(tplHTML) {
+  </span><span style="color: #0000ff;">var</span> re = /&lt;%([^%&gt;]+)?%&gt;/<span style="color: #000000;">g;
+  </span><span style="color: #0000ff;">var</span> code = [], cursor = 0<span style="color: #000000;">;
+  </span><span style="color: #0000ff;">while</span>(match =<span style="color: #000000;"> re.exec(tplHTML)) {
+    code.push(tplHTML.slice(cursor, match.index));
+    code.push({code: match[</span>1]}); <span style="color: #008000;">//</span><span style="color: #008000;"> &lt;-- expression</span>
+    cursor = match.index + match[0<span style="color: #000000;">].length;
+  }
+  code.push(tplHTML.substr(cursor, tplHTML.length </span>-<span style="color: #000000;"> cursor));
+  </span><span style="color: #0000ff;">var</span> body = 'var r=[];\n'<span style="color: #000000;">;
+  </span><span style="color: #0000ff;">while</span>(line =<span style="color: #000000;"> code.shift()) {
+    </span><span style="color: #0000ff;">if</span>(<span style="color: #0000ff;">typeof</span> line === 'string'<span style="color: #000000;">) {
+      </span><span style="color: #008000;">//</span><span style="color: #008000;"> escaping quotes</span>
+      line = line.replace(/"/g, '\\"'<span style="color: #000000;">);
+      </span><span style="color: #008000;">//</span><span style="color: #008000;"> removing new lines</span>
+      line = line.replace(/[\r\t\n]/g, ''<span style="color: #000000;">);
+      body </span>+= 'r.push("' + line+ '");\n'<span style="color: #000000;">
+    } </span><span style="color: #0000ff;">else</span><span style="color: #000000;"> {
+      </span><span style="color: #0000ff;">if</span>(line.code.match(/(^( )?(if|for|else|switch|case|break|while|{|}))(.*)?/<span style="color: #000000;">g)) {
+        body </span>+= line.code + '\n'<span style="color: #000000;">;
+      } </span><span style="color: #0000ff;">else</span><span style="color: #000000;"> {
+        body </span>+= 'r.push(' + line.code + ');\n'<span style="color: #000000;">;
+      }
+    }
+  }
+  body </span>+= 'return r.join("");'<span style="color: #000000;">;
+  console.log(body);
+}</span></pre>
+</div>
+<p><span style="line-height: 1.5;">一旦代码数组被填充玩我们就开始构建函数体了。模板的每行都会被存储到一个数组r中。如果这行是字符串，我们会引号进行转义并且去除掉换行符、回车符和tab符，然后增加到数组中。如果是代码，则需要校验是否是合法的JS操作符，如果是JS语法则不会添加到数组中。console.log会有如下输出：</span></p>
+<div class="cnblogs_code">
+<pre><span style="color: #0000ff;">var</span> r=<span style="color: #000000;">[];
+r.push(</span>"&lt;div class=\"content\"&gt;&lt;h1&gt;"<span style="color: #000000;">);
+r.push(title);
+r.push(</span>"&lt;/h1&gt;"<span style="color: #000000;">);
+
+</span><span style="color: #0000ff;">while</span>(c =<span style="color: #000000;"> colors.shift()) { 
+  r.push(</span>"&lt;p&gt;"<span style="color: #000000;">);
+  r.push(c);
+  r.push(</span>"&lt;/p&gt;"<span style="color: #000000;">);
+}
+
+r.push(</span>"&lt;/div&gt;"<span style="color: #000000;">);
+</span><span style="color: #0000ff;">return</span> r.join("");</pre>
+</div>
+<p><span style="line-height: 1.5;">非常好，不是么？这个JS的属性格式化工具，将会获得到我们想要的结果。</span></p>
+<p>剩下要做的事情就是运行我们创建的函数：</p>
+<div class="cnblogs_code">
+<pre>body = 'with(component) {' + body + '}'<span style="color: #000000;">;
+</span><span style="color: #0000ff;">return</span> <span style="color: #0000ff;">new</span> Function('component', body).apply(comp, [comp]);</pre>
+</div>
+<p><span style="line-height: 1.5;">我们通过使用with语句来把上下文设定为component，如果不适用它我们需要使用this.title和this.colors而不是title和colors。</span></p>
+<p><strong>总结</strong></p>
+<p>在一个大的框架和库函数背后都集中了非常睿智的开发者。他们找到的很多招数都非常的琐细的，甚至是神奇的。在这篇文章中，我们总结了这些魔法。在JS世界中，我们可以从它们并且使用他们的代码是非常棒的事情。</p>
+<p>这篇文章的代码都可以从<a href="https://github.com/jnotnull/Revealing-Magic-JavaScript">GitHub</a>中下载到。</p>
+                </div>
+
+                <div class='span3 sidebar'>
+                    <h2>导航栏</h2>
+                    <ul class="nav nav-tabs nav-stacked">
+                             				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/javascriptzdyxhxzsdyjxyzyddf/index.html">javascript中的一些核心知识点以及需要注意的地方</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/[zd]webappdyhzlyzydqdyhdpyjlkkb/index.html">[置顶]【webapp的优化整理】要做移动前端优化的朋友进来看看吧</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/[zd]yddjrwtyjjavascriptsjjzxjsjydjr/index.html">[置顶]【移动端兼容问题研究】javascript事件机制详解（涉及移动兼容）</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/gruntzhb30fzxhsygruntdbqddm/index.html">【grunt整合版】30分钟学会使用grunt打包前端代码</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/gruntdyd30fzxhsygruntdbqddm/index.html">【grunt第一弹】30分钟学会使用grunt打包前端代码</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/gruntdsdgruntzqdsjxmzdyy/index.html">【grunt第三弹】grunt在前端实际项目中的应用</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/gruntded30fzxhsygruntdbqddm02/index.html">【grunt第二弹】30分钟学会使用grunt打包前端代码（02）</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/IScrollsrxxtpyddhadlqs/index.html">【IScroll深入学习】突破移动端黑暗的利器（上）</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/IScrollsrxxjjIScrollynzz/index.html">【IScroll深入学习】解决IScroll疑难杂症</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/iScrollymxx00mniScroll/index.html">【iScroll源码学习00】模拟iScroll</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/iScrollymxx01zbjd/index.html">【iScroll源码学习01】准备阶段</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/iScrollymxx02fjiScrollsghxsjd/index.html">【iScroll源码学习02】分解iScroll三个核心事件点</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/iScrollymxx03iScrollsjjzygdtdsx/index.html">【iScroll源码学习03】iScroll事件机制与滚动条的实现</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/iScrollymxx04flIScrollhx/index.html">【iScroll源码学习04】分离IScroll核心</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/javascriptpxdytyyjc/index.html">【javascript培训第一天】语言基础</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/javascriptpxdstcybl/index.html">【javascript培训第三天】查遗补漏</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/javascriptpxdetDOMyBOM/index.html">【javascript培训第二天】DOM与BOM</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/javascriptjzdsk01mkhbc/index.html">【javascript激增的思考01】模块化编程</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/javascriptjzdsk02mkhyMVC/index.html">【javascript激增的思考02】模块化与MVC</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/javascriptjzdsk03MVVMyKnockout/index.html">【javascript激增的思考03】MVVM与Knockout</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/javascriptjzdsk04MVCyBackbonejs(beta)/index.html">【javascript激增的思考04】MVC与Backbonejs(beta)</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/javascriptmxdxzlrwmyqltkdzb01/index.html">【javascript面向对象之路】让我们一起来坦克大战吧01</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/NodeJSxxbj04xwfbxt/index.html">【NodeJS学习笔记04】新闻发布系统</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/requireJSymxx01ljzgrequireJSdjg/index.html">【requireJS源码学习01】了解整个requireJS的结构</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/requireJSymxx02datamainjzdsx/index.html">【requireJS源码学习02】datamain加载的实现</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/requireJSymxx03xjrequireJSdjzlc/index.html">【requireJS源码学习03】细究requireJS的加载流程</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/UIcjkfygjdrlcjs/index.html">【UI插件】开发一个简单日历插件（上）</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/UIcjjddrlcjxxxMVCsx/index.html">【UI插件】简单的日历插件（下）——学习MVC思想</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/zeptoxxbj01hxff$()/index.html">【zepto学习笔记01】核心方法$()</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/zeptoxxbj01hxff$()b/index.html">【zepto学习笔记01】核心方法$()（补）</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/zeptoxxbj02lsd/index.html">【zepto学习笔记02】零碎点</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/zeptoxxbj03sjjz/index.html">【zepto学习笔记03】事件机制</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/ycmsztjavascriptzdjc/index.html">【一次面试】再谈javascript中的继承</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/ztbackbone01mxModel/index.html">【再探backbone01】模型Model</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/ztbackbone02jhCollection/index.html">【再探backbone02】集合Collection</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/ztbackbone03bkydyyysltgym/index.html">【再探backbone03】博客园单页应用实例（提供源码）</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/ztbackbone04dyyydjslycl/index.html">【再探backbone04】单页应用的基石路由处理</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/ctUnderscorezsmbyq/index.html">【初探Underscore】再说模版引擎</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/ckjavascriptamzAjaxjsxnszddAjax/index.html">【初窥javascript奥秘之Ajax】简述下你所知道的Ajax？</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/ckjavascriptamzsjmpnxnwmyqmdp/index.html">【初窥javascript奥秘之事件冒泡】那些年我们一起冒的泡</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/ckjavascriptamzsjjzldtygdj/index.html">【初窥javascript奥秘之事件机制】论“点透”与“鬼点击”</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/ckjavascriptamzrrzmbddthisnzdxzthiszxnlm/index.html">【初窥javascript奥秘之让人捉摸不定的this】你知道现在this指向哪里吗？？？</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/ckjavascriptamzbbydxbdhlqbcl/index.html">【初窥javascript奥秘之闭包】叶大侠病都好了，求不踩了：）</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/ckjavascriptamzmxdxfzyjc/index.html">【初窥javascript奥秘之面向对象】封装与继承</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/qdmdsjdjgjdnzdljm/index.html">【前端盲点】事件的几个阶段你真的了解么？？？</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/dyyyviewymodelxgsl/index.html">【单页应用】view与model相关梳理</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/dyyyyqldyyybsxjdwbgns/index.html">【单页应用】一起来单页应用吧，实现简单微博功能！（上）</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/dyyyqjkzqappyggxsm/index.html">【单页应用】全局控制器app应该干些什么？</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/dyyywmgrhclkjdcccjgx/index.html">【单页应用】我们该如何处理框架弹出层层级关系？</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/dyyyljMVC/index.html">【单页应用】理解MVC</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/dyyyztxjzviewzjygrhtx/index.html">【单页应用之通信机制】view之间应该如何通信</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/dyyyjkzHistoryxsHistorydgdyyydm/index.html">【单页应用巨坑之History】细数History带给单页应用的噩梦</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/xtszeptofindysyjiosdcjpknrnhtt/index.html">【小贴士】zeptofind元素以及ios弹出键盘可能让你很头疼</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/xtsgytransitionEndanimatedygyqgs/index.html">【小贴士】关于transitionEndanimate的一个有趣故事</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/xtsgzzdbbysjwtdzzmp/index.html">【小贴士】工作中的”闭包“与事件委托的”阻止冒泡“</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/xtstytjavascriptzdreplace/index.html">【小贴士】探一探javascript中的replace</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/xtsxnjpyfixeddgydddt/index.html">【小贴士】虚拟键盘与fixed带给移动端的痛！</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/ttjavascriptsjjzdcsxyl/index.html">【探讨】javascript事件机制底层实现原理</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/mkhbcljrequireJSsxygjddmkjzq/index.html">【模块化编程】理解requireJS实现一个简单的模块加载器</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/zyJavaScriptmfjmtsdqlxkjzbfgndcljz/index.html">【转】【译】JavaScript魔法揭秘探索当前流行框架中部分功能的处理机制</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/zxjavascriptgszl01javascriptcszds/index.html">【追寻javascript高手之路01】javascript参数知多少？</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/zxjavascriptgszl02blzyyzds/index.html">【追寻javascript高手之路02】变量、作用域知多少？</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/zxjavascriptgszl03javascriptdxdld/index.html">【追寻javascript高手之路03】javascript对象大乱斗</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/zxjavascriptgszl04ljprototype/index.html">【追寻javascript高手之路04】理解prototype</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/zxjavascriptgszl05ljsjl/index.html">【追寻javascript高手之路05】理解事件流</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/zgbj04zxzzsj(2)/index.html">【重构笔记04】重新组织数据(2)</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/zgbj05jhtjbds/index.html">【重构笔记05】简化条件表达式</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/zgbj06jhhsdy/index.html">【重构笔记06】简化函数调用</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/ycmshgttbxysjfl/index.html">一次面试回顾——探讨表现与数据分离</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/dhzwebappzdxz/index.html">动画在webapp中的现状</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/ysandriodlqhthdomclicksjqtsxwttj/index.html">原生andriod浏览器回退后dom（click）事件全体失效问题探究</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/scsbdjxysdsbsjytouchsjdnxs/index.html">手持设备点击响应速度，鼠标事件与touch事件的那些事</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/mnbjQueryzeptohxymfx/index.html">迷你版jQuery——zepto核心源码分析</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/dbsgzdlwmlyqxjdddomxzqb/index.html">都别说工资低了，我们来一起写简单的dom选择器吧！</a></li>
+    				                                         
+                    </ul>
+                </div>
+            </div>
+
+        </div>
+    </body>
+</html>

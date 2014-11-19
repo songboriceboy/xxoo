@@ -1,0 +1,131 @@
+﻿<!DOCTYPE html>
+
+<html lang="zh">
+    <head>
+        <meta charset="utf-8">
+        <meta name="description" content="android,ios" />
+        <meta name="keywords" content="android,ios" />
+
+        <title>叶小钗</title>
+        <style type='text/css'>
+            body {
+                background-color: #CCC;
+            }
+        </style>
+        <link rel="stylesheet" href="../../css/bootstrap.css" />
+    </head>
+
+    <body>
+        <div class="container">
+
+            <h1>叶小钗</h1>
+
+            <div class='navbar navbar-inverse'>
+                <div class='navbar-inner nav-collapse' style="height: auto;">
+                    <ul class="nav">
+                              				<li><a href="http://songboriceboy.github.io/xxoo/html/blade/index.html">blade</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/css/index.html">css</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/HTML5&CSS3/index.html">HTML5&CSS3</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/index.html">javascript</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Javaxx/index.html">Java学习</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/nodejs/index.html">nodejs</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/requirejs/index.html">requirejs</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/index.html">Web前端</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/xxgw/index.html">学习感悟</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/gzdd/index.html">工作点滴</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/jkxx/index.html">接口学习</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/wfl/index.html">未分类</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/ydkf/index.html">移动开发</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/sjms/index.html">设计模式</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/mst/index.html">面试题</a></li>
+    				                      </ul>
+                </div>
+            </div>
+
+            <div id='content' class='row-fluid'>
+
+                <div class='span9 main'>
+				<div style="color:blue" align=center>【NodeJS学习笔记01】不学就老了</div><br><h1>前言</h1>
+<p>再不学nodeJs，我们就老了......在HTML5大浪袭来的时候，很多先辈就开始了NodeJs之旅，而那时我还在做服务器端的程序<br>后来转成前端，和梯队的距离已经很大了，因为我会服务器端语言，还干了很久，所以至今才开始学习NodeJs，向完整的前端前进<br>这次学习NodeJs的计划是：<br>① 1-2周学习基础知识<br>② 1周左右开发一个简单项目<br>③ 利用NodeJs开发一套用于移动端调试的工具<br>④ 打包相关（这个可能比较远了）</p>
+<h4>NodeJs特点</h4>
+<p>① 异步<br>从文件读取到网络请求，NodeJs皆以异步完成，回调函数占据重要作用，在编程模型上Node是领先的</p>
+<p>② 事件回调<br>事件回调让程序变得轻巧，但是具体怎么样还是取决于程序员。但是回调函数在阅读上其实还是有一定难度的</p>
+<p>③ 单线程<br>Node是单线程的，如果多线程的话，这门语言水又深了，问几句进程中的通信时很讨厌的，但线程也没有死锁等问题<br>但是性能相关就有问题了，因为不能利用多核；</p>
+<h1>模块机制/CommonJs</h1>
+<p>我们原来做服务器端的开发，如果没有很好的组织代码的话，后期维护非常困难，所以才会有什么MVC，什么三层架构<br>而现在前端的业务逻辑逐向后端靠拢，就单页应用来说，已经超过后端的程序逻辑<br>页面view不停的增加会带来js代码量的激增，如何很好的管理我们的前端代码成了一个问题，所以requireJs出现了......<br>PS：尼玛这段和nodeJs有一毛钱关系哇......<br>javascript是没有模块化系统的，于是就有CommonJs的提出，让js具备开发大型应用的基础</p>
+<h2>模块引用</h2>
+<p>我们如果要引用一个模块，比如数学计算相关：</p>
+<div class="cnblogs_code">
+<pre><span style="color: #0000ff;">var</span> math = require('math');</pre>
+</div>
+<h2>模块定义</h2>
+<p>我们如果要定义自己的模块可以这样干</p>
+<div class="cnblogs_code">
+<pre>exports.add = <span style="color: #0000ff;">function</span><span style="color: #000000;"> () {
+  </span><span style="color: #0000ff;">return</span><span style="color: #000000;"> sum;
+}</span></pre>
+</div>
+<p>如果此函数在math中定义的话，就能使用了</p>
+<div class="cnblogs_code">
+<pre>math.add();</pre>
+</div>
+<h2>模块标识</h2>
+<p>模块标识就是传递给require的参数，需要为驼峰命名，指向的是一个文件路径，这里和requireJS很类似的</p>
+<h2>模块实现</h2>
+<p>Node中模块实现分为两类，一种是系统级别的核心模块，一种是用户编写的文件模块<br>核心模块在编译过程被翻译成了二进制文件，Node进程启动后，一些核心的模块会直接加载进内存（文件定位、编译执行）<br>文件模块需要动态加载，速度相对慢一点<br>但是一旦加载后，那些文件便会被缓存，二次引入时候便会读取缓存文件（编译后的文件）<br>这里扯远一点，我们在使用underscore过程中，会编译Html形成模板函数（他真的只是一个函数），其实这个就可以做缓存<br>在部署项目之前保存编译过后的函数，去掉html模板文件（优化效果不知）</p>
+<p>在node中，每个模块都是一个对象：</p>
+<div class="cnblogs_code">
+<pre><span style="color: #0000ff;">function</span><span style="color: #000000;"> Module(id, parent) {
+  </span><span style="color: #0000ff;">this</span>.id =<span style="color: #000000;"> id;
+  </span><span style="color: #0000ff;">this</span>.exports =<span style="color: #000000;"> {};
+  </span><span style="color: #008000;">//</span><span style="color: #008000;">parent是关键字，不应该乱用</span>
+  <span style="color: #0000ff;">this</span>.parent =<span style="color: #000000;"> parent;
+  </span><span style="color: #0000ff;">if</span> (parent &amp;&amp;<span style="color: #000000;"> parent.children) {
+    parent.children.push(</span><span style="color: #0000ff;">this</span><span style="color: #000000;">);
+  }
+  </span><span style="color: #0000ff;">this</span>.filename = <span style="color: #0000ff;">null</span><span style="color: #000000;">;
+  </span><span style="color: #0000ff;">this</span>.loaded = <span style="color: #0000ff;">false</span><span style="color: #000000;">;
+  </span><span style="color: #0000ff;">this</span>.children =<span style="color: #000000;"> [];
+}</span></pre>
+</div>
+<p>编译和执行时引入文件模块的最后一个阶段，定位到具体文件后，node会新建一个模块对象，然后根据路径载入并编译<br>每一个编译成功的模块都会将其文件路径作为索引缓存在Module._cache上</p>
+<p>每个模块文件都存在require、exports、module三个变量，但是在文件中并未定义（__filename__、__dirname__ 变量也是）<br>其实在编译过程中，Node对javascript文件内容进行了头尾包装（相当于自定义函数传入window）</p>
+<div class="cnblogs_code">
+<pre>(<span style="color: #0000ff;">function</span><span style="color: #000000;"> (exports, require, module, __filename__, __dirname__) { 
+  </span><span style="color: #0000ff;">var</span> math = require('math'<span style="color: #000000;">);
+  exports.area </span>= <span style="color: #0000ff;">function</span><span style="color: #000000;"> (radius) {
+    </span><span style="color: #0000ff;">return</span> ''<span style="color: #000000;">;
+  };
+});</span></pre>
+</div>
+<p>这样，模块与模块之间做了隔离，不会互相影响，这里和underscore的编译有些类似......</p>
+<h1>包与NPM</h1>
+<p>Node组织了自身的核心模块，所以第三方文件模块可以有序的编写和使用，但是在第三方模块中，模块与模块之间仍然散列在各地<br>相互之间不能直接引用，在模块外包和NPM则是将联系建立起来的一种机制<br>PS：很多模块会形成一个包，这个包的概念和java包的概念，才#程序集的概念应该相似</p>
+<p>一个包结构解压后会形成几个文件：<br>① package.json 描述文件<br>② bin 可执行二进制目录<br>③ lib javascript代码目录<br>④ doc 文档（尼玛基本没有）<br>⑤ test demo</p>
+<p>以上都是CommonJS包的规范的一些东西，但是我们稍微了解一下便可（初学嘛），NPM则需要熟练掌握，借助NPM我们可以熟练安装管理包</p>
+<p>安装依赖包<br>安装依赖包是常用方法：</p>
+<div class="cnblogs_code">
+<pre>npm install express</pre>
+</div>
+<p>执行后就会在当前目录下创建node_modules目录，然后再其下面创建express目录......<br>PS：express是NodeJs上流行的web开发框架，帮助我们快速开发一个web应用<br>安装结束后就可调用了：</p>
+<div class="cnblogs_code">
+<pre><span style="color: #0000ff;">var</span> express = require('express');</pre>
+</div>
+<h1>结语</h1>
+<p>这段简单结束，后面我们项目实战过程逐步深化</p>
+                </div>
+
+                <div class='span3 sidebar'>
+                    <h2>导航栏</h2>
+                    <ul class="nav nav-tabs nav-stacked">
+                             				<li><a href="http://songboriceboy.github.io/xxoo/html/nodejs/NodeJSxxbj01bxjll/index.html">【NodeJS学习笔记01】不学就老了</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/nodejs/NodeJSxxbj02rmzyhzy/index.html">【NodeJS学习笔记02】入门资源很重要</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/nodejs/NodeJSxxbj03xyxqlzs/index.html">【NodeJS学习笔记03】先运行起来再说</a></li>
+    				                                         
+                    </ul>
+                </div>
+            </div>
+
+        </div>
+    </body>
+</html>

@@ -1,0 +1,349 @@
+﻿<!DOCTYPE html>
+
+<html lang="zh">
+    <head>
+        <meta charset="utf-8">
+        <meta name="description" content="android,ios" />
+        <meta name="keywords" content="android,ios" />
+
+        <title>叶小钗</title>
+        <style type='text/css'>
+            body {
+                background-color: #CCC;
+            }
+        </style>
+        <link rel="stylesheet" href="../../../css/bootstrap.css" />
+    </head>
+
+    <body>
+        <div class="container">
+
+            <h1>叶小钗</h1>
+
+            <div class='navbar navbar-inverse'>
+                <div class='navbar-inner nav-collapse' style="height: auto;">
+                    <ul class="nav">
+                              				<li><a href="http://songboriceboy.github.io/xxoo/html/blade/index.html">blade</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/css/index.html">css</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/HTML5&CSS3/index.html">HTML5&CSS3</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/index.html">javascript</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Javaxx/index.html">Java学习</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/nodejs/index.html">nodejs</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/requirejs/index.html">requirejs</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/index.html">Web前端</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/xxgw/index.html">学习感悟</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/gzdd/index.html">工作点滴</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/jkxx/index.html">接口学习</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/wfl/index.html">未分类</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/ydkf/index.html">移动开发</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/sjms/index.html">设计模式</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/mst/index.html">面试题</a></li>
+    				                      </ul>
+                </div>
+            </div>
+
+            <div id='content' class='row-fluid'>
+
+                <div class='span9 main'>
+				<div style="color:blue" align=center>【HTML5CSS3进阶03】Jser与Csser如何一起愉快的翻新老组件</div><br><p>上次，我们形成了两种header的布局，一种flexbox，一种float，最后与身边做重构的同事交流下来，选择了float的布局。</p>
+<p>事实上布局的选型不需要我关注，我的参与或者一些意见多数是自我提升，但要说html结构完全控制于csser的话就不一定了</p>
+<p>在整个header组件的代码过程中，我与重构同事就一些地方发生了重复的交流，争论，今天就header组件的布局以及功能实现，聊一聊js与css的配合</p>
+<p>然后header组件本身是一个老组件，我们顺便探讨下，这类老组件应该如何翻新比较合适。</p>
+<h1><strong>最初的结构</strong></h1>
+<p>最开始重构的同事给了我一个已经做好了的页面：</p>
+<p><img src="7791629289629.png" alt=""></p>
+<p>我们针对其中一些小的体验上做了讨论，并且知会到设计组，便改了，很顺畅，然后我开始了愉快的代码，这是其中一块HTML的结构：</p>
+<div class="cnblogs_code">
+<pre><span style="color: #008080;">1</span> <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">header </span><span style="color: #ff0000;">class</span><span style="color: #0000ff;">="cm-header"</span><span style="color: #ff0000;"> style</span><span style="color: #0000ff;">="top: 50px;"</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">2</span>   <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">span </span><span style="color: #ff0000;">class</span><span style="color: #0000ff;">="fl cm-header-icon icon-back "</span><span style="color: #0000ff;">&gt;&lt;/</span><span style="color: #800000;">span</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">3</span>   <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">span </span><span style="color: #ff0000;">class</span><span style="color: #0000ff;">="fr cm-header-btn"</span><span style="color: #0000ff;">&gt;</span>确认<span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">span</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">4</span>   <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">span </span><span style="color: #ff0000;">class</span><span style="color: #0000ff;">="fr cm-header-icon"</span><span style="color: #0000ff;">&gt;&lt;</span><span style="color: #800000;">i </span><span style="color: #ff0000;">class</span><span style="color: #0000ff;">="icon-home"</span><span style="color: #0000ff;">&gt;&lt;/</span><span style="color: #800000;">i</span><span style="color: #0000ff;">&gt;&lt;/</span><span style="color: #800000;">span</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">5</span>   <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">span </span><span style="color: #ff0000;">class</span><span style="color: #0000ff;">="fr cm-header-icon"</span><span style="color: #0000ff;">&gt;&lt;</span><span style="color: #800000;">i </span><span style="color: #ff0000;">class</span><span style="color: #0000ff;">="icond-list"</span><span style="color: #0000ff;">&gt;&lt;/</span><span style="color: #800000;">i</span><span style="color: #0000ff;">&gt;&lt;/</span><span style="color: #800000;">span</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">6</span>   <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">h1 </span><span style="color: #ff0000;">class</span><span style="color: #0000ff;">="cm-page-title"</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">7</span>     页面标题<span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">h1</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">8</span> <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">header</span><span style="color: #0000ff;">&gt;</span></pre>
+</div>
+<p>这里除去h1标签中的文字不说，因为其中可能表现的非常复杂，我们后面再说，其中的按钮有以下功能：</p>
+<p>① 第二行：回退按钮</p>
+<p>② 第三行：确认</p>
+<p>PS：左边采用float布局所以第一个元素在最右边</p>
+<p>③ 第四行：home标签</p>
+<p>④ 第五行：三个点，点击会出一个侧边栏</p>
+<p>以上便是HTML的实现，但是对与程序员来说，头部除了按钮（btn）以外就只有图标（icon），所以以上的结构事实上js一般是不买账的</p>
+<h1><strong>Jser需要的结构</strong></h1>
+<p>与重构同事交流下来，原因是这样的：</p>
+<p>① 因为回退比较特殊，所以多了一个样式，具体什么我没记住了</p>
+<p>② icon代表背景图，icond代表CSS3画的，CSS3画的可扩展性高，比如换颜色什么的</p>
+<p>③ ......</p>
+<p>当时双方的讨论还是比较激烈的，但是对icond全部变成icon，重构同事不同意，于是也就作罢，经过一轮讨论，结构变成了这样：</p>
+<div class="cnblogs_code">
+<pre><span style="color: #008080;">1</span> <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">header </span><span style="color: #ff0000;">class</span><span style="color: #0000ff;">="cm-header"</span><span style="color: #ff0000;"> style</span><span style="color: #0000ff;">="top: 50px;"</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">2</span>   <span style="background-color: #c0c0c0;"><span style="color: #0000ff;">&lt;</span><span style="color: #800000;">span </span><span style="color: #ff0000;">class</span><span style="color: #0000ff;">="fl cm-header-icon"</span><span style="color: #0000ff;">&gt;&lt;</span><span style="color: #800000;">i </span><span style="color: #ff0000;">class</span><span style="color: #0000ff;">="icon-back"</span><span style="color: #0000ff;">&gt;&lt;/</span><span style="color: #800000;">i</span><span style="color: #0000ff;">&gt;&lt;/</span><span style="color: #800000;">span</span><span style="color: #0000ff;">&gt;</span></span>
+<span style="color: #008080;">3</span>   <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">span </span><span style="color: #ff0000;">class</span><span style="color: #0000ff;">="fr cm-header-btn"</span><span style="color: #0000ff;">&gt;</span>确认<span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">span</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">4</span>   <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">span </span><span style="color: #ff0000;">class</span><span style="color: #0000ff;">="fr cm-header-icon"</span><span style="color: #0000ff;">&gt;&lt;</span><span style="color: #800000;">i </span><span style="color: #ff0000;">class</span><span style="color: #0000ff;">="icon-home"</span><span style="color: #0000ff;">&gt;&lt;/</span><span style="color: #800000;">i</span><span style="color: #0000ff;">&gt;&lt;/</span><span style="color: #800000;">span</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">5</span>   <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">span </span><span style="color: #ff0000;">class</span><span style="color: #0000ff;">="fr cm-header-icon"</span><span style="color: #0000ff;">&gt;&lt;</span><span style="color: #800000;">i </span><span style="color: #ff0000;">class</span><span style="color: #0000ff;">="icond-list"</span><span style="color: #0000ff;">&gt;&lt;/</span><span style="color: #800000;">i</span><span style="color: #0000ff;">&gt;&lt;/</span><span style="color: #800000;">span</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">6</span>   <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">h1 </span><span style="color: #ff0000;">class</span><span style="color: #0000ff;">="cm-page-title"</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">7</span>     页面标题<span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">h1</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">8</span> <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">header</span><span style="color: #0000ff;">&gt;</span></pre>
+</div>
+<p>做了很小的变化，将back的结构与其它icon类型按钮做了统一，于是我开始了愉快的代码</p>
+<p>PS：注意，icond与icon类型的标签会不同程度的在header处出现，无法控制</p>
+<h1><strong>结构的问题</strong></h1>
+<p>因为公司的header一直便存在，我做的过程中必须考虑到两个方面的问题：</p>
+<p>① 方便扩展但是要做到<span style="color: #ff0000;">接口兼容</span></p>
+<p>② 需要通过各个标签的tagname与Hybrid进行联调</p>
+<p>也就是说，每个标签叫什么名字，是已经定死了的，甚至一些标签的回调也被限制了，我这里的数据结构大概如下：</p>
+<div class="cnblogs_code">
+<pre><span style="color: #008080;"> 1</span> <span style="color: #000000;">{
+</span><span style="color: #008080;"> 2</span> <span style="color: #000000;">left: [],
+</span><span style="color: #008080;"> 3</span> <span style="color: #000000;">center: [],
+</span><span style="color: #008080;"> 4</span> <span style="color: #000000;">right: [
+</span><span style="color: #008080;"> 5</span> <span style="color: #000000;">  {
+</span><span style="color: #008080;"> 6</span>     'tagname': 'home', callback: <span style="color: #0000ff;">function</span><span style="color: #000000;"> () {
+</span><span style="color: #008080;"> 7</span>       console.log('返回'<span style="color: #000000;">);
+</span><span style="color: #008080;"> 8</span> <span style="color: #000000;">    }
+</span><span style="color: #008080;"> 9</span> <span style="color: #000000;">  },
+</span><span style="color: #008080;">10</span>   { 'tagname': 'search'<span style="color: #000000;"> },
+</span><span style="color: #008080;">11</span> <span style="color: #000000;">  {
+</span><span style="color: #008080;">12</span>     'tagname': 'list', callback: <span style="color: #0000ff;">function</span><span style="color: #000000;"> (e) {
+</span><span style="color: #008080;">13</span>        <span style="color: #008000;">//</span><span style="color: #008000;">......</span>
+<span style="color: #008080;">14</span> <span style="color: #000000;">    }
+</span><span style="color: #008080;">15</span> <span style="color: #000000;">  },
+</span><span style="color: #008080;">16</span>   { 'tagname': 'tel', 'number': '56973144'<span style="color: #000000;"> },
+</span><span style="color: #008080;">17</span> <span style="color: #000000;">  {
+</span><span style="color: #008080;">18</span>     'tagname': 'commit', 'value': '登录', callback: <span style="color: #0000ff;">function</span><span style="color: #000000;"> () {
+</span><span style="color: #008080;">19</span>       console.log('登录'<span style="color: #000000;">);
+</span><span style="color: #008080;">20</span> <span style="color: #000000;">    }
+</span><span style="color: #008080;">21</span> <span style="color: #000000;">  },
+</span><span style="color: #008080;">22</span> <span style="color: #000000;">  {
+</span><span style="color: #008080;">23</span>     'tagname': 'custom', 'value': '定制化'<span style="color: #000000;">,
+</span><span style="color: #008080;">24</span>     itemFn: <span style="color: #0000ff;">function</span><span style="color: #000000;"> () {
+</span><span style="color: #008080;">25</span>       <span style="color: #0000ff;">return</span> '&lt;span class="cm-header-btn fr js_custom"&gt;定制化&lt;/span&gt;'<span style="color: #000000;">;
+</span><span style="color: #008080;">26</span> <span style="color: #000000;">    },
+</span><span style="color: #008080;">27</span>     callback: <span style="color: #0000ff;">function</span><span style="color: #000000;"> () {
+</span><span style="color: #008080;">28</span>       console.log('定制化'<span style="color: #000000;">);
+</span><span style="color: #008080;">29</span> <span style="color: #000000;">    }
+</span><span style="color: #008080;">30</span> <span style="color: #000000;">  }
+</span><span style="color: #008080;">31</span> ]</pre>
+</div>
+<p>可以看到，一个tagname一个按钮，而现在问题来了：<span style="color: #ff0000;">我们并不知道某个tagname应该是icon或者是icond</span></p>
+<p>但是根据是否存在value字段，我们是可以判断其是否应该具有i子标签，这个时候我们是怎么解决的呢？</p>
+<p>建立tagname与classname的映射关系，比如：</p>
+<div class="cnblogs_code">
+<pre><span style="color: #008080;">1</span> <span style="color: #0000ff;">var</span> map =<span style="color: #000000;"> {
+</span><span style="color: #008080;">2</span>   'home': 'icon'<span style="color: #000000;">,
+</span><span style="color: #008080;">3</span>   'list': 'icond'
+<span style="color: #008080;">4</span> }</pre>
+</div>
+<p>当然，这种做法，自然十分让人感到难受，如果小图标统一为icon，我在模板中可以统一如此代码：</p>
+<div class="cnblogs_code">
+<pre><span style="color: #008080;">1</span> <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">span </span><span style="color: #ff0000;">class</span><span style="color: #0000ff;">="cm-header-icon &lt;%=dir %&gt;  js_&lt;%=item.tagname %&gt;"</span> <span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">2</span>   <span style="background-color: #ffff00; color: #000000;">&lt;%</span> <span style="background-color: #f5f5f5; color: #0000ff;">if</span><span style="background-color: #f5f5f5; color: #000000;">(item.value) { </span><span style="background-color: #ffff00; color: #000000;">%&gt;</span>
+<span style="color: #008080;">3</span>     <span style="background-color: #ffff00; color: #000000;">&lt;%</span><span style="background-color: #f5f5f5; color: #000000;">=</span><span style="background-color: #f5f5f5; color: #000000;">item.value </span><span style="background-color: #ffff00; color: #000000;">%&gt;</span>
+<span style="color: #008080;">4</span>   <span style="background-color: #ffff00; color: #000000;">&lt;%</span><span style="background-color: #f5f5f5; color: #000000;"> } </span><span style="background-color: #f5f5f5; color: #0000ff;">else</span><span style="background-color: #f5f5f5; color: #000000;"> { </span><span style="background-color: #ffff00; color: #000000;">%&gt;</span>
+<span style="color: #008080;">5</span>    <span style="background-color: #c0c0c0;"> <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">i </span><span style="color: #ff0000;">class</span><span style="color: #0000ff;">="icon-&lt;%=item.tagname %&gt;"</span><span style="color: #0000ff;">&gt;&lt;/</span><span style="color: #800000;">i</span><span style="color: #0000ff;">&gt;</span></span>
+<span style="color: #008080;">6</span>   <span style="background-color: #ffff00; color: #000000;">&lt;%</span><span style="background-color: #f5f5f5; color: #000000;"> } </span><span style="background-color: #ffff00; color: #000000;">%&gt;</span>
+<span style="color: #008080;">7</span> <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">span</span><span style="color: #0000ff;">&gt;</span></pre>
+</div>
+<p>但是由于多了一个映射关系，我的代码便不好看了，<span style="color: #ff0000;">并且业务逻辑还变得复杂了起来</span>，于是带着这些考量再次找到了重构同事，重构同事也很明事理，马上答应改了：</p>
+<div class="cnblogs_code">
+<pre><span style="color: #008080;">1</span> <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">header </span><span style="color: #ff0000;">class</span><span style="color: #0000ff;">="cm-header"</span><span style="color: #ff0000;"> style</span><span style="color: #0000ff;">="top: 50px;"</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">2</span>   <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">span </span><span style="color: #ff0000;">class</span><span style="color: #0000ff;">="fl cm-header-icon"</span><span style="color: #0000ff;">&gt;&lt;</span><span style="color: #800000;">i </span><span style="color: #ff0000;">class</span><span style="color: #0000ff;">="icon-back"</span><span style="color: #0000ff;">&gt;&lt;/</span><span style="color: #800000;">i</span><span style="color: #0000ff;">&gt;&lt;/</span><span style="color: #800000;">span</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">3</span>   <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">span </span><span style="color: #ff0000;">class</span><span style="color: #0000ff;">="fr cm-header-btn"</span><span style="color: #0000ff;">&gt;</span>确认<span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">span</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">4</span>   <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">span </span><span style="color: #ff0000;">class</span><span style="color: #0000ff;">="fr cm-header-icon"</span><span style="color: #0000ff;">&gt;&lt;</span><span style="color: #800000;">i </span><span style="color: #ff0000;">class</span><span style="color: #0000ff;">="icon-home"</span><span style="color: #0000ff;">&gt;&lt;/</span><span style="color: #800000;">i</span><span style="color: #0000ff;">&gt;&lt;/</span><span style="color: #800000;">span</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">5</span>   <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">span </span><span style="color: #ff0000;">class</span><span style="color: #0000ff;">="fr cm-header-icon"</span><span style="color: #0000ff;">&gt;&lt;</span><span style="color: #800000;">i </span><span style="color: #ff0000;">class</span><span style="color: #0000ff;">="icon-list"</span><span style="color: #0000ff;">&gt;&lt;/</span><span style="color: #800000;">i</span><span style="color: #0000ff;">&gt;&lt;/</span><span style="color: #800000;">span</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">6</span>   <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">h1 </span><span style="color: #ff0000;">class</span><span style="color: #0000ff;">="cm-page-title"</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">7</span>     页面标题<span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">h1</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">8</span> <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">header</span><span style="color: #0000ff;">&gt;</span></pre>
+</div>
+<p>不考虑h1中的样式的话，搞定上面的代码，对我们来说，真的是太简单了啊！！！</p>
+<div class="cnblogs_code">
+<pre><span style="color: #008080;"> 1</span> <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">header </span><span style="color: #ff0000;">class</span><span style="color: #0000ff;">="cm-header"</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 2</span> <span style="background-color: #ffff00; color: #000000;">&lt;%</span>
+<span style="color: #008080;"> 3</span> <span style="background-color: #f5f5f5; color: #000000;">var i </span><span style="background-color: #f5f5f5; color: #000000;">=</span> <span style="background-color: #f5f5f5; color: #800080;">0</span><span style="background-color: #f5f5f5; color: #000000;">, </span><span style="background-color: #f5f5f5; color: #0000ff;">len</span> <span style="background-color: #f5f5f5; color: #000000;">=</span> <span style="background-color: #f5f5f5; color: #800080;">0</span><span style="background-color: #f5f5f5; color: #000000;">, j </span><span style="background-color: #f5f5f5; color: #000000;">=</span> <span style="background-color: #f5f5f5; color: #800080;">0</span><span style="background-color: #f5f5f5; color: #000000;">, keyagain </span><span style="background-color: #f5f5f5; color: #000000;">=</span> <span style="background-color: #f5f5f5; color: #800080;">0</span><span style="background-color: #f5f5f5; color: #000000;">;
+</span><span style="color: #008080;"> 4</span> <span style="background-color: #f5f5f5; color: #000000;">var </span><span style="background-color: #f5f5f5; color: #0000ff;">left</span> <span style="background-color: #f5f5f5; color: #000000;">=</span> <span style="background-color: #f5f5f5; color: #0000ff;">left</span><span style="background-color: #f5f5f5; color: #000000;">;
+</span><span style="color: #008080;"> 5</span> <span style="background-color: #f5f5f5; color: #000000;">var </span><span style="background-color: #f5f5f5; color: #0000ff;">right</span> <span style="background-color: #f5f5f5; color: #000000;">=</span>  <span style="background-color: #f5f5f5; color: #0000ff;">right</span><span style="background-color: #f5f5f5; color: #000000;">.reverse();
+</span><span style="color: #008080;"> 6</span> <span style="background-color: #f5f5f5; color: #000000;">var item </span><span style="background-color: #f5f5f5; color: #000000;">=</span> <span style="background-color: #f5f5f5; color: #0000ff;">null</span><span style="background-color: #f5f5f5; color: #000000;">;
+</span><span style="color: #008080;"> 7</span> <span style="background-color: #f5f5f5; color: #000000;">var dir;
+</span><span style="color: #008080;"> 8</span> <span style="background-color: #f5f5f5; color: #000000;">var btnObj </span><span style="background-color: #f5f5f5; color: #000000;">=</span> <span style="background-color: #f5f5f5; color: #0000ff;">null</span><span style="background-color: #f5f5f5; color: #000000;">;
+</span><span style="color: #008080;"> 9</span> <span style="background-color: #ffff00; color: #000000;">%&gt;</span>
+<span style="color: #008080;">10</span> <span style="background-color: #ffff00; color: #000000;">&lt;%</span><span style="background-color: #f5f5f5; color: #0000ff;">for</span><span style="background-color: #f5f5f5; color: #000000;">(keyagain</span><span style="background-color: #f5f5f5; color: #000000;">=</span><span style="background-color: #f5f5f5; color: #800080;">0</span><span style="background-color: #f5f5f5; color: #000000;">; keyagain </span><span style="background-color: #f5f5f5; color: #000000;">&lt;</span> <span style="background-color: #f5f5f5; color: #800080;">2</span><span style="background-color: #f5f5f5; color: #000000;">; keyagain</span><span style="background-color: #f5f5f5; color: #000000;">++</span><span style="background-color: #f5f5f5; color: #000000;">) { </span><span style="background-color: #ffff00; color: #000000;">%&gt;</span>
+<span style="color: #008080;">11</span>   <span style="background-color: #ffff00; color: #000000;">&lt;%</span> 
+<span style="color: #008080;">12</span>     <span style="background-color: #f5f5f5; color: #0000ff;">if</span><span style="background-color: #f5f5f5; color: #000000;">(keyagain </span><span style="background-color: #f5f5f5; color: #000000;">==</span> <span style="background-color: #f5f5f5; color: #800080;">0</span><span style="background-color: #f5f5f5; color: #000000;">) { dir </span><span style="background-color: #f5f5f5; color: #000000;">=</span> <span style="background-color: #f5f5f5; color: #008000;">'</span><span style="background-color: #f5f5f5; color: #008000;">fl'; btnObj = left; } else { dir = 'fr'; btnObj = right; }</span>
+<span style="color: #008080;">13</span>   <span style="background-color: #ffff00; color: #000000;">%&gt;</span>
+<span style="color: #008080;">14</span>   <span style="background-color: #ffff00; color: #000000;">&lt;%</span> <span style="background-color: #f5f5f5; color: #0000ff;">for</span><span style="background-color: #f5f5f5; color: #000000;">(i </span><span style="background-color: #f5f5f5; color: #000000;">=</span> <span style="background-color: #f5f5f5; color: #800080;">0</span><span style="background-color: #f5f5f5; color: #000000;">, </span><span style="background-color: #f5f5f5; color: #0000ff;">len</span> <span style="background-color: #f5f5f5; color: #000000;">=</span><span style="background-color: #f5f5f5; color: #000000;"> btnObj.length; i </span><span style="background-color: #f5f5f5; color: #000000;">&lt;</span> <span style="background-color: #f5f5f5; color: #0000ff;">len</span><span style="background-color: #f5f5f5; color: #000000;">; i</span><span style="background-color: #f5f5f5; color: #000000;">++</span><span style="background-color: #f5f5f5; color: #000000;">) { </span><span style="background-color: #ffff00; color: #000000;">%&gt;</span>
+<span style="color: #008080;">15</span>     <span style="background-color: #ffff00; color: #000000;">&lt;%</span><span style="background-color: #f5f5f5; color: #000000;"> item </span><span style="background-color: #f5f5f5; color: #000000;">=</span><span style="background-color: #f5f5f5; color: #000000;"> btnObj[i]; </span><span style="background-color: #ffff00; color: #000000;">%&gt;</span>
+<span style="color: #008080;">16</span>     <span style="background-color: #ffff00; color: #000000;">&lt;%</span><span style="background-color: #f5f5f5; color: #0000ff;">if</span><span style="background-color: #f5f5f5; color: #000000;">(typeof item.itemFn </span><span style="background-color: #f5f5f5; color: #000000;">==</span> <span style="background-color: #f5f5f5; color: #008000;">'</span><span style="background-color: #f5f5f5; color: #008000;">function') { %&gt;</span>
+<span style="color: #008080;">17</span>      <span style="background-color: #888888;"> <span style="color: #000000;">&lt;</span><span style="color: #000000;">%</span><span style="color: #000000;">=</span><span style="color: #000000;">item.itemFn() </span><span style="color: #000000;">%&gt;</span></span>
+<span style="color: #008080;">18</span>     <span style="background-color: #ffff00; color: #000000;">&lt;%</span><span style="background-color: #f5f5f5; color: #000000;">} </span><span style="background-color: #f5f5f5; color: #0000ff;">else</span><span style="background-color: #f5f5f5; color: #000000;"> { </span><span style="background-color: #ffff00; color: #000000;">%&gt;</span>
+<span style="color: #008080;">19</span>       <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">span </span><span style="color: #ff0000;">class</span><span style="color: #0000ff;">="cm-header-icon &lt;%=dir %&gt;  js_&lt;%=item.tagname %&gt;"</span> <span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">20</span>         <span style="background-color: #ffff00; color: #000000;">&lt;%</span> <span style="background-color: #f5f5f5; color: #0000ff;">if</span><span style="background-color: #f5f5f5; color: #000000;">(item.value) { </span><span style="background-color: #ffff00; color: #000000;">%&gt;</span>
+<span style="color: #008080;">21</span>           <span style="background-color: #ffff00; color: #000000;">&lt;%</span><span style="background-color: #f5f5f5; color: #000000;">=</span><span style="background-color: #f5f5f5; color: #000000;">item.value </span><span style="background-color: #ffff00; color: #000000;">%&gt;</span>
+<span style="color: #008080;">22</span>         <span style="background-color: #ffff00; color: #000000;">&lt;%</span><span style="background-color: #f5f5f5; color: #000000;"> } </span><span style="background-color: #f5f5f5; color: #0000ff;">else</span><span style="background-color: #f5f5f5; color: #000000;"> { </span><span style="background-color: #ffff00; color: #000000;">%&gt;</span>
+<span style="color: #008080;">23</span>           <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">i </span><span style="color: #ff0000;">class</span><span style="color: #0000ff;">="icon-&lt;%=item.tagname %&gt;"</span><span style="color: #0000ff;">&gt;&lt;/</span><span style="color: #800000;">i</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">24</span>         <span style="background-color: #ffff00; color: #000000;">&lt;%</span><span style="background-color: #f5f5f5; color: #000000;"> } </span><span style="background-color: #ffff00; color: #000000;">%&gt;</span>
+<span style="color: #008080;">25</span>       <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">span</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">26</span>     <span style="background-color: #ffff00; color: #000000;">&lt;%</span><span style="background-color: #f5f5f5; color: #000000;">} </span><span style="background-color: #ffff00; color: #000000;">%&gt;</span>
+<span style="color: #008080;">27</span>   <span style="background-color: #ffff00; color: #000000;">&lt;%</span><span style="background-color: #f5f5f5; color: #000000;">} </span><span style="background-color: #ffff00; color: #000000;">%&gt;</span>
+<span style="color: #008080;">28</span> <span style="background-color: #ffff00; color: #000000;">&lt;%</span><span style="background-color: #f5f5f5; color: #000000;">} </span><span style="background-color: #ffff00; color: #000000;">%&gt;</span>
+<span style="color: #008080;">29</span> <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">header</span><span style="color: #0000ff;">&gt;</span></pre>
+</div>
+<p>PS：从代码着色来看，js中用到的left与Right是关键字，这个得处理...</p>
+<h1><strong>定制化需求</strong></h1>
+<p>可以看到，一个循环，我们便可以轻易的生成左边和右边的按钮，但是马上问题来了，我们需要扩展怎么办，上面就会有以下问题：</p>
+<p>① tel标签默认是a标签，我们这里却是span标签</p>
+<div class="cnblogs_code">
+<pre><span style="color: #008080;">1</span> <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">a </span><span style="color: #ff0000;">href</span><span style="color: #0000ff;">="tel:56973144"</span><span style="color: #ff0000;"> class</span><span style="color: #0000ff;">="cm-header-btn fr js_tel "</span><span style="color: #0000ff;">&gt;&lt;</span><span style="color: #800000;">i </span><span style="color: #ff0000;">class</span><span style="color: #0000ff;">="icon-tel"</span><span style="color: #0000ff;">&gt;&lt;/</span><span style="color: #800000;">i</span><span style="color: #0000ff;">&gt;&lt;/</span><span style="color: #800000;">a</span><span style="color: #0000ff;">&gt;</span></pre>
+</div>
+<p>② back按钮我们一般会做成a标签，用以解决javascript出错在Hybrid的假死问题</p>
+<p>说白了，就是虽然<span style="color: #ff0000;">标签按钮应该有统一的结构，但是需要保留定制化的能力</span></p>
+<p>这里定制化的工作交给了各个标签的itemFn这个函数，他返回一个字符串，并且具有一定规则，这里取一个代码片段：</p>
+<div class="cnblogs_code">
+<pre><span style="color: #008080;"> 1</span> handleSpecialParam: <span style="color: #0000ff;">function</span><span style="color: #000000;"> (data) {
+</span><span style="color: #008080;"> 2</span>   <span style="color: #0000ff;">var</span><span style="color: #000000;"> k, i, len, item;
+</span><span style="color: #008080;"> 3</span>   <span style="color: #0000ff;">for</span> (k <span style="color: #0000ff;">in</span><span style="color: #000000;"> data) {
+</span><span style="color: #008080;"> 4</span>     <span style="color: #0000ff;">if</span><span style="color: #000000;"> (_.isArray(data[k])) {
+</span><span style="color: #008080;"> 5</span>       <span style="color: #0000ff;">for</span> (i = 0, len = data[k].length; i &lt; len; i++<span style="color: #000000;">) {
+</span><span style="color: #008080;"> 6</span>         item =<span style="color: #000000;"> data[k][i];
+</span><span style="color: #008080;"> 7</span>         <span style="color: #0000ff;">if</span> (<span style="color: #0000ff;">this</span>['customtHandle_' +<span style="color: #000000;"> item.tagname]) {
+</span><span style="color: #008080;"> 8</span>           <span style="color: #0000ff;">this</span>['customtHandle_' +<span style="color: #000000;"> item.tagname](data[k][i], k);
+</span><span style="color: #008080;"> 9</span>         } <span style="color: #008000;">//</span><span style="color: #008000;">if</span>
+<span style="color: #008080;">10</span>       } <span style="color: #008000;">//</span><span style="color: #008000;">for</span>
+<span style="color: #008080;">11</span>     } <span style="color: #008000;">//</span><span style="color: #008000;">if</span>
+<span style="color: #008080;">12</span>   } <span style="color: #008000;">//</span><span style="color: #008000;">for</span>
+<span style="color: #008080;">13</span> <span style="color: #000000;">},
+</span><span style="color: #008080;">14</span> 
+<span style="color: #008080;">15</span> _getDir: <span style="color: #0000ff;">function</span><span style="color: #000000;"> (dir) {
+</span><span style="color: #008080;">16</span>   <span style="color: #0000ff;">var</span> kv = { left: 'fl', right: 'fr'<span style="color: #000000;"> };
+</span><span style="color: #008080;">17</span>   <span style="color: #0000ff;">return</span><span style="color: #000000;"> kv[dir];
+</span><span style="color: #008080;">18</span> <span style="color: #000000;">},
+</span><span style="color: #008080;">19</span> 
+<span style="color: #008080;">20</span> <span style="color: #008000;">//</span><span style="color: #008000;">处理back的按钮逻辑</span>
+<span style="color: #008080;">21</span> customtHandle_back: <span style="color: #0000ff;">function</span><span style="color: #000000;"> (item, dir) {
+</span><span style="color: #008080;">22</span>   dir = <span style="color: #0000ff;">this</span><span style="color: #000000;">._getDir(dir);
+</span><span style="color: #008080;">23</span>   item.itemFn = <span style="color: #0000ff;">function</span><span style="color: #000000;"> () {
+</span><span style="color: #008080;">24</span>     <span style="color: #0000ff;">var</span> str = '&lt;a href="http://m.ctrip.com/html5/" class="cm-header-btn ' + dir + ' js_' + item.tagname + ' " &gt;'<span style="color: #000000;">;
+</span><span style="color: #008080;">25</span>     <span style="color: #0000ff;">if</span><span style="color: #000000;"> (item.value) {
+</span><span style="color: #008080;">26</span>       str += item.value + '&lt;/a&gt;'<span style="color: #000000;">;
+</span><span style="color: #008080;">27</span>     } <span style="color: #0000ff;">else</span><span style="color: #000000;"> {
+</span><span style="color: #008080;">28</span>       str += '&lt;i class="icon-' + item.tagname + '"&gt;&lt;/i&gt;&lt;/a&gt;'<span style="color: #000000;">;
+</span><span style="color: #008080;">29</span> <span style="color: #000000;">    }
+</span><span style="color: #008080;">30</span>     <span style="color: #0000ff;">return</span><span style="color: #000000;"> str;
+</span><span style="color: #008080;">31</span> <span style="color: #000000;">  };
+</span><span style="color: #008080;">32</span> },</pre>
+</div>
+<p>当发现某个按钮不满足需求或者有定制化需求时，便想办法设置其itemFn即可，时候上这个代码可以直接写到初始化的json串去</p>
+<h1><strong>花样百出的title</strong></h1>
+<p>到title时，发现其表现便五花八门了，这个时候一般是根据不同的类型生成不同的HTML结构，框架给默认的几个选项，不支持便自己定制itemFn</p>
+<div class="cnblogs_code">
+<pre><span style="color: #008080;"> 1</span> <span style="background-color: #ffff00; color: #000000;">&lt;%</span><span style="background-color: #f5f5f5; color: #000000;"> item </span><span style="background-color: #f5f5f5; color: #000000;">=</span><span style="background-color: #f5f5f5; color: #000000;"> center; </span><span style="background-color: #ffff00; color: #000000;">%&gt;</span>
+<span style="color: #008080;"> 2</span> <span style="background-color: #ffff00; color: #000000;">&lt;%</span><span style="background-color: #f5f5f5; color: #0000ff;">if</span><span style="background-color: #f5f5f5; color: #000000;">(typeof item.itemFn </span><span style="background-color: #f5f5f5; color: #000000;">==</span> <span style="background-color: #f5f5f5; color: #008000;">'</span><span style="background-color: #f5f5f5; color: #008000;">function') { %&gt;</span>
+<span style="color: #008080;"> 3</span>   <span style="background-color: #f5f5f5; color: #000000;">&lt;</span><span style="background-color: #f5f5f5; color: #000000;">%</span><span style="background-color: #f5f5f5; color: #000000;">=</span><span style="background-color: #f5f5f5; color: #000000;">item.itemFn() </span><span style="background-color: #ffff00; color: #000000;">%&gt;</span>
+<span style="color: #008080;"> 4</span> <span style="background-color: #ffff00; color: #000000;">&lt;%</span><span style="background-color: #f5f5f5; color: #000000;">} </span><span style="background-color: #f5f5f5; color: #0000ff;">else</span> <span style="background-color: #f5f5f5; color: #0000ff;">if</span><span style="background-color: #f5f5f5; color: #000000;">(item.tagname</span><span style="background-color: #f5f5f5; color: #000000;">==</span><span style="background-color: #f5f5f5; color: #008000;">'</span><span style="background-color: #f5f5f5; color: #008000;">title' ||  item.tagname=='subtitle') { %&gt;</span>
+<span style="color: #008080;"> 5</span>   <span style="background-color: #f5f5f5; color: #000000;">&lt;</span><span style="background-color: #f5f5f5; color: #000000;">h1 class</span><span style="background-color: #f5f5f5; color: #000000;">=</span><span style="background-color: #f5f5f5; color: #800000;">"</span><span style="background-color: #f5f5f5; color: #800000;">cm-page-title js_&lt;%=item.tagname %&gt;</span><span style="background-color: #f5f5f5; color: #800000;">"</span> <span style="background-color: #f5f5f5; color: #000000;">&gt;</span>
+<span style="color: #008080;"> 6</span>     <span style="background-color: #f5f5f5; color: #000000;">&lt;</span><span style="background-color: #f5f5f5; color: #000000;">%</span><span style="background-color: #f5f5f5; color: #0000ff;">if</span><span style="background-color: #f5f5f5; color: #000000;">(typeof(item.value) </span><span style="background-color: #f5f5f5; color: #000000;">==</span> <span style="background-color: #f5f5f5; color: #008000;">'</span><span style="background-color: #f5f5f5; color: #008000;">object' &amp;&amp; item.title.value == 2) { %&gt;</span>
+<span style="color: #008080;"> 7</span>       <span style="background-color: #f5f5f5; color: #000000;">&lt;</span><span style="background-color: #f5f5f5; color: #000000;">span class</span><span style="background-color: #f5f5f5; color: #000000;">=</span><span style="background-color: #f5f5f5; color: #800000;">"</span><span style="background-color: #f5f5f5; color: #800000;">cm-title-l</span><span style="background-color: #f5f5f5; color: #800000;">"</span><span style="background-color: #f5f5f5; color: #000000;">&gt;&lt;</span><span style="background-color: #f5f5f5; color: #000000;">%</span><span style="background-color: #f5f5f5; color: #000000;">=</span><span style="background-color: #f5f5f5; color: #000000;">item.value[</span><span style="background-color: #f5f5f5; color: #800080;">0</span><span style="background-color: #f5f5f5; color: #000000;">]</span><span style="background-color: #ffff00; color: #000000;">%&gt;</span><span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">span</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 8</span>       <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">span </span><span style="color: #ff0000;">class</span><span style="color: #0000ff;">="cm-title-s"</span><span style="color: #0000ff;">&gt;</span><span style="background-color: #ffff00; color: #000000;">&lt;%</span><span style="background-color: #f5f5f5; color: #000000;">=</span><span style="background-color: #f5f5f5; color: #000000;">item.value[</span><span style="background-color: #f5f5f5; color: #800080;">1</span><span style="background-color: #f5f5f5; color: #000000;">]</span><span style="background-color: #ffff00; color: #000000;">%&gt;</span><span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">span</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 9</span>     <span style="background-color: #ffff00; color: #000000;">&lt;%</span><span style="background-color: #f5f5f5; color: #000000;">} </span><span style="background-color: #f5f5f5; color: #0000ff;">else</span><span style="background-color: #f5f5f5; color: #000000;"> { </span><span style="background-color: #ffff00; color: #000000;">%&gt;</span>
+<span style="color: #008080;">10</span>       <span style="background-color: #ffff00; color: #000000;">&lt;%</span><span style="background-color: #f5f5f5; color: #000000;">=</span><span style="background-color: #f5f5f5; color: #000000;">item.value </span><span style="background-color: #ffff00; color: #000000;">%&gt;</span>
+<span style="color: #008080;">11</span>     <span style="background-color: #ffff00; color: #000000;">&lt;%</span><span style="background-color: #f5f5f5; color: #000000;">} </span><span style="background-color: #ffff00; color: #000000;">%&gt;</span>
+<span style="color: #008080;">12</span>   <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">h1</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">13</span> <span style="background-color: #ffff00; color: #000000;">&lt;%</span><span style="background-color: #f5f5f5; color: #000000;">} </span><span style="background-color: #f5f5f5; color: #0000ff;">else</span> <span style="background-color: #f5f5f5; color: #0000ff;">if</span><span style="background-color: #f5f5f5; color: #000000;">(item.tagname</span><span style="background-color: #f5f5f5; color: #000000;">==</span><span style="background-color: #f5f5f5; color: #008000;">'</span><span style="background-color: #f5f5f5; color: #008000;">select'){ %&gt;</span>
+<span style="color: #008080;">14</span>   <span style="background-color: #f5f5f5; color: #000000;">&lt;</span><span style="background-color: #f5f5f5; color: #000000;">h1 class</span><span style="background-color: #f5f5f5; color: #000000;">=</span><span style="background-color: #f5f5f5; color: #800000;">"</span><span style="background-color: #f5f5f5; color: #800000;">cm-page-select-title js_&lt;%=item.tagname %&gt;</span><span style="background-color: #f5f5f5; color: #800000;">"</span> <span style="background-color: #f5f5f5; color: #000000;">&gt;</span>
+<span style="color: #008080;">15</span>     <span style="background-color: #f5f5f5; color: #000000;">&lt;</span><span style="background-color: #f5f5f5; color: #000000;">%</span><span style="background-color: #f5f5f5; color: #000000;">=</span><span style="background-color: #f5f5f5; color: #000000;">item.value </span><span style="background-color: #ffff00; color: #000000;">%&gt;</span>
+<span style="color: #008080;">16</span>   <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">h1</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">17</span> <span style="background-color: #ffff00; color: #000000;">&lt;%</span><span style="background-color: #f5f5f5; color: #000000;">} </span><span style="background-color: #f5f5f5; color: #0000ff;">else</span> <span style="background-color: #f5f5f5; color: #0000ff;">if</span><span style="background-color: #f5f5f5; color: #000000;">(item.tagname</span><span style="background-color: #f5f5f5; color: #000000;">==</span><span style="background-color: #f5f5f5; color: #008000;">'</span><span style="background-color: #f5f5f5; color: #008000;">tabs') { %&gt;</span>
+<span style="color: #008080;">18</span>   <span style="background-color: #f5f5f5; color: #000000;">&lt;</span><span style="background-color: #f5f5f5; color: #000000;">h1 class</span><span style="background-color: #f5f5f5; color: #000000;">=</span><span style="background-color: #f5f5f5; color: #800000;">"</span><span style="background-color: #f5f5f5; color: #800000;">cm-page-tabs-title js_&lt;%=item.tagname %&gt;</span><span style="background-color: #f5f5f5; color: #800000;">"</span> <span style="background-color: #f5f5f5; color: #000000;">&gt;</span>
+<span style="color: #008080;">19</span>     <span style="background-color: #f5f5f5; color: #000000;">&lt;</span><span style="background-color: #f5f5f5; color: #000000;">%</span><span style="background-color: #f5f5f5; color: #0000ff;">for</span><span style="background-color: #f5f5f5; color: #000000;">(j </span><span style="background-color: #f5f5f5; color: #000000;">=</span> <span style="background-color: #f5f5f5; color: #800080;">0</span><span style="background-color: #f5f5f5; color: #000000;">; j </span><span style="background-color: #f5f5f5; color: #000000;">&lt;</span><span style="background-color: #f5f5f5; color: #000000;"> item.data.items.length; j </span><span style="background-color: #f5f5f5; color: #000000;">++</span><span style="background-color: #f5f5f5; color: #000000;">) { </span><span style="background-color: #ffff00; color: #000000;">%&gt;</span>
+<span style="color: #008080;">20</span>       <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">span </span><span style="color: #ff0000;">data-key</span><span style="color: #0000ff;">="&lt;%=item.data.items[j].id %&gt;"</span><span style="color: #ff0000;"> class</span><span style="color: #0000ff;">="&lt;%if(item.data.index===j){ %&gt;active&lt;%} %&gt;"</span> <span style="color: #0000ff;">&gt;</span><span style="background-color: #ffff00; color: #000000;">&lt;%</span><span style="background-color: #f5f5f5; color: #000000;">=</span><span style="background-color: #f5f5f5; color: #000000;">item.data.items[j].name </span><span style="background-color: #ffff00; color: #000000;">%&gt;</span><span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">span</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">21</span>     <span style="background-color: #ffff00; color: #000000;">&lt;%</span><span style="background-color: #f5f5f5; color: #000000;"> } </span><span style="background-color: #ffff00; color: #000000;">%&gt;</span>
+<span style="color: #008080;">22</span>   <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">h1</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">23</span> <span style="background-color: #ffff00; color: #000000;">&lt;%</span><span style="background-color: #f5f5f5; color: #000000;"> } </span><span style="background-color: #f5f5f5; color: #0000ff;">else</span><span style="background-color: #f5f5f5; color: #000000;">{ </span><span style="background-color: #ffff00; color: #000000;">%&gt;</span>
+<span style="color: #008080;">24</span> 
+<span style="color: #008080;">25</span> <span style="background-color: #ffff00; color: #000000;">&lt;%</span><span style="background-color: #f5f5f5; color: #000000;">} </span><span style="background-color: #ffff00; color: #000000;">%&gt;</span></pre>
+</div>
+<h1><strong>事件绑定的实现</strong></h1>
+<p>header组件本身继承至Abstract.View这个类，所以只要设置</p>
+<div class="cnblogs_code">
+<pre><span style="color: #0000ff;">this</span>.events = {}</pre>
+</div>
+<p>便能以事件代理的方式将事件绑定至根元素，而header的事件一般就是click事件：</p>
+<div class="cnblogs_code">
+<pre><span style="color: #008080;"> 1</span> setEventsParam: <span style="color: #0000ff;">function</span><span style="color: #000000;"> () {
+</span><span style="color: #008080;"> 2</span>   <span style="color: #0000ff;">var</span> item, data = <span style="color: #0000ff;">this</span>.datamodel.left.concat(<span style="color: #0000ff;">this</span>.datamodel.right).concat(<span style="color: #0000ff;">this</span><span style="color: #000000;">.datamodel.center);
+</span><span style="color: #008080;"> 3</span> 
+<span style="color: #008080;"> 4</span>   <span style="color: #0000ff;">for</span> (<span style="color: #0000ff;">var</span> i = 0, len = data.length; i &lt; len; i++<span style="color: #000000;">) {
+</span><span style="color: #008080;"> 5</span>     item =<span style="color: #000000;"> data[i];
+</span><span style="color: #008080;"> 6</span>     <span style="color: #0000ff;">if</span><span style="color: #000000;"> (_.isFunction(item.callback)) {
+</span><span style="color: #008080;"> 7</span>       <span style="color: #0000ff;">this</span>.events['click <span style="color: #ff0000;">.js_' + item.tagname</span>] = $.proxy(item.callback, <span style="color: #0000ff;">this</span><span style="color: #000000;">.viewScope);
+</span><span style="color: #008080;"> 8</span> <span style="color: #000000;">    }
+</span><span style="color: #008080;"> 9</span> <span style="color: #000000;">  }
+</span><span style="color: #008080;">10</span> },</pre>
+</div>
+<p>这里有一个需要注意的点便是，事件绑定的钩子便是我们的tagname，这个是唯一的，我们会为每个标签动态生成&ldquo;.js_tagname&rdquo;的类，以方便事件绑定</p>
+<h1><strong>老接口的兼容</strong></h1>
+<p>之前便说了，该组件是一个老组件的翻新，于是各个业务团队已经使用了，比如原来是这样调用的：</p>
+<div class="cnblogs_code">
+<pre><span style="color: #008080;"> 1</span> <span style="color: #0000ff;">this</span><span style="color: #000000;">.header.set({
+</span><span style="color: #008080;"> 2</span>   title: '基本Header使用'<span style="color: #000000;">,
+</span><span style="color: #008080;"> 3</span>   subtitle: '中间副标题'<span style="color: #000000;">,
+</span><span style="color: #008080;"> 4</span>   back: <span style="color: #0000ff;">true</span><span style="color: #000000;">,
+</span><span style="color: #008080;"> 5</span>   backtext: '取消'<span style="color: #000000;">,
+</span><span style="color: #008080;"> 6</span>   tel: { number: 1111<span style="color: #000000;"> },
+</span><span style="color: #008080;"> 7</span>   home: <span style="color: #0000ff;">true</span><span style="color: #000000;">,
+</span><span style="color: #008080;"> 8</span>   search: <span style="color: #0000ff;">true</span><span style="color: #000000;">,
+</span><span style="color: #008080;"> 9</span>   btn: { title: "登录", id: 'confirmBtn', classname: 'header_r'<span style="color: #000000;"> },
+</span><span style="color: #008080;">10</span> <span style="color: #000000;">  events: {
+</span><span style="color: #008080;">11</span>     returnHandler: <span style="color: #0000ff;">function</span><span style="color: #000000;"> () {
+</span><span style="color: #008080;">12</span>       console.log('back'<span style="color: #000000;">);
+</span><span style="color: #008080;">13</span> <span style="color: #000000;">    },
+</span><span style="color: #008080;">14</span>     homeHandler: <span style="color: #0000ff;">function</span><span style="color: #000000;"> (e) {
+</span><span style="color: #008080;">15</span> <span style="color: #000000;">    }
+</span><span style="color: #008080;">16</span> <span style="color: #000000;">  }
+</span><span style="color: #008080;">17</span> });</pre>
+</div>
+<p>而现在我们期望的调用方式是这样的：</p>
+<div class="cnblogs_code">
+<pre><span style="color: #008080;">1</span> <span style="color: #0000ff;">this</span><span style="color: #000000;">.header.set({
+</span><span style="color: #008080;">2</span> <span style="color: #000000;">  left: [],
+</span><span style="color: #008080;">3</span> <span style="color: #000000;">  center: {},
+</span><span style="color: #008080;">4</span> <span style="color: #000000;">  right: [
+</span><span style="color: #008080;">5</span>     { tagname: 'home', callback: <span style="color: #0000ff;">function</span><span style="color: #000000;"> () { } },
+</span><span style="color: #008080;">6</span>     { tagname: 'tagname', value: 'value', data: {}, itemFn: <span style="color: #0000ff;">function</span>(){}, callback: <span style="color: #0000ff;">function</span><span style="color: #000000;"> () { } }
+</span><span style="color: #008080;">7</span> <span style="color: #000000;">  ]
+</span><span style="color: #008080;">8</span> });</pre>
+</div>
+<p>这个时候我们应该怎么做呢？当然是不破不立，先破后立，当然是要求业务团队改！！！然后被无情的喷了回来，于是做了接口兼容</p>
+<p><span style="color: #ff0000;">翻新老组件，接口兼容是必须的，如果不是底层机制发生颠覆，而颠覆可以带来颠覆性的成绩，接口还是不建议改！</span></p>
+<p>这里上面便是新接口的调用，下面是老接口的调用，效果如下：</p>
+<p><img src="25557546419952.png" alt=""></p>
+<h1><strong>代码&amp;demo</strong></h1>
+<p>源码：<a href="https://github.com/yexiaochai/cssui/tree/gh-pages" target="_blank">https://github.com/yexiaochai/cssui/tree/gh-pages</a></p>
+<p>demo：<a href="http://yexiaochai.github.io/cssui/demo/debug.html#header" target="_blank">http://yexiaochai.github.io/cssui/demo/debug.html#header</a></p>
+<p><span style="color: #ff0000;">反馈：如果文中有何不足，请您留言</span></p>
+                </div>
+
+                <div class='span3 sidebar'>
+                    <h2>导航栏</h2>
+                    <ul class="nav nav-tabs nav-stacked">
+                             				<li><a href="http://songboriceboy.github.io/xxoo/html/css/HTML5&CSS3jj03JseryCsserrhyqykdfxlzj/index.html">【HTML5&CSS3进阶03】Jser与Csser如何一起愉快的翻新老组件</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/css/HTML5&CSS3jj04CSS3dhygrhzwebappzyy/index.html">【HTML5&CSS3进阶04】CSS3动画应该如何在webapp中运用</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/css/HTML5&CSS3jjxx01qpzjdsx/index.html">【HTML5&CSS3进阶学习01】气泡组件的实现</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/css/ctHTMLbxdzzbgzrhtmlbqtshz/index.html">【初探HTML本相】道之真谛不过自然，html标签脱俗还真</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/css/qdmdDOMsjllzCSShmxsfjyhd/index.html">【前端盲点】DOM事件流论证CSS盒模型是否具有厚度</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/css/zsCSS02inlineylineheightfloatabsolutedgs/index.html">【正视CSS02】inline与lineheight、float、absolute的故事</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/css/zsCSS03blockypositioncmzwdpydwjkl/index.html">【正视CSS03】block与position，出门在外的朋友端午节快乐</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/css/zsCSS05wmcglxsmwhyx/index.html">【正视CSS05】我们错过了些什么，为何叶小钗？</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/css/zsCSS06gjwmzjdsjg/index.html">【正视CSS06】构建我们自己的世界观！</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/css/zsCSS07zkverticalalign/index.html">【正视CSS07】再看verticalalign</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/css/zsCSS08fdwzfloatnwsmyttwdys/index.html">【正视CSS08】巅峰对武之float你为什么要坍塌我的元素！！！</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/css/zsCSStszykyzBzxsmargin/index.html">【正视CSS】他山之玉可以装B之细说margin</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/css/gwzmjshdllbnwmyqlkkhddmstbjsaldy/index.html">各位周末结束后都累了吧，那我们一起来看看【寒冬】的面试题吧（据说阿里的哟）</a></li>
+    				                                         
+                    </ul>
+                </div>
+            </div>
+
+        </div>
+    </body>
+</html>

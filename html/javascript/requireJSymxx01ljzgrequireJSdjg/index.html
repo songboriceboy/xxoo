@@ -1,0 +1,1427 @@
+﻿<!DOCTYPE html>
+
+<html lang="zh">
+    <head>
+        <meta charset="utf-8">
+        <meta name="description" content="android,ios" />
+        <meta name="keywords" content="android,ios" />
+
+        <title>叶小钗</title>
+        <style type='text/css'>
+            body {
+                background-color: #CCC;
+            }
+        </style>
+        <link rel="stylesheet" href="../../../css/bootstrap.css" />
+    </head>
+
+    <body>
+        <div class="container">
+
+            <h1>叶小钗</h1>
+
+            <div class='navbar navbar-inverse'>
+                <div class='navbar-inner nav-collapse' style="height: auto;">
+                    <ul class="nav">
+                              				<li><a href="http://songboriceboy.github.io/xxoo/html/blade/index.html">blade</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/css/index.html">css</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/HTML5&CSS3/index.html">HTML5&CSS3</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/index.html">javascript</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Javaxx/index.html">Java学习</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/nodejs/index.html">nodejs</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/requirejs/index.html">requirejs</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/index.html">Web前端</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/xxgw/index.html">学习感悟</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/gzdd/index.html">工作点滴</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/jkxx/index.html">接口学习</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/wfl/index.html">未分类</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/ydkf/index.html">移动开发</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/sjms/index.html">设计模式</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/mst/index.html">面试题</a></li>
+    				                      </ul>
+                </div>
+            </div>
+
+            <div id='content' class='row-fluid'>
+
+                <div class='span9 main'>
+				<div style="color:blue" align=center>【requireJS源码学习01】了解整个requireJS的结构</div><br><h1>前言</h1>
+<p>现在工作中基本离不开requireJS这种模块管理工具了，之前一直在用，但是对其原理不甚熟悉，整两天我们来试着学习其源码，而后在探寻其背后的AMD思想吧</p>
+<p>于是今天的目标是熟悉requireJS整体框架结构，顺便看看之前的简单demo</p>
+<div class="PostList">
+<div class="postTitl2">
+<p><a id="PostsList1_rpPosts_TitleUrl_1" style="line-height: 1.5;" href="http://www.cnblogs.com/yexiaochai/p/3214926.html">RequireJS学习笔记</a><span style="line-height: 1.5;">&nbsp;</span></p>
+</div>
+</div>
+<h1>程序入口</h1>
+<p>源码阅读仍然有一定门槛，通看的做法不适合我等素质的选手，所以还是得由入口开始，requireJS的入口便是引入时候指定的data-main</p>
+<div class="cnblogs_code">
+<pre>&lt;script src="require.js" type="text/javascript" data-main="main.js"&gt;&lt;/script&gt;</pre>
+</div>
+<p>在js引入后，会自动执行指向data-main的js函数，这个就是我们所谓的入口，跟着这条线，我们就进入了requirejs的大门</p>
+<p>首先，引入js文件本身不会干什么事情，那么requirejs内部做了什么呢？</p>
+<p>① 除了一些初始化操作以为第一件干的事情，值执行这段代码：</p>
+<div class="cnblogs_code">
+<pre><span style="color: #008000;">//</span><span style="color: #008000;">Create default context.</span>
+req({});</pre>
+</div>
+<p>这段代码会构造默认的参数，其调用的又是整个程序的入口</p>
+<div class="cnblogs_code">
+<pre>req = requirejs = <span style="color: #0000ff;">function</span> (deps, callback, errback, optional) {}</pre>
+</div>
+<p>这里具体干了什么我们先不予关注，继续往后面走，因为貌似，这里与data-main暂时不相干，因为这段会先于data-main逻辑运行</p>
+<p>然后，进入data-main相关的逻辑了：</p>
+<div class="cnblogs_code">
+<pre><span style="color: #008000;">//</span><span style="color: #008000;">Look for a data-main script attribute, which could also adjust the baseUrl.</span>
+<span style="color: #0000ff;">if</span> (isBrowser &amp;&amp; !<span style="color: #000000;">cfg.skipDataMain) {
+  </span><span style="color: #008000;">//</span><span style="color: #008000;">Figure out baseUrl. Get it from the script tag with require.js in it.</span>
+  eachReverse(scripts(), <span style="color: #0000ff;">function</span><span style="color: #000000;"> (script) {
+    </span><span style="color: #008000;">//</span><span style="color: #008000;">Set the 'head' where we can append children by</span>
+    <span style="color: #008000;">//</span><span style="color: #008000;">using the script's parent.</span>
+    <span style="color: #0000ff;">if</span> (!<span style="color: #000000;">head) {
+      head </span>=<span style="color: #000000;"> script.parentNode;
+    }
+
+    </span><span style="color: #008000;">//</span><span style="color: #008000;">Look for a data-main attribute to set main script for the page</span>
+    <span style="color: #008000;">//</span><span style="color: #008000;">to load. If it is there, the path to data main becomes the</span>
+    <span style="color: #008000;">//</span><span style="color: #008000;">baseUrl, if it is not already set.</span>
+    dataMain = script.getAttribute('data-main'<span style="color: #000000;">);
+    </span><span style="color: #0000ff;">if</span><span style="color: #000000;"> (dataMain) {
+      </span><span style="color: #008000;">//</span><span style="color: #008000;">Preserve dataMain in case it is a path (i.e. contains '?')</span>
+      mainScript =<span style="color: #000000;"> dataMain;
+
+      </span><span style="color: #008000;">//</span><span style="color: #008000;">Set final baseUrl if there is not already an explicit one.</span>
+      <span style="color: #0000ff;">if</span> (!<span style="color: #000000;">cfg.baseUrl) {
+        </span><span style="color: #008000;">//</span><span style="color: #008000;">Pull off the directory of data-main for use as the</span>
+        <span style="color: #008000;">//</span><span style="color: #008000;">baseUrl.</span>
+        src = mainScript.split('/'<span style="color: #000000;">);
+        mainScript </span>=<span style="color: #000000;"> src.pop();
+        subPath </span>= src.length ? src.join('/') + '/' : './'<span style="color: #000000;">;
+
+        cfg.baseUrl </span>=<span style="color: #000000;"> subPath;
+      }
+
+      </span><span style="color: #008000;">//</span><span style="color: #008000;">Strip off any trailing .js since mainScript is now</span>
+      <span style="color: #008000;">//</span><span style="color: #008000;">like a module name.</span>
+      mainScript = mainScript.replace(jsSuffixRegExp, ''<span style="color: #000000;">);
+
+      </span><span style="color: #008000;">//</span><span style="color: #008000;">If mainScript is still a path, fall back to dataMain</span>
+      <span style="color: #0000ff;">if</span><span style="color: #000000;"> (req.jsExtRegExp.test(mainScript)) {
+        mainScript </span>=<span style="color: #000000;"> dataMain;
+      }
+
+      </span><span style="color: #008000;">//</span><span style="color: #008000;">Put the data-main script in the files to load.</span>
+      cfg.deps = cfg.deps ?<span style="color: #000000;"> cfg.deps.concat(mainScript) : [mainScript];
+
+      </span><span style="color: #0000ff;">return</span> <span style="color: #0000ff;">true</span><span style="color: #000000;">;
+    }
+  });
+}</span></pre>
+</div>
+<p>因为requireJS不止用于浏览器，所以这里有一个判断，我们暂时不予关注，看看他干了些什么</p>
+<p>① 他会去除页面所有的script标签，然后倒叙遍历之</p>
+<div class="cnblogs_code">
+<pre>scripts() =&gt; [&lt;script src="require.js" type="text/javascript" data-main="main.js"&gt;&lt;/script&gt;]</pre>
+</div>
+<p>这个地方遇到两个方法</p>
+<h3>eachReverse</h3>
+<p>与each一致，只不过由逆序遍历</p>
+<div class="cnblogs_code" onclick="cnblogs_code_show('40473501-318e-469b-80a2-4f7dc8b8176d')"><img id="code_img_closed_40473501-318e-469b-80a2-4f7dc8b8176d" class="code_img_closed" src="43570758473519.gif" alt=""><img id="code_img_opened_40473501-318e-469b-80a2-4f7dc8b8176d" class="code_img_opened" style="display: none;" onclick="cnblogs_code_hide('40473501-318e-469b-80a2-4f7dc8b8176d',event)" src="16365178109279.gif" alt="">
+<div id="cnblogs_code_open_40473501-318e-469b-80a2-4f7dc8b8176d" class="cnblogs_code_hide">
+<pre><span style="color: #0000ff;">function</span><span style="color: #000000;"> eachReverse(ary, func) {
+  </span><span style="color: #0000ff;">if</span><span style="color: #000000;"> (ary) {
+    </span><span style="color: #0000ff;">var</span><span style="color: #000000;"> i;
+    </span><span style="color: #0000ff;">for</span> (i = ary.length - 1; i &gt; -1; i -= 1<span style="color: #000000;">) {
+      </span><span style="color: #0000ff;">if</span> (ary[i] &amp;&amp;<span style="color: #000000;"> func(ary[i], i, ary)) {
+        </span><span style="color: #0000ff;">break</span><span style="color: #000000;">;
+      }
+    }
+  }
+}</span></pre>
+</div>
+<span class="cnblogs_code_collapse">View Code</span></div>
+<h3>scripts</h3>
+<p>便是document.getElementsByTagName('script');返回所有的script标签</p>
+<p>然后开始的head便是html中的head标签，暂时不予理睬</p>
+<div class="cnblogs_code" onclick="cnblogs_code_show('041e72af-7489-4065-9be9-ca9dfbf9aefc')"><img id="code_img_closed_041e72af-7489-4065-9be9-ca9dfbf9aefc" class="code_img_closed" src="43570758473519.gif" alt=""><img id="code_img_opened_041e72af-7489-4065-9be9-ca9dfbf9aefc" class="code_img_opened" style="display: none;" onclick="cnblogs_code_hide('041e72af-7489-4065-9be9-ca9dfbf9aefc',event)" src="16365178109279.gif" alt="">
+<div id="cnblogs_code_open_041e72af-7489-4065-9be9-ca9dfbf9aefc" class="cnblogs_code_hide">
+<pre><span style="color: #0000ff;">if</span><span style="color: #000000;"> (isBrowser) {
+  head </span>= s.head = document.getElementsByTagName('head')[0<span style="color: #000000;">];
+  </span><span style="color: #008000;">//</span><span style="color: #008000;">If BASE tag is in play, using appendChild is a problem for IE6.</span>
+  <span style="color: #008000;">//</span><span style="color: #008000;">When that browser dies, this can be removed. Details in this jQuery bug:</span>
+  <span style="color: #008000;">//</span><span style="color: #008000;">http://dev.jquery.com/ticket/2709</span>
+  baseElement = document.getElementsByTagName('base')[0<span style="color: #000000;">];
+  </span><span style="color: #0000ff;">if</span><span style="color: #000000;"> (baseElement) {
+    head </span>= s.head =<span style="color: #000000;"> baseElement.parentNode;
+  }
+}</span></pre>
+</div>
+<span class="cnblogs_code_collapse">View Code</span></div>
+<div class="cnblogs_code">
+<pre>dataMain = script.getAttribute('data-main');</pre>
+</div>
+<p>然后这一句便可以获取当前指定运行的文件名，比如这里</p>
+<div class="cnblogs_code">
+<pre>dataMain =&gt; main.js</pre>
+</div>
+<p>如果不存在就不会有什么操作了</p>
+<p>PS：我原来记得默认指向main.js，看来是我记错了......</p>
+<p>然后下来做了一些处理，会根据指定的main.js<strong>初步确定bashUrl</strong>，其实就是与main.js统一目录</p>
+<p>最后做了关键的一个步骤：</p>
+<div class="cnblogs_code">
+<pre>cfg.deps = cfg.deps ? cfg.deps.concat(mainScript) : [mainScript];</pre>
+</div>
+<p><img src="239535210353908.png" alt=""></p>
+<p>将main放入带加载的配置中，而本身不干任何事情，继续接下来的逻辑......然后此逻辑暂时结束，根据这些参数进入下一步骤</p>
+<h1>req/requirejs</h1>
+<p>根据上一步骤的处理，会形成上面截图的参数，而后再一次执行入口函数req，这个时候就会发生不一样的事情了</p>
+<div class="cnblogs_code">
+<pre><span style="color: #008000;">/*</span><span style="color: #008000;">*
+* Main entry point.
+*
+* If the only argument to require is a string, then the module that
+* is represented by that string is fetched for the appropriate context.
+*
+* If the first argument is an array, then it will be treated as an array
+* of dependency string names to fetch. An optional function callback can
+* be specified to execute when all of those dependencies are available.
+*
+* Make a local req variable to help Caja compliance (it assumes things
+* on a require that are not standardized), and to give a short
+* name for minification/local scope use.
+</span><span style="color: #008000;">*/</span><span style="color: #000000;">
+req </span>= requirejs = <span style="color: #0000ff;">function</span><span style="color: #000000;"> (deps, callback, errback, optional) {
+
+  </span><span style="color: #008000;">//</span><span style="color: #008000;">Find the right context, use default</span>
+  <span style="color: #0000ff;">var</span><span style="color: #000000;"> context, config,
+          contextName </span>=<span style="color: #000000;"> defContextName;
+
+  </span><span style="color: #008000;">//</span><span style="color: #008000;"> Determine if have config object in the call.</span>
+  <span style="color: #0000ff;">if</span> (!isArray(deps) &amp;&amp; <span style="color: #0000ff;">typeof</span> deps !== 'string'<span style="color: #000000;">) {
+    </span><span style="color: #008000;">//</span><span style="color: #008000;"> deps is a config object</span>
+    config =<span style="color: #000000;"> deps;
+    </span><span style="color: #0000ff;">if</span><span style="color: #000000;"> (isArray(callback)) {
+      </span><span style="color: #008000;">//</span><span style="color: #008000;"> Adjust args if there are dependencies</span>
+      deps =<span style="color: #000000;"> callback;
+      callback </span>=<span style="color: #000000;"> errback;
+      errback </span>=<span style="color: #000000;"> optional;
+    } </span><span style="color: #0000ff;">else</span><span style="color: #000000;"> {
+      deps </span>=<span style="color: #000000;"> [];
+    }
+  }
+
+  </span><span style="color: #0000ff;">if</span> (config &amp;&amp;<span style="color: #000000;"> config.context) {
+    contextName </span>=<span style="color: #000000;"> config.context;
+  }
+
+  context </span>=<span style="color: #000000;"> getOwn(contexts, contextName);
+  </span><span style="color: #0000ff;">if</span> (!<span style="color: #000000;">context) {
+    context </span>= contexts[contextName] =<span style="color: #000000;"> req.s.newContext(contextName);
+  }
+
+  </span><span style="color: #0000ff;">if</span><span style="color: #000000;"> (config) {
+    context.configure(config);
+  }
+
+  </span><span style="color: #0000ff;">return</span><span style="color: #000000;"> context.require(deps, callback, errback);
+};</span></pre>
+</div>
+<p>这个时候我们的第一个参数deps就不再是undefined了，而是一个对象，这里便将其配置放到了config变量中保持deps为一数组，然后干了些其他事情</p>
+<p>这里有个变量<strong>context</strong>，需要特别注意，后面我们来看看他有些什么，这里有一个新的函数</p>
+<div class="cnblogs_code">
+<pre><span style="color: #0000ff;">function</span><span style="color: #000000;"> getOwn(obj, prop) {
+  </span><span style="color: #0000ff;">return</span> hasProp(obj, prop) &amp;&amp;<span style="color: #000000;"> obj[prop];
+}
+</span><span style="color: #0000ff;">function</span><span style="color: #000000;"> hasProp(obj, prop) {
+  </span><span style="color: #0000ff;">return</span><span style="color: #000000;"> hasOwn.call(obj, prop);
+}
+hasOwn </span>= op.hasOwnProperty</pre>
+</div>
+<p>这里会获取非原型属性将其扩展，首次执行时候会碰到一个非常重要的函数<strong>newContext&nbsp;</strong>因为他是一个核心，我们这里暂时选择忽略，不然整个全部就陷进去了</p>
+<p>经过newContext处理后的context就变成这个样子了：</p>
+<p><img src="11330406515442.png" alt=""></p>
+<div class="cnblogs_code">
+<pre><span style="color: #0000ff;">if</span><span style="color: #000000;"> (config) {
+  context.configure(config);
+}</span></pre>
+</div>
+<p>这里就会将我们第一步的参数赋值进对象，具体干了什么，我们依旧不予理睬，main.js干了两件事情：</p>
+<p>① 暂时性设置了baseUrl</p>
+<p>② 告诉requireJS你马上要加载我了</p>
+<p>于是最后终于调用require开始处理逻辑</p>
+<div class="cnblogs_code">
+<pre><span style="color: #0000ff;">return</span> context.require(deps, callback, errback);</pre>
+</div>
+<h1>require</h1>
+<p>因为context.require = context.makeRequire();而该函数本身又返回localRequire函数，所以事实上这里是执行的localRequire函数，内部维护着一个闭包</p>
+<p>因为nextContext只会运行一次，所以很多require实际用到的变量都是nextContext闭包所维护，比如我们这里便可以使用config变量</p>
+<p><img src="31487809998574.png" alt=""></p>
+<p>这里依旧有一些特殊处理，比如deps是字符串的情况，但是我们暂时不予关注.......</p>
+<p>PS：搞了这么久很多不予关注了，欠了很多帐啊！</p>
+<p>他这里应该是有一个BUG，所以这里用到了一个settimeout延时</p>
+<p>PS：因为settimeout的使用，整个这块的程序全部会抛到主干逻辑之后了</p>
+<p>然后接下来的步骤比较关键了，我们先抛开一切来理一理这个newContext</p>
+<h1>newContext</h1>
+<p><span style="line-height: 1.5;">newContext占了源码的主要篇幅，他也只会在初始化时候执行一次，而后便不再执行了：</span></p>
+<div class="cnblogs_code">
+<pre><span style="color: #0000ff;">if</span> (!<span style="color: #000000;">context) {
+  context </span>= contexts[contextName] =<span style="color: #000000;"> req.s.newContext(contextName);
+}</span></pre>
+</div>
+<p>现在，我们就目前而知来简单理一理，requireJS的结构</p>
+<p><span style="line-height: 1.5;">① 变量声明，工具类</span></p>
+<p><span style="line-height: 1.5;">在newContext之前，完全是做一些变量的定义，或者做一些简单的操作，里面比较关键的是<strong>contexts/cfg</strong>对象，会被后面无数次的用到</span></p>
+<p><span style="line-height: 1.5;">② 实例化上下文/newContext</span></p>
+<p><span style="line-height: 1.5;">紧接着就是newContext这洋洋洒洒一千多行代码了，其中主要干了什么暂时不知道，据我观察应该是做环境相关的准备</span></p>
+<p><span style="line-height: 1.5;">③ 对外接口</span></p>
+<p><span style="line-height: 1.5;">上面操作结束后便提供了几个主要对外接口</span></p>
+<p><span style="line-height: 1.5;">requirejs</span></p>
+<p><span style="line-height: 1.5;">require.config</span></p>
+<p><span style="line-height: 1.5;">虽然这里是两个函数，其实都是requirejs这一关入口</span></p>
+<p><span style="line-height: 1.5;">而后，require自己撸了一把，实例化了默认的参数，这里便调用了newContext，所以以后都不会调用，其中的函数多处于其闭包环境</span></p>
+<p><span style="line-height: 1.5;">接下来根据引入script标签的data-main做了一次文章，初始化了简单的参数，并将main.js作为了依赖项，这里会根据main.js重写cfg对象</span></p>
+<p><span style="line-height: 1.5;">最后requirejs执行一次reg(cfg)，便真的开始了所有操作，这个时候我们就进入newContext，看看他主要干了什么</span></p>
+<p><span style="line-height: 1.5;">PS:所有require并未提供任何借口出来，所以在全局想查看其contexts或者cfg是不行的，而且每次操作都可能导致其改变</span></p>
+<p><span style="line-height: 1.5;">要了解newContext函数，还是需要进入其入口</span></p>
+<div class="cnblogs_code">
+<pre><span style="color: #0000ff;">if</span> (!<span style="color: #000000;">context) {
+  context </span>= contexts[contextName] =<span style="color: #000000;"> req.s.newContext(contextName);
+}</span></pre>
+</div>
+<p>从script标签引入require库时候，会因为这段代码执行一次newContext函数，从此后，该函数不会被执行，其实现的原因不是我等现在能明白的，先看懂实现再说吧</p>
+<div class="cnblogs_code">
+<pre><span style="color: #008000;">//</span><span style="color: #008000;">Create default context.</span>
+req({});</pre>
+</div>
+<p>所以上面说了那么多，看了这么久，其实最关键的还是首次加载，首次加载就决定了运行上下文了</p>
+<h2>整体结构</h2>
+<p><img src="9404275403560.png" alt=""></p>
+<p>newContext的基本结构大概是这样：</p>
+<p>① 函数作用域内变量定义（中间初始化了一发handlers变量）</p>
+<p>② 一堆工具函数定义</p>
+<p>③ Module模块（这块给人的感觉不明觉厉...应该是核心吧）</p>
+<p>④ 实例化context对象，将该对象返回，然后基本结束</p>
+<p><span>进入newContext后，第一步是基本变量定义，这种对外的框架一般都不会到处命名变量，而是将所有变量全部提到函数最前面</span></p>
+<p><span>一来是js解析时候声明本身会提前，而来可能是到处命名变量会让我们找不到吧......</span></p>
+<p><span>开始定义了很多变量，我们一来都不知道是干神马的，但是config变量却引起了我们的注意,</span><span style="line-height: 1.5;">这里先放出来，继续往下就是一连串的函数了，值得说明的是，这些变量会被重复利用哦</span></p>
+<p>一眼看下来，该函数本身并没有做什么实际的事情，这个时候我们就需要找其入口，这里的入口是</p>
+<div class="cnblogs_code">
+<pre><span style="color: #008000;">//</span><span style="color: #008000;">首次调用</span>
+<span style="color: #000000;">req({}) 
+</span>=&gt; 
+<span style="color: #008000;">//</span><span style="color: #008000;">触发newContext，做首次初始化并返回给context对象</span>
+context = contexts[contextName] =<span style="color: #000000;"> req.s.newContext(contextName)
+</span>=&gt;
+<span style="color: #008000;">//</span><span style="color: #008000;">注意这里require函数其实处于了mackRequire函数的闭包环境</span>
+context.require =<span style="color: #000000;"> context.makeRequire();
+</span>=&gt;
+<span style="color: #008000;">//</span><span style="color: #008000;">首次调用newContext返回对象初始化变量</span>
+context.configure(config);</pre>
+</div>
+<p>所以，在首次初始化后，并未做特别的处理，直到configure的调用，于是让我们进入该函数</p>
+<div class="cnblogs_code" onclick="cnblogs_code_show('38cb5f54-9aa2-4392-ba74-6d185a6253aa')"><img id="code_img_closed_38cb5f54-9aa2-4392-ba74-6d185a6253aa" class="code_img_closed" src="43570758473519.gif" alt=""><img id="code_img_opened_38cb5f54-9aa2-4392-ba74-6d185a6253aa" class="code_img_opened" style="display: none;" onclick="cnblogs_code_hide('38cb5f54-9aa2-4392-ba74-6d185a6253aa',event)" src="16365178109279.gif" alt="">
+<div id="cnblogs_code_open_38cb5f54-9aa2-4392-ba74-6d185a6253aa" class="cnblogs_code_hide">
+<pre><span style="color: #008000;">/*</span><span style="color: #008000;">*
+* Set a configuration for the context.
+* @param {Object} cfg config object to integrate.
+</span><span style="color: #008000;">*/</span><span style="color: #000000;">
+configure: </span><span style="color: #0000ff;">function</span><span style="color: #000000;"> (cfg) {
+  </span><span style="color: #008000;">//</span><span style="color: #008000;">Make sure the baseUrl ends in a slash.</span>
+  <span style="color: #0000ff;">if</span><span style="color: #000000;"> (cfg.baseUrl) {
+    </span><span style="color: #0000ff;">if</span> (cfg.baseUrl.charAt(cfg.baseUrl.length - 1) !== '/'<span style="color: #000000;">) {
+      cfg.baseUrl </span>+= '/'<span style="color: #000000;">;
+    }
+  }
+
+  </span><span style="color: #008000;">//</span><span style="color: #008000;">Save off the paths and packages since they require special processing,</span>
+  <span style="color: #008000;">//</span><span style="color: #008000;">they are additive.</span>
+  <span style="color: #0000ff;">var</span> pkgs =<span style="color: #000000;"> config.pkgs,
+              shim </span>=<span style="color: #000000;"> config.shim,
+              objs </span>=<span style="color: #000000;"> {
+                paths: </span><span style="color: #0000ff;">true</span><span style="color: #000000;">,
+                config: </span><span style="color: #0000ff;">true</span><span style="color: #000000;">,
+                map: </span><span style="color: #0000ff;">true</span><span style="color: #000000;">
+              };
+
+  eachProp(cfg, </span><span style="color: #0000ff;">function</span><span style="color: #000000;"> (value, prop) {
+    </span><span style="color: #0000ff;">if</span><span style="color: #000000;"> (objs[prop]) {
+      </span><span style="color: #0000ff;">if</span> (prop === 'map'<span style="color: #000000;">) {
+        </span><span style="color: #0000ff;">if</span> (!<span style="color: #000000;">config.map) {
+          config.map </span>=<span style="color: #000000;"> {};
+        }
+        mixin(config[prop], value, </span><span style="color: #0000ff;">true</span>, <span style="color: #0000ff;">true</span><span style="color: #000000;">);
+      } </span><span style="color: #0000ff;">else</span><span style="color: #000000;"> {
+        mixin(config[prop], value, </span><span style="color: #0000ff;">true</span><span style="color: #000000;">);
+      }
+    } </span><span style="color: #0000ff;">else</span><span style="color: #000000;"> {
+      config[prop] </span>=<span style="color: #000000;"> value;
+    }
+  });
+
+  </span><span style="color: #008000;">//</span><span style="color: #008000;">Merge shim</span>
+  <span style="color: #0000ff;">if</span><span style="color: #000000;"> (cfg.shim) {
+    eachProp(cfg.shim, </span><span style="color: #0000ff;">function</span><span style="color: #000000;"> (value, id) {
+      </span><span style="color: #008000;">//</span><span style="color: #008000;">Normalize the structure</span>
+      <span style="color: #0000ff;">if</span><span style="color: #000000;"> (isArray(value)) {
+        value </span>=<span style="color: #000000;"> {
+          deps: value
+        };
+      }
+      </span><span style="color: #0000ff;">if</span> ((value.exports || value.init) &amp;&amp; !<span style="color: #000000;">value.exportsFn) {
+        value.exportsFn </span>=<span style="color: #000000;"> context.makeShimExports(value);
+      }
+      shim[id] </span>=<span style="color: #000000;"> value;
+    });
+    config.shim </span>=<span style="color: #000000;"> shim;
+  }
+
+  </span><span style="color: #008000;">//</span><span style="color: #008000;">Adjust packages if necessary.</span>
+  <span style="color: #0000ff;">if</span><span style="color: #000000;"> (cfg.packages) {
+    each(cfg.packages, </span><span style="color: #0000ff;">function</span><span style="color: #000000;"> (pkgObj) {
+      </span><span style="color: #0000ff;">var</span><span style="color: #000000;"> location;
+
+      pkgObj </span>= <span style="color: #0000ff;">typeof</span> pkgObj === 'string' ?<span style="color: #000000;"> { name: pkgObj} : pkgObj;
+      location </span>=<span style="color: #000000;"> pkgObj.location;
+
+      </span><span style="color: #008000;">//</span><span style="color: #008000;">Create a brand new object on pkgs, since currentPackages can</span>
+      <span style="color: #008000;">//</span><span style="color: #008000;">be passed in again, and config.pkgs is the internal transformed</span>
+      <span style="color: #008000;">//</span><span style="color: #008000;">state for all package configs.</span>
+      pkgs[pkgObj.name] =<span style="color: #000000;"> {
+        name: pkgObj.name,
+        location: location </span>||<span style="color: #000000;"> pkgObj.name,
+        </span><span style="color: #008000;">//</span><span style="color: #008000;">Remove leading dot in main, so main paths are normalized,</span>
+        <span style="color: #008000;">//</span><span style="color: #008000;">and remove any trailing .js, since different package</span>
+        <span style="color: #008000;">//</span><span style="color: #008000;">envs have different conventions: some use a module name,</span>
+        <span style="color: #008000;">//</span><span style="color: #008000;">some use a file name.</span>
+        main: (pkgObj.main || 'main'<span style="color: #000000;">)
+                            .replace(currDirRegExp, </span>''<span style="color: #000000;">)
+                            .replace(jsSuffixRegExp, </span>''<span style="color: #000000;">)
+      };
+    });
+
+    </span><span style="color: #008000;">//</span><span style="color: #008000;">Done with modifications, assing packages back to context config</span>
+    config.pkgs =<span style="color: #000000;"> pkgs;
+  }
+
+  </span><span style="color: #008000;">//</span><span style="color: #008000;">If there are any "waiting to execute" modules in the registry,</span>
+  <span style="color: #008000;">//</span><span style="color: #008000;">update the maps for them, since their info, like URLs to load,</span>
+  <span style="color: #008000;">//</span><span style="color: #008000;">may have changed.</span>
+  eachProp(registry, <span style="color: #0000ff;">function</span><span style="color: #000000;"> (mod, id) {
+    </span><span style="color: #008000;">//</span><span style="color: #008000;">If module already has init called, since it is too</span>
+    <span style="color: #008000;">//</span><span style="color: #008000;">late to modify them, and ignore unnormalized ones</span>
+    <span style="color: #008000;">//</span><span style="color: #008000;">since they are transient.</span>
+    <span style="color: #0000ff;">if</span> (!mod.inited &amp;&amp; !<span style="color: #000000;">mod.map.unnormalized) {
+      mod.map </span>=<span style="color: #000000;"> makeModuleMap(id);
+    }
+  });
+
+  </span><span style="color: #008000;">//</span><span style="color: #008000;">If a deps array or a config callback is specified, then call</span>
+  <span style="color: #008000;">//</span><span style="color: #008000;">require with those args. This is useful when require is defined as a</span>
+  <span style="color: #008000;">//</span><span style="color: #008000;">config object before require.js is loaded.</span>
+  <span style="color: #0000ff;">if</span> (cfg.deps ||<span style="color: #000000;"> cfg.callback) {
+    context.require(cfg.deps </span>||<span style="color: #000000;"> [], cfg.callback);
+  }
+},</span></pre>
+</div>
+<span class="cnblogs_code_collapse">View Code</span></div>
+<p>首次传入的是空对象，所以开始一段代码暂时没有意义，这里使用的config变量正是newContext维护的闭包，也就是上面让注意的</p>
+<div class="cnblogs_code">
+<pre>config = {
+  //Defaults. Do not set a default for map
+  //config to speed up normalize(), which
+  //will run faster if there is no default.
+  waitSeconds: 7,
+  baseUrl: './',
+  paths: {},
+  pkgs: {},
+  shim: {},
+  config: {}
+},</pre>
+</div>
+<p>下面用到了一个新的函数：</p>
+<h3>eachProp</h3>
+<p>这个函数会遍历对象所有非原型属性，并且使用第二个参数（函数）执行之，如果返回true便停止，首次执行时候cfg为空对象，便没有往下走，否则config变量会被操作，具体我们暂时不管</p>
+<div class="cnblogs_code" onclick="cnblogs_code_show('56e2e96f-82fd-438e-b245-540b45e92226')"><img id="code_img_closed_56e2e96f-82fd-438e-b245-540b45e92226" class="code_img_closed" src="43570758473519.gif" alt=""><img id="code_img_opened_56e2e96f-82fd-438e-b245-540b45e92226" class="code_img_opened" style="display: none;" onclick="cnblogs_code_hide('56e2e96f-82fd-438e-b245-540b45e92226',event)" src="16365178109279.gif" alt="">
+<div id="cnblogs_code_open_56e2e96f-82fd-438e-b245-540b45e92226" class="cnblogs_code_hide">
+<pre><span style="color: #008000;">/*</span><span style="color: #008000;">*
+* Cycles over properties in an object and calls a function for each
+* property value. If the function returns a truthy value, then the
+* iteration is stopped.
+</span><span style="color: #008000;">*/</span>
+<span style="color: #0000ff;">function</span><span style="color: #000000;"> eachProp(obj, func) {
+  </span><span style="color: #0000ff;">var</span><span style="color: #000000;"> prop;
+  </span><span style="color: #0000ff;">for</span> (prop <span style="color: #0000ff;">in</span><span style="color: #000000;"> obj) {
+    </span><span style="color: #0000ff;">if</span><span style="color: #000000;"> (hasProp(obj, prop)) {
+      </span><span style="color: #0000ff;">if</span><span style="color: #000000;"> (func(obj[prop], prop)) {
+        </span><span style="color: #0000ff;">break</span><span style="color: #000000;">;
+      }
+    }
+  }
+}</span></pre>
+</div>
+<span class="cnblogs_code_collapse">View Code</span></div>
+<p>这个所谓的入口执行后实际的意义基本等于什么都没有干......</p>
+<p>但是，这里可以得出一个弱弱的结论就是</p>
+<div class="cnblogs_code">
+<pre><span style="color: #800000;">configure是用于设置参数滴</span></pre>
+</div>
+<p>所以所谓的入口其实没有干事情，这个时候第二个入口便出现了</p>
+<h2>context.require</h2>
+<div class="cnblogs_code">
+<pre><span style="color: #0000ff;">return</span> context.require(deps, callback, errback);</pre>
+</div>
+<p>参数设置结束后便会执行context的require方法，这个是真正的入口，他实际调用顺序为：</p>
+<div class="cnblogs_code">
+<pre>context.require =<span style="color: #000000;"> context.makeRequire();
+</span>=&gt;<span style="color: #000000;">
+localRequire</span></pre>
+</div>
+<p>所以真正调用localRequire时候，已经执行了一番makeRequire函数了，现在处于了其上下文，正因为localRequire被处理过，其多了几个函数属性</p>
+<p>除此之外，暂时没有看出其它变化，所以这里在某些特定场景是等价的</p>
+<div class="cnblogs_code" onclick="cnblogs_code_show('bfe94819-5cb4-4da0-b45b-e48330d164ec')"><img id="code_img_closed_bfe94819-5cb4-4da0-b45b-e48330d164ec" class="code_img_closed" src="43570758473519.gif" alt=""><img id="code_img_opened_bfe94819-5cb4-4da0-b45b-e48330d164ec" class="code_img_opened" style="display: none;" onclick="cnblogs_code_hide('bfe94819-5cb4-4da0-b45b-e48330d164ec',event)" src="16365178109279.gif" alt="">
+<div id="cnblogs_code_open_bfe94819-5cb4-4da0-b45b-e48330d164ec" class="cnblogs_code_hide">
+<pre><span style="color: #0000ff;">function</span><span style="color: #000000;"> localRequire(deps, callback, errback) {
+  </span><span style="color: #0000ff;">var</span><span style="color: #000000;"> id, map, requireMod;
+
+  </span><span style="color: #0000ff;">if</span> (options.enableBuildCallback &amp;&amp; callback &amp;&amp;<span style="color: #000000;"> isFunction(callback)) {
+    callback.__requireJsBuild </span>= <span style="color: #0000ff;">true</span><span style="color: #000000;">;
+  }
+
+  </span><span style="color: #0000ff;">if</span> (<span style="color: #0000ff;">typeof</span> deps === 'string'<span style="color: #000000;">) {
+    </span><span style="color: #0000ff;">if</span><span style="color: #000000;"> (isFunction(callback)) {
+      </span><span style="color: #008000;">//</span><span style="color: #008000;">Invalid call</span>
+      <span style="color: #0000ff;">return</span> onError(makeError('requireargs', 'Invalid require call'<span style="color: #000000;">), errback);
+    }
+
+    </span><span style="color: #008000;">//</span><span style="color: #008000;">If require|exports|module are requested, get the</span>
+    <span style="color: #008000;">//</span><span style="color: #008000;">value for them from the special handlers. Caveat:</span>
+    <span style="color: #008000;">//</span><span style="color: #008000;">this only works while module is being defined.</span>
+    <span style="color: #0000ff;">if</span> (relMap &amp;&amp;<span style="color: #000000;"> hasProp(handlers, deps)) {
+      </span><span style="color: #0000ff;">return</span><span style="color: #000000;"> handlers[deps](registry[relMap.id]);
+    }
+
+    </span><span style="color: #008000;">//</span><span style="color: #008000;">Synchronous access to one module. If require.get is</span>
+    <span style="color: #008000;">//</span><span style="color: #008000;">available (as in the Node adapter), prefer that.</span>
+    <span style="color: #0000ff;">if</span><span style="color: #000000;"> (req.get) {
+      </span><span style="color: #0000ff;">return</span><span style="color: #000000;"> req.get(context, deps, relMap, localRequire);
+    }
+
+    </span><span style="color: #008000;">//</span><span style="color: #008000;">Normalize module name, if it contains . or ..</span>
+    map = makeModuleMap(deps, relMap, <span style="color: #0000ff;">false</span>, <span style="color: #0000ff;">true</span><span style="color: #000000;">);
+    id </span>=<span style="color: #000000;"> map.id;
+
+    </span><span style="color: #0000ff;">if</span> (!<span style="color: #000000;">hasProp(defined, id)) {
+      </span><span style="color: #0000ff;">return</span> onError(makeError('notloaded', 'Module name "' +<span style="color: #000000;">
+                                id </span>+
+                                '" has not been loaded yet for context: ' +<span style="color: #000000;">
+                                contextName </span>+<span style="color: #000000;">
+                                (relMap </span>? '' : '. Use require([])'<span style="color: #000000;">)));
+    }
+    </span><span style="color: #0000ff;">return</span><span style="color: #000000;"> defined[id];
+  }
+
+  </span><span style="color: #008000;">//</span><span style="color: #008000;">Grab defines waiting in the global queue.</span>
+<span style="color: #000000;">  intakeDefines();
+
+  </span><span style="color: #008000;">//</span><span style="color: #008000;">Mark all the dependencies as needing to be loaded.</span>
+  context.nextTick(<span style="color: #0000ff;">function</span><span style="color: #000000;"> () {
+    </span><span style="color: #008000;">//</span><span style="color: #008000;">Some defines could have been added since the</span>
+    <span style="color: #008000;">//</span><span style="color: #008000;">require call, collect them.</span>
+<span style="color: #000000;">    intakeDefines();
+
+    requireMod </span>= getModule(makeModuleMap(<span style="color: #0000ff;">null</span><span style="color: #000000;">, relMap));
+
+    </span><span style="color: #008000;">//</span><span style="color: #008000;">Store if map config should be applied to this require</span>
+    <span style="color: #008000;">//</span><span style="color: #008000;">call for dependencies.</span>
+    requireMod.skipMap =<span style="color: #000000;"> options.skipMap;
+
+    requireMod.init(deps, callback, errback, {
+      enabled: </span><span style="color: #0000ff;">true</span><span style="color: #000000;">
+    });
+
+    checkLoaded();
+  });
+
+  </span><span style="color: #0000ff;">return</span><span style="color: #000000;"> localRequire;
+}</span></pre>
+</div>
+<span class="cnblogs_code_collapse">View Code</span></div>
+<p>过程中会执行一次intakeDefines，他的意义是定义全局队列，其意义暂时不明，然后进入了前面说的那个settimeout</p>
+<p>在主干逻辑结束后，这里会进入时钟队列的回调，其中的代码就比较关键了，只不过首次不能体现</p>
+<div class="cnblogs_code">
+<pre>context.nextTick(<span style="color: #0000ff;">function</span><span style="color: #000000;"> () {
+  </span><span style="color: #008000;">//</span><span style="color: #008000;">Some defines could have been added since the</span>
+  <span style="color: #008000;">//</span><span style="color: #008000;">require call, collect them.</span>
+<span style="color: #000000;">  intakeDefines();
+
+  requireMod </span>= getModule(makeModuleMap(<span style="color: #0000ff;">null</span><span style="color: #000000;">, relMap));
+
+  </span><span style="color: #008000;">//</span><span style="color: #008000;">Store if map config should be applied to this require</span>
+  <span style="color: #008000;">//</span><span style="color: #008000;">call for dependencies.</span>
+  requireMod.skipMap =<span style="color: #000000;"> options.skipMap;
+
+  requireMod.init(deps, callback, errback, {
+    enabled: </span><span style="color: #0000ff;">true</span><span style="color: #000000;">
+  });
+
+  checkLoaded();
+});</span></pre>
+</div>
+<p>这段代码事实上是比较奇特的，他会完全脱离整个require代码，比如整个</p>
+<div class="cnblogs_code">
+<pre> <span style="color: #0000ff;">return</span> context.require(deps, callback, errback);</pre>
+</div>
+<p>执行了后上面才会慢慢执行</p>
+<p>PS：require这段比较重要，留待明天分析，今天先看整体逻辑</p>
+<p><span style="line-height: 1.5;">下面的主要逻辑又到了这里</span></p>
+<div class="cnblogs_code">
+<pre>requireMod = getModule(makeModuleMap(<span style="color: #0000ff;">null</span>, relMap));</pre>
+</div>
+<p>我们这里主要先看getModule先，首先makeModuleMap比较关键，他会根据规则创建一些模块唯一标识的东西，暂时是什么当然是先不管啦......</p>
+<p>PS：其规则应该与加载的require数量有关，最后会形成这个东西</p>
+<p><img src="15756238218137.png" alt=""></p>
+<div class="cnblogs_code" onclick="cnblogs_code_show('911ffd1a-3dc4-4a4f-8c18-713f17408f39')"><img id="code_img_closed_911ffd1a-3dc4-4a4f-8c18-713f17408f39" class="code_img_closed" src="43570758473519.gif" alt=""><img id="code_img_opened_911ffd1a-3dc4-4a4f-8c18-713f17408f39" class="code_img_opened" style="display: none;" onclick="cnblogs_code_hide('911ffd1a-3dc4-4a4f-8c18-713f17408f39',event)" src="16365178109279.gif" alt="">
+<div id="cnblogs_code_open_911ffd1a-3dc4-4a4f-8c18-713f17408f39" class="cnblogs_code_hide">
+<pre><span style="color: #008000;">/*</span><span style="color: #008000;">*
+* Creates a module mapping that includes plugin prefix, module
+* name, and path. If parentModuleMap is provided it will
+* also normalize the name via require.normalize()
+*
+* @param {String} name the module name
+* @param {String} [parentModuleMap] parent module map
+* for the module name, used to resolve relative names.
+* @param {Boolean} isNormalized: is the ID already normalized.
+* This is true if this call is done for a define() module ID.
+* @param {Boolean} applyMap: apply the map config to the ID.
+* Should only be true if this map is for a dependency.
+*
+* @returns {Object}
+</span><span style="color: #008000;">*/</span>
+<span style="color: #0000ff;">function</span><span style="color: #000000;"> makeModuleMap(name, parentModuleMap, isNormalized, applyMap) {
+  </span><span style="color: #0000ff;">var</span><span style="color: #000000;"> url, pluginModule, suffix, nameParts,
+            prefix </span>= <span style="color: #0000ff;">null</span><span style="color: #000000;">,
+            parentName </span>= parentModuleMap ? parentModuleMap.name : <span style="color: #0000ff;">null</span><span style="color: #000000;">,
+            originalName </span>=<span style="color: #000000;"> name,
+            isDefine </span>= <span style="color: #0000ff;">true</span><span style="color: #000000;">,
+            normalizedName </span>= ''<span style="color: #000000;">;
+
+  </span><span style="color: #008000;">//</span><span style="color: #008000;">If no name, then it means it is a require call, generate an</span>
+  <span style="color: #008000;">//</span><span style="color: #008000;">internal name.</span>
+  <span style="color: #0000ff;">if</span> (!<span style="color: #000000;">name) {
+    isDefine </span>= <span style="color: #0000ff;">false</span><span style="color: #000000;">;
+    name </span>= '_@r' + (requireCounter += 1<span style="color: #000000;">);
+  }
+
+  nameParts </span>=<span style="color: #000000;"> splitPrefix(name);
+  prefix </span>= nameParts[0<span style="color: #000000;">];
+  name </span>= nameParts[1<span style="color: #000000;">];
+
+  </span><span style="color: #0000ff;">if</span><span style="color: #000000;"> (prefix) {
+    prefix </span>=<span style="color: #000000;"> normalize(prefix, parentName, applyMap);
+    pluginModule </span>=<span style="color: #000000;"> getOwn(defined, prefix);
+  }
+
+  </span><span style="color: #008000;">//</span><span style="color: #008000;">Account for relative paths if there is a base name.</span>
+  <span style="color: #0000ff;">if</span><span style="color: #000000;"> (name) {
+    </span><span style="color: #0000ff;">if</span><span style="color: #000000;"> (prefix) {
+      </span><span style="color: #0000ff;">if</span> (pluginModule &amp;&amp;<span style="color: #000000;"> pluginModule.normalize) {
+        </span><span style="color: #008000;">//</span><span style="color: #008000;">Plugin is loaded, use its normalize method.</span>
+        normalizedName = pluginModule.normalize(name, <span style="color: #0000ff;">function</span><span style="color: #000000;"> (name) {
+          </span><span style="color: #0000ff;">return</span><span style="color: #000000;"> normalize(name, parentName, applyMap);
+        });
+      } </span><span style="color: #0000ff;">else</span><span style="color: #000000;"> {
+        normalizedName </span>=<span style="color: #000000;"> normalize(name, parentName, applyMap);
+      }
+    } </span><span style="color: #0000ff;">else</span><span style="color: #000000;"> {
+      </span><span style="color: #008000;">//</span><span style="color: #008000;">A regular module.</span>
+      normalizedName =<span style="color: #000000;"> normalize(name, parentName, applyMap);
+
+      </span><span style="color: #008000;">//</span><span style="color: #008000;">Normalized name may be a plugin ID due to map config</span>
+      <span style="color: #008000;">//</span><span style="color: #008000;">application in normalize. The map config values must</span>
+      <span style="color: #008000;">//</span><span style="color: #008000;">already be normalized, so do not need to redo that part.</span>
+      nameParts =<span style="color: #000000;"> splitPrefix(normalizedName);
+      prefix </span>= nameParts[0<span style="color: #000000;">];
+      normalizedName </span>= nameParts[1<span style="color: #000000;">];
+      isNormalized </span>= <span style="color: #0000ff;">true</span><span style="color: #000000;">;
+
+      url </span>=<span style="color: #000000;"> context.nameToUrl(normalizedName);
+    }
+  }
+
+  </span><span style="color: #008000;">//</span><span style="color: #008000;">If the id is a plugin id that cannot be determined if it needs</span>
+  <span style="color: #008000;">//</span><span style="color: #008000;">normalization, stamp it with a unique ID so two matching relative</span>
+  <span style="color: #008000;">//</span><span style="color: #008000;">ids that may conflict can be separate.</span>
+  suffix = prefix &amp;&amp; !pluginModule &amp;&amp; !isNormalized ?
+                  '_unnormalized' + (unnormalizedCounter += 1<span style="color: #000000;">) :
+                  </span>''<span style="color: #000000;">;
+
+  </span><span style="color: #0000ff;">return</span><span style="color: #000000;"> {
+    prefix: prefix,
+    name: normalizedName,
+    parentMap: parentModuleMap,
+    unnormalized: </span>!!<span style="color: #000000;">suffix,
+    url: url,
+    originalName: originalName,
+    isDefine: isDefine,
+    id: (prefix </span>?<span style="color: #000000;">
+                    prefix </span>+ '!' +<span style="color: #000000;"> normalizedName :
+                    normalizedName) </span>+<span style="color: #000000;"> suffix
+  };
+}</span></pre>
+</div>
+<span class="cnblogs_code_collapse">View Code</span></div>
+<p>然后是我们关键的getModule函数</p>
+<div class="cnblogs_code">
+<pre><span style="color: #0000ff;">function</span><span style="color: #000000;"> getModule(depMap) {
+  </span><span style="color: #0000ff;">var</span> id =<span style="color: #000000;"> depMap.id,
+            mod </span>=<span style="color: #000000;"> getOwn(registry, id);
+
+  </span><span style="color: #0000ff;">if</span> (!<span style="color: #000000;">mod) {
+    mod </span>= registry[id] = <span style="color: #0000ff;">new</span><span style="color: #000000;"> context.Module(depMap);
+  }
+
+  </span><span style="color: #0000ff;">return</span><span style="color: #000000;"> mod;
+}</span></pre>
+</div>
+<p><strong>可以看到，一旦我们加载了一个模块便不会重新加载了，这是一个很重要的发现哦</strong></p>
+<div class="cnblogs_code">
+<pre><span style="color: #800000;">registry
+
+该全局变量用于存储加载模块的键值对</span></pre>
+</div>
+<p>第一步当然是加载啦，但是首次应该会跳过，因为当然事实上没有需要加载的模块，一起跟下去吧</p>
+<h2>Module</h2>
+<p><span style="line-height: 1.5;">然后进入我们关键的Module类模块了</span></p>
+<div class="cnblogs_code" onclick="cnblogs_code_show('03c0d69d-68a2-467b-97f6-2c5aaf9fda49')"><img id="code_img_closed_03c0d69d-68a2-467b-97f6-2c5aaf9fda49" class="code_img_closed" src="43570758473519.gif" alt=""><img id="code_img_opened_03c0d69d-68a2-467b-97f6-2c5aaf9fda49" class="code_img_opened" style="display: none;" onclick="cnblogs_code_hide('03c0d69d-68a2-467b-97f6-2c5aaf9fda49',event)" src="16365178109279.gif" alt="">
+<div id="cnblogs_code_open_03c0d69d-68a2-467b-97f6-2c5aaf9fda49" class="cnblogs_code_hide">
+<pre>Module = <span style="color: #0000ff;">function</span><span style="color: #000000;"> (map) {
+  </span><span style="color: #0000ff;">this</span>.events = getOwn(undefEvents, map.id) ||<span style="color: #000000;"> {};
+  </span><span style="color: #0000ff;">this</span>.map =<span style="color: #000000;"> map;
+  </span><span style="color: #0000ff;">this</span>.shim =<span style="color: #000000;"> getOwn(config.shim, map.id);
+  </span><span style="color: #0000ff;">this</span>.depExports =<span style="color: #000000;"> [];
+  </span><span style="color: #0000ff;">this</span>.depMaps =<span style="color: #000000;"> [];
+  </span><span style="color: #0000ff;">this</span>.depMatched =<span style="color: #000000;"> [];
+  </span><span style="color: #0000ff;">this</span>.pluginMaps =<span style="color: #000000;"> {};
+  </span><span style="color: #0000ff;">this</span>.depCount = 0<span style="color: #000000;">;
+
+  </span><span style="color: #008000;">/*</span><span style="color: #008000;"> this.exports this.factory
+  this.depMaps = [],
+  this.enabled, this.fetched
+  </span><span style="color: #008000;">*/</span><span style="color: #000000;">
+};
+
+Module.prototype </span>=<span style="color: #000000;"> {
+  init: </span><span style="color: #0000ff;">function</span><span style="color: #000000;"> (depMaps, factory, errback, options) {
+    options </span>= options ||<span style="color: #000000;"> {};
+
+    </span><span style="color: #008000;">//</span><span style="color: #008000;">Do not do more inits if already done. Can happen if there</span>
+    <span style="color: #008000;">//</span><span style="color: #008000;">are multiple define calls for the same module. That is not</span>
+    <span style="color: #008000;">//</span><span style="color: #008000;">a normal, common case, but it is also not unexpected.</span>
+    <span style="color: #0000ff;">if</span> (<span style="color: #0000ff;">this</span><span style="color: #000000;">.inited) {
+      </span><span style="color: #0000ff;">return</span><span style="color: #000000;">;
+    }
+
+    </span><span style="color: #0000ff;">this</span>.factory =<span style="color: #000000;"> factory;
+
+    </span><span style="color: #0000ff;">if</span><span style="color: #000000;"> (errback) {
+      </span><span style="color: #008000;">//</span><span style="color: #008000;">Register for errors on this module.</span>
+      <span style="color: #0000ff;">this</span>.on('error'<span style="color: #000000;">, errback);
+    } </span><span style="color: #0000ff;">else</span> <span style="color: #0000ff;">if</span> (<span style="color: #0000ff;">this</span><span style="color: #000000;">.events.error) {
+      </span><span style="color: #008000;">//</span><span style="color: #008000;">If no errback already, but there are error listeners</span>
+      <span style="color: #008000;">//</span><span style="color: #008000;">on this module, set up an errback to pass to the deps.</span>
+      errback = bind(<span style="color: #0000ff;">this</span>, <span style="color: #0000ff;">function</span><span style="color: #000000;"> (err) {
+        </span><span style="color: #0000ff;">this</span>.emit('error'<span style="color: #000000;">, err);
+      });
+    }
+
+    </span><span style="color: #008000;">//</span><span style="color: #008000;">Do a copy of the dependency array, so that</span>
+    <span style="color: #008000;">//</span><span style="color: #008000;">source inputs are not modified. For example</span>
+    <span style="color: #008000;">//</span><span style="color: #008000;">"shim" deps are passed in here directly, and</span>
+    <span style="color: #008000;">//</span><span style="color: #008000;">doing a direct modification of the depMaps array</span>
+    <span style="color: #008000;">//</span><span style="color: #008000;">would affect that config.</span>
+    <span style="color: #0000ff;">this</span>.depMaps = depMaps &amp;&amp; depMaps.slice(0<span style="color: #000000;">);
+
+    </span><span style="color: #0000ff;">this</span>.errback =<span style="color: #000000;"> errback;
+
+    </span><span style="color: #008000;">//</span><span style="color: #008000;">Indicate this module has be initialized</span>
+    <span style="color: #0000ff;">this</span>.inited = <span style="color: #0000ff;">true</span><span style="color: #000000;">;
+
+    </span><span style="color: #0000ff;">this</span>.ignore =<span style="color: #000000;"> options.ignore;
+
+    </span><span style="color: #008000;">//</span><span style="color: #008000;">Could have option to init this module in enabled mode,</span>
+    <span style="color: #008000;">//</span><span style="color: #008000;">or could have been previously marked as enabled. However,</span>
+    <span style="color: #008000;">//</span><span style="color: #008000;">the dependencies are not known until init is called. So</span>
+    <span style="color: #008000;">//</span><span style="color: #008000;">if enabled previously, now trigger dependencies as enabled.</span>
+    <span style="color: #0000ff;">if</span> (options.enabled || <span style="color: #0000ff;">this</span><span style="color: #000000;">.enabled) {
+      </span><span style="color: #008000;">//</span><span style="color: #008000;">Enable this module and dependencies.</span>
+      <span style="color: #008000;">//</span><span style="color: #008000;">Will call this.check()</span>
+      <span style="color: #0000ff;">this</span><span style="color: #000000;">.enable();
+    } </span><span style="color: #0000ff;">else</span><span style="color: #000000;"> {
+      </span><span style="color: #0000ff;">this</span><span style="color: #000000;">.check();
+    }
+  },
+
+  defineDep: </span><span style="color: #0000ff;">function</span><span style="color: #000000;"> (i, depExports) {
+    </span><span style="color: #008000;">//</span><span style="color: #008000;">Because of cycles, defined callback for a given</span>
+    <span style="color: #008000;">//</span><span style="color: #008000;">export can be called more than once.</span>
+    <span style="color: #0000ff;">if</span> (!<span style="color: #0000ff;">this</span><span style="color: #000000;">.depMatched[i]) {
+      </span><span style="color: #0000ff;">this</span>.depMatched[i] = <span style="color: #0000ff;">true</span><span style="color: #000000;">;
+      </span><span style="color: #0000ff;">this</span>.depCount -= 1<span style="color: #000000;">;
+      </span><span style="color: #0000ff;">this</span>.depExports[i] =<span style="color: #000000;"> depExports;
+    }
+  },
+
+  fetch: </span><span style="color: #0000ff;">function</span><span style="color: #000000;"> () {
+    </span><span style="color: #0000ff;">if</span> (<span style="color: #0000ff;">this</span><span style="color: #000000;">.fetched) {
+      </span><span style="color: #0000ff;">return</span><span style="color: #000000;">;
+    }
+    </span><span style="color: #0000ff;">this</span>.fetched = <span style="color: #0000ff;">true</span><span style="color: #000000;">;
+
+    context.startTime </span>= (<span style="color: #0000ff;">new</span><span style="color: #000000;"> Date()).getTime();
+
+    </span><span style="color: #0000ff;">var</span> map = <span style="color: #0000ff;">this</span><span style="color: #000000;">.map;
+
+    </span><span style="color: #008000;">//</span><span style="color: #008000;">If the manager is for a plugin managed resource,</span>
+    <span style="color: #008000;">//</span><span style="color: #008000;">ask the plugin to load it now.</span>
+    <span style="color: #0000ff;">if</span> (<span style="color: #0000ff;">this</span><span style="color: #000000;">.shim) {
+      context.makeRequire(</span><span style="color: #0000ff;">this</span><span style="color: #000000;">.map, {
+        enableBuildCallback: </span><span style="color: #0000ff;">true</span><span style="color: #000000;">
+      })(</span><span style="color: #0000ff;">this</span>.shim.deps || [], bind(<span style="color: #0000ff;">this</span>, <span style="color: #0000ff;">function</span><span style="color: #000000;"> () {
+        </span><span style="color: #0000ff;">return</span> map.prefix ? <span style="color: #0000ff;">this</span>.callPlugin() : <span style="color: #0000ff;">this</span><span style="color: #000000;">.load();
+      }));
+    } </span><span style="color: #0000ff;">else</span><span style="color: #000000;"> {
+      </span><span style="color: #008000;">//</span><span style="color: #008000;">Regular dependency.</span>
+      <span style="color: #0000ff;">return</span> map.prefix ? <span style="color: #0000ff;">this</span>.callPlugin() : <span style="color: #0000ff;">this</span><span style="color: #000000;">.load();
+    }
+  },
+
+  load: </span><span style="color: #0000ff;">function</span><span style="color: #000000;"> () {
+    </span><span style="color: #0000ff;">var</span> url = <span style="color: #0000ff;">this</span><span style="color: #000000;">.map.url;
+
+    </span><span style="color: #008000;">//</span><span style="color: #008000;">Regular dependency.</span>
+    <span style="color: #0000ff;">if</span> (!<span style="color: #000000;">urlFetched[url]) {
+      urlFetched[url] </span>= <span style="color: #0000ff;">true</span><span style="color: #000000;">;
+      context.load(</span><span style="color: #0000ff;">this</span><span style="color: #000000;">.map.id, url);
+    }
+  },
+
+  </span><span style="color: #008000;">/*</span><span style="color: #008000;">*
+  * Checks if the module is ready to define itself, and if so,
+  * define it.
+  </span><span style="color: #008000;">*/</span><span style="color: #000000;">
+  check: </span><span style="color: #0000ff;">function</span><span style="color: #000000;"> () {
+    </span><span style="color: #0000ff;">if</span> (!<span style="color: #0000ff;">this</span>.enabled || <span style="color: #0000ff;">this</span><span style="color: #000000;">.enabling) {
+      </span><span style="color: #0000ff;">return</span><span style="color: #000000;">;
+    }
+
+    </span><span style="color: #0000ff;">var</span><span style="color: #000000;"> err, cjsModule,
+                id </span>= <span style="color: #0000ff;">this</span><span style="color: #000000;">.map.id,
+                depExports </span>= <span style="color: #0000ff;">this</span><span style="color: #000000;">.depExports,
+                exports </span>= <span style="color: #0000ff;">this</span><span style="color: #000000;">.exports,
+                factory </span>= <span style="color: #0000ff;">this</span><span style="color: #000000;">.factory;
+
+    </span><span style="color: #0000ff;">if</span> (!<span style="color: #0000ff;">this</span><span style="color: #000000;">.inited) {
+      </span><span style="color: #0000ff;">this</span><span style="color: #000000;">.fetch();
+    } </span><span style="color: #0000ff;">else</span> <span style="color: #0000ff;">if</span> (<span style="color: #0000ff;">this</span><span style="color: #000000;">.error) {
+      </span><span style="color: #0000ff;">this</span>.emit('error', <span style="color: #0000ff;">this</span><span style="color: #000000;">.error);
+    } </span><span style="color: #0000ff;">else</span> <span style="color: #0000ff;">if</span> (!<span style="color: #0000ff;">this</span><span style="color: #000000;">.defining) {
+      </span><span style="color: #008000;">//</span><span style="color: #008000;">The factory could trigger another require call</span>
+      <span style="color: #008000;">//</span><span style="color: #008000;">that would result in checking this module to</span>
+      <span style="color: #008000;">//</span><span style="color: #008000;">define itself again. If already in the process</span>
+      <span style="color: #008000;">//</span><span style="color: #008000;">of doing that, skip this work.</span>
+      <span style="color: #0000ff;">this</span>.defining = <span style="color: #0000ff;">true</span><span style="color: #000000;">;
+
+      </span><span style="color: #0000ff;">if</span> (<span style="color: #0000ff;">this</span>.depCount &lt; 1 &amp;&amp; !<span style="color: #0000ff;">this</span><span style="color: #000000;">.defined) {
+        </span><span style="color: #0000ff;">if</span><span style="color: #000000;"> (isFunction(factory)) {
+          </span><span style="color: #008000;">//</span><span style="color: #008000;">If there is an error listener, favor passing</span>
+          <span style="color: #008000;">//</span><span style="color: #008000;">to that instead of throwing an error. However,</span>
+          <span style="color: #008000;">//</span><span style="color: #008000;">only do it for define()'d  modules. require</span>
+          <span style="color: #008000;">//</span><span style="color: #008000;">errbacks should not be called for failures in</span>
+          <span style="color: #008000;">//</span><span style="color: #008000;">their callbacks (#699). However if a global</span>
+          <span style="color: #008000;">//</span><span style="color: #008000;">onError is set, use that.</span>
+          <span style="color: #0000ff;">if</span> ((<span style="color: #0000ff;">this</span>.events.error &amp;&amp; <span style="color: #0000ff;">this</span>.map.isDefine) ||<span style="color: #000000;">
+                            req.onError </span>!==<span style="color: #000000;"> defaultOnError) {
+            </span><span style="color: #0000ff;">try</span><span style="color: #000000;"> {
+              exports </span>=<span style="color: #000000;"> context.execCb(id, factory, depExports, exports);
+            } </span><span style="color: #0000ff;">catch</span><span style="color: #000000;"> (e) {
+              err </span>=<span style="color: #000000;"> e;
+            }
+          } </span><span style="color: #0000ff;">else</span><span style="color: #000000;"> {
+            exports </span>=<span style="color: #000000;"> context.execCb(id, factory, depExports, exports);
+          }
+
+          </span><span style="color: #0000ff;">if</span> (<span style="color: #0000ff;">this</span><span style="color: #000000;">.map.isDefine) {
+            </span><span style="color: #008000;">//</span><span style="color: #008000;">If setting exports via 'module' is in play,</span>
+            <span style="color: #008000;">//</span><span style="color: #008000;">favor that over return value and exports. After that,</span>
+            <span style="color: #008000;">//</span><span style="color: #008000;">favor a non-undefined return value over exports use.</span>
+            cjsModule = <span style="color: #0000ff;">this</span><span style="color: #000000;">.module;
+            </span><span style="color: #0000ff;">if</span> (cjsModule &amp;&amp;<span style="color: #000000;">
+                                    cjsModule.exports </span>!== undefined &amp;&amp;
+            <span style="color: #008000;">//</span><span style="color: #008000;">Make sure it is not already the exports value</span>
+                                    cjsModule.exports !== <span style="color: #0000ff;">this</span><span style="color: #000000;">.exports) {
+              exports </span>=<span style="color: #000000;"> cjsModule.exports;
+            } </span><span style="color: #0000ff;">else</span> <span style="color: #0000ff;">if</span> (exports === undefined &amp;&amp; <span style="color: #0000ff;">this</span><span style="color: #000000;">.usingExports) {
+              </span><span style="color: #008000;">//</span><span style="color: #008000;">exports already set the defined value.</span>
+              exports = <span style="color: #0000ff;">this</span><span style="color: #000000;">.exports;
+            }
+          }
+
+          </span><span style="color: #0000ff;">if</span><span style="color: #000000;"> (err) {
+            err.requireMap </span>= <span style="color: #0000ff;">this</span><span style="color: #000000;">.map;
+            err.requireModules </span>= <span style="color: #0000ff;">this</span>.map.isDefine ? [<span style="color: #0000ff;">this</span>.map.id] : <span style="color: #0000ff;">null</span><span style="color: #000000;">;
+            err.requireType </span>= <span style="color: #0000ff;">this</span>.map.isDefine ? 'define' : 'require'<span style="color: #000000;">;
+            </span><span style="color: #0000ff;">return</span> onError((<span style="color: #0000ff;">this</span>.error =<span style="color: #000000;"> err));
+          }
+
+        } </span><span style="color: #0000ff;">else</span><span style="color: #000000;"> {
+          </span><span style="color: #008000;">//</span><span style="color: #008000;">Just a literal value</span>
+          exports =<span style="color: #000000;"> factory;
+        }
+
+        </span><span style="color: #0000ff;">this</span>.exports =<span style="color: #000000;"> exports;
+
+        </span><span style="color: #0000ff;">if</span> (<span style="color: #0000ff;">this</span>.map.isDefine &amp;&amp; !<span style="color: #0000ff;">this</span><span style="color: #000000;">.ignore) {
+          defined[id] </span>=<span style="color: #000000;"> exports;
+
+          </span><span style="color: #0000ff;">if</span><span style="color: #000000;"> (req.onResourceLoad) {
+            req.onResourceLoad(context, </span><span style="color: #0000ff;">this</span>.map, <span style="color: #0000ff;">this</span><span style="color: #000000;">.depMaps);
+          }
+        }
+
+        </span><span style="color: #008000;">//</span><span style="color: #008000;">Clean up</span>
+<span style="color: #000000;">        cleanRegistry(id);
+
+        </span><span style="color: #0000ff;">this</span>.defined = <span style="color: #0000ff;">true</span><span style="color: #000000;">;
+      }
+
+      </span><span style="color: #008000;">//</span><span style="color: #008000;">Finished the define stage. Allow calling check again</span>
+      <span style="color: #008000;">//</span><span style="color: #008000;">to allow define notifications below in the case of a</span>
+      <span style="color: #008000;">//</span><span style="color: #008000;">cycle.</span>
+      <span style="color: #0000ff;">this</span>.defining = <span style="color: #0000ff;">false</span><span style="color: #000000;">;
+
+      </span><span style="color: #0000ff;">if</span> (<span style="color: #0000ff;">this</span>.defined &amp;&amp; !<span style="color: #0000ff;">this</span><span style="color: #000000;">.defineEmitted) {
+        </span><span style="color: #0000ff;">this</span>.defineEmitted = <span style="color: #0000ff;">true</span><span style="color: #000000;">;
+        </span><span style="color: #0000ff;">this</span>.emit('defined', <span style="color: #0000ff;">this</span><span style="color: #000000;">.exports);
+        </span><span style="color: #0000ff;">this</span>.defineEmitComplete = <span style="color: #0000ff;">true</span><span style="color: #000000;">;
+      }
+
+    }
+  },
+
+  callPlugin: </span><span style="color: #0000ff;">function</span><span style="color: #000000;"> () {
+    </span><span style="color: #0000ff;">var</span> map = <span style="color: #0000ff;">this</span><span style="color: #000000;">.map,
+                id </span>=<span style="color: #000000;"> map.id,
+    </span><span style="color: #008000;">//</span><span style="color: #008000;">Map already normalized the prefix.</span>
+                pluginMap =<span style="color: #000000;"> makeModuleMap(map.prefix);
+
+    </span><span style="color: #008000;">//</span><span style="color: #008000;">Mark this as a dependency for this plugin, so it</span>
+    <span style="color: #008000;">//</span><span style="color: #008000;">can be traced for cycles.</span>
+    <span style="color: #0000ff;">this</span><span style="color: #000000;">.depMaps.push(pluginMap);
+
+    on(pluginMap, </span>'defined', bind(<span style="color: #0000ff;">this</span>, <span style="color: #0000ff;">function</span><span style="color: #000000;"> (plugin) {
+      </span><span style="color: #0000ff;">var</span><span style="color: #000000;"> load, normalizedMap, normalizedMod,
+                    name </span>= <span style="color: #0000ff;">this</span><span style="color: #000000;">.map.name,
+                    parentName </span>= <span style="color: #0000ff;">this</span>.map.parentMap ? <span style="color: #0000ff;">this</span>.map.parentMap.name : <span style="color: #0000ff;">null</span><span style="color: #000000;">,
+                    localRequire </span>=<span style="color: #000000;"> context.makeRequire(map.parentMap, {
+                      enableBuildCallback: </span><span style="color: #0000ff;">true</span><span style="color: #000000;">
+                    });
+
+      </span><span style="color: #008000;">//</span><span style="color: #008000;">If current map is not normalized, wait for that</span>
+      <span style="color: #008000;">//</span><span style="color: #008000;">normalized name to load instead of continuing.</span>
+      <span style="color: #0000ff;">if</span> (<span style="color: #0000ff;">this</span><span style="color: #000000;">.map.unnormalized) {
+        </span><span style="color: #008000;">//</span><span style="color: #008000;">Normalize the ID if the plugin allows it.</span>
+        <span style="color: #0000ff;">if</span><span style="color: #000000;"> (plugin.normalize) {
+          name </span>= plugin.normalize(name, <span style="color: #0000ff;">function</span><span style="color: #000000;"> (name) {
+            </span><span style="color: #0000ff;">return</span> normalize(name, parentName, <span style="color: #0000ff;">true</span><span style="color: #000000;">);
+          }) </span>|| ''<span style="color: #000000;">;
+        }
+
+        </span><span style="color: #008000;">//</span><span style="color: #008000;">prefix and name should already be normalized, no need</span>
+        <span style="color: #008000;">//</span><span style="color: #008000;">for applying map config again either.</span>
+        normalizedMap = makeModuleMap(map.prefix + '!' +<span style="color: #000000;"> name,
+                                                  </span><span style="color: #0000ff;">this</span><span style="color: #000000;">.map.parentMap);
+        on(normalizedMap,
+                        </span>'defined', bind(<span style="color: #0000ff;">this</span>, <span style="color: #0000ff;">function</span><span style="color: #000000;"> (value) {
+                          </span><span style="color: #0000ff;">this</span>.init([], <span style="color: #0000ff;">function</span> () { <span style="color: #0000ff;">return</span> value; }, <span style="color: #0000ff;">null</span><span style="color: #000000;">, {
+                            enabled: </span><span style="color: #0000ff;">true</span><span style="color: #000000;">,
+                            ignore: </span><span style="color: #0000ff;">true</span><span style="color: #000000;">
+                          });
+                        }));
+
+        normalizedMod </span>=<span style="color: #000000;"> getOwn(registry, normalizedMap.id);
+        </span><span style="color: #0000ff;">if</span><span style="color: #000000;"> (normalizedMod) {
+          </span><span style="color: #008000;">//</span><span style="color: #008000;">Mark this as a dependency for this plugin, so it</span>
+          <span style="color: #008000;">//</span><span style="color: #008000;">can be traced for cycles.</span>
+          <span style="color: #0000ff;">this</span><span style="color: #000000;">.depMaps.push(normalizedMap);
+
+          </span><span style="color: #0000ff;">if</span> (<span style="color: #0000ff;">this</span><span style="color: #000000;">.events.error) {
+            normalizedMod.on(</span>'error', bind(<span style="color: #0000ff;">this</span>, <span style="color: #0000ff;">function</span><span style="color: #000000;"> (err) {
+              </span><span style="color: #0000ff;">this</span>.emit('error'<span style="color: #000000;">, err);
+            }));
+          }
+          normalizedMod.enable();
+        }
+
+        </span><span style="color: #0000ff;">return</span><span style="color: #000000;">;
+      }
+
+      load </span>= bind(<span style="color: #0000ff;">this</span>, <span style="color: #0000ff;">function</span><span style="color: #000000;"> (value) {
+        </span><span style="color: #0000ff;">this</span>.init([], <span style="color: #0000ff;">function</span> () { <span style="color: #0000ff;">return</span> value; }, <span style="color: #0000ff;">null</span><span style="color: #000000;">, {
+          enabled: </span><span style="color: #0000ff;">true</span><span style="color: #000000;">
+        });
+      });
+
+      load.error </span>= bind(<span style="color: #0000ff;">this</span>, <span style="color: #0000ff;">function</span><span style="color: #000000;"> (err) {
+        </span><span style="color: #0000ff;">this</span>.inited = <span style="color: #0000ff;">true</span><span style="color: #000000;">;
+        </span><span style="color: #0000ff;">this</span>.error =<span style="color: #000000;"> err;
+        err.requireModules </span>=<span style="color: #000000;"> [id];
+
+        </span><span style="color: #008000;">//</span><span style="color: #008000;">Remove temp unnormalized modules for this module,</span>
+        <span style="color: #008000;">//</span><span style="color: #008000;">since they will never be resolved otherwise now.</span>
+        eachProp(registry, <span style="color: #0000ff;">function</span><span style="color: #000000;"> (mod) {
+          </span><span style="color: #0000ff;">if</span> (mod.map.id.indexOf(id + '_unnormalized') === 0<span style="color: #000000;">) {
+            cleanRegistry(mod.map.id);
+          }
+        });
+
+        onError(err);
+      });
+
+      </span><span style="color: #008000;">//</span><span style="color: #008000;">Allow plugins to load other code without having to know the</span>
+      <span style="color: #008000;">//</span><span style="color: #008000;">context or how to 'complete' the load.</span>
+      load.fromText = bind(<span style="color: #0000ff;">this</span>, <span style="color: #0000ff;">function</span><span style="color: #000000;"> (text, textAlt) {
+        </span><span style="color: #008000;">/*</span><span style="color: #008000;">jslint evil: true </span><span style="color: #008000;">*/</span>
+        <span style="color: #0000ff;">var</span> moduleName =<span style="color: #000000;"> map.name,
+                        moduleMap </span>=<span style="color: #000000;"> makeModuleMap(moduleName),
+                        hasInteractive </span>=<span style="color: #000000;"> useInteractive;
+
+        </span><span style="color: #008000;">//</span><span style="color: #008000;">As of 2.1.0, support just passing the text, to reinforce</span>
+        <span style="color: #008000;">//</span><span style="color: #008000;">fromText only being called once per resource. Still</span>
+        <span style="color: #008000;">//</span><span style="color: #008000;">support old style of passing moduleName but discard</span>
+        <span style="color: #008000;">//</span><span style="color: #008000;">that moduleName in favor of the internal ref.</span>
+        <span style="color: #0000ff;">if</span><span style="color: #000000;"> (textAlt) {
+          text </span>=<span style="color: #000000;"> textAlt;
+        }
+
+        </span><span style="color: #008000;">//</span><span style="color: #008000;">Turn off interactive script matching for IE for any define</span>
+        <span style="color: #008000;">//</span><span style="color: #008000;">calls in the text, then turn it back on at the end.</span>
+        <span style="color: #0000ff;">if</span><span style="color: #000000;"> (hasInteractive) {
+          useInteractive </span>= <span style="color: #0000ff;">false</span><span style="color: #000000;">;
+        }
+
+        </span><span style="color: #008000;">//</span><span style="color: #008000;">Prime the system by creating a module instance for</span>
+        <span style="color: #008000;">//</span><span style="color: #008000;">it.</span>
+<span style="color: #000000;">        getModule(moduleMap);
+
+        </span><span style="color: #008000;">//</span><span style="color: #008000;">Transfer any config to this other module.</span>
+        <span style="color: #0000ff;">if</span><span style="color: #000000;"> (hasProp(config.config, id)) {
+          config.config[moduleName] </span>=<span style="color: #000000;"> config.config[id];
+        }
+
+        </span><span style="color: #0000ff;">try</span><span style="color: #000000;"> {
+          req.exec(text);
+        } </span><span style="color: #0000ff;">catch</span><span style="color: #000000;"> (e) {
+          </span><span style="color: #0000ff;">return</span> onError(makeError('fromtexteval'<span style="color: #000000;">,
+                                          </span>'fromText eval for ' + id +
+                                        ' failed: ' +<span style="color: #000000;"> e,
+                                          e,
+                                          [id]));
+        }
+
+        </span><span style="color: #0000ff;">if</span><span style="color: #000000;"> (hasInteractive) {
+          useInteractive </span>= <span style="color: #0000ff;">true</span><span style="color: #000000;">;
+        }
+
+        </span><span style="color: #008000;">//</span><span style="color: #008000;">Mark this as a dependency for the plugin</span>
+        <span style="color: #008000;">//</span><span style="color: #008000;">resource</span>
+        <span style="color: #0000ff;">this</span><span style="color: #000000;">.depMaps.push(moduleMap);
+
+        </span><span style="color: #008000;">//</span><span style="color: #008000;">Support anonymous modules.</span>
+<span style="color: #000000;">        context.completeLoad(moduleName);
+
+        </span><span style="color: #008000;">//</span><span style="color: #008000;">Bind the value of that module to the value for this</span>
+        <span style="color: #008000;">//</span><span style="color: #008000;">resource ID.</span>
+<span style="color: #000000;">        localRequire([moduleName], load);
+      });
+
+      </span><span style="color: #008000;">//</span><span style="color: #008000;">Use parentName here since the plugin's name is not reliable,</span>
+      <span style="color: #008000;">//</span><span style="color: #008000;">could be some weird string with no path that actually wants to</span>
+      <span style="color: #008000;">//</span><span style="color: #008000;">reference the parentName's path.</span>
+<span style="color: #000000;">      plugin.load(map.name, localRequire, load, config);
+    }));
+
+    context.enable(pluginMap, </span><span style="color: #0000ff;">this</span><span style="color: #000000;">);
+    </span><span style="color: #0000ff;">this</span>.pluginMaps[pluginMap.id] =<span style="color: #000000;"> pluginMap;
+  },
+
+  enable: </span><span style="color: #0000ff;">function</span><span style="color: #000000;"> () {
+    enabledRegistry[</span><span style="color: #0000ff;">this</span>.map.id] = <span style="color: #0000ff;">this</span><span style="color: #000000;">;
+    </span><span style="color: #0000ff;">this</span>.enabled = <span style="color: #0000ff;">true</span><span style="color: #000000;">;
+
+    </span><span style="color: #008000;">//</span><span style="color: #008000;">Set flag mentioning that the module is enabling,</span>
+    <span style="color: #008000;">//</span><span style="color: #008000;">so that immediate calls to the defined callbacks</span>
+    <span style="color: #008000;">//</span><span style="color: #008000;">for dependencies do not trigger inadvertent load</span>
+    <span style="color: #008000;">//</span><span style="color: #008000;">with the depCount still being zero.</span>
+    <span style="color: #0000ff;">this</span>.enabling = <span style="color: #0000ff;">true</span><span style="color: #000000;">;
+
+    </span><span style="color: #008000;">//</span><span style="color: #008000;">Enable each dependency</span>
+    each(<span style="color: #0000ff;">this</span>.depMaps, bind(<span style="color: #0000ff;">this</span>, <span style="color: #0000ff;">function</span><span style="color: #000000;"> (depMap, i) {
+      </span><span style="color: #0000ff;">var</span><span style="color: #000000;"> id, mod, handler;
+
+      </span><span style="color: #0000ff;">if</span> (<span style="color: #0000ff;">typeof</span> depMap === 'string'<span style="color: #000000;">) {
+        </span><span style="color: #008000;">//</span><span style="color: #008000;">Dependency needs to be converted to a depMap</span>
+        <span style="color: #008000;">//</span><span style="color: #008000;">and wired up to this module.</span>
+        depMap =<span style="color: #000000;"> makeModuleMap(depMap,
+                                            (</span><span style="color: #0000ff;">this</span>.map.isDefine ? <span style="color: #0000ff;">this</span>.map : <span style="color: #0000ff;">this</span><span style="color: #000000;">.map.parentMap),
+                                            </span><span style="color: #0000ff;">false</span><span style="color: #000000;">,
+                                            </span>!<span style="color: #0000ff;">this</span><span style="color: #000000;">.skipMap);
+        </span><span style="color: #0000ff;">this</span>.depMaps[i] =<span style="color: #000000;"> depMap;
+
+        handler </span>=<span style="color: #000000;"> getOwn(handlers, depMap.id);
+
+        </span><span style="color: #0000ff;">if</span><span style="color: #000000;"> (handler) {
+          </span><span style="color: #0000ff;">this</span>.depExports[i] = handler(<span style="color: #0000ff;">this</span><span style="color: #000000;">);
+          </span><span style="color: #0000ff;">return</span><span style="color: #000000;">;
+        }
+
+        </span><span style="color: #0000ff;">this</span>.depCount += 1<span style="color: #000000;">;
+
+        on(depMap, </span>'defined', bind(<span style="color: #0000ff;">this</span>, <span style="color: #0000ff;">function</span><span style="color: #000000;"> (depExports) {
+          </span><span style="color: #0000ff;">this</span><span style="color: #000000;">.defineDep(i, depExports);
+          </span><span style="color: #0000ff;">this</span><span style="color: #000000;">.check();
+        }));
+
+        </span><span style="color: #0000ff;">if</span> (<span style="color: #0000ff;">this</span><span style="color: #000000;">.errback) {
+          on(depMap, </span>'error', bind(<span style="color: #0000ff;">this</span>, <span style="color: #0000ff;">this</span><span style="color: #000000;">.errback));
+        }
+      }
+
+      id </span>=<span style="color: #000000;"> depMap.id;
+      mod </span>=<span style="color: #000000;"> registry[id];
+
+      </span><span style="color: #008000;">//</span><span style="color: #008000;">Skip special modules like 'require', 'exports', 'module'</span>
+      <span style="color: #008000;">//</span><span style="color: #008000;">Also, don't call enable if it is already enabled,</span>
+      <span style="color: #008000;">//</span><span style="color: #008000;">important in circular dependency cases.</span>
+      <span style="color: #0000ff;">if</span> (!hasProp(handlers, id) &amp;&amp; mod &amp;&amp; !<span style="color: #000000;">mod.enabled) {
+        context.enable(depMap, </span><span style="color: #0000ff;">this</span><span style="color: #000000;">);
+      }
+    }));
+
+    </span><span style="color: #008000;">//</span><span style="color: #008000;">Enable each plugin that is used in</span>
+    <span style="color: #008000;">//</span><span style="color: #008000;">a dependency</span>
+    eachProp(<span style="color: #0000ff;">this</span>.pluginMaps, bind(<span style="color: #0000ff;">this</span>, <span style="color: #0000ff;">function</span><span style="color: #000000;"> (pluginMap) {
+      </span><span style="color: #0000ff;">var</span> mod =<span style="color: #000000;"> getOwn(registry, pluginMap.id);
+      </span><span style="color: #0000ff;">if</span> (mod &amp;&amp; !<span style="color: #000000;">mod.enabled) {
+        context.enable(pluginMap, </span><span style="color: #0000ff;">this</span><span style="color: #000000;">);
+      }
+    }));
+
+    </span><span style="color: #0000ff;">this</span>.enabling = <span style="color: #0000ff;">false</span><span style="color: #000000;">;
+
+    </span><span style="color: #0000ff;">this</span><span style="color: #000000;">.check();
+  },
+
+  on: </span><span style="color: #0000ff;">function</span><span style="color: #000000;"> (name, cb) {
+    </span><span style="color: #0000ff;">var</span> cbs = <span style="color: #0000ff;">this</span><span style="color: #000000;">.events[name];
+    </span><span style="color: #0000ff;">if</span> (!<span style="color: #000000;">cbs) {
+      cbs </span>= <span style="color: #0000ff;">this</span>.events[name] =<span style="color: #000000;"> [];
+    }
+    cbs.push(cb);
+  },
+
+  emit: </span><span style="color: #0000ff;">function</span><span style="color: #000000;"> (name, evt) {
+    each(</span><span style="color: #0000ff;">this</span>.events[name], <span style="color: #0000ff;">function</span><span style="color: #000000;"> (cb) {
+      cb(evt);
+    });
+    </span><span style="color: #0000ff;">if</span> (name === 'error'<span style="color: #000000;">) {
+      </span><span style="color: #008000;">//</span><span style="color: #008000;">Now that the error handler was triggered, remove</span>
+      <span style="color: #008000;">//</span><span style="color: #008000;">the listeners, since this broken Module instance</span>
+      <span style="color: #008000;">//</span><span style="color: #008000;">can stay around for a while in the registry.</span>
+      <span style="color: #0000ff;">delete</span> <span style="color: #0000ff;">this</span><span style="color: #000000;">.events[name];
+    }
+  }
+};</span></pre>
+</div>
+<span class="cnblogs_code_collapse">View Code</span></div>
+<p>总的来说，这个模块还是很长的，首先是其构造函数</p>
+<p><img src="49922566021026.png" alt=""></p>
+<p>这里仍有很多东西读不懂，所以就全部过吧，反正今天的主要目的是熟悉整体框架</p>
+<p>这里实例化结束后便形成了一个模块暂存于requireMod变量中，函数执行结束后变量会销毁，该模块会存与全局registery对象中</p>
+<p>这里会执行其init方法干具体业务的事情</p>
+<div class="cnblogs_code">
+<pre><span style="color: #000000;">requireMod.init(deps, callback, errback, {
+  enabled: </span><span style="color: #0000ff;">true</span><span style="color: #000000;">
+});</span></pre>
+</div>
+<p>这里又会执行</p>
+<div class="cnblogs_code">
+<pre><span style="color: #0000ff;">this</span>.enable();</pre>
+</div>
+<div class="cnblogs_code" onclick="cnblogs_code_show('14d0be0a-dcab-4277-810e-cf64723c7a23')"><img id="code_img_closed_14d0be0a-dcab-4277-810e-cf64723c7a23" class="code_img_closed" src="43570758473519.gif" alt=""><img id="code_img_opened_14d0be0a-dcab-4277-810e-cf64723c7a23" class="code_img_opened" style="display: none;" onclick="cnblogs_code_hide('14d0be0a-dcab-4277-810e-cf64723c7a23',event)" src="16365178109279.gif" alt="">
+<div id="cnblogs_code_open_14d0be0a-dcab-4277-810e-cf64723c7a23" class="cnblogs_code_hide">
+<pre>enable: <span style="color: #0000ff;">function</span><span style="color: #000000;"> () {
+  enabledRegistry[</span><span style="color: #0000ff;">this</span>.map.id] = <span style="color: #0000ff;">this</span><span style="color: #000000;">;
+  </span><span style="color: #0000ff;">this</span>.enabled = <span style="color: #0000ff;">true</span><span style="color: #000000;">;
+
+  </span><span style="color: #008000;">//</span><span style="color: #008000;">Set flag mentioning that the module is enabling,</span>
+  <span style="color: #008000;">//</span><span style="color: #008000;">so that immediate calls to the defined callbacks</span>
+  <span style="color: #008000;">//</span><span style="color: #008000;">for dependencies do not trigger inadvertent load</span>
+  <span style="color: #008000;">//</span><span style="color: #008000;">with the depCount still being zero.</span>
+  <span style="color: #0000ff;">this</span>.enabling = <span style="color: #0000ff;">true</span><span style="color: #000000;">;
+
+  </span><span style="color: #008000;">//</span><span style="color: #008000;">Enable each dependency</span>
+  each(<span style="color: #0000ff;">this</span>.depMaps, bind(<span style="color: #0000ff;">this</span>, <span style="color: #0000ff;">function</span><span style="color: #000000;"> (depMap, i) {
+    </span><span style="color: #0000ff;">var</span><span style="color: #000000;"> id, mod, handler;
+
+    </span><span style="color: #0000ff;">if</span> (<span style="color: #0000ff;">typeof</span> depMap === 'string'<span style="color: #000000;">) {
+      </span><span style="color: #008000;">//</span><span style="color: #008000;">Dependency needs to be converted to a depMap</span>
+      <span style="color: #008000;">//</span><span style="color: #008000;">and wired up to this module.</span>
+      depMap =<span style="color: #000000;"> makeModuleMap(depMap,
+                                          (</span><span style="color: #0000ff;">this</span>.map.isDefine ? <span style="color: #0000ff;">this</span>.map : <span style="color: #0000ff;">this</span><span style="color: #000000;">.map.parentMap),
+                                          </span><span style="color: #0000ff;">false</span><span style="color: #000000;">,
+                                          </span>!<span style="color: #0000ff;">this</span><span style="color: #000000;">.skipMap);
+      </span><span style="color: #0000ff;">this</span>.depMaps[i] =<span style="color: #000000;"> depMap;
+
+      handler </span>=<span style="color: #000000;"> getOwn(handlers, depMap.id);
+
+      </span><span style="color: #0000ff;">if</span><span style="color: #000000;"> (handler) {
+        </span><span style="color: #0000ff;">this</span>.depExports[i] = handler(<span style="color: #0000ff;">this</span><span style="color: #000000;">);
+        </span><span style="color: #0000ff;">return</span><span style="color: #000000;">;
+      }
+
+      </span><span style="color: #0000ff;">this</span>.depCount += 1<span style="color: #000000;">;
+
+      on(depMap, </span>'defined', bind(<span style="color: #0000ff;">this</span>, <span style="color: #0000ff;">function</span><span style="color: #000000;"> (depExports) {
+        </span><span style="color: #0000ff;">this</span><span style="color: #000000;">.defineDep(i, depExports);
+        </span><span style="color: #0000ff;">this</span><span style="color: #000000;">.check();
+      }));
+
+      </span><span style="color: #0000ff;">if</span> (<span style="color: #0000ff;">this</span><span style="color: #000000;">.errback) {
+        on(depMap, </span>'error', bind(<span style="color: #0000ff;">this</span>, <span style="color: #0000ff;">this</span><span style="color: #000000;">.errback));
+      }
+    }
+
+    id </span>=<span style="color: #000000;"> depMap.id;
+    mod </span>=<span style="color: #000000;"> registry[id];
+
+    </span><span style="color: #008000;">//</span><span style="color: #008000;">Skip special modules like 'require', 'exports', 'module'</span>
+    <span style="color: #008000;">//</span><span style="color: #008000;">Also, don't call enable if it is already enabled,</span>
+    <span style="color: #008000;">//</span><span style="color: #008000;">important in circular dependency cases.</span>
+    <span style="color: #0000ff;">if</span> (!hasProp(handlers, id) &amp;&amp; mod &amp;&amp; !<span style="color: #000000;">mod.enabled) {
+      context.enable(depMap, </span><span style="color: #0000ff;">this</span><span style="color: #000000;">);
+    }
+  }));
+
+  </span><span style="color: #008000;">//</span><span style="color: #008000;">Enable each plugin that is used in</span>
+  <span style="color: #008000;">//</span><span style="color: #008000;">a dependency</span>
+  eachProp(<span style="color: #0000ff;">this</span>.pluginMaps, bind(<span style="color: #0000ff;">this</span>, <span style="color: #0000ff;">function</span><span style="color: #000000;"> (pluginMap) {
+    </span><span style="color: #0000ff;">var</span> mod =<span style="color: #000000;"> getOwn(registry, pluginMap.id);
+    </span><span style="color: #0000ff;">if</span> (mod &amp;&amp; !<span style="color: #000000;">mod.enabled) {
+      context.enable(pluginMap, </span><span style="color: #0000ff;">this</span><span style="color: #000000;">);
+    }
+  }));
+
+  </span><span style="color: #0000ff;">this</span>.enabling = <span style="color: #0000ff;">false</span><span style="color: #000000;">;
+
+  </span><span style="color: #0000ff;">this</span><span style="color: #000000;">.check();
+},</span></pre>
+</div>
+<span class="cnblogs_code_collapse">View Code</span></div>
+<p>然后又会调用&nbsp;this.check();这个家伙操作结束后接下来checkLoaded就会创建script标签了......</p>
+<div class="cnblogs_code" onclick="cnblogs_code_show('ee46ccf5-132f-4ff0-820e-783ada729024')"><img id="code_img_closed_ee46ccf5-132f-4ff0-820e-783ada729024" class="code_img_closed" src="43570758473519.gif" alt=""><img id="code_img_opened_ee46ccf5-132f-4ff0-820e-783ada729024" class="code_img_opened" style="display: none;" onclick="cnblogs_code_hide('ee46ccf5-132f-4ff0-820e-783ada729024',event)" src="16365178109279.gif" alt="">
+<div id="cnblogs_code_open_ee46ccf5-132f-4ff0-820e-783ada729024" class="cnblogs_code_hide">
+<pre><span style="color: #008000;">/*</span><span style="color: #008000;">*
+* Checks if the module is ready to define itself, and if so,
+* define it.
+</span><span style="color: #008000;">*/</span><span style="color: #000000;">
+check: </span><span style="color: #0000ff;">function</span><span style="color: #000000;"> () {
+  </span><span style="color: #0000ff;">if</span> (!<span style="color: #0000ff;">this</span>.enabled || <span style="color: #0000ff;">this</span><span style="color: #000000;">.enabling) {
+    </span><span style="color: #0000ff;">return</span><span style="color: #000000;">;
+  }
+
+  </span><span style="color: #0000ff;">var</span><span style="color: #000000;"> err, cjsModule,
+              id </span>= <span style="color: #0000ff;">this</span><span style="color: #000000;">.map.id,
+              depExports </span>= <span style="color: #0000ff;">this</span><span style="color: #000000;">.depExports,
+              exports </span>= <span style="color: #0000ff;">this</span><span style="color: #000000;">.exports,
+              factory </span>= <span style="color: #0000ff;">this</span><span style="color: #000000;">.factory;
+
+  </span><span style="color: #0000ff;">if</span> (!<span style="color: #0000ff;">this</span><span style="color: #000000;">.inited) {
+    </span><span style="color: #0000ff;">this</span><span style="color: #000000;">.fetch();
+  } </span><span style="color: #0000ff;">else</span> <span style="color: #0000ff;">if</span> (<span style="color: #0000ff;">this</span><span style="color: #000000;">.error) {
+    </span><span style="color: #0000ff;">this</span>.emit('error', <span style="color: #0000ff;">this</span><span style="color: #000000;">.error);
+  } </span><span style="color: #0000ff;">else</span> <span style="color: #0000ff;">if</span> (!<span style="color: #0000ff;">this</span><span style="color: #000000;">.defining) {
+    </span><span style="color: #008000;">//</span><span style="color: #008000;">The factory could trigger another require call</span>
+    <span style="color: #008000;">//</span><span style="color: #008000;">that would result in checking this module to</span>
+    <span style="color: #008000;">//</span><span style="color: #008000;">define itself again. If already in the process</span>
+    <span style="color: #008000;">//</span><span style="color: #008000;">of doing that, skip this work.</span>
+    <span style="color: #0000ff;">this</span>.defining = <span style="color: #0000ff;">true</span><span style="color: #000000;">;
+
+    </span><span style="color: #0000ff;">if</span> (<span style="color: #0000ff;">this</span>.depCount &lt; 1 &amp;&amp; !<span style="color: #0000ff;">this</span><span style="color: #000000;">.defined) {
+      </span><span style="color: #0000ff;">if</span><span style="color: #000000;"> (isFunction(factory)) {
+        </span><span style="color: #008000;">//</span><span style="color: #008000;">If there is an error listener, favor passing</span>
+        <span style="color: #008000;">//</span><span style="color: #008000;">to that instead of throwing an error. However,</span>
+        <span style="color: #008000;">//</span><span style="color: #008000;">only do it for define()'d  modules. require</span>
+        <span style="color: #008000;">//</span><span style="color: #008000;">errbacks should not be called for failures in</span>
+        <span style="color: #008000;">//</span><span style="color: #008000;">their callbacks (#699). However if a global</span>
+        <span style="color: #008000;">//</span><span style="color: #008000;">onError is set, use that.</span>
+        <span style="color: #0000ff;">if</span> ((<span style="color: #0000ff;">this</span>.events.error &amp;&amp; <span style="color: #0000ff;">this</span>.map.isDefine) ||<span style="color: #000000;">
+                          req.onError </span>!==<span style="color: #000000;"> defaultOnError) {
+          </span><span style="color: #0000ff;">try</span><span style="color: #000000;"> {
+            exports </span>=<span style="color: #000000;"> context.execCb(id, factory, depExports, exports);
+          } </span><span style="color: #0000ff;">catch</span><span style="color: #000000;"> (e) {
+            err </span>=<span style="color: #000000;"> e;
+          }
+        } </span><span style="color: #0000ff;">else</span><span style="color: #000000;"> {
+          exports </span>=<span style="color: #000000;"> context.execCb(id, factory, depExports, exports);
+        }
+
+        </span><span style="color: #0000ff;">if</span> (<span style="color: #0000ff;">this</span><span style="color: #000000;">.map.isDefine) {
+          </span><span style="color: #008000;">//</span><span style="color: #008000;">If setting exports via 'module' is in play,</span>
+          <span style="color: #008000;">//</span><span style="color: #008000;">favor that over return value and exports. After that,</span>
+          <span style="color: #008000;">//</span><span style="color: #008000;">favor a non-undefined return value over exports use.</span>
+          cjsModule = <span style="color: #0000ff;">this</span><span style="color: #000000;">.module;
+          </span><span style="color: #0000ff;">if</span> (cjsModule &amp;&amp;<span style="color: #000000;">
+                                  cjsModule.exports </span>!== undefined &amp;&amp;
+          <span style="color: #008000;">//</span><span style="color: #008000;">Make sure it is not already the exports value</span>
+                                  cjsModule.exports !== <span style="color: #0000ff;">this</span><span style="color: #000000;">.exports) {
+            exports </span>=<span style="color: #000000;"> cjsModule.exports;
+          } </span><span style="color: #0000ff;">else</span> <span style="color: #0000ff;">if</span> (exports === undefined &amp;&amp; <span style="color: #0000ff;">this</span><span style="color: #000000;">.usingExports) {
+            </span><span style="color: #008000;">//</span><span style="color: #008000;">exports already set the defined value.</span>
+            exports = <span style="color: #0000ff;">this</span><span style="color: #000000;">.exports;
+          }
+        }
+
+        </span><span style="color: #0000ff;">if</span><span style="color: #000000;"> (err) {
+          err.requireMap </span>= <span style="color: #0000ff;">this</span><span style="color: #000000;">.map;
+          err.requireModules </span>= <span style="color: #0000ff;">this</span>.map.isDefine ? [<span style="color: #0000ff;">this</span>.map.id] : <span style="color: #0000ff;">null</span><span style="color: #000000;">;
+          err.requireType </span>= <span style="color: #0000ff;">this</span>.map.isDefine ? 'define' : 'require'<span style="color: #000000;">;
+          </span><span style="color: #0000ff;">return</span> onError((<span style="color: #0000ff;">this</span>.error =<span style="color: #000000;"> err));
+        }
+
+      } </span><span style="color: #0000ff;">else</span><span style="color: #000000;"> {
+        </span><span style="color: #008000;">//</span><span style="color: #008000;">Just a literal value</span>
+        exports =<span style="color: #000000;"> factory;
+      }
+
+      </span><span style="color: #0000ff;">this</span>.exports =<span style="color: #000000;"> exports;
+
+      </span><span style="color: #0000ff;">if</span> (<span style="color: #0000ff;">this</span>.map.isDefine &amp;&amp; !<span style="color: #0000ff;">this</span><span style="color: #000000;">.ignore) {
+        defined[id] </span>=<span style="color: #000000;"> exports;
+
+        </span><span style="color: #0000ff;">if</span><span style="color: #000000;"> (req.onResourceLoad) {
+          req.onResourceLoad(context, </span><span style="color: #0000ff;">this</span>.map, <span style="color: #0000ff;">this</span><span style="color: #000000;">.depMaps);
+        }
+      }
+
+      </span><span style="color: #008000;">//</span><span style="color: #008000;">Clean up</span>
+<span style="color: #000000;">      cleanRegistry(id);
+
+      </span><span style="color: #0000ff;">this</span>.defined = <span style="color: #0000ff;">true</span><span style="color: #000000;">;
+    }
+
+    </span><span style="color: #008000;">//</span><span style="color: #008000;">Finished the define stage. Allow calling check again</span>
+    <span style="color: #008000;">//</span><span style="color: #008000;">to allow define notifications below in the case of a</span>
+    <span style="color: #008000;">//</span><span style="color: #008000;">cycle.</span>
+    <span style="color: #0000ff;">this</span>.defining = <span style="color: #0000ff;">false</span><span style="color: #000000;">;
+
+    </span><span style="color: #0000ff;">if</span> (<span style="color: #0000ff;">this</span>.defined &amp;&amp; !<span style="color: #0000ff;">this</span><span style="color: #000000;">.defineEmitted) {
+      </span><span style="color: #0000ff;">this</span>.defineEmitted = <span style="color: #0000ff;">true</span><span style="color: #000000;">;
+      </span><span style="color: #0000ff;">this</span>.emit('defined', <span style="color: #0000ff;">this</span><span style="color: #000000;">.exports);
+      </span><span style="color: #0000ff;">this</span>.defineEmitComplete = <span style="color: #0000ff;">true</span><span style="color: #000000;">;
+    }
+
+  }
+},</span></pre>
+</div>
+<span class="cnblogs_code_collapse">View Code</span></div>
+<p>然后今天累了，明天继续吧......</p>
+<h1>结语</h1>
+<p>今天的目标是熟悉requireJS的整体结构，如果没有错觉或者解读失误，我们应该大概了解了requireJS的整体结构，于是让我们明天继续吧</p>
+<p>PS：尼玛这个框架还真是有点难，小钗感觉有点小吃力啊，估计要读到下周才能真正理解一点的了........</p>
+                </div>
+
+                <div class='span3 sidebar'>
+                    <h2>导航栏</h2>
+                    <ul class="nav nav-tabs nav-stacked">
+                             				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/javascriptzdyxhxzsdyjxyzyddf/index.html">javascript中的一些核心知识点以及需要注意的地方</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/[zd]webappdyhzlyzydqdyhdpyjlkkb/index.html">[置顶]【webapp的优化整理】要做移动前端优化的朋友进来看看吧</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/[zd]yddjrwtyjjavascriptsjjzxjsjydjr/index.html">[置顶]【移动端兼容问题研究】javascript事件机制详解（涉及移动兼容）</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/gruntzhb30fzxhsygruntdbqddm/index.html">【grunt整合版】30分钟学会使用grunt打包前端代码</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/gruntdyd30fzxhsygruntdbqddm/index.html">【grunt第一弹】30分钟学会使用grunt打包前端代码</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/gruntdsdgruntzqdsjxmzdyy/index.html">【grunt第三弹】grunt在前端实际项目中的应用</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/gruntded30fzxhsygruntdbqddm02/index.html">【grunt第二弹】30分钟学会使用grunt打包前端代码（02）</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/IScrollsrxxtpyddhadlqs/index.html">【IScroll深入学习】突破移动端黑暗的利器（上）</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/IScrollsrxxjjIScrollynzz/index.html">【IScroll深入学习】解决IScroll疑难杂症</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/iScrollymxx00mniScroll/index.html">【iScroll源码学习00】模拟iScroll</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/iScrollymxx01zbjd/index.html">【iScroll源码学习01】准备阶段</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/iScrollymxx02fjiScrollsghxsjd/index.html">【iScroll源码学习02】分解iScroll三个核心事件点</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/iScrollymxx03iScrollsjjzygdtdsx/index.html">【iScroll源码学习03】iScroll事件机制与滚动条的实现</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/iScrollymxx04flIScrollhx/index.html">【iScroll源码学习04】分离IScroll核心</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/javascriptpxdytyyjc/index.html">【javascript培训第一天】语言基础</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/javascriptpxdstcybl/index.html">【javascript培训第三天】查遗补漏</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/javascriptpxdetDOMyBOM/index.html">【javascript培训第二天】DOM与BOM</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/javascriptjzdsk01mkhbc/index.html">【javascript激增的思考01】模块化编程</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/javascriptjzdsk02mkhyMVC/index.html">【javascript激增的思考02】模块化与MVC</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/javascriptjzdsk03MVVMyKnockout/index.html">【javascript激增的思考03】MVVM与Knockout</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/javascriptjzdsk04MVCyBackbonejs(beta)/index.html">【javascript激增的思考04】MVC与Backbonejs(beta)</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/javascriptmxdxzlrwmyqltkdzb01/index.html">【javascript面向对象之路】让我们一起来坦克大战吧01</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/NodeJSxxbj04xwfbxt/index.html">【NodeJS学习笔记04】新闻发布系统</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/requireJSymxx01ljzgrequireJSdjg/index.html">【requireJS源码学习01】了解整个requireJS的结构</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/requireJSymxx02datamainjzdsx/index.html">【requireJS源码学习02】datamain加载的实现</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/requireJSymxx03xjrequireJSdjzlc/index.html">【requireJS源码学习03】细究requireJS的加载流程</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/UIcjkfygjdrlcjs/index.html">【UI插件】开发一个简单日历插件（上）</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/UIcjjddrlcjxxxMVCsx/index.html">【UI插件】简单的日历插件（下）——学习MVC思想</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/zeptoxxbj01hxff$()/index.html">【zepto学习笔记01】核心方法$()</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/zeptoxxbj01hxff$()b/index.html">【zepto学习笔记01】核心方法$()（补）</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/zeptoxxbj02lsd/index.html">【zepto学习笔记02】零碎点</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/zeptoxxbj03sjjz/index.html">【zepto学习笔记03】事件机制</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/ycmsztjavascriptzdjc/index.html">【一次面试】再谈javascript中的继承</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/ztbackbone01mxModel/index.html">【再探backbone01】模型Model</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/ztbackbone02jhCollection/index.html">【再探backbone02】集合Collection</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/ztbackbone03bkydyyysltgym/index.html">【再探backbone03】博客园单页应用实例（提供源码）</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/ztbackbone04dyyydjslycl/index.html">【再探backbone04】单页应用的基石路由处理</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/ctUnderscorezsmbyq/index.html">【初探Underscore】再说模版引擎</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/ckjavascriptamzAjaxjsxnszddAjax/index.html">【初窥javascript奥秘之Ajax】简述下你所知道的Ajax？</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/ckjavascriptamzsjmpnxnwmyqmdp/index.html">【初窥javascript奥秘之事件冒泡】那些年我们一起冒的泡</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/ckjavascriptamzsjjzldtygdj/index.html">【初窥javascript奥秘之事件机制】论“点透”与“鬼点击”</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/ckjavascriptamzrrzmbddthisnzdxzthiszxnlm/index.html">【初窥javascript奥秘之让人捉摸不定的this】你知道现在this指向哪里吗？？？</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/ckjavascriptamzbbydxbdhlqbcl/index.html">【初窥javascript奥秘之闭包】叶大侠病都好了，求不踩了：）</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/ckjavascriptamzmxdxfzyjc/index.html">【初窥javascript奥秘之面向对象】封装与继承</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/qdmdsjdjgjdnzdljm/index.html">【前端盲点】事件的几个阶段你真的了解么？？？</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/dyyyviewymodelxgsl/index.html">【单页应用】view与model相关梳理</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/dyyyyqldyyybsxjdwbgns/index.html">【单页应用】一起来单页应用吧，实现简单微博功能！（上）</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/dyyyqjkzqappyggxsm/index.html">【单页应用】全局控制器app应该干些什么？</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/dyyywmgrhclkjdcccjgx/index.html">【单页应用】我们该如何处理框架弹出层层级关系？</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/dyyyljMVC/index.html">【单页应用】理解MVC</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/dyyyztxjzviewzjygrhtx/index.html">【单页应用之通信机制】view之间应该如何通信</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/dyyyjkzHistoryxsHistorydgdyyydm/index.html">【单页应用巨坑之History】细数History带给单页应用的噩梦</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/xtszeptofindysyjiosdcjpknrnhtt/index.html">【小贴士】zeptofind元素以及ios弹出键盘可能让你很头疼</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/xtsgytransitionEndanimatedygyqgs/index.html">【小贴士】关于transitionEndanimate的一个有趣故事</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/xtsgzzdbbysjwtdzzmp/index.html">【小贴士】工作中的”闭包“与事件委托的”阻止冒泡“</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/xtstytjavascriptzdreplace/index.html">【小贴士】探一探javascript中的replace</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/xtsxnjpyfixeddgydddt/index.html">【小贴士】虚拟键盘与fixed带给移动端的痛！</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/ttjavascriptsjjzdcsxyl/index.html">【探讨】javascript事件机制底层实现原理</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/mkhbcljrequireJSsxygjddmkjzq/index.html">【模块化编程】理解requireJS实现一个简单的模块加载器</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/zyJavaScriptmfjmtsdqlxkjzbfgndcljz/index.html">【转】【译】JavaScript魔法揭秘探索当前流行框架中部分功能的处理机制</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/zxjavascriptgszl01javascriptcszds/index.html">【追寻javascript高手之路01】javascript参数知多少？</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/zxjavascriptgszl02blzyyzds/index.html">【追寻javascript高手之路02】变量、作用域知多少？</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/zxjavascriptgszl03javascriptdxdld/index.html">【追寻javascript高手之路03】javascript对象大乱斗</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/zxjavascriptgszl04ljprototype/index.html">【追寻javascript高手之路04】理解prototype</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/zxjavascriptgszl05ljsjl/index.html">【追寻javascript高手之路05】理解事件流</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/zgbj04zxzzsj(2)/index.html">【重构笔记04】重新组织数据(2)</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/zgbj05jhtjbds/index.html">【重构笔记05】简化条件表达式</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/zgbj06jhhsdy/index.html">【重构笔记06】简化函数调用</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/ycmshgttbxysjfl/index.html">一次面试回顾——探讨表现与数据分离</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/dhzwebappzdxz/index.html">动画在webapp中的现状</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/ysandriodlqhthdomclicksjqtsxwttj/index.html">原生andriod浏览器回退后dom（click）事件全体失效问题探究</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/scsbdjxysdsbsjytouchsjdnxs/index.html">手持设备点击响应速度，鼠标事件与touch事件的那些事</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/mnbjQueryzeptohxymfx/index.html">迷你版jQuery——zepto核心源码分析</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/dbsgzdlwmlyqxjdddomxzqb/index.html">都别说工资低了，我们来一起写简单的dom选择器吧！</a></li>
+    				                                         
+                    </ul>
+                </div>
+            </div>
+
+        </div>
+    </body>
+</html>

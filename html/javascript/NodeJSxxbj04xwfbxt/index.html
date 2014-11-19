@@ -1,0 +1,663 @@
+﻿<!DOCTYPE html>
+
+<html lang="zh">
+    <head>
+        <meta charset="utf-8">
+        <meta name="description" content="android,ios" />
+        <meta name="keywords" content="android,ios" />
+
+        <title>叶小钗</title>
+        <style type='text/css'>
+            body {
+                background-color: #CCC;
+            }
+        </style>
+        <link rel="stylesheet" href="../../../css/bootstrap.css" />
+    </head>
+
+    <body>
+        <div class="container">
+
+            <h1>叶小钗</h1>
+
+            <div class='navbar navbar-inverse'>
+                <div class='navbar-inner nav-collapse' style="height: auto;">
+                    <ul class="nav">
+                              				<li><a href="http://songboriceboy.github.io/xxoo/html/blade/index.html">blade</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/css/index.html">css</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/HTML5&CSS3/index.html">HTML5&CSS3</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/index.html">javascript</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Javaxx/index.html">Java学习</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/nodejs/index.html">nodejs</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/requirejs/index.html">requirejs</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/index.html">Web前端</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/xxgw/index.html">学习感悟</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/gzdd/index.html">工作点滴</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/jkxx/index.html">接口学习</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/wfl/index.html">未分类</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/ydkf/index.html">移动开发</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/sjms/index.html">设计模式</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/mst/index.html">面试题</a></li>
+    				                      </ul>
+                </div>
+            </div>
+
+            <div id='content' class='row-fluid'>
+
+                <div class='span9 main'>
+				<div style="color:blue" align=center>【NodeJS学习笔记04】新闻发布系统</div><br><h1>前言</h1>
+<p>昨天，我们跟着这位大哥的博客（https://github.com/nswbmw/N-blog/wiki/_pages）进行了nodeJS初步的学习，最后也能将数据插入数据库了</p>
+<p>但是一味的跟着别人博客写代码肯定不行，所以我们今天就来做一个简单的新闻发布系统，系统第一阶段不需要太难，主要有以下功能</p>
+<p>① 新闻类型管理</p>
+<p>② 新闻管理（具有图片上传功能）</p>
+<p>③ 新闻浏览</p>
+<p>功能虽然不多，但是也涵盖很多基本操作了，程序不过增删查改嘛，外加上传附件，够了。于是开始我们今天的学习吧</p>
+<h1><span style="line-height: 1.5;">准备工作</span></h1>
+<p><span style="line-height: 1.5;">根据昨天的折腾后，我们已经有了nodeJS与mongoDB环境了，现在直接新建工程文件与数据库文件即可</span></p>
+<p><span style="line-height: 1.5;">第一步，打开命令符切换到D盘后输入</span></p>
+<div class="cnblogs_code">
+<pre>D:\&gt;express -e news</pre>
+</div>
+<p>&nbsp;于是系统会自动开开心心构建基本环境</p>
+<p><img src="2180137514519.png" alt=""></p>
+<p>很明显，里面很多模块依赖没有，这个时候将昨天的package.json直接考过来：</p>
+<div class="cnblogs_code">
+<pre><span style="color: #000000;">{
+  </span>"name": "application-name"<span style="color: #000000;">,
+  </span>"version": "0.0.1"<span style="color: #000000;">,
+  </span>"private": <span style="color: #0000ff;">true</span><span style="color: #000000;">,
+  </span>"scripts"<span style="color: #000000;">: {
+    </span>"start": "node app.js"<span style="color: #000000;">
+  },
+  </span>"dependencies"<span style="color: #000000;">: {
+    </span>"express": "3.4.8"<span style="color: #000000;">,
+    </span>"ejs": "*"<span style="color: #000000;">,
+    </span>"mongodb": "*"<span style="color: #000000;">
+  }
+}</span></pre>
+</div>
+<p><span style="line-height: 1.5;">然后切换到项目目录下：</span></p>
+<div class="cnblogs_code">
+<pre>nmp install</pre>
+</div>
+<p>依赖文件全部搞下来了，<span style="line-height: 1.5;">然后我们输入</span></p>
+<div class="cnblogs_code">
+<p>D:\news&gt;node app<br>Express server listening on port 3000</p>
+
+
+
+
+
+
+
+</div>
+<p>于是，我们的程序高高兴兴的运行起来了，打开网址一看，确实没问题</p>
+<p>PS：这里有个问题需要注意，我们下载下来的文件不是UTF-8编码，所以中文可能有乱码，文件编码需要各位自己统一</p>
+<p>程序跑起来了就需要数据库相关的配置了</p>
+<p>① 首先在mongoDB目录中新建news文件夹</p>
+<p>② 为项目新增配置文件settings.js</p>
+<div class="cnblogs_code">
+<pre>module.exports =<span style="color: #000000;"> {
+  cookieSecret: </span>'myNews'<span style="color: #000000;">,
+  db: </span>'news'<span style="color: #000000;">,
+  host: </span>'localhost'<span style="color: #000000;">
+}; </span></pre>
+</div>
+<p>③ 新建models目录，新建db.js</p>
+<div class="cnblogs_code">
+<pre><span style="color: #0000ff;">var</span> settings = require('../settings'<span style="color: #000000;">),
+    Db </span>= require('mongodb'<span style="color: #000000;">).Db,
+    Connection </span>= require('mongodb'<span style="color: #000000;">).Connection,
+    Server </span>= require('mongodb'<span style="color: #000000;">).Server;
+module.exports </span>= <span style="color: #0000ff;">new</span> Db(settings.db, <span style="color: #0000ff;">new</span> Server(settings.host, Connection.DEFAULT_PORT), { safe: <span style="color: #0000ff;">true</span> });</pre>
+</div>
+<p>④ 在桌面新建news.bat程序</p>
+<div class="cnblogs_code">
+<pre>d:\mongodb\bin\mongod.exe -dbpath d:\mongodb\news</pre>
+</div>
+<p>以后要启动数据库，只需要运行他即可，如此，我们初步的准备工作基本结束</p>
+<p>但是这里有两个比较烦的事情，一个是每次要启动news程序很烦，二个是修改任何东西都需要重启，于是我们这里先解决这两个问题</p>
+<p>① 在桌面新建news_app.bat，以后运行他就可以启动程序了</p>
+<div class="cnblogs_code">
+<pre>node d:\news\app</pre>
+</div>
+<p>② supervisor为一进程保护程序，我们可以使用他帮我们重启程序，首先按照，然后调整我们的node_app.bat</p>
+<div class="cnblogs_code">
+<pre><span style="color: #000000;">supervisor  d:\news\app</span></pre>
+</div>
+<p>当然之前需要安装：</p>
+<div class="cnblogs_code">
+<pre>npm install -g supervisor</pre>
+</div>
+<p>这个样子后，修改了文件就不需要手动重启了（需要将news_app放到项目目录下），于是准备工作到此为止</p>
+<h1>项目结构</h1>
+<p><span style="line-height: 1.5;">第一步结束后，我们就需要思考下项目结构了</span></p>
+<p><span style="line-height: 1.5;">① 首页为index这里将列出所有新闻类型以及对于新闻条目</span></p>
+<p><span style="line-height: 1.5;">② 各个新闻条目拥有编辑/删除/查看 三个按钮</span></p>
+<p><span style="line-height: 1.5;">③ 首页具有增加新闻按钮（增加时候可上传图片）</span></p>
+<p><span style="line-height: 1.5;">基本功能如上</span></p>
+<p><span style="line-height: 1.5;">于是，我们去掉app里面的路由功能，将路由全部放到index里面</span></p>
+<div class="cnblogs_code">
+<pre><span style="color: #008000;">//</span><span style="color: #008000;">将路由功能放入index</span><span style="color: #008000;">
+//</span><span style="color: #008000;">app.get('/', routes.index);</span><span style="color: #008000;">
+//</span><span style="color: #008000;">app.get('/users', user.list);</span><span style="color: #000000;">
+routes(app);</span></pre>
+</div>
+<div class="cnblogs_code">
+<pre>module.exports = <span style="color: #0000ff;">function</span><span style="color: #000000;"> (app) {
+  </span><span style="color: #008000;">//</span><span style="color: #008000;">主页，现在也是首页</span>
+  app.get('/', <span style="color: #0000ff;">function</span><span style="color: #000000;"> (req, res) {
+    res.render(</span>'index', { title: 'Express'<span style="color: #000000;"> });
+  });
+
+  app.get(</span>'/add', <span style="color: #0000ff;">function</span><span style="color: #000000;"> (req, res) {
+    res.send(</span>'增加新闻请求'<span style="color: #000000;">);
+  });
+
+  app.get(</span>'/delete', <span style="color: #0000ff;">function</span><span style="color: #000000;"> (req, res) {
+    res.send(</span>'删除新闻请求'<span style="color: #000000;">);
+  });
+
+  app.get(</span>'/view', <span style="color: #0000ff;">function</span><span style="color: #000000;"> (req, res) {
+    res.send(</span>'查看新闻请求'<span style="color: #000000;">);
+  });
+
+  app.get(</span>'/update', <span style="color: #0000ff;">function</span><span style="color: #000000;"> (req, res) {
+    res.send(</span>'修改新闻请求'<span style="color: #000000;">);
+  });
+
+};</span></pre>
+</div>
+<p>第一步简单如此，因为增加新闻应该有单独的页面，而具体点击增加按钮又会有其他处理，所以内部还得细分各个请求，现在规定如下：</p>
+<p><span style="line-height: 1.5;">/ 默认页面，该页面显示所有类型以及新闻，并带有删除按钮</span></p>
+<p><span style="line-height: 1.5;">/add 进入添加新闻页面</span></p>
+<p><span style="line-height: 1.5;">/addNews 添加新闻具体post请求地址（点击按钮时候的响应）</span></p>
+<p><span style="line-height: 1.5;">/delete 删除新闻请求</span></p>
+<p><span style="line-height: 1.5;">/view 具体新闻查询</span></p>
+<p><span style="line-height: 1.5;">于是稍微修改下上述路由：</span></p>
+<div class="cnblogs_code">
+<pre>module.exports = <span style="color: #0000ff;">function</span><span style="color: #000000;"> (app) {
+  </span><span style="color: #008000;">//</span><span style="color: #008000;">主页，现在也是首页</span>
+  app.get('/', <span style="color: #0000ff;">function</span><span style="color: #000000;"> (req, res) {
+    res.render(</span>'index', { title: 'Express'<span style="color: #000000;"> });
+  });
+
+  app.get(</span>'/add', <span style="color: #0000ff;">function</span><span style="color: #000000;"> (req, res) {
+    res.send(</span>'添加新闻页面'<span style="color: #000000;">);
+  });
+
+  app.post(</span>'/addNews', <span style="color: #0000ff;">function</span><span style="color: #000000;"> (req, res) {
+    res.send(</span>'处理添加新闻请求'<span style="color: #000000;">);
+  });
+
+  app.get(</span>'/delete', <span style="color: #0000ff;">function</span><span style="color: #000000;"> (req, res) {
+    res.send(</span>'删除新闻请求'<span style="color: #000000;">);
+  });
+
+  app.get(</span>'/view', <span style="color: #0000ff;">function</span><span style="color: #000000;"> (req, res) {
+    res.send(</span>'查看新闻请求'<span style="color: #000000;">);
+  });
+
+};</span></pre>
+</div>
+<p>于是我们需要新建几个模板组织我们的网页，这里我们先不分离头尾只要最简单的页面即可</p>
+<p>新增add与view两个模板文件，暂时表现与index.ejs一致，并且修改导航相关</p>
+<div class="cnblogs_code">
+<pre>module.exports = <span style="color: #0000ff;">function</span><span style="color: #000000;"> (app) {
+  </span><span style="color: #008000;">//</span><span style="color: #008000;">主页，现在也是首页</span>
+  app.get('/', <span style="color: #0000ff;">function</span><span style="color: #000000;"> (req, res) {
+    res.render(</span>'index', { title: 'Express'<span style="color: #000000;"> });
+  });
+
+  app.get(</span>'/add', <span style="color: #0000ff;">function</span><span style="color: #000000;"> (req, res) {
+    res.render(</span>'add', { title: '添加新闻页面'<span style="color: #000000;"> });
+  });
+
+  app.post(</span>'/addNews', <span style="color: #0000ff;">function</span><span style="color: #000000;"> (req, res) {
+    res.send(</span>'处理添加新闻请求'<span style="color: #000000;">);
+  });
+
+  app.get(</span>'/delete', <span style="color: #0000ff;">function</span><span style="color: #000000;"> (req, res) {
+    res.send(</span>'删除新闻请求'<span style="color: #000000;">);
+  });
+
+  app.get(</span>'/view', <span style="color: #0000ff;">function</span><span style="color: #000000;"> (req, res) {
+    res.render(</span>'view', { title: '查看新闻请求'<span style="color: #000000;"> });
+
+  });
+};</span></pre>
+</div>
+<p>至此项目结构结束</p>
+<h1>数据操作</h1>
+<p>整体结构出来后，我们就需要进行数据操作了：</p>
+<p>① 增加数据（增加新闻）</p>
+<p>② 展示数据（展示新闻）</p>
+<p>③ 删除数据（删除新闻）</p>
+<p>本来还涉及到类型操作的，但是做着做着给搞没了，暂时不管他吧，因为首次做容易迷糊</p>
+<h2>增加新闻</h2>
+<p><span style="line-height: 1.5;">这里，我们就不使用表单提交了，我们用ajax......这里顺便引入zepto库，于是我们的页面成了这样</span></p>
+<div class="cnblogs_code">
+<pre><span style="color: #0000ff;">&lt;!</span><span style="color: #ff00ff;">DOCTYPE html</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #0000ff;">&lt;</span><span style="color: #800000;">html</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #0000ff;">&lt;</span><span style="color: #800000;">head</span><span style="color: #0000ff;">&gt;</span>
+    <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">title</span><span style="color: #0000ff;">&gt;</span>
+        <span style="background-color: #ffff00; color: #000000;">&lt;%</span><span style="background-color: #f5f5f5; color: #000000;">=</span><span style="background-color: #f5f5f5; color: #000000;"> title </span><span style="background-color: #ffff00; color: #000000;">%&gt;</span><span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">title</span><span style="color: #0000ff;">&gt;</span>
+    <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">link </span><span style="color: #ff0000;">rel</span><span style="color: #0000ff;">='stylesheet' </span><span style="color: #ff0000;">href</span><span style="color: #0000ff;">='/stylesheets/style.css' </span><span style="color: #0000ff;">/&gt;</span>
+    <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">script </span><span style="color: #ff0000;">src</span><span style="color: #0000ff;">="javascripts/zepto.js"</span><span style="color: #ff0000;"> type</span><span style="color: #0000ff;">="text/javascript"</span><span style="color: #0000ff;">&gt;&lt;/</span><span style="color: #800000;">script</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">head</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #0000ff;">&lt;</span><span style="color: #800000;">body</span><span style="color: #0000ff;">&gt;</span>
+    <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">h1</span><span style="color: #0000ff;">&gt;</span>
+        <span style="background-color: #ffff00; color: #000000;">&lt;%</span><span style="background-color: #f5f5f5; color: #000000;">=</span><span style="background-color: #f5f5f5; color: #000000;"> title </span><span style="background-color: #ffff00; color: #000000;">%&gt;</span><span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">h1</span><span style="color: #0000ff;">&gt;</span>
+    <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">div</span><span style="color: #0000ff;">&gt;</span><span style="color: #000000;">
+        标题：</span><span style="color: #0000ff;">&lt;</span><span style="color: #800000;">input </span><span style="color: #ff0000;">type</span><span style="color: #0000ff;">="text"</span><span style="color: #ff0000;"> id</span><span style="color: #0000ff;">="title"</span> <span style="color: #0000ff;">/&gt;</span>
+    <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">div</span><span style="color: #0000ff;">&gt;</span>
+    <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">div</span><span style="color: #0000ff;">&gt;</span><span style="color: #000000;">
+        内容：</span><span style="color: #0000ff;">&lt;</span><span style="color: #800000;">textarea </span><span style="color: #ff0000;">id</span><span style="color: #0000ff;">="content"</span><span style="color: #0000ff;">&gt;&lt;/</span><span style="color: #800000;">textarea</span><span style="color: #0000ff;">&gt;</span>
+    <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">div</span><span style="color: #0000ff;">&gt;</span>
+    <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">div</span><span style="color: #0000ff;">&gt;</span>
+        <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">input </span><span style="color: #ff0000;">type</span><span style="color: #0000ff;">="button"</span><span style="color: #ff0000;"> type</span><span style="color: #0000ff;">="button"</span><span style="color: #ff0000;"> id</span><span style="color: #0000ff;">="ok"</span><span style="color: #ff0000;"> value</span><span style="color: #0000ff;">="添加新闻"</span> <span style="color: #0000ff;">/&gt;</span>
+    <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">div</span><span style="color: #0000ff;">&gt;</span>
+    <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">script </span><span style="color: #ff0000;">type</span><span style="color: #0000ff;">="text/javascript"</span><span style="color: #0000ff;">&gt;</span><span style="background-color: #f5f5f5; color: #000000;">
+        $(document).ready(</span><span style="background-color: #f5f5f5; color: #0000ff;">function</span><span style="background-color: #f5f5f5; color: #000000;"> () {
+            $(</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">#ok</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">).click(</span><span style="background-color: #f5f5f5; color: #0000ff;">function</span><span style="background-color: #f5f5f5; color: #000000;"> () {
+                </span><span style="background-color: #f5f5f5; color: #0000ff;">var</span><span style="background-color: #f5f5f5; color: #000000;"> param </span><span style="background-color: #f5f5f5; color: #000000;">=</span><span style="background-color: #f5f5f5; color: #000000;"> {};
+                param.title </span><span style="background-color: #f5f5f5; color: #000000;">=</span><span style="background-color: #f5f5f5; color: #000000;"> $(</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">#title</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">).val();
+                param.content </span><span style="background-color: #f5f5f5; color: #000000;">=</span><span style="background-color: #f5f5f5; color: #000000;"> $(</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">#content</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">).val();
+
+                $.post(</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">/addNews</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">, param, </span><span style="background-color: #f5f5f5; color: #0000ff;">function</span><span style="background-color: #f5f5f5; color: #000000;"> () {
+
+                    console.log(</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">添加成功</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">);
+                });
+            });
+        });
+    </span><span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">script</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">body</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">html</span><span style="color: #0000ff;">&gt;</span></pre>
+</div>
+<p><img src="35886048171441.png" alt=""><img src="6067208778087.png" alt=""></p>
+<p>虽然现在还没有请求响应程序，所以数据并不会被处理，另外我们这里的附件也没有（现在附件只允许一个好了），于是再修改下代码，加入图片：</p>
+<p>PS：比较麻烦的是图片经过ajax处理有点麻烦，所以我们这里乖乖的换回form操作算了，不然又要搞多久......</p>
+<div class="cnblogs_code">
+<pre><span style="color: #0000ff;">&lt;</span><span style="color: #800000;">html</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #0000ff;">&lt;</span><span style="color: #800000;">head</span><span style="color: #0000ff;">&gt;</span>
+    <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">title</span><span style="color: #0000ff;">&gt;</span>
+        <span style="background-color: #ffff00; color: #000000;">&lt;%</span><span style="background-color: #f5f5f5; color: #000000;">=</span><span style="background-color: #f5f5f5; color: #000000;"> title </span><span style="background-color: #ffff00; color: #000000;">%&gt;</span><span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">title</span><span style="color: #0000ff;">&gt;</span>
+    <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">link </span><span style="color: #ff0000;">rel</span><span style="color: #0000ff;">='stylesheet' </span><span style="color: #ff0000;">href</span><span style="color: #0000ff;">='/stylesheets/style.css' </span><span style="color: #0000ff;">/&gt;</span>
+<span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">head</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #0000ff;">&lt;</span><span style="color: #800000;">body</span><span style="color: #0000ff;">&gt;</span>
+    <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">h1</span><span style="color: #0000ff;">&gt;</span>
+        <span style="background-color: #ffff00; color: #000000;">&lt;%</span><span style="background-color: #f5f5f5; color: #000000;">=</span><span style="background-color: #f5f5f5; color: #000000;"> title </span><span style="background-color: #ffff00; color: #000000;">%&gt;</span><span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">h1</span><span style="color: #0000ff;">&gt;</span>
+    <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">form </span><span style="color: #ff0000;">enctype</span><span style="color: #0000ff;">="multipart/form-data"</span><span style="color: #ff0000;"> method</span><span style="color: #0000ff;">="post"</span><span style="color: #ff0000;">  action</span><span style="color: #0000ff;">="/addNews"</span><span style="color: #0000ff;">&gt;</span>
+    <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">div</span><span style="color: #0000ff;">&gt;</span><span style="color: #000000;">
+        标题：</span><span style="color: #0000ff;">&lt;</span><span style="color: #800000;">input </span><span style="color: #ff0000;">type</span><span style="color: #0000ff;">="text"</span><span style="color: #ff0000;"> id</span><span style="color: #0000ff;">="title"</span><span style="color: #ff0000;"> name</span><span style="color: #0000ff;">="title"</span> <span style="color: #0000ff;">/&gt;</span>
+    <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">div</span><span style="color: #0000ff;">&gt;</span>
+    <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">div</span><span style="color: #0000ff;">&gt;</span><span style="color: #000000;">
+        图片：</span><span style="color: #0000ff;">&lt;</span><span style="color: #800000;">input </span><span style="color: #ff0000;">type</span><span style="color: #0000ff;">="file"</span><span style="color: #ff0000;"> id</span><span style="color: #0000ff;">="pic"</span><span style="color: #ff0000;"> name</span><span style="color: #0000ff;">="pic"</span> <span style="color: #0000ff;">/&gt;</span>
+    <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">div</span><span style="color: #0000ff;">&gt;</span>
+    <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">div</span><span style="color: #0000ff;">&gt;</span><span style="color: #000000;">
+        内容：</span><span style="color: #0000ff;">&lt;</span><span style="color: #800000;">textarea </span><span style="color: #ff0000;">id</span><span style="color: #0000ff;">="content"</span><span style="color: #ff0000;"> name</span><span style="color: #0000ff;">="content"</span><span style="color: #0000ff;">&gt;&lt;/</span><span style="color: #800000;">textarea</span><span style="color: #0000ff;">&gt;</span>
+    <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">div</span><span style="color: #0000ff;">&gt;</span>
+    <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">div</span><span style="color: #0000ff;">&gt;</span>
+        <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">input  </span><span style="color: #ff0000;">type</span><span style="color: #0000ff;">="submit"</span><span style="color: #ff0000;"> id</span><span style="color: #0000ff;">="ok"</span><span style="color: #ff0000;"> value</span><span style="color: #0000ff;">="添加新闻"</span> <span style="color: #0000ff;">/&gt;</span>
+    <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">div</span><span style="color: #0000ff;">&gt;</span>
+    <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">form</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">body</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">html</span><span style="color: #0000ff;">&gt;</span></pre>
+</div>
+<p>这个样子就不需要过多的考虑附件问题，先暂时如此吧，现在先处理请求程序，这里先在public里面新建news文件夹用于存储其图片</p>
+<h3><span style="line-height: 1.5;">model</span></h3>
+<p><span style="line-height: 1.5;">在models文件夹新增news.js文件，为其构建实体，并赋予新增查询相关操作:</span></p>
+<div class="cnblogs_code" onclick="cnblogs_code_show('d3c54e1c-17b1-4e6f-838d-c703ad2f374f')"><img id="code_img_closed_d3c54e1c-17b1-4e6f-838d-c703ad2f374f" class="code_img_closed" src="43570758473519.gif" alt=""><img id="code_img_opened_d3c54e1c-17b1-4e6f-838d-c703ad2f374f" class="code_img_opened" style="display: none;" onclick="cnblogs_code_hide('d3c54e1c-17b1-4e6f-838d-c703ad2f374f',event)" src="16365178109279.gif" alt="">
+<div id="cnblogs_code_open_d3c54e1c-17b1-4e6f-838d-c703ad2f374f" class="cnblogs_code_hide">
+<pre><span style="color: #0000ff;">var</span> mongodb = require('./db'<span style="color: #000000;">);
+
+
+</span><span style="color: #0000ff;">function</span><span style="color: #000000;"> News(title, content, pic) {
+  </span><span style="color: #0000ff;">this</span>.title =<span style="color: #000000;"> title;
+  </span><span style="color: #0000ff;">this</span>.content =<span style="color: #000000;"> content;
+  </span><span style="color: #0000ff;">this</span>.pic = pic;<span style="color: #008000;">//</span><span style="color: #008000;">保存存储路径</span>
+<span style="color: #000000;">};
+
+module.exports </span>=<span style="color: #000000;"> News;
+
+</span><span style="color: #008000;">//</span><span style="color: #008000;">存储数据</span>
+News.prototype =<span style="color: #000000;"> {
+  save: </span><span style="color: #0000ff;">function</span><span style="color: #000000;"> (callback) {
+    </span><span style="color: #0000ff;">var</span> date = <span style="color: #0000ff;">new</span><span style="color: #000000;"> Date();
+    </span><span style="color: #0000ff;">var</span> time =<span style="color: #000000;"> {
+      date: date,
+      year: date.getFullYear(),
+      month: date.getFullYear() </span>+ "-" + (date.getMonth() + 1<span style="color: #000000;">),
+      day: date.getFullYear() </span>+ "-" + (date.getMonth() + 1) + "-" +<span style="color: #000000;"> date.getDate(),
+      minute: date.getFullYear() </span>+ "-" + (date.getMonth() + 1) + "-" + date.getDate() + " " +<span style="color: #000000;">
+      date.getHours() </span>+ ":" + (date.getMinutes() &lt; 10 ? '0' +<span style="color: #000000;"> date.getMinutes() : date.getMinutes())
+    }
+
+    </span><span style="color: #008000;">//</span><span style="color: #008000;">数据存储对象</span>
+    <span style="color: #0000ff;">var</span> news =<span style="color: #000000;"> {
+      title: </span><span style="color: #0000ff;">this</span><span style="color: #000000;">.title,
+      content: </span><span style="color: #0000ff;">this</span><span style="color: #000000;">.content,
+      pic: </span><span style="color: #0000ff;">this</span>.pic, <span style="color: #008000;">//</span><span style="color: #008000;">图片处理最后来说，现在先乱存</span>
+<span style="color: #000000;">      time: time
+    };
+
+    </span><span style="color: #008000;">//</span><span style="color: #008000;">打开数据连接，打开就是一个回调......</span>
+    mongodb.open(<span style="color: #0000ff;">function</span><span style="color: #000000;"> (err, db) {
+      </span><span style="color: #008000;">//</span><span style="color: #008000;">错误就退出</span>
+      <span style="color: #0000ff;">if</span><span style="color: #000000;"> (err) {
+        </span><span style="color: #0000ff;">return</span><span style="color: #000000;"> callback(err);
+      }
+
+      </span><span style="color: #008000;">//</span><span style="color: #008000;">打开news集合</span>
+      db.collection('news', <span style="color: #0000ff;">function</span><span style="color: #000000;"> (err, collection) {
+        </span><span style="color: #0000ff;">if</span><span style="color: #000000;"> (err) {
+          mongodb.close();
+          </span><span style="color: #0000ff;">return</span><span style="color: #000000;"> callback(err);
+        }
+
+        </span><span style="color: #008000;">//</span><span style="color: #008000;">写入集合（写入数据库）</span>
+        collection.insert(news, { safe: <span style="color: #0000ff;">true</span> }, <span style="color: #0000ff;">function</span><span style="color: #000000;"> (err) {
+          </span><span style="color: #0000ff;">return</span><span style="color: #000000;"> callback(err);
+        });
+        callback(</span><span style="color: #0000ff;">null</span>);<span style="color: #008000;">//</span><span style="color: #008000;">err为null</span>
+<span style="color: #000000;">      });
+    });
+  }
+};</span></pre>
+</div>
+<span class="cnblogs_code_collapse">View Code </span></div>
+<p>于是，写入数据库的程序就有了，这里我们来试试能不能插入数据库，当然需要修改路由处的程序</p>
+<p>PS：路由处当然不能写过多逻辑代码，这个文件以后还得分离</p>
+<p>这个时候/addNews里面的逻辑需要改变</p>
+<div class="cnblogs_code">
+<pre>app.post('/addNews', <span style="color: #0000ff;">function</span><span style="color: #000000;"> (req, res) {
+  </span><span style="color: #0000ff;">var</span> title =<span style="color: #000000;"> req.body.title;
+  </span><span style="color: #0000ff;">var</span> content =<span style="color: #000000;"> req.body.content;
+  </span><span style="color: #0000ff;">var</span> pic =<span style="color: #000000;"> req.body.pic;
+  </span><span style="color: #0000ff;">var</span> news = <span style="color: #0000ff;">new</span><span style="color: #000000;"> News(title, content, pic)
+  news.save(</span><span style="color: #0000ff;">function</span><span style="color: #000000;"> (err, data) {
+    res.send(data);
+  })
+});</span></pre>
+</div>
+<p><img src="2314589248114.png" alt=""></p>
+<p><span style="line-height: 1.5;">查询下，问题不大，现在要解决的就是附件问题了</span></p>
+<h2><span style="line-height: 1.5;">上传图片</span></h2>
+<p><span style="line-height: 1.5;">上传图片功能express本身就支持了，express通过bodyParser解析请求体，然后便可通过他上传文件了，其内部使用了formidable</span></p>
+<p><span style="line-height: 1.5;">这里将app.js里面的app.use(express.bodyParser())改为：</span></p>
+<div class="cnblogs_code">
+<pre>app.use(express.bodyParser({ keepExtensions: <span style="color: #0000ff;">true</span>, uploadDir: './public/news' }));</pre>
+</div>
+<p>打开index.js，在前面加一行代码：</p>
+<div class="cnblogs_code">
+<pre>fs = require('fs'),</pre>
+</div>
+<p>修改一下index文件：</p>
+<div class="cnblogs_code">
+<pre>app.post('/addNews', <span style="color: #0000ff;">function</span><span style="color: #000000;"> (req, res) {
+
+  </span><span style="color: #0000ff;">for</span> (<span style="color: #0000ff;">var</span> i <span style="color: #0000ff;">in</span><span style="color: #000000;"> req.files) {
+    </span><span style="color: #0000ff;">if</span> (req.files[i] == 0<span style="color: #000000;">) {
+      </span><span style="color: #008000;">//</span><span style="color: #008000;">同步方式删除一个文件</span>
+<span style="color: #000000;">      fs.unlinkSync(req.files[i].path);
+      console.log(</span>'success removed an empty file'<span style="color: #000000;">);
+    } </span><span style="color: #0000ff;">else</span><span style="color: #000000;"> {
+      </span><span style="color: #0000ff;">var</span> path = './public/news/' +<span style="color: #000000;"> req.files[i].name;
+      </span><span style="color: #008000;">//</span><span style="color: #008000;"> 使用同步方式重命名一个文件</span>
+<span style="color: #000000;">      fs.renameSync(req.files[i].path, path);
+      console.log(</span>'sunccess renamed a file'<span style="color: #000000;">);
+    }
+  }
+
+</span><span style="color: #008000;">//</span><span style="color: #008000;">    var title = req.body.title;</span><span style="color: #008000;">
+//</span><span style="color: #008000;">    var content = req.body.content;</span><span style="color: #008000;">
+//</span><span style="color: #008000;">    var pic = req.body.pic;</span><span style="color: #008000;">
+//</span><span style="color: #008000;">    var news = new News(title, content, pic)</span><span style="color: #008000;">
+//</span><span style="color: #008000;">    news.save(function (err, data) {</span><span style="color: #008000;">
+//</span><span style="color: #008000;">      res.send(data);</span><span style="color: #008000;">
+//</span><span style="color: #008000;">    })</span>
+});</pre>
+</div>
+<p>这个时候选取文件后点击添加新闻，我们的文件就上传上去了</p>
+<p><img src="38970547295727.png" alt=""></p>
+<p>这个时候，我只需要将文件名记录在数据库即可，文件目录里面就有图片了</p>
+<div class="cnblogs_code">
+<pre>app.post('/addNews', <span style="color: #0000ff;">function</span><span style="color: #000000;"> (req, res) {
+
+  </span><span style="color: #0000ff;">var</span> pic = <span style="color: #0000ff;">null</span><span style="color: #000000;">;
+
+  </span><span style="color: #0000ff;">for</span> (<span style="color: #0000ff;">var</span> i <span style="color: #0000ff;">in</span><span style="color: #000000;"> req.files) {
+    </span><span style="color: #0000ff;">if</span> (req.files[i] == 0<span style="color: #000000;">) {
+      </span><span style="color: #008000;">//</span><span style="color: #008000;">同步方式删除一个文件</span>
+<span style="color: #000000;">      fs.unlinkSync(req.files[i].path);
+      console.log(</span>'success removed an empty file'<span style="color: #000000;">);
+    } </span><span style="color: #0000ff;">else</span><span style="color: #000000;"> {
+      </span><span style="color: #0000ff;">var</span> path = './public/news/' +<span style="color: #000000;"> req.files[i].name;
+      </span><span style="color: #008000;">//</span><span style="color: #008000;"> 使用同步方式重命名一个文件</span>
+<span style="color: #000000;">      fs.renameSync(req.files[i].path, path);
+      console.log(</span>'sunccess renamed a file'<span style="color: #000000;">);
+    }
+    pic </span>=<span style="color: #000000;"> req.files[i].name;
+  }
+
+
+  </span><span style="color: #0000ff;">var</span> title =<span style="color: #000000;"> req.body.title;
+  </span><span style="color: #0000ff;">var</span> content =<span style="color: #000000;"> req.body.content;
+
+  </span><span style="color: #0000ff;">var</span> news = <span style="color: #0000ff;">new</span><span style="color: #000000;"> News(title, content, pic)
+  news.save(</span><span style="color: #0000ff;">function</span><span style="color: #000000;"> (err, data) {
+    res.send(data);
+  })
+  res.send(</span>'&lt;a href="./"&gt;请求成功，返回首页&lt;/a&gt;'<span style="color: #000000;">);
+
+});</span></pre>
+</div>
+<p><img src="12357795902767.png" alt=""></p>
+<p><span style="line-height: 1.5;">数据库中有数据了，我们目录也有文件了，现在只需要将数据读出来了</span></p>
+<p><span style="line-height: 1.5;">PS：放假兄弟们催的凶，要出去喝酒了</span></p>
+<h2><span style="line-height: 1.5;">读取数据</span></h2>
+<p><span style="line-height: 1.5;">第二步当然是读取数据，首先是首页的数据读取：</span></p>
+<div class="cnblogs_code" onclick="cnblogs_code_show('1f5b9407-e035-40fb-8f25-57583044d019')"><img id="code_img_closed_1f5b9407-e035-40fb-8f25-57583044d019" class="code_img_closed" src="43570758473519.gif" alt=""><img id="code_img_opened_1f5b9407-e035-40fb-8f25-57583044d019" class="code_img_opened" style="display: none;" onclick="cnblogs_code_hide('1f5b9407-e035-40fb-8f25-57583044d019',event)" src="16365178109279.gif" alt="">
+<div id="cnblogs_code_open_1f5b9407-e035-40fb-8f25-57583044d019" class="cnblogs_code_hide">
+<pre><span style="color: #008080;"> 1</span> <span style="color: #0000ff;">var</span> mongodb = require('./db'<span style="color: #000000;">);
+</span><span style="color: #008080;"> 2</span> 
+<span style="color: #008080;"> 3</span> 
+<span style="color: #008080;"> 4</span> <span style="color: #0000ff;">function</span><span style="color: #000000;"> News(title, content, pic) {
+</span><span style="color: #008080;"> 5</span>   <span style="color: #0000ff;">this</span>.title =<span style="color: #000000;"> title;
+</span><span style="color: #008080;"> 6</span>   <span style="color: #0000ff;">this</span>.content =<span style="color: #000000;"> content;
+</span><span style="color: #008080;"> 7</span>   <span style="color: #0000ff;">this</span>.pic = pic;<span style="color: #008000;">//</span><span style="color: #008000;">保存存储路径</span>
+<span style="color: #008080;"> 8</span> <span style="color: #000000;">};
+</span><span style="color: #008080;"> 9</span> 
+<span style="color: #008080;">10</span> module.exports =<span style="color: #000000;"> News;
+</span><span style="color: #008080;">11</span> 
+<span style="color: #008080;">12</span> <span style="color: #008000;">//</span><span style="color: #008000;">存储数据</span>
+<span style="color: #008080;">13</span> News.prototype =<span style="color: #000000;"> {
+</span><span style="color: #008080;">14</span>   save: <span style="color: #0000ff;">function</span><span style="color: #000000;"> (callback) {
+</span><span style="color: #008080;">15</span>     <span style="color: #0000ff;">var</span> date = <span style="color: #0000ff;">new</span><span style="color: #000000;"> Date();
+</span><span style="color: #008080;">16</span> 
+<span style="color: #008080;">17</span>     <span style="color: #008000;">//</span><span style="color: #008000;">数据存储对象</span>
+<span style="color: #008080;">18</span>     <span style="color: #0000ff;">var</span> news =<span style="color: #000000;"> {
+</span><span style="color: #008080;">19</span>       title: <span style="color: #0000ff;">this</span><span style="color: #000000;">.title,
+</span><span style="color: #008080;">20</span>       content: <span style="color: #0000ff;">this</span><span style="color: #000000;">.content,
+</span><span style="color: #008080;">21</span>       pic: <span style="color: #0000ff;">this</span>.pic, <span style="color: #008000;">//</span><span style="color: #008000;">图片处理最后来说，现在先乱存</span>
+<span style="color: #008080;">22</span> <span style="color: #000000;">      date: date
+</span><span style="color: #008080;">23</span> <span style="color: #000000;">    };
+</span><span style="color: #008080;">24</span> 
+<span style="color: #008080;">25</span>     <span style="color: #008000;">//</span><span style="color: #008000;">打开数据连接，打开就是一个回调......</span>
+<span style="color: #008080;">26</span>     mongodb.open(<span style="color: #0000ff;">function</span><span style="color: #000000;"> (err, db) {
+</span><span style="color: #008080;">27</span>       <span style="color: #008000;">//</span><span style="color: #008000;">错误就退出</span>
+<span style="color: #008080;">28</span>       <span style="color: #0000ff;">if</span><span style="color: #000000;"> (err) {
+</span><span style="color: #008080;">29</span>         <span style="color: #0000ff;">return</span><span style="color: #000000;"> callback(err);
+</span><span style="color: #008080;">30</span> <span style="color: #000000;">      }
+</span><span style="color: #008080;">31</span> 
+<span style="color: #008080;">32</span>       <span style="color: #008000;">//</span><span style="color: #008000;">打开news集合</span>
+<span style="color: #008080;">33</span>       db.collection('news', <span style="color: #0000ff;">function</span><span style="color: #000000;"> (err, collection) {
+</span><span style="color: #008080;">34</span>         <span style="color: #0000ff;">if</span><span style="color: #000000;"> (err) {
+</span><span style="color: #008080;">35</span> <span style="color: #000000;">          mongodb.close();
+</span><span style="color: #008080;">36</span>           <span style="color: #0000ff;">return</span><span style="color: #000000;"> callback(err);
+</span><span style="color: #008080;">37</span> <span style="color: #000000;">        }
+</span><span style="color: #008080;">38</span> 
+<span style="color: #008080;">39</span>         <span style="color: #008000;">//</span><span style="color: #008000;">写入集合（写入数据库）</span>
+<span style="color: #008080;">40</span>         collection.insert(news, { safe: <span style="color: #0000ff;">true</span> }, <span style="color: #0000ff;">function</span><span style="color: #000000;"> (err) {
+</span><span style="color: #008080;">41</span>           <span style="color: #0000ff;">return</span><span style="color: #000000;"> callback(err);
+</span><span style="color: #008080;">42</span> <span style="color: #000000;">        });
+</span><span style="color: #008080;">43</span>         callback(<span style="color: #0000ff;">null</span>); <span style="color: #008000;">//</span><span style="color: #008000;">err为null</span>
+<span style="color: #008080;">44</span> <span style="color: #000000;">      });
+</span><span style="color: #008080;">45</span> <span style="color: #000000;">    });
+</span><span style="color: #008080;">46</span> <span style="color: #000000;">  }
+</span><span style="color: #008080;">47</span>   
+<span style="color: #008080;">48</span> <span style="color: #000000;">};
+</span><span style="color: #008080;">49</span> 
+<span style="color: #008080;">50</span> 
+<span style="color: #008080;">51</span> <span style="color: #008000;">//</span><span style="color: #008000;">读取文章及其相关信息</span>
+<span style="color: #008080;">52</span> News.get = <span style="color: #0000ff;">function</span><span style="color: #000000;"> (id, callback) {
+</span><span style="color: #008080;">53</span>   <span style="color: #008000;">//</span><span style="color: #008000;">打开数据库</span>
+<span style="color: #008080;">54</span>   mongodb.open(<span style="color: #0000ff;">function</span><span style="color: #000000;"> (err, db) {
+</span><span style="color: #008080;">55</span>     <span style="color: #0000ff;">if</span><span style="color: #000000;"> (err) {
+</span><span style="color: #008080;">56</span>       <span style="color: #0000ff;">return</span><span style="color: #000000;"> callback(err);
+</span><span style="color: #008080;">57</span> <span style="color: #000000;">    }
+</span><span style="color: #008080;">58</span>     db.collection('news', <span style="color: #0000ff;">function</span><span style="color: #000000;"> (err, collection) {
+</span><span style="color: #008080;">59</span>       <span style="color: #0000ff;">if</span><span style="color: #000000;"> (err) {
+</span><span style="color: #008080;">60</span> <span style="color: #000000;">        mongodb.close();
+</span><span style="color: #008080;">61</span>         <span style="color: #0000ff;">return</span><span style="color: #000000;"> callback(err);
+</span><span style="color: #008080;">62</span> <span style="color: #000000;">      }
+</span><span style="color: #008080;">63</span>       <span style="color: #0000ff;">var</span> query =<span style="color: #000000;"> {};
+</span><span style="color: #008080;">64</span>       <span style="color: #0000ff;">if</span><span style="color: #000000;"> (id) {
+</span><span style="color: #008080;">65</span>         query.id =<span style="color: #000000;"> id;
+</span><span style="color: #008080;">66</span> <span style="color: #000000;">      }
+</span><span style="color: #008080;">67</span>       <span style="color: #008000;">//</span><span style="color: #008000;">根据 query 对象查询文章</span>
+<span style="color: #008080;">68</span> <span style="color: #000000;">      collection.find(query).sort({
+</span><span style="color: #008080;">69</span>         date: -1
+<span style="color: #008080;">70</span>       }).toArray(<span style="color: #0000ff;">function</span><span style="color: #000000;"> (err, data) {
+</span><span style="color: #008080;">71</span> <span style="color: #000000;">        mongodb.close();
+</span><span style="color: #008080;">72</span>         <span style="color: #0000ff;">if</span><span style="color: #000000;"> (err) {
+</span><span style="color: #008080;">73</span>           <span style="color: #0000ff;">return</span> callback(err); <span style="color: #008000;">//</span><span style="color: #008000;">失败！返回 err</span>
+<span style="color: #008080;">74</span> <span style="color: #000000;">        }
+</span><span style="color: #008080;">75</span>         callback(<span style="color: #0000ff;">null</span>, data); <span style="color: #008000;">//</span><span style="color: #008000;">成功！以数组形式返回查询的结果</span>
+<span style="color: #008080;">76</span> <span style="color: #000000;">      });
+</span><span style="color: #008080;">77</span> <span style="color: #000000;">    });
+</span><span style="color: #008080;">78</span> <span style="color: #000000;">  });
+</span><span style="color: #008080;">79</span> };</pre>
+</div>
+<span class="cnblogs_code_collapse">news.js</span></div>
+<div class="cnblogs_code">
+<pre><span style="color: #0000ff;">&lt;!</span><span style="color: #ff00ff;">DOCTYPE html</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #0000ff;">&lt;</span><span style="color: #800000;">html</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #0000ff;">&lt;</span><span style="color: #800000;">head</span><span style="color: #0000ff;">&gt;</span>
+    <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">title</span><span style="color: #0000ff;">&gt;</span>
+        <span style="background-color: #ffff00; color: #000000;">&lt;%</span><span style="background-color: #f5f5f5; color: #000000;">=</span><span style="background-color: #f5f5f5; color: #000000;"> title </span><span style="background-color: #ffff00; color: #000000;">%&gt;</span><span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">title</span><span style="color: #0000ff;">&gt;</span>
+    <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">link </span><span style="color: #ff0000;">rel</span><span style="color: #0000ff;">='stylesheet' </span><span style="color: #ff0000;">href</span><span style="color: #0000ff;">='/stylesheets/style.css' </span><span style="color: #0000ff;">/&gt;</span>
+<span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">head</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #0000ff;">&lt;</span><span style="color: #800000;">body</span><span style="color: #0000ff;">&gt;</span>
+    <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">h1</span><span style="color: #0000ff;">&gt;</span>
+        <span style="background-color: #ffff00; color: #000000;">&lt;%</span><span style="background-color: #f5f5f5; color: #000000;">=</span><span style="background-color: #f5f5f5; color: #000000;"> title </span><span style="background-color: #ffff00; color: #000000;">%&gt;</span><span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">h1</span><span style="color: #0000ff;">&gt;</span>
+    <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">ul</span><span style="color: #0000ff;">&gt;</span>
+        <span style="background-color: #ffff00; color: #000000;">&lt;%</span><span style="background-color: #f5f5f5; color: #0000ff;">for</span><span style="background-color: #f5f5f5; color: #000000;">(var k in data) { </span><span style="background-color: #ffff00; color: #000000;">%&gt;</span>
+        <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">li</span><span style="color: #0000ff;">&gt;</span>
+            <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">div</span><span style="color: #0000ff;">&gt;</span><span style="color: #000000;">
+               标题： </span><span style="background-color: #ffff00; color: #000000;">&lt;%</span><span style="background-color: #f5f5f5; color: #000000;">=</span><span style="background-color: #f5f5f5; color: #000000;">data[k].title </span><span style="background-color: #ffff00; color: #000000;">%&gt;</span><span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">div</span><span style="color: #0000ff;">&gt;</span>
+            <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">div</span><span style="color: #0000ff;">&gt;</span><span style="color: #000000;">
+              内容：  </span><span style="background-color: #ffff00; color: #000000;">&lt;%</span><span style="background-color: #f5f5f5; color: #000000;">=</span><span style="background-color: #f5f5f5; color: #000000;">data[k].content</span><span style="background-color: #ffff00; color: #000000;">%&gt;</span><span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">div</span><span style="color: #0000ff;">&gt;</span>
+              <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">div</span><span style="color: #0000ff;">&gt;</span><span style="color: #000000;">
+              附件：</span><span style="color: #0000ff;">&lt;</span><span style="color: #800000;">img </span><span style="color: #ff0000;">src</span><span style="color: #0000ff;">="news/&lt;%= data[k].pic%&gt;"</span> <span style="color: #0000ff;">/&gt;&lt;/</span><span style="color: #800000;">div</span><span style="color: #0000ff;">&gt;</span>
+              <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">div</span><span style="color: #0000ff;">&gt;</span>
+              <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">div</span><span style="color: #0000ff;">&gt;</span>
+              <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">a </span><span style="color: #ff0000;">href</span><span style="color: #0000ff;">="/delete?id=&lt;%=data[k] %&gt;"</span><span style="color: #0000ff;">&gt;</span>删除<span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">a</span><span style="color: #0000ff;">&gt;</span>
+              <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">div</span><span style="color: #0000ff;">&gt;</span>
+              <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">hr</span><span style="color: #0000ff;">/&gt;</span>
+        <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">li</span><span style="color: #0000ff;">&gt;</span>
+        <span style="background-color: #ffff00; color: #000000;">&lt;%</span><span style="background-color: #f5f5f5; color: #000000;">} </span><span style="background-color: #ffff00; color: #000000;">%&gt;</span>
+    <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">ul</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">body</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">html</span><span style="color: #0000ff;">&gt;</span></pre>
+</div>
+<p><img src="22819117170073.png" alt=""></p>
+<h1>结语</h1>
+<p>今天，暂时 这样，晚上有约要出去了，有点仓促</p>
+                </div>
+
+                <div class='span3 sidebar'>
+                    <h2>导航栏</h2>
+                    <ul class="nav nav-tabs nav-stacked">
+                             				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/javascriptzdyxhxzsdyjxyzyddf/index.html">javascript中的一些核心知识点以及需要注意的地方</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/[zd]webappdyhzlyzydqdyhdpyjlkkb/index.html">[置顶]【webapp的优化整理】要做移动前端优化的朋友进来看看吧</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/[zd]yddjrwtyjjavascriptsjjzxjsjydjr/index.html">[置顶]【移动端兼容问题研究】javascript事件机制详解（涉及移动兼容）</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/gruntzhb30fzxhsygruntdbqddm/index.html">【grunt整合版】30分钟学会使用grunt打包前端代码</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/gruntdyd30fzxhsygruntdbqddm/index.html">【grunt第一弹】30分钟学会使用grunt打包前端代码</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/gruntdsdgruntzqdsjxmzdyy/index.html">【grunt第三弹】grunt在前端实际项目中的应用</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/gruntded30fzxhsygruntdbqddm02/index.html">【grunt第二弹】30分钟学会使用grunt打包前端代码（02）</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/IScrollsrxxtpyddhadlqs/index.html">【IScroll深入学习】突破移动端黑暗的利器（上）</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/IScrollsrxxjjIScrollynzz/index.html">【IScroll深入学习】解决IScroll疑难杂症</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/iScrollymxx00mniScroll/index.html">【iScroll源码学习00】模拟iScroll</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/iScrollymxx01zbjd/index.html">【iScroll源码学习01】准备阶段</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/iScrollymxx02fjiScrollsghxsjd/index.html">【iScroll源码学习02】分解iScroll三个核心事件点</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/iScrollymxx03iScrollsjjzygdtdsx/index.html">【iScroll源码学习03】iScroll事件机制与滚动条的实现</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/iScrollymxx04flIScrollhx/index.html">【iScroll源码学习04】分离IScroll核心</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/javascriptpxdytyyjc/index.html">【javascript培训第一天】语言基础</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/javascriptpxdstcybl/index.html">【javascript培训第三天】查遗补漏</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/javascriptpxdetDOMyBOM/index.html">【javascript培训第二天】DOM与BOM</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/javascriptjzdsk01mkhbc/index.html">【javascript激增的思考01】模块化编程</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/javascriptjzdsk02mkhyMVC/index.html">【javascript激增的思考02】模块化与MVC</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/javascriptjzdsk03MVVMyKnockout/index.html">【javascript激增的思考03】MVVM与Knockout</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/javascriptjzdsk04MVCyBackbonejs(beta)/index.html">【javascript激增的思考04】MVC与Backbonejs(beta)</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/javascriptmxdxzlrwmyqltkdzb01/index.html">【javascript面向对象之路】让我们一起来坦克大战吧01</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/NodeJSxxbj04xwfbxt/index.html">【NodeJS学习笔记04】新闻发布系统</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/requireJSymxx01ljzgrequireJSdjg/index.html">【requireJS源码学习01】了解整个requireJS的结构</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/requireJSymxx02datamainjzdsx/index.html">【requireJS源码学习02】datamain加载的实现</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/requireJSymxx03xjrequireJSdjzlc/index.html">【requireJS源码学习03】细究requireJS的加载流程</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/UIcjkfygjdrlcjs/index.html">【UI插件】开发一个简单日历插件（上）</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/UIcjjddrlcjxxxMVCsx/index.html">【UI插件】简单的日历插件（下）——学习MVC思想</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/zeptoxxbj01hxff$()/index.html">【zepto学习笔记01】核心方法$()</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/zeptoxxbj01hxff$()b/index.html">【zepto学习笔记01】核心方法$()（补）</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/zeptoxxbj02lsd/index.html">【zepto学习笔记02】零碎点</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/zeptoxxbj03sjjz/index.html">【zepto学习笔记03】事件机制</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/ycmsztjavascriptzdjc/index.html">【一次面试】再谈javascript中的继承</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/ztbackbone01mxModel/index.html">【再探backbone01】模型Model</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/ztbackbone02jhCollection/index.html">【再探backbone02】集合Collection</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/ztbackbone03bkydyyysltgym/index.html">【再探backbone03】博客园单页应用实例（提供源码）</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/ztbackbone04dyyydjslycl/index.html">【再探backbone04】单页应用的基石路由处理</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/ctUnderscorezsmbyq/index.html">【初探Underscore】再说模版引擎</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/ckjavascriptamzAjaxjsxnszddAjax/index.html">【初窥javascript奥秘之Ajax】简述下你所知道的Ajax？</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/ckjavascriptamzsjmpnxnwmyqmdp/index.html">【初窥javascript奥秘之事件冒泡】那些年我们一起冒的泡</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/ckjavascriptamzsjjzldtygdj/index.html">【初窥javascript奥秘之事件机制】论“点透”与“鬼点击”</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/ckjavascriptamzrrzmbddthisnzdxzthiszxnlm/index.html">【初窥javascript奥秘之让人捉摸不定的this】你知道现在this指向哪里吗？？？</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/ckjavascriptamzbbydxbdhlqbcl/index.html">【初窥javascript奥秘之闭包】叶大侠病都好了，求不踩了：）</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/ckjavascriptamzmxdxfzyjc/index.html">【初窥javascript奥秘之面向对象】封装与继承</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/qdmdsjdjgjdnzdljm/index.html">【前端盲点】事件的几个阶段你真的了解么？？？</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/dyyyviewymodelxgsl/index.html">【单页应用】view与model相关梳理</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/dyyyyqldyyybsxjdwbgns/index.html">【单页应用】一起来单页应用吧，实现简单微博功能！（上）</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/dyyyqjkzqappyggxsm/index.html">【单页应用】全局控制器app应该干些什么？</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/dyyywmgrhclkjdcccjgx/index.html">【单页应用】我们该如何处理框架弹出层层级关系？</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/dyyyljMVC/index.html">【单页应用】理解MVC</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/dyyyztxjzviewzjygrhtx/index.html">【单页应用之通信机制】view之间应该如何通信</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/dyyyjkzHistoryxsHistorydgdyyydm/index.html">【单页应用巨坑之History】细数History带给单页应用的噩梦</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/xtszeptofindysyjiosdcjpknrnhtt/index.html">【小贴士】zeptofind元素以及ios弹出键盘可能让你很头疼</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/xtsgytransitionEndanimatedygyqgs/index.html">【小贴士】关于transitionEndanimate的一个有趣故事</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/xtsgzzdbbysjwtdzzmp/index.html">【小贴士】工作中的”闭包“与事件委托的”阻止冒泡“</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/xtstytjavascriptzdreplace/index.html">【小贴士】探一探javascript中的replace</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/xtsxnjpyfixeddgydddt/index.html">【小贴士】虚拟键盘与fixed带给移动端的痛！</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/ttjavascriptsjjzdcsxyl/index.html">【探讨】javascript事件机制底层实现原理</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/mkhbcljrequireJSsxygjddmkjzq/index.html">【模块化编程】理解requireJS实现一个简单的模块加载器</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/zyJavaScriptmfjmtsdqlxkjzbfgndcljz/index.html">【转】【译】JavaScript魔法揭秘探索当前流行框架中部分功能的处理机制</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/zxjavascriptgszl01javascriptcszds/index.html">【追寻javascript高手之路01】javascript参数知多少？</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/zxjavascriptgszl02blzyyzds/index.html">【追寻javascript高手之路02】变量、作用域知多少？</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/zxjavascriptgszl03javascriptdxdld/index.html">【追寻javascript高手之路03】javascript对象大乱斗</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/zxjavascriptgszl04ljprototype/index.html">【追寻javascript高手之路04】理解prototype</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/zxjavascriptgszl05ljsjl/index.html">【追寻javascript高手之路05】理解事件流</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/zgbj04zxzzsj(2)/index.html">【重构笔记04】重新组织数据(2)</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/zgbj05jhtjbds/index.html">【重构笔记05】简化条件表达式</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/zgbj06jhhsdy/index.html">【重构笔记06】简化函数调用</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/ycmshgttbxysjfl/index.html">一次面试回顾——探讨表现与数据分离</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/dhzwebappzdxz/index.html">动画在webapp中的现状</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/ysandriodlqhthdomclicksjqtsxwttj/index.html">原生andriod浏览器回退后dom（click）事件全体失效问题探究</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/scsbdjxysdsbsjytouchsjdnxs/index.html">手持设备点击响应速度，鼠标事件与touch事件的那些事</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/mnbjQueryzeptohxymfx/index.html">迷你版jQuery——zepto核心源码分析</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/dbsgzdlwmlyqxjdddomxzqb/index.html">都别说工资低了，我们来一起写简单的dom选择器吧！</a></li>
+    				                                         
+                    </ul>
+                </div>
+            </div>
+
+        </div>
+    </body>
+</html>

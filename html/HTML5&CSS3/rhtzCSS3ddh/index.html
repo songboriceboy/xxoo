@@ -1,0 +1,283 @@
+﻿<!DOCTYPE html>
+
+<html lang="zh">
+    <head>
+        <meta charset="utf-8">
+        <meta name="description" content="android,ios" />
+        <meta name="keywords" content="android,ios" />
+
+        <title>叶小钗</title>
+        <style type='text/css'>
+            body {
+                background-color: #CCC;
+            }
+        </style>
+        <link rel="stylesheet" href="../../../css/bootstrap.css" />
+    </head>
+
+    <body>
+        <div class="container">
+
+            <h1>叶小钗</h1>
+
+            <div class='navbar navbar-inverse'>
+                <div class='navbar-inner nav-collapse' style="height: auto;">
+                    <ul class="nav">
+                              				<li><a href="http://songboriceboy.github.io/xxoo/html/blade/index.html">blade</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/css/index.html">css</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/HTML5&CSS3/index.html">HTML5&CSS3</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/index.html">javascript</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Javaxx/index.html">Java学习</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/nodejs/index.html">nodejs</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/requirejs/index.html">requirejs</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/index.html">Web前端</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/xxgw/index.html">学习感悟</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/gzdd/index.html">工作点滴</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/jkxx/index.html">接口学习</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/wfl/index.html">未分类</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/ydkf/index.html">移动开发</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/sjms/index.html">设计模式</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/mst/index.html">面试题</a></li>
+    				                      </ul>
+                </div>
+            </div>
+
+            <div id='content' class='row-fluid'>
+
+                <div class='span9 main'>
+				<div style="color:blue" align=center>如何停止CSS3的动画？</div><br><h1><span style="line-height: 1.5;">前言</span></h1>
+<p>我们在移动端一般使用zepto框架，与其说zepto是jquery的轻量级替代版，不如说是html5替代版<br>我们在js中会用到animate方法执行动画，这个家伙可是真资格的动画，完全是css一点点变化的！<br>而zepto则不然，使用的是HTML5/CSS3的方案，而CSS相关是不保存元素状态值的，也没办法保存，所以停止动画就成了一大问题<br>我们今天就一起来讨论下相关停止动画的方案，反正没有什么好的......</p>
+<h1>CSS3动画原理</h1>
+<p>在现有浏览器中，一般有两种模式（我只知道两种）：<br>一种是js动画，他是动态改写元素的style实现动画，所以任意时间想停止动画都是没问题的，因为我们可以获得各个阶段的状态值<br>另一种就是CSS3动画了，至于CSS3动画的原理，我不知道但是可以说一点的就是&mdash;&mdash;见代码</p>
+<div class="cnblogs_code">
+<pre><span style="color: #008080;"> 1</span> <span style="color: #0000ff;">&lt;!</span><span style="color: #ff00ff;">DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 2</span> <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">html </span><span style="color: #ff0000;">xmlns</span><span style="color: #0000ff;">="http://www.w3.org/1999/xhtml"</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 3</span> <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">head</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 4</span>     <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">title</span><span style="color: #0000ff;">&gt;&lt;/</span><span style="color: #800000;">title</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 5</span>  <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">script </span><span style="color: #ff0000;">id</span><span style="color: #0000ff;">="Script1"</span><span style="color: #ff0000;"> type</span><span style="color: #0000ff;">="text/javascript"</span><span style="color: #ff0000;"> class</span><span style="color: #0000ff;">="library"</span><span style="color: #ff0000;"> src</span><span style="color: #0000ff;">="/js/sandbox/other/zepto.min.js"</span><span style="color: #0000ff;">&gt;&lt;/</span><span style="color: #800000;">script</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 6</span> <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">head</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 7</span> <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">body</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 8</span>     <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">div </span><span style="color: #ff0000;">id</span><span style="color: #0000ff;">="Div1"</span><span style="color: #ff0000;"> style</span><span style="color: #0000ff;">="background-color: Orange; width: 100px; height: 100px; position: absolute;
+</span><span style="color: #008080;"> 9</span> <span style="color: #0000ff;">        left: 0; border: 1px solid black; "</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">10</span>     <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">div</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">11</span> <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">body</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">12</span> <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">script </span><span style="color: #ff0000;">src</span><span style="color: #0000ff;">="../zepto.js"</span><span style="color: #ff0000;"> type</span><span style="color: #0000ff;">="text/javascript"</span><span style="color: #0000ff;">&gt;&lt;/</span><span style="color: #800000;">script</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">13</span> <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">script </span><span style="color: #ff0000;">type</span><span style="color: #0000ff;">="text/javascript"</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">14</span>     <span style="background-color: #f5f5f5; color: #0000ff;">var</span><span style="background-color: #f5f5f5; color: #000000;"> d </span><span style="background-color: #f5f5f5; color: #000000;">=</span><span style="background-color: #f5f5f5; color: #000000;"> $(</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">#d</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">);
+</span><span style="color: #008080;">15</span> <span style="background-color: #f5f5f5; color: #000000;">    d.animate({
+</span><span style="color: #008080;">16</span> <span style="background-color: #f5f5f5; color: #000000;">        left: </span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">100px</span><span style="background-color: #f5f5f5; color: #000000;">'</span>
+<span style="color: #008080;">17</span> <span style="background-color: #f5f5f5; color: #000000;">    }, </span><span style="background-color: #f5f5f5; color: #000000;">10000</span><span style="background-color: #f5f5f5; color: #000000;">);
+</span><span style="color: #008080;">18</span> 
+<span style="color: #008080;">19</span> <span style="background-color: #f5f5f5; color: #000000;">    setTimeout(</span><span style="background-color: #f5f5f5; color: #0000ff;">function</span><span style="background-color: #f5f5f5; color: #000000;"> () {
+</span><span style="color: #008080;">20</span> <span style="background-color: #f5f5f5; color: #000000;">        d.html(</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">left: </span><span style="background-color: #f5f5f5; color: #000000;">'</span> <span style="background-color: #f5f5f5; color: #000000;">+</span><span style="background-color: #f5f5f5; color: #000000;"> d.css(</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">left</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">));
+</span><span style="color: #008080;">21</span> <span style="background-color: #f5f5f5; color: #000000;">    }, </span><span style="background-color: #f5f5f5; color: #000000;">1</span><span style="background-color: #f5f5f5; color: #000000;">);
+</span><span style="color: #008080;">22</span> 
+<span style="color: #008080;">23</span> <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">script</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">24</span> <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">html</span><span style="color: #0000ff;">&gt;</span></pre>
+</div>
+<p><a href="http://sandbox.runjs.cn/show/xziwuir2"><strong><span style="color: #ff0000;">http://sandbox.runjs.cn/show/xziwuir2</span></strong></a></p>
+<p>zepto的animate事实上马上就改变了style的值，所以我们在里面看到了left为100px，虽然他正在运动<br>而他动画的实现事实上使用的是CSS3的transition动画属性，我们这里来看看zepto的源码：</p>
+<div class="cnblogs_code" onclick="cnblogs_code_show('b36772cb-078c-4c25-b909-894c2208f02e')"><img id="code_img_closed_b36772cb-078c-4c25-b909-894c2208f02e" class="code_img_closed" src="43570758473519.gif" alt=""><img id="code_img_opened_b36772cb-078c-4c25-b909-894c2208f02e" class="code_img_opened" style="display: none;" onclick="cnblogs_code_hide('b36772cb-078c-4c25-b909-894c2208f02e',event)" src="16365178109279.gif" alt="">
+<div id="cnblogs_code_open_b36772cb-078c-4c25-b909-894c2208f02e" class="cnblogs_code_hide">
+<pre><span style="color: #008080;"> 1</span> <span style="color: #000000;">var prefix = '', eventPrefix, endEventName, endAnimationName,
+</span><span style="color: #008080;"> 2</span> <span style="color: #000000;">vendors = { Webkit: 'webkit', Moz: '', O: 'o', ms: 'MS' },
+</span><span style="color: #008080;"> 3</span> <span style="color: #000000;">document = window.document, testEl = document.createElement('div'),
+</span><span style="color: #008080;"> 4</span> <span style="color: #000000;">supportedTransforms = /^((translate|rotate|scale)(X|Y|Z|3d)?|matrix(3d)?|perspective|skew(X|Y)?)$/i,
+</span><span style="color: #008080;"> 5</span> <span style="color: #000000;">transform,
+</span><span style="color: #008080;"> 6</span> <span style="color: #000000;">transitionProperty, transitionDuration, transitionTiming,
+</span><span style="color: #008080;"> 7</span> <span style="color: #000000;">animationName, animationDuration, animationTiming,
+</span><span style="color: #008080;"> 8</span> <span style="color: #000000;">cssReset = {}
+</span><span style="color: #008080;"> 9</span> 
+<span style="color: #008080;">10</span> <span style="color: #000000;">function dasherize(str) { return downcase(str.replace(/([a-z])([A-Z])/, '$1-$2')) }
+</span><span style="color: #008080;">11</span> <span style="color: #000000;">function downcase(str) { return str.toLowerCase() }
+</span><span style="color: #008080;">12</span> <span style="color: #000000;">function normalizeEvent(name) { return eventPrefix ? eventPrefix + name : downcase(name) }
+</span><span style="color: #008080;">13</span> 
+<span style="color: #008080;">14</span> <span style="color: #000000;">$.each(vendors, function (vendor, event) {
+</span><span style="color: #008080;">15</span> <span style="color: #000000;">    if (testEl.style[vendor + 'TransitionProperty'] !== undefined) {
+</span><span style="color: #008080;">16</span> <span style="color: #000000;">        prefix = '-' + downcase(vendor) + '-'
+</span><span style="color: #008080;">17</span> <span style="color: #000000;">        eventPrefix = event
+</span><span style="color: #008080;">18</span> <span style="color: #000000;">        return false
+</span><span style="color: #008080;">19</span> <span style="color: #000000;">    }
+</span><span style="color: #008080;">20</span> <span style="color: #000000;">})
+</span><span style="color: #008080;">21</span> 
+<span style="color: #008080;">22</span> <span style="color: #000000;">transform = prefix + 'transform'
+</span><span style="color: #008080;">23</span> <span style="color: #000000;">cssReset[transitionProperty = prefix + 'transition-property'] =
+</span><span style="color: #008080;">24</span> <span style="color: #000000;">cssReset[transitionDuration = prefix + 'transition-duration'] =
+</span><span style="color: #008080;">25</span> <span style="color: #000000;">cssReset[transitionTiming = prefix + 'transition-timing-function'] =
+</span><span style="color: #008080;">26</span> <span style="color: #000000;">cssReset[animationName = prefix + 'animation-name'] =
+</span><span style="color: #008080;">27</span> <span style="color: #000000;">cssReset[animationDuration = prefix + 'animation-duration'] =
+</span><span style="color: #008080;">28</span> <span style="color: #000000;">cssReset[animationTiming = prefix + 'animation-timing-function'] = ''
+</span><span style="color: #008080;">29</span> 
+<span style="color: #008080;">30</span> <span style="color: #000000;">$.fx = {
+</span><span style="color: #008080;">31</span> <span style="color: #000000;">    off: (eventPrefix === undefined &amp;&amp; testEl.style.transitionProperty === undefined),
+</span><span style="color: #008080;">32</span> <span style="color: #000000;">    speeds: { _default: 400, fast: 200, slow: 600 },
+</span><span style="color: #008080;">33</span> <span style="color: #000000;">    cssPrefix: prefix,
+</span><span style="color: #008080;">34</span> <span style="color: #000000;">    transitionEnd: normalizeEvent('TransitionEnd'),
+</span><span style="color: #008080;">35</span> <span style="color: #000000;">    animationEnd: normalizeEvent('AnimationEnd')
+</span><span style="color: #008080;">36</span> <span style="color: #000000;">}
+</span><span style="color: #008080;">37</span> 
+<span style="color: #008080;">38</span> <span style="color: #000000;">$.fn.animate = function (properties, duration, ease, callback) {
+</span><span style="color: #008080;">39</span> <span style="color: #000000;">    if ($.isPlainObject(duration))
+</span><span style="color: #008080;">40</span> <span style="color: #000000;">        ease = duration.easing, callback = duration.complete, duration = duration.duration
+</span><span style="color: #008080;">41</span> <span style="color: #000000;">    if (duration) duration = (typeof duration == 'number' ? duration :
+</span><span style="color: #008080;">42</span> <span style="color: #000000;">                ($.fx.speeds[duration] || $.fx.speeds._default)) / 1000
+</span><span style="color: #008080;">43</span> <span style="color: #000000;">    return this.anim(properties, duration, ease, callback)
+</span><span style="color: #008080;">44</span> <span style="color: #000000;">}
+</span><span style="color: #008080;">45</span> 
+<span style="color: #008080;">46</span> <span style="color: #000000;">$.fn.anim = function (properties, duration, ease, callback) {
+</span><span style="color: #008080;">47</span> <span style="color: #000000;">    var key, cssValues = {}, cssProperties, transforms = '',
+</span><span style="color: #008080;">48</span> <span style="color: #000000;">    that = this, wrappedCallback, endEvent = $.fx.transitionEnd
+</span><span style="color: #008080;">49</span> 
+<span style="color: #008080;">50</span> <span style="color: #000000;">    if (duration === undefined) duration = 0.4
+</span><span style="color: #008080;">51</span> <span style="color: #000000;">    if ($.fx.off) duration = 0
+</span><span style="color: #008080;">52</span> 
+<span style="color: #008080;">53</span> <span style="color: #000000;">    if (typeof properties == 'string') {
+</span><span style="color: #008080;">54</span> <span style="color: #000000;">        // keyframe animation
+</span><span style="color: #008080;">55</span> <span style="color: #000000;">        cssValues[animationName] = properties
+</span><span style="color: #008080;">56</span> <span style="color: #000000;">        cssValues[animationDuration] = duration + 's'
+</span><span style="color: #008080;">57</span> <span style="color: #000000;">        cssValues[animationTiming] = (ease || 'linear')
+</span><span style="color: #008080;">58</span> <span style="color: #000000;">        endEvent = $.fx.animationEnd
+</span><span style="color: #008080;">59</span> <span style="color: #000000;">    } else {
+</span><span style="color: #008080;">60</span> <span style="color: #000000;">        cssProperties = []
+</span><span style="color: #008080;">61</span> <span style="color: #000000;">        // CSS transitions
+</span><span style="color: #008080;">62</span> <span style="color: #000000;">        for (key in properties)
+</span><span style="color: #008080;">63</span> <span style="color: #000000;">            if (supportedTransforms.test(key)) transforms += key + '(' + properties[key] + ') '
+</span><span style="color: #008080;">64</span> <span style="color: #000000;">            else cssValues[key] = properties[key], cssProperties.push(dasherize(key))
+</span><span style="color: #008080;">65</span> 
+<span style="color: #008080;">66</span> <span style="color: #000000;">        if (transforms) cssValues[transform] = transforms, cssProperties.push(transform)
+</span><span style="color: #008080;">67</span> <span style="color: #000000;">        if (duration &gt; 0 &amp;&amp; typeof properties === 'object') {
+</span><span style="color: #008080;">68</span> <span style="color: #000000;">            cssValues[transitionProperty] = cssProperties.join(', ')
+</span><span style="color: #008080;">69</span> <span style="color: #000000;">            cssValues[transitionDuration] = duration + 's'
+</span><span style="color: #008080;">70</span> <span style="color: #000000;">            cssValues[transitionTiming] = (ease || 'linear')
+</span><span style="color: #008080;">71</span> <span style="color: #000000;">        }
+</span><span style="color: #008080;">72</span> <span style="color: #000000;">    }
+</span><span style="color: #008080;">73</span> 
+<span style="color: #008080;">74</span> <span style="color: #000000;">    wrappedCallback = function (event) {
+</span><span style="color: #008080;">75</span> <span style="color: #000000;">        if (typeof event !== 'undefined') {
+</span><span style="color: #008080;">76</span> <span style="color: #000000;">            if (event.target !== event.currentTarget) return // makes sure the event didn't bubble from "below"
+</span><span style="color: #008080;">77</span> <span style="color: #000000;">            $(event.target).unbind(endEvent, wrappedCallback)
+</span><span style="color: #008080;">78</span> <span style="color: #000000;">        }
+</span><span style="color: #008080;">79</span> <span style="color: #000000;">        $(this).css(cssReset)
+</span><span style="color: #008080;">80</span> <span style="color: #000000;">        callback &amp;&amp; callback.call(this)
+</span><span style="color: #008080;">81</span> <span style="color: #000000;">    }
+</span><span style="color: #008080;">82</span> <span style="color: #000000;">    if (duration &gt; 0) this.bind(endEvent, wrappedCallback)
+</span><span style="color: #008080;">83</span> 
+<span style="color: #008080;">84</span> <span style="color: #000000;">    // trigger page reflow so new elements can animate
+</span><span style="color: #008080;">85</span> <span style="color: #000000;">    this.size() &amp;&amp; this.get(0).clientLeft
+</span><span style="color: #008080;">86</span> 
+<span style="color: #008080;">87</span> <span style="color: #000000;">    this.css(cssValues)
+</span><span style="color: #008080;">88</span> 
+<span style="color: #008080;">89</span>     if (duration <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">= 0</span><span style="color: #ff0000;">) setTimeout(function () {
+</span><span style="color: #008080;">90</span> <span style="color: #ff0000;">        that.each(function () { wrappedCallback.call(this) })
+</span><span style="color: #008080;">91</span> <span style="color: #ff0000;">    }, 0)
+</span><span style="color: #008080;">92</span> 
+<span style="color: #008080;">93</span> <span style="color: #ff0000;">    return this
+</span><span style="color: #008080;">94</span> <span style="color: #ff0000;">}</span></pre>
+</div>
+<span class="cnblogs_code_collapse">View Code </span></div>
+<p>最后实际上是执行anim实现我们的动画，大家注意看这里<br>$(this).css(cssReset)<br>this.css(cssValues)<br>他事实上搞了个先设置动画属性，再给style属性给元素，所以会产生动画<br>到此，zepto实现动画原理我们大概知道了，现在问题就是如何停止他了，所以我们继续往下看</p>
+<h1><span style="line-height: 1.5;">如何停止动画</span></h1>
+<p><span style="line-height: 1.5;">我们先看看这个东西：</span></p>
+<div class="cnblogs_code">
+<pre><span style="color: #008080;"> 1</span> <span style="color: #0000ff;">&lt;!</span><span style="color: #ff00ff;">DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 2</span> <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">html </span><span style="color: #ff0000;">xmlns</span><span style="color: #0000ff;">="http://www.w3.org/1999/xhtml"</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 3</span> <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">head</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 4</span>     <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">title</span><span style="color: #0000ff;">&gt;&lt;/</span><span style="color: #800000;">title</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 5</span>     <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">script </span><span style="color: #ff0000;">id</span><span style="color: #0000ff;">="Script2"</span><span style="color: #ff0000;"> type</span><span style="color: #0000ff;">="text/javascript"</span><span style="color: #ff0000;"> class</span><span style="color: #0000ff;">="library"</span><span style="color: #ff0000;"> src</span><span style="color: #0000ff;">="/js/sandbox/other/zepto.min.js"</span><span style="color: #0000ff;">&gt;&lt;/</span><span style="color: #800000;">script</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 6</span> <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">head</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 7</span> <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">body</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 8</span>     <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">div </span><span style="color: #ff0000;">id</span><span style="color: #0000ff;">="Div2"</span><span style="color: #ff0000;"> style</span><span style="color: #0000ff;">="background-color: Orange; width: 100px; height: 100px; position: absolute;
+</span><span style="color: #008080;"> 9</span> <span style="color: #0000ff;">        left: 0; border: 1px solid black;"</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">10</span>     <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">div</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">11</span> <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">body</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">12</span> <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">script </span><span style="color: #ff0000;">src</span><span style="color: #0000ff;">="../zepto.js"</span><span style="color: #ff0000;"> type</span><span style="color: #0000ff;">="text/javascript"</span><span style="color: #0000ff;">&gt;&lt;/</span><span style="color: #800000;">script</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">13</span> <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">script </span><span style="color: #ff0000;">type</span><span style="color: #0000ff;">="text/javascript"</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">14</span>     <span style="background-color: #f5f5f5; color: #0000ff;">var</span><span style="background-color: #f5f5f5; color: #000000;"> d </span><span style="background-color: #f5f5f5; color: #000000;">=</span><span style="background-color: #f5f5f5; color: #000000;"> $(</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">#d</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">);
+</span><span style="color: #008080;">15</span> <span style="background-color: #f5f5f5; color: #000000;">    d.animate({
+</span><span style="color: #008080;">16</span> <span style="background-color: #f5f5f5; color: #000000;">        left: </span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">100px</span><span style="background-color: #f5f5f5; color: #000000;">'</span>
+<span style="color: #008080;">17</span> <span style="background-color: #f5f5f5; color: #000000;">    }, </span><span style="background-color: #f5f5f5; color: #000000;">10000</span><span style="background-color: #f5f5f5; color: #000000;">);
+</span><span style="color: #008080;">18</span> 
+<span style="color: #008080;">19</span> <span style="background-color: #f5f5f5; color: #000000;">    setInterval(</span><span style="background-color: #f5f5f5; color: #0000ff;">function</span><span style="background-color: #f5f5f5; color: #000000;"> () {
+</span><span style="color: #008080;">20</span> <span style="background-color: #f5f5f5; color: #000000;">        d.html(</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">left: </span><span style="background-color: #f5f5f5; color: #000000;">'</span> <span style="background-color: #f5f5f5; color: #000000;">+</span><span style="background-color: #f5f5f5; color: #000000;"> d.css(</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">left</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">) </span><span style="background-color: #f5f5f5; color: #000000;">+</span> <span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;"> _ offsetLeft: </span><span style="background-color: #f5f5f5; color: #000000;">'</span> <span style="background-color: #f5f5f5; color: #000000;">+</span><span style="background-color: #f5f5f5; color: #000000;"> d[</span><span style="background-color: #f5f5f5; color: #000000;">0</span><span style="background-color: #f5f5f5; color: #000000;">].offsetLeft);
+</span><span style="color: #008080;">21</span> <span style="background-color: #f5f5f5; color: #000000;">    }, </span><span style="background-color: #f5f5f5; color: #000000;">1</span><span style="background-color: #f5f5f5; color: #000000;">);
+</span><span style="color: #008080;">22</span> 
+<span style="color: #008080;">23</span> <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">script</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">24</span> <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">html</span><span style="color: #0000ff;">&gt;</span></pre>
+</div>
+<h4><a href="http://sandbox.runjs.cn/show/gdqezvdo"><strong><span style="color: #ff0000;">http://sandbox.runjs.cn/show/gdqezvdo</span></strong></a></h4>
+<p>其中虽然left一开始就变了，我们惊奇的发现，offset这个家伙居然保存了我们的状态！！！<br>我和我的小伙伴都惊呆了，因为我之前一直以为什么状态都不能获得，于是我们为他加上mousedown事件，各位运动时候点击试试<br>我们这里这样干了下：</p>
+<div class="cnblogs_code">
+<pre><span style="color: #008080;"> 1</span> <span style="color: #0000ff;">&lt;!</span><span style="color: #ff00ff;">DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 2</span> <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">html </span><span style="color: #ff0000;">xmlns</span><span style="color: #0000ff;">="http://www.w3.org/1999/xhtml"</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 3</span> <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">head</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 4</span>     <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">title</span><span style="color: #0000ff;">&gt;&lt;/</span><span style="color: #800000;">title</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 5</span>     <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">script </span><span style="color: #ff0000;">id</span><span style="color: #0000ff;">="Script3"</span><span style="color: #ff0000;"> type</span><span style="color: #0000ff;">="text/javascript"</span><span style="color: #ff0000;"> class</span><span style="color: #0000ff;">="library"</span><span style="color: #ff0000;"> src</span><span style="color: #0000ff;">="/js/sandbox/other/zepto.min.js"</span><span style="color: #0000ff;">&gt;&lt;/</span><span style="color: #800000;">script</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 6</span> <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">head</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 7</span> <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">body</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 8</span>     <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">div </span><span style="color: #ff0000;">id</span><span style="color: #0000ff;">="Div3"</span><span style="color: #ff0000;"> style</span><span style="color: #0000ff;">="background-color: Orange; width: 100px; height: 100px; position: absolute;
+</span><span style="color: #008080;"> 9</span> <span style="color: #0000ff;">        left: 0; border: 1px solid black;"</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">10</span>     <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">div</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">11</span> <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">body</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">12</span> <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">script </span><span style="color: #ff0000;">src</span><span style="color: #0000ff;">="../zepto.js"</span><span style="color: #ff0000;"> type</span><span style="color: #0000ff;">="text/javascript"</span><span style="color: #0000ff;">&gt;&lt;/</span><span style="color: #800000;">script</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">13</span> <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">script </span><span style="color: #ff0000;">type</span><span style="color: #0000ff;">="text/javascript"</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">14</span>     <span style="background-color: #f5f5f5; color: #0000ff;">var</span><span style="background-color: #f5f5f5; color: #000000;"> d </span><span style="background-color: #f5f5f5; color: #000000;">=</span><span style="background-color: #f5f5f5; color: #000000;"> $(</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">#d</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">);
+</span><span style="color: #008080;">15</span> <span style="background-color: #f5f5f5; color: #000000;">    d.animate({
+</span><span style="color: #008080;">16</span> <span style="background-color: #f5f5f5; color: #000000;">        left: </span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">100px</span><span style="background-color: #f5f5f5; color: #000000;">'</span>
+<span style="color: #008080;">17</span> <span style="background-color: #f5f5f5; color: #000000;">    }, </span><span style="background-color: #f5f5f5; color: #000000;">10000</span><span style="background-color: #f5f5f5; color: #000000;">);
+</span><span style="color: #008080;">18</span> 
+<span style="color: #008080;">19</span> <span style="background-color: #f5f5f5; color: #000000;">    setInterval(</span><span style="background-color: #f5f5f5; color: #0000ff;">function</span><span style="background-color: #f5f5f5; color: #000000;"> () {
+</span><span style="color: #008080;">20</span> <span style="background-color: #f5f5f5; color: #000000;">        d.html(</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">left: </span><span style="background-color: #f5f5f5; color: #000000;">'</span> <span style="background-color: #f5f5f5; color: #000000;">+</span><span style="background-color: #f5f5f5; color: #000000;"> d.css(</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">left</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">) </span><span style="background-color: #f5f5f5; color: #000000;">+</span> <span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;"> _ offsetLeft: </span><span style="background-color: #f5f5f5; color: #000000;">'</span> <span style="background-color: #f5f5f5; color: #000000;">+</span><span style="background-color: #f5f5f5; color: #000000;"> d[</span><span style="background-color: #f5f5f5; color: #000000;">0</span><span style="background-color: #f5f5f5; color: #000000;">].offsetLeft);
+</span><span style="color: #008080;">21</span> <span style="background-color: #f5f5f5; color: #000000;">    }, </span><span style="background-color: #f5f5f5; color: #000000;">1</span><span style="background-color: #f5f5f5; color: #000000;">);
+</span><span style="color: #008080;">22</span> 
+<span style="color: #008080;">23</span> <span style="background-color: #f5f5f5; color: #000000;">    d.mousedown(</span><span style="background-color: #f5f5f5; color: #0000ff;">function</span><span style="background-color: #f5f5f5; color: #000000;"> (e) {
+</span><span style="color: #008080;">24</span> <span style="background-color: #f5f5f5; color: #000000;">        console.log(d);
+</span><span style="color: #008080;">25</span> <span style="background-color: #f5f5f5; color: #000000;">        d.css(</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">transition</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">, </span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">left 0s linear</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">);
+</span><span style="color: #008080;">26</span> <span style="background-color: #f5f5f5; color: #000000;">        d.css(</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">left</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">, d[</span><span style="background-color: #f5f5f5; color: #000000;">0</span><span style="background-color: #f5f5f5; color: #000000;">].offsetLeft </span><span style="background-color: #f5f5f5; color: #000000;">+</span> <span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">px</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">);
+</span><span style="color: #008080;">27</span> <span style="background-color: #f5f5f5; color: #000000;">    });
+</span><span style="color: #008080;">28</span> 
+<span style="color: #008080;">29</span> <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">script</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">30</span> <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">html</span><span style="color: #0000ff;">&gt;</span></pre>
+</div>
+<p>于是我们发现，动画停止了，亲！他真的停止了！！！<br>PS：因为项目过程中，我这里要模仿类似iscroll的滚动效果，所以使用的最多的就是top或者translate3d(0, 0, 0)这种东西</p>
+<h1>结语</h1>
+<p><span style="line-height: 1.5;">本来这里还想深入一点研究下的，但是现在时间有点来不及，事情有点多，暂时到这里了吧，具体的demo争取周末搞出来</span></p>
+                </div>
+
+                <div class='span3 sidebar'>
+                    <h2>导航栏</h2>
+                    <ul class="nav nav-tabs nav-stacked">
+                             				<li><a href="http://songboriceboy.github.io/xxoo/html/HTML5&CSS3/CSS3ctzMediaQuerieszywcldCSS3wmlgzzzj/index.html">【CSS3初探之MediaQueries】终于完成了的CSS3，我们来个终章总结！</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/HTML5&CSS3/CSS3ctzbxydhlrjtdCSS3/index.html">【CSS3初探之变形与动画】令人惊叹的CSS3</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/HTML5&CSS3/CSS3ctzztwbxgrrkblsdCSS3/index.html">【CSS3初探之字体、文本相关】让人开不了始的CSS3。。。</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/HTML5&CSS3/CSS3ctzhxgyswmyrygk/index.html">【CSS3初探之盒相关样式】我们一人一个框。。。</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/HTML5&CSS3/CSS3ctzbjbkxgqdyldclyjqdwfzofferqdyt/index.html">【CSS3初探之背景边框相关】奇葩的与老大吵了一架，奇葩的五分钟offer，奇葩的一天。。。</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/HTML5&CSS3/HTML5&CSS3jjxx02HeaderdsxCSSzdbj/index.html">【HTML5&CSS3进阶学习02】Header的实现·CSS中的布局</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/HTML5&CSS3/HTML5ctzformbqjfbdyzzjwjscjctf/index.html">【HTML5初探之form标签】解放表单验证、增加文件上传、集成拖放</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/HTML5&CSS3/HTML5ctzGeolocationAPIrwmhqnsddz/index.html">【HTML5初探之GeolocationAPI】让我们获取女神的地址</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/HTML5&CSS3/HTML5ctzWebWorkerswyyndxc/index.html">【HTML5初探之WebWorkers】网页也能多线程</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/HTML5&CSS3/HTML5ctzdmtysspbfHTML5Flashscswd/index.html">【HTML5初探之多媒体元素】视频播放HTML5、Flash谁才是王道？</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/HTML5&CSS3/HTML5ctzbdccrgmysjk/index.html">【HTML5初探之本地存储】如果没有数据库。。。</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/HTML5&CSS3/HTML5ctzlxyyrhdzlqqwlldwz/index.html">【HTML5初探之离线应用】如何打造零请求、无流量的网站？</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/HTML5&CSS3/HTML5ctzhztxskwcanvasysylxydwebym/index.html">【HTML5初探之绘制图像（上）】看我canvas元素引领下一代web页面</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/HTML5&CSS3/HTML5ctzhztxxkwcanvasysylxydwebym/index.html">【HTML5初探之绘制图像（下）】看我canvas元素引领下一代web页面</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/HTML5&CSS3/HTML5ctztxAPIkymjbzgsjtsbsm/index.html">【HTML5初探之通信API】跨域门槛不再高、数据推送不是梦</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/HTML5&CSS3/xpldbkrwmdbkgjplrwmdbkzcxysbj/index.html">【写漂亮的博客】让我们的博客更加漂亮，让我们的博客支持响应式布局！</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/HTML5&CSS3/ctHTML5zsyxbqbjyhtml5bjwdbky/index.html">【初探HTML5之使用新标签布局】用html5布局我的博客页！</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/HTML5&CSS3/szHTML5yCSS3mfzzwkymlfym/index.html">【实战HTML5与CSS3】免费制作威客页面啦（附源码）</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/HTML5&CSS3/szHTML5yCSS3yHTML5hCSS3zzyms/index.html">【实战HTML5与CSS3】用HTML5和CSS3制作页面（上）</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/HTML5&CSS3/szHTML5yCSS3dypctssmlddhxldtpbz/index.html">【实战HTML5与CSS3第一篇】初探水深，美丽的导航，绚丽的图片爆炸！！</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/HTML5&CSS3/szHTML5yCSS3dspwdygHTML5wydsl(tgym)/index.html">【实战HTML5与CSS3第三篇】我第一个HTML5网页诞生了(提供源码)</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/HTML5&CSS3/szHTML5yCSS3depxldksdh/index.html">【实战HTML5与CSS3第二篇】绚丽的快速导航！</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/HTML5&CSS3/tsHTML5ded01HTML5dqsjsyjls/index.html">【探索HTML5第二弹01】HTML5的前世今生以及来世</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/HTML5&CSS3/tsHTML5ded03zjdtyydsjkwmgoogledtkykxsm/index.html">【探索HTML5第二弹03】走近地图应用的世界，看我们google地图可以看些什么！</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/HTML5&CSS3/tsHTML5ded04xysbjsrwmyqlxysbjb/index.html">【探索HTML5第二弹04】响应式布局（上），让我们一起来响应式布局吧</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/HTML5&CSS3/tsHTML5ded05xysbjzybybxysbj/index.html">【探索HTML5第二弹05】响应式布局（中），一步一步响应式布局</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/HTML5&CSS3/rhtzCSS3ddh/index.html">如何停止CSS3的动画？</a></li>
+    				                                         
+                    </ul>
+                </div>
+            </div>
+
+        </div>
+    </body>
+</html>

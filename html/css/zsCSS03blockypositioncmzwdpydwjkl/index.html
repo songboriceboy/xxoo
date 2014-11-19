@@ -1,0 +1,298 @@
+﻿<!DOCTYPE html>
+
+<html lang="zh">
+    <head>
+        <meta charset="utf-8">
+        <meta name="description" content="android,ios" />
+        <meta name="keywords" content="android,ios" />
+
+        <title>叶小钗</title>
+        <style type='text/css'>
+            body {
+                background-color: #CCC;
+            }
+        </style>
+        <link rel="stylesheet" href="../../../css/bootstrap.css" />
+    </head>
+
+    <body>
+        <div class="container">
+
+            <h1>叶小钗</h1>
+
+            <div class='navbar navbar-inverse'>
+                <div class='navbar-inner nav-collapse' style="height: auto;">
+                    <ul class="nav">
+                              				<li><a href="http://songboriceboy.github.io/xxoo/html/blade/index.html">blade</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/css/index.html">css</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/HTML5&CSS3/index.html">HTML5&CSS3</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/index.html">javascript</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Javaxx/index.html">Java学习</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/nodejs/index.html">nodejs</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/requirejs/index.html">requirejs</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/index.html">Web前端</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/xxgw/index.html">学习感悟</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/gzdd/index.html">工作点滴</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/jkxx/index.html">接口学习</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/wfl/index.html">未分类</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/ydkf/index.html">移动开发</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/sjms/index.html">设计模式</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/mst/index.html">面试题</a></li>
+    				                      </ul>
+                </div>
+            </div>
+
+            <div id='content' class='row-fluid'>
+
+                <div class='span9 main'>
+				<div style="color:blue" align=center>【正视CSS03】block与position，出门在外的朋友端午节快乐</div><br><h1>前言</h1>
+<p><span style="color: #ff0000;">一件非常重要的事情！！！很多朋友问我是不是妹子！！！</span></p>
+<p><span style="color: #ff0000;">哎，想我刀狂剑痴叶小钗堂堂七尺男儿居然一而再再而三的被调戏，真是愧对中原剑圣之名，所以今后请不要再问我性别啦！</span></p>
+<p>独在异乡为异客！哎，出门在外啊！今天过节，我这里牢骚几句。</p>
+<p>今年职业规划上发生了很大的变化，前段时间失业了。毫无预料的失业带来的就是近两年的计划付诸东流，这里我就不得不思考一个问题</p>
+<p>我现在会面临失业问题，今后可能也会，我现在年轻还无所谓，之后年纪大一点呢？工作不那么好找了呢？所以我很是惶恐啊！</p>
+<p>因为家庭上一些原因，我从小就很敏感，缺乏安全感，而公司从来就不是有情有义的存在，创造价值你就留下，创造不出价值你就滚蛋</p>
+<p>这是很合理的，所以我们得武装自己，以应付风云变幻的职场啊！</p>
+<p>于是，我离开了我的家乡，离开了我亲爱的女朋友，独自一人来到外地求生存、求发展，也希望能有一页书写自己的传奇，但世事如棋、乾坤莫测，谁又能真正自诩笑尽英雄呢？</p>
+<p>咳咳！！！！！尼玛今天端午节，老夫居然变得文艺了，就此打住，进入今天的正题吧！！！！<strong>各位，端午节快乐！</strong></p>
+<p>关于CSS，我一直是带着敬畏的心理对待的，因为自己搞过几年服务器端的开发，也组织做过很多小项目，所以学习js时还相对简单，但CSS就给我留下了高深莫测的印象。</p>
+<p>后来，实习时候进入公司做的第一个单页产品，就写了不下1w行的js代码，也因此正式进入前端行业。做出来的产品还很有APP的味道呢，但是当时公司完全不重视CSS，乃至很多莫名其妙的布局问题居然无人找得到原因！！！</p>
+<p>其中非常经典的就是，我看到一个框没有&ldquo;高度&rdquo;，当时跟看到一个人没有影子一样神奇！</p>
+<p>最后那个产品做了8个月左右我就离开了，其后续也不太清楚了，但是以我现在的想法。</p>
+<p>没有CSS熟手的支持，这个产品死路一条，当然这里说的有些严重了。</p>
+<p>再后来，我开始切图，开始熟悉CSS，但从来都不敢像很多其他同事一样任务CSS很浅，会用就是了。</p>
+<p>所以，我这里依旧带着敬畏的心情，来看一看CSS中的块级元素吧。</p>
+<h1>块级元素</h1>
+<p>大家对块级元素必定都相当熟悉了，但我们这里还是简单回顾一下下：</p>
+<p>块级元素很霸道，会独占一行作为自己的王国，一般一个元素的width被定义为从做内边距到右内边距的距离（IE6对盒模型解释有误）。margin、padding、width、height可以确定文档布局。</p>
+<p>多数情况下文档高宽我们不太关心，宽度一般会铺满浏览器，高度会自己延生。</p>
+<p><strong>水平格式化</strong></p>
+<div class="cnblogs_code">
+<pre><span style="color: #0000ff;">&lt;</span><span style="color: #800000;">p </span><span style="color: #ff0000;">style</span><span style="color: #0000ff;">="width: 200px; padding: 10px; margin: 20px;"</span><span style="color: #0000ff;">&gt;</span><span style="color: #000000;">
+    刀狂剑痴叶小钗</span><span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">p</span><span style="color: #0000ff;">&gt;</span></pre>
+</div>
+<p>本来p元素宽度是200，但是由于padding问题宽度就变为220了，外边距再延生40，所以整个宽度就是260了，这样便<span style="color: #ff0000;"><strong>隐式</strong></span>的增加了width的值！ 但是，其右边距却不是20，因为CSS还有一个规则：<span style="color: #ff0000;">正常流块级元素的margin，width，padding，border之和必须等于包含块的内容区域，所以右边距会被重置为auto</span>。</p>
+<p>所以我们要将一个元素居中会这样设置</p>
+<div class="cnblogs_code">
+<pre><span style="color: #0000ff;">&lt;</span><span style="color: #800000;">div </span><span style="color: #ff0000;">style</span><span style="color: #0000ff;">="margin: 0 auto;"</span><span style="color: #0000ff;">&gt;&lt;/</span><span style="color: #800000;">div</span><span style="color: #0000ff;">&gt;</span></pre>
+</div>
+<p>在宽度确定的情况下，做外边距与右外边距的值会被设置为相等的值（IE6忽视之，他会将之设置为0）。</p>
+<p><strong>负外边距</strong></p>
+<p>由于margin可以被设置为负值，所以整个情况又会变得比较复杂，因为按照我们上面的规则，width便有可能超过其包含块！！！</p>
+<div class="cnblogs_code">
+<pre><span style="color: #0000ff;">&lt;</span><span style="color: #800000;">div </span><span style="color: #ff0000;">style</span><span style="color: #0000ff;">=" margin: 20px auto; width: 300px; background: gray; padding: 10px;"</span><span style="color: #0000ff;">&gt;</span>
+    <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">p </span><span style="color: #ff0000;">style</span><span style="color: #0000ff;">="  background-color: Orange;"</span><span style="color: #0000ff;">&gt;</span><span style="color: #000000;">
+        刀狂剑痴叶小钗</span><span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">p</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">div</span><span style="color: #0000ff;">&gt;</span></pre>
+</div>
+<div class="cnblogs_code">
+<pre><span style="color: #0000ff;">&lt;</span><span style="color: #800000;">div </span><span style="color: #ff0000;">style</span><span style="color: #0000ff;">=" margin: 20px auto; width: 300px; background: gray; padding: 10px;"</span><span style="color: #0000ff;">&gt;</span>
+    <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">p </span><span style="color: #ff0000;">style</span><span style="color: #0000ff;">="  background-color: Orange; margin: 0 -20px;"</span><span style="color: #0000ff;">&gt;</span><span style="color: #000000;">
+        刀狂剑痴叶小钗</span><span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">p</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">div</span><span style="color: #0000ff;">&gt;</span></pre>
+</div>
+<p><img src="17596579026185.png" alt=""></p>
+<p>所以，我们平时操作负边距时候，其实是增加了高宽，若是高宽确定的情况下，那边是其他几个属性被增加了，带来了元素移动的错觉。</p>
+<p><strong>垂直格式化</strong></p>
+<p>块级元素的高度默认由其内容决定，我们可以为元素显示设置高度，但是这样的话，元素框便不会自动增加了。</p>
+<p><strong>垂直居中</strong></p>
+<p>在水平情况下设置auto后，会取相同的值，当在垂直情况下，情况有所不同，<span style="color: #ff0000;">margin: auto 0;这种情况下，上下外边距会被重置为0</span>，元素框失去了外边距（定位元素有所不同）。</p>
+<div class="cnblogs_code">
+<pre><span style="color: #0000ff;">&lt;</span><span style="color: #800000;">div </span><span style="color: #ff0000;">style</span><span style="color: #0000ff;">=" margin: 20px auto; width: 300px; height: 200px; background: gray; padding: 10px; position: relative;"</span><span style="color: #0000ff;">&gt;</span>
+    <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">p </span><span style="color: #ff0000;">style</span><span style="color: #0000ff;">="  background-color: Orange; width: 130px; height: 20px; margin: auto; position: absolute; "</span><span style="color: #0000ff;">&gt;</span><span style="color: #000000;">
+        刀狂剑痴叶小钗</span><span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">p</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">div</span><span style="color: #0000ff;">&gt;</span></pre>
+</div>
+<p><img src="15134228140240.png" alt=""></p>
+<p><strong>外边距合并</strong></p>
+<p>外边距合并的问题大家都知道，上下外边距会发生合并现象，但是有种情况会让事情变得比较复杂：</p>
+<div class="cnblogs_code">
+<div class="cnblogs_code_toolbar"><span class="cnblogs_code_copy"><a title="复制代码" onclick="copyCnblogsCode(this)" href="javascript:void(0);"><img src="10862056545768.gif" alt="复制代码"></a></span></div>
+<pre><span style="color: #0000ff;">&lt;</span><span style="color: #800000;">html </span><span style="color: #ff0000;">xmlns</span><span style="color: #0000ff;">="http://www.w3.org/1999/xhtml"</span><span style="color: #0000ff;">&gt;</span>
+ <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">head</span><span style="color: #0000ff;">&gt;</span>
+     <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">title</span><span style="color: #0000ff;">&gt;&lt;/</span><span style="color: #800000;">title</span><span style="color: #0000ff;">&gt;</span>
+     <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">style </span><span style="color: #ff0000;">type</span><span style="color: #0000ff;">="text/css"</span><span style="color: #0000ff;">&gt;</span><span style="color: #800000; background-color: #f5f5f5;">
+         body </span><span style="color: #000000; background-color: #f5f5f5;">{</span><span style="color: #ff0000; background-color: #f5f5f5;"> background</span><span style="color: #000000; background-color: #f5f5f5;">:</span><span style="color: #0000ff; background-color: #f5f5f5;"> #ECECEC</span><span style="color: #000000; background-color: #f5f5f5;">;</span> <span style="color: #000000; background-color: #f5f5f5;">}</span><span style="color: #800000; background-color: #f5f5f5;">
+         .outer </span><span style="color: #000000; background-color: #f5f5f5;">{</span><span style="color: #ff0000; background-color: #f5f5f5;"> background</span><span style="color: #000000; background-color: #f5f5f5;">:</span><span style="color: #0000ff; background-color: #f5f5f5;"> white</span><span style="color: #000000; background-color: #f5f5f5;">;</span><span style="color: #ff0000; background-color: #f5f5f5;"> border</span><span style="color: #000000; background-color: #f5f5f5;">:</span><span style="color: #0000ff; background-color: #f5f5f5;"> 1px solid #CCCCCC</span><span style="color: #000000; background-color: #f5f5f5;">;</span><span style="color: #ff0000; background-color: #f5f5f5;"> width</span><span style="color: #000000; background-color: #f5f5f5;">:</span><span style="color: #0000ff; background-color: #f5f5f5;"> 300px</span><span style="color: #000000; background-color: #f5f5f5;">;</span> <span style="color: #000000; background-color: #f5f5f5;">}</span><span style="color: #800000; background-color: #f5f5f5;">
+         .inner </span><span style="color: #000000; background-color: #f5f5f5;">{</span><span style="color: #ff0000; background-color: #f5f5f5;"> margin</span><span style="color: #000000; background-color: #f5f5f5;">:</span><span style="color: #0000ff; background-color: #f5f5f5;"> 10px</span><span style="color: #000000; background-color: #f5f5f5;">;</span><span style="color: #ff0000; background-color: #f5f5f5;"> padding</span><span style="color: #000000; background-color: #f5f5f5;">:</span><span style="color: #0000ff; background-color: #f5f5f5;"> 8px</span><span style="color: #000000; background-color: #f5f5f5;">;</span><span style="color: #ff0000; background-color: #f5f5f5;"> background</span><span style="color: #000000; background-color: #f5f5f5;">:</span><span style="color: #0000ff; background-color: #f5f5f5;"> none repeat scroll 0 0 #1C87D5</span><span style="color: #000000; background-color: #f5f5f5;">;</span><span style="color: #ff0000; background-color: #f5f5f5;"> color</span><span style="color: #000000; background-color: #f5f5f5;">:</span><span style="color: #0000ff; background-color: #f5f5f5;"> white</span><span style="color: #000000; background-color: #f5f5f5;">;</span><span style="color: #000000; background-color: #f5f5f5;">}</span>
+     <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">style</span><span style="color: #0000ff;">&gt;</span>
+ <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">head</span><span style="color: #0000ff;">&gt;</span>
+ <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">body</span><span style="color: #0000ff;">&gt;</span>
+     <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">div </span><span style="color: #ff0000;">class</span><span style="color: #0000ff;">="outer"</span><span style="color: #0000ff;">&gt;</span>
+         <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">h1 </span><span style="color: #ff0000;">class</span><span style="color: #0000ff;">="inner"</span><span style="color: #0000ff;">&gt;</span><span style="color: #000000;">
+             来个测试走</span><span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">h1</span><span style="color: #0000ff;">&gt;</span>
+     <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">div</span><span style="color: #0000ff;">&gt;</span>
+ <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">body</span><span style="color: #0000ff;">&gt;</span>
+ <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">html</span><span style="color: #0000ff;">&gt;</span></pre>
+<div class="cnblogs_code_toolbar"><span class="cnblogs_code_copy"><a title="复制代码" onclick="copyCnblogsCode(this)" href="javascript:void(0);"><img src="10862056545768.gif" alt="复制代码"></a></span></div>
+</div>
+<p><img src="15733527800692.jpg" alt=""></p>
+<p>若是我们将代码做一点改变：&ldquo;将外层元素border&rdquo;去掉；那么。。</p>
+<p><img src="40334587508863.jpg" alt=""></p>
+<p>他这种合并方法就彻底让我傻眼了。。。。。</p>
+<p>以上是之前的研究，很浅的介绍了一下我们的块级元素，今天我们来看看其它东西。</p>
+<h1>block与position</h1>
+<p>单说块级元素其实意义不大，前面部分可能的说的七七八八了，单说块级元素师应该用以布局的，所以position才是block的战场。</p>
+<p>position有这么多值：</p>
+<p><img src="9692048864885.png" alt=""></p>
+<p>其中static便是默认值，这样的块级元素在文档流之中，我们暂时不予关注，我们来看看其它的东西。</p>
+<p>昨天我们说到行内元素与float时，我们认为float是白蚁，而absolute是会飞的白蚁（会飞的inline-block），他们会破坏会重建，所以我们首先看看这个例子：</p>
+<div class="cnblogs_code">
+<pre><span style="color: #008080;">1</span> &lt;div&gt;我在之前&lt;/div&gt;
+<span style="color: #008080;">2</span> &lt;div style=<span style="color: #800000;">"</span><span style="color: #800000;">background-color: Gray; padding: 10px; margin: 10px;</span><span style="color: #800000;">"</span>&gt;
+<span style="color: #008080;">3</span>     刀狂剑痴叶小钗是男儿&lt;/div&gt;
+<span style="color: #008080;">4</span> &lt;div&gt;我在之后&lt;/div&gt;</pre>
+</div>
+<p><img src="1867925825846.png" alt=""></p>
+<p>毫无疑问的占满了一行，于是我们将之布局改一下下：</p>
+<div class="cnblogs_code">
+<pre><span style="color: #008080;">1</span> &lt;div&gt;我在之前&lt;/div&gt;
+<span style="color: #008080;">2</span> &lt;div style=<span style="color: #800000;">"</span><span style="color: #800000;">background-color: Gray; padding: 10px; margin: 10px; position: absolute;</span><span style="color: #800000;">"</span>&gt;
+<span style="color: #008080;">3</span>     刀狂剑痴叶小钗是男儿&lt;/div&gt;
+<span style="color: #008080;">4</span> &lt;div&gt;我在之后&lt;/div&gt;</pre>
+</div>
+<p>这里无论是absolute或者fixed，他的高与宽都被先破坏然后在重建了同一道理（XX膜破坏与修复），但是他已不食人间烟火，和我们正常留不属于同一纬度啦：</p>
+<p><img src="50494185757570.png" alt=""></p>
+<p><img src="43809936101077.png" alt=""></p>
+<h2>relative</h2>
+<p>relative就跟七仙女一样，他虽然可以飞，虽然是神仙，但是他在人间还有一个家，所以其文档布局还在：</p>
+<p><img src="26671966934485.png" alt=""></p>
+<h2>绝对定位的破坏性</h2>
+<p>我们昨天看了float的破坏性，今天连着绝对定位的一起看看呗，看看谁更厉害：</p>
+<p>① imgfloat引起父元素高度坍塌</p>
+<div class="cnblogs_code">
+<pre>&lt;div style=<span style="color: #800000;">"</span><span style="color: #800000;">background-color: Gray; padding: 10px; </span><span style="color: #800000;">"</span>&gt;
+    &lt;img src=<span style="color: #800000;">"</span><span style="color: #800000;">1.png</span><span style="color: #800000;">"</span> style=<span style="color: #800000;">"</span><span style="color: #800000;"> float: left; </span><span style="color: #800000;">"</span>  /&gt;&lt;/div&gt;</pre>
+</div>
+<p><img src="13045469107512.png" alt=""></p>
+<p>② 父元素漂浮拯救自我坍塌</p>
+<div class="cnblogs_code">
+<pre><span style="color: #0000ff;">&lt;</span><span style="color: #800000;">div </span><span style="color: #ff0000;">style</span><span style="color: #0000ff;">="background-color: Gray; padding: 10px; float: left; "</span><span style="color: #0000ff;">&gt;</span>
+    <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">img </span><span style="color: #ff0000;">src</span><span style="color: #0000ff;">="1.png"</span><span style="color: #ff0000;"> style</span><span style="color: #0000ff;">=" float: left; "</span>  <span style="color: #0000ff;">/&gt;&lt;/</span><span style="color: #800000;">div</span><span style="color: #0000ff;">&gt;</span></pre>
+</div>
+<p><img src="70073410262908.png" alt=""></p>
+<p>③ 绝对元素引起父元素升天</p>
+<div class="cnblogs_code">
+<pre><span style="color: #0000ff;">&lt;</span><span style="color: #800000;">div </span><span style="color: #ff0000;">style</span><span style="color: #0000ff;">="background-color: Gray; padding: 10px;  "</span><span style="color: #0000ff;">&gt;</span>
+    <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">img </span><span style="color: #ff0000;">src</span><span style="color: #0000ff;">="1.png"</span><span style="color: #ff0000;"> style</span><span style="color: #0000ff;">=" position: absolute; "</span>  <span style="color: #0000ff;">/&gt;&lt;/</span><span style="color: #800000;">div</span><span style="color: #0000ff;">&gt;</span></pre>
+</div>
+<p><img src="37672059219877.png" alt=""></p>
+<p>④ 父元素漂浮能否拯救子元素？</p>
+<div class="cnblogs_code">
+<pre><span style="color: #0000ff;">&lt;</span><span style="color: #800000;">div </span><span style="color: #ff0000;">style</span><span style="color: #0000ff;">="background-color: Gray; padding: 10px; float: left;  "</span><span style="color: #0000ff;">&gt;</span>
+    <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">img </span><span style="color: #ff0000;">src</span><span style="color: #0000ff;">="1.png"</span><span style="color: #ff0000;"> style</span><span style="color: #0000ff;">=" position: absolute; "</span>  <span style="color: #0000ff;">/&gt;&lt;/</span><span style="color: #800000;">div</span><span style="color: #0000ff;">&gt;</span></pre>
+</div>
+<p><img src="7832075335741.png" alt=""></p>
+<p>事实证明，他若要走，谁都拦不住啊！！</p>
+<p>PS：此处absolute与fixed是表现一致的。</p>
+<h1>绝对定位的位置</h1>
+<p>绝对定位的元素一般情况下还是应该放到body后面的。</p>
+<p>不要为了实现一个下拉菜单的功能而把它搞到dom（表格神马的）里面，越深的dom回流越厉害</p>
+<p>而且仅仅为了实现一个下拉操作，可能还需要将父标签设置为relative，得不偿失啊！</p>
+<p>如此一来，z-index引起的bug也不会出现了，以下是我用到的一点东西：</p>
+<p><a id="cb_post_title_url" class="postTitle2" href="http://www.cnblogs.com/yexiaochai/archive/2013/06/02/3112682.html">各位加了一天班累了吧？那我们来继续未完的表单验证吧</a></p>
+<p>里面的提示信息就完全在body里面，不用relative限制依旧可以实现的。</p>
+<p>然后，若是绝对定位元素不在body后面而是需要在某些dom节点中才能实现其效果的话，dom节点浅还不用说，深的话就要考虑是否有其它方案了。</p>
+<h1>优化之元素隐藏</h1>
+<p>元素隐藏我们用的最多的一定是display属性，但是他不一定是最好的实现方案。为什么这么说呢？</p>
+<p>我这里有一个明确的体会，就是前段时间一个需求，我的广告div标签在最前面，他的背景是图片，我原想开始隐藏将图片加载完成，后面慢慢展示实现特效，但是背景在display: none的情况下根本不会加载的！！！</p>
+<p>也许我们这里可以以此特性搞个延迟加载的其它方案实现，但是若是这个家伙可能引起回流与渲染哦！！！！</p>
+<p>以上和这一小节的东西扯得有点远，我们还是来看看我们的隐藏吧。</p>
+<p>我所用到以absolute做的隐藏有以下几种：</p>
+<div class="cnblogs_code">
+<pre><span style="color: #0000ff;">&lt;</span><span style="color: #800000;">div</span><span style="color: #0000ff;">&gt;</span><span style="color: #000000;">
+    我在之前</span><span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">div</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #0000ff;">&lt;</span><span style="color: #800000;">div </span><span style="color: #ff0000;">style</span><span style="color: #0000ff;">="background-color: Gray; padding: 10px; margin: 10px; position: absolute; top: -9999px;"</span><span style="color: #0000ff;">&gt;</span><span style="color: #000000;">
+    刀狂剑痴叶小钗是男儿
+</span><span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">div</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #0000ff;">&lt;</span><span style="color: #800000;">div</span><span style="color: #0000ff;">&gt;</span><span style="color: #000000;">
+    我在之后</span><span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">div</span><span style="color: #0000ff;">&gt;</span></pre>
+</div>
+<div class="cnblogs_code">
+<pre><span style="color: #0000ff;">&lt;</span><span style="color: #800000;">div</span><span style="color: #0000ff;">&gt;</span><span style="color: #000000;">
+    我在之前</span><span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">div</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #0000ff;">&lt;</span><span style="color: #800000;">div </span><span style="color: #ff0000;">style</span><span style="color: #0000ff;">="background-color: Gray; padding: 10px; margin: 10px; position: absolute; visibility: hidden; "</span><span style="color: #0000ff;">&gt;</span><span style="color: #000000;">
+    刀狂剑痴叶小钗是男儿
+</span><span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">div</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #0000ff;">&lt;</span><span style="color: #800000;">div</span><span style="color: #0000ff;">&gt;</span><span style="color: #000000;">
+    我在之后</span><span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">div</span><span style="color: #0000ff;">&gt;</span></pre>
+</div>
+<p>我暂时就用到了这两种方式，尤其是第二种用得较多，腾讯微博的下拉菜单也是这么干的。</p>
+<p><img src="11885729739772.png" alt=""></p>
+<h1>两栏等高布局</h1>
+<p>两栏等高布局是非常常用的，也是面试题经常中的，我们可能这样做：</p>
+<div class="cnblogs_code">
+<pre><span style="color: #008080;">1</span> <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">div </span><span style="color: #ff0000;">style</span><span style="color: #0000ff;">="overflow: hidden;"</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">2</span>     <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">div </span><span style="color: #ff0000;">style</span><span style="color: #0000ff;">="float: left; width: 300px; background-color: Orange; margin-bottom: -3000px;
+</span><span style="color: #008080;">3</span> <span style="color: #0000ff;">        padding-bottom: 3000px;"</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">4</span>         边栏<span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">div</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">5</span>     <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">div </span><span style="color: #ff0000;">style</span><span style="color: #0000ff;">="margin-left: 310px; background-color: Gray; margin-bottom: -3000px; padding-bottom: 3000px;"</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">6</span>         主区域<span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">div</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">7</span> <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">div</span><span style="color: #0000ff;">&gt;</span></pre>
+</div>
+<p><img src="25686878188956.png" alt=""></p>
+<p>其实这个代码是不好的，因为不是内容优秀的做法，我们应该将主要内容标签提前。</p>
+<p>这个实现原理其实是非常巧妙的：</p>
+<p>因为padding是包括背景色的，而外层高度的计算方式我们知道是margin+padding+border+height。</p>
+<p>所以事实上，我们这里元素其实已经延伸了3000px了，但是由于overflow: hidden，由于margin，其高度其实是没有的，我们一旦设置高度就会撑开父元素，无论怎么撑开其两边背景都是存在的，所以貌似等高，其实没有等高了。。。</p>
+<p>然后，我们现在知道了绝对定位的元素无高度，无宽度，那么我们是不是也可以用它实现呢？</p>
+<p>其实我们可以设置一个absolute/fxied的东东摆在中间就实现啦。。。。</p>
+<div class="cnblogs_code">
+<pre><span style="color: #0000ff;">&lt;</span><span style="color: #800000;">div </span><span style="color: #ff0000;">style</span><span style="color: #0000ff;">="position: relative; overflow: hidden; background-color: Gray;"</span><span style="color: #0000ff;">&gt;</span>
+    <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">div </span><span style="color: #ff0000;">style</span><span style="color: #0000ff;">="width: 300px; background-color: Orange; position: absolute; height: 3000px; z-index: 1;"</span><span style="color: #0000ff;">&gt;</span>
+    <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">div</span><span style="color: #0000ff;">&gt;</span>
+    <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">div </span><span style="color: #ff0000;">style</span><span style="color: #0000ff;">="width: 300px; float: left; position: relative; z-index: 2; "</span><span style="color: #0000ff;">&gt;</span><span style="color: #000000;">
+        边栏</span><span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">div</span><span style="color: #0000ff;">&gt;</span>
+    <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">div </span><span style="color: #ff0000;">style</span><span style="color: #0000ff;">="margin-left: 310px; background-color: Gray;"</span><span style="color: #0000ff;">&gt;</span><span style="color: #000000;">
+        主区域</span><span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">div</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">div</span><span style="color: #0000ff;">&gt;</span></pre>
+</div>
+<p>代码有点恶心，大家不必细看。。。</p>
+<h1>block与relative的故事</h1>
+<p>之前我们就说了relative是七仙女，虽然可以飞，但是编制在人间。</p>
+<p>relative因为是七仙女就具有z-index特性，可以垂直升空。</p>
+<p>relative因为是玉帝的女儿，权限很大，所以被他包裹着的神仙absolute都飞不出他的区域。。。</p>
+<h2>IE6与relative的爱情故事</h2>
+<p>ie7以下有个严重的bug，就是z-index需要依赖其父元素的z-index才行，否则儿子再高，但是父元素低，他依旧会被别人挡着。</p>
+<p>这个问题我之前讨论过，这里就不管他了。</p>
+<h1>这是一个例子</h1>
+<p>之前，我们为了实现一个功能：广告得出现在屏幕的中间，我开始任务这个东西很简单便没有关注，但后面点看到了一个实现：</p>
+<p>在body后面加了一个div，而且这个div有一个属性：</p>
+<div class="cnblogs_code">
+<pre><span style="color: #0000ff;">&lt;</span><span style="color: #800000;">div </span><span style="color: #ff0000;">style</span><span style="color: #0000ff;">=" position: relative;"</span><span style="color: #0000ff;">&gt;&lt;/</span><span style="color: #800000;">div</span><span style="color: #0000ff;">&gt;</span></pre>
+</div>
+<p>然后用这个div包裹着了所有其它标签。</p>
+<p>我一看其实有点傻了的。因为这将影响很大，最严重的情况是页面布局全部坏了!</p>
+<p>这里我就想给我们的前端规范加上一条：相对定位一点要最小的影响。</p>
+<p>这样做是有道理也有原因的，是想其中若是出现其他定位元素，岂不是会发现悲剧。</p>
+<p>一个形象的例子，relative要对其下的布局元素负责，我们运用了此元素，就得负责下面所有的布局元素的展示，一个考虑不到就要悲剧。</p>
+<h1>结语</h1>
+<p>今天我们一起学习了块级元素的东东，后面点继续学习CSS与bootstrap吧。各位端午节快乐。</p>
+<p>参考：</p>
+<p><a href="http://www.zhangxinxu.com/">http://www.zhangxinxu.com/</a></p>
+                </div>
+
+                <div class='span3 sidebar'>
+                    <h2>导航栏</h2>
+                    <ul class="nav nav-tabs nav-stacked">
+                             				<li><a href="http://songboriceboy.github.io/xxoo/html/css/HTML5&CSS3jj03JseryCsserrhyqykdfxlzj/index.html">【HTML5&CSS3进阶03】Jser与Csser如何一起愉快的翻新老组件</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/css/HTML5&CSS3jj04CSS3dhygrhzwebappzyy/index.html">【HTML5&CSS3进阶04】CSS3动画应该如何在webapp中运用</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/css/HTML5&CSS3jjxx01qpzjdsx/index.html">【HTML5&CSS3进阶学习01】气泡组件的实现</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/css/ctHTMLbxdzzbgzrhtmlbqtshz/index.html">【初探HTML本相】道之真谛不过自然，html标签脱俗还真</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/css/qdmdDOMsjllzCSShmxsfjyhd/index.html">【前端盲点】DOM事件流论证CSS盒模型是否具有厚度</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/css/zsCSS02inlineylineheightfloatabsolutedgs/index.html">【正视CSS02】inline与lineheight、float、absolute的故事</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/css/zsCSS03blockypositioncmzwdpydwjkl/index.html">【正视CSS03】block与position，出门在外的朋友端午节快乐</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/css/zsCSS05wmcglxsmwhyx/index.html">【正视CSS05】我们错过了些什么，为何叶小钗？</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/css/zsCSS06gjwmzjdsjg/index.html">【正视CSS06】构建我们自己的世界观！</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/css/zsCSS07zkverticalalign/index.html">【正视CSS07】再看verticalalign</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/css/zsCSS08fdwzfloatnwsmyttwdys/index.html">【正视CSS08】巅峰对武之float你为什么要坍塌我的元素！！！</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/css/zsCSStszykyzBzxsmargin/index.html">【正视CSS】他山之玉可以装B之细说margin</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/css/gwzmjshdllbnwmyqlkkhddmstbjsaldy/index.html">各位周末结束后都累了吧，那我们一起来看看【寒冬】的面试题吧（据说阿里的哟）</a></li>
+    				                                         
+                    </ul>
+                </div>
+            </div>
+
+        </div>
+    </body>
+</html>

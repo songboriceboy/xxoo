@@ -1,0 +1,237 @@
+﻿<!DOCTYPE html>
+
+<html lang="zh">
+    <head>
+        <meta charset="utf-8">
+        <meta name="description" content="android,ios" />
+        <meta name="keywords" content="android,ios" />
+
+        <title>叶小钗</title>
+        <style type='text/css'>
+            body {
+                background-color: #CCC;
+            }
+        </style>
+        <link rel="stylesheet" href="../../../css/bootstrap.css" />
+    </head>
+
+    <body>
+        <div class="container">
+
+            <h1>叶小钗</h1>
+
+            <div class='navbar navbar-inverse'>
+                <div class='navbar-inner nav-collapse' style="height: auto;">
+                    <ul class="nav">
+                              				<li><a href="http://songboriceboy.github.io/xxoo/html/blade/index.html">blade</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/css/index.html">css</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/HTML5&CSS3/index.html">HTML5&CSS3</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/index.html">javascript</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Javaxx/index.html">Java学习</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/nodejs/index.html">nodejs</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/requirejs/index.html">requirejs</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/index.html">Web前端</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/xxgw/index.html">学习感悟</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/gzdd/index.html">工作点滴</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/jkxx/index.html">接口学习</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/wfl/index.html">未分类</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/ydkf/index.html">移动开发</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/sjms/index.html">设计模式</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/mst/index.html">面试题</a></li>
+    				                      </ul>
+                </div>
+            </div>
+
+            <div id='content' class='row-fluid'>
+
+                <div class='span9 main'>
+				<div style="color:blue" align=center>【前端盲点】DOM事件流论证CSS盒模型是否具有厚度</div><br><h1>前言</h1>
+<p>很久没有扯淡了，我们今天来扯淡吧。</p>
+<p>我今天思考了一个问题，我们页面的dom树到底是如何渲染的，而CSS盒模型与javascript是否有联系，于是便想到一个问题：</p>
+<p>CSS的盒模型具有厚度么？？？</p>
+<p><span style="color: #ff0000;"><strong>该文只是一种帮助理解的说法，与官方定义不一定统一，权当扯淡</strong></span></p>
+<h1>盒模型</h1>
+<p>稍微入门点的前端都知道CSS盒模型，于是我们不厌其烦的偷图来用：</p>
+<p><img src="49250727660728.jpg" alt=""></p>
+<p><img src="5743527666175.jpg" alt=""></p>
+<p>这个就是我们传说中的盒模型，我们这里先把盒模型放一放，来看我们的DOM事件流</p>
+<h1>DOM事件流</h1>
+<p>在上一篇博客中，我们详细说了下javascript的事件机制：<a id="cb_post_title_url" class="postTitle2" href="http://www.cnblogs.com/yexiaochai/p/3462657.html">【移动端兼容问题研究】javascript事件机制详解（涉及移动兼容）</a></p>
+<p>今天也不知道怎么发神经了，突然对其中两个事件参数产生兴趣：</p>
+<h3>currentTarget</h3>
+<p>某事件处理程序当前正在处理的那个元素</p>
+<h3>target</h3>
+<p>事件目标（<span style="text-decoration: line-through;">绑定事件那个dom</span>），源事件触发点</p>
+<p>&nbsp;</p>
+<p>这两个兄弟非常有意思，为了说明他的有意思，我写了一段代码：</p>
+<div class="cnblogs_code">
+<pre><span style="color: #008080;"> 1</span> <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">html </span><span style="color: #ff0000;">xmlns</span><span style="color: #0000ff;">="http://www.w3.org/1999/xhtml"</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 2</span> <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">head</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 3</span>     <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">title</span><span style="color: #0000ff;">&gt;&lt;/</span><span style="color: #800000;">title</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 4</span>     <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">style </span><span style="color: #ff0000;">type</span><span style="color: #0000ff;">="text/css"</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 5</span> <span style="background-color: #f5f5f5; color: #800000;">         #p </span><span style="background-color: #f5f5f5; color: #000000;">{</span><span style="background-color: #f5f5f5; color: #ff0000;"> width</span><span style="background-color: #f5f5f5; color: #000000;">:</span><span style="background-color: #f5f5f5; color: #0000ff;"> 300px</span><span style="background-color: #f5f5f5; color: #000000;">;</span><span style="background-color: #f5f5f5; color: #ff0000;"> height</span><span style="background-color: #f5f5f5; color: #000000;">:</span><span style="background-color: #f5f5f5; color: #0000ff;"> 300px</span><span style="background-color: #f5f5f5; color: #000000;">;</span><span style="background-color: #f5f5f5; color: #ff0000;"> padding</span><span style="background-color: #f5f5f5; color: #000000;">:</span><span style="background-color: #f5f5f5; color: #0000ff;"> 10px</span><span style="background-color: #f5f5f5; color: #000000;">;</span><span style="background-color: #f5f5f5; color: #ff0000;">  border</span><span style="background-color: #f5f5f5; color: #000000;">:</span><span style="background-color: #f5f5f5; color: #0000ff;"> 1px solid black</span><span style="background-color: #f5f5f5; color: #000000;">;</span> <span style="background-color: #f5f5f5; color: #000000;">}</span>
+<span style="color: #008080;"> 6</span> <span style="background-color: #f5f5f5; color: #800000;">         #c </span><span style="background-color: #f5f5f5; color: #000000;">{</span><span style="background-color: #f5f5f5; color: #ff0000;"> width</span><span style="background-color: #f5f5f5; color: #000000;">:</span><span style="background-color: #f5f5f5; color: #0000ff;"> 100px</span><span style="background-color: #f5f5f5; color: #000000;">;</span><span style="background-color: #f5f5f5; color: #ff0000;"> height</span><span style="background-color: #f5f5f5; color: #000000;">:</span><span style="background-color: #f5f5f5; color: #0000ff;"> 100px</span><span style="background-color: #f5f5f5; color: #000000;">;</span><span style="background-color: #f5f5f5; color: #ff0000;"> border</span><span style="background-color: #f5f5f5; color: #000000;">:</span><span style="background-color: #f5f5f5; color: #0000ff;"> 1px solid red</span><span style="background-color: #f5f5f5; color: #000000;">;</span> <span style="background-color: #f5f5f5; color: #000000;">}</span>
+<span style="color: #008080;"> 7</span>     <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">style</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 8</span> <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">head</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 9</span> <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">body</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">10</span>     <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">div </span><span style="color: #ff0000;">id</span><span style="color: #0000ff;">="p"</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">11</span> <span style="color: #000000;">        parent
+</span><span style="color: #008080;">12</span>         <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">div </span><span style="color: #ff0000;">id</span><span style="color: #0000ff;">="c"</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">13</span> <span style="color: #000000;">            child
+</span><span style="color: #008080;">14</span>         <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">div</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">15</span>     <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">div</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">16</span>     <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">script </span><span style="color: #ff0000;">type</span><span style="color: #0000ff;">="text/javascript"</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">17</span>         <span style="background-color: #f5f5f5; color: #0000ff;">var</span><span style="background-color: #f5f5f5; color: #000000;"> p </span><span style="background-color: #f5f5f5; color: #000000;">=</span><span style="background-color: #f5f5f5; color: #000000;"> document.getElementById(</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">p</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">),
+</span><span style="color: #008080;">18</span> <span style="background-color: #f5f5f5; color: #000000;">        c </span><span style="background-color: #f5f5f5; color: #000000;">=</span><span style="background-color: #f5f5f5; color: #000000;"> document.getElementById(</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">c</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">);
+</span><span style="color: #008080;">19</span> <span style="background-color: #f5f5f5; color: #000000;">        c.addEventListener(</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">click</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">, </span><span style="background-color: #f5f5f5; color: #0000ff;">function</span><span style="background-color: #f5f5f5; color: #000000;"> () {
+</span><span style="color: #008080;">20</span> <span style="background-color: #f5f5f5; color: #000000;">            alert(</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">子节点捕获</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">)
+</span><span style="color: #008080;">21</span> <span style="background-color: #f5f5f5; color: #000000;">        }, </span><span style="background-color: #f5f5f5; color: #0000ff;">true</span><span style="background-color: #f5f5f5; color: #000000;">);
+</span><span style="color: #008080;">22</span> 
+<span style="color: #008080;">23</span> <span style="background-color: #f5f5f5; color: #000000;">        c.addEventListener(</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">click</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">, </span><span style="background-color: #f5f5f5; color: #0000ff;">function</span><span style="background-color: #f5f5f5; color: #000000;"> () {
+</span><span style="color: #008080;">24</span> <span style="background-color: #f5f5f5; color: #000000;">            alert(</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">子节点冒泡</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">)
+</span><span style="color: #008080;">25</span> <span style="background-color: #f5f5f5; color: #000000;">        }, </span><span style="background-color: #f5f5f5; color: #0000ff;">false</span><span style="background-color: #f5f5f5; color: #000000;">);
+</span><span style="color: #008080;">26</span> 
+<span style="color: #008080;">27</span> <span style="background-color: #f5f5f5; color: #000000;">        p.addEventListener(</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">click</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">, </span><span style="background-color: #f5f5f5; color: #0000ff;">function</span><span style="background-color: #f5f5f5; color: #000000;"> () {
+</span><span style="color: #008080;">28</span> <span style="background-color: #f5f5f5; color: #000000;">            alert(</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">父节点捕获</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">)
+</span><span style="color: #008080;">29</span> <span style="background-color: #f5f5f5; color: #000000;">        }, </span><span style="background-color: #f5f5f5; color: #0000ff;">true</span><span style="background-color: #f5f5f5; color: #000000;">);
+</span><span style="color: #008080;">30</span> 
+<span style="color: #008080;">31</span> <span style="background-color: #f5f5f5; color: #000000;">        p.addEventListener(</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">click</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">, </span><span style="background-color: #f5f5f5; color: #0000ff;">function</span><span style="background-color: #f5f5f5; color: #000000;"> () {
+</span><span style="color: #008080;">32</span> <span style="background-color: #f5f5f5; color: #000000;">            alert(</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">父节点冒泡</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">)
+</span><span style="color: #008080;">33</span> <span style="background-color: #f5f5f5; color: #000000;">        }, </span><span style="background-color: #f5f5f5; color: #0000ff;">false</span><span style="background-color: #f5f5f5; color: #000000;">);
+</span><span style="color: #008080;">34</span>     <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">script</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">35</span> <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">body</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">36</span> <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">html</span><span style="color: #0000ff;">&gt;</span></pre>
+</div>
+<p><a href="274411910134217.jpg" target="_blank"><span style="color: #ff0000;"><strong>274411910134217.jpg</strong></span></a></p>
+<p><iframe src="274411910134217.jpg" width="885" height="416"></iframe></p>
+<p>这个家伙其实是非常有意思的，按照我们当时的逻辑：</p>
+<p><img src="411157710318383.png" alt=""></p>
+<p><span>① 点击parent，事件首先在document上然后parent捕获到事件，处于目标阶段然后event.target也等于parent，所以触发捕获事件</span></p>
+<p><span>由于target与currentTarget相等了，</span><span>所以认为到底了，开始冒泡，执行冒泡事件</span></p>
+<p><span>② 点击child情况有所不同，事件由document传向parent执行事件，然后传向child最后开始冒泡</span></p>
+<p>上面的解释没问题，我们很多朋友也都清楚，但是我今天突然问题就来了，CSS盒模型尼玛到底是怎么排布的？？？</p>
+<h1>猜想一：积木式=盒模型</h1>
+<p>首先，也是最简单的猜想，盒模型就是堆积木（其实根据上图来看，这个想法自然而然）</p>
+<p><img src="37070519091838.png" alt=""></p>
+<p>这个想法简单，而且直观，也和我们一般的思维类似，但是问题马上来了：</p>
+<h3>事件捕获会先于事件冒泡发生</h3>
+<div class="cnblogs_code">
+<pre><span style="color: #800000;">事件捕获：由最先接收到事件的元素然后传向最里边</span></pre>
+</div>
+<p>虽然是中文翻译，我们可以得到两个重要信息（点击child div、忽略document）：</p>
+<p>① parent div 应该先于child div触发</p>
+<p>② &ldquo;最里面&rdquo;，这个最里面应该如何理解需要关注！！！</p>
+<h3>悖谬</h3>
+<p>按照上图的理解，我们这里就该child div事件先触发呢，情况却是parent div先触发，这与常理不合，所以CSS盒模型不应该是这个样子</p>
+<p>于是，我这里推翻了猜想一，这里进行猜想二。</p>
+<h1>猜想二：盒子=盒模型</h1>
+<p>这个猜想也比较直接，因为盒模型嘛。。。。。。</p>
+<p><img src="6394827741834.png" alt=""></p>
+<p>最初，我在想盒模型是这个样子，他能很好的解释为什么会先触发parent的click事件而不是child的，但是他仍有一个让我难受的地方：</p>
+<p><strong>我body或者parent div如果有颜色，我里面的元素岂不是看不到了？？？这与现实不合啊？？？</strong></p>
+<p>于是我再一次陷入僵局，于是进入猜想三，也是最终猜想</p>
+<h1>最终幻想：盒模型=具有厚度一面透明盒子</h1>
+<p>其实用盒子来形容盒模型是非常贴切的，而且</p>
+<div class="cnblogs_code">
+<pre><span style="color: #800000;">CSS盒模型是具有厚度的</span></pre>
+</div>
+<p>我们这里有一个很好的形容词来形容CSS盒模型：捅不破的XX膜！</p>
+<p>PS：这里本来想画一个图的但是，确实画不出来，各位将就点听我描述吧，我觉得</p>
+<p><img src="426014810483861.png" alt=""></p>
+<p>这个应该是我们的盒模型了，由此我们就可以更好的说明我们的答案了：</p>
+<p>① 点击parent区域时，我们首先触发一次点击，流程如下：</p>
+<p>document=》body=》parent div=开始冒泡=》parent div=》body=》document</p>
+<p>我们因为在parent div上注册了事件，所以他会执行</p>
+<p>② 点击child区域时</p>
+<p>document=》body=》parent div=》child div=开始冒泡=》child div =》parent div=》body=》document</p>
+<p>这里情况也比较明显了，我们一次点击鼠标会点破透明膜，然后一次会碰到上面的元素（离开时候会记住碰到的最深dom也就是target）</p>
+<h1>底层事件模拟（纯粹幻想）</h1>
+<p>好了，我们这里来做一次详细的事件模拟：</p>
+<p>① 首先我们组织我们的dom树，为dom绑定事件（这里绑定事件我就当向hash中传入了值）</p>
+<div class="cnblogs_code">
+<pre><span style="color: #008080;"> 1</span> <span style="color: #000000;">el.addEventListener(type, fn, useCapture);
+</span><span style="color: #008080;"> 2</span> <span style="color: #008000;">//</span><span style="color: #008000;">每个dom在浏览器中肯定会具有一个唯一标识，我不知道是什么，暂且认为是uuid</span>
+<span style="color: #008080;"> 3</span> <span style="color: #008000;">//</span><span style="color: #008000;">于是上面的代码在浏览器中大概是这个意思</span>
+<span style="color: #008080;"> 4</span> 
+<span style="color: #008080;"> 5</span> <span style="color: #0000ff;">var</span> hashCapture = {};<span style="color: #008000;">//</span><span style="color: #008000;">保存捕获事件集合</span>
+<span style="color: #008080;"> 6</span> <span style="color: #0000ff;">var</span> hashBubble = {};<span style="color: #008000;">//</span><span style="color: #008000;">保存冒泡事件集合</span>
+<span style="color: #008080;"> 7</span> 
+<span style="color: #008080;"> 8</span> <span style="color: #0000ff;">if</span><span style="color: #000000;"> (useCapture) {
+</span><span style="color: #008080;"> 9</span>     <span style="color: #008000;">//</span><span style="color: #008000;">装载捕获时的click事件</span>
+<span style="color: #008080;">10</span> <span style="color: #000000;">    pushSet(el, type, fn, hashCapture);
+</span><span style="color: #008080;">11</span> } <span style="color: #0000ff;">else</span><span style="color: #000000;"> {
+</span><span style="color: #008080;">12</span>     <span style="color: #008000;">//</span><span style="color: #008000;">装载冒泡时的click事件</span>
+<span style="color: #008080;">13</span> <span style="color: #000000;">    pushSet(el, type, fn, hashCapture);
+</span><span style="color: #008080;">14</span> <span style="color: #000000;">}
+</span><span style="color: #008080;">15</span> 
+<span style="color: #008080;">16</span> <span style="color: #0000ff;">function</span><span style="color: #000000;"> pushSet(el, type, fn, hashSet) {
+</span><span style="color: #008080;">17</span>     hashSet[el.uuid] =<span style="color: #000000;"> {};
+</span><span style="color: #008080;">18</span> <span style="color: #000000;">    hashSet[el.uuid][type].push(fn);
+</span><span style="color: #008080;">19</span> }</pre>
+</div>
+<p><span style="color: #ff0000; line-height: 1.5;">PS：注意，此处完全是一种假想，我并不知道系统底层如何实现</span></p>
+<p>按照上述思想，其实保存了两个对象：</p>
+<div class="cnblogs_code">
+<pre><span style="color: #800000;">一个关于捕获时期dom（el）click事件的集合（）&mdash;&mdash;hashCapture
+一个关于冒泡时期dom（el）click事件的集合（）&mdash;&mdash;hashBubble</span></pre>
+</div>
+<p>② 我们开始点击，然后记录点击过程中，手指碰到的元素（我们这里简化去掉document）</p>
+<p>body=》parent div=》child div=》child div =》parent div=》body</p>
+<p>&nbsp;</p>
+<p>按照上面的逻辑，我首先碰到了body，离开前碰到了child div，我们最好触碰的dom就是target，所以</p>
+<div class="cnblogs_code">
+<pre><span style="color: #008080;">1</span> <span style="color: #0000ff;">var</span> Event =<span style="color: #000000;"> {};
+</span><span style="color: #008080;">2</span> <span style="color: #008000;">//</span><span style="color: #008000;">捕获时碰到的dom</span>
+<span style="color: #008080;">3</span> Event.captureDoms =<span style="color: #000000;"> [];
+</span><span style="color: #008080;">4</span> <span style="color: #008000;">//</span><span style="color: #008000;">冒泡时候碰到的dom</span>
+<span style="color: #008080;">5</span> Event.captureDoms =<span style="color: #000000;"> [];
+</span><span style="color: #008080;">6</span> Event.target = dom;<span style="color: #008000;">//</span><span style="color: #008000;">最后碰到的元素</span></pre>
+</div>
+<p>所以上面的target永远都是child div，而currentTarget却会不断变化</p>
+<p>captureDoms装的是body，parent div， child div</p>
+<p>而captureDoms 与他一致，只不过顺序是反的，最好就只剩下执行事件了</p>
+<p>PS：当我们鼠标离开window时，判断为一次点击，于是：</p>
+<div class="cnblogs_code">
+<pre><span style="color: #008080;">1</span> <span style="color: #0000ff;">for</span> (<span style="color: #0000ff;">var</span> i = 0, len &lt; Event.captureDoms.length; i &lt; len; i++<span style="color: #000000;">) {
+</span><span style="color: #008080;">2</span>     <span style="color: #0000ff;">var</span> el =<span style="color: #000000;"> Event.captureDoms[i];
+</span><span style="color: #008080;">3</span>     <span style="color: #0000ff;">var</span> uuid =<span style="color: #000000;"> el.uuid;
+</span><span style="color: #008080;">4</span>     <span style="color: #008000;">//</span><span style="color: #008000;">获取捕获中保存的click事件集合</span>
+<span style="color: #008080;">5</span>     <span style="color: #0000ff;">for</span> (<span style="color: #0000ff;">var</span> j = 0, len1 &lt; hashCapture[uuid].click.length; j &lt; len1; j++<span style="color: #000000;">) {
+</span><span style="color: #008080;">6</span>         hashCapture[uuid]['click'][j](Event);<span style="color: #008000;">//</span><span style="color: #008000;">执行保存的click事件</span>
+<span style="color: #008080;">7</span> <span style="color: #000000;">    }
+</span><span style="color: #008080;">8</span> }</pre>
+</div>
+<p>然后执行冒泡时候的相同逻辑即可，于是就我们的猜想结束......</p>
+<h1>firefox模型</h1>
+<p><img src="1155077970586.png" alt=""></p>
+<p><img src="25010239897080.png" alt=""></p>
+<p><img src="167051110424282.png" alt=""></p>
+<p>firefox dom结构如此，但是与我的猜想好像不一样......</p>
+<h1>结语</h1>
+<p>我们的盒模型具有厚度吗？我认为是具有的，而且他很好的解释了我遇到的问题，所以我认为他是具有的，我能自圆其说......</p>
+                </div>
+
+                <div class='span3 sidebar'>
+                    <h2>导航栏</h2>
+                    <ul class="nav nav-tabs nav-stacked">
+                             				<li><a href="http://songboriceboy.github.io/xxoo/html/css/HTML5&CSS3jj03JseryCsserrhyqykdfxlzj/index.html">【HTML5&CSS3进阶03】Jser与Csser如何一起愉快的翻新老组件</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/css/HTML5&CSS3jj04CSS3dhygrhzwebappzyy/index.html">【HTML5&CSS3进阶04】CSS3动画应该如何在webapp中运用</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/css/HTML5&CSS3jjxx01qpzjdsx/index.html">【HTML5&CSS3进阶学习01】气泡组件的实现</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/css/ctHTMLbxdzzbgzrhtmlbqtshz/index.html">【初探HTML本相】道之真谛不过自然，html标签脱俗还真</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/css/qdmdDOMsjllzCSShmxsfjyhd/index.html">【前端盲点】DOM事件流论证CSS盒模型是否具有厚度</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/css/zsCSS02inlineylineheightfloatabsolutedgs/index.html">【正视CSS02】inline与lineheight、float、absolute的故事</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/css/zsCSS03blockypositioncmzwdpydwjkl/index.html">【正视CSS03】block与position，出门在外的朋友端午节快乐</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/css/zsCSS05wmcglxsmwhyx/index.html">【正视CSS05】我们错过了些什么，为何叶小钗？</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/css/zsCSS06gjwmzjdsjg/index.html">【正视CSS06】构建我们自己的世界观！</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/css/zsCSS07zkverticalalign/index.html">【正视CSS07】再看verticalalign</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/css/zsCSS08fdwzfloatnwsmyttwdys/index.html">【正视CSS08】巅峰对武之float你为什么要坍塌我的元素！！！</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/css/zsCSStszykyzBzxsmargin/index.html">【正视CSS】他山之玉可以装B之细说margin</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/css/gwzmjshdllbnwmyqlkkhddmstbjsaldy/index.html">各位周末结束后都累了吧，那我们一起来看看【寒冬】的面试题吧（据说阿里的哟）</a></li>
+    				                                         
+                    </ul>
+                </div>
+            </div>
+
+        </div>
+    </body>
+</html>

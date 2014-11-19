@@ -1,0 +1,278 @@
+﻿<!DOCTYPE html>
+
+<html lang="zh">
+    <head>
+        <meta charset="utf-8">
+        <meta name="description" content="android,ios" />
+        <meta name="keywords" content="android,ios" />
+
+        <title>叶小钗</title>
+        <style type='text/css'>
+            body {
+                background-color: #CCC;
+            }
+        </style>
+        <link rel="stylesheet" href="../../../css/bootstrap.css" />
+    </head>
+
+    <body>
+        <div class="container">
+
+            <h1>叶小钗</h1>
+
+            <div class='navbar navbar-inverse'>
+                <div class='navbar-inner nav-collapse' style="height: auto;">
+                    <ul class="nav">
+                              				<li><a href="http://songboriceboy.github.io/xxoo/html/blade/index.html">blade</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/css/index.html">css</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/HTML5&CSS3/index.html">HTML5&CSS3</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/index.html">javascript</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Javaxx/index.html">Java学习</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/nodejs/index.html">nodejs</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/requirejs/index.html">requirejs</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/index.html">Web前端</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/xxgw/index.html">学习感悟</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/gzdd/index.html">工作点滴</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/jkxx/index.html">接口学习</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/wfl/index.html">未分类</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/ydkf/index.html">移动开发</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/sjms/index.html">设计模式</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/mst/index.html">面试题</a></li>
+    				                      </ul>
+                </div>
+            </div>
+
+            <div id='content' class='row-fluid'>
+
+                <div class='span9 main'>
+				<div style="color:blue" align=center>【web前端面试题整理07】我不理解表现与数据分离。。。</div><br><h1><span style="color: #ffffff;">拜师传说</span></h1>
+<p><span style="color: #000000;">今天老夫拜师了，老夫有幸认识一个JS高手，在此推荐其博客，悄悄告诉你，我拜他为师了，他承诺我只收我一个男弟子。。。。。</span></p>
+<p><span style="color: #000000;">师尊刚注册的账号，现在博客数量还不多，但是后面点会有干货哦，值得期待。</span></p>
+<p><span style="color: #000000;"><a href="http://www.cnblogs.com/aaronjs/">http://www.cnblogs.com/aaronjs/</a></span></p>
+<h1>前言</h1>
+<p>上周回到了成都，这周就准备找工作了，对成都的聚美优品其实比较有好感的，所以昨天就先去面试了，感觉技术面试的还不错啦，结果最后HR说经理不在，让我等经理反馈。</p>
+<p>我当时相信了，但是回来想想感觉可能失败了，但是我不知道哪里出了问题。</p>
+<p>现在遇到的前端面试都大同小异的，具体的题目就不列出来了，因为泄露公司机密不太好，我就说说自己印象比较深刻的一些东西吧。</p>
+<p>今天发生了一次电话面试，下午参加了一家公司的面试，感觉公司还是很有发展潜力的，比较靠谱，若是有后文应该会选择吧。</p>
+<p>回到家中后，有两件事一直放在心中，第一个就是昨天为什么失败了，另一个就是我那抄袭的简历啦。。。。</p>
+<p><strong>话说简历抄袭</strong></p>
+<p>我简历上面抄了一段话：<span style="color: #ff0000;">对表现与数据分离有一定了解</span>！</p>
+<p>于是上午就被人问到了，并且那位大哥还把工作中遇到的一个问题与我交流了一番（问题等下提出），当时我对这块的理解其实比较模糊，然后就给绕过去了。</p>
+<p>于是上午就一直觉得有件事情堵得慌，到下午面试结束后，确实忍不住了，我们一起来看看这个问题吧！</p>
+<p>&nbsp;</p>
+<h1>什么是表现与数据分离</h1>
+<p>我一来就看了一篇文章，点进去一看结果说的是表现与结构分离，其大意是：</p>
+<p>表现应该由CSS来控制，结构应该由html来控制，比如我们伟大的禅意花园。</p>
+<p>于是我觉得，我简历是不是应该改成，表现与结构分离呢。。。。</p>
+<p>但是我感觉表现与数据分离还是有点道理呢，所以我们还是回到我们的表现与数据分离吧。</p>
+<p><span style="color: #ff0000;">----------华丽的分割线----------</span></p>
+<p>半个小时过去了，我去查询了资料也去请教了前辈，最后得出了两个东西：</p>
+<p>MVC</p>
+<p>MVVM</p>
+<p>很显然，他们说的这个也许是我找寻的答案，但是我心里面视乎并不买账，于是我找寻了以后截了一个图：</p>
+<p><img src="43678289763358.png" alt=""></p>
+<p>这是一个搞后端的大哥写的博客，我们看到采用MVC开发的主要目的就是表现与数据分离。</p>
+<p>看来真的就是MVC啦。。。</p>
+<p><strong>好了，这个地方暂时打住，我们来看看当时的原话</strong></p>
+<h1>模拟面试</h1>
+<p>面试官问我，说简历上写的对表现与数据分离有一定理解，可以描述一下么</p>
+<p>我很淡定的说了句让我思考下，然后开始搜索着我的大脑硬盘，好像压根就没有这个词呢，于是胡乱蒙了个是不是html与css应该分离？</p>
+<p>答案当然是否定的，然后面试哥把他在项目中遇到的一个问题抛了出来：</p>
+<div class="cnblogs_code">
+<pre><span style="color: #800000;">他有一个国家列表，现在要将国家列表放到A中，然后B可以由A选择，也可以有总列表选择
+但是B中添加后，若是A中没有要动态为A增加这项。</span></pre>
+</div>
+<p>为了方便各位理解，我上个图</p>
+<p><img src="35140746441196.png" alt=""></p>
+<p>不知道各位听到这个题作何感受，我当时其实就有一种方式可以实现（最简单，最土的），压根就没有想到这个题会和&ldquo;表现与数据分离&rdquo;有关系。</p>
+<p>但是既然问到了，应该还是有联系吧，不知道各位怎么看待呢？</p>
+<p>于是我们回到问题本身吧</p>
+<h1>再论行为与数据分离</h1>
+<p>我们工作中可能会碰到这种情况，美工每次拿过来的东西感觉都有点不一样，你不能说出有好大的不一样，反正就是有地方不一样。</p>
+<p>然后一拿来后整个家伙全部完蛋，js报错啦，为什么报错你们懂的，这里我来现身说法，整一个真实的例子吧</p>
+<p>当年我年少轻狂还在索贝时，我们有设计，但是设计同事的CSS很差，给我们的html+css经常有未闭合的标签，经常会出现莫名其妙的双引号。</p>
+<p>但是当时我CSS也不好，其它同事完全就是搞后端的，所以在这个情况下我们艰难的做出了我们的第一版产品，与设计图一致（<span style="color: #ff0000;">还是在设计的代码上修改的</span>）。</p>
+<p>完了领导看了提出了一点修改意见，于是设计同事又改了下图，相信我他只是简单的改了一点东西，然后形成了html交给了我们。。。。</p>
+<p>这次拿来后我看到了这次的html结构和上次完全是两码事，而我们的产品又是单页应用，很多地方完全是javascript生成的，或者html标签与data形成了模板，现在要改。。。改毛线啊。。。</p>
+<p>为了具体描述我们所遇到的困境我这里详细描述下：</p>
+<p>① 我们根据设计第一版图做好了页面</p>
+<p>② 页面上有很多应用，是采用类似于js模板化的东西（小的封装的，很戳）</p>
+<p>③ 页面根据数据库设计，前端使用js控制页面加载，最后渲染出我们的页面</p>
+<p>好了整个代码还有点小复杂，完了现在设计哥来了一个完全不同的结构了，当时内部没有CSS高手，甚至说没有CSS熟手。</p>
+<p>我负责改这个工作，我依稀记得我改出了翔。。。。最后终于改完了！</p>
+<p>然后根据领导指示，设计同事给出了我们第三套HTML代码，这个和原来的差距相对大一点，但是主要模块还在，于是我看空中到处都是翔了。。。。</p>
+<p>我不知道我前面的描述各位遇到过没有，但是当时我没能很好的解决这个问题，就只能缝缝补补的改着，每次出新东西后又是一场悲剧。</p>
+<p><strong>回到现实</strong></p>
+<p>其实我遇到的这个问题我感觉可以很好的说明表现数据分离的重要性了，但是什么是表现数据分离，我们还是需要将它说清楚啦。</p>
+<p>PS：其实我遇到的问题比较复杂吧，我感觉都不完全是表现与数据分离了......</p>
+<p>我说不清楚什么是表现与数据分离，那我们举点反例吧：</p>
+<p>① 服务器端（php/.net/java），将html标签与数据一起打印出来</p>
+<div class="cnblogs_code">
+<pre>Response.Write(<span style="color: #800000;">"</span><span style="color: #800000;">&lt;div&gt;......&lt;/div&gt;</span><span style="color: #800000;">"</span>);</pre>
+</div>
+<p>这段代码各位一定见过，可以想象，一个系统一年后要改版，这个地方的代码修改可能有点痛苦吧（特别是原来的开发人员不在了）</p>
+<p>这个是服务器端的，那么我们的客户端呢（咳咳，让我想想啦，想不到啦。。。）</p>
+<p>② 我想到一个例子，不知道合适不，拿出来说说吧</p>
+<p>前段时间，我们前端有个地区控件的东西，他大概是这个样子的：</p>
+<div class="cnblogs_code">
+<pre><span style="color: #0000ff;">var</span> area = '&lt;table&gt;......&lt;/table&gt;';</pre>
+</div>
+<p>他在字符串中将所有的地区全部写了出来（包括地区编号（隐藏）），这样做会有问题的：</p>
+<p>假设我哪天想改变一下结构适应新的布局（响应式布局神马的随便啦），那么我们会发现无从下手</p>
+<p>③ 还是回到我遇到那个问题（<strong><span style="color: #ff0000;">重点来了哦</span></strong>）</p>
+<p>我遇到那个问题其实主要是我在js中使用的id，或者class或者标签子选择器都不在了，新的代码上来后肯定出错啦。</p>
+<div class="cnblogs_code">
+<pre><span style="color: #800000;">这个问题很尖锐的，原来我使用了一套html+css页面，我们根据这个写了一大套javascript的东西，耗时3个月。
+然后我们换了一套页面，但是其中功能还是我们那套js
+然后我们再换了一套页面，其中的js还是我们那套js
+最后最变态的要求出来了（因为产品会给不同的电视台使用），我们的产品在不同的人看起来页面是不一样的，但是其中的功能是一样的！！！</span></pre>
+</div>
+<p>屌丝们，接招吧，各位哥哥，你们会怎么解决这个问题呢？</p>
+<p>正是因为有上面那种莫名其妙的需求，所以才会出现我们前端MVC这种莫名其妙的东西。。。</p>
+<p>因为按道理来说前端是不应该出现MVC的，我们的html就是model，我们的css就是view，我们的js就是controller。</p>
+<p>结果现在单是javascript就搞出来了一套MVC，这不坑爹么？</p>
+<p><span style="color: #ff0000;"><strong>至此，不知道各位对表现与数据分离有新的了解没有？？？</strong></span></p>
+<h1>MVC&mdash;&mdash;表现与数据分离</h1>
+<p>话不多说，先上一段代码（<span style="color: #ff0000;">原来的代码，抄过来的</span>）：</p>
+<div class="cnblogs_code">
+<pre><span style="color: #008080;"> 1</span> <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">html </span><span style="color: #ff0000;">xmlns</span><span style="color: #0000ff;">="http://www.w3.org/1999/xhtml"</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 2</span> <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">head</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 3</span>     <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">title</span><span style="color: #0000ff;">&gt;&lt;/</span><span style="color: #800000;">title</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 4</span>     <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">script </span><span style="color: #ff0000;">src</span><span style="color: #0000ff;">="../jquery-1.7.1.js"</span><span style="color: #ff0000;"> type</span><span style="color: #0000ff;">="text/javascript"</span><span style="color: #0000ff;">&gt;&lt;/</span><span style="color: #800000;">script</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 5</span>     <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">script </span><span style="color: #ff0000;">type</span><span style="color: #0000ff;">="text/javascript"</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 6</span> <span style="background-color: #f5f5f5; color: #000000;">        $(document).ready(</span><span style="background-color: #f5f5f5; color: #0000ff;">function</span><span style="background-color: #f5f5f5; color: #000000;"> () {
+</span><span style="color: #008080;"> 7</span>             <span style="background-color: #f5f5f5; color: #0000ff;">var</span><span style="background-color: #f5f5f5; color: #000000;"> end </span><span style="background-color: #f5f5f5; color: #000000;">=</span><span style="background-color: #f5f5f5; color: #000000;"> $(</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">#end</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">);
+</span><span style="color: #008080;"> 8</span> <span style="background-color: #f5f5f5; color: #000000;">            $(</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">#pili</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">).change(</span><span style="background-color: #f5f5f5; color: #0000ff;">function</span><span style="background-color: #f5f5f5; color: #000000;"> () {
+</span><span style="color: #008080;"> 9</span>                 <span style="background-color: #f5f5f5; color: #0000ff;">var</span><span style="background-color: #f5f5f5; color: #000000;"> name </span><span style="background-color: #f5f5f5; color: #000000;">=</span> <span style="background-color: #f5f5f5; color: #000000;">''</span><span style="background-color: #f5f5f5; color: #000000;">;
+</span><span style="color: #008080;">10</span>                 <span style="background-color: #f5f5f5; color: #0000ff;">var</span><span style="background-color: #f5f5f5; color: #000000;"> p </span><span style="background-color: #f5f5f5; color: #000000;">=</span><span style="background-color: #f5f5f5; color: #000000;"> $(</span><span style="background-color: #f5f5f5; color: #0000ff;">this</span><span style="background-color: #f5f5f5; color: #000000;">).val();
+</span><span style="color: #008080;">11</span>                 <span style="background-color: #f5f5f5; color: #0000ff;">if</span><span style="background-color: #f5f5f5; color: #000000;"> (p </span><span style="background-color: #f5f5f5; color: #000000;">==</span> <span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">叶小钗</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">) {
+</span><span style="color: #008080;">12</span> <span style="background-color: #f5f5f5; color: #000000;">                    name </span><span style="background-color: #f5f5f5; color: #000000;">=</span> <span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">刀狂剑痴</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">;
+</span><span style="color: #008080;">13</span> <span style="background-color: #f5f5f5; color: #000000;">                }
+</span><span style="color: #008080;">14</span>                 <span style="background-color: #f5f5f5; color: #0000ff;">if</span><span style="background-color: #f5f5f5; color: #000000;"> (p </span><span style="background-color: #f5f5f5; color: #000000;">==</span> <span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">一页书</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">) {
+</span><span style="color: #008080;">15</span> <span style="background-color: #f5f5f5; color: #000000;">                    name </span><span style="background-color: #f5f5f5; color: #000000;">==</span> <span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">百世经纶</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">;
+</span><span style="color: #008080;">16</span> <span style="background-color: #f5f5f5; color: #000000;">                }
+</span><span style="color: #008080;">17</span>                 <span style="background-color: #f5f5f5; color: #0000ff;">if</span><span style="background-color: #f5f5f5; color: #000000;"> (p </span><span style="background-color: #f5f5f5; color: #000000;">==</span> <span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">素还真</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">) {
+</span><span style="color: #008080;">18</span> <span style="background-color: #f5f5f5; color: #000000;">                    name </span><span style="background-color: #f5f5f5; color: #000000;">=</span> <span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">清香白莲</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">;
+</span><span style="color: #008080;">19</span> <span style="background-color: #f5f5f5; color: #000000;">                }
+</span><span style="color: #008080;">20</span> 
+<span style="color: #008080;">21</span> <span style="background-color: #f5f5f5; color: #000000;">                end.html(name </span><span style="background-color: #f5f5f5; color: #000000;">+</span><span style="background-color: #f5f5f5; color: #000000;"> p);
+</span><span style="color: #008080;">22</span> <span style="background-color: #f5f5f5; color: #000000;">            });
+</span><span style="color: #008080;">23</span> <span style="background-color: #f5f5f5; color: #000000;">        });
+</span><span style="color: #008080;">24</span>     <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">script</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">25</span> <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">head</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">26</span> <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">body</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">27</span>     <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">select </span><span style="color: #ff0000;">id</span><span style="color: #0000ff;">="pili"</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">28</span>         <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">option </span><span style="color: #ff0000;">value</span><span style="color: #0000ff;">="叶小钗"</span><span style="color: #0000ff;">&gt;</span>叶小钗<span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">option</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">29</span>         <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">option </span><span style="color: #ff0000;">value</span><span style="color: #0000ff;">="一页书"</span><span style="color: #0000ff;">&gt;</span>一页书<span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">option</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">30</span>         <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">option </span><span style="color: #ff0000;">value</span><span style="color: #0000ff;">="素还真"</span><span style="color: #0000ff;">&gt;</span>素还真<span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">option</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">31</span>     <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">select</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">32</span>     <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">div </span><span style="color: #ff0000;">id</span><span style="color: #0000ff;">="end"</span><span style="color: #0000ff;">&gt;&lt;/</span><span style="color: #800000;">div</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">33</span> <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">body</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">34</span> <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">html</span><span style="color: #0000ff;">&gt;</span></pre>
+</div>
+<p>我们重新看看上面的代码，很简单的逻辑，select改变后变化end的值，好了现在需求发生改变：</p>
+<p>① select变成使用input模拟select</p>
+<p>② 在手机上还是使用select算了</p>
+<p>③ 总会有莫名其妙的需求，这个就是</p>
+<p>好吧，现在的代码你该怎么写呢？是不是会写几个代码，或者你压根不知道怎么写呢？？？于是看看我们的MVC的实现吧</p>
+<p><span style="color: #ff0000;">PS：代码是我可耻的抄的。。。。但我可是自豪的一个字一个字的敲的哦，窃知识不算偷......</span></p>
+<div class="cnblogs_code">
+<pre><span style="color: #008080;"> 1</span> <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">html </span><span style="color: #ff0000;">xmlns</span><span style="color: #0000ff;">="http://www.w3.org/1999/xhtml"</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 2</span> <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">head</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 3</span>     <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">title</span><span style="color: #0000ff;">&gt;&lt;/</span><span style="color: #800000;">title</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 4</span>     <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">script </span><span style="color: #ff0000;">src</span><span style="color: #0000ff;">="../jquery-1.7.1.js"</span><span style="color: #ff0000;"> type</span><span style="color: #0000ff;">="text/javascript"</span><span style="color: #0000ff;">&gt;&lt;/</span><span style="color: #800000;">script</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 5</span>     <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">script </span><span style="color: #ff0000;">type</span><span style="color: #0000ff;">="text/javascript"</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 6</span> <span style="background-color: #f5f5f5; color: #000000;">        $(document).ready(</span><span style="background-color: #f5f5f5; color: #0000ff;">function</span><span style="background-color: #f5f5f5; color: #000000;"> () {
+</span><span style="color: #008080;"> 7</span>             <span style="background-color: #f5f5f5; color: #008000;">//</span><span style="background-color: #f5f5f5; color: #008000;">定义一个controller</span>
+<span style="color: #008080;"> 8</span>             <span style="background-color: #f5f5f5; color: #0000ff;">var</span><span style="background-color: #f5f5f5; color: #000000;"> piliController </span><span style="background-color: #f5f5f5; color: #000000;">=</span><span style="background-color: #f5f5f5; color: #000000;"> {
+</span><span style="color: #008080;"> 9</span>                 <span style="background-color: #f5f5f5; color: #008000;">//</span><span style="background-color: #f5f5f5; color: #008000;">选择视图</span>
+<span style="color: #008080;">10</span> <span style="background-color: #f5f5f5; color: #000000;">                start: </span><span style="background-color: #f5f5f5; color: #0000ff;">function</span><span style="background-color: #f5f5f5; color: #000000;"> () {
+</span><span style="color: #008080;">11</span>                     <span style="background-color: #f5f5f5; color: #0000ff;">this</span><span style="background-color: #f5f5f5; color: #000000;">.view.start();
+</span><span style="color: #008080;">12</span> <span style="background-color: #f5f5f5; color: #000000;">                },
+</span><span style="color: #008080;">13</span>                 <span style="background-color: #f5f5f5; color: #008000;">//</span><span style="background-color: #f5f5f5; color: #008000;">将用户操作映射到模型更新上</span>
+<span style="color: #008080;">14</span> <span style="background-color: #f5f5f5; color: #000000;">                set: </span><span style="background-color: #f5f5f5; color: #0000ff;">function</span><span style="background-color: #f5f5f5; color: #000000;"> (name) {
+</span><span style="color: #008080;">15</span>                     <span style="background-color: #f5f5f5; color: #0000ff;">this</span><span style="background-color: #f5f5f5; color: #000000;">.model.setPerson(name);
+</span><span style="color: #008080;">16</span> <span style="background-color: #f5f5f5; color: #000000;">                }
+</span><span style="color: #008080;">17</span> <span style="background-color: #f5f5f5; color: #000000;">            };
+</span><span style="color: #008080;">18</span> <span style="background-color: #f5f5f5; color: #000000;">            piliController.model </span><span style="background-color: #f5f5f5; color: #000000;">=</span><span style="background-color: #f5f5f5; color: #000000;"> {
+</span><span style="color: #008080;">19</span> <span style="background-color: #f5f5f5; color: #000000;">                piliKV: {
+</span><span style="color: #008080;">20</span>                     <span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">叶小钗</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">: </span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">刀狂剑痴</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">,
+</span><span style="color: #008080;">21</span>                     <span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">一页书</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">: </span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">百世经纶</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">,
+</span><span style="color: #008080;">22</span>                     <span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">素还真</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">: </span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">清香白莲</span><span style="background-color: #f5f5f5; color: #000000;">'</span>
+<span style="color: #008080;">23</span> <span style="background-color: #f5f5f5; color: #000000;">                },
+</span><span style="color: #008080;">24</span> <span style="background-color: #f5f5f5; color: #000000;">                curPerson: </span><span style="background-color: #f5f5f5; color: #0000ff;">null</span><span style="background-color: #f5f5f5; color: #000000;">,
+</span><span style="color: #008080;">25</span>                 <span style="background-color: #f5f5f5; color: #008000;">//</span><span style="background-color: #f5f5f5; color: #008000;">数据模型负责业务逻辑和数据存储</span>
+<span style="color: #008080;">26</span> <span style="background-color: #f5f5f5; color: #000000;">                setPerson: </span><span style="background-color: #f5f5f5; color: #0000ff;">function</span><span style="background-color: #f5f5f5; color: #000000;"> (name) {
+</span><span style="color: #008080;">27</span>                     <span style="background-color: #f5f5f5; color: #0000ff;">this</span><span style="background-color: #f5f5f5; color: #000000;">.curPerson </span><span style="background-color: #f5f5f5; color: #000000;">=</span> <span style="background-color: #f5f5f5; color: #0000ff;">this</span><span style="background-color: #f5f5f5; color: #000000;">.piliKV[name] </span><span style="background-color: #f5f5f5; color: #000000;">?</span><span style="background-color: #f5f5f5; color: #000000;"> name : </span><span style="background-color: #f5f5f5; color: #0000ff;">null</span><span style="background-color: #f5f5f5; color: #000000;">;
+</span><span style="color: #008080;">28</span>                     <span style="background-color: #f5f5f5; color: #0000ff;">this</span><span style="background-color: #f5f5f5; color: #000000;">.onchange();
+</span><span style="color: #008080;">29</span> <span style="background-color: #f5f5f5; color: #000000;">                },
+</span><span style="color: #008080;">30</span>                 <span style="background-color: #f5f5f5; color: #008000;">//</span><span style="background-color: #f5f5f5; color: #008000;">通知数据同步更新</span>
+<span style="color: #008080;">31</span> <span style="background-color: #f5f5f5; color: #000000;">                onchange: </span><span style="background-color: #f5f5f5; color: #0000ff;">function</span><span style="background-color: #f5f5f5; color: #000000;"> () {
+</span><span style="color: #008080;">32</span> <span style="background-color: #f5f5f5; color: #000000;">                    piliController.view.update();
+</span><span style="color: #008080;">33</span> <span style="background-color: #f5f5f5; color: #000000;">                },
+</span><span style="color: #008080;">34</span>                 <span style="background-color: #f5f5f5; color: #008000;">//</span><span style="background-color: #f5f5f5; color: #008000;">相应视图对当前状态的查询</span>
+<span style="color: #008080;">35</span> <span style="background-color: #f5f5f5; color: #000000;">                getPiliAction: </span><span style="background-color: #f5f5f5; color: #0000ff;">function</span><span style="background-color: #f5f5f5; color: #000000;"> () {
+</span><span style="color: #008080;">36</span>                     <span style="background-color: #f5f5f5; color: #0000ff;">return</span> <span style="background-color: #f5f5f5; color: #0000ff;">this</span><span style="background-color: #f5f5f5; color: #000000;">.curPerson </span><span style="background-color: #f5f5f5; color: #000000;">?</span> <span style="background-color: #f5f5f5; color: #0000ff;">this</span><span style="background-color: #f5f5f5; color: #000000;">.piliKV[</span><span style="background-color: #f5f5f5; color: #0000ff;">this</span><span style="background-color: #f5f5f5; color: #000000;">.curPerson] </span><span style="background-color: #f5f5f5; color: #000000;">+</span> <span style="background-color: #f5f5f5; color: #0000ff;">this</span><span style="background-color: #f5f5f5; color: #000000;">.curPerson : </span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">???</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">;
+</span><span style="color: #008080;">37</span> <span style="background-color: #f5f5f5; color: #000000;">                }
+</span><span style="color: #008080;">38</span> <span style="background-color: #f5f5f5; color: #000000;">            };
+</span><span style="color: #008080;">39</span> <span style="background-color: #f5f5f5; color: #000000;">            piliController.view </span><span style="background-color: #f5f5f5; color: #000000;">=</span><span style="background-color: #f5f5f5; color: #000000;"> {
+</span><span style="color: #008080;">40</span>                 <span style="background-color: #f5f5f5; color: #008000;">//</span><span style="background-color: #f5f5f5; color: #008000;">用户触发change事件</span>
+<span style="color: #008080;">41</span> <span style="background-color: #f5f5f5; color: #000000;">                start: </span><span style="background-color: #f5f5f5; color: #0000ff;">function</span><span style="background-color: #f5f5f5; color: #000000;"> () {
+</span><span style="color: #008080;">42</span> <span style="background-color: #f5f5f5; color: #000000;">                    $(</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">#pili</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">).change(</span><span style="background-color: #f5f5f5; color: #0000ff;">this</span><span style="background-color: #f5f5f5; color: #000000;">.onchange);
+</span><span style="color: #008080;">43</span> <span style="background-color: #f5f5f5; color: #000000;">                },
+</span><span style="color: #008080;">44</span> <span style="background-color: #f5f5f5; color: #000000;">                onchange: </span><span style="background-color: #f5f5f5; color: #0000ff;">function</span><span style="background-color: #f5f5f5; color: #000000;"> () {
+</span><span style="color: #008080;">45</span> <span style="background-color: #f5f5f5; color: #000000;">                    piliController.set($(</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">#pili</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">).val());
+</span><span style="color: #008080;">46</span> <span style="background-color: #f5f5f5; color: #000000;">                },
+</span><span style="color: #008080;">47</span> <span style="background-color: #f5f5f5; color: #000000;">                update: </span><span style="background-color: #f5f5f5; color: #0000ff;">function</span><span style="background-color: #f5f5f5; color: #000000;"> () {
+</span><span style="color: #008080;">48</span> <span style="background-color: #f5f5f5; color: #000000;">                    $(</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">#end</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">).html(piliController.model.getPiliAction());
+</span><span style="color: #008080;">49</span> <span style="background-color: #f5f5f5; color: #000000;">                }
+</span><span style="color: #008080;">50</span> <span style="background-color: #f5f5f5; color: #000000;">            };
+</span><span style="color: #008080;">51</span> <span style="background-color: #f5f5f5; color: #000000;">            piliController.start();
+</span><span style="color: #008080;">52</span> <span style="background-color: #f5f5f5; color: #000000;">        });
+</span><span style="color: #008080;">53</span>     <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">script</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">54</span> <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">head</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">55</span> <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">body</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">56</span>     <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">select </span><span style="color: #ff0000;">id</span><span style="color: #0000ff;">="pili"</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">57</span>      <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">option </span><span style="color: #ff0000;">value</span><span style="color: #0000ff;">="叶小钗"</span><span style="color: #0000ff;">&gt;</span>叶小钗<span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">option</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">58</span>         <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">option </span><span style="color: #ff0000;">value</span><span style="color: #0000ff;">="一页书"</span><span style="color: #0000ff;">&gt;</span>一页书<span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">option</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">59</span>         <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">option </span><span style="color: #ff0000;">value</span><span style="color: #0000ff;">="素还真"</span><span style="color: #0000ff;">&gt;</span>素还真<span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">option</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">60</span>     <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">select</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">61</span>     <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">div </span><span style="color: #ff0000;">id</span><span style="color: #0000ff;">="end"</span><span style="color: #0000ff;">&gt;&lt;/</span><span style="color: #800000;">div</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">62</span> <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">body</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">63</span> <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">html</span><span style="color: #0000ff;">&gt;</span></pre>
+</div>
+<p>我们来看看这个神一样的代码。。。。我们一开始会认为他有这些问题：</p>
+<p>① 代码维护困难，至少我认为很困难</p>
+<p>② 徒增复杂性，性能会有问题</p>
+<p>③ 我并不能说服自己说自己懂了。。。。</p>
+<p>于是我们就放弃了MVC啦，但是我们回过头来好好审视下他，我们会发现不一样的东西：</p>
+<p>① 我们好像就在view中使用了选择器获取dom，其它地方压根不认识dom这个丫的。</p>
+<p>② 我们的数据似乎在model中，我们可以随意改变，但是并不会影响到我们dom</p>
+<p>③ view和model是完全独立的，我们的controller恰好把他们串联起来了</p>
+<p>看着这神奇的魔法，我似懂非懂的点了点头，你妹的MVC还真他妈够劲！！！</p>
+<h1>结语</h1>
+<p>听我唧唧歪歪说了这么多，不知道各位理解到了表现与数据分离是什么意思没，我感觉自己有所得，所以写出来与各位分享。</p>
+<p>这次只是很浅的理解，后面我会请教各位大牛，然后再写一篇心得，希望届时能好好解决这个问题，其中上面面试的问题也一并解答吧，今天暂时到这。</p>
+<p>希望这篇博客能对各位有所帮助，当然最重要的是：</p>
+<p><span style="color: #ff0000;"><strong>哥，有什么想法要说出来哦，不要藏着啊！！！</strong></span></p>
+<p>&nbsp;</p>
+                </div>
+
+                <div class='span3 sidebar'>
+                    <h2>导航栏</h2>
+                    <ul class="nav nav-tabs nav-stacked">
+                             				<li><a href="http://songboriceboy.github.io/xxoo/html/mst/webqdmstzl01gwjbllblzdqdmstb/index.html">【web前端面试题整理01】各位加班累了吧，来做点前端面试题吧</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/mst/webqdmstzl02qdmstdedxljz/index.html">【web前端面试题整理02】前端面试题第二弹袭来，接招！</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/mst/webqdmstzl03lkydCSSxgdb/index.html">【web前端面试题整理03】来看一点CSS相关的吧</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/mst/webqdmstzl04alyxzdsmdm/index.html">【web前端面试题整理04】阿里一行之大神面对面</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/mst/webqdmstzl05zjdqdmstxxxxb/index.html">【web前端面试题整理05】做几道前端面试题休息休息吧</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/mst/webqdmstzl06cddydjmyp/index.html">【web前端面试题整理06】成都第一弹，邂逅聚美优品</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/mst/webqdmstzl07wbljbxysjfl/index.html">【web前端面试题整理07】我不理解表现与数据分离。。。</a></li>
+    				                                         
+                    </ul>
+                </div>
+            </div>
+
+        </div>
+    </body>
+</html>

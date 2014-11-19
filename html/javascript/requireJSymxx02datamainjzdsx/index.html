@@ -1,0 +1,373 @@
+﻿<!DOCTYPE html>
+
+<html lang="zh">
+    <head>
+        <meta charset="utf-8">
+        <meta name="description" content="android,ios" />
+        <meta name="keywords" content="android,ios" />
+
+        <title>叶小钗</title>
+        <style type='text/css'>
+            body {
+                background-color: #CCC;
+            }
+        </style>
+        <link rel="stylesheet" href="../../../css/bootstrap.css" />
+    </head>
+
+    <body>
+        <div class="container">
+
+            <h1>叶小钗</h1>
+
+            <div class='navbar navbar-inverse'>
+                <div class='navbar-inner nav-collapse' style="height: auto;">
+                    <ul class="nav">
+                              				<li><a href="http://songboriceboy.github.io/xxoo/html/blade/index.html">blade</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/css/index.html">css</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/HTML5&CSS3/index.html">HTML5&CSS3</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/index.html">javascript</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Javaxx/index.html">Java学习</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/nodejs/index.html">nodejs</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/requirejs/index.html">requirejs</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/index.html">Web前端</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/xxgw/index.html">学习感悟</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/gzdd/index.html">工作点滴</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/jkxx/index.html">接口学习</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/wfl/index.html">未分类</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/ydkf/index.html">移动开发</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/sjms/index.html">设计模式</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/mst/index.html">面试题</a></li>
+    				                      </ul>
+                </div>
+            </div>
+
+            <div id='content' class='row-fluid'>
+
+                <div class='span9 main'>
+				<div style="color:blue" align=center>【requireJS源码学习02】datamain加载的实现</div><br><h1>前言</h1>
+<p>经过昨天的学习，我们大概了解到了requireJS的主要结构，这里先大概的回顾一下</p>
+<p>首先从总体结构来说，require这里分为三块：</p>
+<p>① newContext之前变量声明或者一些工具函数</p>
+<p>② newContext大家伙</p>
+<p>③ 解析script标签抽出data-main，并提供几个对外接口</p>
+<p>从流程上讲，大概发生了这些事情：</p>
+<p>① script标签引入requireJS后，便会初始化一些变量以及函数，并不干实际的事情</p>
+<p>② 在主干结构第三步之前会使用req({})调用（并且只会调用一次）newContext方法由此会维护一个newContext的闭包环境，之后的很多变量全在其中</p>
+<p>③ 取出script标签中的data-main参数，做第一次简单参数处理（这里有两个全局变量contexts以及cfg比较重要）</p>
+<p>在此调用req(cfg)，这里便会进行实际的操作了</p>
+<p>所以，关键还是第二次调用req(cfg)，这里由涉及到很多细节的地方了，这里我们便可以关注requirejs方法的细节了：</p>
+<p>① 这次调用首先会取出当前上下文环境，然后调用config方法设置属性，最后调用context.require进行实际操作</p>
+<div class="cnblogs_code">
+<pre>context =<span style="color: #000000;"> getOwn(contexts, contextName);
+</span><span style="color: #0000ff;">if</span> (!<span style="color: #000000;">context) {
+  context </span>= contexts[contextName] =<span style="color: #000000;"> req.s.newContext(contextName);
+}
+</span><span style="color: #0000ff;">if</span><span style="color: #000000;"> (config) {
+  context.configure(config);
+}
+</span><span style="color: #0000ff;">return</span> context.require(deps, callback, errback);</pre>
+</div>
+<p>② 属性配置结束后便执行localRequire方法，这里会慢慢加载模块了，然后使用</p>
+<div class="cnblogs_code">
+<pre>requireMod = getModule(makeModuleMap(<span style="color: #0000ff;">null</span>, relMap));</pre>
+</div>
+<p>真正加载模块，具体里面真的干了什么，这就是我们今天要学习的内容了，于是我们继续吧</p>
+<h1>requireJS如何加载data-main文件</h1>
+<p>这里我们先干一件事情，搞清楚requireJS是如何将script标签中data-main对应的文件加载出来的，这一步搞懂了后，才能知道其它文件如何加载</p>
+<p>首先，根据前面的学习，我们知道了</p>
+<div class="cnblogs_code">
+<pre><span style="color: #000000;">req(cfg)
+</span>=&gt;<span style="color: #000000;">
+context.require(config)
+</span>=&gt;<span style="color: #000000;">
+context.makeRequire()
+</span>=&gt;<span style="color: #000000;">
+localRequire()</span></pre>
+</div>
+<p>而localRequire干了很多事情，我们这里暂时是不关注的，于是主要注意力一到了nextTick上面，于是最终进入了这里的核心getModule</p>
+<h2>getModule</h2>
+<div class="cnblogs_code">
+<pre><span style="color: #0000ff;">function</span><span style="color: #000000;"> getModule(depMap) {
+  </span><span style="color: #0000ff;">var</span> id =<span style="color: #000000;"> depMap.id, mod </span>=<span style="color: #000000;"> getOwn(registry, id);
+  </span><span style="color: #0000ff;">if</span> (!<span style="color: #000000;">mod) {
+    mod </span>= registry[id] = <span style="color: #0000ff;">new</span><span style="color: #000000;"> context.Module(depMap);
+  }
+  </span><span style="color: #0000ff;">return</span><span style="color: #000000;"> mod;
+}</span></pre>
+</div>
+<p>我们前面说了registry里面存储着已经加载好了的模块，而一个模块加载后便不会再加载了，这里的唯一标识是makeModuleMap处理的，我们暂时不予关注</p>
+<p>这里没有便会创建，而这里的创建module过程便是我们需要了解的主干流程</p>
+<div class="cnblogs_code">
+<pre>mod = registry[id] = <span style="color: #0000ff;">new</span> context.Module(depMap);</pre>
+</div>
+<h2>context.Module</h2>
+<p><span style="line-height: 1.5;">我们这里实例化了一个mod作为返回，并且将之存入了registry对象中，</span><span style="line-height: 1.5;">初始化过程中并未做什么特别的事情，但是该模块具备了大量实用方法</span></p>
+<p><img src="14776557940113.png" alt=""></p>
+<p><span style="line-height: 1.5;">然后，将该mod返回给了我们的临时变量requireMod，并且调用了其初始化方法</span></p>
+<div class="cnblogs_code">
+<pre><span style="color: #000000;">requireMod.init(deps, callback, errback, {
+  enabled: </span><span style="color: #0000ff;">true</span><span style="color: #000000;">
+});</span></pre>
+</div>
+<h2>requireMod.init</h2>
+<p><span style="line-height: 1.5;">这里开始了我们实际的模块初始化逻辑了</span></p>
+<p><span style="line-height: 1.5;"><img src="40648117479047.png" alt=""></span></p>
+<p>&nbsp;</p>
+<p><span style="line-height: 1.5;">① 如果该模块已经初始化便不再执行下面逻辑</span></p>
+<p><span style="line-height: 1.5;">② 然后他会将依赖映射取出，这里为了保存原始数组的完整性还做了其它操作</span></p>
+<div class="cnblogs_code">
+<pre><span style="color: #008000;">//</span><span style="color: #008000;">Do a copy of the dependency array, so that</span><span style="color: #008000;">
+//</span><span style="color: #008000;">source inputs are not modified. For example</span><span style="color: #008000;">
+//</span><span style="color: #008000;">"shim" deps are passed in here directly, and</span><span style="color: #008000;">
+//</span><span style="color: #008000;">doing a direct modification of the depMaps array</span><span style="color: #008000;">
+//</span><span style="color: #008000;">would affect that config.</span>
+<span style="color: #0000ff;">this</span>.depMaps = depMaps &amp;&amp; depMaps.slice(0);</pre>
+</div>
+<p>最后执行了module的enable方法，enable最后会调用this.check</p>
+<h2>requireMod.check</h2>
+<p>调用enable方法时，首先会存一个类似于registry的对象enabledRegistry，这个应该与依赖项什么的相关，比如backbone依赖于underscore，这里就应该先加载underscore</p>
+<p>但是这里具体干了什么，我们先放一下，先跑主干流程，我们这里直接进入check</p>
+<p><span style="color: #ff0000;">PS：这个enable很关键，我们后面一点详细来看看</span></p>
+<p>进入check流程后，马上又跳至了this.fetch</p>
+<p>这里首先记录了当前上下文环境的开始时间（此context是所有mod共享的）</p>
+<div class="cnblogs_code">
+<pre>context.startTime = (<span style="color: #0000ff;">new</span> Date()).getTime();</pre>
+</div>
+<p>然后回调用this.load方法，这个方法有可能要加载标签了，这里也是有点东西的，我们稍候再说</p>
+<p><img src="13137808088351.png" alt=""></p>
+<p>然后控制器又回到了context的load手里</p>
+<div class="cnblogs_code">
+<pre><span style="color: #008000;">//</span><span style="color: #008000;">Delegates to req.load. Broken out as a separate function to</span><span style="color: #008000;">
+//</span><span style="color: #008000;">allow overriding in the optimizer.</span>
+load: <span style="color: #0000ff;">function</span><span style="color: #000000;"> (id, url) {
+  req.load(context, id, url);
+},
+</span><span style="color: #000000;">
+req.load </span>= <span style="color: #0000ff;">function</span><span style="color: #000000;"> (context, moduleName, url) {
+  </span><span style="color: #0000ff;">var</span> config = (context &amp;&amp; context.config) ||<span style="color: #000000;"> {},
+          node;
+  </span><span style="color: #0000ff;">if</span><span style="color: #000000;"> (isBrowser) {
+    </span><span style="color: #008000;">//</span><span style="color: #008000;">In the browser so use a script tag</span>
+    node =<span style="color: #000000;"> req.createNode(config, moduleName, url);
+
+    node.setAttribute(</span>'data-requirecontext'<span style="color: #000000;">, context.contextName);
+    node.setAttribute(</span>'data-requiremodule'<span style="color: #000000;">, moduleName);
+</span>
+    <span style="color: #0000ff;">if</span> (node.attachEvent &amp;&amp;
+                  !(node.attachEvent.toString &amp;&amp; node.attachEvent.toString().indexOf('[native code') &lt; 0) &amp;&amp;
+                  !<span style="color: #000000;">isOpera) {</span>
+      useInteractive = <span style="color: #0000ff;">true</span><span style="color: #000000;">;
+      node.attachEvent(</span>'onreadystatechange'<span style="color: #000000;">, context.onScriptLoad);</span>
+    } <span style="color: #0000ff;">else</span><span style="color: #000000;"> {
+      node.addEventListener(</span>'load', context.onScriptLoad, <span style="color: #0000ff;">false</span><span style="color: #000000;">);
+      node.addEventListener(</span>'error', context.onScriptError, <span style="color: #0000ff;">false</span><span style="color: #000000;">);
+    }
+    node.src </span>=<span style="color: #000000;"> url;</span>
+    currentlyAddingScript =<span style="color: #000000;"> node;
+    </span><span style="color: #0000ff;">if</span><span style="color: #000000;"> (baseElement) {
+      head.insertBefore(node, baseElement);
+    } </span><span style="color: #0000ff;">else</span><span style="color: #000000;"> {
+      head.appendChild(node);
+    }
+    currentlyAddingScript </span>= <span style="color: #0000ff;">null</span><span style="color: #000000;">;
+
+    </span><span style="color: #0000ff;">return</span><span style="color: #000000;"> node;
+  } </span><span style="color: #0000ff;">else</span> <span style="color: #0000ff;">if</span><span style="color: #000000;"> (isWebWorker) {
+    </span><span style="color: #0000ff;">try</span><span style="color: #000000;"> {</span>
+<span style="color: #000000;">      importScripts(url);</span>
+<span style="color: #000000;">      context.completeLoad(moduleName);
+    } </span><span style="color: #0000ff;">catch</span><span style="color: #000000;"> (e) {
+      context.onError(makeError(</span>'importscripts'<span style="color: #000000;">,
+                              </span>'importScripts failed for ' +<span style="color: #000000;">
+                                  moduleName </span>+ ' at ' +<span style="color: #000000;"> url,
+                              e,
+                              [moduleName]));
+    }
+  }
+};</span></pre>
+</div>
+<p>这里做了很多兼容性处理，我们直接抽取主干逻辑即可，这里是重头戏了：</p>
+<p>① 使用createNode创建script标签</p>
+<div class="cnblogs_code">
+<pre>req.createNode = <span style="color: #0000ff;">function</span><span style="color: #000000;"> (config, moduleName, url) {
+  </span><span style="color: #0000ff;">var</span> node = config.xhtml ?<span style="color: #000000;">
+              document.createElementNS(</span>'http://www.w3.org/1999/xhtml', 'html:script'<span style="color: #000000;">) :
+              document.createElement(</span>'script'<span style="color: #000000;">);
+  node.type </span>= config.scriptType || 'text/javascript'<span style="color: #000000;">;
+  node.charset </span>= 'utf-8'<span style="color: #000000;">;
+  node.async </span>= <span style="color: #0000ff;">true</span><span style="color: #000000;">;
+  </span><span style="color: #0000ff;">return</span><span style="color: #000000;"> node;
+};</span></pre>
+</div>
+<p><img src="39890678223580.png" alt=""></p>
+<p>这里创建标签后给其注入了一些自定义属性，并且绑定了一个事件（这里各个浏览器可能不同，我们关注标准的）</p>
+<div class="cnblogs_code">
+<pre>node.addEventListener('load', context.onScriptLoad, <span style="color: #0000ff;">false</span>);</pre>
+</div>
+<div class="cnblogs_code">
+<pre>onScriptLoad: <span style="color: #0000ff;">function</span><span style="color: #000000;"> (evt) {
+  </span><span style="color: #0000ff;">if</span> (evt.type === 'load' || <span style="color: #000000;">(readyRegExp.test((evt.currentTarget </span>||<span style="color: #000000;"> evt.srcElement).readyState))) {
+    interactiveScript </span>= <span style="color: #0000ff;">null</span><span style="color: #000000;">;
+    </span><span style="color: #0000ff;">var</span> data =<span style="color: #000000;"> getScriptData(evt);
+    context.completeLoad(data.id);
+  }
+},</span></pre>
+</div>
+<p>然后将该节点插入head中</p>
+<div class="cnblogs_code">
+<pre>head.appendChild(node);</pre>
+</div>
+<p>于是头部多出了这么一块东西</p>
+<p><img src="44963418187230.png" alt=""></p>
+<p>此段js加载结束后马上执行调用onScriptLoad方法，但是，我们写在main.js中的逻辑会被调用，该函数暂时看来是执行一些资源清理工作</p>
+<p>并且会将该节点存储起来</p>
+<p>PS：注意啦，这里可能会有一定时序性问题，整个这块逻辑我们还需要整理</p>
+<p>看到这里，我们基本明白了，我们第一个文件，main.js是如何加载出来的了</p>
+<h1>一个简单的例子</h1>
+<p>为了帮助理解，我们这里以一个简单的例子做说明，再看看源码的实现</p>
+<h3>HTML</h3>
+<div class="cnblogs_code">
+<pre><span style="color: #0000ff;">&lt;</span><span style="color: #800000;">html </span><span style="color: #ff0000;">xmlns</span><span style="color: #0000ff;">="http://www.w3.org/1999/xhtml"</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #0000ff;">&lt;</span><span style="color: #800000;">head</span><span style="color: #0000ff;">&gt;</span>
+    <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">title</span><span style="color: #0000ff;">&gt;&lt;/</span><span style="color: #800000;">title</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">head</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #0000ff;">&lt;</span><span style="color: #800000;">body</span><span style="color: #0000ff;">&gt;</span>
+  <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">script </span><span style="color: #ff0000;">src</span><span style="color: #0000ff;">="require.js"</span><span style="color: #ff0000;"> type</span><span style="color: #0000ff;">="text/javascript"</span><span style="color: #ff0000;"> data-main</span><span style="color: #0000ff;">="main.js"</span><span style="color: #0000ff;">&gt;&lt;/</span><span style="color: #800000;">script</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">body</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">html</span><span style="color: #0000ff;">&gt;</span></pre>
+</div>
+<h3>main.js</h3>
+<div class="cnblogs_code">
+<pre><span style="color: #000000;">require.config({
+  baseUrl: </span>''<span style="color: #000000;">,
+  paths: {
+    </span>'nameDep': 'js/nameDep'<span style="color: #000000;">,
+    </span>'say': 'js/say'<span style="color: #000000;">,
+    </span>'name': 'js/name'<span style="color: #000000;">
+  },
+  shim: {
+    </span>'name'<span style="color: #000000;">: {
+      deps: [</span>'nameDep'<span style="color: #000000;">]
+    }
+  }
+});
+require([</span>'name', 'say'], <span style="color: #0000ff;">function</span><span style="color: #000000;"> (name, say) {
+  say(name);
+});</span></pre>
+</div>
+<h2>name/say</h2>
+<div class="cnblogs_code">
+<pre>//name<br>define([''], <span style="color: #0000ff;">function</span><span style="color: #000000;"> () {
+  </span><span style="color: #0000ff;">return</span> '测试'<span style="color: #000000;">;
+});<br><br>//say
+define([], </span><span style="color: #0000ff;">function</span><span style="color: #000000;"> () {
+  </span><span style="color: #0000ff;">return</span> <span style="color: #0000ff;">function</span><span style="color: #000000;"> (name) {
+    console.log(name);
+  };
+});</span></pre>
+</div>
+<p>由上面的逻辑来看，当main.js加载结束后于是就该进行下一个逻辑的处理，我们这里看看他是如何处理的呢，这个时候第一个入口便是require.config了</p>
+<h2>require.config</h2>
+<p>这个时候会传一些有意义的参数进来了</p>
+<p><img src="48534628260111.png" alt=""></p>
+<p>整个config依旧在做参数设置，这个这个操作实际的意义是为newContext中的config赋值，并在localRequire中使用</p>
+<p><img src="44385399575185.png" alt=""></p>
+<p>接下来顺理成章的再次进入了模块实例化的步骤</p>
+<div class="cnblogs_code">
+<pre> requireMod = getModule(makeModuleMap(<span style="color: #0000ff;">null</span>, relMap));</pre>
+</div>
+<p>最后进入上面提到的初始化环节，但是内部会有不一样的细节处理（我们暂时不予关注，留着下次学习）这里每一次加载会清除前面的registry</p>
+<p>config的设置并不会触发script标签的加载，所以其实际加载还是下面的require，这块的逻辑又有点小复杂了......</p>
+<p><img src="38289337801466.png" alt=""></p>
+<p>PS：这里设置断点调试时序上好像有点问题，所以这块暂时就不处理了，应该与其维护的队列有关，留待下次解决吧</p>
+<h1><span style="line-height: 1.5;">结语</span></h1>
+<p>通过这两天的学习，我们大概了解了requireJS的一些东西，但是还是那句话，小钗感觉requireJS读起来还是有点小难，不是那么好吸收</p>
+<p>关于他的学习，还需要慢慢来哦，感觉里面水有点深......</p>
+                </div>
+
+                <div class='span3 sidebar'>
+                    <h2>导航栏</h2>
+                    <ul class="nav nav-tabs nav-stacked">
+                             				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/javascriptzdyxhxzsdyjxyzyddf/index.html">javascript中的一些核心知识点以及需要注意的地方</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/[zd]webappdyhzlyzydqdyhdpyjlkkb/index.html">[置顶]【webapp的优化整理】要做移动前端优化的朋友进来看看吧</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/[zd]yddjrwtyjjavascriptsjjzxjsjydjr/index.html">[置顶]【移动端兼容问题研究】javascript事件机制详解（涉及移动兼容）</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/gruntzhb30fzxhsygruntdbqddm/index.html">【grunt整合版】30分钟学会使用grunt打包前端代码</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/gruntdyd30fzxhsygruntdbqddm/index.html">【grunt第一弹】30分钟学会使用grunt打包前端代码</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/gruntdsdgruntzqdsjxmzdyy/index.html">【grunt第三弹】grunt在前端实际项目中的应用</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/gruntded30fzxhsygruntdbqddm02/index.html">【grunt第二弹】30分钟学会使用grunt打包前端代码（02）</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/IScrollsrxxtpyddhadlqs/index.html">【IScroll深入学习】突破移动端黑暗的利器（上）</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/IScrollsrxxjjIScrollynzz/index.html">【IScroll深入学习】解决IScroll疑难杂症</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/iScrollymxx00mniScroll/index.html">【iScroll源码学习00】模拟iScroll</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/iScrollymxx01zbjd/index.html">【iScroll源码学习01】准备阶段</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/iScrollymxx02fjiScrollsghxsjd/index.html">【iScroll源码学习02】分解iScroll三个核心事件点</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/iScrollymxx03iScrollsjjzygdtdsx/index.html">【iScroll源码学习03】iScroll事件机制与滚动条的实现</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/iScrollymxx04flIScrollhx/index.html">【iScroll源码学习04】分离IScroll核心</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/javascriptpxdytyyjc/index.html">【javascript培训第一天】语言基础</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/javascriptpxdstcybl/index.html">【javascript培训第三天】查遗补漏</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/javascriptpxdetDOMyBOM/index.html">【javascript培训第二天】DOM与BOM</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/javascriptjzdsk01mkhbc/index.html">【javascript激增的思考01】模块化编程</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/javascriptjzdsk02mkhyMVC/index.html">【javascript激增的思考02】模块化与MVC</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/javascriptjzdsk03MVVMyKnockout/index.html">【javascript激增的思考03】MVVM与Knockout</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/javascriptjzdsk04MVCyBackbonejs(beta)/index.html">【javascript激增的思考04】MVC与Backbonejs(beta)</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/javascriptmxdxzlrwmyqltkdzb01/index.html">【javascript面向对象之路】让我们一起来坦克大战吧01</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/NodeJSxxbj04xwfbxt/index.html">【NodeJS学习笔记04】新闻发布系统</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/requireJSymxx01ljzgrequireJSdjg/index.html">【requireJS源码学习01】了解整个requireJS的结构</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/requireJSymxx02datamainjzdsx/index.html">【requireJS源码学习02】datamain加载的实现</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/requireJSymxx03xjrequireJSdjzlc/index.html">【requireJS源码学习03】细究requireJS的加载流程</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/UIcjkfygjdrlcjs/index.html">【UI插件】开发一个简单日历插件（上）</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/UIcjjddrlcjxxxMVCsx/index.html">【UI插件】简单的日历插件（下）——学习MVC思想</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/zeptoxxbj01hxff$()/index.html">【zepto学习笔记01】核心方法$()</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/zeptoxxbj01hxff$()b/index.html">【zepto学习笔记01】核心方法$()（补）</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/zeptoxxbj02lsd/index.html">【zepto学习笔记02】零碎点</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/zeptoxxbj03sjjz/index.html">【zepto学习笔记03】事件机制</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/ycmsztjavascriptzdjc/index.html">【一次面试】再谈javascript中的继承</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/ztbackbone01mxModel/index.html">【再探backbone01】模型Model</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/ztbackbone02jhCollection/index.html">【再探backbone02】集合Collection</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/ztbackbone03bkydyyysltgym/index.html">【再探backbone03】博客园单页应用实例（提供源码）</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/ztbackbone04dyyydjslycl/index.html">【再探backbone04】单页应用的基石路由处理</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/ctUnderscorezsmbyq/index.html">【初探Underscore】再说模版引擎</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/ckjavascriptamzAjaxjsxnszddAjax/index.html">【初窥javascript奥秘之Ajax】简述下你所知道的Ajax？</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/ckjavascriptamzsjmpnxnwmyqmdp/index.html">【初窥javascript奥秘之事件冒泡】那些年我们一起冒的泡</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/ckjavascriptamzsjjzldtygdj/index.html">【初窥javascript奥秘之事件机制】论“点透”与“鬼点击”</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/ckjavascriptamzrrzmbddthisnzdxzthiszxnlm/index.html">【初窥javascript奥秘之让人捉摸不定的this】你知道现在this指向哪里吗？？？</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/ckjavascriptamzbbydxbdhlqbcl/index.html">【初窥javascript奥秘之闭包】叶大侠病都好了，求不踩了：）</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/ckjavascriptamzmxdxfzyjc/index.html">【初窥javascript奥秘之面向对象】封装与继承</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/qdmdsjdjgjdnzdljm/index.html">【前端盲点】事件的几个阶段你真的了解么？？？</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/dyyyviewymodelxgsl/index.html">【单页应用】view与model相关梳理</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/dyyyyqldyyybsxjdwbgns/index.html">【单页应用】一起来单页应用吧，实现简单微博功能！（上）</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/dyyyqjkzqappyggxsm/index.html">【单页应用】全局控制器app应该干些什么？</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/dyyywmgrhclkjdcccjgx/index.html">【单页应用】我们该如何处理框架弹出层层级关系？</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/dyyyljMVC/index.html">【单页应用】理解MVC</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/dyyyztxjzviewzjygrhtx/index.html">【单页应用之通信机制】view之间应该如何通信</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/dyyyjkzHistoryxsHistorydgdyyydm/index.html">【单页应用巨坑之History】细数History带给单页应用的噩梦</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/xtszeptofindysyjiosdcjpknrnhtt/index.html">【小贴士】zeptofind元素以及ios弹出键盘可能让你很头疼</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/xtsgytransitionEndanimatedygyqgs/index.html">【小贴士】关于transitionEndanimate的一个有趣故事</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/xtsgzzdbbysjwtdzzmp/index.html">【小贴士】工作中的”闭包“与事件委托的”阻止冒泡“</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/xtstytjavascriptzdreplace/index.html">【小贴士】探一探javascript中的replace</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/xtsxnjpyfixeddgydddt/index.html">【小贴士】虚拟键盘与fixed带给移动端的痛！</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/ttjavascriptsjjzdcsxyl/index.html">【探讨】javascript事件机制底层实现原理</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/mkhbcljrequireJSsxygjddmkjzq/index.html">【模块化编程】理解requireJS实现一个简单的模块加载器</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/zyJavaScriptmfjmtsdqlxkjzbfgndcljz/index.html">【转】【译】JavaScript魔法揭秘探索当前流行框架中部分功能的处理机制</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/zxjavascriptgszl01javascriptcszds/index.html">【追寻javascript高手之路01】javascript参数知多少？</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/zxjavascriptgszl02blzyyzds/index.html">【追寻javascript高手之路02】变量、作用域知多少？</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/zxjavascriptgszl03javascriptdxdld/index.html">【追寻javascript高手之路03】javascript对象大乱斗</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/zxjavascriptgszl04ljprototype/index.html">【追寻javascript高手之路04】理解prototype</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/zxjavascriptgszl05ljsjl/index.html">【追寻javascript高手之路05】理解事件流</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/zgbj04zxzzsj(2)/index.html">【重构笔记04】重新组织数据(2)</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/zgbj05jhtjbds/index.html">【重构笔记05】简化条件表达式</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/zgbj06jhhsdy/index.html">【重构笔记06】简化函数调用</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/ycmshgttbxysjfl/index.html">一次面试回顾——探讨表现与数据分离</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/dhzwebappzdxz/index.html">动画在webapp中的现状</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/ysandriodlqhthdomclicksjqtsxwttj/index.html">原生andriod浏览器回退后dom（click）事件全体失效问题探究</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/scsbdjxysdsbsjytouchsjdnxs/index.html">手持设备点击响应速度，鼠标事件与touch事件的那些事</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/mnbjQueryzeptohxymfx/index.html">迷你版jQuery——zepto核心源码分析</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/dbsgzdlwmlyqxjdddomxzqb/index.html">都别说工资低了，我们来一起写简单的dom选择器吧！</a></li>
+    				                                         
+                    </ul>
+                </div>
+            </div>
+
+        </div>
+    </body>
+</html>

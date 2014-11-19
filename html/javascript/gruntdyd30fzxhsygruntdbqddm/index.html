@@ -1,0 +1,474 @@
+﻿<!DOCTYPE html>
+
+<html lang="zh">
+    <head>
+        <meta charset="utf-8">
+        <meta name="description" content="android,ios" />
+        <meta name="keywords" content="android,ios" />
+
+        <title>叶小钗</title>
+        <style type='text/css'>
+            body {
+                background-color: #CCC;
+            }
+        </style>
+        <link rel="stylesheet" href="../../../css/bootstrap.css" />
+    </head>
+
+    <body>
+        <div class="container">
+
+            <h1>叶小钗</h1>
+
+            <div class='navbar navbar-inverse'>
+                <div class='navbar-inner nav-collapse' style="height: auto;">
+                    <ul class="nav">
+                              				<li><a href="http://songboriceboy.github.io/xxoo/html/blade/index.html">blade</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/css/index.html">css</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/HTML5&CSS3/index.html">HTML5&CSS3</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/index.html">javascript</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Javaxx/index.html">Java学习</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/nodejs/index.html">nodejs</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/requirejs/index.html">requirejs</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/index.html">Web前端</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/xxgw/index.html">学习感悟</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/gzdd/index.html">工作点滴</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/jkxx/index.html">接口学习</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/wfl/index.html">未分类</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/ydkf/index.html">移动开发</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/sjms/index.html">设计模式</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/mst/index.html">面试题</a></li>
+    				                      </ul>
+                </div>
+            </div>
+
+            <div id='content' class='row-fluid'>
+
+                <div class='span9 main'>
+				<div style="color:blue" align=center>【grunt第一弹】30分钟学会使用grunt打包前端代码</div><br><h1>前言</h1>
+<p>以现在前端js激增的态势，一个项目下来几十个js文件轻轻松松<br>对于复杂一点的单页应用来说，文件上百简直是家常便饭，那么这个时候我们的js文件应该怎么处理呢？<br>另外，对于css文件，又该如何处理呢？？<br>这些都是我们实际工作中要遇到的问题，比如我们现在框架使用zepto、backbone、underscore<br>我们要如何将他们合成一个libs文件，这都是令人头疼的问题</p>
+<p>但是grunt的出现却让这些事情变得优雅起来！<br>简单一键，打包结束，尼玛不是不可能啊！</p>
+<h2>grunt</h2>
+<p>是一套前端自动化工具，一个基于nodeJs的命令行工具，一般用于：<br>① 压缩文件<br>② 合并文件<br>③ 简单语法检查</p>
+<p>对于其他用法，我还不太清楚，我们这里简单介绍下grunt的压缩、合并文件</p>
+<p>初学，有误请包涵</p>
+<h1>准备阶段</h1>
+<h2>1、nodeJs环境</h2>
+<p>因为grunt是基于nodeJs的，所以首先各位需要安装nodeJS环境，这块我们便不管了<br>http://www.cnblogs.com/yexiaochai/p/3527418.html</p>
+<h2>2、安装grunt</h2>
+<p>有了nodeJs环境后，我们便可以开始搞grunt了，因为我们可能在任何目录下运行打包程序，所以我们需要安装CLI<br>官方推荐在全局安装CLI（grunt的命令行接口）</p>
+<div class="cnblogs_code">
+<pre><span style="color: #800000;">npm install -g grunt-cli</span></pre>
+</div>
+<p><span style="line-height: 1.5;">这条命令将会把grunt命令植入系统路径，这样就能在任意目录运行他，原因是</span></p>
+<p>每次运行grunt时，它都会使用node的require查找本地是否安装grunt，如果找到CLI便加载这个本地grunt库<br>然后应用我们项目中的GruntFile配置，并执行任务<br>PS：这段先不要管，安装完了往下看</p>
+<h1>实例学习：打包zepto</h1>
+<p>一些东西说多了都是泪，直接先上实例吧，实例结束后再说其它的<br>首先在D盘新建一个项目（文件夹就好）<br>在里面新增两个文件（不要问为什么，搞进去先）</p>
+<h2>① package.json</h2>
+<div class="cnblogs_code">
+<pre><span style="color: #000000;">{
+  </span>"name": "demo"<span style="color: #000000;">,
+  </span>"file": "zepto"<span style="color: #000000;">,
+  </span>"version": "0.1.0"<span style="color: #000000;">,
+  </span>"description": "demo"<span style="color: #000000;">,
+  </span>"license": "MIT"<span style="color: #000000;">,
+  </span>"devDependencies"<span style="color: #000000;">: {
+    </span>"grunt": "~0.4.1"<span style="color: #000000;">,
+    </span>"grunt-contrib-jshint": "~0.6.3"<span style="color: #000000;">,
+    </span>"grunt-contrib-uglify": "~0.2.1"<span style="color: #000000;">,
+    </span>"grunt-contrib-requirejs": "~0.4.1"<span style="color: #000000;">,
+    </span>"grunt-contrib-copy": "~0.4.1"<span style="color: #000000;">,
+    </span>"grunt-contrib-clean": "~0.5.0"<span style="color: #000000;">,
+    </span>"grunt-strip": "~0.2.1"<span style="color: #000000;">
+  },
+  </span>"dependencies"<span style="color: #000000;">: {
+    </span>"express": "3.x"<span style="color: #000000;">
+  }
+}</span></pre>
+</div>
+<h2>② Gruntfile.js</h2>
+<p>完了我们需要在grunt目录下执行 npm install将相关的文件下载下来：</p>
+<div class="cnblogs_code">
+<pre><span style="color: #800000;">$ cd d:
+$ cd grunt</span></pre>
+</div>
+<p><img src="51142158544467.png" alt=""></p>
+<p>然后我们的目录就会多一点东西：</p>
+<p><img src="253389610316040.png" alt=""></p>
+<p>多了很多东西，先别管事干什么的，我们后面都会用到，这个时候在目录下新建src文件夹，并且搞一个zepto进去</p>
+<p><img src="347799810327866.png" alt=""></p>
+<p>然后在Gruntfile中新增以下代码（先别管，增加再说）</p>
+<div class="cnblogs_code">
+<pre>module.exports = <span style="color: #0000ff;">function</span><span style="color: #000000;"> (grunt) {
+  </span><span style="color: #008000;">//</span><span style="color: #008000;"> 项目配置</span>
+<span style="color: #000000;">  grunt.initConfig({
+    pkg: grunt.file.readJSON(</span>'package.json'<span style="color: #000000;">),
+    uglify: {
+      options: {
+        banner: </span>'/*! &lt;%= pkg.file %&gt; &lt;%= grunt.template.today("yyyy-mm-dd") %&gt; */\n'<span style="color: #000000;">
+      },
+      build: {
+        src: </span>'src/&lt;%=pkg.file %&gt;.js'<span style="color: #000000;">,
+        dest: </span>'dest/&lt;%= pkg.file %&gt;.min.js'<span style="color: #000000;">
+      }
+    }
+  });
+  </span><span style="color: #008000;">//</span><span style="color: #008000;"> 加载提供"uglify"任务的插件</span>
+  grunt.loadNpmTasks('grunt-contrib-uglify'<span style="color: #000000;">);
+  </span><span style="color: #008000;">//</span><span style="color: #008000;"> 默认任务</span>
+  grunt.registerTask('default', ['uglify'<span style="color: #000000;">]);
+}</span></pre>
+</div>
+<p>然后运行 grunt命令后</p>
+<div class="cnblogs_code">
+<pre><span style="color: #800000;">grunt</span></pre>
+</div>
+<p><img src="15931369750941.png" alt=""></p>
+<p>嗯嗯，多了一个文件，并且是压缩的，不差！！！第一步结束</p>
+<h1>认识Gruntdile与package.json</h1>
+<p><span style="line-height: 1.5;">不出意外，每一个gurnt都会需要这两个文件，并且很可能就只有这两个文件（复杂的情况有所不同）</span></p>
+<h2><span style="line-height: 1.5;">package.json</span></h2>
+<p>这个文件用来存储npm模块的依赖项（比如我们的打包若是依赖requireJS的插件，这里就需要配置）<br>然后，我们会在里面配置一些不一样的信息，比如我们上面的file，这些数据都会放到package中<br>对于package的灵活配置，我们会在后面提到</p>
+<h2>Gruntfile</h2>
+<p>这个文件尤其关键，他一般干两件事情：<br>① 读取package信息<br>② 插件加载、注册任务，运行任务（grunt对外的接口全部写在这里面）</p>
+<p>Gruntfile一般由四个部分组成<br>① 包装函数<br>这个包装函数没什么东西，意思就是我们所有的代码必须放到这个函数里面</p>
+<div class="cnblogs_code">
+<pre>module.exports = <span style="color: #0000ff;">function</span><span style="color: #000000;"> (grunt) {
+</span><span style="color: #008000;">//</span><span style="color: #008000;">你的代码</span>
+}</pre>
+</div>
+<p>这个不用知道为什么，直接将代码放入即可</p>
+<p>② 项目/任务配置<br>我们在Gruntfile一般第一个用到的就是initConfig方法配置依赖信息</p>
+<div class="cnblogs_code">
+<pre>pkg: grunt.file.readJSON('package.json')</pre>
+</div>
+<p><span style="line-height: 1.5;">这里的 grunt.file.readJSON就会将我们的配置文件读出，并且转换为json对象</span></p>
+<p>然后我们在后面的地方就可以采用pkg.XXX的方式访问其中的数据了<br>值得注意的是这里使用的是underscore模板引擎，所以你在这里可以写很多东西</p>
+<p>uglify是一个插件的，我们在package依赖项进行了配置，这个时候我们为系统配置了一个任务<br>uglify（压缩），他会干这几个事情：</p>
+<p>① 在src中找到zepto进行压缩（具体名字在package中找到）<br>② 找到dest目录，没有就新建，然后将压缩文件搞进去<br>③ 在上面加几个描述语言</p>
+<p>这个任务配置其实就是一个方法接口调用，按照规范来就好，暂时不予关注，内幕后期来<br>这里只是定义了相关参数，但是并未加载实际函数，所以后面马上就有一句：</p>
+<div class="cnblogs_code">
+<pre>grunt.loadNpmTasks('grunt-contrib-uglify');</pre>
+</div>
+<p>用于加载相关插件</p>
+<p><span style="line-height: 1.5;">最后注册一个自定义任务（其实也是默认任务），所以我们下面的命令行是等效的：</span></p>
+<div class="cnblogs_code">
+<pre>grunt == grunt uglify</pre>
+</div>
+<p>至此，我们就简单解析了一番grunt的整个操作，下面来合并文件的例子</p>
+<h1>合并文件</h1>
+<p><span style="line-height: 1.5;">合并文件依赖于grunt-contrib-concat插件，所以我们的package依赖项要新增一项</span></p>
+<div class="cnblogs_code">
+<pre>"devDependencies"<span style="color: #000000;">: {
+  </span>"grunt": "~0.4.1"<span style="color: #000000;">,
+  </span>"grunt-contrib-jshint": "~0.6.3"<span style="color: #000000;">,
+  </span>"grunt-contrib-concat": "~0.3.0"<span style="color: #000000;">,
+  </span>"grunt-contrib-uglify": "~0.2.1"<span style="color: #000000;">,
+  </span>"grunt-contrib-requirejs": "~0.4.1"<span style="color: #000000;">,
+  </span>"grunt-contrib-copy": "~0.4.1"<span style="color: #000000;">,
+  </span>"grunt-contrib-clean": "~0.5.0"<span style="color: #000000;">,
+  </span>"grunt-strip": "~0.2.1"<span style="color: #000000;">
+},</span></pre>
+</div>
+<p>然后再将代码写成这个样子</p>
+<div class="cnblogs_code">
+<pre>module.exports = <span style="color: #0000ff;">function</span><span style="color: #000000;"> (grunt) {
+  </span><span style="color: #008000;">//</span><span style="color: #008000;"> 项目配置</span>
+<span style="color: #000000;">  grunt.initConfig({
+    pkg: grunt.file.readJSON(</span>'package.json'<span style="color: #000000;">),
+    concat: {
+      options: {
+        separator: </span>';'<span style="color: #000000;">
+      },
+      dist: {
+        src: [</span>'src/zepto.js', 'src/underscore.js', 'src/backbone.js'<span style="color: #000000;">],
+        dest: </span>'dest/libs.js'<span style="color: #000000;">
+      }
+    }
+  });
+  grunt.loadNpmTasks(</span>'grunt-contrib-concat'<span style="color: #000000;">);
+  </span><span style="color: #008000;">//</span><span style="color: #008000;"> 默认任务</span>
+  grunt.registerTask('default', ['concat'<span style="color: #000000;">]);
+}</span></pre>
+</div>
+<p>运行后，神奇的一幕发生了：</p>
+<p><img src="7274737510242.png" alt=""></p>
+<p>三个文件被压缩成了一个，但是没有压缩，所以，我们这里再加一步操作，将之压缩后再合并</p>
+<div class="cnblogs_code">
+<pre>module.exports = <span style="color: #0000ff;">function</span><span style="color: #000000;"> (grunt) {
+  </span><span style="color: #008000;">//</span><span style="color: #008000;"> 项目配置</span>
+<span style="color: #000000;">  grunt.initConfig({
+    pkg: grunt.file.readJSON(</span>'package.json'<span style="color: #000000;">),
+    concat: {
+      options: {
+        separator: </span>';'<span style="color: #000000;">
+      },
+      dist: {
+        src: [</span>'src/zepto.js', 'src/underscore.js', 'src/backbone.js'<span style="color: #000000;">],
+        dest: </span>'dest/libs.js'<span style="color: #000000;">
+      }
+    },
+    uglify: {
+      build: {
+        src: </span>'dest/libs.js'<span style="color: #000000;">,
+        dest: </span>'dest/libs.min.js'<span style="color: #000000;">
+      }
+    }
+  });
+  grunt.loadNpmTasks(</span>'grunt-contrib-uglify'<span style="color: #000000;">);
+  grunt.loadNpmTasks(</span>'grunt-contrib-concat'<span style="color: #000000;">);
+  </span><span style="color: #008000;">//</span><span style="color: #008000;"> 默认任务</span>
+  grunt.registerTask('default', ['concat', 'uglify'<span style="color: #000000;">]);
+}</span></pre>
+</div>
+<p>我这里的做法是先合并形成一个libs，然后再将libs压缩成libs.min.js</p>
+<p><img src="42146406938419.png" alt=""></p>
+<p>所以我们这里换个做法，先压缩再合并，其实unglify已经干了这些事情了</p>
+<div class="cnblogs_code">
+<pre>module.exports = <span style="color: #0000ff;">function</span><span style="color: #000000;"> (grunt) {
+  </span><span style="color: #008000;">//</span><span style="color: #008000;"> 项目配置</span>
+<span style="color: #000000;">  grunt.initConfig({
+    pkg: grunt.file.readJSON(</span>'package.json'<span style="color: #000000;">),
+    uglify: {
+      </span>"my_target"<span style="color: #000000;">: {
+        </span>"files"<span style="color: #000000;">: {
+          </span>'dest/libs.min.js': ['src/zepto.js', 'src/underscore.js', 'src/backbone.js'<span style="color: #000000;">]
+        }
+      }
+    }
+  });
+  grunt.loadNpmTasks(</span>'grunt-contrib-uglify'<span style="color: #000000;">);
+  </span><span style="color: #008000;">//</span><span style="color: #008000;"> 默认任务</span>
+  grunt.registerTask('default', ['uglify'<span style="color: #000000;">]);
+}</span></pre>
+</div>
+<p>所以，我们就暂时不去关注concat了</p>
+<p>最后，今天时间不早了，我们最后研究下grunt配合require于是便结束今天的学习吧</p>
+<h1>合并requireJS管理的文件</h1>
+<p>有了前面基础后，我们来干一件平时很头疼的事情，便是将require管理的所有js文件给压缩了合并为一个文件<br>首先我们建立一个简单的程序，里面使用了zepto、backbone、underscore（事实上我并未使用什么）</p>
+<p><img src="15540785404970.png" alt=""></p>
+<p><span style="line-height: 1.5;">在main.js中新增代码：</span></p>
+<div class="cnblogs_code">
+<pre><span style="color: #000000;">require.config({
+ baseUrl: </span>''<span style="color: #000000;">,
+ shim: {
+  $: {
+      exports: </span>'zepto'<span style="color: #000000;">
+  },
+  _: {
+   exports: </span>'_'<span style="color: #000000;">
+  },
+  B: {
+   deps: [
+    </span>'_'<span style="color: #000000;">,
+    </span>'$'<span style="color: #000000;">
+     ],
+   exports: </span>'Backbone'<span style="color: #000000;">
+  }
+ },
+ paths: {
+  </span>'$': 'src/zepto'<span style="color: #000000;">,
+  </span>'_': 'src/underscore'<span style="color: #000000;">,
+  </span>'B': 'src/backbone'<span style="color: #000000;">
+ }
+});
+requirejs([</span>'B'], <span style="color: #0000ff;">function</span><span style="color: #000000;"> (b) {
+});</span></pre>
+</div>
+<p>这样的话运行会自动加载几个文件，我们现在希望将之合并为一个libs.js该怎么干呢？？？</p>
+<p>我们这里使用自定义任务方法来做，因为我们好像没有介绍他</p>
+<p>要使用requireJS相关需要插件&nbsp;</p>
+<div class="cnblogs_code">
+<pre>grunt.loadNpmTasks('grunt-contrib-requirejs');</pre>
+</div>
+<p><span style="line-height: 1.5;">因为我们以后可能存在配置文件存在各个项目文件的情况，所以我们这里将requireJs相关的配置放入gruntCfg.json中</span></p>
+<p>这样我们的package.json就没有什么实际意义了：</p>
+<div class="cnblogs_code">
+<pre><span style="color: #000000;">{
+  </span>"name": "demo"<span style="color: #000000;">,
+  </span>"version": "0.1.0"<span style="color: #000000;">,
+  </span>"description": "demo"<span style="color: #000000;">,
+  </span>"license": "MIT"<span style="color: #000000;">,
+  </span>"devDependencies"<span style="color: #000000;">: {
+ </span>"grunt": "~0.4.1"<span style="color: #000000;">,
+ </span>"grunt-contrib-jshint": "~0.6.3"<span style="color: #000000;">,
+ </span>"grunt-contrib-concat": "~0.3.0"<span style="color: #000000;">,
+ </span>"grunt-contrib-uglify": "~0.2.1"<span style="color: #000000;">,
+ </span>"grunt-contrib-requirejs": "~0.4.1"<span style="color: #000000;">,
+ </span>"grunt-contrib-copy": "~0.4.1"<span style="color: #000000;">,
+ </span>"grunt-contrib-clean": "~0.5.0"<span style="color: #000000;">,
+ </span>"grunt-strip": "~0.2.1"<span style="color: #000000;">
+ 
+  },
+  </span>"dependencies"<span style="color: #000000;">: {
+    </span>"express": "3.x"<span style="color: #000000;">
+  }
+}</span></pre>
+</div>
+<p>我们这里设置的require相关的grunt配置文件如下（gruntCfg.json）：</p>
+<div class="cnblogs_code">
+<pre><span style="color: #000000;">{
+  </span>"requirejs"<span style="color: #000000;">: {
+    </span>"main"<span style="color: #000000;">: {
+      </span>"options"<span style="color: #000000;">: {
+        </span>"baseUrl": ""<span style="color: #000000;">,
+        </span>"paths"<span style="color: #000000;">: {
+          </span>"$": "src/zepto"<span style="color: #000000;">,
+          </span>"_": "src/underscore"<span style="color: #000000;">,
+          </span>"B": "src/backbone"<span style="color: #000000;">,
+          </span>"Test": "src/Test"<span style="color: #000000;">
+        },
+        </span>"web"<span style="color: #000000;">: {
+          </span>"include"<span style="color: #000000;">: [
+            </span>"$"<span style="color: #000000;">,
+            </span>"_"<span style="color: #000000;">,
+            </span>"B"<span style="color: #000000;">,
+            </span>"Test"<span style="color: #000000;">
+          ],
+          </span>"out": "dest/libs.js"<span style="color: #000000;">
+        }
+      }
+    }
+  }
+}</span></pre>
+</div>
+<p>这里我们要打包这些文件搞到dest的libs.js文件中，这个文件照做就行，最后核心代码如下：</p>
+<div class="cnblogs_code">
+<pre>module.exports = <span style="color: #0000ff;">function</span><span style="color: #000000;"> (grunt) {
+  grunt.loadNpmTasks(</span>'grunt-contrib-requirejs'<span style="color: #000000;">);
+  </span><span style="color: #008000;">//</span><span style="color: #008000;">为了介绍自定义任务搞了一个这个</span>
+  grunt.registerTask('build', 'require demo', <span style="color: #0000ff;">function</span><span style="color: #000000;"> () {
+    </span><span style="color: #008000;">//</span><span style="color: #008000;">任务列表</span>
+    <span style="color: #0000ff;">var</span> tasks = ['requirejs'<span style="color: #000000;">];
+    </span><span style="color: #008000;">//</span><span style="color: #008000;">源码文件</span>
+    <span style="color: #0000ff;">var</span> srcDir = 'src'<span style="color: #000000;">;
+    </span><span style="color: #008000;">//</span><span style="color: #008000;">目标文件</span>
+    <span style="color: #0000ff;">var</span> destDir = 'dest'<span style="color: #000000;">;
+    </span><span style="color: #008000;">//</span><span style="color: #008000;">设置参数</span>
+    grunt.config.set('config'<span style="color: #000000;">, {
+      srcDir: srcDir,
+      destDir: destDir
+    });
+    </span><span style="color: #008000;">//</span><span style="color: #008000;">设置requireJs的信息</span>
+    <span style="color: #0000ff;">var</span> taskCfg = grunt.file.readJSON('gruntCfg.json'<span style="color: #000000;">);
+    </span><span style="color: #0000ff;">var</span> options =<span style="color: #000000;"> taskCfg.requirejs.main.options,
+        platformCfg </span>=<span style="color: #000000;"> options.web,
+        includes </span>=<span style="color: #000000;"> platformCfg.include,
+        paths </span>=<span style="color: #000000;"> options.paths;
+    </span><span style="color: #0000ff;">var</span> pos = -1<span style="color: #000000;">;
+    </span><span style="color: #0000ff;">var</span> requireTask =<span style="color: #000000;"> taskCfg.requirejs;
+    options.path </span>=<span style="color: #000000;"> paths;
+    options.out </span>=<span style="color: #000000;"> platformCfg.out;
+    options.include </span>=<span style="color: #000000;"> includes;
+    </span><span style="color: #008000;">//</span><span style="color: #008000;">运行任务</span>
+<span style="color: #000000;">    grunt.task.run(tasks);
+    grunt.config.set(</span>"requirejs"<span style="color: #000000;">, requireTask);
+  });
+}</span></pre>
+</div>
+<p><span>搞完了运行就好：grunt build</span></p>
+<div class="cnblogs_code">
+<pre><span style="color: #800000;">grunt build</span></pre>
+</div>
+<p><img src="38835026168581.png" alt=""></p>
+<p><img src="32951285938665.png" alt=""></p>
+<p>最后发现叶小钗三字，我就放心了，安全！！！！！！</p>
+<h1>下集预告</h1>
+<h2>1 HTML文件打包</h2>
+<h2>2 样式文件打包</h2>
+<h2>3 移动打包文件</h2>
+<p>我们的开发版本与使用版本可能不在一个位置哦</p>
+<h2>4 分支处理</h2>
+<p>不同分支打包</p>
+<h2>5 native包与HTML5包</h2>
+<p>在HTML5嵌入webview的时代，我们当然存在一次打包既要形成网站文件也要形成app文件</p>
+<h2>6 分频道打包</h2>
+<p>当然可能存在分频道分分支打包的情况</p>
+<p>今日到此为止，待续......</p>
+                </div>
+
+                <div class='span3 sidebar'>
+                    <h2>导航栏</h2>
+                    <ul class="nav nav-tabs nav-stacked">
+                             				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/javascriptzdyxhxzsdyjxyzyddf/index.html">javascript中的一些核心知识点以及需要注意的地方</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/[zd]webappdyhzlyzydqdyhdpyjlkkb/index.html">[置顶]【webapp的优化整理】要做移动前端优化的朋友进来看看吧</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/[zd]yddjrwtyjjavascriptsjjzxjsjydjr/index.html">[置顶]【移动端兼容问题研究】javascript事件机制详解（涉及移动兼容）</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/gruntzhb30fzxhsygruntdbqddm/index.html">【grunt整合版】30分钟学会使用grunt打包前端代码</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/gruntdyd30fzxhsygruntdbqddm/index.html">【grunt第一弹】30分钟学会使用grunt打包前端代码</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/gruntdsdgruntzqdsjxmzdyy/index.html">【grunt第三弹】grunt在前端实际项目中的应用</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/gruntded30fzxhsygruntdbqddm02/index.html">【grunt第二弹】30分钟学会使用grunt打包前端代码（02）</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/IScrollsrxxtpyddhadlqs/index.html">【IScroll深入学习】突破移动端黑暗的利器（上）</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/IScrollsrxxjjIScrollynzz/index.html">【IScroll深入学习】解决IScroll疑难杂症</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/iScrollymxx00mniScroll/index.html">【iScroll源码学习00】模拟iScroll</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/iScrollymxx01zbjd/index.html">【iScroll源码学习01】准备阶段</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/iScrollymxx02fjiScrollsghxsjd/index.html">【iScroll源码学习02】分解iScroll三个核心事件点</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/iScrollymxx03iScrollsjjzygdtdsx/index.html">【iScroll源码学习03】iScroll事件机制与滚动条的实现</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/iScrollymxx04flIScrollhx/index.html">【iScroll源码学习04】分离IScroll核心</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/javascriptpxdytyyjc/index.html">【javascript培训第一天】语言基础</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/javascriptpxdstcybl/index.html">【javascript培训第三天】查遗补漏</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/javascriptpxdetDOMyBOM/index.html">【javascript培训第二天】DOM与BOM</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/javascriptjzdsk01mkhbc/index.html">【javascript激增的思考01】模块化编程</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/javascriptjzdsk02mkhyMVC/index.html">【javascript激增的思考02】模块化与MVC</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/javascriptjzdsk03MVVMyKnockout/index.html">【javascript激增的思考03】MVVM与Knockout</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/javascriptjzdsk04MVCyBackbonejs(beta)/index.html">【javascript激增的思考04】MVC与Backbonejs(beta)</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/javascriptmxdxzlrwmyqltkdzb01/index.html">【javascript面向对象之路】让我们一起来坦克大战吧01</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/NodeJSxxbj04xwfbxt/index.html">【NodeJS学习笔记04】新闻发布系统</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/requireJSymxx01ljzgrequireJSdjg/index.html">【requireJS源码学习01】了解整个requireJS的结构</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/requireJSymxx02datamainjzdsx/index.html">【requireJS源码学习02】datamain加载的实现</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/requireJSymxx03xjrequireJSdjzlc/index.html">【requireJS源码学习03】细究requireJS的加载流程</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/UIcjkfygjdrlcjs/index.html">【UI插件】开发一个简单日历插件（上）</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/UIcjjddrlcjxxxMVCsx/index.html">【UI插件】简单的日历插件（下）——学习MVC思想</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/zeptoxxbj01hxff$()/index.html">【zepto学习笔记01】核心方法$()</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/zeptoxxbj01hxff$()b/index.html">【zepto学习笔记01】核心方法$()（补）</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/zeptoxxbj02lsd/index.html">【zepto学习笔记02】零碎点</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/zeptoxxbj03sjjz/index.html">【zepto学习笔记03】事件机制</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/ycmsztjavascriptzdjc/index.html">【一次面试】再谈javascript中的继承</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/ztbackbone01mxModel/index.html">【再探backbone01】模型Model</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/ztbackbone02jhCollection/index.html">【再探backbone02】集合Collection</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/ztbackbone03bkydyyysltgym/index.html">【再探backbone03】博客园单页应用实例（提供源码）</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/ztbackbone04dyyydjslycl/index.html">【再探backbone04】单页应用的基石路由处理</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/ctUnderscorezsmbyq/index.html">【初探Underscore】再说模版引擎</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/ckjavascriptamzAjaxjsxnszddAjax/index.html">【初窥javascript奥秘之Ajax】简述下你所知道的Ajax？</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/ckjavascriptamzsjmpnxnwmyqmdp/index.html">【初窥javascript奥秘之事件冒泡】那些年我们一起冒的泡</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/ckjavascriptamzsjjzldtygdj/index.html">【初窥javascript奥秘之事件机制】论“点透”与“鬼点击”</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/ckjavascriptamzrrzmbddthisnzdxzthiszxnlm/index.html">【初窥javascript奥秘之让人捉摸不定的this】你知道现在this指向哪里吗？？？</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/ckjavascriptamzbbydxbdhlqbcl/index.html">【初窥javascript奥秘之闭包】叶大侠病都好了，求不踩了：）</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/ckjavascriptamzmxdxfzyjc/index.html">【初窥javascript奥秘之面向对象】封装与继承</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/qdmdsjdjgjdnzdljm/index.html">【前端盲点】事件的几个阶段你真的了解么？？？</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/dyyyviewymodelxgsl/index.html">【单页应用】view与model相关梳理</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/dyyyyqldyyybsxjdwbgns/index.html">【单页应用】一起来单页应用吧，实现简单微博功能！（上）</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/dyyyqjkzqappyggxsm/index.html">【单页应用】全局控制器app应该干些什么？</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/dyyywmgrhclkjdcccjgx/index.html">【单页应用】我们该如何处理框架弹出层层级关系？</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/dyyyljMVC/index.html">【单页应用】理解MVC</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/dyyyztxjzviewzjygrhtx/index.html">【单页应用之通信机制】view之间应该如何通信</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/dyyyjkzHistoryxsHistorydgdyyydm/index.html">【单页应用巨坑之History】细数History带给单页应用的噩梦</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/xtszeptofindysyjiosdcjpknrnhtt/index.html">【小贴士】zeptofind元素以及ios弹出键盘可能让你很头疼</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/xtsgytransitionEndanimatedygyqgs/index.html">【小贴士】关于transitionEndanimate的一个有趣故事</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/xtsgzzdbbysjwtdzzmp/index.html">【小贴士】工作中的”闭包“与事件委托的”阻止冒泡“</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/xtstytjavascriptzdreplace/index.html">【小贴士】探一探javascript中的replace</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/xtsxnjpyfixeddgydddt/index.html">【小贴士】虚拟键盘与fixed带给移动端的痛！</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/ttjavascriptsjjzdcsxyl/index.html">【探讨】javascript事件机制底层实现原理</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/mkhbcljrequireJSsxygjddmkjzq/index.html">【模块化编程】理解requireJS实现一个简单的模块加载器</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/zyJavaScriptmfjmtsdqlxkjzbfgndcljz/index.html">【转】【译】JavaScript魔法揭秘探索当前流行框架中部分功能的处理机制</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/zxjavascriptgszl01javascriptcszds/index.html">【追寻javascript高手之路01】javascript参数知多少？</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/zxjavascriptgszl02blzyyzds/index.html">【追寻javascript高手之路02】变量、作用域知多少？</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/zxjavascriptgszl03javascriptdxdld/index.html">【追寻javascript高手之路03】javascript对象大乱斗</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/zxjavascriptgszl04ljprototype/index.html">【追寻javascript高手之路04】理解prototype</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/zxjavascriptgszl05ljsjl/index.html">【追寻javascript高手之路05】理解事件流</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/zgbj04zxzzsj(2)/index.html">【重构笔记04】重新组织数据(2)</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/zgbj05jhtjbds/index.html">【重构笔记05】简化条件表达式</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/zgbj06jhhsdy/index.html">【重构笔记06】简化函数调用</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/ycmshgttbxysjfl/index.html">一次面试回顾——探讨表现与数据分离</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/dhzwebappzdxz/index.html">动画在webapp中的现状</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/ysandriodlqhthdomclicksjqtsxwttj/index.html">原生andriod浏览器回退后dom（click）事件全体失效问题探究</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/scsbdjxysdsbsjytouchsjdnxs/index.html">手持设备点击响应速度，鼠标事件与touch事件的那些事</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/mnbjQueryzeptohxymfx/index.html">迷你版jQuery——zepto核心源码分析</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/dbsgzdlwmlyqxjdddomxzqb/index.html">都别说工资低了，我们来一起写简单的dom选择器吧！</a></li>
+    				                                         
+                    </ul>
+                </div>
+            </div>
+
+        </div>
+    </body>
+</html>

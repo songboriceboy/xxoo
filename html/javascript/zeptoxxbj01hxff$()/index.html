@@ -1,0 +1,372 @@
+﻿<!DOCTYPE html>
+
+<html lang="zh">
+    <head>
+        <meta charset="utf-8">
+        <meta name="description" content="android,ios" />
+        <meta name="keywords" content="android,ios" />
+
+        <title>叶小钗</title>
+        <style type='text/css'>
+            body {
+                background-color: #CCC;
+            }
+        </style>
+        <link rel="stylesheet" href="../../../css/bootstrap.css" />
+    </head>
+
+    <body>
+        <div class="container">
+
+            <h1>叶小钗</h1>
+
+            <div class='navbar navbar-inverse'>
+                <div class='navbar-inner nav-collapse' style="height: auto;">
+                    <ul class="nav">
+                              				<li><a href="http://songboriceboy.github.io/xxoo/html/blade/index.html">blade</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/css/index.html">css</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/HTML5&CSS3/index.html">HTML5&CSS3</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/index.html">javascript</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Javaxx/index.html">Java学习</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/nodejs/index.html">nodejs</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/requirejs/index.html">requirejs</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/index.html">Web前端</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/xxgw/index.html">学习感悟</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/gzdd/index.html">工作点滴</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/jkxx/index.html">接口学习</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/wfl/index.html">未分类</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/ydkf/index.html">移动开发</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/sjms/index.html">设计模式</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/mst/index.html">面试题</a></li>
+    				                      </ul>
+                </div>
+            </div>
+
+            <div id='content' class='row-fluid'>
+
+                <div class='span9 main'>
+				<div style="color:blue" align=center>【zepto学习笔记01】核心方法$()</div><br><h1>前言</h1>
+<p>我们移动端基本使用zepto了，而我也从一个小白变成稍微靠谱一点的前端了，最近居然经常要改到zepto源码<br>但是，我对zepto不太熟悉，其实前端水准还是不够，所以便私下偷偷学习下吧，别被发现了</p>
+<h1>核心方法$()</h1>
+<p>我们使用这个方法一般有几个用途（我这里只说我自己用到过的），这里根据使用度排个序：</p>
+<h3>① 选择器/$(selector)</h3>
+<p>将返回一个包装过的dom集合对象（有很多选择器）</p>
+<h3>② html字符串/$(domStr)</h3>
+<p>仍然返回一个包装过的dom对象，他会将字符串初始化为我们的dom结构<br>PS：新增了一个方法可以直接赋予dom结构属性，我们这里不关注</p>
+<h3>③ 函数/$(function(){})</h3>
+<p>我基本没这么用过，他实在文档加载结束后执行</p>
+<p>暂时不管这些东西吧。我们这里来一个个看看他们的实现：</p>
+<div class="cnblogs_code">
+<pre><span style="color: #008080;"> 1</span> $('div'<span style="color: #000000;">)
+</span><span style="color: #008080;"> 2</span> <span style="color: #008000;">//</span><span style="color: #008000;">=&gt; all DIV elements on the page</span>
+<span style="color: #008080;"> 3</span> $('#foo'<span style="color: #000000;">)
+</span><span style="color: #008080;"> 4</span> <span style="color: #008000;">//</span><span style="color: #008000;">=&gt; element with ID "foo"</span>
+<span style="color: #008080;"> 5</span> 
+<span style="color: #008080;"> 6</span> <span style="color: #008000;">//</span><span style="color: #008000;"> create element:</span>
+<span style="color: #008080;"> 7</span> $("&lt;p&gt;Hello&lt;/p&gt;"<span style="color: #000000;">)
+</span><span style="color: #008080;"> 8</span> <span style="color: #008000;">//</span><span style="color: #008000;">=&gt; the new P element</span>
+<span style="color: #008080;"> 9</span> <span style="color: #008000;">//</span><span style="color: #008000;"> create element with attributes:</span>
+<span style="color: #008080;">10</span> $("&lt;p /&gt;"<span style="color: #000000;">,
+</span><span style="color: #008080;">11</span> <span style="color: #000000;">{
+</span><span style="color: #008080;">12</span> text: "Hello"<span style="color: #000000;">,
+</span><span style="color: #008080;">13</span> id: "greeting"<span style="color: #000000;">,
+</span><span style="color: #008080;">14</span> css: { color: 'darkblue'<span style="color: #000000;"> }
+</span><span style="color: #008080;">15</span> <span style="color: #000000;">})
+</span><span style="color: #008080;">16</span> <span style="color: #008000;">//</span><span style="color: #008000;">=&gt; &lt;p id=greeting style="color:darkblue"&gt;Hello&lt;/p&gt;</span>
+<span style="color: #008080;">17</span> <span style="color: #008000;">//</span><span style="color: #008000;"> execute callback when the page is ready:</span>
+<span style="color: #008080;">18</span> Zepto(<span style="color: #0000ff;">function</span><span style="color: #000000;"> ($) {
+</span><span style="color: #008080;">19</span> alert('Ready to Zepto!'<span style="color: #000000;">)
+</span><span style="color: #008080;">20</span> })</pre>
+</div>
+<h1>入口$()</h1>
+<h2>只如初见</h2>
+<p>首先我们来看看选择器，在zepto代码中有这么一行代码：</p>
+<div class="cnblogs_code">
+<pre><span style="color: #008080;">1</span> $ = <span style="color: #0000ff;">function</span><span style="color: #000000;"> (selector, context) {
+</span><span style="color: #008080;">2</span>     <span style="color: #0000ff;">return</span><span style="color: #000000;"> zepto.init(selector, context)
+</span><span style="color: #008080;">3</span> }</pre>
+</div>
+<p>这里其实前面就定义了$这个变量：</p>
+<div class="cnblogs_code">
+<pre><span style="color: #0000ff;">var</span> undefined, key, $, classList, emptyArray = [],</pre>
+</div>
+<p>这里初始化了$这个变量为一个函数，最后并将这个变量公开化（现在再匿名还是中，外面是访问不到的），他具体是这样干的</p>
+<div class="cnblogs_code">
+<pre><span style="color: #008080;"> 1</span> <span style="color: #0000ff;">var</span> Zepto = <span style="color: #0000ff;">function</span><span style="color: #000000;"> () {
+</span><span style="color: #008080;"> 2</span>     <span style="color: #0000ff;">var</span> zepto =<span style="color: #000000;"> {}, $;
+</span><span style="color: #008080;"> 3</span>     zepto.init = <span style="color: #0000ff;">function</span><span style="color: #000000;"> (selector, context) {
+</span><span style="color: #008080;"> 4</span> <span style="color: #000000;">    };
+</span><span style="color: #008080;"> 5</span>     $ = <span style="color: #0000ff;">function</span><span style="color: #000000;"> (selector, context) {
+</span><span style="color: #008080;"> 6</span>         <span style="color: #0000ff;">return</span><span style="color: #000000;"> zepto.init(selector, context);
+</span><span style="color: #008080;"> 7</span> <span style="color: #000000;">    };
+</span><span style="color: #008080;"> 8</span>     $.zepto =<span style="color: #000000;"> zepto;
+</span><span style="color: #008080;"> 9</span>     <span style="color: #0000ff;">return</span><span style="color: #000000;"> $;
+</span><span style="color: #008080;">10</span> <span style="color: #000000;">};
+</span><span style="color: #008080;">11</span> window.$ = Zepto;</pre>
+</div>
+<p>于是我们在页面中使用这样的代码：</p>
+<div class="cnblogs_code">
+<pre><span style="color: #008080;">1</span> <span style="color: #0000ff;">var</span> el = $('#id'<span style="color: #000000;">);
+</span><span style="color: #008080;">2</span> <span style="color: #008000;">//</span><span style="color: #008000;">实际上是</span>
+<span style="color: #008080;">3</span> <span style="color: #0000ff;">var</span> el = zepto.init('#id');</pre>
+</div>
+<p>具体里面的逻辑就是我们的重点，于是我们跟进去慢慢看吧</p>
+<h2>一查到底</h2>
+<p>我们详细看看zepto.init这个方法</p>
+<div class="cnblogs_code">
+<pre><span style="color: #008080;"> 1</span> zepto.init = <span style="color: #0000ff;">function</span><span style="color: #000000;"> (selector, context) {
+</span><span style="color: #008080;"> 2</span>     <span style="color: #0000ff;">if</span> (!selector) <span style="color: #0000ff;">return</span><span style="color: #000000;"> zepto.Z()
+</span><span style="color: #008080;"> 3</span>     <span style="color: #0000ff;">else</span> <span style="color: #0000ff;">if</span> (isFunction(selector)) <span style="color: #0000ff;">return</span><span style="color: #000000;"> $(document).ready(selector)
+</span><span style="color: #008080;"> 4</span>     <span style="color: #0000ff;">else</span> <span style="color: #0000ff;">if</span> (zepto.isZ(selector)) <span style="color: #0000ff;">return</span><span style="color: #000000;"> selector
+</span><span style="color: #008080;"> 5</span>     <span style="color: #0000ff;">else</span><span style="color: #000000;"> {
+</span><span style="color: #008080;"> 6</span>         <span style="color: #0000ff;">var</span><span style="color: #000000;"> dom
+</span><span style="color: #008080;"> 7</span>         <span style="color: #0000ff;">if</span> (isArray(selector)) dom =<span style="color: #000000;"> compact(selector)
+</span><span style="color: #008080;"> 8</span>         <span style="color: #0000ff;">else</span> <span style="color: #0000ff;">if</span><span style="color: #000000;"> (isObject(selector))
+</span><span style="color: #008080;"> 9</span>             dom = [isPlainObject(selector) ? $.extend({}, selector) : selector], selector = <span style="color: #0000ff;">null</span>
+<span style="color: #008080;">10</span>         <span style="color: #0000ff;">else</span> <span style="color: #0000ff;">if</span><span style="color: #000000;"> (fragmentRE.test(selector))
+</span><span style="color: #008080;">11</span>             dom = zepto.fragment(selector.trim(), RegExp.$1, context), selector = <span style="color: #0000ff;">null</span>
+<span style="color: #008080;">12</span>         <span style="color: #0000ff;">else</span> <span style="color: #0000ff;">if</span> (context !== undefined) <span style="color: #0000ff;">return</span><span style="color: #000000;"> $(context).find(selector)
+</span><span style="color: #008080;">13</span>         <span style="color: #0000ff;">else</span> dom =<span style="color: #000000;"> zepto.qsa(document, selector)
+</span><span style="color: #008080;">14</span>         <span style="color: #0000ff;">return</span><span style="color: #000000;"> zepto.Z(dom, selector)
+</span><span style="color: #008080;">15</span> <span style="color: #000000;">    }
+</span><span style="color: #008080;">16</span> }</pre>
+</div>
+<p>第一步，如果选择器selector不存在的话，就调用默认的方法，说白了就是返回一个集合长度为0的包装对象</p>
+<div class="cnblogs_code">
+<pre><span style="color: #008080;">1</span> <span style="color: #008000;">//</span><span style="color: #008000;">通过给dom设置__proto__属性指向$.fn来达到继承$.fn上所有方法的目的</span>
+<span style="color: #008080;">2</span> <span style="color: #008000;">//</span><span style="color: #008000;">ie自然是不支持的，zepto也基本不理睬ie</span>
+<span style="color: #008080;">3</span> zepto.Z = <span style="color: #0000ff;">function</span><span style="color: #000000;"> (dom, selector) {
+</span><span style="color: #008080;">4</span>     dom = dom ||<span style="color: #000000;"> []
+</span><span style="color: #008080;">5</span>     dom.__proto__ =<span style="color: #000000;"> $.fn
+</span><span style="color: #008080;">6</span>     dom.selector = selector || ''
+<span style="color: #008080;">7</span>     <span style="color: #0000ff;">return</span><span style="color: #000000;"> dom
+</span><span style="color: #008080;">8</span> }</pre>
+</div>
+<p>第二步，处理传入函数情况，如果传入是函数的话就在文档加载结束后执行<br>第三步，处理传入zepto对象，如果已经是zepto包装对象了就直接返回</p>
+<div class="cnblogs_code">
+<pre><span style="color: #008080;">1</span> zepto.isZ = <span style="color: #0000ff;">function</span><span style="color: #000000;"> (object) {
+</span><span style="color: #008080;">2</span>     <span style="color: #0000ff;">return</span> object <span style="color: #0000ff;">instanceof</span><span style="color: #000000;"> zepto.Z
+</span><span style="color: #008080;">3</span> }</pre>
+</div>
+<p>第四步，开始了复杂的逻辑计算了，我们这里单独提出来</p>
+<h2>selector处理</h2>
+<h3>① 数组项</h3>
+<p>如果对象是一个数组，则去掉其中无意义的数组项</p>
+<div class="cnblogs_code">
+<pre><span style="color: #008080;">1</span> <span style="color: #008000;">//</span><span style="color: #008000;">清除给定的参数中的null或undefined，注意0==null,'' == null为false</span>
+<span style="color: #008080;">2</span> <span style="color: #0000ff;">function</span><span style="color: #000000;"> compact(array) {
+</span><span style="color: #008080;">3</span>     <span style="color: #0000ff;">return</span> filter.call(array, <span style="color: #0000ff;">function</span><span style="color: #000000;"> (item) {
+</span><span style="color: #008080;">4</span>         <span style="color: #0000ff;">return</span> item != <span style="color: #0000ff;">null</span>
+<span style="color: #008080;">5</span> <span style="color: #000000;">    })
+</span><span style="color: #008080;">6</span> }</pre>
+</div>
+<h3>filter</h3>
+<p>其中filter是javascript数组的一个新的方法，用以筛选满足条件的数组项</p>
+<div class="cnblogs_code">
+<pre><span style="color: #008080;">1</span> <span style="color: #0000ff;">var</span> arr = [5, "element", 10, "the", <span style="color: #0000ff;">true</span><span style="color: #000000;">];
+</span><span style="color: #008080;">2</span> <span style="color: #0000ff;">var</span> result =<span style="color: #000000;"> arr.filter(
+</span><span style="color: #008080;">3</span>     <span style="color: #0000ff;">function</span><span style="color: #000000;"> (value) {
+</span><span style="color: #008080;">4</span>         <span style="color: #0000ff;">return</span> (<span style="color: #0000ff;">typeof</span> value === 'string'<span style="color: #000000;">);
+</span><span style="color: #008080;">5</span> <span style="color: #000000;">    }
+</span><span style="color: #008080;">6</span> <span style="color: #000000;">);
+</span><span style="color: #008080;">7</span> document.write(result);<span style="color: #008000;">//</span><span style="color: #008000;">Output: element, the</span></pre>
+</div>
+<p>最后返回数组项，我们这里认为其中每个数组项都是一个dom结构</p>
+<h3>② 传入对象</h3>
+<p>因为typeof dom也是object，所以zepto这里做了一点扩展</p>
+<div class="cnblogs_code">
+<pre><span style="color: #008080;">1</span> <span style="color: #0000ff;">function</span><span style="color: #000000;"> isObject(obj) {
+</span><span style="color: #008080;">2</span>     <span style="color: #0000ff;">return</span> type(obj) == "object"
+<span style="color: #008080;">3</span> }</pre>
+</div>
+<p>这个代码存在的意义，老夫也不知道了......if里面的代码比较关键：<br>如果传入的是对象（比如{}），就将selector拷贝到一个对象，如果是dom结构就直接放入数组<br>这里有两个方法需要注意，一个是extend，一个是isPlainObject</p>
+<h3>extend</h3>
+<p>extend用于为对象扩展对象</p>
+<div class="cnblogs_code">
+<pre><span style="color: #008080;"> 1</span> <span style="color: #0000ff;">function</span><span style="color: #000000;"> extend(target, source, deep) {
+</span><span style="color: #008080;"> 2</span>     <span style="color: #0000ff;">for</span> (key <span style="color: #0000ff;">in</span><span style="color: #000000;"> source)
+</span><span style="color: #008080;"> 3</span>     <span style="color: #008000;">//</span><span style="color: #008000;">如果深度扩展</span>
+<span style="color: #008080;"> 4</span>         <span style="color: #0000ff;">if</span> (deep &amp;&amp; (isPlainObject(source[key]) ||<span style="color: #000000;"> isArray(source[key]))) {
+</span><span style="color: #008080;"> 5</span>             <span style="color: #008000;">//</span><span style="color: #008000;">如果要扩展的数据是对象且target相对应的key不是对象</span>
+<span style="color: #008080;"> 6</span>             <span style="color: #0000ff;">if</span> (isPlainObject(source[key]) &amp;&amp; !isPlainObject(target[key])) target[key] =<span style="color: #000000;"> {}
+</span><span style="color: #008080;"> 7</span>             <span style="color: #008000;">//</span><span style="color: #008000;">如果要扩展的数据是数组且target相对应的key不是数组</span>
+<span style="color: #008080;"> 8</span>             <span style="color: #0000ff;">if</span> (isArray(source[key]) &amp;&amp; !isArray(target[key])) target[key] =<span style="color: #000000;"> []
+</span><span style="color: #008080;"> 9</span> <span style="color: #000000;">            extend(target[key], source[key], deep)
+</span><span style="color: #008080;">10</span>         } <span style="color: #0000ff;">else</span> <span style="color: #0000ff;">if</span> (source[key] !== undefined) target[key] =<span style="color: #000000;"> source[key]
+</span><span style="color: #008080;">11</span> }</pre>
+</div>
+<p>$.extend事实上也是调用的上面的方法，我们这里先不管他</p>
+<div class="cnblogs_code">
+<pre><span style="color: #008080;"> 1</span> $.extend = <span style="color: #0000ff;">function</span><span style="color: #000000;"> (target) {
+</span><span style="color: #008080;"> 2</span> <span style="color: #0000ff;">var</span> deep, args = slice.call(arguments, 1<span style="color: #000000;">)
+</span><span style="color: #008080;"> 3</span> <span style="color: #0000ff;">if</span> (<span style="color: #0000ff;">typeof</span> target == 'boolean') { <span style="color: #008000;">//</span><span style="color: #008000;">当第一个参数为boolean类型的值时，表示是否深度扩展</span>
+<span style="color: #008080;"> 4</span> deep =<span style="color: #000000;"> target
+</span><span style="color: #008080;"> 5</span> target = args.shift() <span style="color: #008000;">//</span><span style="color: #008000;">target取第二个参数</span>
+<span style="color: #008080;"> 6</span> <span style="color: #000000;">}
+</span><span style="color: #008080;"> 7</span> <span style="color: #008000;">//</span><span style="color: #008000;">遍历后面的参数，全部扩展到target上</span>
+<span style="color: #008080;"> 8</span> args.forEach(<span style="color: #0000ff;">function</span><span style="color: #000000;"> (arg) {
+</span><span style="color: #008080;"> 9</span> <span style="color: #000000;">extend(target, arg, deep)
+</span><span style="color: #008080;">10</span> <span style="color: #000000;">})
+</span><span style="color: #008080;">11</span> <span style="color: #0000ff;">return</span><span style="color: #000000;"> target
+</span><span style="color: #008080;">12</span> }</pre>
+</div>
+<h3>isPlainObject</h3>
+<p>这个方法有所不同，通过字面量定义的对象和new Object的对象返回true，new Object时传参数的返回false（测试对象是否纯粹的对象）</p>
+<div class="cnblogs_code">
+<pre><span style="color: #008080;">1</span> <span style="color: #0000ff;">function</span><span style="color: #000000;"> isPlainObject(obj) {
+</span><span style="color: #008080;">2</span>     <span style="color: #0000ff;">return</span> isObject(obj) &amp;&amp; !isWindow(obj) &amp;&amp; obj.__proto__ ==<span style="color: #000000;"> Object.prototype
+</span><span style="color: #008080;">3</span> <span style="color: #000000;">}
+</span><span style="color: #008080;">4</span> $.isPlainObject({})<span style="color: #008000;">//</span><span style="color: #008000;"> =&gt; true</span>
+<span style="color: #008080;">5</span> $.isPlainObject(<span style="color: #0000ff;">new</span> Object) <span style="color: #008000;">//</span><span style="color: #008000;"> =&gt; true</span>
+<span style="color: #008080;">6</span> $.isPlainObject(<span style="color: #0000ff;">new</span> Date) <span style="color: #008000;">//</span><span style="color: #008000;"> =&gt; false</span>
+<span style="color: #008080;">7</span> $.isPlainObject(window) <span style="color: #008000;">//</span><span style="color: #008000;"> =&gt; false</span></pre>
+</div>
+<p>至于这个数组到底是不是dom，代码这里先不关注，完了这里也结束了</p>
+<h3>③ 传入html字符串</h3>
+<p>如果传入的是html字符串，我们这里就要负责创建dom的工作了，整个这个东西其实比较复杂：</p>
+<div class="cnblogs_code">
+<pre><span style="color: #008080;">1</span> <span style="color: #008000;">//</span><span style="color: #008000;">HTML代码片断的正则</span>
+<span style="color: #008080;">2</span> fragmentRE = /^\s*&lt;(\w+|!)[^&gt;]*&gt;/,</pre>
+</div>
+<p>PS：我正则不行，暂时就不尝试去解释这个了</p>
+<p>字符串=&gt;dom</p>
+<div class="cnblogs_code">
+<pre><span style="color: #008080;"> 1</span> zepto.fragment = <span style="color: #0000ff;">function</span><span style="color: #000000;"> (html, name, properties) {
+</span><span style="color: #008080;"> 2</span>     <span style="color: #008000;">//</span><span style="color: #008000;">将类似&lt;div class="test"/&gt;替换成&lt;div class="test"&gt;&lt;/div&gt;,算是一种修复吧</span>
+<span style="color: #008080;"> 3</span>     <span style="color: #0000ff;">if</span> (html.replace) html = html.replace(tagExpanderRE, "&lt;$1&gt;&lt;/$2&gt;"<span style="color: #000000;">)
+</span><span style="color: #008080;"> 4</span>     <span style="color: #008000;">//</span><span style="color: #008000;">给name取标签名</span>
+<span style="color: #008080;"> 5</span>     <span style="color: #0000ff;">if</span> (name === undefined) name = fragmentRE.test(html) &amp;&amp; RegExp.$1
+<span style="color: #008080;"> 6</span>     <span style="color: #008000;">//</span><span style="color: #008000;">设置容器标签名，如果不是tr,tbody,thead,tfoot,td,th，则容器标签名为div</span>
+<span style="color: #008080;"> 7</span>     <span style="color: #0000ff;">if</span> (!(name <span style="color: #0000ff;">in</span> containers)) name = '*'
+<span style="color: #008080;"> 8</span>     <span style="color: #0000ff;">var</span> nodes, dom, container = containers[name] <span style="color: #008000;">//</span><span style="color: #008000;">创建容器</span>
+<span style="color: #008080;"> 9</span>     container.innerHTML = '' + html <span style="color: #008000;">//</span><span style="color: #008000;">将html代码片断放入容器</span>
+<span style="color: #008080;">10</span>     <span style="color: #008000;">//</span><span style="color: #008000;">取容器的子节点，这样就直接把字符串转成DOM节点了</span>
+<span style="color: #008080;">11</span>     dom = $.each(slice.call(container.childNodes), <span style="color: #0000ff;">function</span><span style="color: #000000;"> () {
+</span><span style="color: #008080;">12</span>         container.removeChild(<span style="color: #0000ff;">this</span>) <span style="color: #008000;">//</span><span style="color: #008000;">逐个删除</span>
+<span style="color: #008080;">13</span> <span style="color: #000000;">    })
+</span><span style="color: #008080;">14</span>     <span style="color: #008000;">//</span><span style="color: #008000;">如果properties是对象, 则将其当作属性来给添加进来的节点进行设置</span>
+<span style="color: #008080;">15</span>     <span style="color: #0000ff;">if</span><span style="color: #000000;"> (isPlainObject(properties)) {
+</span><span style="color: #008080;">16</span>         nodes = $(dom) <span style="color: #008000;">//</span><span style="color: #008000;">将dom转成zepto对象，为了方便下面调用zepto上的方法</span>
+<span style="color: #008080;">17</span>         <span style="color: #008000;">//</span><span style="color: #008000;">遍历对象，设置属性</span>
+<span style="color: #008080;">18</span>         $.each(properties, <span style="color: #0000ff;">function</span><span style="color: #000000;"> (key, value) {
+</span><span style="color: #008080;">19</span>             <span style="color: #008000;">//</span><span style="color: #008000;">如果设置的是'val', 'css', 'html', 'text', 'data', 'width', 'height', 'offset'，则调用zepto上相对应的方法</span>
+<span style="color: #008080;">20</span>             <span style="color: #0000ff;">if</span> (methodAttributes.indexOf(key) &gt; -1<span style="color: #000000;">) nodes[key](value)
+</span><span style="color: #008080;">21</span>             <span style="color: #0000ff;">else</span><span style="color: #000000;"> nodes.attr(key, value)
+</span><span style="color: #008080;">22</span> <span style="color: #000000;">        })
+</span><span style="color: #008080;">23</span> <span style="color: #000000;">    }
+</span><span style="color: #008080;">24</span>     <span style="color: #008000;">//</span><span style="color: #008000;">返回将字符串转成的DOM节点后的数组，比如'&lt;li&gt;&lt;/li&gt;&lt;li&gt;&lt;/li&gt;&lt;li&gt;&lt;/li&gt;'转成[li,li,li]</span>
+<span style="color: #008080;">25</span>     <span style="color: #0000ff;">return</span><span style="color: #000000;"> dom
+</span><span style="color: #008080;">26</span> }</pre>
+</div>
+<p>这个方法比较高深，各位慢慢消化，我稍后也再去消化下<br>以上完了后，就返回了创建后的dom结构了......</p>
+<h3>④ 上下文</h3>
+<p>如果带有上下文，就得使用上下文查找，没有就在document中查询</p>
+<div class="cnblogs_code">
+<pre><span style="color: #008080;"> 1</span> zepto.qsa = <span style="color: #0000ff;">function</span><span style="color: #000000;"> (element, selector) {
+</span><span style="color: #008080;"> 2</span>     <span style="color: #0000ff;">var</span><span style="color: #000000;"> found
+</span><span style="color: #008080;"> 3</span>     <span style="color: #0000ff;">return</span> (isDocument(element) &amp;&amp; idSelectorRE.test(selector)) ?
+<span style="color: #008080;"> 4</span>             ((found = element.getElementById(RegExp.$1)) ?<span style="color: #000000;"> [found] : []) :
+</span><span style="color: #008080;"> 5</span>             (element.nodeType !== 1 &amp;&amp; element.nodeType !== 9) ?<span style="color: #000000;"> [] :
+</span><span style="color: #008080;"> 6</span> <span style="color: #000000;">            slice.call(
+</span><span style="color: #008080;"> 7</span>                 classSelectorRE.test(selector) ? element.getElementsByClassName(RegExp.$1<span style="color: #000000;">) :
+</span><span style="color: #008080;"> 8</span>                 tagSelectorRE.test(selector) ?<span style="color: #000000;"> element.getElementsByTagName(selector) :
+</span><span style="color: #008080;"> 9</span> <span style="color: #000000;">                element.querySelectorAll(selector)
+</span><span style="color: #008080;">10</span> <span style="color: #000000;">        )
+</span><span style="color: #008080;">11</span> }</pre>
+</div>
+<p>这个函数与上面函数一样重要，各位下去消化吧</p>
+<h3>⑤ 结束</h3>
+<p>最后的最后便返回我们的包装集合了，这里依旧使用zepto.Z(dom, selector)进行封装</p>
+<h1>深入zepto.fragment</h1>
+<p>待续......</p>
+<h1>深入zepto.qsa</h1>
+<p>待续......</p>
+<h1>结语</h1>
+<p>今天的学习暂时到这里，我们下次继续。</p>
+                </div>
+
+                <div class='span3 sidebar'>
+                    <h2>导航栏</h2>
+                    <ul class="nav nav-tabs nav-stacked">
+                             				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/javascriptzdyxhxzsdyjxyzyddf/index.html">javascript中的一些核心知识点以及需要注意的地方</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/[zd]webappdyhzlyzydqdyhdpyjlkkb/index.html">[置顶]【webapp的优化整理】要做移动前端优化的朋友进来看看吧</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/[zd]yddjrwtyjjavascriptsjjzxjsjydjr/index.html">[置顶]【移动端兼容问题研究】javascript事件机制详解（涉及移动兼容）</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/gruntzhb30fzxhsygruntdbqddm/index.html">【grunt整合版】30分钟学会使用grunt打包前端代码</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/gruntdyd30fzxhsygruntdbqddm/index.html">【grunt第一弹】30分钟学会使用grunt打包前端代码</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/gruntdsdgruntzqdsjxmzdyy/index.html">【grunt第三弹】grunt在前端实际项目中的应用</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/gruntded30fzxhsygruntdbqddm02/index.html">【grunt第二弹】30分钟学会使用grunt打包前端代码（02）</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/IScrollsrxxtpyddhadlqs/index.html">【IScroll深入学习】突破移动端黑暗的利器（上）</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/IScrollsrxxjjIScrollynzz/index.html">【IScroll深入学习】解决IScroll疑难杂症</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/iScrollymxx00mniScroll/index.html">【iScroll源码学习00】模拟iScroll</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/iScrollymxx01zbjd/index.html">【iScroll源码学习01】准备阶段</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/iScrollymxx02fjiScrollsghxsjd/index.html">【iScroll源码学习02】分解iScroll三个核心事件点</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/iScrollymxx03iScrollsjjzygdtdsx/index.html">【iScroll源码学习03】iScroll事件机制与滚动条的实现</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/iScrollymxx04flIScrollhx/index.html">【iScroll源码学习04】分离IScroll核心</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/javascriptpxdytyyjc/index.html">【javascript培训第一天】语言基础</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/javascriptpxdstcybl/index.html">【javascript培训第三天】查遗补漏</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/javascriptpxdetDOMyBOM/index.html">【javascript培训第二天】DOM与BOM</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/javascriptjzdsk01mkhbc/index.html">【javascript激增的思考01】模块化编程</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/javascriptjzdsk02mkhyMVC/index.html">【javascript激增的思考02】模块化与MVC</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/javascriptjzdsk03MVVMyKnockout/index.html">【javascript激增的思考03】MVVM与Knockout</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/javascriptjzdsk04MVCyBackbonejs(beta)/index.html">【javascript激增的思考04】MVC与Backbonejs(beta)</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/javascriptmxdxzlrwmyqltkdzb01/index.html">【javascript面向对象之路】让我们一起来坦克大战吧01</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/NodeJSxxbj04xwfbxt/index.html">【NodeJS学习笔记04】新闻发布系统</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/requireJSymxx01ljzgrequireJSdjg/index.html">【requireJS源码学习01】了解整个requireJS的结构</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/requireJSymxx02datamainjzdsx/index.html">【requireJS源码学习02】datamain加载的实现</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/requireJSymxx03xjrequireJSdjzlc/index.html">【requireJS源码学习03】细究requireJS的加载流程</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/UIcjkfygjdrlcjs/index.html">【UI插件】开发一个简单日历插件（上）</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/UIcjjddrlcjxxxMVCsx/index.html">【UI插件】简单的日历插件（下）——学习MVC思想</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/zeptoxxbj01hxff$()/index.html">【zepto学习笔记01】核心方法$()</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/zeptoxxbj01hxff$()b/index.html">【zepto学习笔记01】核心方法$()（补）</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/zeptoxxbj02lsd/index.html">【zepto学习笔记02】零碎点</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/zeptoxxbj03sjjz/index.html">【zepto学习笔记03】事件机制</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/ycmsztjavascriptzdjc/index.html">【一次面试】再谈javascript中的继承</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/ztbackbone01mxModel/index.html">【再探backbone01】模型Model</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/ztbackbone02jhCollection/index.html">【再探backbone02】集合Collection</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/ztbackbone03bkydyyysltgym/index.html">【再探backbone03】博客园单页应用实例（提供源码）</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/ztbackbone04dyyydjslycl/index.html">【再探backbone04】单页应用的基石路由处理</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/ctUnderscorezsmbyq/index.html">【初探Underscore】再说模版引擎</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/ckjavascriptamzAjaxjsxnszddAjax/index.html">【初窥javascript奥秘之Ajax】简述下你所知道的Ajax？</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/ckjavascriptamzsjmpnxnwmyqmdp/index.html">【初窥javascript奥秘之事件冒泡】那些年我们一起冒的泡</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/ckjavascriptamzsjjzldtygdj/index.html">【初窥javascript奥秘之事件机制】论“点透”与“鬼点击”</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/ckjavascriptamzrrzmbddthisnzdxzthiszxnlm/index.html">【初窥javascript奥秘之让人捉摸不定的this】你知道现在this指向哪里吗？？？</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/ckjavascriptamzbbydxbdhlqbcl/index.html">【初窥javascript奥秘之闭包】叶大侠病都好了，求不踩了：）</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/ckjavascriptamzmxdxfzyjc/index.html">【初窥javascript奥秘之面向对象】封装与继承</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/qdmdsjdjgjdnzdljm/index.html">【前端盲点】事件的几个阶段你真的了解么？？？</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/dyyyviewymodelxgsl/index.html">【单页应用】view与model相关梳理</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/dyyyyqldyyybsxjdwbgns/index.html">【单页应用】一起来单页应用吧，实现简单微博功能！（上）</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/dyyyqjkzqappyggxsm/index.html">【单页应用】全局控制器app应该干些什么？</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/dyyywmgrhclkjdcccjgx/index.html">【单页应用】我们该如何处理框架弹出层层级关系？</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/dyyyljMVC/index.html">【单页应用】理解MVC</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/dyyyztxjzviewzjygrhtx/index.html">【单页应用之通信机制】view之间应该如何通信</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/dyyyjkzHistoryxsHistorydgdyyydm/index.html">【单页应用巨坑之History】细数History带给单页应用的噩梦</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/xtszeptofindysyjiosdcjpknrnhtt/index.html">【小贴士】zeptofind元素以及ios弹出键盘可能让你很头疼</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/xtsgytransitionEndanimatedygyqgs/index.html">【小贴士】关于transitionEndanimate的一个有趣故事</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/xtsgzzdbbysjwtdzzmp/index.html">【小贴士】工作中的”闭包“与事件委托的”阻止冒泡“</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/xtstytjavascriptzdreplace/index.html">【小贴士】探一探javascript中的replace</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/xtsxnjpyfixeddgydddt/index.html">【小贴士】虚拟键盘与fixed带给移动端的痛！</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/ttjavascriptsjjzdcsxyl/index.html">【探讨】javascript事件机制底层实现原理</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/mkhbcljrequireJSsxygjddmkjzq/index.html">【模块化编程】理解requireJS实现一个简单的模块加载器</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/zyJavaScriptmfjmtsdqlxkjzbfgndcljz/index.html">【转】【译】JavaScript魔法揭秘探索当前流行框架中部分功能的处理机制</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/zxjavascriptgszl01javascriptcszds/index.html">【追寻javascript高手之路01】javascript参数知多少？</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/zxjavascriptgszl02blzyyzds/index.html">【追寻javascript高手之路02】变量、作用域知多少？</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/zxjavascriptgszl03javascriptdxdld/index.html">【追寻javascript高手之路03】javascript对象大乱斗</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/zxjavascriptgszl04ljprototype/index.html">【追寻javascript高手之路04】理解prototype</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/zxjavascriptgszl05ljsjl/index.html">【追寻javascript高手之路05】理解事件流</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/zgbj04zxzzsj(2)/index.html">【重构笔记04】重新组织数据(2)</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/zgbj05jhtjbds/index.html">【重构笔记05】简化条件表达式</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/zgbj06jhhsdy/index.html">【重构笔记06】简化函数调用</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/ycmshgttbxysjfl/index.html">一次面试回顾——探讨表现与数据分离</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/dhzwebappzdxz/index.html">动画在webapp中的现状</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/ysandriodlqhthdomclicksjqtsxwttj/index.html">原生andriod浏览器回退后dom（click）事件全体失效问题探究</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/scsbdjxysdsbsjytouchsjdnxs/index.html">手持设备点击响应速度，鼠标事件与touch事件的那些事</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/mnbjQueryzeptohxymfx/index.html">迷你版jQuery——zepto核心源码分析</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/dbsgzdlwmlyqxjdddomxzqb/index.html">都别说工资低了，我们来一起写简单的dom选择器吧！</a></li>
+    				                                         
+                    </ul>
+                </div>
+            </div>
+
+        </div>
+    </body>
+</html>

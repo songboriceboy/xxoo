@@ -1,0 +1,492 @@
+﻿<!DOCTYPE html>
+
+<html lang="zh">
+    <head>
+        <meta charset="utf-8">
+        <meta name="description" content="android,ios" />
+        <meta name="keywords" content="android,ios" />
+
+        <title>叶小钗</title>
+        <style type='text/css'>
+            body {
+                background-color: #CCC;
+            }
+        </style>
+        <link rel="stylesheet" href="../../../css/bootstrap.css" />
+    </head>
+
+    <body>
+        <div class="container">
+
+            <h1>叶小钗</h1>
+
+            <div class='navbar navbar-inverse'>
+                <div class='navbar-inner nav-collapse' style="height: auto;">
+                    <ul class="nav">
+                              				<li><a href="http://songboriceboy.github.io/xxoo/html/blade/index.html">blade</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/css/index.html">css</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/HTML5&CSS3/index.html">HTML5&CSS3</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/index.html">javascript</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Javaxx/index.html">Java学习</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/nodejs/index.html">nodejs</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/requirejs/index.html">requirejs</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/index.html">Web前端</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/xxgw/index.html">学习感悟</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/gzdd/index.html">工作点滴</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/jkxx/index.html">接口学习</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/wfl/index.html">未分类</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/ydkf/index.html">移动开发</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/sjms/index.html">设计模式</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/mst/index.html">面试题</a></li>
+    				                      </ul>
+                </div>
+            </div>
+
+            <div id='content' class='row-fluid'>
+
+                <div class='span9 main'>
+				<div style="color:blue" align=center>【grunt第三弹】grunt在前端实际项目中的应用</div><br><h1>前言</h1>
+<ul>
+<li><a href="http://www.cnblogs.com/yexiaochai/p/3602002.html">【grunt第二弹】30分钟学会使用grunt打包前端代码（02）</a></li>
+<li><a href="http://www.cnblogs.com/yexiaochai/p/3594561.html">【grunt第一弹】30分钟学会使用grunt打包前端代码</a></li>
+</ul>
+<p>经过前两次的学习，我们了解了grunt打包的一些基础知识，对于压缩几个文件有了初步认识</p>
+<p>但是实际项目中的应用往往不是那么简单的，因为我们会有分支，我们也会有app版本Html5版本，更复杂的情况是我们有各个频道，而且各个频道是不同的团队在开发</p>
+<p>那么统一的一套打包工具如何满足不同团队的需求呢？</p>
+<p>然后，我们本地联调时候，仍然需要打包，但是打包的代码有些时候却不想要minify，这些功能都是实际项目重要用到的</p>
+<p>我们这个时间化大力气学习grunt打包一块的知识是有绝对意义的，不然前端代码合并一块的难题仍然不可破，所以有心思在前端的朋友还是应该掌握一套前端自动化工具</p>
+<p>我们继续几天的学习吧！！！</p>
+<h1>移动打包文件</h1>
+<p>其实，grunt本身具有这样的功能，但是我们实际项目重会出现这种可能：</p>
+<p>我们核心框架会有一套压缩代码，并且会在对应目录生成文件用于发布，但是这个地方的权限对各个频道团队是不可见的</p>
+<p>所以，我们在各个频道的公共文件夹内应该将刚刚的文件给复制过去，这块代码其实很简单，不需要任何新知识都能实现：</p>
+<p>我们这里依旧采用昨天的require相关的代码，但是一有个不同的地方就是，我们要同时在D盘的common文件夹中生成该文件</p>
+<p>这个代码其实比较简单，这里我们先介绍一个新的插件copy</p>
+<h2>grunt-contrib-copy</h2>
+<p>该插件用于复制文件到你想要的文件夹处</p>
+<div class="cnblogs_code">
+<pre><span style="color: #000000;">grunt.initConfig({ copy: {
+  main: {
+    flatten: </span><span style="color: #0000ff;">true</span><span style="color: #000000;">,
+    src: </span>'src/*.js'<span style="color: #000000;">,
+    dest: </span>'dest/'<span style="color: #000000;">
+  }
+}
+});</span></pre>
+</div>
+<p>这段代码就会将src中的js文件搞到dest里面，并且新建src文件夹：</p>
+<div class="cnblogs_code">
+<pre><span style="color: #000000;">$ grunt copy
+Running </span>"copy:main"<span style="color: #000000;"> (copy) task
+Copied </span>7 files</pre>
+</div>
+<p><img src="39395997488850.png" alt=""></p>
+<p>若是不想复制文件夹只要文件应该这样干：</p>
+<div class="cnblogs_code">
+<pre><span style="color: #000000;">grunt.initConfig({ copy: {
+  main: {
+    flatten: </span><span style="color: #0000ff;">true</span><span style="color: #000000;">,
+    </span><span style="color: #008000;">//</span><span style="color: #008000;">    filter: 'isFile',</span>
+    expand: <span style="color: #0000ff;">true</span><span style="color: #000000;">,
+    src: </span>'src/**.js'<span style="color: #000000;">,
+    dest: </span>'dest/'<span style="color: #000000;">
+  }
+}
+});</span></pre>
+</div>
+<p>这块完了，我们就来移动打包文件至D盘了</p>
+<h2>移动打包文件</h2>
+<p>这个时候代码这样写就好（也许移动前我们还想将其文件夹里面的东西销毁，暂时不考虑了）</p>
+<div class="cnblogs_code">
+<pre>module.exports = <span style="color: #0000ff;">function</span><span style="color: #000000;"> (grunt) {
+
+  grunt.initConfig({ copy: {
+    main: {
+      </span><span style="color: #008000;">//</span><span style="color: #008000;">      flatten: true,</span>
+      <span style="color: #008000;">//</span><span style="color: #008000;">      expand: true,</span>
+      src: 'dest/**.js'<span style="color: #000000;">,
+      dest: </span>'d:/common/'<span style="color: #000000;">
+    }
+  }
+  });
+
+  grunt.loadNpmTasks(</span>'grunt-contrib-copy'<span style="color: #000000;">);
+  grunt.loadNpmTasks(</span>'grunt-contrib-requirejs'<span style="color: #000000;">);
+
+  grunt.registerTask(</span>'build', 'require demo', <span style="color: #0000ff;">function</span><span style="color: #000000;"> () {
+
+    </span><span style="color: #008000;">//</span><span style="color: #008000;">第一步，读取配置信息</span>
+    <span style="color: #0000ff;">var</span> cfg = grunt.file.readJSON('cfg.json'<span style="color: #000000;">);
+    cfg </span>=<span style="color: #000000;"> cfg.requirejs;
+    grunt.config.set(</span>'requirejs'<span style="color: #000000;">, { test: cfg });
+
+    </span><span style="color: #008000;">//</span><span style="color: #008000;">第二步，设置参数</span>
+    grunt.log.debug('参数：' +<span style="color: #000000;"> JSON.stringify(grunt.config()));
+
+    </span><span style="color: #008000;">//</span><span style="color: #008000;">第三步跑任务</span>
+    grunt.task.run(['requirejs'<span style="color: #000000;">]);
+
+  });
+
+  grunt.registerTask(</span>'default', 'test demo', ['build', 'copy'<span style="color: #000000;">]);
+
+}</span></pre>
+</div>
+<div class="cnblogs_code">
+<pre>Running "build"<span style="color: #000000;"> task
+
+Running </span>"requirejs:test"<span style="color: #000000;"> (requirejs) task
+</span>&gt;&gt; Tracing dependencies <span style="color: #0000ff;">for</span>: d:/grunt/dest/libs.js
+&gt;&gt; Uglifying file: d:/grunt/dest/libs.js
+&gt;&gt; d:/grunt/dest/libs.js
+&gt;&gt; ----------------
+&gt;&gt; d:/grunt/src/zepto.js
+&gt;&gt; d:/grunt/src/underscore.js
+&gt;&gt; d:/grunt/src/backbone.js
+&gt;&gt; d:/grunt/src/test01.js
+&gt;&gt; d:/grunt/src/require.text.js
+&gt;&gt; text!src/demo01.html
+<span style="color: #000000;">
+Running </span>"copy:main"<span style="color: #000000;"> (copy) task
+Copied </span>8 files</pre>
+</div>
+<p><img src="49467699583904.png" alt=""></p>
+<p>关于移动相关的知识点暂时介绍到这里，我们进入下一话题</p>
+<h1><span style="line-height: 1.5;">分支/频道处理</span></h1>
+<p><span style="line-height: 1.5;">我们在实际项目重会遇到这种情况，我们一个主干分支上可能拉出很多分支完成不同的功能，而各个分支就有那么一点点不同，那么这个时候打包工具该怎么办呢？</span></p>
+<p><span style="line-height: 1.5;">我们一般是这样处理的：</span></p>
+<p><span style="line-height: 1.5;">① 首先全局只会有一个打包工具</span></p>
+<p><span style="line-height: 1.5;">② 其次每一个分支都会有一个gruntCfg.json的配置文件，存储相关的打包信息</span></p>
+<p><span style="line-height: 1.5;">③ 每次打包时候便把响应的分支打印到各自的dest目录里面</span></p>
+<p><span style="line-height: 1.5;">为了模拟这一情况我们将grunt打包相关的文件放到D盘的grunt目录里面，并在D盘新建gruntDemo目录</span></p>
+<p><span style="line-height: 1.5;">然后我们在gruntDemo中建立一个项目，并且为这个项目拉一个分支，比如现在项目是地demo01与demo02</span></p>
+<p>现在文件结构如下：</p>
+<div class="cnblogs_code">
+<pre><span style="color: #000000;">D:\GRUNTDEMO
+├─demo01
+│  │  gruntCfg.json
+│  │
+│  └─src
+│          backbone.js
+│          require.js
+│          require.text.js
+│          test01.js
+│          test02.js
+│          underscore.js
+│          zepto.js
+│
+└─demo02
+    │  gruntCfg.json
+    │
+    └─src
+            backbone.js
+            require.js
+            require.text.js
+            test01.js
+            test02.js
+            underscore.js
+            zepto.js</span></pre>
+</div>
+<p>这个时候，要实现功能最好的方法就是写自定义任务了，其它方案不好使，这个时候起配置文件也需要有一定修改，比如其中的路径需要加入参数信息</p>
+<div class="cnblogs_code">
+<pre><span style="color: #000000;">{
+  </span>"requirejs"<span style="color: #000000;">: {
+    </span>"options"<span style="color: #000000;">: {
+      </span>"baseUrl": "&lt;%= config.srcDir %&gt;"<span style="color: #000000;">,
+      </span>"paths"<span style="color: #000000;">: {
+        </span>"$": "src/zepto"<span style="color: #000000;">,
+        </span>"_": "src/underscore"<span style="color: #000000;">,
+        </span>"B": "src/backbone"<span style="color: #000000;">,
+        </span>"test": "src/test01"<span style="color: #000000;">,
+        </span>"text": "src/require.text"<span style="color: #000000;">
+
+      },
+      </span>"include"<span style="color: #000000;">: [
+        </span>"$"<span style="color: #000000;">,
+        </span>"_"<span style="color: #000000;">,
+        </span>"B"<span style="color: #000000;">,
+        </span>"test"<span style="color: #000000;">,
+        </span>"text!src/demo01.html"<span style="color: #000000;">
+        ],
+        </span>"out": "&lt;%= config.destDir %&gt;/libs.js"<span style="color: #000000;">
+      }
+  }
+}</span></pre>
+</div>
+<p>这个时候initConfig相关信息时候，首先得传入path依赖的文件目录，以及输出的文件目录</p>
+<div class="cnblogs_code">
+<pre>module.exports = <span style="color: #0000ff;">function</span><span style="color: #000000;"> (grunt) {
+
+  grunt.loadNpmTasks(</span>'grunt-contrib-requirejs'<span style="color: #000000;">);
+
+  </span><span style="color: #008000;">//</span><span style="color: #008000;">channel为频道名称，project为项目名称，这里对应gruntDemo，branch为其分支，默认与grunt目录为平行关系，佛则package.json里面应该有配置信息</span>
+  grunt.registerTask('build', 'require demo', <span style="color: #0000ff;">function</span><span style="color: #000000;"> (channel, project, branch) {
+
+    </span><span style="color: #0000ff;">var</span> path = '../' + channel + '/' + project +<span style="color: #000000;"> branch;
+    grunt.log.debug(</span>'path: ' +<span style="color: #000000;"> path);
+
+    </span><span style="color: #008000;">//</span><span style="color: #008000;">第一步，读取配置信息</span>
+    <span style="color: #0000ff;">var</span> cfg = grunt.file.readJSON(path + '/gruntCfg.json'<span style="color: #000000;">);
+    cfg </span>=<span style="color: #000000;"> cfg.requirejs;
+
+    grunt.config.set(</span>'config'<span style="color: #000000;">, {
+      srcDir: path,
+      destDir: path </span>+ '/dest'<span style="color: #000000;">
+    });
+
+    grunt.config.set(</span>'requirejs'<span style="color: #000000;">, { main: cfg });
+
+    </span><span style="color: #008000;">//</span><span style="color: #008000;">第二步，设置参数</span>
+    grunt.log.debug('param: ' +<span style="color: #000000;"> JSON.stringify(grunt.config()));
+
+    </span><span style="color: #008000;">//</span><span style="color: #008000;">第三步跑任务</span>
+    grunt.task.run(['requirejs'<span style="color: #000000;">]);
+
+  });
+
+  grunt.registerTask(</span>'default', 'test demo', ['build', 'copy'<span style="color: #000000;">]);
+
+}</span></pre>
+</div>
+<p>于是我们第一步工作成功了：</p>
+<div class="cnblogs_code">
+<pre>$ grunt build:gruntDemo:demo:02 --<span style="color: #000000;">debug
+Running </span>"build:gruntDemo:demo:02"<span style="color: #000000;"> (build) task
+[D] Task source: d:\grunt\Gruntfile.js
+[D] path: ..</span>/gruntDemo/<span style="color: #000000;">demo02
+[D] param: {</span>"config":{"srcDir":"../gruntDemo/demo02","destDir":"<span style="color: #000000;">../gruntDemo/dem
+o02/dest</span>"},"requirejs":{"main":{"options":{"baseUrl":"../gruntDemo/demo02","<span style="color: #000000;">path
+s</span>":{"$":"src/zepto","_":"src/underscore","B":"src/backbone","test":"src/test01"<span style="color: #000000;">,
+</span>"text":"src/require.text"},"include":["$","_","B","test","text!src/demo01.html"<span style="color: #000000;">]
+,</span>"out":"../gruntDemo/demo02/dest/libs.js"<span style="color: #000000;">}}}}
+
+Running </span>"requirejs:main"<span style="color: #000000;"> (requirejs) task
+[D] Task source: d:\grunt\node_modules\grunt</span>-contrib-<span style="color: #000000;">requirejs\tasks\requirejs.j
+s
+</span>&gt;&gt; Tracing dependencies <span style="color: #0000ff;">for</span>: d:/gruntDemo/demo02/dest/<span style="color: #000000;">libs.js
+</span>&gt;&gt; Uglifying file: d:/gruntDemo/demo02/dest/<span style="color: #000000;">libs.js
+</span>&gt;&gt; d:/gruntDemo/demo02/dest/<span style="color: #000000;">libs.js
+</span>&gt;&gt; ----------------
+&gt;&gt; d:/gruntDemo/demo02/src/<span style="color: #000000;">zepto.js
+</span>&gt;&gt; d:/gruntDemo/demo02/src/<span style="color: #000000;">underscore.js
+</span>&gt;&gt; d:/gruntDemo/demo02/src/<span style="color: #000000;">backbone.js
+</span>&gt;&gt; d:/gruntDemo/demo02/src/<span style="color: #000000;">test01.js
+</span>&gt;&gt; d:/gruntDemo/demo02/src/<span style="color: #000000;">require.text.js
+</span>&gt;&gt; text!src/demo01.html</pre>
+</div>
+<p><img src="46831147014782.png" alt=""></p>
+<p>如果改变一下任务命令呢：</p>
+<div class="cnblogs_code">
+<pre>grunt build:gruntDemo:demo:01 --debug</pre>
+</div>
+<p>结果证明也是没有问题的，这个地方我就不贴出来了，各位自己去试试，我们分支处理一块暂时到这里</p>
+<p>频道处理其实我们这里已经做了，第一个参数是频道，第二个参数是项目，第三个参数为分支，所以频道相关我们暂时就不说了</p>
+<h1>native与HTML5打包</h1>
+<p>最后让我们来看看如何打包native文件，native文件的打包其实与打包HTML5的方式类似，只不过我们这里需要一点点配置，让一个项目可以打包成不同的效果</p>
+<p>仍然以上面demo01为例，他的配置文件可能就需要做一定调整：</p>
+<div class="cnblogs_code">
+<pre><span style="color: #000000;">{
+    </span>"requirejs"<span style="color: #000000;">: {
+        </span>"options"<span style="color: #000000;">: {
+            </span>"baseUrl": "&lt;%= config.srcDir %&gt;"<span style="color: #000000;">, 
+            </span>"paths"<span style="color: #000000;">: {
+                </span>"$": "src/zepto"<span style="color: #000000;">, 
+                </span>"_": "src/underscore"<span style="color: #000000;">, 
+                </span>"B": "src/backbone"<span style="color: #000000;">, 
+                </span>"test": "src/test01"<span style="color: #000000;">, 
+                </span>"text": "src/require.text"<span style="color: #000000;">
+            }, 
+            </span>"web"<span style="color: #000000;">: {
+                </span>"include"<span style="color: #000000;">: [
+                    </span>"$"<span style="color: #000000;">, 
+                    </span>"_"<span style="color: #000000;">, 
+                    </span>"B"<span style="color: #000000;">, 
+                    </span>"test"<span style="color: #000000;">
+                ], 
+                </span>"out": "&lt;%= config.destDir %&gt;/libs.js"<span style="color: #000000;">
+            }, 
+            </span>"app"<span style="color: #000000;">: {
+                </span>"include"<span style="color: #000000;">: [
+                    </span>"$"<span style="color: #000000;">, 
+                    </span>"_"<span style="color: #000000;">, 
+                    </span>"B"<span style="color: #000000;">, 
+                    </span>"test"<span style="color: #000000;">, 
+                    </span>"text!src/demo01.html"<span style="color: #000000;">
+                ], 
+                </span>"out": "&lt;%= config.destDir %&gt;/libs_app.js"<span style="color: #000000;">
+            }
+        }
+    }
+}</span></pre>
+</div>
+<p><span style="line-height: 1.5;">这里为了表现一点web与native的不同，我特意将web中少包含一个text文件，具体还得各位项目中去实践</span></p>
+<p>如此一来，我们的代码需要做些许调整：</p>
+<div class="cnblogs_code">
+<pre>module.exports = <span style="color: #0000ff;">function</span><span style="color: #000000;"> (grunt) {
+
+  grunt.loadNpmTasks(</span>'grunt-contrib-requirejs'<span style="color: #000000;">);
+
+  </span><span style="color: #008000;">//</span><span style="color: #008000;">type 打包app包还是web包，channel为频道名称，project为项目名称，这里对应gruntDemo，branch为其分支，默认与grunt目录为平行关系，佛则package.json里面应该有配置信息</span>
+  grunt.registerTask('build', 'require demo', <span style="color: #0000ff;">function</span><span style="color: #000000;"> (type, channel, project, branch) {
+
+    </span><span style="color: #0000ff;">var</span> path = '../' + channel + '/' + project +<span style="color: #000000;"> branch;
+    grunt.log.debug(</span>'path: ' +<span style="color: #000000;"> path);
+
+    </span><span style="color: #008000;">//</span><span style="color: #008000;">第一步，读取配置信息</span>
+    <span style="color: #0000ff;">var</span> cfg = grunt.file.readJSON(path + '/gruntCfg.json'<span style="color: #000000;">);
+    cfg </span>=<span style="color: #000000;"> cfg.requirejs.options;
+
+    grunt.config.set(</span>'config'<span style="color: #000000;">, {
+      srcDir: path,
+      destDir: path </span>+ '/dest'<span style="color: #000000;">
+    });
+
+    grunt.log.debug(</span>'param: ' +<span style="color: #000000;"> JSON.stringify(cfg));
+    grunt.log.debug(</span>'param: ' + cfg[type]['include'<span style="color: #000000;">]);
+
+
+    </span><span style="color: #0000ff;">var</span> taskCfg =<span style="color: #000000;"> {};
+    taskCfg.options </span>=<span style="color: #000000;"> {};
+    taskCfg.options.baseUrl </span>=<span style="color: #000000;"> cfg.baseUrl;
+    taskCfg.options.paths </span>=<span style="color: #000000;"> cfg.paths;
+    taskCfg.options[</span>'include'] = cfg[type]['include'<span style="color: #000000;">];
+    taskCfg.options.out </span>=<span style="color: #000000;"> cfg[type].out;
+
+
+    grunt.config.set(</span>'requirejs'<span style="color: #000000;">, { main: taskCfg });
+
+    </span><span style="color: #008000;">//</span><span style="color: #008000;">第二步，设置参数</span>
+    grunt.log.debug('param: ' +<span style="color: #000000;"> JSON.stringify(grunt.config()));
+
+    </span><span style="color: #008000;">//</span><span style="color: #008000;">第三步跑任务</span>
+    grunt.task.run(['requirejs'<span style="color: #000000;">]);
+
+  });
+
+  grunt.registerTask(</span>'default', 'test demo', ['build', 'copy'<span style="color: #000000;">]);
+
+}</span></pre>
+</div>
+<p>于是便可以运行了！！！</p>
+<div class="cnblogs_code">
+<pre>$ grunt build:app:gruntDemo:demo:01 --<span style="color: #000000;">debug
+Running </span>"build:app:gruntDemo:demo:01"<span style="color: #000000;"> (build) task
+[D] Task source: d:\grunt\Gruntfile.js
+[D] path: ..</span>/gruntDemo/<span style="color: #000000;">demo01
+[D] param: {</span>"baseUrl":"&lt;%= config.srcDir %&gt;","paths":{"$":"src/zepto","_":"<span style="color: #000000;">src/u
+nderscore</span>","B":"src/backbone","test":"src/test01","text":"src/require.text"},"<span style="color: #000000;">we
+b</span>":{"include":["$","_","B","test"],"out":"&lt;%= config.destDir %&gt;/libs.js"},"app"<span style="color: #000000;">:
+{</span>"include":["$","_","B","test","text!src/demo01.html"],"out":"<span style="color: #000000;">&lt;%= config.destDir
+ %&gt;/libs_app.js</span>"<span style="color: #000000;">}}
+[D] param: $,_,B,test,text</span>!src/demo01.html
+[D] param: {"config":{"srcDir":"../gruntDemo/demo01","destDir":"<span style="color: #000000;">../gruntDemo/dem
+o01/dest</span>"},"requirejs":{"main":{"options":{"baseUrl":"../gruntDemo/demo01","<span style="color: #000000;">path
+s</span>":{"$":"src/zepto","_":"src/underscore","B":"src/backbone","test":"src/test01"<span style="color: #000000;">,
+</span>"text":"src/require.text"},"include":["$","_","B","test","text!src/demo01.html"<span style="color: #000000;">]
+,</span>"out":"../gruntDemo/demo01/dest/libs_app.js"<span style="color: #000000;">}}}}
+
+Running </span>"requirejs:main"<span style="color: #000000;"> (requirejs) task
+[D] Task source: d:\grunt\node_modules\grunt</span>-contrib-<span style="color: #000000;">requirejs\tasks\requirejs.j
+s
+</span>&gt;&gt; Tracing dependencies <span style="color: #0000ff;">for</span>: d:/gruntDemo/demo01/dest/<span style="color: #000000;">libs_app.js
+</span>&gt;&gt; Uglifying file: d:/gruntDemo/demo01/dest/<span style="color: #000000;">libs_app.js
+</span>&gt;&gt; d:/gruntDemo/demo01/dest/<span style="color: #000000;">libs_app.js
+</span>&gt;&gt; ----------------
+&gt;&gt; d:/gruntDemo/demo01/src/<span style="color: #000000;">zepto.js
+</span>&gt;&gt; d:/gruntDemo/demo01/src/<span style="color: #000000;">underscore.js
+</span>&gt;&gt; d:/gruntDemo/demo01/src/<span style="color: #000000;">backbone.js
+</span>&gt;&gt; d:/gruntDemo/demo01/src/<span style="color: #000000;">test01.js
+</span>&gt;&gt; d:/gruntDemo/demo01/src/<span style="color: #000000;">require.text.js
+</span>&gt;&gt; text!src/demo01.html</pre>
+</div>
+<h1>结语</h1>
+<p>我们这个星期花了三天时间一起学习了grunt打包相关的知识点，需要这些知识对您有用，搞这个东西还花费了不少心血呢！！！</p>
+<p>若是文中有误请一并提出，后续若是这块有所得我们再一起总结吧</p>
+<p>&nbsp;</p>
+                </div>
+
+                <div class='span3 sidebar'>
+                    <h2>导航栏</h2>
+                    <ul class="nav nav-tabs nav-stacked">
+                             				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/javascriptzdyxhxzsdyjxyzyddf/index.html">javascript中的一些核心知识点以及需要注意的地方</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/[zd]webappdyhzlyzydqdyhdpyjlkkb/index.html">[置顶]【webapp的优化整理】要做移动前端优化的朋友进来看看吧</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/[zd]yddjrwtyjjavascriptsjjzxjsjydjr/index.html">[置顶]【移动端兼容问题研究】javascript事件机制详解（涉及移动兼容）</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/gruntzhb30fzxhsygruntdbqddm/index.html">【grunt整合版】30分钟学会使用grunt打包前端代码</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/gruntdyd30fzxhsygruntdbqddm/index.html">【grunt第一弹】30分钟学会使用grunt打包前端代码</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/gruntdsdgruntzqdsjxmzdyy/index.html">【grunt第三弹】grunt在前端实际项目中的应用</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/gruntded30fzxhsygruntdbqddm02/index.html">【grunt第二弹】30分钟学会使用grunt打包前端代码（02）</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/IScrollsrxxtpyddhadlqs/index.html">【IScroll深入学习】突破移动端黑暗的利器（上）</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/IScrollsrxxjjIScrollynzz/index.html">【IScroll深入学习】解决IScroll疑难杂症</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/iScrollymxx00mniScroll/index.html">【iScroll源码学习00】模拟iScroll</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/iScrollymxx01zbjd/index.html">【iScroll源码学习01】准备阶段</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/iScrollymxx02fjiScrollsghxsjd/index.html">【iScroll源码学习02】分解iScroll三个核心事件点</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/iScrollymxx03iScrollsjjzygdtdsx/index.html">【iScroll源码学习03】iScroll事件机制与滚动条的实现</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/iScrollymxx04flIScrollhx/index.html">【iScroll源码学习04】分离IScroll核心</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/javascriptpxdytyyjc/index.html">【javascript培训第一天】语言基础</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/javascriptpxdstcybl/index.html">【javascript培训第三天】查遗补漏</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/javascriptpxdetDOMyBOM/index.html">【javascript培训第二天】DOM与BOM</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/javascriptjzdsk01mkhbc/index.html">【javascript激增的思考01】模块化编程</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/javascriptjzdsk02mkhyMVC/index.html">【javascript激增的思考02】模块化与MVC</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/javascriptjzdsk03MVVMyKnockout/index.html">【javascript激增的思考03】MVVM与Knockout</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/javascriptjzdsk04MVCyBackbonejs(beta)/index.html">【javascript激增的思考04】MVC与Backbonejs(beta)</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/javascriptmxdxzlrwmyqltkdzb01/index.html">【javascript面向对象之路】让我们一起来坦克大战吧01</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/NodeJSxxbj04xwfbxt/index.html">【NodeJS学习笔记04】新闻发布系统</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/requireJSymxx01ljzgrequireJSdjg/index.html">【requireJS源码学习01】了解整个requireJS的结构</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/requireJSymxx02datamainjzdsx/index.html">【requireJS源码学习02】datamain加载的实现</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/requireJSymxx03xjrequireJSdjzlc/index.html">【requireJS源码学习03】细究requireJS的加载流程</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/UIcjkfygjdrlcjs/index.html">【UI插件】开发一个简单日历插件（上）</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/UIcjjddrlcjxxxMVCsx/index.html">【UI插件】简单的日历插件（下）——学习MVC思想</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/zeptoxxbj01hxff$()/index.html">【zepto学习笔记01】核心方法$()</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/zeptoxxbj01hxff$()b/index.html">【zepto学习笔记01】核心方法$()（补）</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/zeptoxxbj02lsd/index.html">【zepto学习笔记02】零碎点</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/zeptoxxbj03sjjz/index.html">【zepto学习笔记03】事件机制</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/ycmsztjavascriptzdjc/index.html">【一次面试】再谈javascript中的继承</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/ztbackbone01mxModel/index.html">【再探backbone01】模型Model</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/ztbackbone02jhCollection/index.html">【再探backbone02】集合Collection</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/ztbackbone03bkydyyysltgym/index.html">【再探backbone03】博客园单页应用实例（提供源码）</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/ztbackbone04dyyydjslycl/index.html">【再探backbone04】单页应用的基石路由处理</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/ctUnderscorezsmbyq/index.html">【初探Underscore】再说模版引擎</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/ckjavascriptamzAjaxjsxnszddAjax/index.html">【初窥javascript奥秘之Ajax】简述下你所知道的Ajax？</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/ckjavascriptamzsjmpnxnwmyqmdp/index.html">【初窥javascript奥秘之事件冒泡】那些年我们一起冒的泡</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/ckjavascriptamzsjjzldtygdj/index.html">【初窥javascript奥秘之事件机制】论“点透”与“鬼点击”</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/ckjavascriptamzrrzmbddthisnzdxzthiszxnlm/index.html">【初窥javascript奥秘之让人捉摸不定的this】你知道现在this指向哪里吗？？？</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/ckjavascriptamzbbydxbdhlqbcl/index.html">【初窥javascript奥秘之闭包】叶大侠病都好了，求不踩了：）</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/ckjavascriptamzmxdxfzyjc/index.html">【初窥javascript奥秘之面向对象】封装与继承</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/qdmdsjdjgjdnzdljm/index.html">【前端盲点】事件的几个阶段你真的了解么？？？</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/dyyyviewymodelxgsl/index.html">【单页应用】view与model相关梳理</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/dyyyyqldyyybsxjdwbgns/index.html">【单页应用】一起来单页应用吧，实现简单微博功能！（上）</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/dyyyqjkzqappyggxsm/index.html">【单页应用】全局控制器app应该干些什么？</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/dyyywmgrhclkjdcccjgx/index.html">【单页应用】我们该如何处理框架弹出层层级关系？</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/dyyyljMVC/index.html">【单页应用】理解MVC</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/dyyyztxjzviewzjygrhtx/index.html">【单页应用之通信机制】view之间应该如何通信</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/dyyyjkzHistoryxsHistorydgdyyydm/index.html">【单页应用巨坑之History】细数History带给单页应用的噩梦</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/xtszeptofindysyjiosdcjpknrnhtt/index.html">【小贴士】zeptofind元素以及ios弹出键盘可能让你很头疼</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/xtsgytransitionEndanimatedygyqgs/index.html">【小贴士】关于transitionEndanimate的一个有趣故事</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/xtsgzzdbbysjwtdzzmp/index.html">【小贴士】工作中的”闭包“与事件委托的”阻止冒泡“</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/xtstytjavascriptzdreplace/index.html">【小贴士】探一探javascript中的replace</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/xtsxnjpyfixeddgydddt/index.html">【小贴士】虚拟键盘与fixed带给移动端的痛！</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/ttjavascriptsjjzdcsxyl/index.html">【探讨】javascript事件机制底层实现原理</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/mkhbcljrequireJSsxygjddmkjzq/index.html">【模块化编程】理解requireJS实现一个简单的模块加载器</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/zyJavaScriptmfjmtsdqlxkjzbfgndcljz/index.html">【转】【译】JavaScript魔法揭秘探索当前流行框架中部分功能的处理机制</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/zxjavascriptgszl01javascriptcszds/index.html">【追寻javascript高手之路01】javascript参数知多少？</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/zxjavascriptgszl02blzyyzds/index.html">【追寻javascript高手之路02】变量、作用域知多少？</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/zxjavascriptgszl03javascriptdxdld/index.html">【追寻javascript高手之路03】javascript对象大乱斗</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/zxjavascriptgszl04ljprototype/index.html">【追寻javascript高手之路04】理解prototype</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/zxjavascriptgszl05ljsjl/index.html">【追寻javascript高手之路05】理解事件流</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/zgbj04zxzzsj(2)/index.html">【重构笔记04】重新组织数据(2)</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/zgbj05jhtjbds/index.html">【重构笔记05】简化条件表达式</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/zgbj06jhhsdy/index.html">【重构笔记06】简化函数调用</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/ycmshgttbxysjfl/index.html">一次面试回顾——探讨表现与数据分离</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/dhzwebappzdxz/index.html">动画在webapp中的现状</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/ysandriodlqhthdomclicksjqtsxwttj/index.html">原生andriod浏览器回退后dom（click）事件全体失效问题探究</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/scsbdjxysdsbsjytouchsjdnxs/index.html">手持设备点击响应速度，鼠标事件与touch事件的那些事</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/mnbjQueryzeptohxymfx/index.html">迷你版jQuery——zepto核心源码分析</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/dbsgzdlwmlyqxjdddomxzqb/index.html">都别说工资低了，我们来一起写简单的dom选择器吧！</a></li>
+    				                                         
+                    </ul>
+                </div>
+            </div>
+
+        </div>
+    </body>
+</html>

@@ -1,0 +1,788 @@
+﻿<!DOCTYPE html>
+
+<html lang="zh">
+    <head>
+        <meta charset="utf-8">
+        <meta name="description" content="android,ios" />
+        <meta name="keywords" content="android,ios" />
+
+        <title>叶小钗</title>
+        <style type='text/css'>
+            body {
+                background-color: #CCC;
+            }
+        </style>
+        <link rel="stylesheet" href="../../../css/bootstrap.css" />
+    </head>
+
+    <body>
+        <div class="container">
+
+            <h1>叶小钗</h1>
+
+            <div class='navbar navbar-inverse'>
+                <div class='navbar-inner nav-collapse' style="height: auto;">
+                    <ul class="nav">
+                              				<li><a href="http://songboriceboy.github.io/xxoo/html/blade/index.html">blade</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/css/index.html">css</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/HTML5&CSS3/index.html">HTML5&CSS3</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/index.html">javascript</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Javaxx/index.html">Java学习</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/nodejs/index.html">nodejs</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/requirejs/index.html">requirejs</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/index.html">Web前端</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/xxgw/index.html">学习感悟</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/gzdd/index.html">工作点滴</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/jkxx/index.html">接口学习</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/wfl/index.html">未分类</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/ydkf/index.html">移动开发</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/sjms/index.html">设计模式</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/mst/index.html">面试题</a></li>
+    				                      </ul>
+                </div>
+            </div>
+
+            <div id='content' class='row-fluid'>
+
+                <div class='span9 main'>
+				<div style="color:blue" align=center>【iScroll源码学习02】分解iScroll三个核心事件点</div><br><h1>前言</h1>
+<p>最近两天看到很多的总结性发言，我想想今年好像我的变化挺大的，是不是该晚上来水一发呢？嗯，决定了，晚上来水一发！</p>
+<p>上周六，我们简单模拟了下iScroll的实现，周日我们开始了学习iScroll的源码，今天我们接着上次的记录学习，因为最近事情稍微有点多了</p>
+<p>学习进度可能要放慢，而且iScroll这个库实际意义很大，不能囫囵吞枣的学习，要学到精华，并且要用于项目中的，所以初步规划是最近两周主要围绕iScroll展开</p>
+<p>而后两个选择：① 分离iScroll代码用于项目；② 抄袭iScroll精华部分用于项目。无论如何都要用于项目......</p>
+<ul>
+<li><a href="http://www.cnblogs.com/yexiaochai/p/3496369.html">iScroll源码学习01准备阶段</a></li>
+<li><a href="http://www.cnblogs.com/yexiaochai/p/3489676.html">SPA移动站点APP化研究之上中下页面的iScroll化</a></li>
+</ul>
+<h1><span style="line-height: 1.5;">几个事件点</span></h1>
+<p><span style="line-height: 1.5;">iScroll的整体逻辑由三大事件点组成：</span></p>
+<p><span style="line-height: 1.5;">① touchStart（mousedown）</span></p>
+<p><span style="line-height: 1.5;">② touchMove（mousemove）</span></p>
+<p><span style="line-height: 1.5;">③ touchEnd（mouseUp）</span></p>
+<p><span style="line-height: 1.5;">也就是iScroll整体的功能逻辑其实是由这几个事件串起来的，其中</span></p>
+<p><span style="line-height: 1.5;">touchStart会保留一些初始化操作，或者停止正在进行的动画</span></p>
+<p><span style="line-height: 1.5;">touchMove会带动dom一起移动</span></p>
+<p><span style="line-height: 1.5;">而touchEnd最为复杂，在touchend阶段可能需要处理很多东西</span></p>
+<div class="cnblogs_code">
+<pre><span style="color: #800000;">① 一般性拖动结束事件
+② 超出边界还原后触发的事件（此时可以滚动加载数据）
+③ 如果此次为一次按钮点击，需要触发按钮事件那么还有对preventDefault进行处理（preventDefault可能导致事件不触发）
+④ 如果此次为一次点击事件，并且对象为文本框或者select（其它会获得焦点的事件），那么应该让其获得焦点，并且弹出键盘
+⑤ ......</span></pre>
+</div>
+<p>以上为主观臆测下的猜想，我们来看看iScroll实际干了些什么，下面再细细的分析各个阶段</p>
+<h1>start</h1>
+<div class="cnblogs_code" onclick="cnblogs_code_show('6a379ef1-0f5b-4e21-97eb-2a87555dcd58')"><img id="code_img_closed_6a379ef1-0f5b-4e21-97eb-2a87555dcd58" class="code_img_closed" src="43570758473519.gif" alt=""><img id="code_img_opened_6a379ef1-0f5b-4e21-97eb-2a87555dcd58" class="code_img_opened" style="display: none;" onclick="cnblogs_code_hide('6a379ef1-0f5b-4e21-97eb-2a87555dcd58',event)" src="16365178109279.gif" alt="">
+<div id="cnblogs_code_open_6a379ef1-0f5b-4e21-97eb-2a87555dcd58" class="cnblogs_code_hide">
+<pre><span style="color: #008080;"> 1</span> _start: <span style="color: #0000ff;">function</span><span style="color: #000000;"> (e) {
+</span><span style="color: #008080;"> 2</span>   <span style="color: #008000;">//</span><span style="color: #008000;"> React to left mouse button only</span>
+<span style="color: #008080;"> 3</span>   <span style="color: #0000ff;">if</span> (utils.eventType[e.type] != 1<span style="color: #000000;">) {
+</span><span style="color: #008080;"> 4</span>     <span style="color: #0000ff;">if</span> (e.button !== 0<span style="color: #000000;">) {
+</span><span style="color: #008080;"> 5</span>       <span style="color: #0000ff;">return</span><span style="color: #000000;">;
+</span><span style="color: #008080;"> 6</span> <span style="color: #000000;">    }
+</span><span style="color: #008080;"> 7</span> <span style="color: #000000;">  }
+</span><span style="color: #008080;"> 8</span>   <span style="color: #0000ff;">if</span> (!<span style="color: #0000ff;">this</span>.enabled || (<span style="color: #0000ff;">this</span>.initiated &amp;&amp; utils.eventType[e.type] !== <span style="color: #0000ff;">this</span><span style="color: #000000;">.initiated)) {
+</span><span style="color: #008080;"> 9</span>     <span style="color: #0000ff;">return</span><span style="color: #000000;">;
+</span><span style="color: #008080;">10</span> <span style="color: #000000;">  }
+</span><span style="color: #008080;">11</span>   <span style="color: #0000ff;">if</span> (<span style="color: #0000ff;">this</span>.options.preventDefault &amp;&amp; !utils.isBadAndroid &amp;&amp; !utils.preventDefaultException(e.target, <span style="color: #0000ff;">this</span><span style="color: #000000;">.options.preventDefaultException)) {
+</span><span style="color: #008080;">12</span> <span style="color: #000000;">    e.preventDefault();
+</span><span style="color: #008080;">13</span> <span style="color: #000000;">  }
+</span><span style="color: #008080;">14</span>   <span style="color: #0000ff;">var</span> point = e.touches ? e.touches[0<span style="color: #000000;">] : e,
+</span><span style="color: #008080;">15</span> <span style="color: #000000;">pos;
+</span><span style="color: #008080;">16</span> 
+<span style="color: #008080;">17</span>   <span style="color: #0000ff;">this</span>.initiated =<span style="color: #000000;"> utils.eventType[e.type];
+</span><span style="color: #008080;">18</span>   <span style="color: #0000ff;">this</span>.moved = <span style="color: #0000ff;">false</span><span style="color: #000000;">;
+</span><span style="color: #008080;">19</span>   <span style="color: #0000ff;">this</span>.distX = 0<span style="color: #000000;">;
+</span><span style="color: #008080;">20</span>   <span style="color: #0000ff;">this</span>.distY = 0<span style="color: #000000;">;
+</span><span style="color: #008080;">21</span>   <span style="color: #0000ff;">this</span>.directionX = 0<span style="color: #000000;">;
+</span><span style="color: #008080;">22</span>   <span style="color: #0000ff;">this</span>.directionY = 0<span style="color: #000000;">;
+</span><span style="color: #008080;">23</span>   <span style="color: #0000ff;">this</span>.directionLocked = 0<span style="color: #000000;">;
+</span><span style="color: #008080;">24</span> 
+<span style="color: #008080;">25</span>   <span style="color: #0000ff;">this</span><span style="color: #000000;">._transitionTime();
+</span><span style="color: #008080;">26</span> 
+<span style="color: #008080;">27</span>   <span style="color: #0000ff;">this</span>.startTime =<span style="color: #000000;"> utils.getTime();
+</span><span style="color: #008080;">28</span> 
+<span style="color: #008080;">29</span>   <span style="color: #0000ff;">if</span> (<span style="color: #0000ff;">this</span>.options.useTransition &amp;&amp; <span style="color: #0000ff;">this</span><span style="color: #000000;">.isInTransition) {
+</span><span style="color: #008080;">30</span>     <span style="color: #0000ff;">this</span>.isInTransition = <span style="color: #0000ff;">false</span><span style="color: #000000;">;
+</span><span style="color: #008080;">31</span>     pos = <span style="color: #0000ff;">this</span><span style="color: #000000;">.getComputedPosition();
+</span><span style="color: #008080;">32</span>     <span style="color: #0000ff;">this</span><span style="color: #000000;">._translate(Math.round(pos.x), Math.round(pos.y));
+</span><span style="color: #008080;">33</span>     <span style="color: #0000ff;">this</span>._execEvent('scrollEnd'<span style="color: #000000;">);
+</span><span style="color: #008080;">34</span>   } <span style="color: #0000ff;">else</span> <span style="color: #0000ff;">if</span> (!<span style="color: #0000ff;">this</span>.options.useTransition &amp;&amp; <span style="color: #0000ff;">this</span><span style="color: #000000;">.isAnimating) {
+</span><span style="color: #008080;">35</span>     <span style="color: #0000ff;">this</span>.isAnimating = <span style="color: #0000ff;">false</span><span style="color: #000000;">;
+</span><span style="color: #008080;">36</span>     <span style="color: #0000ff;">this</span>._execEvent('scrollEnd'<span style="color: #000000;">);
+</span><span style="color: #008080;">37</span> <span style="color: #000000;">  }
+</span><span style="color: #008080;">38</span> 
+<span style="color: #008080;">39</span>   <span style="color: #0000ff;">this</span>.startX = <span style="color: #0000ff;">this</span><span style="color: #000000;">.x;
+</span><span style="color: #008080;">40</span>   <span style="color: #0000ff;">this</span>.startY = <span style="color: #0000ff;">this</span><span style="color: #000000;">.y;
+</span><span style="color: #008080;">41</span>   <span style="color: #0000ff;">this</span>.absStartX = <span style="color: #0000ff;">this</span><span style="color: #000000;">.x;
+</span><span style="color: #008080;">42</span>   <span style="color: #0000ff;">this</span>.absStartY = <span style="color: #0000ff;">this</span><span style="color: #000000;">.y;
+</span><span style="color: #008080;">43</span>   <span style="color: #0000ff;">this</span>.pointX =<span style="color: #000000;"> point.pageX;
+</span><span style="color: #008080;">44</span>   <span style="color: #0000ff;">this</span>.pointY =<span style="color: #000000;"> point.pageY;
+</span><span style="color: #008080;">45</span> 
+<span style="color: #008080;">46</span>   <span style="color: #0000ff;">this</span>._execEvent('beforeScrollStart'<span style="color: #000000;">);
+</span><span style="color: #008080;">47</span> },</pre>
+</div>
+<span class="cnblogs_code_collapse">View Code </span></div>
+<div class="cnblogs_code">
+<pre><span style="color: #008080;">1</span> <span style="color: #0000ff;">if</span> ( utils.eventType[e.type] != 1<span style="color: #000000;"> ) {
+</span><span style="color: #008080;">2</span>     <span style="color: #0000ff;">if</span> ( e.button !== 0<span style="color: #000000;"> ) {
+</span><span style="color: #008080;">3</span>         <span style="color: #0000ff;">return</span><span style="color: #000000;">;
+</span><span style="color: #008080;">4</span> <span style="color: #000000;">    }
+</span><span style="color: #008080;">5</span> }</pre>
+</div>
+<p><span style="line-height: 1.5;">首先一段代码特别针对非touch事件进行了处理，其中的意图暂时不明，应该是只有点击鼠标左键的情况下才会触发下面逻辑</span></p>
+<div class="cnblogs_code">
+<pre><span style="color: #008080;">1</span> <span style="color: #0000ff;">if</span> ( !<span style="color: #0000ff;">this</span>.enabled || (<span style="color: #0000ff;">this</span>.initiated &amp;&amp; utils.eventType[e.type] !== <span style="color: #0000ff;">this</span><span style="color: #000000;">.initiated) ) {
+</span><span style="color: #008080;">2</span>     <span style="color: #0000ff;">return</span><span style="color: #000000;">;
+</span><span style="color: #008080;">3</span> }</pre>
+</div>
+<p><span>第二段代码做了一次是否开始的验证，this.enabled应该是程序功能总开关，</span><span>this.initiated为首次触发touchStart的事件类型</span></p>
+<p>可能是mousedown，touchstart或者其他，如果两次不等的话，这里也会终止流程（此段代码确实不明意图）</p>
+<div class="cnblogs_code">
+<pre><span style="color: #008000;">//</span><span style="color: #008000;"> This should find all Android browsers lower than build 535.19 (both stock browser and webview)</span>
+me.isBadAndroid = /Android/.test(window.navigator.appVersion) &amp;&amp; !(/Chrome\/\d/.test(window.navigator.appVersion));</pre>
+</div>
+<div class="cnblogs_code">
+<pre><span style="color: #008080;">1</span> <span style="color: #0000ff;">if</span> ( <span style="color: #0000ff;">this</span>.options.preventDefault &amp;&amp; !utils.isBadAndroid &amp;&amp; !utils.preventDefaultException(e.target, <span style="color: #0000ff;">this</span><span style="color: #000000;">.options.preventDefaultException) ) {
+</span><span style="color: #008080;">2</span> <span style="color: #000000;">    e.preventDefault();
+</span><span style="color: #008080;">3</span> }</pre>
+</div>
+<p>第三段做了一些兼容性操作，各位可以看到只有这里有preventDefault的操作，如果默写dom元素在你手触碰会有默认的事件，比如文本框，便会触发</p>
+<p>但是我们默认是阻止的，而在一些android设备上市必须阻止的，这里建议都阻止</p>
+<div class="cnblogs_code">
+<pre><span style="color: #008080;"> 1</span> <span style="color: #0000ff;">var</span> point = e.touches ? e.touches[0<span style="color: #000000;">] : e,
+</span><span style="color: #008080;"> 2</span> <span style="color: #000000;">pos;
+</span><span style="color: #008080;"> 3</span> 
+<span style="color: #008080;"> 4</span> <span style="color: #0000ff;">this</span>.initiated =<span style="color: #000000;"> utils.eventType[e.type];
+</span><span style="color: #008080;"> 5</span> <span style="color: #0000ff;">this</span>.moved = <span style="color: #0000ff;">false</span><span style="color: #000000;">;
+</span><span style="color: #008080;"> 6</span> <span style="color: #0000ff;">this</span>.distX = 0<span style="color: #000000;">;
+</span><span style="color: #008080;"> 7</span> <span style="color: #0000ff;">this</span>.distY = 0<span style="color: #000000;">;
+</span><span style="color: #008080;"> 8</span> <span style="color: #0000ff;">this</span>.directionX = 0<span style="color: #000000;">;
+</span><span style="color: #008080;"> 9</span> <span style="color: #0000ff;">this</span>.directionY = 0<span style="color: #000000;">;
+</span><span style="color: #008080;">10</span> <span style="color: #0000ff;">this</span>.directionLocked = 0;</pre>
+</div>
+<p>接下来进行了一些初始化属性的定义，其中比较重要的是</p>
+<p>① point做了最简单的兼容性处理</p>
+<p>② this.moved你想知道现在控件是不是在拖动就看他了</p>
+<p><span style="line-height: 1.5;">然后这里执行了一个方法：_transitionTime</span></p>
+<div class="cnblogs_code">
+<pre><span style="color: #008080;"> 1</span> _transitionTime: <span style="color: #0000ff;">function</span><span style="color: #000000;"> (time) {
+</span><span style="color: #008080;"> 2</span>   time = time || 0<span style="color: #000000;">;
+</span><span style="color: #008080;"> 3</span> 
+<span style="color: #008080;"> 4</span>   <span style="color: #0000ff;">this</span>.scrollerStyle[utils.style.transitionDuration] = time + 'ms'<span style="color: #000000;">;
+</span><span style="color: #008080;"> 5</span> 
+<span style="color: #008080;"> 6</span>   <span style="color: #0000ff;">if</span> (!time &amp;&amp;<span style="color: #000000;"> utils.isBadAndroid) {
+</span><span style="color: #008080;"> 7</span>     <span style="color: #0000ff;">this</span>.scrollerStyle[utils.style.transitionDuration] = '0.001s'<span style="color: #000000;">;
+</span><span style="color: #008080;"> 8</span> <span style="color: #000000;">  }
+</span><span style="color: #008080;"> 9</span> 
+<span style="color: #008080;">10</span>   <span style="color: #0000ff;">if</span> (<span style="color: #0000ff;">this</span><span style="color: #000000;">.indicators) {
+</span><span style="color: #008080;">11</span>     <span style="color: #0000ff;">for</span> (<span style="color: #0000ff;">var</span> i = <span style="color: #0000ff;">this</span>.indicators.length; i--<span style="color: #000000;">; ) {
+</span><span style="color: #008080;">12</span>       <span style="color: #0000ff;">this</span><span style="color: #000000;">.indicators[i].transitionTime(time);
+</span><span style="color: #008080;">13</span> <span style="color: #000000;">    }
+</span><span style="color: #008080;">14</span> <span style="color: #000000;">  }
+</span><span style="color: #008080;">15</span> 
+<span style="color: #008080;">16</span>   <span style="color: #008000;">//</span><span style="color: #008000;"> INSERT POINT: _transitionTime</span>
+<span style="color: #008080;">17</span> },</pre>
+</div>
+<p>utils具有以下style属性：</p>
+<div class="cnblogs_code">
+<pre><span style="color: #008080;">1</span> me.extend(me.style =<span style="color: #000000;"> {}, {
+</span><span style="color: #008080;">2</span> <span style="color: #000000;">    transform: _transform,
+</span><span style="color: #008080;">3</span>     transitionTimingFunction: _prefixStyle('transitionTimingFunction'<span style="color: #000000;">),
+</span><span style="color: #008080;">4</span>     transitionDuration: _prefixStyle('transitionDuration'<span style="color: #000000;">),
+</span><span style="color: #008080;">5</span>     transitionDelay: _prefixStyle('transitionDelay'<span style="color: #000000;">),
+</span><span style="color: #008080;">6</span>     transformOrigin: _prefixStyle('transformOrigin'<span style="color: #000000;">)
+</span><span style="color: #008080;">7</span> });</pre>
+</div>
+<p>这里为其设置了适合放弃浏览器的运动时间属性，就是简单的兼容处理</p>
+<p>在有些android浏览器上，这个使用是有问题的，所以就直接当没传时间，直接给了个0.001s</p>
+<p><span style="line-height: 1.5;">其中的indicators就是我们的滚动条，这里既然涉及到了，我们也暂时不管，因为涉及到滚动条的篇幅也不小，我们暂时不关注</span></p>
+<p><span style="line-height: 1.5;">这个方法也涉及滚动条相关，我们这里先简单提一下，后面在补充，现在继续看下面的逻辑</span></p>
+<p>&nbsp;</p>
+<p><span style="line-height: 1.5;">再下面就开始真正初始化信息，这些信息在以下会被用到</span></p>
+<div class="cnblogs_code">
+<pre><span style="color: #008080;"> 1</span> <span style="color: #0000ff;">this</span>.startTime =<span style="color: #000000;"> utils.getTime();
+</span><span style="color: #008080;"> 2</span> 
+<span style="color: #008080;"> 3</span> <span style="color: #0000ff;">if</span> ( <span style="color: #0000ff;">this</span>.options.useTransition &amp;&amp; <span style="color: #0000ff;">this</span><span style="color: #000000;">.isInTransition ) {
+</span><span style="color: #008080;"> 4</span>     <span style="color: #0000ff;">this</span>.isInTransition = <span style="color: #0000ff;">false</span><span style="color: #000000;">;
+</span><span style="color: #008080;"> 5</span>     pos = <span style="color: #0000ff;">this</span><span style="color: #000000;">.getComputedPosition();
+</span><span style="color: #008080;"> 6</span>     <span style="color: #0000ff;">this</span><span style="color: #000000;">._translate(Math.round(pos.x), Math.round(pos.y));
+</span><span style="color: #008080;"> 7</span>     <span style="color: #0000ff;">this</span>._execEvent('scrollEnd'<span style="color: #000000;">);
+</span><span style="color: #008080;"> 8</span> } <span style="color: #0000ff;">else</span> <span style="color: #0000ff;">if</span> ( !<span style="color: #0000ff;">this</span>.options.useTransition &amp;&amp; <span style="color: #0000ff;">this</span><span style="color: #000000;">.isAnimating ) {
+</span><span style="color: #008080;"> 9</span>     <span style="color: #0000ff;">this</span>.isAnimating = <span style="color: #0000ff;">false</span><span style="color: #000000;">;
+</span><span style="color: #008080;">10</span>     <span style="color: #0000ff;">this</span>._execEvent('scrollEnd'<span style="color: #000000;">);
+</span><span style="color: #008080;">11</span> <span style="color: #000000;">}
+</span><span style="color: #008080;">12</span> 
+<span style="color: #008080;">13</span> <span style="color: #0000ff;">this</span>.startX    = <span style="color: #0000ff;">this</span><span style="color: #000000;">.x;
+</span><span style="color: #008080;">14</span> <span style="color: #0000ff;">this</span>.startY    = <span style="color: #0000ff;">this</span><span style="color: #000000;">.y;
+</span><span style="color: #008080;">15</span> <span style="color: #0000ff;">this</span>.absStartX = <span style="color: #0000ff;">this</span><span style="color: #000000;">.x;
+</span><span style="color: #008080;">16</span> <span style="color: #0000ff;">this</span>.absStartY = <span style="color: #0000ff;">this</span><span style="color: #000000;">.y;
+</span><span style="color: #008080;">17</span> <span style="color: #0000ff;">this</span>.pointX    =<span style="color: #000000;"> point.pageX;
+</span><span style="color: #008080;">18</span> <span style="color: #0000ff;">this</span>.pointY    = point.pageY;</pre>
+</div>
+<p>首先记录了手指触屏屏幕的时间，而后记录手指所处的位置，其中有两个if语句需要我们注意，这里的代码还是相当关键的</p>
+<p>这段话的意义是告诉我们，如果我们当前正在运动，而此时触屏了，那么就<span style="color: #ff0000;">触发scrollEnd事件停止动画</span>（这里非常关键）</p>
+<p>其中若是使用了CSS3的属性实现动画会做一些特别的处理，这里的<span style="color: #ff0000;">this.isAnimating</span> = false 是一个关键点，各位要注意</p>
+<p>他在首次为undefined（我觉得这种属性应该给他一个初始化值false），运动过程中为true，运动结束为false</p>
+<p>这里再提一下若是使用CSS3的话，会马上让dom移动到特定位置，然后停止动画</p>
+<div class="cnblogs_code">
+<pre><span style="color: #008080;"> 1</span> _translate: <span style="color: #0000ff;">function</span><span style="color: #000000;"> (x, y) {
+</span><span style="color: #008080;"> 2</span>     <span style="color: #0000ff;">if</span> ( <span style="color: #0000ff;">this</span><span style="color: #000000;">.options.useTransform ) {
+</span><span style="color: #008080;"> 3</span>         <span style="color: #0000ff;">this</span>.scrollerStyle[utils.style.transform] = 'translate(' + x + 'px,' + y + 'px)' + <span style="color: #0000ff;">this</span><span style="color: #000000;">.translateZ;
+</span><span style="color: #008080;"> 4</span> 
+<span style="color: #008080;"> 5</span>     } <span style="color: #0000ff;">else</span><span style="color: #000000;"> {
+</span><span style="color: #008080;"> 6</span>         x =<span style="color: #000000;"> Math.round(x);
+</span><span style="color: #008080;"> 7</span>         y =<span style="color: #000000;"> Math.round(y);
+</span><span style="color: #008080;"> 8</span>         <span style="color: #0000ff;">this</span>.scrollerStyle.left = x + 'px'<span style="color: #000000;">;
+</span><span style="color: #008080;"> 9</span>         <span style="color: #0000ff;">this</span>.scrollerStyle.top = y + 'px'<span style="color: #000000;">;
+</span><span style="color: #008080;">10</span> <span style="color: #000000;">    }
+</span><span style="color: #008080;">11</span>     <span style="color: #0000ff;">this</span>.x =<span style="color: #000000;"> x;
+</span><span style="color: #008080;">12</span>     <span style="color: #0000ff;">this</span>.y =<span style="color: #000000;"> y;
+</span><span style="color: #008080;">13</span> <span style="color: #0000ff;">if</span> ( <span style="color: #0000ff;">this</span><span style="color: #000000;">.indicators ) {
+</span><span style="color: #008080;">14</span>     <span style="color: #0000ff;">for</span> ( <span style="color: #0000ff;">var</span> i = <span style="color: #0000ff;">this</span>.indicators.length; i--<span style="color: #000000;">; ) {
+</span><span style="color: #008080;">15</span>         <span style="color: #0000ff;">this</span><span style="color: #000000;">.indicators[i].updatePosition();
+</span><span style="color: #008080;">16</span> <span style="color: #000000;">    }
+</span><span style="color: #008080;">17</span> <span style="color: #000000;">}
+</span><span style="color: #008080;">18</span> <span style="color: #008000;">//</span><span style="color: #008000;"> INSERT POINT: _translate</span>
+<span style="color: #008080;">19</span> },</pre>
+</div>
+<p>下面的代码依旧在操作滚动条，不用现在关注，这里将信息全部写入了scrollerStyle对象，同事dom style属性的引用，这里就直接给赋值了</p>
+<p>然我们来看看this._execEvent('scrollEnd');这段代码</p>
+<p>首先_execEvent是用于触发存储在this._event数组中的事件的方法，然后我们只看scrollEnd即可，这里的事件机制，我们提到后面来说</p>
+<p>很奇怪的是，这里有触发事件的代码却没有注册的代码，这是因为这个接口应该是开放给用户的，然后这里的beforeScrollStart也是开放给用户注册事件的</p>
+<p><span style="line-height: 1.5;">到此touchstart相关事件就结束了，我们接下来看move事件</span></p>
+<h1><span style="line-height: 1.5;">move</span></h1>
+<div class="cnblogs_code" onclick="cnblogs_code_show('7da26304-4434-4935-9989-93eaf468fe1c')"><img id="code_img_closed_7da26304-4434-4935-9989-93eaf468fe1c" class="code_img_closed" src="43570758473519.gif" alt=""><img id="code_img_opened_7da26304-4434-4935-9989-93eaf468fe1c" class="code_img_opened" style="display: none;" onclick="cnblogs_code_hide('7da26304-4434-4935-9989-93eaf468fe1c',event)" src="16365178109279.gif" alt="">
+<div id="cnblogs_code_open_7da26304-4434-4935-9989-93eaf468fe1c" class="cnblogs_code_hide">
+<pre><span style="color: #008080;"> 1</span> _move: <span style="color: #0000ff;">function</span><span style="color: #000000;"> (e) {
+</span><span style="color: #008080;"> 2</span>   <span style="color: #0000ff;">if</span> (!<span style="color: #0000ff;">this</span>.enabled || utils.eventType[e.type] !== <span style="color: #0000ff;">this</span><span style="color: #000000;">.initiated) {
+</span><span style="color: #008080;"> 3</span>     <span style="color: #0000ff;">return</span><span style="color: #000000;">;
+</span><span style="color: #008080;"> 4</span> <span style="color: #000000;">  }
+</span><span style="color: #008080;"> 5</span> 
+<span style="color: #008080;"> 6</span>   <span style="color: #0000ff;">if</span> (<span style="color: #0000ff;">this</span>.options.preventDefault) {    <span style="color: #008000;">//</span><span style="color: #008000;"> increases performance on Android? TODO: check!</span>
+<span style="color: #008080;"> 7</span> <span style="color: #000000;">    e.preventDefault();
+</span><span style="color: #008080;"> 8</span> <span style="color: #000000;">  }
+</span><span style="color: #008080;"> 9</span> 
+<span style="color: #008080;">10</span>   <span style="color: #0000ff;">var</span> point = e.touches ? e.touches[0<span style="color: #000000;">] : e,
+</span><span style="color: #008080;">11</span>     deltaX = point.pageX - <span style="color: #0000ff;">this</span><span style="color: #000000;">.pointX,
+</span><span style="color: #008080;">12</span>     deltaY = point.pageY - <span style="color: #0000ff;">this</span><span style="color: #000000;">.pointY,
+</span><span style="color: #008080;">13</span>     timestamp =<span style="color: #000000;"> utils.getTime(),
+</span><span style="color: #008080;">14</span> <span style="color: #000000;">    newX, newY,
+</span><span style="color: #008080;">15</span> <span style="color: #000000;">    absDistX, absDistY;
+</span><span style="color: #008080;">16</span> 
+<span style="color: #008080;">17</span>   <span style="color: #0000ff;">this</span>.pointX =<span style="color: #000000;"> point.pageX;
+</span><span style="color: #008080;">18</span>   <span style="color: #0000ff;">this</span>.pointY =<span style="color: #000000;"> point.pageY;
+</span><span style="color: #008080;">19</span> 
+<span style="color: #008080;">20</span>   <span style="color: #0000ff;">this</span>.distX +=<span style="color: #000000;"> deltaX;
+</span><span style="color: #008080;">21</span>   <span style="color: #0000ff;">this</span>.distY +=<span style="color: #000000;"> deltaY;
+</span><span style="color: #008080;">22</span>   absDistX = Math.abs(<span style="color: #0000ff;">this</span><span style="color: #000000;">.distX);
+</span><span style="color: #008080;">23</span>   absDistY = Math.abs(<span style="color: #0000ff;">this</span><span style="color: #000000;">.distY);
+</span><span style="color: #008080;">24</span> 
+<span style="color: #008080;">25</span>   <span style="color: #008000;">//</span><span style="color: #008000;"> We need to move at least 10 pixels for the scrolling to initiate</span>
+<span style="color: #008080;">26</span>   <span style="color: #0000ff;">if</span> (timestamp - <span style="color: #0000ff;">this</span>.endTime &gt; 300 &amp;&amp; (absDistX &lt; 10 &amp;&amp; absDistY &lt; 10<span style="color: #000000;">)) {
+</span><span style="color: #008080;">27</span>     <span style="color: #0000ff;">return</span><span style="color: #000000;">;
+</span><span style="color: #008080;">28</span> <span style="color: #000000;">  }
+</span><span style="color: #008080;">29</span> 
+<span style="color: #008080;">30</span>   <span style="color: #008000;">//</span><span style="color: #008000;"> If you are scrolling in one direction lock the other</span>
+<span style="color: #008080;">31</span>   <span style="color: #0000ff;">if</span> (!<span style="color: #0000ff;">this</span>.directionLocked &amp;&amp; !<span style="color: #0000ff;">this</span><span style="color: #000000;">.options.freeScroll) {
+</span><span style="color: #008080;">32</span>     <span style="color: #0000ff;">if</span> (absDistX &gt; absDistY + <span style="color: #0000ff;">this</span><span style="color: #000000;">.options.directionLockThreshold) {
+</span><span style="color: #008080;">33</span>       <span style="color: #0000ff;">this</span>.directionLocked = 'h';     <span style="color: #008000;">//</span><span style="color: #008000;"> lock horizontally</span>
+<span style="color: #008080;">34</span>     } <span style="color: #0000ff;">else</span> <span style="color: #0000ff;">if</span> (absDistY &gt;= absDistX + <span style="color: #0000ff;">this</span><span style="color: #000000;">.options.directionLockThreshold) {
+</span><span style="color: #008080;">35</span>       <span style="color: #0000ff;">this</span>.directionLocked = 'v';     <span style="color: #008000;">//</span><span style="color: #008000;"> lock vertically</span>
+<span style="color: #008080;">36</span>     } <span style="color: #0000ff;">else</span><span style="color: #000000;"> {
+</span><span style="color: #008080;">37</span>       <span style="color: #0000ff;">this</span>.directionLocked = 'n';     <span style="color: #008000;">//</span><span style="color: #008000;"> no lock</span>
+<span style="color: #008080;">38</span> <span style="color: #000000;">    }
+</span><span style="color: #008080;">39</span> <span style="color: #000000;">  }
+</span><span style="color: #008080;">40</span> 
+<span style="color: #008080;">41</span>   <span style="color: #0000ff;">if</span> (<span style="color: #0000ff;">this</span>.directionLocked == 'h'<span style="color: #000000;">) {
+</span><span style="color: #008080;">42</span>     <span style="color: #0000ff;">if</span> (<span style="color: #0000ff;">this</span>.options.eventPassthrough == 'vertical'<span style="color: #000000;">) {
+</span><span style="color: #008080;">43</span> <span style="color: #000000;">      e.preventDefault();
+</span><span style="color: #008080;">44</span>     } <span style="color: #0000ff;">else</span> <span style="color: #0000ff;">if</span> (<span style="color: #0000ff;">this</span>.options.eventPassthrough == 'horizontal'<span style="color: #000000;">) {
+</span><span style="color: #008080;">45</span>       <span style="color: #0000ff;">this</span>.initiated = <span style="color: #0000ff;">false</span><span style="color: #000000;">;
+</span><span style="color: #008080;">46</span>       <span style="color: #0000ff;">return</span><span style="color: #000000;">;
+</span><span style="color: #008080;">47</span> <span style="color: #000000;">    }
+</span><span style="color: #008080;">48</span> 
+<span style="color: #008080;">49</span>     deltaY = 0<span style="color: #000000;">;
+</span><span style="color: #008080;">50</span>   } <span style="color: #0000ff;">else</span> <span style="color: #0000ff;">if</span> (<span style="color: #0000ff;">this</span>.directionLocked == 'v'<span style="color: #000000;">) {
+</span><span style="color: #008080;">51</span>     <span style="color: #0000ff;">if</span> (<span style="color: #0000ff;">this</span>.options.eventPassthrough == 'horizontal'<span style="color: #000000;">) {
+</span><span style="color: #008080;">52</span> <span style="color: #000000;">      e.preventDefault();
+</span><span style="color: #008080;">53</span>     } <span style="color: #0000ff;">else</span> <span style="color: #0000ff;">if</span> (<span style="color: #0000ff;">this</span>.options.eventPassthrough == 'vertical'<span style="color: #000000;">) {
+</span><span style="color: #008080;">54</span>       <span style="color: #0000ff;">this</span>.initiated = <span style="color: #0000ff;">false</span><span style="color: #000000;">;
+</span><span style="color: #008080;">55</span>       <span style="color: #0000ff;">return</span><span style="color: #000000;">;
+</span><span style="color: #008080;">56</span> <span style="color: #000000;">    }
+</span><span style="color: #008080;">57</span> 
+<span style="color: #008080;">58</span>     deltaX = 0<span style="color: #000000;">;
+</span><span style="color: #008080;">59</span> <span style="color: #000000;">  }
+</span><span style="color: #008080;">60</span> 
+<span style="color: #008080;">61</span>   deltaX = <span style="color: #0000ff;">this</span>.hasHorizontalScroll ? deltaX : 0<span style="color: #000000;">;
+</span><span style="color: #008080;">62</span>   deltaY = <span style="color: #0000ff;">this</span>.hasVerticalScroll ? deltaY : 0<span style="color: #000000;">;
+</span><span style="color: #008080;">63</span> 
+<span style="color: #008080;">64</span>   newX = <span style="color: #0000ff;">this</span>.x +<span style="color: #000000;"> deltaX;
+</span><span style="color: #008080;">65</span>   newY = <span style="color: #0000ff;">this</span>.y +<span style="color: #000000;"> deltaY;
+</span><span style="color: #008080;">66</span> 
+<span style="color: #008080;">67</span>   <span style="color: #008000;">//</span><span style="color: #008000;"> Slow down if outside of the boundaries</span>
+<span style="color: #008080;">68</span>   <span style="color: #0000ff;">if</span> (newX &gt; 0 || newX &lt; <span style="color: #0000ff;">this</span><span style="color: #000000;">.maxScrollX) {
+</span><span style="color: #008080;">69</span>     newX = <span style="color: #0000ff;">this</span>.options.bounce ? <span style="color: #0000ff;">this</span>.x + deltaX / 3 : newX &gt; 0 ? 0 : <span style="color: #0000ff;">this</span><span style="color: #000000;">.maxScrollX;
+</span><span style="color: #008080;">70</span> <span style="color: #000000;">  }
+</span><span style="color: #008080;">71</span>   <span style="color: #0000ff;">if</span> (newY &gt; 0 || newY &lt; <span style="color: #0000ff;">this</span><span style="color: #000000;">.maxScrollY) {
+</span><span style="color: #008080;">72</span>     newY = <span style="color: #0000ff;">this</span>.options.bounce ? <span style="color: #0000ff;">this</span>.y + deltaY / 3 : newY &gt; 0 ? 0 : <span style="color: #0000ff;">this</span><span style="color: #000000;">.maxScrollY;
+</span><span style="color: #008080;">73</span> <span style="color: #000000;">  }
+</span><span style="color: #008080;">74</span> 
+<span style="color: #008080;">75</span>   <span style="color: #0000ff;">this</span>.directionX = deltaX &gt; 0 ? -1 : deltaX &lt; 0 ? 1 : 0<span style="color: #000000;">;
+</span><span style="color: #008080;">76</span>   <span style="color: #0000ff;">this</span>.directionY = deltaY &gt; 0 ? -1 : deltaY &lt; 0 ? 1 : 0<span style="color: #000000;">;
+</span><span style="color: #008080;">77</span> 
+<span style="color: #008080;">78</span>   <span style="color: #0000ff;">if</span> (!<span style="color: #0000ff;">this</span><span style="color: #000000;">.moved) {
+</span><span style="color: #008080;">79</span>     <span style="color: #0000ff;">this</span>._execEvent('scrollStart'<span style="color: #000000;">);
+</span><span style="color: #008080;">80</span> <span style="color: #000000;">  }
+</span><span style="color: #008080;">81</span> 
+<span style="color: #008080;">82</span>   <span style="color: #0000ff;">this</span>.moved = <span style="color: #0000ff;">true</span><span style="color: #000000;">;
+</span><span style="color: #008080;">83</span> 
+<span style="color: #008080;">84</span>   <span style="color: #0000ff;">this</span><span style="color: #000000;">._translate(newX, newY);
+</span><span style="color: #008080;">85</span> 
+<span style="color: #008080;">86</span>   <span style="color: #008000;">/*</span><span style="color: #008000;"> REPLACE START: _move </span><span style="color: #008000;">*/</span>
+<span style="color: #008080;">87</span> 
+<span style="color: #008080;">88</span>   <span style="color: #0000ff;">if</span> (timestamp - <span style="color: #0000ff;">this</span>.startTime &gt; 300<span style="color: #000000;">) {
+</span><span style="color: #008080;">89</span>     <span style="color: #0000ff;">this</span>.startTime =<span style="color: #000000;"> timestamp;
+</span><span style="color: #008080;">90</span>     <span style="color: #0000ff;">this</span>.startX = <span style="color: #0000ff;">this</span><span style="color: #000000;">.x;
+</span><span style="color: #008080;">91</span>     <span style="color: #0000ff;">this</span>.startY = <span style="color: #0000ff;">this</span><span style="color: #000000;">.y;
+</span><span style="color: #008080;">92</span> <span style="color: #000000;">  }
+</span><span style="color: #008080;">93</span> 
+<span style="color: #008080;">94</span>   <span style="color: #008000;">/*</span><span style="color: #008000;"> REPLACE END: _move </span><span style="color: #008000;">*/</span>
+<span style="color: #008080;">95</span> 
+<span style="color: #008080;">96</span> },</pre>
+</div>
+<span class="cnblogs_code_collapse">View Code </span></div>
+<p><span style="line-height: 1.5;">move为功能第二个阶段，首先仍然是做全局开关检测，如果不通过就直接给干掉</span></p>
+<div class="cnblogs_code">
+<pre><span style="color: #008080;">1</span> <span style="color: #0000ff;">if</span> (!<span style="color: #0000ff;">this</span>.enabled || utils.eventType[e.type] !== <span style="color: #0000ff;">this</span><span style="color: #000000;">.initiated) {
+</span><span style="color: #008080;">2</span>   <span style="color: #0000ff;">return</span><span style="color: #000000;">;
+</span><span style="color: #008080;">3</span> <span style="color: #000000;">}
+</span><span style="color: #008080;">4</span> 
+<span style="color: #008080;">5</span> <span style="color: #0000ff;">if</span> (<span style="color: #0000ff;">this</span>.options.preventDefault) {    <span style="color: #008000;">//</span><span style="color: #008000;"> increases performance on Android? TODO: check!</span>
+<span style="color: #008080;">6</span> <span style="color: #000000;">  e.preventDefault();
+</span><span style="color: #008080;">7</span> }</pre>
+</div>
+<p><span style="line-height: 1.5;">然后这个时候必须要将浏览器默认事件搞掉，否则你滚动时候，如果body跟着一起滚动就麻烦了</span></p>
+<p><span style="line-height: 1.5;">PS：Android下有些浏览器preventDefault并不能阻止浏览器滚动，这事情很烦</span></p>
+<p><span style="line-height: 1.5;">接下来就是记录当前移动数据，为dom移动做准备了：</span></p>
+<div class="cnblogs_code">
+<pre><span style="color: #008080;"> 1</span> <span style="color: #0000ff;">var</span> point = e.touches ? e.touches[0<span style="color: #000000;">] : e,
+</span><span style="color: #008080;"> 2</span> deltaX = point.pageX - <span style="color: #0000ff;">this</span><span style="color: #000000;">.pointX,
+</span><span style="color: #008080;"> 3</span> deltaY = point.pageY - <span style="color: #0000ff;">this</span><span style="color: #000000;">.pointY,
+</span><span style="color: #008080;"> 4</span> timestamp =<span style="color: #000000;"> utils.getTime(),
+</span><span style="color: #008080;"> 5</span> <span style="color: #000000;">newX, newY,
+</span><span style="color: #008080;"> 6</span> <span style="color: #000000;">absDistX, absDistY;
+</span><span style="color: #008080;"> 7</span> 
+<span style="color: #008080;"> 8</span> <span style="color: #0000ff;">this</span>.pointX =<span style="color: #000000;"> point.pageX;
+</span><span style="color: #008080;"> 9</span> <span style="color: #0000ff;">this</span>.pointY =<span style="color: #000000;"> point.pageY;
+</span><span style="color: #008080;">10</span> 
+<span style="color: #008080;">11</span> <span style="color: #0000ff;">this</span>.distX +=<span style="color: #000000;"> deltaX;
+</span><span style="color: #008080;">12</span> <span style="color: #0000ff;">this</span>.distY +=<span style="color: #000000;"> deltaY;
+</span><span style="color: #008080;">13</span> absDistX = Math.abs(<span style="color: #0000ff;">this</span><span style="color: #000000;">.distX);
+</span><span style="color: #008080;">14</span> absDistY = Math.abs(<span style="color: #0000ff;">this</span>.distY);</pre>
+</div>
+<p>首先记录了当前鼠标位置，而后记录移动位置后，重置当前鼠标位置，然后这里做了一个判断，这个判断是如果我们手指一直停到一个位置不动的话，就给他终止了</p>
+<p>这里也做了一个优化，为了防止浏览器不停的重绘吗，一定是移动10px以上才真正的移动</p>
+<div class="cnblogs_code">
+<pre><span style="color: #008080;">1</span> <span style="color: #0000ff;">if</span> (!<span style="color: #0000ff;">this</span>.directionLocked &amp;&amp; !<span style="color: #0000ff;">this</span><span style="color: #000000;">.options.freeScroll) {
+</span><span style="color: #008080;">2</span>   <span style="color: #0000ff;">if</span> (absDistX &gt; absDistY + <span style="color: #0000ff;">this</span><span style="color: #000000;">.options.directionLockThreshold) {
+</span><span style="color: #008080;">3</span>     <span style="color: #0000ff;">this</span>.directionLocked = 'h';     <span style="color: #008000;">//</span><span style="color: #008000;"> lock horizontally</span>
+<span style="color: #008080;">4</span>   } <span style="color: #0000ff;">else</span> <span style="color: #0000ff;">if</span> (absDistY &gt;= absDistX + <span style="color: #0000ff;">this</span><span style="color: #000000;">.options.directionLockThreshold) {
+</span><span style="color: #008080;">5</span>     <span style="color: #0000ff;">this</span>.directionLocked = 'v';     <span style="color: #008000;">//</span><span style="color: #008000;"> lock vertically</span>
+<span style="color: #008080;">6</span>   } <span style="color: #0000ff;">else</span><span style="color: #000000;"> {
+</span><span style="color: #008080;">7</span>     <span style="color: #0000ff;">this</span>.directionLocked = 'n';     <span style="color: #008000;">//</span><span style="color: #008000;"> no lock</span>
+<span style="color: #008080;">8</span> <span style="color: #000000;">  }
+</span><span style="color: #008080;">9</span> }</pre>
+</div>
+<p>这里做了一个判断，让DOM朝一个方向运动即可，因为我们关注的是Y方向，这里可以暂时不予关注</p>
+<p>然后开始计算新位置了，这里要开始移动了哦（注意：<span style="color: #ff0000;">这里做了一个判断如果超出边界的话，拖动率要减低</span>）</p>
+<div class="cnblogs_code">
+<pre><span style="color: #008080;"> 1</span> newX = <span style="color: #0000ff;">this</span>.x +<span style="color: #000000;"> deltaX;
+</span><span style="color: #008080;"> 2</span> newY = <span style="color: #0000ff;">this</span>.y +<span style="color: #000000;"> deltaY;
+</span><span style="color: #008080;"> 3</span> 
+<span style="color: #008080;"> 4</span> <span style="color: #008000;">//</span><span style="color: #008000;"> Slow down if outside of the boundaries</span>
+<span style="color: #008080;"> 5</span> <span style="color: #0000ff;">if</span> (newX &gt; 0 || newX &lt; <span style="color: #0000ff;">this</span><span style="color: #000000;">.maxScrollX) {
+</span><span style="color: #008080;"> 6</span>   newX = <span style="color: #0000ff;">this</span>.options.bounce ? <span style="color: #0000ff;">this</span>.x + deltaX / 3 : newX &gt; 0 ? 0 : <span style="color: #0000ff;">this</span><span style="color: #000000;">.maxScrollX;
+</span><span style="color: #008080;"> 7</span> <span style="color: #000000;">}
+</span><span style="color: #008080;"> 8</span> <span style="color: #0000ff;">if</span> (newY &gt; 0 || newY &lt; <span style="color: #0000ff;">this</span><span style="color: #000000;">.maxScrollY) {
+</span><span style="color: #008080;"> 9</span>   newY = <span style="color: #0000ff;">this</span>.options.bounce ? <span style="color: #0000ff;">this</span>.y + deltaY / 3 : newY &gt; 0 ? 0 : <span style="color: #0000ff;">this</span><span style="color: #000000;">.maxScrollY;
+</span><span style="color: #008080;">10</span> }</pre>
+</div>
+<p>我们在touchstart时候将this.moved设置为了false，这里就触发一个scrollSatrt事件后将其还原为true，所以这个事件只会触发一次，</p>
+<p>这个事件同样是开放给用户的，iScroll本身并未注册任何事件</p>
+<div class="cnblogs_code">
+<pre><span style="color: #008080;">1</span> <span style="color: #0000ff;">if</span> (timestamp - <span style="color: #0000ff;">this</span>.startTime &gt; 300<span style="color: #000000;">) {
+</span><span style="color: #008080;">2</span>   <span style="color: #0000ff;">this</span>.startTime =<span style="color: #000000;"> timestamp;
+</span><span style="color: #008080;">3</span>   <span style="color: #0000ff;">this</span>.startX = <span style="color: #0000ff;">this</span><span style="color: #000000;">.x;
+</span><span style="color: #008080;">4</span>   <span style="color: #0000ff;">this</span>.startY = <span style="color: #0000ff;">this</span><span style="color: #000000;">.y;
+</span><span style="color: #008080;">5</span> }</pre>
+</div>
+<p><span style="color: #ff0000;">每300ms会重置一次当前位置以及开始时间，这个就是为什么我们在抓住不放很久突然丢开仍然有长距离移动的原因，这个比较精妙哦！</span></p>
+<p><span style="line-height: 1.5;">最后我们说下其中的_translate方法，这个方法用于移动DOM，这种封装的思想很不错的，值得借鉴，现在就进入关键点了touchend</span></p>
+<h1><span style="line-height: 1.5;">end</span></h1>
+<div class="cnblogs_code" onclick="cnblogs_code_show('c704496d-91d8-4691-9ce8-9cfaec2a7518')"><img id="code_img_closed_c704496d-91d8-4691-9ce8-9cfaec2a7518" class="code_img_closed" src="43570758473519.gif" alt=""><img id="code_img_opened_c704496d-91d8-4691-9ce8-9cfaec2a7518" class="code_img_opened" style="display: none;" onclick="cnblogs_code_hide('c704496d-91d8-4691-9ce8-9cfaec2a7518',event)" src="16365178109279.gif" alt="">
+<div id="cnblogs_code_open_c704496d-91d8-4691-9ce8-9cfaec2a7518" class="cnblogs_code_hide">
+<pre><span style="color: #008080;"> 1</span> _end: <span style="color: #0000ff;">function</span><span style="color: #000000;"> (e) {
+</span><span style="color: #008080;"> 2</span>   <span style="color: #0000ff;">if</span> (!<span style="color: #0000ff;">this</span>.enabled || utils.eventType[e.type] !== <span style="color: #0000ff;">this</span><span style="color: #000000;">.initiated) {
+</span><span style="color: #008080;"> 3</span>     <span style="color: #0000ff;">return</span><span style="color: #000000;">;
+</span><span style="color: #008080;"> 4</span> <span style="color: #000000;">  }
+</span><span style="color: #008080;"> 5</span> 
+<span style="color: #008080;"> 6</span>   <span style="color: #0000ff;">if</span> (<span style="color: #0000ff;">this</span>.options.preventDefault &amp;&amp; !utils.preventDefaultException(e.target, <span style="color: #0000ff;">this</span><span style="color: #000000;">.options.preventDefaultException)) {
+</span><span style="color: #008080;"> 7</span> <span style="color: #000000;">    e.preventDefault();
+</span><span style="color: #008080;"> 8</span> <span style="color: #000000;">  }
+</span><span style="color: #008080;"> 9</span> 
+<span style="color: #008080;">10</span>   <span style="color: #0000ff;">var</span> point = e.changedTouches ? e.changedTouches[0<span style="color: #000000;">] : e,
+</span><span style="color: #008080;">11</span> <span style="color: #000000;">    momentumX,
+</span><span style="color: #008080;">12</span> <span style="color: #000000;">    momentumY,
+</span><span style="color: #008080;">13</span>     duration = utils.getTime() - <span style="color: #0000ff;">this</span><span style="color: #000000;">.startTime,
+</span><span style="color: #008080;">14</span>     newX = Math.round(<span style="color: #0000ff;">this</span><span style="color: #000000;">.x),
+</span><span style="color: #008080;">15</span>     newY = Math.round(<span style="color: #0000ff;">this</span><span style="color: #000000;">.y),
+</span><span style="color: #008080;">16</span>     distanceX = Math.abs(newX - <span style="color: #0000ff;">this</span><span style="color: #000000;">.startX),
+</span><span style="color: #008080;">17</span>     distanceY = Math.abs(newY - <span style="color: #0000ff;">this</span><span style="color: #000000;">.startY),
+</span><span style="color: #008080;">18</span>     time = 0<span style="color: #000000;">,
+</span><span style="color: #008080;">19</span>     easing = ''<span style="color: #000000;">;
+</span><span style="color: #008080;">20</span> 
+<span style="color: #008080;">21</span>   <span style="color: #0000ff;">this</span>.isInTransition = 0<span style="color: #000000;">;
+</span><span style="color: #008080;">22</span>   <span style="color: #0000ff;">this</span>.initiated = 0<span style="color: #000000;">;
+</span><span style="color: #008080;">23</span>   <span style="color: #0000ff;">this</span>.endTime =<span style="color: #000000;"> utils.getTime();
+</span><span style="color: #008080;">24</span> 
+<span style="color: #008080;">25</span>   <span style="color: #008000;">//</span><span style="color: #008000;"> reset if we are outside of the boundaries</span>
+<span style="color: #008080;">26</span>   <span style="color: #0000ff;">if</span> (<span style="color: #0000ff;">this</span>.resetPosition(<span style="color: #0000ff;">this</span><span style="color: #000000;">.options.bounceTime)) {
+</span><span style="color: #008080;">27</span>     <span style="color: #0000ff;">return</span><span style="color: #000000;">;
+</span><span style="color: #008080;">28</span> <span style="color: #000000;">  }
+</span><span style="color: #008080;">29</span> 
+<span style="color: #008080;">30</span>   <span style="color: #0000ff;">this</span>.scrollTo(newX, newY); <span style="color: #008000;">//</span><span style="color: #008000;"> ensures that the last position is rounded</span>
+<span style="color: #008080;">31</span> 
+<span style="color: #008080;">32</span>   <span style="color: #008000;">//</span><span style="color: #008000;"> we scrolled less than 10 pixels</span>
+<span style="color: #008080;">33</span>   <span style="color: #0000ff;">if</span> (!<span style="color: #0000ff;">this</span><span style="color: #000000;">.moved) {
+</span><span style="color: #008080;">34</span>     <span style="color: #0000ff;">if</span> (<span style="color: #0000ff;">this</span><span style="color: #000000;">.options.tap) {
+</span><span style="color: #008080;">35</span>       utils.tap(e, <span style="color: #0000ff;">this</span><span style="color: #000000;">.options.tap);
+</span><span style="color: #008080;">36</span> <span style="color: #000000;">    }
+</span><span style="color: #008080;">37</span> 
+<span style="color: #008080;">38</span>     <span style="color: #0000ff;">if</span> (<span style="color: #0000ff;">this</span><span style="color: #000000;">.options.click) {
+</span><span style="color: #008080;">39</span> <span style="color: #000000;">      utils.click(e);
+</span><span style="color: #008080;">40</span> <span style="color: #000000;">    }
+</span><span style="color: #008080;">41</span> 
+<span style="color: #008080;">42</span>     <span style="color: #0000ff;">this</span>._execEvent('scrollCancel'<span style="color: #000000;">);
+</span><span style="color: #008080;">43</span>     <span style="color: #0000ff;">return</span><span style="color: #000000;">;
+</span><span style="color: #008080;">44</span> <span style="color: #000000;">  }
+</span><span style="color: #008080;">45</span> 
+<span style="color: #008080;">46</span>   <span style="color: #0000ff;">if</span> (<span style="color: #0000ff;">this</span>._events.flick &amp;&amp; duration &lt; 200 &amp;&amp; distanceX &lt; 100 &amp;&amp; distanceY &lt; 100<span style="color: #000000;">) {
+</span><span style="color: #008080;">47</span>     <span style="color: #0000ff;">this</span>._execEvent('flick'<span style="color: #000000;">);
+</span><span style="color: #008080;">48</span>     <span style="color: #0000ff;">return</span><span style="color: #000000;">;
+</span><span style="color: #008080;">49</span> <span style="color: #000000;">  }
+</span><span style="color: #008080;">50</span> 
+<span style="color: #008080;">51</span>   <span style="color: #008000;">//</span><span style="color: #008000;"> start momentum animation if needed</span>
+<span style="color: #008080;">52</span>   <span style="color: #0000ff;">if</span> (<span style="color: #0000ff;">this</span>.options.momentum &amp;&amp; duration &lt; 300<span style="color: #000000;">) {
+</span><span style="color: #008080;">53</span>     momentumX = <span style="color: #0000ff;">this</span>.hasHorizontalScroll ? utils.momentum(<span style="color: #0000ff;">this</span>.x, <span style="color: #0000ff;">this</span>.startX, duration, <span style="color: #0000ff;">this</span>.maxScrollX, <span style="color: #0000ff;">this</span>.options.bounce ? <span style="color: #0000ff;">this</span>.wrapperWidth : 0) : { destination: newX, duration: 0<span style="color: #000000;"> };
+</span><span style="color: #008080;">54</span>     momentumY = <span style="color: #0000ff;">this</span>.hasVerticalScroll ? utils.momentum(<span style="color: #0000ff;">this</span>.y, <span style="color: #0000ff;">this</span>.startY, duration, <span style="color: #0000ff;">this</span>.maxScrollY, <span style="color: #0000ff;">this</span>.options.bounce ? <span style="color: #0000ff;">this</span>.wrapperHeight : 0) : { destination: newY, duration: 0<span style="color: #000000;"> };
+</span><span style="color: #008080;">55</span>     newX =<span style="color: #000000;"> momentumX.destination;
+</span><span style="color: #008080;">56</span>     newY =<span style="color: #000000;"> momentumY.destination;
+</span><span style="color: #008080;">57</span>     time =<span style="color: #000000;"> Math.max(momentumX.duration, momentumY.duration);
+</span><span style="color: #008080;">58</span>     <span style="color: #0000ff;">this</span>.isInTransition = 1<span style="color: #000000;">;
+</span><span style="color: #008080;">59</span> <span style="color: #000000;">  }
+</span><span style="color: #008080;">60</span> 
+<span style="color: #008080;">61</span> 
+<span style="color: #008080;">62</span>   <span style="color: #0000ff;">if</span> (<span style="color: #0000ff;">this</span><span style="color: #000000;">.options.snap) {
+</span><span style="color: #008080;">63</span>     <span style="color: #0000ff;">var</span> snap = <span style="color: #0000ff;">this</span><span style="color: #000000;">._nearestSnap(newX, newY);
+</span><span style="color: #008080;">64</span>     <span style="color: #0000ff;">this</span>.currentPage =<span style="color: #000000;"> snap;
+</span><span style="color: #008080;">65</span>     time = <span style="color: #0000ff;">this</span>.options.snapSpeed ||<span style="color: #000000;"> Math.max(
+</span><span style="color: #008080;">66</span> <span style="color: #000000;">            Math.max(
+</span><span style="color: #008080;">67</span>                 Math.min(Math.abs(newX - snap.x), 1000<span style="color: #000000;">),
+</span><span style="color: #008080;">68</span>                 Math.min(Math.abs(newY - snap.y), 1000<span style="color: #000000;">)
+</span><span style="color: #008080;">69</span>             ), 300<span style="color: #000000;">);
+</span><span style="color: #008080;">70</span>     newX =<span style="color: #000000;"> snap.x;
+</span><span style="color: #008080;">71</span>     newY =<span style="color: #000000;"> snap.y;
+</span><span style="color: #008080;">72</span> 
+<span style="color: #008080;">73</span>     <span style="color: #0000ff;">this</span>.directionX = 0<span style="color: #000000;">;
+</span><span style="color: #008080;">74</span>     <span style="color: #0000ff;">this</span>.directionY = 0<span style="color: #000000;">;
+</span><span style="color: #008080;">75</span>     easing = <span style="color: #0000ff;">this</span><span style="color: #000000;">.options.bounceEasing;
+</span><span style="color: #008080;">76</span> <span style="color: #000000;">  }
+</span><span style="color: #008080;">77</span> 
+<span style="color: #008080;">78</span>   <span style="color: #008000;">//</span><span style="color: #008000;"> INSERT POINT: _end</span>
+<span style="color: #008080;">79</span> 
+<span style="color: #008080;">80</span>   <span style="color: #0000ff;">if</span> (newX != <span style="color: #0000ff;">this</span>.x || newY != <span style="color: #0000ff;">this</span><span style="color: #000000;">.y) {
+</span><span style="color: #008080;">81</span>     <span style="color: #008000;">//</span><span style="color: #008000;"> change easing function when scroller goes out of the boundaries</span>
+<span style="color: #008080;">82</span>     <span style="color: #0000ff;">if</span> (newX &gt; 0 || newX &lt; <span style="color: #0000ff;">this</span>.maxScrollX || newY &gt; 0 || newY &lt; <span style="color: #0000ff;">this</span><span style="color: #000000;">.maxScrollY) {
+</span><span style="color: #008080;">83</span>       easing =<span style="color: #000000;"> utils.ease.quadratic;
+</span><span style="color: #008080;">84</span> <span style="color: #000000;">    }
+</span><span style="color: #008080;">85</span> 
+<span style="color: #008080;">86</span>     <span style="color: #0000ff;">this</span><span style="color: #000000;">.scrollTo(newX, newY, time, easing);
+</span><span style="color: #008080;">87</span>     <span style="color: #0000ff;">return</span><span style="color: #000000;">;
+</span><span style="color: #008080;">88</span> <span style="color: #000000;">  }
+</span><span style="color: #008080;">89</span> 
+<span style="color: #008080;">90</span>   <span style="color: #0000ff;">this</span>._execEvent('scrollEnd'<span style="color: #000000;">);
+</span><span style="color: #008080;">91</span> },</pre>
+</div>
+<span class="cnblogs_code_collapse">View Code </span></div>
+<p>开始我们就说过，touchend为这个控件一个关键点与难点，现在我们就来啃一啃，这个看完了，iScroll核心部分也就结束了，后面就只需要拆解分析即可</p>
+<p>首先仍然是一点初始化操作</p>
+<div class="cnblogs_code">
+<pre><span style="color: #008080;">1</span> <span style="color: #0000ff;">if</span> (!<span style="color: #0000ff;">this</span>.enabled || utils.eventType[e.type] !== <span style="color: #0000ff;">this</span><span style="color: #000000;">.initiated) {
+</span><span style="color: #008080;">2</span>   <span style="color: #0000ff;">return</span><span style="color: #000000;">;
+</span><span style="color: #008080;">3</span> <span style="color: #000000;">}
+</span><span style="color: #008080;">4</span> 
+<span style="color: #008080;">5</span> <span style="color: #0000ff;">if</span> (<span style="color: #0000ff;">this</span>.options.preventDefault &amp;&amp; !utils.preventDefaultException(e.target, <span style="color: #0000ff;">this</span><span style="color: #000000;">.options.preventDefaultException)) {
+</span><span style="color: #008080;">6</span> <span style="color: #000000;">  e.preventDefault();
+</span><span style="color: #008080;">7</span> }</pre>
+</div>
+<p>而后逐步好戏上场了，在手指离开前做了状态保存</p>
+<div class="cnblogs_code">
+<pre><span style="color: #008080;"> 1</span> <span style="color: #0000ff;">var</span> point = e.changedTouches ? e.changedTouches[0<span style="color: #000000;">] : e,
+</span><span style="color: #008080;"> 2</span> <span style="color: #000000;">momentumX,
+</span><span style="color: #008080;"> 3</span> <span style="color: #000000;">momentumY,
+</span><span style="color: #008080;"> 4</span> duration = utils.getTime() - <span style="color: #0000ff;">this</span><span style="color: #000000;">.startTime,
+</span><span style="color: #008080;"> 5</span> newX = Math.round(<span style="color: #0000ff;">this</span><span style="color: #000000;">.x),
+</span><span style="color: #008080;"> 6</span> newY = Math.round(<span style="color: #0000ff;">this</span><span style="color: #000000;">.y),
+</span><span style="color: #008080;"> 7</span> distanceX = Math.abs(newX - <span style="color: #0000ff;">this</span><span style="color: #000000;">.startX),
+</span><span style="color: #008080;"> 8</span> distanceY = Math.abs(newY - <span style="color: #0000ff;">this</span><span style="color: #000000;">.startY),
+</span><span style="color: #008080;"> 9</span> time = 0<span style="color: #000000;">,
+</span><span style="color: #008080;">10</span> easing = ''<span style="color: #000000;">;
+</span><span style="color: #008080;">11</span> 
+<span style="color: #008080;">12</span> <span style="color: #0000ff;">this</span>.isInTransition = 0<span style="color: #000000;">;
+</span><span style="color: #008080;">13</span> <span style="color: #0000ff;">this</span>.initiated = 0<span style="color: #000000;">;
+</span><span style="color: #008080;">14</span> <span style="color: #0000ff;">this</span>.endTime = utils.getTime();</pre>
+</div>
+<p>duration是当前拖动的事件，这里可不是手指触屏到离开哦，因为move时候每300ms变了一次</p>
+<p>PS：这里想象一下如果我们想要快速的滑动是不是触屏屏幕很快呢，而我们一直拖动DOM在最后也是有可能想让他快速移动的</p>
+<p>记录当前x，y位置记录当前移动位置distanceY，然后重置结束时间，这里有一个resetPosition方法：</p>
+<div class="cnblogs_code">
+<pre><span style="color: #008080;"> 1</span> resetPosition: <span style="color: #0000ff;">function</span><span style="color: #000000;"> (time) {
+</span><span style="color: #008080;"> 2</span>     <span style="color: #0000ff;">var</span> x = <span style="color: #0000ff;">this</span><span style="color: #000000;">.x,
+</span><span style="color: #008080;"> 3</span>         y = <span style="color: #0000ff;">this</span><span style="color: #000000;">.y;
+</span><span style="color: #008080;"> 4</span> 
+<span style="color: #008080;"> 5</span>     time = time || 0<span style="color: #000000;">;
+</span><span style="color: #008080;"> 6</span> 
+<span style="color: #008080;"> 7</span>     <span style="color: #0000ff;">if</span> ( !<span style="color: #0000ff;">this</span>.hasHorizontalScroll || <span style="color: #0000ff;">this</span>.x &gt; 0<span style="color: #000000;"> ) {
+</span><span style="color: #008080;"> 8</span>         x = 0<span style="color: #000000;">;
+</span><span style="color: #008080;"> 9</span>     } <span style="color: #0000ff;">else</span> <span style="color: #0000ff;">if</span> ( <span style="color: #0000ff;">this</span>.x &lt; <span style="color: #0000ff;">this</span><span style="color: #000000;">.maxScrollX ) {
+</span><span style="color: #008080;">10</span>         x = <span style="color: #0000ff;">this</span><span style="color: #000000;">.maxScrollX;
+</span><span style="color: #008080;">11</span> <span style="color: #000000;">    }
+</span><span style="color: #008080;">12</span> 
+<span style="color: #008080;">13</span>     <span style="color: #0000ff;">if</span> ( !<span style="color: #0000ff;">this</span>.hasVerticalScroll || <span style="color: #0000ff;">this</span>.y &gt; 0<span style="color: #000000;"> ) {
+</span><span style="color: #008080;">14</span>         y = 0<span style="color: #000000;">;
+</span><span style="color: #008080;">15</span>     } <span style="color: #0000ff;">else</span> <span style="color: #0000ff;">if</span> ( <span style="color: #0000ff;">this</span>.y &lt; <span style="color: #0000ff;">this</span><span style="color: #000000;">.maxScrollY ) {
+</span><span style="color: #008080;">16</span>         y = <span style="color: #0000ff;">this</span><span style="color: #000000;">.maxScrollY;
+</span><span style="color: #008080;">17</span> <span style="color: #000000;">    }
+</span><span style="color: #008080;">18</span> 
+<span style="color: #008080;">19</span>     <span style="color: #0000ff;">if</span> ( x == <span style="color: #0000ff;">this</span>.x &amp;&amp; y == <span style="color: #0000ff;">this</span><span style="color: #000000;">.y ) {
+</span><span style="color: #008080;">20</span>         <span style="color: #0000ff;">return</span> <span style="color: #0000ff;">false</span><span style="color: #000000;">;
+</span><span style="color: #008080;">21</span> <span style="color: #000000;">    }
+</span><span style="color: #008080;">22</span> 
+<span style="color: #008080;">23</span>     <span style="color: #0000ff;">this</span>.scrollTo(x, y, time, <span style="color: #0000ff;">this</span><span style="color: #000000;">.options.bounceEasing);
+</span><span style="color: #008080;">24</span> 
+<span style="color: #008080;">25</span>     <span style="color: #0000ff;">return</span> <span style="color: #0000ff;">true</span><span style="color: #000000;">;
+</span><span style="color: #008080;">26</span> },</pre>
+</div>
+<p>他是记录我们是不是已经离开了边界了，如果离开边界了就不会执行后面逻辑，而直接重置DOM位置，这里还用到了我们的scrollTo方法，该方法尤其关键</p>
+<h3>scrollTo</h3>
+<div class="cnblogs_code">
+<pre><span style="color: #008080;"> 1</span> scrollTo: <span style="color: #0000ff;">function</span><span style="color: #000000;"> (x, y, time, easing) {
+</span><span style="color: #008080;"> 2</span>     easing = easing ||<span style="color: #000000;"> utils.ease.circular;
+</span><span style="color: #008080;"> 3</span> 
+<span style="color: #008080;"> 4</span>     <span style="color: #0000ff;">this</span>.isInTransition = <span style="color: #0000ff;">this</span>.options.useTransition &amp;&amp; time &gt; 0<span style="color: #000000;">;
+</span><span style="color: #008080;"> 5</span> 
+<span style="color: #008080;"> 6</span>     <span style="color: #0000ff;">if</span> ( !time || (<span style="color: #0000ff;">this</span>.options.useTransition &amp;&amp;<span style="color: #000000;"> easing.style) ) {
+</span><span style="color: #008080;"> 7</span>         <span style="color: #0000ff;">this</span><span style="color: #000000;">._transitionTimingFunction(easing.style);
+</span><span style="color: #008080;"> 8</span>         <span style="color: #0000ff;">this</span><span style="color: #000000;">._transitionTime(time);
+</span><span style="color: #008080;"> 9</span>         <span style="color: #0000ff;">this</span><span style="color: #000000;">._translate(x, y);
+</span><span style="color: #008080;">10</span>     } <span style="color: #0000ff;">else</span><span style="color: #000000;"> {
+</span><span style="color: #008080;">11</span>         <span style="color: #0000ff;">this</span><span style="color: #000000;">._animate(x, y, time, easing.fn);
+</span><span style="color: #008080;">12</span> <span style="color: #000000;">    }
+</span><span style="color: #008080;">13</span> },</pre>
+</div>
+<p>这个方法是此处一个重要的方法，传入距离与时间后，他就会高高兴兴的移动到对应位置</p>
+<p><span style="line-height: 1.5;">如果启用了CSS3的动画，便会使用CSS3动画方式进行动画（这个动画我们下期再说），否则使用_animate方法（js实现方案）</span></p>
+<div class="cnblogs_code">
+<pre><span style="color: #008080;"> 1</span> _animate: <span style="color: #0000ff;">function</span><span style="color: #000000;"> (destX, destY, duration, easingFn) {
+</span><span style="color: #008080;"> 2</span>     <span style="color: #0000ff;">var</span> that = <span style="color: #0000ff;">this</span><span style="color: #000000;">,
+</span><span style="color: #008080;"> 3</span>         startX = <span style="color: #0000ff;">this</span><span style="color: #000000;">.x,
+</span><span style="color: #008080;"> 4</span>         startY = <span style="color: #0000ff;">this</span><span style="color: #000000;">.y,
+</span><span style="color: #008080;"> 5</span>         startTime =<span style="color: #000000;"> utils.getTime(),
+</span><span style="color: #008080;"> 6</span>         destTime = startTime +<span style="color: #000000;"> duration;
+</span><span style="color: #008080;"> 7</span> 
+<span style="color: #008080;"> 8</span>     <span style="color: #0000ff;">function</span><span style="color: #000000;"> step () {
+</span><span style="color: #008080;"> 9</span>         <span style="color: #0000ff;">var</span> now =<span style="color: #000000;"> utils.getTime(),
+</span><span style="color: #008080;">10</span> <span style="color: #000000;">            newX, newY,
+</span><span style="color: #008080;">11</span> <span style="color: #000000;">            easing;
+</span><span style="color: #008080;">12</span> 
+<span style="color: #008080;">13</span>         <span style="color: #0000ff;">if</span> ( now &gt;=<span style="color: #000000;"> destTime ) {
+</span><span style="color: #008080;">14</span>             that.isAnimating = <span style="color: #0000ff;">false</span><span style="color: #000000;">;
+</span><span style="color: #008080;">15</span> <span style="color: #000000;">            that._translate(destX, destY);
+</span><span style="color: #008080;">16</span> 
+<span style="color: #008080;">17</span>             <span style="color: #0000ff;">if</span> ( !<span style="color: #000000;">that.resetPosition(that.options.bounceTime) ) {
+</span><span style="color: #008080;">18</span>                 that._execEvent('scrollEnd'<span style="color: #000000;">);
+</span><span style="color: #008080;">19</span> <span style="color: #000000;">            }
+</span><span style="color: #008080;">20</span> 
+<span style="color: #008080;">21</span>             <span style="color: #0000ff;">return</span><span style="color: #000000;">;
+</span><span style="color: #008080;">22</span> <span style="color: #000000;">        }
+</span><span style="color: #008080;">23</span> 
+<span style="color: #008080;">24</span>         now = ( now - startTime ) /<span style="color: #000000;"> duration;
+</span><span style="color: #008080;">25</span>         easing =<span style="color: #000000;"> easingFn(now);
+</span><span style="color: #008080;">26</span>         newX = ( destX - startX ) * easing +<span style="color: #000000;"> startX;
+</span><span style="color: #008080;">27</span>         newY = ( destY - startY ) * easing +<span style="color: #000000;"> startY;
+</span><span style="color: #008080;">28</span> <span style="color: #000000;">        that._translate(newX, newY);
+</span><span style="color: #008080;">29</span> 
+<span style="color: #008080;">30</span>         <span style="color: #0000ff;">if</span><span style="color: #000000;"> ( that.isAnimating ) {
+</span><span style="color: #008080;">31</span> <span style="color: #000000;">            rAF(step);
+</span><span style="color: #008080;">32</span> <span style="color: #000000;">        }
+</span><span style="color: #008080;">33</span> <span style="color: #000000;">    }
+</span><span style="color: #008080;">34</span> 
+<span style="color: #008080;">35</span>     <span style="color: #0000ff;">this</span>.isAnimating = <span style="color: #0000ff;">true</span><span style="color: #000000;">;
+</span><span style="color: #008080;">36</span> <span style="color: #000000;">    step();
+</span><span style="color: #008080;">37</span> },</pre>
+</div>
+<p>这里用到了前文说描述的settimeout实现动画方案，这里有一点需要我们回到start部分重新思考，为什么CSS停止了动画？</p>
+<p>原因是因为transitionend事件</p>
+<div class="cnblogs_code">
+<pre><span style="color: #800000;">transitionend 事件会在 CSS transition 结束后触发. 当transition完成前移除transition时，比如移除css的transition-property 属性，事件将不会被触发.</span></pre>
+</div>
+<div class="cnblogs_code">
+<pre><span style="color: #008080;"> 1</span> _transitionEnd: <span style="color: #0000ff;">function</span><span style="color: #000000;"> (e) {
+</span><span style="color: #008080;"> 2</span>     <span style="color: #0000ff;">if</span> ( e.target != <span style="color: #0000ff;">this</span>.scroller || !<span style="color: #0000ff;">this</span><span style="color: #000000;">.isInTransition ) {
+</span><span style="color: #008080;"> 3</span>         <span style="color: #0000ff;">return</span><span style="color: #000000;">;
+</span><span style="color: #008080;"> 4</span> <span style="color: #000000;">    }
+</span><span style="color: #008080;"> 5</span> 
+<span style="color: #008080;"> 6</span>     <span style="color: #0000ff;">this</span><span style="color: #000000;">._transitionTime();
+</span><span style="color: #008080;"> 7</span>     <span style="color: #0000ff;">if</span> ( !<span style="color: #0000ff;">this</span>.resetPosition(<span style="color: #0000ff;">this</span><span style="color: #000000;">.options.bounceTime) ) {
+</span><span style="color: #008080;"> 8</span>         <span style="color: #0000ff;">this</span>.isInTransition = <span style="color: #0000ff;">false</span><span style="color: #000000;">;
+</span><span style="color: #008080;"> 9</span>         <span style="color: #0000ff;">this</span>._execEvent('scrollEnd'<span style="color: #000000;">);
+</span><span style="color: #008080;">10</span> <span style="color: #000000;">    }
+</span><span style="color: #008080;">11</span> },</pre>
+</div>
+<p>所以，我们第二次touchstart时候，便高高兴兴停止了动画（之一_transitionTime未传time时候会重置时间），所以先取消动画再移动位置</p>
+<p>于是继续回到我们的end事件，</p>
+<div class="cnblogs_code">
+<pre><span style="color: #008080;">1</span> <span style="color: #0000ff;">this</span>.scrollTo(newX, newY);</pre>
+</div>
+<p>如果没有超出边界便滑动到应该去的位置（这里有动画哦）</p>
+<h3>点击情况</h3>
+<p>当然，我们手指可能当前只不过想点击而已，这个时候就要触发相关的点击事件了，如果需要获取焦点，便获取焦点</p>
+<p>PS：他这里还模拟的fastclick想提升响应速度，但是他这样会引起大量BUG</p>
+<div class="cnblogs_code">
+<pre><span style="color: #008080;"> 1</span> <span style="color: #0000ff;">if</span> (!<span style="color: #0000ff;">this</span><span style="color: #000000;">.moved) {
+</span><span style="color: #008080;"> 2</span>   <span style="color: #0000ff;">if</span> (<span style="color: #0000ff;">this</span><span style="color: #000000;">.options.tap) {
+</span><span style="color: #008080;"> 3</span>     utils.tap(e, <span style="color: #0000ff;">this</span><span style="color: #000000;">.options.tap);
+</span><span style="color: #008080;"> 4</span> <span style="color: #000000;">  }
+</span><span style="color: #008080;"> 5</span> 
+<span style="color: #008080;"> 6</span>   <span style="color: #0000ff;">if</span> (<span style="color: #0000ff;">this</span><span style="color: #000000;">.options.click) {
+</span><span style="color: #008080;"> 7</span> <span style="color: #000000;">    utils.click(e);
+</span><span style="color: #008080;"> 8</span> <span style="color: #000000;">  }
+</span><span style="color: #008080;"> 9</span> 
+<span style="color: #008080;">10</span>   <span style="color: #0000ff;">this</span>._execEvent('scrollCancel'<span style="color: #000000;">);
+</span><span style="color: #008080;">11</span>   <span style="color: #0000ff;">return</span><span style="color: #000000;">;
+</span><span style="color: #008080;">12</span> <span style="color: #000000;">}
+</span><span style="color: #008080;">13</span> 
+<span style="color: #008080;">14</span> <span style="color: #0000ff;">if</span> (<span style="color: #0000ff;">this</span>._events.flick &amp;&amp; duration &lt; 200 &amp;&amp; distanceX &lt; 100 &amp;&amp; distanceY &lt; 100<span style="color: #000000;">) {
+</span><span style="color: #008080;">15</span>   <span style="color: #0000ff;">this</span>._execEvent('flick'<span style="color: #000000;">);
+</span><span style="color: #008080;">16</span>   <span style="color: #0000ff;">return</span><span style="color: #000000;">;
+</span><span style="color: #008080;">17</span> }</pre>
+</div>
+<h3>运动参数</h3>
+<p>第一步的scrollTo其实可以放到move里面去，后面就用到了我们上文所说，根据动力加速度计算出来的动画参数：</p>
+<div class="cnblogs_code">
+<pre><span style="color: #008080;">1</span> <span style="color: #0000ff;">if</span> (<span style="color: #0000ff;">this</span>.options.momentum &amp;&amp; duration &lt; 300<span style="color: #000000;">) {
+</span><span style="color: #008080;">2</span>   momentumX = <span style="color: #0000ff;">this</span>.hasHorizontalScroll ? utils.momentum(<span style="color: #0000ff;">this</span>.x, <span style="color: #0000ff;">this</span>.startX, duration, <span style="color: #0000ff;">this</span>.maxScrollX, <span style="color: #0000ff;">this</span>.options.bounce ? <span style="color: #0000ff;">this</span>.wrapperWidth : 0) : { destination: newX, duration: 0<span style="color: #000000;"> };
+</span><span style="color: #008080;">3</span>   momentumY = <span style="color: #0000ff;">this</span>.hasVerticalScroll ? utils.momentum(<span style="color: #0000ff;">this</span>.y, <span style="color: #0000ff;">this</span>.startY, duration, <span style="color: #0000ff;">this</span>.maxScrollY, <span style="color: #0000ff;">this</span>.options.bounce ? <span style="color: #0000ff;">this</span>.wrapperHeight : 0) : { destination: newY, duration: 0<span style="color: #000000;"> };
+</span><span style="color: #008080;">4</span>   newX =<span style="color: #000000;"> momentumX.destination;
+</span><span style="color: #008080;">5</span>   newY =<span style="color: #000000;"> momentumY.destination;
+</span><span style="color: #008080;">6</span>   time =<span style="color: #000000;"> Math.max(momentumX.duration, momentumY.duration);
+</span><span style="color: #008080;">7</span>   <span style="color: #0000ff;">this</span>.isInTransition = 1<span style="color: #000000;">;
+</span><span style="color: #008080;">8</span> }</pre>
+</div>
+<p>那个snap不必关注，直接看下面，在此使用</p>
+<div class="cnblogs_code">
+<pre><span style="color: #008080;">1</span> <span style="color: #0000ff;">this</span>.scrollTo(newX, newY, time, easing);</pre>
+</div>
+<p>开始运动，最后触发scrollend事件，这里如果超出边界会执行resetPosition方法还原的，不必关心</p>
+<p>由此，我们几大核心事件点便学习结束了，轻松愉快哈</p>
+<h1>结语</h1>
+<p><span style="line-height: 1.5;">今天学习了iScroll的几个核心点，我们下次来说下他的滚动条以及事件机制相关，整个iScroll就七七八八了</span></p>
+<p>&nbsp;</p>
+                </div>
+
+                <div class='span3 sidebar'>
+                    <h2>导航栏</h2>
+                    <ul class="nav nav-tabs nav-stacked">
+                             				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/javascriptzdyxhxzsdyjxyzyddf/index.html">javascript中的一些核心知识点以及需要注意的地方</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/[zd]webappdyhzlyzydqdyhdpyjlkkb/index.html">[置顶]【webapp的优化整理】要做移动前端优化的朋友进来看看吧</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/[zd]yddjrwtyjjavascriptsjjzxjsjydjr/index.html">[置顶]【移动端兼容问题研究】javascript事件机制详解（涉及移动兼容）</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/gruntzhb30fzxhsygruntdbqddm/index.html">【grunt整合版】30分钟学会使用grunt打包前端代码</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/gruntdyd30fzxhsygruntdbqddm/index.html">【grunt第一弹】30分钟学会使用grunt打包前端代码</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/gruntdsdgruntzqdsjxmzdyy/index.html">【grunt第三弹】grunt在前端实际项目中的应用</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/gruntded30fzxhsygruntdbqddm02/index.html">【grunt第二弹】30分钟学会使用grunt打包前端代码（02）</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/IScrollsrxxtpyddhadlqs/index.html">【IScroll深入学习】突破移动端黑暗的利器（上）</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/IScrollsrxxjjIScrollynzz/index.html">【IScroll深入学习】解决IScroll疑难杂症</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/iScrollymxx00mniScroll/index.html">【iScroll源码学习00】模拟iScroll</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/iScrollymxx01zbjd/index.html">【iScroll源码学习01】准备阶段</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/iScrollymxx02fjiScrollsghxsjd/index.html">【iScroll源码学习02】分解iScroll三个核心事件点</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/iScrollymxx03iScrollsjjzygdtdsx/index.html">【iScroll源码学习03】iScroll事件机制与滚动条的实现</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/iScrollymxx04flIScrollhx/index.html">【iScroll源码学习04】分离IScroll核心</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/javascriptpxdytyyjc/index.html">【javascript培训第一天】语言基础</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/javascriptpxdstcybl/index.html">【javascript培训第三天】查遗补漏</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/javascriptpxdetDOMyBOM/index.html">【javascript培训第二天】DOM与BOM</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/javascriptjzdsk01mkhbc/index.html">【javascript激增的思考01】模块化编程</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/javascriptjzdsk02mkhyMVC/index.html">【javascript激增的思考02】模块化与MVC</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/javascriptjzdsk03MVVMyKnockout/index.html">【javascript激增的思考03】MVVM与Knockout</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/javascriptjzdsk04MVCyBackbonejs(beta)/index.html">【javascript激增的思考04】MVC与Backbonejs(beta)</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/javascriptmxdxzlrwmyqltkdzb01/index.html">【javascript面向对象之路】让我们一起来坦克大战吧01</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/NodeJSxxbj04xwfbxt/index.html">【NodeJS学习笔记04】新闻发布系统</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/requireJSymxx01ljzgrequireJSdjg/index.html">【requireJS源码学习01】了解整个requireJS的结构</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/requireJSymxx02datamainjzdsx/index.html">【requireJS源码学习02】datamain加载的实现</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/requireJSymxx03xjrequireJSdjzlc/index.html">【requireJS源码学习03】细究requireJS的加载流程</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/UIcjkfygjdrlcjs/index.html">【UI插件】开发一个简单日历插件（上）</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/UIcjjddrlcjxxxMVCsx/index.html">【UI插件】简单的日历插件（下）——学习MVC思想</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/zeptoxxbj01hxff$()/index.html">【zepto学习笔记01】核心方法$()</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/zeptoxxbj01hxff$()b/index.html">【zepto学习笔记01】核心方法$()（补）</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/zeptoxxbj02lsd/index.html">【zepto学习笔记02】零碎点</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/zeptoxxbj03sjjz/index.html">【zepto学习笔记03】事件机制</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/ycmsztjavascriptzdjc/index.html">【一次面试】再谈javascript中的继承</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/ztbackbone01mxModel/index.html">【再探backbone01】模型Model</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/ztbackbone02jhCollection/index.html">【再探backbone02】集合Collection</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/ztbackbone03bkydyyysltgym/index.html">【再探backbone03】博客园单页应用实例（提供源码）</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/ztbackbone04dyyydjslycl/index.html">【再探backbone04】单页应用的基石路由处理</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/ctUnderscorezsmbyq/index.html">【初探Underscore】再说模版引擎</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/ckjavascriptamzAjaxjsxnszddAjax/index.html">【初窥javascript奥秘之Ajax】简述下你所知道的Ajax？</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/ckjavascriptamzsjmpnxnwmyqmdp/index.html">【初窥javascript奥秘之事件冒泡】那些年我们一起冒的泡</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/ckjavascriptamzsjjzldtygdj/index.html">【初窥javascript奥秘之事件机制】论“点透”与“鬼点击”</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/ckjavascriptamzrrzmbddthisnzdxzthiszxnlm/index.html">【初窥javascript奥秘之让人捉摸不定的this】你知道现在this指向哪里吗？？？</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/ckjavascriptamzbbydxbdhlqbcl/index.html">【初窥javascript奥秘之闭包】叶大侠病都好了，求不踩了：）</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/ckjavascriptamzmxdxfzyjc/index.html">【初窥javascript奥秘之面向对象】封装与继承</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/qdmdsjdjgjdnzdljm/index.html">【前端盲点】事件的几个阶段你真的了解么？？？</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/dyyyviewymodelxgsl/index.html">【单页应用】view与model相关梳理</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/dyyyyqldyyybsxjdwbgns/index.html">【单页应用】一起来单页应用吧，实现简单微博功能！（上）</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/dyyyqjkzqappyggxsm/index.html">【单页应用】全局控制器app应该干些什么？</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/dyyywmgrhclkjdcccjgx/index.html">【单页应用】我们该如何处理框架弹出层层级关系？</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/dyyyljMVC/index.html">【单页应用】理解MVC</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/dyyyztxjzviewzjygrhtx/index.html">【单页应用之通信机制】view之间应该如何通信</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/dyyyjkzHistoryxsHistorydgdyyydm/index.html">【单页应用巨坑之History】细数History带给单页应用的噩梦</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/xtszeptofindysyjiosdcjpknrnhtt/index.html">【小贴士】zeptofind元素以及ios弹出键盘可能让你很头疼</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/xtsgytransitionEndanimatedygyqgs/index.html">【小贴士】关于transitionEndanimate的一个有趣故事</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/xtsgzzdbbysjwtdzzmp/index.html">【小贴士】工作中的”闭包“与事件委托的”阻止冒泡“</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/xtstytjavascriptzdreplace/index.html">【小贴士】探一探javascript中的replace</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/xtsxnjpyfixeddgydddt/index.html">【小贴士】虚拟键盘与fixed带给移动端的痛！</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/ttjavascriptsjjzdcsxyl/index.html">【探讨】javascript事件机制底层实现原理</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/mkhbcljrequireJSsxygjddmkjzq/index.html">【模块化编程】理解requireJS实现一个简单的模块加载器</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/zyJavaScriptmfjmtsdqlxkjzbfgndcljz/index.html">【转】【译】JavaScript魔法揭秘探索当前流行框架中部分功能的处理机制</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/zxjavascriptgszl01javascriptcszds/index.html">【追寻javascript高手之路01】javascript参数知多少？</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/zxjavascriptgszl02blzyyzds/index.html">【追寻javascript高手之路02】变量、作用域知多少？</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/zxjavascriptgszl03javascriptdxdld/index.html">【追寻javascript高手之路03】javascript对象大乱斗</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/zxjavascriptgszl04ljprototype/index.html">【追寻javascript高手之路04】理解prototype</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/zxjavascriptgszl05ljsjl/index.html">【追寻javascript高手之路05】理解事件流</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/zgbj04zxzzsj(2)/index.html">【重构笔记04】重新组织数据(2)</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/zgbj05jhtjbds/index.html">【重构笔记05】简化条件表达式</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/zgbj06jhhsdy/index.html">【重构笔记06】简化函数调用</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/ycmshgttbxysjfl/index.html">一次面试回顾——探讨表现与数据分离</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/dhzwebappzdxz/index.html">动画在webapp中的现状</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/ysandriodlqhthdomclicksjqtsxwttj/index.html">原生andriod浏览器回退后dom（click）事件全体失效问题探究</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/scsbdjxysdsbsjytouchsjdnxs/index.html">手持设备点击响应速度，鼠标事件与touch事件的那些事</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/mnbjQueryzeptohxymfx/index.html">迷你版jQuery——zepto核心源码分析</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/dbsgzdlwmlyqxjdddomxzqb/index.html">都别说工资低了，我们来一起写简单的dom选择器吧！</a></li>
+    				                                         
+                    </ul>
+                </div>
+            </div>
+
+        </div>
+    </body>
+</html>

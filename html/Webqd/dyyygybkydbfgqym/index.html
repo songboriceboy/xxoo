@@ -1,0 +1,545 @@
+﻿<!DOCTYPE html>
+
+<html lang="zh">
+    <head>
+        <meta charset="utf-8">
+        <meta name="description" content="android,ios" />
+        <meta name="keywords" content="android,ios" />
+
+        <title>叶小钗</title>
+        <style type='text/css'>
+            body {
+                background-color: #CCC;
+            }
+        </style>
+        <link rel="stylesheet" href="../../../css/bootstrap.css" />
+    </head>
+
+    <body>
+        <div class="container">
+
+            <h1>叶小钗</h1>
+
+            <div class='navbar navbar-inverse'>
+                <div class='navbar-inner nav-collapse' style="height: auto;">
+                    <ul class="nav">
+                              				<li><a href="http://songboriceboy.github.io/xxoo/html/blade/index.html">blade</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/css/index.html">css</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/HTML5&CSS3/index.html">HTML5&CSS3</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/index.html">javascript</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Javaxx/index.html">Java学习</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/nodejs/index.html">nodejs</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/requirejs/index.html">requirejs</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/index.html">Web前端</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/xxgw/index.html">学习感悟</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/gzdd/index.html">工作点滴</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/jkxx/index.html">接口学习</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/wfl/index.html">未分类</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/ydkf/index.html">移动开发</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/sjms/index.html">设计模式</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/mst/index.html">面试题</a></li>
+    				                      </ul>
+                </div>
+            </div>
+
+            <div id='content' class='row-fluid'>
+
+                <div class='span9 main'>
+				<div style="color:blue" align=center>【单页应用】关于博客园的补发（高清有码）。。。</div><br><h1>前言</h1>
+<p>上周的时候，做了一点单页应用的研究，但是给断了，本来说最近继续的，但是最近有点其它事情给耽搁了，就给忘了。</p>
+<p>PS：其实是师傅（<a class="gray" href="http://www.cnblogs.com/aaronjs/" target="_blank">http://www.cnblogs.com/aaronjs/</a>）叫我读jquery源码，我给读跪了。。。</p>
+<p>最近两天又朋友问怎么还没写，所以有了今天的东西。</p>
+<p>这个单页应用的框架问题很多，就是个简单的demo，喜欢的朋友就看看吧，需要源码的可以下载，但是里面的图片资源文件我给删除了，需要的就留言吧。</p>
+<p>这次代码增加了本地存储的应用，将model搞出来了，但是不太完善，过段时间再更新吧。</p>
+<h1>关于博客园</h1>
+<p>我想说博客园的接口很难用吗？？？而且全部是xml的，我这里还写了一个后端程序作为转换呢：</p>
+<div class="cnblogs_code" onclick="cnblogs_code_show('4b0d11b9-e01b-43b6-91fc-31162c9de24e')"><img id="code_img_closed_4b0d11b9-e01b-43b6-91fc-31162c9de24e" class="code_img_closed" src="43570758473519.gif" alt=""><img id="code_img_opened_4b0d11b9-e01b-43b6-91fc-31162c9de24e" class="code_img_opened" style="display: none;" onclick="cnblogs_code_hide('4b0d11b9-e01b-43b6-91fc-31162c9de24e',event)" src="16365178109279.gif" alt="">
+<div id="cnblogs_code_open_4b0d11b9-e01b-43b6-91fc-31162c9de24e" class="cnblogs_code_hide">
+<pre><span style="color: #008080;">  1</span> &lt;%@ WebHandler Language=<span style="color: #800000;">"</span><span style="color: #800000;">C#</span><span style="color: #800000;">"</span> Class=<span style="color: #800000;">"</span><span style="color: #800000;">Handler</span><span style="color: #800000;">"</span> %&gt;
+<span style="color: #008080;">  2</span> 
+<span style="color: #008080;">  3</span> <span style="color: #0000ff;">using</span><span style="color: #000000;"> System;
+</span><span style="color: #008080;">  4</span> <span style="color: #0000ff;">using</span><span style="color: #000000;"> System.Web;
+</span><span style="color: #008080;">  5</span> <span style="color: #0000ff;">using</span><span style="color: #000000;"> System.Net;
+</span><span style="color: #008080;">  6</span> <span style="color: #0000ff;">using</span><span style="color: #000000;"> System.IO;
+</span><span style="color: #008080;">  7</span> <span style="color: #0000ff;">using</span><span style="color: #000000;"> System.Text;
+</span><span style="color: #008080;">  8</span> <span style="color: #0000ff;">using</span><span style="color: #000000;"> System.Collections;
+</span><span style="color: #008080;">  9</span> <span style="color: #0000ff;">using</span><span style="color: #000000;"> System.Xml;
+</span><span style="color: #008080;"> 10</span> 
+<span style="color: #008080;"> 11</span> 
+<span style="color: #008080;"> 12</span> 
+<span style="color: #008080;"> 13</span> <span style="color: #0000ff;">public</span> <span style="color: #0000ff;">class</span><span style="color: #000000;"> Handler : IHttpHandler {
+</span><span style="color: #008080;"> 14</span>     
+<span style="color: #008080;"> 15</span>     <span style="color: #0000ff;">public</span> <span style="color: #0000ff;">void</span><span style="color: #000000;"> ProcessRequest (HttpContext context) {
+</span><span style="color: #008080;"> 16</span>         context.Response.ContentType = <span style="color: #800000;">"</span><span style="color: #800000;">text/plain</span><span style="color: #800000;">"</span><span style="color: #000000;">;
+</span><span style="color: #008080;"> 17</span>         <span style="color: #0000ff;">string</span> url = context.Request[<span style="color: #800000;">"</span><span style="color: #800000;">url</span><span style="color: #800000;">"</span>] != <span style="color: #0000ff;">null</span> ?  context.Request[<span style="color: #800000;">"</span><span style="color: #800000;">url</span><span style="color: #800000;">"</span>].ToString() : <span style="color: #800000;">""</span><span style="color: #000000;">; 
+</span><span style="color: #008080;"> 18</span>         <span style="color: #0000ff;">string</span> sException = <span style="color: #0000ff;">null</span><span style="color: #000000;">;
+</span><span style="color: #008080;"> 19</span>         <span style="color: #0000ff;">string</span> sRslt = <span style="color: #0000ff;">null</span><span style="color: #000000;">;
+</span><span style="color: #008080;"> 20</span>         WebResponse oWebRps = <span style="color: #0000ff;">null</span><span style="color: #000000;">;
+</span><span style="color: #008080;"> 21</span>         WebRequest oWebRqst =<span style="color: #000000;"> WebRequest.Create(url);
+</span><span style="color: #008080;"> 22</span>         oWebRqst.Timeout = <span style="color: #800080;">50000</span><span style="color: #000000;">;
+</span><span style="color: #008080;"> 23</span>         <span style="color: #0000ff;">try</span>
+<span style="color: #008080;"> 24</span> <span style="color: #000000;">        {
+</span><span style="color: #008080;"> 25</span>             oWebRps =<span style="color: #000000;"> oWebRqst.GetResponse();
+</span><span style="color: #008080;"> 26</span> <span style="color: #000000;">        }
+</span><span style="color: #008080;"> 27</span>         <span style="color: #0000ff;">catch</span><span style="color: #000000;"> (WebException ex)
+</span><span style="color: #008080;"> 28</span> <span style="color: #000000;">        {
+</span><span style="color: #008080;"> 29</span>             sException =<span style="color: #000000;"> ex.Message.ToString();
+</span><span style="color: #008080;"> 30</span> <span style="color: #000000;">            context.Response.Write(sException);
+</span><span style="color: #008080;"> 31</span> <span style="color: #000000;">        }
+</span><span style="color: #008080;"> 32</span>         <span style="color: #0000ff;">finally</span>
+<span style="color: #008080;"> 33</span> <span style="color: #000000;">        {
+</span><span style="color: #008080;"> 34</span>             <span style="color: #0000ff;">if</span> (oWebRps != <span style="color: #0000ff;">null</span><span style="color: #000000;">)
+</span><span style="color: #008080;"> 35</span> <span style="color: #000000;">            {
+</span><span style="color: #008080;"> 36</span>                 StreamReader oStreamRd = <span style="color: #0000ff;">new</span> StreamReader(oWebRps.GetResponseStream(), Encoding.GetEncoding(<span style="color: #800000;">"</span><span style="color: #800000;">utf-8</span><span style="color: #800000;">"</span><span style="color: #000000;">));
+</span><span style="color: #008080;"> 37</span>                 sRslt =<span style="color: #000000;"> oStreamRd.ReadToEnd();
+</span><span style="color: #008080;"> 38</span> <span style="color: #000000;">                oStreamRd.Close();
+</span><span style="color: #008080;"> 39</span> <span style="color: #000000;">                oWebRps.Close();
+</span><span style="color: #008080;"> 40</span> <span style="color: #000000;">            }
+</span><span style="color: #008080;"> 41</span> <span style="color: #000000;">        }
+</span><span style="color: #008080;"> 42</span> 
+<span style="color: #008080;"> 43</span>         XmlDocument doc = <span style="color: #0000ff;">new</span><span style="color: #000000;"> XmlDocument();
+</span><span style="color: #008080;"> 44</span>      
+<span style="color: #008080;"> 45</span>         doc.InnerXml =<span style="color: #000000;"> sRslt;
+</span><span style="color: #008080;"> 46</span>         <span style="color: #008000;">//</span><span style="color: #008000;"> Convert XML to a JSON string</span>
+<span style="color: #008080;"> 47</span>         <span style="color: #0000ff;">string</span> JSON =<span style="color: #000000;"> XmlToJSON(doc);
+</span><span style="color: #008080;"> 48</span> 
+<span style="color: #008080;"> 49</span>         <span style="color: #008000;">//</span><span style="color: #008000;"> Replace \ with \\ because string is being decoded twice
+</span><span style="color: #008080;"> 50</span>         <span style="color: #008000;">//</span><span style="color: #008000;">JSON = JSON.Replace(@"\", @"\\");</span>
+<span style="color: #008080;"> 51</span> 
+<span style="color: #008080;"> 52</span> <span style="color: #000000;">        context.Response.Write(JSON);
+</span><span style="color: #008080;"> 53</span>         
+<span style="color: #008080;"> 54</span> <span style="color: #000000;">    }
+</span><span style="color: #008080;"> 55</span>     <span style="color: #0000ff;">private</span> <span style="color: #0000ff;">static</span> <span style="color: #0000ff;">string</span><span style="color: #000000;"> XmlToJSON(XmlDocument xmlDoc)
+</span><span style="color: #008080;"> 56</span> <span style="color: #000000;">    {
+</span><span style="color: #008080;"> 57</span>         StringBuilder sbJSON = <span style="color: #0000ff;">new</span><span style="color: #000000;"> StringBuilder();
+</span><span style="color: #008080;"> 58</span>         sbJSON.Append(<span style="color: #800000;">"</span><span style="color: #800000;">{ </span><span style="color: #800000;">"</span><span style="color: #000000;">);
+</span><span style="color: #008080;"> 59</span>         XmlToJSONnode(sbJSON, xmlDoc.DocumentElement, <span style="color: #0000ff;">true</span><span style="color: #000000;">);
+</span><span style="color: #008080;"> 60</span>         sbJSON.Append(<span style="color: #800000;">"</span><span style="color: #800000;">}</span><span style="color: #800000;">"</span><span style="color: #000000;">);
+</span><span style="color: #008080;"> 61</span>         <span style="color: #0000ff;">return</span><span style="color: #000000;"> sbJSON.ToString();
+</span><span style="color: #008080;"> 62</span> <span style="color: #000000;">    }
+</span><span style="color: #008080;"> 63</span> 
+<span style="color: #008080;"> 64</span>     <span style="color: #008000;">//</span><span style="color: #008000;">  XmlToJSONnode:  Output an XmlElement, possibly as part of a higher array</span>
+<span style="color: #008080;"> 65</span>     <span style="color: #0000ff;">private</span> <span style="color: #0000ff;">static</span> <span style="color: #0000ff;">void</span> XmlToJSONnode(StringBuilder sbJSON, XmlElement node, <span style="color: #0000ff;">bool</span><span style="color: #000000;"> showNodeName)
+</span><span style="color: #008080;"> 66</span> <span style="color: #000000;">    {
+</span><span style="color: #008080;"> 67</span>         <span style="color: #0000ff;">if</span><span style="color: #000000;"> (showNodeName)
+</span><span style="color: #008080;"> 68</span>             sbJSON.Append(<span style="color: #800000;">"</span><span style="color: #800000;">\"</span><span style="color: #800000;">"</span> + SafeJSON(node.Name) + <span style="color: #800000;">"</span><span style="color: #800000;">\": </span><span style="color: #800000;">"</span><span style="color: #000000;">);
+</span><span style="color: #008080;"> 69</span>         sbJSON.Append(<span style="color: #800000;">"</span><span style="color: #800000;">{</span><span style="color: #800000;">"</span><span style="color: #000000;">);
+</span><span style="color: #008080;"> 70</span>         <span style="color: #008000;">//</span><span style="color: #008000;"> Build a sorted list of key-value pairs
+</span><span style="color: #008080;"> 71</span>         <span style="color: #008000;">//</span><span style="color: #008000;">  where   key is case-sensitive nodeName
+</span><span style="color: #008080;"> 72</span>         <span style="color: #008000;">//</span><span style="color: #008000;">          value is an ArrayList of string or XmlElement
+</span><span style="color: #008080;"> 73</span>         <span style="color: #008000;">//</span><span style="color: #008000;">  so that we know whether the nodeName is an array or not.</span>
+<span style="color: #008080;"> 74</span>         SortedList childNodeNames = <span style="color: #0000ff;">new</span><span style="color: #000000;"> SortedList();
+</span><span style="color: #008080;"> 75</span> 
+<span style="color: #008080;"> 76</span>         <span style="color: #008000;">//</span><span style="color: #008000;">  Add in all node attributes</span>
+<span style="color: #008080;"> 77</span>         <span style="color: #0000ff;">if</span> (node.Attributes != <span style="color: #0000ff;">null</span><span style="color: #000000;">)
+</span><span style="color: #008080;"> 78</span>             <span style="color: #0000ff;">foreach</span> (XmlAttribute attr <span style="color: #0000ff;">in</span><span style="color: #000000;"> node.Attributes)
+</span><span style="color: #008080;"> 79</span> <span style="color: #000000;">                StoreChildNode(childNodeNames, attr.Name, attr.InnerText);
+</span><span style="color: #008080;"> 80</span> 
+<span style="color: #008080;"> 81</span>         <span style="color: #008000;">//</span><span style="color: #008000;">  Add in all nodes</span>
+<span style="color: #008080;"> 82</span>         <span style="color: #0000ff;">foreach</span> (XmlNode cnode <span style="color: #0000ff;">in</span><span style="color: #000000;"> node.ChildNodes)
+</span><span style="color: #008080;"> 83</span> <span style="color: #000000;">        {
+</span><span style="color: #008080;"> 84</span>             <span style="color: #0000ff;">if</span> (cnode <span style="color: #0000ff;">is</span><span style="color: #000000;"> XmlText)
+</span><span style="color: #008080;"> 85</span>                 StoreChildNode(childNodeNames, <span style="color: #800000;">"</span><span style="color: #800000;">value</span><span style="color: #800000;">"</span><span style="color: #000000;">, cnode.InnerText);
+</span><span style="color: #008080;"> 86</span>             <span style="color: #0000ff;">else</span> <span style="color: #0000ff;">if</span> (cnode <span style="color: #0000ff;">is</span><span style="color: #000000;"> XmlElement)
+</span><span style="color: #008080;"> 87</span> <span style="color: #000000;">                StoreChildNode(childNodeNames, cnode.Name, cnode);
+</span><span style="color: #008080;"> 88</span> <span style="color: #000000;">        }
+</span><span style="color: #008080;"> 89</span> 
+<span style="color: #008080;"> 90</span>         <span style="color: #008000;">//</span><span style="color: #008000;"> Now output all stored info</span>
+<span style="color: #008080;"> 91</span>         <span style="color: #0000ff;">foreach</span> (<span style="color: #0000ff;">string</span> childname <span style="color: #0000ff;">in</span><span style="color: #000000;"> childNodeNames.Keys)
+</span><span style="color: #008080;"> 92</span> <span style="color: #000000;">        {
+</span><span style="color: #008080;"> 93</span>             ArrayList alChild =<span style="color: #000000;"> (ArrayList)childNodeNames[childname];
+</span><span style="color: #008080;"> 94</span>             <span style="color: #0000ff;">if</span> (alChild.Count == <span style="color: #800080;">1</span><span style="color: #000000;">)
+</span><span style="color: #008080;"> 95</span>                 OutputNode(childname, alChild[<span style="color: #800080;">0</span>], sbJSON, <span style="color: #0000ff;">true</span><span style="color: #000000;">);
+</span><span style="color: #008080;"> 96</span>             <span style="color: #0000ff;">else</span>
+<span style="color: #008080;"> 97</span> <span style="color: #000000;">            {
+</span><span style="color: #008080;"> 98</span>                 sbJSON.Append(<span style="color: #800000;">"</span><span style="color: #800000;"> \"</span><span style="color: #800000;">"</span> + SafeJSON(childname) + <span style="color: #800000;">"</span><span style="color: #800000;">\": [ </span><span style="color: #800000;">"</span><span style="color: #000000;">);
+</span><span style="color: #008080;"> 99</span>                 <span style="color: #0000ff;">foreach</span> (<span style="color: #0000ff;">object</span> Child <span style="color: #0000ff;">in</span><span style="color: #000000;"> alChild)
+</span><span style="color: #008080;">100</span>                     OutputNode(childname, Child, sbJSON, <span style="color: #0000ff;">false</span><span style="color: #000000;">);
+</span><span style="color: #008080;">101</span>                 sbJSON.Remove(sbJSON.Length - <span style="color: #800080;">2</span>, <span style="color: #800080;">2</span><span style="color: #000000;">);
+</span><span style="color: #008080;">102</span>                 sbJSON.Append(<span style="color: #800000;">"</span><span style="color: #800000;"> ], </span><span style="color: #800000;">"</span><span style="color: #000000;">);
+</span><span style="color: #008080;">103</span> <span style="color: #000000;">            }
+</span><span style="color: #008080;">104</span> <span style="color: #000000;">        }
+</span><span style="color: #008080;">105</span>         sbJSON.Remove(sbJSON.Length - <span style="color: #800080;">2</span>, <span style="color: #800080;">2</span><span style="color: #000000;">);
+</span><span style="color: #008080;">106</span>         sbJSON.Append(<span style="color: #800000;">"</span><span style="color: #800000;"> }</span><span style="color: #800000;">"</span><span style="color: #000000;">);
+</span><span style="color: #008080;">107</span> <span style="color: #000000;">    }
+</span><span style="color: #008080;">108</span> 
+<span style="color: #008080;">109</span>     <span style="color: #008000;">//</span><span style="color: #008000;">  StoreChildNode: Store data associated with each nodeName
+</span><span style="color: #008080;">110</span>     <span style="color: #008000;">//</span><span style="color: #008000;">                  so that we know whether the nodeName is an array or not.</span>
+<span style="color: #008080;">111</span>     <span style="color: #0000ff;">private</span> <span style="color: #0000ff;">static</span> <span style="color: #0000ff;">void</span> StoreChildNode(SortedList childNodeNames, <span style="color: #0000ff;">string</span> nodeName, <span style="color: #0000ff;">object</span><span style="color: #000000;"> nodeValue)
+</span><span style="color: #008080;">112</span> <span style="color: #000000;">    {
+</span><span style="color: #008080;">113</span>         <span style="color: #008000;">//</span><span style="color: #008000;"> Pre-process contraction of XmlElement-s</span>
+<span style="color: #008080;">114</span>         <span style="color: #0000ff;">if</span> (nodeValue <span style="color: #0000ff;">is</span><span style="color: #000000;"> XmlElement)
+</span><span style="color: #008080;">115</span> <span style="color: #000000;">        {
+</span><span style="color: #008080;">116</span>             <span style="color: #008000;">//</span><span style="color: #008000;"> Convert  &lt;aa&gt;&lt;/aa&gt; into "aa":null
+</span><span style="color: #008080;">117</span>             <span style="color: #008000;">//</span><span style="color: #008000;">          &lt;aa&gt;xx&lt;/aa&gt; into "aa":"xx"</span>
+<span style="color: #008080;">118</span>             XmlNode cnode =<span style="color: #000000;"> (XmlNode)nodeValue;
+</span><span style="color: #008080;">119</span>             <span style="color: #0000ff;">if</span> (cnode.Attributes.Count == <span style="color: #800080;">0</span><span style="color: #000000;">)
+</span><span style="color: #008080;">120</span> <span style="color: #000000;">            {
+</span><span style="color: #008080;">121</span>                 XmlNodeList children =<span style="color: #000000;"> cnode.ChildNodes;
+</span><span style="color: #008080;">122</span>                 <span style="color: #0000ff;">if</span> (children.Count == <span style="color: #800080;">0</span><span style="color: #000000;">)
+</span><span style="color: #008080;">123</span>                     nodeValue = <span style="color: #0000ff;">null</span><span style="color: #000000;">;
+</span><span style="color: #008080;">124</span>                 <span style="color: #0000ff;">else</span> <span style="color: #0000ff;">if</span> (children.Count == <span style="color: #800080;">1</span> &amp;&amp; (children[<span style="color: #800080;">0</span>] <span style="color: #0000ff;">is</span><span style="color: #000000;"> XmlText))
+</span><span style="color: #008080;">125</span>                     nodeValue = ((XmlText)(children[<span style="color: #800080;">0</span><span style="color: #000000;">])).InnerText;
+</span><span style="color: #008080;">126</span> <span style="color: #000000;">            }
+</span><span style="color: #008080;">127</span> <span style="color: #000000;">        }
+</span><span style="color: #008080;">128</span>         <span style="color: #008000;">//</span><span style="color: #008000;"> Add nodeValue to ArrayList associated with each nodeName
+</span><span style="color: #008080;">129</span>         <span style="color: #008000;">//</span><span style="color: #008000;"> If nodeName doesn't exist then add it</span>
+<span style="color: #008080;">130</span>         <span style="color: #0000ff;">object</span> oValuesAL =<span style="color: #000000;"> childNodeNames[nodeName];
+</span><span style="color: #008080;">131</span> <span style="color: #000000;">        ArrayList ValuesAL;
+</span><span style="color: #008080;">132</span>         <span style="color: #0000ff;">if</span> (oValuesAL == <span style="color: #0000ff;">null</span><span style="color: #000000;">)
+</span><span style="color: #008080;">133</span> <span style="color: #000000;">        {
+</span><span style="color: #008080;">134</span>             ValuesAL = <span style="color: #0000ff;">new</span><span style="color: #000000;"> ArrayList();
+</span><span style="color: #008080;">135</span>             childNodeNames[nodeName] =<span style="color: #000000;"> ValuesAL;
+</span><span style="color: #008080;">136</span> <span style="color: #000000;">        }
+</span><span style="color: #008080;">137</span>         <span style="color: #0000ff;">else</span>
+<span style="color: #008080;">138</span>             ValuesAL =<span style="color: #000000;"> (ArrayList)oValuesAL;
+</span><span style="color: #008080;">139</span> <span style="color: #000000;">        ValuesAL.Add(nodeValue);
+</span><span style="color: #008080;">140</span> <span style="color: #000000;">    }
+</span><span style="color: #008080;">141</span> 
+<span style="color: #008080;">142</span>     <span style="color: #0000ff;">private</span> <span style="color: #0000ff;">static</span> <span style="color: #0000ff;">void</span> OutputNode(<span style="color: #0000ff;">string</span> childname, <span style="color: #0000ff;">object</span> alChild, StringBuilder sbJSON, <span style="color: #0000ff;">bool</span><span style="color: #000000;"> showNodeName)
+</span><span style="color: #008080;">143</span> <span style="color: #000000;">    {
+</span><span style="color: #008080;">144</span>         <span style="color: #0000ff;">if</span> (alChild == <span style="color: #0000ff;">null</span><span style="color: #000000;">)
+</span><span style="color: #008080;">145</span> <span style="color: #000000;">        {
+</span><span style="color: #008080;">146</span>             <span style="color: #0000ff;">if</span><span style="color: #000000;"> (showNodeName)
+</span><span style="color: #008080;">147</span>                 sbJSON.Append(<span style="color: #800000;">"</span><span style="color: #800000;">\"</span><span style="color: #800000;">"</span> + SafeJSON(childname) + <span style="color: #800000;">"</span><span style="color: #800000;">\": </span><span style="color: #800000;">"</span><span style="color: #000000;">);
+</span><span style="color: #008080;">148</span>             sbJSON.Append(<span style="color: #800000;">"</span><span style="color: #800000;">null</span><span style="color: #800000;">"</span><span style="color: #000000;">);
+</span><span style="color: #008080;">149</span> <span style="color: #000000;">        }
+</span><span style="color: #008080;">150</span>         <span style="color: #0000ff;">else</span> <span style="color: #0000ff;">if</span> (alChild <span style="color: #0000ff;">is</span> <span style="color: #0000ff;">string</span><span style="color: #000000;">)
+</span><span style="color: #008080;">151</span> <span style="color: #000000;">        {
+</span><span style="color: #008080;">152</span>             <span style="color: #0000ff;">if</span><span style="color: #000000;"> (showNodeName)
+</span><span style="color: #008080;">153</span>                 sbJSON.Append(<span style="color: #800000;">"</span><span style="color: #800000;">\"</span><span style="color: #800000;">"</span> + SafeJSON(childname) + <span style="color: #800000;">"</span><span style="color: #800000;">\": </span><span style="color: #800000;">"</span><span style="color: #000000;">);
+</span><span style="color: #008080;">154</span>             <span style="color: #0000ff;">string</span> sChild = (<span style="color: #0000ff;">string</span><span style="color: #000000;">)alChild;
+</span><span style="color: #008080;">155</span>             sChild =<span style="color: #000000;"> sChild.Trim();
+</span><span style="color: #008080;">156</span>             sbJSON.Append(<span style="color: #800000;">"</span><span style="color: #800000;">\"</span><span style="color: #800000;">"</span> + SafeJSON(sChild) + <span style="color: #800000;">"</span><span style="color: #800000;">\"</span><span style="color: #800000;">"</span><span style="color: #000000;">);
+</span><span style="color: #008080;">157</span> <span style="color: #000000;">        }
+</span><span style="color: #008080;">158</span>         <span style="color: #0000ff;">else</span>
+<span style="color: #008080;">159</span> <span style="color: #000000;">            XmlToJSONnode(sbJSON, (XmlElement)alChild, showNodeName);
+</span><span style="color: #008080;">160</span>         sbJSON.Append(<span style="color: #800000;">"</span><span style="color: #800000;">, </span><span style="color: #800000;">"</span><span style="color: #000000;">);
+</span><span style="color: #008080;">161</span> <span style="color: #000000;">    }
+</span><span style="color: #008080;">162</span> 
+<span style="color: #008080;">163</span>     <span style="color: #008000;">//</span><span style="color: #008000;"> Make a string safe for JSON</span>
+<span style="color: #008080;">164</span>     <span style="color: #0000ff;">private</span> <span style="color: #0000ff;">static</span> <span style="color: #0000ff;">string</span> SafeJSON(<span style="color: #0000ff;">string</span><span style="color: #000000;"> sIn)
+</span><span style="color: #008080;">165</span> <span style="color: #000000;">    {
+</span><span style="color: #008080;">166</span>         StringBuilder sbOut = <span style="color: #0000ff;">new</span><span style="color: #000000;"> StringBuilder(sIn.Length);
+</span><span style="color: #008080;">167</span>         <span style="color: #0000ff;">foreach</span> (<span style="color: #0000ff;">char</span> ch <span style="color: #0000ff;">in</span><span style="color: #000000;"> sIn)
+</span><span style="color: #008080;">168</span> <span style="color: #000000;">        {
+</span><span style="color: #008080;">169</span>             <span style="color: #0000ff;">if</span> (Char.IsControl(ch) || ch == <span style="color: #800000;">'</span><span style="color: #800000;">\'</span><span style="color: #800000;">'</span><span style="color: #000000;">)
+</span><span style="color: #008080;">170</span> <span style="color: #000000;">            {
+</span><span style="color: #008080;">171</span>                 <span style="color: #0000ff;">int</span> ich = (<span style="color: #0000ff;">int</span><span style="color: #000000;">)ch;
+</span><span style="color: #008080;">172</span>                 sbOut.Append(<span style="color: #800000;">@"</span><span style="color: #800000;">\u</span><span style="color: #800000;">"</span> + ich.ToString(<span style="color: #800000;">"</span><span style="color: #800000;">x4</span><span style="color: #800000;">"</span><span style="color: #000000;">));
+</span><span style="color: #008080;">173</span>                 <span style="color: #0000ff;">continue</span><span style="color: #000000;">;
+</span><span style="color: #008080;">174</span> <span style="color: #000000;">            }
+</span><span style="color: #008080;">175</span>             <span style="color: #0000ff;">else</span> <span style="color: #0000ff;">if</span> (ch == <span style="color: #800000;">'</span><span style="color: #800000;">\"</span><span style="color: #800000;">'</span> || ch == <span style="color: #800000;">'</span><span style="color: #800000;">\\</span><span style="color: #800000;">'</span> || ch == <span style="color: #800000;">'</span><span style="color: #800000;">/</span><span style="color: #800000;">'</span><span style="color: #000000;">)
+</span><span style="color: #008080;">176</span> <span style="color: #000000;">            {
+</span><span style="color: #008080;">177</span>                 sbOut.Append(<span style="color: #800000;">'</span><span style="color: #800000;">\\</span><span style="color: #800000;">'</span><span style="color: #000000;">);
+</span><span style="color: #008080;">178</span> <span style="color: #000000;">            }
+</span><span style="color: #008080;">179</span> <span style="color: #000000;">            sbOut.Append(ch);
+</span><span style="color: #008080;">180</span> <span style="color: #000000;">        }
+</span><span style="color: #008080;">181</span>         <span style="color: #0000ff;">return</span><span style="color: #000000;"> sbOut.ToString();
+</span><span style="color: #008080;">182</span> <span style="color: #000000;">    }
+</span><span style="color: #008080;">183</span>     <span style="color: #0000ff;">public</span> <span style="color: #0000ff;">bool</span><span style="color: #000000;"> IsReusable {
+</span><span style="color: #008080;">184</span>         <span style="color: #0000ff;">get</span><span style="color: #000000;"> {
+</span><span style="color: #008080;">185</span>             <span style="color: #0000ff;">return</span> <span style="color: #0000ff;">false</span><span style="color: #000000;">;
+</span><span style="color: #008080;">186</span> <span style="color: #000000;">        }
+</span><span style="color: #008080;">187</span> <span style="color: #000000;">    }
+</span><span style="color: #008080;">188</span> 
+<span style="color: #008080;">189</span> }</pre>
+</div>
+<span class="cnblogs_code_collapse">View Code </span></div>
+<p>因为博客园没有手机端，所以简单做了一个，真的非常简单啊。。。</p>
+<h3>多上一张图：</h3>
+<p><img src="20369266159672.png" alt=""></p>
+<p>&nbsp;</p>
+<p><img src="8878149449364.png" alt=""></p>
+<p>&nbsp;</p>
+<p><img src="1965216969443.png" alt=""></p>
+<p>&nbsp;</p>
+<p><img src="26969827829775.png" alt=""></p>
+<p>&nbsp;</p>
+<p><img src="25904157446594.png" alt=""></p>
+<p>&nbsp;</p>
+<p><img src="2860259787587.png" alt=""></p>
+<p>&nbsp;</p>
+<p><img src="37399656422569.png" alt=""></p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<h1>功能一览</h1>
+<p>其实说白了就只有一个博客页与博客详情页了</p>
+<h2>博客页</h2>
+<p><img src="30459457298793.png" alt=""></p>
+<p>其中滚动会分页：我们来看看我们的数据吧：</p>
+<p><img src="19110539357229.png" alt=""></p>
+<h3>核心代码：</h3>
+<div class="cnblogs_code" onclick="cnblogs_code_show('a5c286c7-43d3-4593-914f-f6c2e5ec1a7a')"><img id="code_img_closed_a5c286c7-43d3-4593-914f-f6c2e5ec1a7a" class="code_img_closed" src="43570758473519.gif" alt=""><img id="code_img_opened_a5c286c7-43d3-4593-914f-f6c2e5ec1a7a" class="code_img_opened" style="display: none;" onclick="cnblogs_code_hide('a5c286c7-43d3-4593-914f-f6c2e5ec1a7a',event)" src="16365178109279.gif" alt="">
+<div id="cnblogs_code_open_a5c286c7-43d3-4593-914f-f6c2e5ec1a7a" class="cnblogs_code_hide">
+<pre><span style="color: #008080;">  1</span> define(['$', '_', 'cBase', 'cView', getViewPath('index'), getViewPath('index_item'), 'blogModel', 'blogStore'], <span style="color: #0000ff;">function</span><span style="color: #000000;"> ($, _, b, v, html, itemTpt, model, store) {
+</span><span style="color: #008080;">  2</span>     <span style="color: #0000ff;">var</span> getPageScrollPos = <span style="color: #0000ff;">function</span><span style="color: #000000;"> () {
+</span><span style="color: #008080;">  3</span>         <span style="color: #0000ff;">var</span> left =<span style="color: #000000;"> Math.max(document.documentElement.scrollLeft, document.body.scrollLeft),
+</span><span style="color: #008080;">  4</span>             top =<span style="color: #000000;"> Math.max(document.documentElement.scrollTop, document.body.scrollTop),
+</span><span style="color: #008080;">  5</span>             height =<span style="color: #000000;"> Math.min(document.documentElement.clientHeight, document.body.clientHeight),
+</span><span style="color: #008080;">  6</span>             width =<span style="color: #000000;"> Math.min(document.documentElement.clientWidth, document.body.clientWidth),
+</span><span style="color: #008080;">  7</span>             pageWidth =<span style="color: #000000;"> Math.max(document.documentElement.scrollWidth, document.body.scrollWidth),
+</span><span style="color: #008080;">  8</span>             pageHeight =<span style="color: #000000;"> Math.max(document.documentElement.scrollHeight, document.body.scrollHeight);
+</span><span style="color: #008080;">  9</span>         <span style="color: #0000ff;">return</span><span style="color: #000000;"> {
+</span><span style="color: #008080;"> 10</span> <span style="color: #000000;">            top: top,
+</span><span style="color: #008080;"> 11</span> <span style="color: #000000;">            left: left,
+</span><span style="color: #008080;"> 12</span> <span style="color: #000000;">            height: height,
+</span><span style="color: #008080;"> 13</span> <span style="color: #000000;">            width: width,
+</span><span style="color: #008080;"> 14</span> <span style="color: #000000;">            pageWidth: pageWidth,
+</span><span style="color: #008080;"> 15</span> <span style="color: #000000;">            pageHeight: pageHeight
+</span><span style="color: #008080;"> 16</span> <span style="color: #000000;">        };
+</span><span style="color: #008080;"> 17</span> <span style="color: #000000;">    };
+</span><span style="color: #008080;"> 18</span>     <span style="color: #0000ff;">var</span> model =<span style="color: #000000;"> model.blogList.getInstance();
+</span><span style="color: #008080;"> 19</span>     <span style="color: #0000ff;">var</span> blogStore =<span style="color: #000000;"> store.blog.getInstance();
+</span><span style="color: #008080;"> 20</span> 
+<span style="color: #008080;"> 21</span>     <span style="color: #0000ff;">var</span> pageSize = 10<span style="color: #000000;">;
+</span><span style="color: #008080;"> 22</span>     <span style="color: #0000ff;">var</span> curpage = 1<span style="color: #000000;">;
+</span><span style="color: #008080;"> 23</span>     <span style="color: #0000ff;">var</span> isLoading = <span style="color: #0000ff;">false</span>; <span style="color: #008000;">//</span><span style="color: #008000;">正在加载</span>
+<span style="color: #008080;"> 24</span>     <span style="color: #0000ff;">var</span> blogs =<span style="color: #000000;"> {};
+</span><span style="color: #008080;"> 25</span> 
+<span style="color: #008080;"> 26</span> 
+<span style="color: #008080;"> 27</span>     <span style="color: #0000ff;">var</span> View =<span style="color: #000000;"> b.Class(v.PageView, {
+</span><span style="color: #008080;"> 28</span>         _propertys_: <span style="color: #0000ff;">function</span><span style="color: #000000;"> () {
+</span><span style="color: #008080;"> 29</span> <span style="color: #000000;">        },
+</span><span style="color: #008080;"> 30</span>         init: <span style="color: #0000ff;">function</span><span style="color: #000000;"> (superInit, request, interface) {
+</span><span style="color: #008080;"> 31</span> <span style="color: #000000;">            superInit(request, interface);
+</span><span style="color: #008080;"> 32</span>             console.log('init'<span style="color: #000000;">);
+</span><span style="color: #008080;"> 33</span> <span style="color: #000000;">        },
+</span><span style="color: #008080;"> 34</span>         createHtml: <span style="color: #0000ff;">function</span><span style="color: #000000;"> () {
+</span><span style="color: #008080;"> 35</span>             <span style="color: #0000ff;">return</span><span style="color: #000000;"> html;
+</span><span style="color: #008080;"> 36</span> <span style="color: #000000;">        },
+</span><span style="color: #008080;"> 37</span> <span style="color: #000000;">        attrs: {
+</span><span style="color: #008080;"> 38</span>             'data-id': 'test'<span style="color: #000000;">,
+</span><span style="color: #008080;"> 39</span>             className: 'yexiaoc'
+<span style="color: #008080;"> 40</span> <span style="color: #000000;">        },
+</span><span style="color: #008080;"> 41</span> <span style="color: #000000;">        events: {
+</span><span style="color: #008080;"> 42</span>             '.orderItem,click': <span style="color: #0000ff;">function</span><span style="color: #000000;"> (el) {
+</span><span style="color: #008080;"> 43</span>                 <span style="color: #0000ff;">var</span> id = el.attr('data-id'<span style="color: #000000;">);
+</span><span style="color: #008080;"> 44</span>                 <span style="color: #0000ff;">var</span> blog =<span style="color: #000000;"> blogs[id];
+</span><span style="color: #008080;"> 45</span> <span style="color: #000000;">                blogStore.set(blog);
+</span><span style="color: #008080;"> 46</span>                 <span style="color: #0000ff;">this</span>.forward('detail'<span style="color: #000000;">);
+</span><span style="color: #008080;"> 47</span>                 <span style="color: #0000ff;">this</span><span style="color: #000000;">._unbindScroll();
+</span><span style="color: #008080;"> 48</span>                 <span style="color: #0000ff;">var</span> s = ''<span style="color: #000000;">;
+</span><span style="color: #008080;"> 49</span> <span style="color: #000000;">            }
+</span><span style="color: #008080;"> 50</span> <span style="color: #000000;">        },
+</span><span style="color: #008080;"> 51</span>         onCreate: <span style="color: #0000ff;">function</span><span style="color: #000000;"> () {
+</span><span style="color: #008080;"> 52</span>             console.log('onCreate'<span style="color: #000000;">);
+</span><span style="color: #008080;"> 53</span>             <span style="color: #0000ff;">this</span>.tpl =<span style="color: #000000;"> _.template(itemTpt);
+</span><span style="color: #008080;"> 54</span>             <span style="color: #0000ff;">this</span><span style="color: #000000;">._loadData();
+</span><span style="color: #008080;"> 55</span> <span style="color: #000000;">        },
+</span><span style="color: #008080;"> 56</span>         <span style="color: #008000;">//</span><span style="color: #008000;">dom创建后数据加载时执行，用于加载后执行我们的逻辑</span>
+<span style="color: #008080;"> 57</span>         onLoad: <span style="color: #0000ff;">function</span><span style="color: #000000;"> () {
+</span><span style="color: #008080;"> 58</span>             console.log('onLoad'<span style="color: #000000;">);
+</span><span style="color: #008080;"> 59</span>             
+<span style="color: #008080;"> 60</span>             <span style="color: #0000ff;">var</span> scope = <span style="color: #0000ff;">this</span><span style="color: #000000;">;
+</span><span style="color: #008080;"> 61</span>             $(window).bind('scroll', <span style="color: #0000ff;">function</span><span style="color: #000000;"> () {
+</span><span style="color: #008080;"> 62</span> <span style="color: #000000;">                scope._onWindowScroll.call(scope)
+</span><span style="color: #008080;"> 63</span> <span style="color: #000000;">            });
+</span><span style="color: #008080;"> 64</span> 
+<span style="color: #008080;"> 65</span> <span style="color: #000000;">        },
+</span><span style="color: #008080;"> 66</span>         _loadData: <span style="color: #0000ff;">function</span><span style="color: #000000;"> (onSuc, onError) {
+</span><span style="color: #008080;"> 67</span>             <span style="color: #0000ff;">var</span> tpl = <span style="color: #0000ff;">this</span><span style="color: #000000;">.tpl;
+</span><span style="color: #008080;"> 68</span>             <span style="color: #0000ff;">var</span> list = <span style="color: #0000ff;">this</span>.find('#lstbox'<span style="color: #000000;">);
+</span><span style="color: #008080;"> 69</span>             <span style="color: #0000ff;">var</span> param =<span style="color: #000000;"> {};
+</span><span style="color: #008080;"> 70</span>             param.url = 'http://wcf.open.cnblogs.com/blog/sitehome/paged/' + curpage + '/' +<span style="color: #000000;"> pageSize;
+</span><span style="color: #008080;"> 71</span> <span style="color: #000000;">            model.setParam(param);
+</span><span style="color: #008080;"> 72</span>             <span style="color: #0000ff;">var</span> scope = <span style="color: #0000ff;">this</span><span style="color: #000000;">;
+</span><span style="color: #008080;"> 73</span>             isLoading = <span style="color: #0000ff;">true</span><span style="color: #000000;">;
+</span><span style="color: #008080;"> 74</span>             model.execute(<span style="color: #0000ff;">function</span><span style="color: #000000;"> (data) {
+</span><span style="color: #008080;"> 75</span>                 <span style="color: #0000ff;">var</span> listData = data.feed &amp;&amp; (data.feed.entry ||<span style="color: #000000;"> []);
+</span><span style="color: #008080;"> 76</span>                 <span style="color: #0000ff;">if</span><span style="color: #000000;"> (listData) {
+</span><span style="color: #008080;"> 77</span>                     <span style="color: #0000ff;">if</span> (listData.length == 0<span style="color: #000000;">) {
+</span><span style="color: #008080;"> 78</span>                         list.html('&lt;li&gt;暂无数据&lt;/li&gt;'<span style="color: #000000;">);
+</span><span style="color: #008080;"> 79</span>                     } <span style="color: #0000ff;">else</span><span style="color: #000000;"> {
+</span><span style="color: #008080;"> 80</span>                         $.each(listData, <span style="color: #0000ff;">function</span><span style="color: #000000;"> (i, item) {
+</span><span style="color: #008080;"> 81</span>                             blogs[item.id] = item; <span style="color: #008000;">//</span><span style="color: #008000;">将博客存储</span>
+<span style="color: #008080;"> 82</span>                             <span style="color: #0000ff;">var</span> htm = tpl(item) || ''<span style="color: #000000;">;
+</span><span style="color: #008080;"> 83</span> <span style="color: #000000;">                            list.append(htm);
+</span><span style="color: #008080;"> 84</span> <span style="color: #000000;">                        });
+</span><span style="color: #008080;"> 85</span> <span style="color: #000000;">                    }
+</span><span style="color: #008080;"> 86</span>                     (<span style="color: #0000ff;">typeof</span> onSuc === 'function') &amp;&amp;<span style="color: #000000;"> (onSuc.call(scope, data));
+</span><span style="color: #008080;"> 87</span> <span style="color: #000000;">                }
+</span><span style="color: #008080;"> 88</span>                 isLoading = <span style="color: #0000ff;">false</span><span style="color: #000000;">;
+</span><span style="color: #008080;"> 89</span> <span style="color: #000000;">            });
+</span><span style="color: #008080;"> 90</span> <span style="color: #000000;">        },
+</span><span style="color: #008080;"> 91</span>         _onWindowScroll: <span style="color: #0000ff;">function</span><span style="color: #000000;"> () {
+</span><span style="color: #008080;"> 92</span>             <span style="color: #0000ff;">var</span> pos =<span style="color: #000000;"> getPageScrollPos();
+</span><span style="color: #008080;"> 93</span>             <span style="color: #0000ff;">if</span> (pos.pageHeight - (pos.top + pos.height) &lt; 500 &amp;&amp; !<span style="color: #000000;">isLoading) {
+</span><span style="color: #008080;"> 94</span>                 curpage++<span style="color: #000000;">;
+</span><span style="color: #008080;"> 95</span>                 <span style="color: #0000ff;">this</span><span style="color: #000000;">._loadData();
+</span><span style="color: #008080;"> 96</span> <span style="color: #000000;">            }
+</span><span style="color: #008080;"> 97</span> <span style="color: #000000;">        },
+</span><span style="color: #008080;"> 98</span>         _unbindScroll: <span style="color: #0000ff;">function</span><span style="color: #000000;"> () {
+</span><span style="color: #008080;"> 99</span>             $(window).unbind('scroll'<span style="color: #000000;">);
+</span><span style="color: #008080;">100</span> <span style="color: #000000;">        },
+</span><span style="color: #008080;">101</span>         <span style="color: #008000;">//</span><span style="color: #008000;">dom创建后，未显示</span>
+<span style="color: #008080;">102</span>         onShow: <span style="color: #0000ff;">function</span><span style="color: #000000;"> () {
+</span><span style="color: #008080;">103</span> 
+<span style="color: #008080;">104</span>             console.log('onShow'<span style="color: #000000;">);
+</span><span style="color: #008080;">105</span> <span style="color: #000000;">        },
+</span><span style="color: #008080;">106</span>         <span style="color: #008000;">//</span><span style="color: #008000;">dom隐藏前</span>
+<span style="color: #008080;">107</span>         onHide: <span style="color: #0000ff;">function</span><span style="color: #000000;"> () {
+</span><span style="color: #008080;">108</span>             console.log('onHide'<span style="color: #000000;">);
+</span><span style="color: #008080;">109</span> <span style="color: #000000;">        }
+</span><span style="color: #008080;">110</span> <span style="color: #000000;">    });
+</span><span style="color: #008080;">111</span> 
+<span style="color: #008080;">112</span>     <span style="color: #0000ff;">return</span><span style="color: #000000;"> View;
+</span><span style="color: #008080;">113</span> });</pre>
+</div>
+<span class="cnblogs_code_collapse">View Code </span></div>
+<h3>对应两个模板页</h3>
+<div class="cnblogs_code">
+<pre><span style="color: #008080;"> 1</span> <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">input </span><span style="color: #ff0000;">class</span><span style="color: #0000ff;">="login"</span><span style="color: #ff0000;"> type</span><span style="color: #0000ff;">="button"</span><span style="color: #ff0000;"> value</span><span style="color: #0000ff;">="点击登录"</span> <span style="color: #0000ff;">/&gt;</span>
+<span style="color: #008080;"> 2</span> <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">header</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 3</span>     <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">b </span><span style="color: #ff0000;">class</span><span style="color: #0000ff;">="icon_home i_bef"</span><span style="color: #ff0000;"> id</span><span style="color: #0000ff;">="js_home"</span><span style="color: #0000ff;">&gt;&lt;/</span><span style="color: #800000;">b</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 4</span>     <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">h1</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 5</span>         博客园<span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">h1</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 6</span>     <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">i </span><span style="color: #ff0000;">id</span><span style="color: #0000ff;">="js_return"</span><span style="color: #ff0000;"> class</span><span style="color: #0000ff;">="returnico"</span><span style="color: #0000ff;">&gt;&lt;/</span><span style="color: #800000;">i</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 7</span> <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">header</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 8</span> <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">section </span><span style="color: #ff0000;">class</span><span style="color: #0000ff;">="cont_wrap"</span><span style="color: #ff0000;"> style</span><span style="color: #0000ff;">="margin: 17px 0 40px;"</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 9</span>     <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">ul </span><span style="color: #ff0000;">class</span><span style="color: #0000ff;">="pro_list"</span><span style="color: #ff0000;"> id</span><span style="color: #0000ff;">="lstbox"</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">10</span>     <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">ul</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">11</span> <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">section</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">12</span> <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">ul </span><span style="color: #ff0000;">class</span><span style="color: #0000ff;">="tab_search fix_bottom"</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">13</span>     <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">li </span><span style="color: #ff0000;">class</span><span style="color: #0000ff;">="tabcrt"</span><span style="color: #0000ff;">&gt;</span>博客<span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">li</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">14</span>     <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">li </span><span style="color: #ff0000;">class</span><span style="color: #0000ff;">="tab_hotel "</span><span style="color: #0000ff;">&gt;</span>新闻<span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">li</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">15</span>     <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">li </span><span style="color: #ff0000;">class</span><span style="color: #0000ff;">="tab_hotel "</span><span style="color: #0000ff;">&gt;</span>48小时<span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">li</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">16</span>     <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">li </span><span style="color: #ff0000;">class</span><span style="color: #0000ff;">="tab_hotel "</span><span style="color: #0000ff;">&gt;</span>推荐<span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">li</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">17</span> <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">ul</span><span style="color: #0000ff;">&gt;</span></pre>
+</div>
+<div class="cnblogs_code">
+<pre><span style="color: #008080;"> 1</span> <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">li </span><span style="color: #ff0000;">class</span><span style="color: #0000ff;">="arr_r orderItem"</span><span style="color: #ff0000;"> data-id</span><span style="color: #0000ff;">="&lt;%=id %&gt;"</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 2</span>     <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">article </span><span style="color: #ff0000;">class</span><span style="color: #0000ff;">="blog_item"</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 3</span>         <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">h3</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 4</span>             <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">a </span><span style="color: #ff0000;">href</span><span style="color: #0000ff;">="&lt;%=link.href %&gt;"</span><span style="color: #ff0000;"> target</span><span style="color: #0000ff;">="_blank"</span><span style="color: #0000ff;">&gt;</span><span style="background-color: #ffff00; color: #000000;">&lt;%</span><span style="background-color: #f5f5f5; color: #000000;">=</span><span style="background-color: #f5f5f5; color: #000000;">title.value || </span><span style="background-color: #f5f5f5; color: #008000;">'</span><span style="background-color: #f5f5f5; color: #008000;">无题' %&gt;&lt;/a&gt;</span>
+<span style="color: #008080;"> 5</span>             <span style="background-color: #f5f5f5; color: #000000;">&lt;/</span><span style="background-color: #f5f5f5; color: #000000;">h3</span><span style="background-color: #f5f5f5; color: #000000;">&gt;</span>
+<span style="color: #008080;"> 6</span>             
+<span style="color: #008080;"> 7</span>         <span style="background-color: #f5f5f5; color: #000000;">&lt;</span><span style="background-color: #f5f5f5; color: #000000;">div class</span><span style="background-color: #f5f5f5; color: #000000;">=</span><span style="background-color: #f5f5f5; color: #800000;">"</span><span style="background-color: #f5f5f5; color: #800000;">author pro_list_rank</span><span style="background-color: #f5f5f5; color: #800000;">"</span><span style="background-color: #f5f5f5; color: #000000;">&gt;</span>
+<span style="color: #008080;"> 8</span>             <span style="background-color: #f5f5f5; color: #000000;">&lt;</span><span style="background-color: #f5f5f5; color: #000000;">%</span><span style="background-color: #f5f5f5; color: #0000ff;">if</span><span style="background-color: #f5f5f5; color: #000000;">(author.avatar){ </span><span style="background-color: #ffff00; color: #000000;">%&gt;</span>
+<span style="color: #008080;"> 9</span>             <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">a </span><span style="color: #ff0000;">href</span><span style="color: #0000ff;">="&lt;%=author.uri %&gt;"</span><span style="color: #ff0000;"> target</span><span style="color: #0000ff;">="_blank"</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">10</span>                 <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">img </span><span style="color: #ff0000;">src</span><span style="color: #0000ff;">="&lt;%=author.avatar %&gt;"</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">11</span>             <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">a</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">12</span>             <span style="background-color: #ffff00; color: #000000;">&lt;%</span><span style="background-color: #f5f5f5; color: #000000;">} </span><span style="background-color: #ffff00; color: #000000;">%&gt;</span>
+<span style="color: #008080;">13</span> <span style="color: #000000;">            JavaScript 是根据 "ECMAScript"标准制定的网页脚本语言。这个标准由 ECMA 组织发展和维护。ECMA-262 是正式的 JavaScript标准。JavaScript是目前Web客户端开发的主要编程语言，也是Ajax的核心技术之一。
+</span><span style="color: #008080;">14</span>         <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">div</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">15</span>         <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">div </span><span style="color: #ff0000;">class</span><span style="color: #0000ff;">="item_footer"</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">16</span>             <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">a </span><span style="color: #ff0000;">href</span><span style="color: #0000ff;">="&lt;%=author.uri %&gt;"</span><span style="color: #ff0000;"> class</span><span style="color: #0000ff;">="lightblue"</span><span style="color: #0000ff;">&gt;</span>Scut<span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">a</span><span style="color: #0000ff;">&gt;</span> <span style="background-color: #ffff00; color: #000000;">&lt;%</span><span style="background-color: #f5f5f5; color: #000000;">=</span><span style="background-color: #f5f5f5; color: #000000;">published </span><span style="background-color: #ffff00; color: #000000;">%&gt;</span> <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">a </span><span style="color: #ff0000;">href</span><span style="color: #0000ff;">="&lt;%=link.href %&gt;"</span><span style="color: #ff0000;"> title</span><span style="color: #0000ff;">="2013-08-21 15:21"</span><span style="color: #ff0000;"> class</span><span style="color: #0000ff;">="gray"</span><span style="color: #0000ff;">&gt;</span>评论(<span style="background-color: #ffff00; color: #000000;">&lt;%</span><span style="background-color: #f5f5f5; color: #000000;">=</span><span style="background-color: #f5f5f5; color: #000000;">comments </span><span style="background-color: #ffff00; color: #000000;">%&gt;</span>)<span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">a</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">17</span>             <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">a </span><span style="color: #ff0000;">href</span><span style="color: #0000ff;">="&lt;%=link.href %&gt;"</span><span style="color: #ff0000;"> class</span><span style="color: #0000ff;">="gray"</span><span style="color: #0000ff;">&gt;</span>阅读(<span style="background-color: #ffff00; color: #000000;">&lt;%</span><span style="background-color: #f5f5f5; color: #000000;">=</span><span style="background-color: #f5f5f5; color: #000000;">views </span><span style="background-color: #ffff00; color: #000000;">%&gt;</span>)<span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">a</span><span style="color: #0000ff;">&gt;</span> <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">span </span><span style="color: #ff0000;">class</span><span style="color: #0000ff;">="price1"</span><span style="color: #0000ff;">&gt;</span>推荐(<span style="background-color: #ffff00; color: #000000;">&lt;%</span><span style="background-color: #f5f5f5; color: #000000;">=</span><span style="background-color: #f5f5f5; color: #000000;">diggs </span><span style="background-color: #ffff00; color: #000000;">%&gt;</span>)<span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">span</span><span style="color: #0000ff;">&gt;&lt;/</span><span style="color: #800000;">div</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">18</span>     <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">article</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">19</span> <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">li</span><span style="color: #0000ff;">&gt;</span></pre>
+</div>
+<p>然后就是详情页了</p>
+<h2>详情页</h2>
+<div class="cnblogs_code">
+<pre><span style="color: #008080;"> 1</span> define(['$', '_', 'cBase', 'cView', getViewPath('detail'), getViewPath('detail_article'), 'blogModel', 'blogStore'], <span style="color: #0000ff;">function</span><span style="color: #000000;"> ($, _, b, v, html, itemTpt, model, store) {
+</span><span style="color: #008080;"> 2</span> 
+<span style="color: #008080;"> 3</span>     <span style="color: #0000ff;">var</span> model =<span style="color: #000000;"> model.blog.getInstance();
+</span><span style="color: #008080;"> 4</span>     <span style="color: #0000ff;">var</span> blogStore =<span style="color: #000000;"> store.blog.getInstance();
+</span><span style="color: #008080;"> 5</span>     <span style="color: #0000ff;">var</span> tpl =<span style="color: #000000;"> _.template(itemTpt);
+</span><span style="color: #008080;"> 6</span> 
+<span style="color: #008080;"> 7</span>     <span style="color: #0000ff;">var</span> View =<span style="color: #000000;"> b.Class(v.PageView, {
+</span><span style="color: #008080;"> 8</span>         _propertys_: <span style="color: #0000ff;">function</span><span style="color: #000000;"> () {
+</span><span style="color: #008080;"> 9</span> <span style="color: #000000;">        },
+</span><span style="color: #008080;">10</span>         init: <span style="color: #0000ff;">function</span><span style="color: #000000;"> (superInit, request, interface) {
+</span><span style="color: #008080;">11</span> <span style="color: #000000;">            superInit(request, interface);
+</span><span style="color: #008080;">12</span>             console.log('init'<span style="color: #000000;">);
+</span><span style="color: #008080;">13</span> <span style="color: #000000;">        },
+</span><span style="color: #008080;">14</span>         createHtml: <span style="color: #0000ff;">function</span><span style="color: #000000;"> () {
+</span><span style="color: #008080;">15</span>             <span style="color: #0000ff;">return</span><span style="color: #000000;"> html;
+</span><span style="color: #008080;">16</span> <span style="color: #000000;">        },
+</span><span style="color: #008080;">17</span> <span style="color: #000000;">        attrs: {
+</span><span style="color: #008080;">18</span> <span style="color: #000000;">        },
+</span><span style="color: #008080;">19</span> <span style="color: #000000;">        events: {
+</span><span style="color: #008080;">20</span>             '#js_return,click': <span style="color: #0000ff;">function</span><span style="color: #000000;"> () {
+</span><span style="color: #008080;">21</span>                 <span style="color: #0000ff;">this</span>.forward('index'<span style="color: #000000;">);
+</span><span style="color: #008080;">22</span> <span style="color: #000000;">            }
+</span><span style="color: #008080;">23</span> <span style="color: #000000;">        },
+</span><span style="color: #008080;">24</span>         onCreate: <span style="color: #0000ff;">function</span><span style="color: #000000;"> () {
+</span><span style="color: #008080;">25</span>             console.log('onCreate'<span style="color: #000000;">);
+</span><span style="color: #008080;">26</span> 
+<span style="color: #008080;">27</span> <span style="color: #000000;">        },
+</span><span style="color: #008080;">28</span>         _loadData: <span style="color: #0000ff;">function</span><span style="color: #000000;"> () {
+</span><span style="color: #008080;">29</span>             <span style="color: #0000ff;">var</span> box = <span style="color: #0000ff;">this</span>.find('.cont_wrap'<span style="color: #000000;">);
+</span><span style="color: #008080;">30</span>             box.html(''<span style="color: #000000;">);
+</span><span style="color: #008080;">31</span>             <span style="color: #0000ff;">var</span> param = { url: 'http://wcf.open.cnblogs.com/blog/post/body/' +<span style="color: #000000;"> blogStore.get().id }
+</span><span style="color: #008080;">32</span>             $.get('Handler.ashx', param, <span style="color: #0000ff;">function</span><span style="color: #000000;"> (data) {
+</span><span style="color: #008080;">33</span>                 (<span style="color: #0000ff;">typeof</span> data === 'string') &amp;&amp; (data =<span style="color: #000000;"> $.parseJSON(data));
+</span><span style="color: #008080;">34</span>                 data &amp;&amp; data.string &amp;&amp; (blogStore.setAttr('value'<span style="color: #000000;">, data.string.value));
+</span><span style="color: #008080;">35</span>                 <span style="color: #0000ff;">var</span> d =<span style="color: #000000;"> blogStore.get();
+</span><span style="color: #008080;">36</span> <span style="color: #000000;">                box.append(tpl(d));
+</span><span style="color: #008080;">37</span>                 <span style="color: #0000ff;">var</span> ss = ''<span style="color: #000000;">;
+</span><span style="color: #008080;">38</span> <span style="color: #000000;">            });
+</span><span style="color: #008080;">39</span> <span style="color: #000000;">        },
+</span><span style="color: #008080;">40</span>         <span style="color: #008000;">//</span><span style="color: #008000;">dom创建后数据加载时执行，用于加载后执行我们的逻辑</span>
+<span style="color: #008080;">41</span>         onLoad: <span style="color: #0000ff;">function</span><span style="color: #000000;"> () {
+</span><span style="color: #008080;">42</span>             console.log('onLoad'<span style="color: #000000;">);
+</span><span style="color: #008080;">43</span> <span style="color: #000000;">        },
+</span><span style="color: #008080;">44</span>         <span style="color: #008000;">//</span><span style="color: #008000;">dom创建后，未显示</span>
+<span style="color: #008080;">45</span>         onShow: <span style="color: #0000ff;">function</span><span style="color: #000000;"> () {
+</span><span style="color: #008080;">46</span>             console.log('onShow'<span style="color: #000000;">);
+</span><span style="color: #008080;">47</span>             <span style="color: #0000ff;">this</span><span style="color: #000000;">._loadData();
+</span><span style="color: #008080;">48</span> 
+<span style="color: #008080;">49</span> <span style="color: #000000;">        },
+</span><span style="color: #008080;">50</span>         <span style="color: #008000;">//</span><span style="color: #008000;">dom隐藏前</span>
+<span style="color: #008080;">51</span>         onHide: <span style="color: #0000ff;">function</span><span style="color: #000000;"> () {
+</span><span style="color: #008080;">52</span>             console.log('onHide'<span style="color: #000000;">);
+</span><span style="color: #008080;">53</span> <span style="color: #000000;">        }
+</span><span style="color: #008080;">54</span> <span style="color: #000000;">    });
+</span><span style="color: #008080;">55</span> 
+<span style="color: #008080;">56</span>     <span style="color: #0000ff;">return</span><span style="color: #000000;"> View;
+</span><span style="color: #008080;">57</span> });</pre>
+</div>
+<p>其中模板各位自己下载看吧。</p>
+<h1>结语</h1>
+<p>之前已经详细描述了整个代码逻辑这次就不说了，各位觉得不错可以下载下来看看，后面点还会更新。</p>
+<h3>源码</h3>
+<p>http://files.cnblogs.com/yexiaochai/page.zip（<span style="color: #ff0000;"><a id="" href="http://files.cnblogs.com/yexiaochai/page.zip"><span style="color: #ff0000;">page.zip</span></a></span>）</p>
+<p>&nbsp;</p>
+                </div>
+
+                <div class='span3 sidebar'>
+                    <h2>导航栏</h2>
+                    <ul class="nav nav-tabs nav-stacked">
+                             				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/Fiddlerznqddsq/index.html">Fiddler真乃前端大杀器！！！</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/Requirejs/index.html">Requirejs</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/RequireJSyBackbonejdzh/index.html">RequireJS与Backbone简单整合</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/RequireJSxxbj/index.html">RequireJS学习笔记</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/Webqdyhctxdpzyyqdgsgpng/index.html">Web前端优化初探，小弟抛砖引玉，期待高手共破难关！</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/Webqdlqjrctxsqwpzyyqdgsgpng/index.html">Web前端浏览器兼容初探，小生浅文抛砖引玉，期待高手攻破难关！</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/jqueryfdataListxnyhmbybysxtgxn10bys/index.html">【jquery仿dataList——性能优化】模板预编译思想提高性能10倍以上！！！</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/jqueryfdataListyyzmfigoogledzhtdpxzdhfp/index.html">【jquery仿dataList】应用之——模仿igoogle【定制化、拖动排序，最大化、分屏】</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/jqueryfdatalistdygwtqzszmxxsjlkzDIVdjjbf/index.html">【jquery仿datalist的一个问题，求助】——设置每行显示几列，块状DIV的解决办法</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/jquerymfnetkjcbGridViewmxsxjqjdyy/index.html">【jquery模仿net控件】初步GridView模型实现，及其简单应用</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/jquerymfnetkjjdfykj10fsgridviewsycs/index.html">【jquery模仿net控件】简单分页控件10，附上gridview使用测试</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/jquerymfnetkjjdddatalistkjgxjqjdyy/index.html">【jquery模仿net控件】简单的datalist控件更新，及其简单应用</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/jquerymfnetkjjdddropdownlistydatalist/index.html">【jquery模仿net控件】简单的dropdownlist与datalist</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/jquerybnetkjdropdownlistfymhydjzdzzpz/index.html">【jquery版net控件—dropdownlist】附源码，欢迎大家指点、指正、拍砖！！！</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/positionykyhfzddccyslsbdws/index.html">【position也可以很复杂】当弹出层遇上了鼠标定位（上）</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/positionykyhfzddccyslsbdwx/index.html">【position也可以很复杂】当弹出层遇上了鼠标定位（下）</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/SEOzmlwljnmtsbwmlyqkkSEOb/index.html">【SEO】周末了，为了纪念明天上班，我们来一起看看SEO吧</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/webqdyhqdwyhyrzrz/index.html">【web前端优化】前端无优化，庸人自扰之！</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/webqdyhzreflowjsymdhl/index.html">【web前端优化之reflow】减少页面的回流</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/webqdyhztpycjzctzwbsxwbk/index.html">【web前端优化之图片延迟加载初探】中午不睡，下午崩溃</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/webqdyhztpmhdqxkwQQkjrhxsxp/index.html">【web前端优化之图片模糊到清晰】看我QQ空间如何显示相片</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/webqdpxzqhddphsywmsxdDatalistsmwtb/index.html">【web前端培训之前后端的配合（上）】以我们熟悉的Datalist说明问题吧</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/webqdpxzqhddphzjxzrdgs/index.html">【web前端培训之前后端的配合（中）】继续昨日的故事</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/dyyygybkydbfgqym/index.html">【单页应用】关于博客园的补发（高清有码）。。。</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/xtsstringifysBUGlocalstoragesxxmSafarialertksfycjzym10pxbp/index.html">【小贴士】【stringify神BUG】【localstorage失效】【消灭Safarialert框】【是否延迟加载】【页面10px白屏】</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/dalhdmsthhdsdmstjsh/index.html">【答阿里寒冬面试题】呵呵，大神的面试题就是好！</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/ycsjmstdldgwxxdgjxxdff/index.html">一次上机面试题带来的感悟【学习的感觉、学习的方法】</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/ydmstdldqdyhsxxxdp/index.html">一道面试题带来的前端优化——实现星星点评</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/zysyzjjhfzwebqdbfxlgxmndjjfa/index.html">只言碎语总结，今后发展web前端，并分享两个项目难点解决方案。</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/gwjlytbllbnwmljxwwdbdyzb/index.html">各位加了一天班累了吧？那我们来继续未完的表单验证吧</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/gwzmwlytllbwmyqlzldmstbjstbdy/index.html">各位周末玩了一天累了吧，我们一起来做两道面试题吧（据说淘宝的哟）！</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/jyjQuerydxlcdcjzwsy/index.html">基于jQuery的下拉菜单插件，诸位上眼！！！</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/jyjQuerydxlcdcd02zwsy/index.html">基于jQuery的下拉菜单菜单【02】，诸位上眼！！！</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/gzzpddyxdxdccktfybwjsc/index.html">工作中碰到的一些东西【弹出窗口】【拖放】【异步文件上传】</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/gzlygxqgwydllbnwmyqlbdyzyfb/index.html">工作了一个星期各位一定累了吧，那我们一起来表单验证一番吧！</a></li>
+    				                                         
+                    </ul>
+                </div>
+            </div>
+
+        </div>
+    </body>
+</html>

@@ -1,0 +1,236 @@
+﻿<!DOCTYPE html>
+
+<html lang="zh">
+    <head>
+        <meta charset="utf-8">
+        <meta name="description" content="android,ios" />
+        <meta name="keywords" content="android,ios" />
+
+        <title>叶小钗</title>
+        <style type='text/css'>
+            body {
+                background-color: #CCC;
+            }
+        </style>
+        <link rel="stylesheet" href="../../../css/bootstrap.css" />
+    </head>
+
+    <body>
+        <div class="container">
+
+            <h1>叶小钗</h1>
+
+            <div class='navbar navbar-inverse'>
+                <div class='navbar-inner nav-collapse' style="height: auto;">
+                    <ul class="nav">
+                              				<li><a href="http://songboriceboy.github.io/xxoo/html/blade/index.html">blade</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/css/index.html">css</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/HTML5&CSS3/index.html">HTML5&CSS3</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/index.html">javascript</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Javaxx/index.html">Java学习</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/nodejs/index.html">nodejs</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/requirejs/index.html">requirejs</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/index.html">Web前端</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/xxgw/index.html">学习感悟</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/gzdd/index.html">工作点滴</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/jkxx/index.html">接口学习</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/wfl/index.html">未分类</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/ydkf/index.html">移动开发</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/sjms/index.html">设计模式</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/mst/index.html">面试题</a></li>
+    				                      </ul>
+                </div>
+            </div>
+
+            <div id='content' class='row-fluid'>
+
+                <div class='span9 main'>
+				<div style="color:blue" align=center>【正视CSS08】巅峰对武之float你为什么要坍塌我的元素！！！</div><br><h1>前言</h1>
+<p>事情还要回答一个月前，当时寒冬老师搞了一道position的面试题，我当时有幸给看到了，而且正是我要去外地的那天。</p>
+<p>于是我那天上午便开始入魔了，写完了博客才急急忙忙上飞机：</p>
+<p><a id="CategoryEntryList1_EntryStoryList_Entries_TitleUrl_5" class="entrylistItemTitle" style="text-transform: none; background-color: #ffffff; text-indent: 0px; letter-spacing: normal; font: bold 13px/19px Verdana, Geneva, Arial, Helvetica, sans-serif; white-space: normal; color: #1a8bc8; word-spacing: 0px; text-decoration: none; -webkit-text-stroke-width: 0px;" href="http://www.cnblogs.com/yexiaochai/archive/2013/05/20/3086697.html">各位周末结束后都累了吧，那我们一起来看看【寒冬】的面试题吧（据说阿里的哟）</a></p>
+<p>当时只是草草的回答了那道题，却没想到今天会再拿出来说事！对的，我还是搞不懂为什么float会导致元素坍塌！！！！</p>
+<h1>近期状况</h1>
+<p>我CSS的名师是：张鑫旭（自认入门的）</p>
+<p>最近引导者：寒冬</p>
+<p>我CSS方面的东西除了之前的积累，基本来源于此两人，各位可以关注下。</p>
+<p>多数知识来源于张鑫旭，寒冬让我把整个知识串了起来，虽然素不相识，在此谢过了。</p>
+<h1>引出问题</h1>
+<p>我最近一直在思考float实现的原理。<br>我最开始根据各种学习后产生了一个认识，float破坏了行内框inline boxes<br>从而导致块级元素坍塌，因为块级元素的高是line-height撑起来的，而line-height又来源于line boxes。<br>但是最近学习了BFC后，知道float触发了bfc，导致其独立了出来，所以元素被包裹了，这也是overflow清楚浮动的原理。<br>那么float到底做了些什么事情呢？？？</p>
+<p>虽然我昨天病了，这个问题却在脑中挥之不去，所以今天搞完js后，觉得还是有必要深究一下。</p>
+<p>不研究就算了，一研究又发现一个高手，好像是前端观察，只不过我不认识罢了。。。我这里也不管他是谁了，开始今天的学习吧。</p>
+<h1>clear：none=&gt;闭合浮动</h1>
+<p>关于这个问题，我其实也必将迷糊的，因为我在用自己形成的CSS世界观解释问题时候一说到清楚浮动就感觉奇怪！</p>
+<div class="cnblogs_code">
+<pre><span style="color: #800000;">clear对应属性：left, right, both, none
+按道理说clear: none才是清除浮动啦</span></pre>
+</div>
+<p>所以我们这里为他取名闭合浮动较为合理。而且他也解释了为什么overflow可以导致坍陷消失。</p>
+<h1>haslayout与block formatting contexts</h1>
+<p>IE7以下特有的layout以及BFC再次光临了，我都不知道最近有多少次提到他了。</p>
+<p>通过之前我们的学习（清除浮动的具体例子我这里就不管了），想要解决高度塌陷的问题无非两种方案：</p>
+<p>① 在浮动元素末尾加上clear: both 属性，强制其闭合元素</p>
+<p>② 设置overflow或者display: table属性触发BFC（这里寒冬老师有不同的认识，他认为对名词触发不合适），从而解决坍塌问题。</p>
+<p>关于BFC（<span style="color: #ff0000;"><strong>现在他换了个马甲叫做flow root</strong></span>），大家应该相对熟悉了。</p>
+<p>我的理解是所有normal flow的元素皆处于同一BFC，float元素处于一个BFC，每个绝对定位单独一个BFC</p>
+<p>PS：<span style="color: #ff0000;">此处有误请提出来</span>。</p>
+<p>我们的BFC可以解决上外边距叠加，可以强制包含float元素，通俗点说：</p>
+<div class="cnblogs_code">
+<pre><span style="color: #800000;">BFC就是一个独立的盒子，里面的子元素不会再布局上影响外面元素，BFC依然属于普通流</span></pre>
+</div>
+<p>overflow闭合浮动的真相便是：</p>
+<p>父级元素拥有了新的BFC，具有BFC的块级元素可以包含浮动！</p>
+<p>以上好像是官方定义了，再往下面挖就没意思了。</p>
+<p>IE6/7中没有BFC这个概念，其自身实现的haslayout基本等同于BFC。</p>
+<p>所以我们在IE6/7中闭合浮动时候要加上一句，zoom: 1的属性触发haslayout</p>
+<h1>真相到此为止？</h1>
+<p>以上就是追寻后得到的真相，虽然我还是不太满意，虽然我还有点迷迷糊糊但是暂时这样吧，在今后一段时间里面，我还会再回来回看这个问题。</p>
+<p>届时，我希望自己能找到自己想要的答案。</p>
+<h1>意外之喜</h1>
+<p>此次找寻答案过程中虽然没有完全得到我想要的答案，却意外得到了其它东西，他的名字便是inline-block。</p>
+<p>对的，你没有看错，我要说的就是inline-block！</p>
+<p>其实我们还是很喜欢人云亦云的，比如说我就一直认为IE7之前没有inline-block这个属性，其实这是大错特错的！</p>
+<div class="cnblogs_code">
+<pre><span style="color: #008080;"> 1</span> <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">html </span><span style="color: #ff0000;">xmlns</span><span style="color: #0000ff;">="http://www.w3.org/1999/xhtml"</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 2</span> <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">head</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 3</span>     <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">title</span><span style="color: #0000ff;">&gt;&lt;/</span><span style="color: #800000;">title</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 4</span>     <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">style </span><span style="color: #ff0000;">type</span><span style="color: #0000ff;">="text/css"</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 5</span> <span style="background-color: #f5f5f5; color: #800000;">        span </span><span style="background-color: #f5f5f5; color: #000000;">{</span><span style="background-color: #f5f5f5; color: #ff0000;"> height</span><span style="background-color: #f5f5f5; color: #000000;">:</span><span style="background-color: #f5f5f5; color: #0000ff;"> 100px</span><span style="background-color: #f5f5f5; color: #000000;">;</span><span style="background-color: #f5f5f5; color: #ff0000;"> border</span><span style="background-color: #f5f5f5; color: #000000;">:</span><span style="background-color: #f5f5f5; color: #0000ff;"> 1px solid black</span><span style="background-color: #f5f5f5; color: #000000;">;</span> <span style="background-color: #f5f5f5; color: #000000;">}</span>
+<span style="color: #008080;"> 6</span> <span style="background-color: #f5f5f5; color: #800000;">        .ib </span><span style="background-color: #f5f5f5; color: #000000;">{</span><span style="background-color: #f5f5f5; color: #ff0000;"> display</span><span style="background-color: #f5f5f5; color: #000000;">:</span><span style="background-color: #f5f5f5; color: #0000ff;"> inline-block</span><span style="background-color: #f5f5f5; color: #000000;">;</span> <span style="background-color: #f5f5f5; color: #000000;">}</span>
+<span style="color: #008080;"> 7</span>     <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">style</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 8</span> <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">head</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 9</span> <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">body</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">10</span>     <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">span </span><span style="color: #ff0000;">class</span><span style="color: #0000ff;">="ib"</span><span style="color: #0000ff;">&gt;</span>叶小钗<span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">span</span><span style="color: #0000ff;">&gt;</span> <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">span</span><span style="color: #0000ff;">&gt;</span>叶小钗<span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">span</span><span style="color: #0000ff;">&gt;</span> <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">span </span><span style="color: #ff0000;">class</span><span style="color: #0000ff;">="ib"</span><span style="color: #0000ff;">&gt;</span>叶小钗<span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">span</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">11</span> <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">body</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">12</span> <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">html</span><span style="color: #0000ff;">&gt;</span></pre>
+</div>
+<p><img src="44175257220305.x-png" alt=""></p>
+<p>以上是标准浏览器，我们来看看我们的IE7：</p>
+<p><img src="1533646876970.x-png" alt=""></p>
+<p>大家看到了，虽然中间那块有问题，但是我们的inline-block是没有问题的！！！</p>
+<p>其中中间那个家伙的底边没有了，大家知道是为什么的（layout）。</p>
+<p>以上是行内元素，我们来看看块级元素的表现。</p>
+<div class="cnblogs_code">
+<pre><span style="color: #008080;"> 1</span> <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">html </span><span style="color: #ff0000;">xmlns</span><span style="color: #0000ff;">="http://www.w3.org/1999/xhtml"</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 2</span> <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">head</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 3</span>     <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">title</span><span style="color: #0000ff;">&gt;&lt;/</span><span style="color: #800000;">title</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 4</span>     <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">style </span><span style="color: #ff0000;">type</span><span style="color: #0000ff;">="text/css"</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 5</span> <span style="background-color: #f5f5f5; color: #800000;">        div </span><span style="background-color: #f5f5f5; color: #000000;">{</span><span style="background-color: #f5f5f5; color: #ff0000;"> height</span><span style="background-color: #f5f5f5; color: #000000;">:</span><span style="background-color: #f5f5f5; color: #0000ff;"> 100px</span><span style="background-color: #f5f5f5; color: #000000;">;</span><span style="background-color: #f5f5f5; color: #ff0000;"> border</span><span style="background-color: #f5f5f5; color: #000000;">:</span><span style="background-color: #f5f5f5; color: #0000ff;"> 1px solid black</span><span style="background-color: #f5f5f5; color: #000000;">;</span><span style="background-color: #f5f5f5; color: #ff0000;"> *zoom</span><span style="background-color: #f5f5f5; color: #000000;">:</span><span style="background-color: #f5f5f5; color: #0000ff;"> 1 </span><span style="background-color: #f5f5f5; color: #000000;">}</span>
+<span style="color: #008080;"> 6</span> <span style="background-color: #f5f5f5; color: #800000;">        .ib </span><span style="background-color: #f5f5f5; color: #000000;">{</span><span style="background-color: #f5f5f5; color: #ff0000;"> display</span><span style="background-color: #f5f5f5; color: #000000;">:</span><span style="background-color: #f5f5f5; color: #0000ff;"> inline-block</span><span style="background-color: #f5f5f5; color: #000000;">;</span> <span style="background-color: #f5f5f5; color: #000000;">}</span>
+<span style="color: #008080;"> 7</span>     <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">style</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 8</span> <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">head</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 9</span> <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">body</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">10</span>     <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">div </span><span style="color: #ff0000;">class</span><span style="color: #0000ff;">="ib"</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">11</span>         叶小钗<span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">div</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">12</span>     <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">div </span><span style="color: #ff0000;">class</span><span style="color: #0000ff;">="ib"</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">13</span>         叶小钗<span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">div</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">14</span>     <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">div</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">15</span>         叶小钗<span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">div</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">16</span> <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">body</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">17</span> <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">html</span><span style="color: #0000ff;">&gt;</span></pre>
+</div>
+<p><img src="43970538662598.x-png" alt=""></p>
+<p>我们来看看IE7的表现：</p>
+<p>这家伙直接没有理我啊！！！所以说，并不是inline-block没有，而只是对块级元素的支持有问题罢了，所以我们对于块级元素需要这么干：</p>
+<div class="cnblogs_code">
+<pre><span style="color: #008080;"> 1</span> <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">html </span><span style="color: #ff0000;">xmlns</span><span style="color: #0000ff;">="http://www.w3.org/1999/xhtml"</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 2</span> <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">head</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 3</span>     <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">title</span><span style="color: #0000ff;">&gt;&lt;/</span><span style="color: #800000;">title</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 4</span>     <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">style </span><span style="color: #ff0000;">type</span><span style="color: #0000ff;">="text/css"</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 5</span> <span style="background-color: #f5f5f5; color: #800000;">        div </span><span style="background-color: #f5f5f5; color: #000000;">{</span><span style="background-color: #f5f5f5; color: #ff0000;"> height</span><span style="background-color: #f5f5f5; color: #000000;">:</span><span style="background-color: #f5f5f5; color: #0000ff;"> 100px</span><span style="background-color: #f5f5f5; color: #000000;">;</span><span style="background-color: #f5f5f5; color: #ff0000;"> border</span><span style="background-color: #f5f5f5; color: #000000;">:</span><span style="background-color: #f5f5f5; color: #0000ff;"> 1px solid black</span><span style="background-color: #f5f5f5; color: #000000;">;</span>  <span style="background-color: #f5f5f5; color: #000000;">}</span>
+<span style="color: #008080;"> 6</span> <span style="background-color: #f5f5f5; color: #800000;">        .ib </span><span style="background-color: #f5f5f5; color: #000000;">{</span><span style="background-color: #f5f5f5; color: #ff0000;"> display</span><span style="background-color: #f5f5f5; color: #000000;">:</span><span style="background-color: #f5f5f5; color: #0000ff;"> inline-block</span><span style="background-color: #f5f5f5; color: #000000;">;</span><span style="background-color: #f5f5f5; color: #ff0000;"> *zoom</span><span style="background-color: #f5f5f5; color: #000000;">:</span><span style="background-color: #f5f5f5; color: #0000ff;"> 1</span><span style="background-color: #f5f5f5; color: #000000;">;</span><span style="background-color: #f5f5f5; color: #ff0000;"> *display</span><span style="background-color: #f5f5f5; color: #000000;">:</span><span style="background-color: #f5f5f5; color: #0000ff;"> inline</span><span style="background-color: #f5f5f5; color: #000000;">;</span> <span style="background-color: #f5f5f5; color: #000000;">}</span>
+<span style="color: #008080;"> 7</span>     <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">style</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 8</span> <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">head</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 9</span> <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">body</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">10</span>     <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">div </span><span style="color: #ff0000;">class</span><span style="color: #0000ff;">="ib"</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">11</span>         叶小钗<span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">div</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">12</span>     <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">div </span><span style="color: #ff0000;">class</span><span style="color: #0000ff;">="ib"</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">13</span>         叶小钗<span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">div</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">14</span>     <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">div</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">15</span>         叶小钗<span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">div</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">16</span> <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">body</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">17</span> <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">html</span><span style="color: #0000ff;">&gt;</span></pre>
+</div>
+<p><img src="510839410034134.x-png" alt=""></p>
+<p>虽然他们之间的间隔却没有了，却达到了我们的目标。问题又来了：</p>
+<h1>inline-block为什么会有莫名的间隔？</h1>
+<p>注意看图的朋友应该看到了，inline-block元素在现代浏览器中有间隔，我搞了很久查询确实是有！</p>
+<p>这是因为默认情况下inline元素之间就有间隔（IE7不会有间隔）！</p>
+<div class="cnblogs_code">
+<pre><span style="color: #008080;"> 1</span> <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">html </span><span style="color: #ff0000;">xmlns</span><span style="color: #0000ff;">="http://www.w3.org/1999/xhtml"</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 2</span> <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">head</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 3</span>     <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">title</span><span style="color: #0000ff;">&gt;&lt;/</span><span style="color: #800000;">title</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 4</span>     <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">style </span><span style="color: #ff0000;">type</span><span style="color: #0000ff;">="text/css"</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 5</span> <span style="background-color: #f5f5f5; color: #800000;">        div </span><span style="background-color: #f5f5f5; color: #000000;">{</span><span style="background-color: #f5f5f5; color: #ff0000;"> height</span><span style="background-color: #f5f5f5; color: #000000;">:</span><span style="background-color: #f5f5f5; color: #0000ff;"> 100px</span><span style="background-color: #f5f5f5; color: #000000;">;</span><span style="background-color: #f5f5f5; color: #ff0000;"> border</span><span style="background-color: #f5f5f5; color: #000000;">:</span><span style="background-color: #f5f5f5; color: #0000ff;"> 1px solid black</span><span style="background-color: #f5f5f5; color: #000000;">;</span><span style="background-color: #f5f5f5; color: #ff0000;"> margin</span><span style="background-color: #f5f5f5; color: #000000;">:</span><span style="background-color: #f5f5f5; color: #0000ff;"> 0</span><span style="background-color: #f5f5f5; color: #000000;">;</span><span style="background-color: #f5f5f5; color: #ff0000;"> display</span><span style="background-color: #f5f5f5; color: #000000;">:</span><span style="background-color: #f5f5f5; color: #0000ff;"> inline</span><span style="background-color: #f5f5f5; color: #000000;">;</span>  <span style="background-color: #f5f5f5; color: #000000;">}</span>
+<span style="color: #008080;"> 6</span>     <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">style</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 7</span> <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">head</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 8</span> <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">body</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 9</span>     <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">div </span><span style="color: #ff0000;">class</span><span style="color: #0000ff;">="ib"</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">10</span>         叶小钗<span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">div</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">11</span>     <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">div </span><span style="color: #ff0000;">class</span><span style="color: #0000ff;">="ib"</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">12</span>         叶小钗<span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">div</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">13</span>     <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">div</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">14</span>         叶小钗<span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">div</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">15</span> <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">body</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">16</span> <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">html</span><span style="color: #0000ff;">&gt;</span></pre>
+</div>
+<p><br>&nbsp;</p>
+<p><img src="1368238948975.x-png" alt=""></p>
+<p><img src="13328955681138.x-png" alt="">IE7</p>
+<p><span style="color: #ff0000;">这个问题你抓破头发都不会知道原因！！！</span></p>
+<div class="cnblogs_code">
+<pre><span style="color: #800000;">因为块级元素搞成inline的时候，在编辑器中换号了，浏览器认为换行就是一个空格，所以将他们写到一起吧！囧</span></pre>
+</div>
+<p>&nbsp;</p>
+<p>此处我不再纠结下去了，附上抄来的解决空隙的代码：</p>
+<div class="cnblogs_code">
+<pre><span style="color: #008080;"> 1</span> <span style="color: #800000;">.dib-wrap </span>{
+<span style="color: #008080;"> 2</span> <span style="color: #ff0000;">    font-size</span>:<span style="color: #0000ff;">0</span>;<span style="color: #008000;">/*</span><span style="color: #008000;"> 所有浏览器 </span><span style="color: #008000;">*/</span>
+<span style="color: #008080;"> 3</span> <span style="color: #ff0000;">    *word-spacing</span>:<span style="color: #0000ff;">-1px</span>;<span style="color: #008000;">/*</span><span style="color: #008000;"> IE6、7 </span><span style="color: #008000;">*/</span>
+<span style="color: #008080;"> 4</span> }
+<span style="color: #008080;"> 5</span> <span style="color: #800000;">.dib-wrap .dib</span>{
+<span style="color: #008080;"> 6</span> <span style="color: #ff0000;">    font-size</span>:<span style="color: #0000ff;"> 12px</span>;
+<span style="color: #008080;"> 7</span> <span style="color: #ff0000;">    letter-spacing</span>:<span style="color: #0000ff;"> normal</span>;
+<span style="color: #008080;"> 8</span> <span style="color: #ff0000;">    word-spacing</span>:<span style="color: #0000ff;"> normal</span>;
+<span style="color: #008080;"> 9</span> <span style="color: #ff0000;">    vertical-align</span>:<span style="color: #0000ff;">top</span>;
+<span style="color: #008080;">10</span> }
+<span style="color: #008080;">11</span> <span style="color: #800000;">@media screen and (-webkit-min-device-pixel-ratio:0)</span>{
+<span style="color: #008080;">12</span> <span style="color: #008000;">/*</span><span style="color: #008000;"> firefox 中 letter-spacing 会导致脱离普通流的元素水平位移 </span><span style="color: #008000;">*/</span>
+<span style="color: #008080;">13</span> <span style="color: #ff0000;">     .dib-wrap{
+</span><span style="color: #008080;">14</span> <span style="color: #ff0000;">            letter-spacing</span>:<span style="color: #0000ff;">-5px</span>;<span style="color: #008000;">/*</span><span style="color: #008000;"> Safari 等不支持字体大小为 0 的浏览器, N 根据父级字体调节</span><span style="color: #008000;">*/</span>
+<span style="color: #008080;">15</span>     }
+<span style="color: #008080;">16</span> <span style="color: #800000;">}
+</span><span style="color: #008080;">17</span> <span style="color: #800000;">.dib </span>{
+<span style="color: #008080;">18</span> <span style="color: #ff0000;">    display</span>:<span style="color: #0000ff;"> inline-block</span>;
+<span style="color: #008080;">19</span> <span style="color: #ff0000;">    *display</span>:<span style="color: #0000ff;">inline</span>;
+<span style="color: #008080;">20</span> <span style="color: #ff0000;">    *zoom</span>:<span style="color: #0000ff;">1</span>;
+<span style="color: #008080;">21</span> }</pre>
+</div>
+<h1>结语</h1>
+<p>咳咳，其实我病了。。。我养伤去了，刚刚求妹子顶就有个兄弟踩了我下，现在求兄弟顶好吧。。。。</p>
+                </div>
+
+                <div class='span3 sidebar'>
+                    <h2>导航栏</h2>
+                    <ul class="nav nav-tabs nav-stacked">
+                             				<li><a href="http://songboriceboy.github.io/xxoo/html/css/HTML5&CSS3jj03JseryCsserrhyqykdfxlzj/index.html">【HTML5&CSS3进阶03】Jser与Csser如何一起愉快的翻新老组件</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/css/HTML5&CSS3jj04CSS3dhygrhzwebappzyy/index.html">【HTML5&CSS3进阶04】CSS3动画应该如何在webapp中运用</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/css/HTML5&CSS3jjxx01qpzjdsx/index.html">【HTML5&CSS3进阶学习01】气泡组件的实现</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/css/ctHTMLbxdzzbgzrhtmlbqtshz/index.html">【初探HTML本相】道之真谛不过自然，html标签脱俗还真</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/css/qdmdDOMsjllzCSShmxsfjyhd/index.html">【前端盲点】DOM事件流论证CSS盒模型是否具有厚度</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/css/zsCSS02inlineylineheightfloatabsolutedgs/index.html">【正视CSS02】inline与lineheight、float、absolute的故事</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/css/zsCSS03blockypositioncmzwdpydwjkl/index.html">【正视CSS03】block与position，出门在外的朋友端午节快乐</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/css/zsCSS05wmcglxsmwhyx/index.html">【正视CSS05】我们错过了些什么，为何叶小钗？</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/css/zsCSS06gjwmzjdsjg/index.html">【正视CSS06】构建我们自己的世界观！</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/css/zsCSS07zkverticalalign/index.html">【正视CSS07】再看verticalalign</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/css/zsCSS08fdwzfloatnwsmyttwdys/index.html">【正视CSS08】巅峰对武之float你为什么要坍塌我的元素！！！</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/css/zsCSStszykyzBzxsmargin/index.html">【正视CSS】他山之玉可以装B之细说margin</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/css/gwzmjshdllbnwmyqlkkhddmstbjsaldy/index.html">各位周末结束后都累了吧，那我们一起来看看【寒冬】的面试题吧（据说阿里的哟）</a></li>
+    				                                         
+                    </ul>
+                </div>
+            </div>
+
+        </div>
+    </body>
+</html>

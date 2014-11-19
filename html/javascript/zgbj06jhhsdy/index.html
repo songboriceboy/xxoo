@@ -1,0 +1,623 @@
+﻿<!DOCTYPE html>
+
+<html lang="zh">
+    <head>
+        <meta charset="utf-8">
+        <meta name="description" content="android,ios" />
+        <meta name="keywords" content="android,ios" />
+
+        <title>叶小钗</title>
+        <style type='text/css'>
+            body {
+                background-color: #CCC;
+            }
+        </style>
+        <link rel="stylesheet" href="../../../css/bootstrap.css" />
+    </head>
+
+    <body>
+        <div class="container">
+
+            <h1>叶小钗</h1>
+
+            <div class='navbar navbar-inverse'>
+                <div class='navbar-inner nav-collapse' style="height: auto;">
+                    <ul class="nav">
+                              				<li><a href="http://songboriceboy.github.io/xxoo/html/blade/index.html">blade</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/css/index.html">css</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/HTML5&CSS3/index.html">HTML5&CSS3</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/index.html">javascript</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Javaxx/index.html">Java学习</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/nodejs/index.html">nodejs</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/requirejs/index.html">requirejs</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/index.html">Web前端</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/xxgw/index.html">学习感悟</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/gzdd/index.html">工作点滴</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/jkxx/index.html">接口学习</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/wfl/index.html">未分类</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/ydkf/index.html">移动开发</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/sjms/index.html">设计模式</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/mst/index.html">面试题</a></li>
+    				                      </ul>
+                </div>
+            </div>
+
+            <div id='content' class='row-fluid'>
+
+                <div class='span9 main'>
+				<div style="color:blue" align=center>【重构笔记06】简化函数调用</div><br><h1>前言</h1>
+<p>在对象技术中，最重要的概念莫过于&ldquo;接口interface&rdquo;，容易被理解和使用的接口，是开发良好面向对象软件的关键，本章将介绍几个被接口变得更简洁易用的重构手法。</p>
+<h3>改名</h3>
+<p>① 最简单也是最重要的一件事情就是修改函数名，名称是程序作者与阅读者交流的关键工具</p>
+<p>PS：如果说HTML是构造世界的话，里面最恐怖的是就是给一山一水建立class名，你会发现是一个巨大的工程！</p>
+<p>② 函数参数在接口中扮演着十分重要的角色，增减参数都是常见的重构手法，刚接触面向对象的程序员往往使用很长的参数列，但是面向对象的参数可以保持参数简短</p>
+<p>如果来自同一对象的多个值被当做参数传递，可以使用保持对象完整避免传递参数，而采用引入参数对象......</p>
+<h3>读写分离</h3>
+<p>我们程序过程中可以明确的将&ldquo;修改对象状态&rdquo;的修改函数与&ldquo;查询对象状态&rdquo;的查询函数分开设计</p>
+<h3>隐藏细节</h3>
+<p>良好的接口只向用户提供必需展现的东西，如果一个接口暴露了过多细节，我们就需要将细节隐藏，从而改变接口质量</p>
+<p>首先，所有数据都应该隐藏，然后所有私有方法也该隐藏，就算是javascript这种不可隐藏的对象，也可以使用_Method方式装做隐藏</p>
+<p>我们做的时候可以先方便程序编写而最后隐藏</p>
+<h3>工厂函数取代构造函数</h3>
+<p>构造函数是比较麻烦的一个东西，他强迫我们必须知道要创建对象属于哪一个类，而且往往我们并不想知道，这个时候就可以用工厂函数取代构造函数了</p>
+<p>所以我们一起来看看具体怎么做吧！</p>
+<h1>函数改名</h1>
+<p><span style="line-height: 1.5;">如果函数名称未能解释函数的用途，那么修改函数名称吧！！！</span></p>
+<p><span style="line-height: 1.5;">将复杂的处理的处理过程分解成小函数是一种好的习惯，这样代码会变得清晰</span></p>
+<p><span style="line-height: 1.5;">但是如果做的不好，就会让我们费尽周折却弄不清小函数的用途，避免这个问题的关键就是函数取名，而由于英语水平我们往往都做的很糟糕，</span><span style="line-height: 1.5;">所以，必要的注释必不可少！！！</span></p>
+<p><span style="line-height: 1.5;">PS：其实我注释写的比较糟糕，一个比较好的格式如下：</span></p>
+<div class="cnblogs_code">
+<pre><span style="color: #008000;">/*</span><span style="color: #008000;">*
+*    取model数据
+*    @param {Function} onComplete 取完的回调函
+*    传入的第一个参数为model的数第二个数据为元数据，元数据为ajax下发时的ServerCode,Message等数
+*    @param {Function} onError 发生错误时的回调
+*    @param {Boolean} ajaxOnly 可选，默认为false当为true时只使用ajax调取数据
+*   @param {Boolean} scope 可选，设定回调函数this指向的对象
+*   @param {Function} onAbort 可选，但取消时会调用的函数
+</span><span style="color: #008000;">*/</span>
+<span style="color: #0000ff;">function</span>(......){}</pre>
+</div>
+<p>PS：这个注释可以放到类上面，可以放到方法上面，并且标注作者，让人可以找到你......</p>
+<h2>取名难</h2>
+<p><span style="line-height: 1.5;">经常出现的情况是我们第一次并不能取一个好名字，甚至会拼写错误！！！这个时候往往就睁一只眼闭一只眼过去了</span></p>
+<p><span style="line-height: 1.5;">当心一点，这是一个坑！如果一个对外接口拼写错误/如果一个对外接口取名不好一旦有人用了，你就哭吧！！！</span></p>
+<p><span style="line-height: 1.5;">要成为高手，取名就是第一步，就算准高手或者高手很多时候取名都是坑，所以好好取名吧！</span></p>
+<h2><span style="line-height: 1.5;">怎么干？</span></h2>
+<p><span style="line-height: 1.5;">① 检查函数名是否被超类实现，如果被实现就需要声明新函数，将旧函数代码复制过去</span></p>
+<p><span style="line-height: 1.5;">② 修改旧函数。将调用转发给新函数</span></p>
+<p><span style="line-height: 1.5;">③ 找出旧函数引用点，修改之让他们改用新函数，然后删除旧函数</span></p>
+<h2><span style="line-height: 1.5;">范例</span></h2>
+<div class="cnblogs_code">
+<pre><span style="color: #008080;">1</span> <span style="color: #0000ff;">var</span> Person =<span style="color: #000000;"> base.Class({
+</span><span style="color: #008080;">2</span>     _propertys_: <span style="color: #0000ff;">function</span><span style="color: #000000;"> () {
+</span><span style="color: #008080;">3</span>         <span style="color: #0000ff;">this</span>.officeAreaCode = ''<span style="color: #000000;">;
+</span><span style="color: #008080;">4</span>         <span style="color: #0000ff;">this</span>.officeAreaNumber = ''<span style="color: #000000;">;
+</span><span style="color: #008080;">5</span> <span style="color: #000000;">    },
+</span><span style="color: #008080;">6</span>     getTel: <span style="color: #0000ff;">function</span><span style="color: #000000;"> () {
+</span><span style="color: #008080;">7</span>         <span style="color: #0000ff;">return</span> '(' + <span style="color: #0000ff;">this</span>.officeAreaCode + ')' + <span style="color: #0000ff;">this</span><span style="color: #000000;">.officeAreaNumber;
+</span><span style="color: #008080;">8</span> <span style="color: #000000;">    }
+</span><span style="color: #008080;">9</span> });</pre>
+</div>
+<p>现在我们将函数名改得更合理一点</p>
+<div class="cnblogs_code">
+<pre><span style="color: #008080;"> 1</span> <span style="color: #0000ff;">var</span> Person =<span style="color: #000000;"> base.Class({
+</span><span style="color: #008080;"> 2</span>     _propertys_: <span style="color: #0000ff;">function</span><span style="color: #000000;"> () {
+</span><span style="color: #008080;"> 3</span>         <span style="color: #0000ff;">this</span>.officeAreaCode = ''<span style="color: #000000;">;
+</span><span style="color: #008080;"> 4</span>         <span style="color: #0000ff;">this</span>.officeAreaNumber = ''<span style="color: #000000;">;
+</span><span style="color: #008080;"> 5</span> <span style="color: #000000;">    },
+</span><span style="color: #008080;"> 6</span>     getTel: <span style="color: #0000ff;">function</span><span style="color: #000000;"> () {
+</span><span style="color: #008080;"> 7</span>         <span style="color: #0000ff;">return</span> '(' + <span style="color: #0000ff;">this</span>.officeAreaCode + ')' + <span style="color: #0000ff;">this</span><span style="color: #000000;">.officeAreaNumber;
+</span><span style="color: #008080;"> 8</span> <span style="color: #000000;">    },
+</span><span style="color: #008080;"> 9</span>     getOfficeNumber: <span style="color: #0000ff;">function</span><span style="color: #000000;"> () {
+</span><span style="color: #008080;">10</span>         <span style="color: #0000ff;">return</span> <span style="color: #0000ff;">this</span><span style="color: #000000;">.getTel();
+</span><span style="color: #008080;">11</span> <span style="color: #000000;">    }
+</span><span style="color: #008080;">12</span> });</pre>
+</div>
+<p>这是，旧函数其实可以删除也可以留着，全看当时的使用情况了</p>
+<h1>添加/移除参数</h1>
+<h2><span style="line-height: 1.5;">添加参数</span></h2>
+<p><span style="line-height: 1.5;">如果某个函数需要从调用端得到更多信息，为此函数添加一个对象参数，让该对象带进函数所需信息</span></p>
+<p><span style="line-height: 1.5;">添加参数是一个常使用的重构手段，我们修改一个函数时，如果需要一些过去没有的信息，这时就需要给该函数添加一个参数了</span></p>
+<p><span style="line-height: 1.5;">其实不使用这个方法我们依然有其它可选方案，因为参数过长的感觉不是很好！</span></p>
+<p><span style="line-height: 1.5;">PS：这个规律对js来说不太适用，这个我们就不深入了解了......</span></p>
+<h2><span style="line-height: 1.5;">移除参数</span></h2>
+<p><span style="line-height: 1.5;">有增便有减，而且适当的移动参数顺序也是不错的</span></p>
+<h1><span style="line-height: 1.5;">将查询和修改函数分离</span></h1>
+<p>如果某个函数既返回对象值又修改对象状态，那么建立两个函数，一个负责查询一个负责修改</p>
+<p>如果某个函数只是想你提供一个值，没有其它副作用，那么就任意调用这个函数</p>
+<p>任何有返回值的函数，都不应该有明显的副作用，如果我们遇到一个既有返回值，又有副作用的函数，就应该分离了</p>
+<h2>怎么干？</h2>
+<p><span style="line-height: 1.5;">① 新建一个查询函数，令他返回值与原函数相同，观察原函数，看他返回什么东西，如果是临时变量需要找出临时变量位置</span></p>
+<p><span style="line-height: 1.5;">② 修改原函数，令他调用查询函数，并返回获得结果</span></p>
+<p><span style="line-height: 1.5;">原函数的每个return都应该像这样：</span></p>
+<div class="cnblogs_code">
+<pre><span style="color: #0000ff;">return</span> newQuery()</pre>
+</div>
+<p>而不应该返回其它东西，如果调用者将返回值给了一个临时变量，你应该去除这个临时变量</p>
+<p>PS：我其实在程序过程中经常借用临时变量，为了减少计算，看来这个习惯要改了</p>
+<p>③ 将调用原函数的代码改为调用查询函数，然后在调用查询函数的那一行之前加上对原函数的调用，修改编译</p>
+<h2>范例</h2>
+<p><span style="line-height: 1.5;">有这样一个函数，一旦有人入侵安全系统，他会告诉我们侵略者的名字，并发送警报，如果入侵者不止一个，也只发一次警报</span></p>
+<div class="cnblogs_code">
+<pre><span style="color: #008080;"> 1</span> <span style="color: #0000ff;">function</span><span style="color: #000000;"> findInSet(names, arr) {
+</span><span style="color: #008080;"> 2</span>     <span style="color: #0000ff;">if</span> (<span style="color: #0000ff;">typeof</span> names != 'object') names =<span style="color: #000000;"> [names];
+</span><span style="color: #008080;"> 3</span>     <span style="color: #0000ff;">var</span> ret =<span style="color: #000000;"> [];
+</span><span style="color: #008080;"> 4</span>     <span style="color: #0000ff;">for</span> (<span style="color: #0000ff;">var</span> k <span style="color: #0000ff;">in</span><span style="color: #000000;"> names) {
+</span><span style="color: #008080;"> 5</span>         <span style="color: #0000ff;">for</span> (<span style="color: #0000ff;">var</span> i = 0, len = arr.length; i &lt; len; i++<span style="color: #000000;">) {
+</span><span style="color: #008080;"> 6</span>             <span style="color: #0000ff;">if</span> (arr[i] ==<span style="color: #000000;"> names[k]) ret.push(names[k]);
+</span><span style="color: #008080;"> 7</span> <span style="color: #000000;">        }
+</span><span style="color: #008080;"> 8</span> <span style="color: #000000;">    }
+</span><span style="color: #008080;"> 9</span>     <span style="color: #0000ff;">return</span><span style="color: #000000;"> ret;
+</span><span style="color: #008080;">10</span> <span style="color: #000000;">}
+</span><span style="color: #008080;">11</span> <span style="color: #0000ff;">function</span><span style="color: #000000;"> sendAlert() {
+</span><span style="color: #008080;">12</span>     console.log('警报'<span style="color: #000000;">);
+</span><span style="color: #008080;">13</span> <span style="color: #000000;">}
+</span><span style="color: #008080;">14</span> <span style="color: #0000ff;">function</span><span style="color: #000000;"> foundMiscreant(people) {
+</span><span style="color: #008080;">15</span>     <span style="color: #0000ff;">for</span> (<span style="color: #0000ff;">var</span> i = 0, len = people.length; i &lt; len; i++<span style="color: #000000;">) {
+</span><span style="color: #008080;">16</span>         <span style="color: #0000ff;">if</span> (findInSet(['Don', 'John'], people).length &gt; 0<span style="color: #000000;">) {
+</span><span style="color: #008080;">17</span>             (<span style="color: #0000ff;">typeof</span> sendAlert == 'function') &amp;&amp;<span style="color: #000000;"> sendAlert();
+</span><span style="color: #008080;">18</span>             <span style="color: #0000ff;">return</span> findInSet(['Don', 'John'<span style="color: #000000;">], people);
+</span><span style="color: #008080;">19</span> <span style="color: #000000;">        }
+</span><span style="color: #008080;">20</span> <span style="color: #000000;">    }
+</span><span style="color: #008080;">21</span>     <span style="color: #0000ff;">return</span> ''<span style="color: #000000;">;
+</span><span style="color: #008080;">22</span> <span style="color: #000000;">}
+</span><span style="color: #008080;">23</span> <span style="color: #008000;">//</span><span style="color: #008000;">调用者</span>
+<span style="color: #008080;">24</span> <span style="color: #0000ff;">function</span><span style="color: #000000;"> checkSecurity(people) {
+</span><span style="color: #008080;">25</span>     <span style="color: #0000ff;">var</span> found =<span style="color: #000000;"> foundMiscreant(people);
+</span><span style="color: #008080;">26</span>     (<span style="color: #0000ff;">typeof</span> someMethod == 'function') &amp;&amp;<span style="color: #000000;"> someMethod(found);
+</span><span style="color: #008080;">27</span> <span style="color: #000000;">}
+</span><span style="color: #008080;">28</span> console.log(checkSecurity(['1', '2', 'Don']));</pre>
+</div>
+<p>其实这里的代码我做了一次优化，原来作者的意思是将发警报与查找的逻辑分离，我们这样干：</p>
+<div class="cnblogs_code">
+<pre><span style="color: #008080;"> 1</span> <span style="color: #0000ff;">function</span><span style="color: #000000;"> findInSet(names, arr) {
+</span><span style="color: #008080;"> 2</span>     <span style="color: #0000ff;">if</span> (<span style="color: #0000ff;">typeof</span> names != 'object') names =<span style="color: #000000;"> [names];
+</span><span style="color: #008080;"> 3</span>     <span style="color: #0000ff;">var</span> ret =<span style="color: #000000;"> [];
+</span><span style="color: #008080;"> 4</span>     <span style="color: #0000ff;">for</span> (<span style="color: #0000ff;">var</span> k <span style="color: #0000ff;">in</span><span style="color: #000000;"> names) {
+</span><span style="color: #008080;"> 5</span>         <span style="color: #0000ff;">for</span> (<span style="color: #0000ff;">var</span> i = 0, len = arr.length; i &lt; len; i++<span style="color: #000000;">) {
+</span><span style="color: #008080;"> 6</span>             <span style="color: #0000ff;">if</span> (arr[i] ==<span style="color: #000000;"> names[k]) ret.push(names[k]);
+</span><span style="color: #008080;"> 7</span> <span style="color: #000000;">        }
+</span><span style="color: #008080;"> 8</span> <span style="color: #000000;">    }
+</span><span style="color: #008080;"> 9</span>     <span style="color: #0000ff;">return</span><span style="color: #000000;"> ret;
+</span><span style="color: #008080;">10</span> <span style="color: #000000;">}
+</span><span style="color: #008080;">11</span> <span style="color: #0000ff;">function</span><span style="color: #000000;"> sendAlert() {
+</span><span style="color: #008080;">12</span>     console.log('警报'<span style="color: #000000;">);
+</span><span style="color: #008080;">13</span> <span style="color: #000000;">}
+</span><span style="color: #008080;">14</span> <span style="color: #0000ff;">function</span><span style="color: #000000;"> _sendAlert(people) {
+</span><span style="color: #008080;">15</span>     <span style="color: #0000ff;">for</span> (<span style="color: #0000ff;">var</span> i = 0, len = people.length; i &lt; len; i++<span style="color: #000000;">) {
+</span><span style="color: #008080;">16</span>         <span style="color: #0000ff;">if</span> (findInSet(['Don', 'John'], people).length &gt; 0<span style="color: #000000;">) {
+</span><span style="color: #008080;">17</span>             <span style="color: #0000ff;">return</span> findInSet(['Don', 'John'<span style="color: #000000;">], people);
+</span><span style="color: #008080;">18</span> <span style="color: #000000;">        }
+</span><span style="color: #008080;">19</span> <span style="color: #000000;">    }
+</span><span style="color: #008080;">20</span>     <span style="color: #0000ff;">return</span><span style="color: #000000;"> [];
+</span><span style="color: #008080;">21</span> <span style="color: #000000;">}
+</span><span style="color: #008080;">22</span> 
+<span style="color: #008080;">23</span> <span style="color: #008000;">//</span><span style="color: #008000;">调用者</span>
+<span style="color: #008080;">24</span> <span style="color: #0000ff;">function</span><span style="color: #000000;"> checkSecurity(people) {
+</span><span style="color: #008080;">25</span>     <span style="color: #0000ff;">var</span> found = findInSet(['Don', 'John'<span style="color: #000000;">], people);
+</span><span style="color: #008080;">26</span>     (<span style="color: #0000ff;">typeof</span> _sendAlert == 'function') &amp;&amp;<span style="color: #000000;"> _sendAlert(found);
+</span><span style="color: #008080;">27</span> <span style="color: #000000;">}
+</span><span style="color: #008080;">28</span> console.log(checkSecurity(['1', '2', 'Don']));</pre>
+</div>
+<h1>令函数携带参数</h1>
+<p><span style="line-height: 1.5;">若干函数做了类似的工作，但函数本体却包含了不同的值，那么建立一个函数，以参数表达那些不同的值</span></p>
+<p><span style="line-height: 1.5;">这种情况经常发生，明明干的事情差不多的函数，却因为几个值致使行为略有不同，这种情况让人恨啊！</span></p>
+<p><span style="line-height: 1.5;">这个时候可以将分离的函数统一，通过参数来处理变化情况，这样可以去除重复代码，并提高灵活性，所以干掉他们吧</span></p>
+<h2><span style="line-height: 1.5;">范例</span></h2>
+<div class="cnblogs_code">
+<pre><span style="color: #0000ff;">function</span><span style="color: #000000;"> tenPercent() {
+    </span><span style="color: #0000ff;">return</span> <span style="color: #0000ff;">this</span>.salary * 1.1<span style="color: #000000;">;
+}
+</span><span style="color: #0000ff;">function</span><span style="color: #000000;"> fivePercent() {
+    </span><span style="color: #0000ff;">return</span> <span style="color: #0000ff;">this</span>.salary * 1.05<span style="color: #000000;">;
+}</span></pre>
+</div>
+<p>这个比较简单</p>
+<div class="cnblogs_code">
+<pre><span style="color: #0000ff;">function</span><span style="color: #000000;"> raise(factor) {
+    </span><span style="color: #0000ff;">return</span> <span style="color: #0000ff;">this</span>.salary *<span style="color: #000000;"> factor;
+}</span></pre>
+</div>
+<p>我们下面来个较复杂的</p>
+<div class="cnblogs_code">
+<pre><span style="color: #008080;"> 1</span> <span style="color: #0000ff;">var</span> lastUsage = <span style="color: #0000ff;">function</span><span style="color: #000000;"> () {
+</span><span style="color: #008080;"> 2</span>     <span style="color: #0000ff;">return</span> 10<span style="color: #000000;">;
+</span><span style="color: #008080;"> 3</span> <span style="color: #000000;">};
+</span><span style="color: #008080;"> 4</span> <span style="color: #0000ff;">function</span><span style="color: #000000;"> baseCharge() {
+</span><span style="color: #008080;"> 5</span>     <span style="color: #0000ff;">var</span> result = Math.min(lastUsage(), 100) * 0.3
+<span style="color: #008080;"> 6</span>     <span style="color: #0000ff;">if</span> (lastUsage() &gt; 100<span style="color: #000000;">) {
+</span><span style="color: #008080;"> 7</span>         result += (Math.min(lastUsage(), 100) - 100) * 0.05<span style="color: #000000;">;
+</span><span style="color: #008080;"> 8</span> <span style="color: #000000;">    }
+</span><span style="color: #008080;"> 9</span>     <span style="color: #0000ff;">if</span> (lastUsage() &gt; 200<span style="color: #000000;">) {
+</span><span style="color: #008080;">10</span>         result += (lastUsage() - 200) * 0.07<span style="color: #000000;">;
+</span><span style="color: #008080;">11</span> <span style="color: #000000;">    }
+</span><span style="color: #008080;">12</span>     <span style="color: #0000ff;">return</span><span style="color: #000000;"> result;
+</span><span style="color: #008080;">13</span> }</pre>
+</div>
+<p>科学计算的情况下，这个代码很容易出现，我们将相同的分离出来</p>
+<div class="cnblogs_code">
+<pre><span style="color: #008080;"> 1</span> <span style="color: #0000ff;">function</span><span style="color: #000000;"> baseCharge() {
+</span><span style="color: #008080;"> 2</span>     <span style="color: #0000ff;">var</span> result = usageInRange(0, 100) * 0.3
+<span style="color: #008080;"> 3</span>         result += usageInRange(100, 200) * 0.05<span style="color: #000000;">;
+</span><span style="color: #008080;"> 4</span>         result += usageInRange(200, 10000000000) * 0.07<span style="color: #000000;">;
+</span><span style="color: #008080;"> 5</span>     <span style="color: #0000ff;">return</span><span style="color: #000000;"> result;
+</span><span style="color: #008080;"> 6</span> <span style="color: #000000;">}
+</span><span style="color: #008080;"> 7</span> <span style="color: #0000ff;">function</span><span style="color: #000000;"> usageInRange(start, end) {
+</span><span style="color: #008080;"> 8</span>     <span style="color: #0000ff;">if</span> (lastUsage() &gt; start) <span style="color: #0000ff;">return</span> Math.min(lastUsage(), end) -<span style="color: #000000;"> start;
+</span><span style="color: #008080;"> 9</span>     <span style="color: #0000ff;">return</span> 0<span style="color: #000000;">;
+</span><span style="color: #008080;">10</span> }</pre>
+</div>
+<p>他这个优化挺巧妙的</p>
+<h1>以明确函数取代参数</h1>
+<p><span style="line-height: 1.5;">我们有一个函数，其中完全取决于参数值而采取不同的行为，那么针对该参数的每一个可能的值，建立一个独立函数</span></p>
+<p><span style="line-height: 1.5;">这个跟上一个方法恰好相反，如果某个参数有多个可能的值，而函数内又以条件表达式检查这些参数值，并根据不同的参数有不同的行为，那么就该使用此重构</span></p>
+<p><span style="line-height: 1.5;">调用者原本必须给予适当的参数，再决定做和反应，现在提供不同的函数就可以避免条件表达式了</span></p>
+<h2><span style="line-height: 1.5;">范例</span></h2>
+<div class="cnblogs_code">
+<pre><span style="color: #008080;"> 1</span> <span style="color: #0000ff;">function</span><span style="color: #000000;"> setValue(name, value) {
+</span><span style="color: #008080;"> 2</span>     <span style="color: #0000ff;">if</span> (name == 'height'<span style="color: #000000;">) {
+</span><span style="color: #008080;"> 3</span>         <span style="color: #0000ff;">this</span>.height =<span style="color: #000000;"> value;
+</span><span style="color: #008080;"> 4</span>         <span style="color: #0000ff;">return</span><span style="color: #000000;">;
+</span><span style="color: #008080;"> 5</span> <span style="color: #000000;">    }
+</span><span style="color: #008080;"> 6</span>     <span style="color: #0000ff;">if</span> (name == 'width'<span style="color: #000000;">) {
+</span><span style="color: #008080;"> 7</span>         <span style="color: #0000ff;">this</span>.width =<span style="color: #000000;"> value;
+</span><span style="color: #008080;"> 8</span>         <span style="color: #0000ff;">return</span><span style="color: #000000;">;
+</span><span style="color: #008080;"> 9</span> <span style="color: #000000;">    }
+</span><span style="color: #008080;">10</span> }</pre>
+</div>
+<p>这个优化较简单，其实就是简单的设值函数，清晰表达含义</p>
+<div class="cnblogs_code">
+<pre><span style="color: #008080;">1</span> <span style="color: #0000ff;">function</span><span style="color: #000000;"> setWidth(arg) {
+</span><span style="color: #008080;">2</span>     <span style="color: #0000ff;">this</span>.width =<span style="color: #000000;"> arg;
+</span><span style="color: #008080;">3</span> <span style="color: #000000;">}
+</span><span style="color: #008080;">4</span> <span style="color: #0000ff;">function</span><span style="color: #000000;"> setHeight(arg) {
+</span><span style="color: #008080;">5</span>     <span style="color: #0000ff;">this</span>.height =<span style="color: #000000;"> arg;
+</span><span style="color: #008080;">6</span> }</pre>
+</div>
+<h1>保持对象完整</h1>
+<p>你从某个对象中取出若干值，将他们作为某一次函数调用的参数，那么改为传递整个对象</p>
+<div class="cnblogs_code">
+<pre><span style="color: #008080;"> 1</span> <span style="color: #008000;">//</span><span style="color: #008000;">一天的最高最低温度</span>
+<span style="color: #008080;"> 2</span> <span style="color: #0000ff;">function</span><span style="color: #000000;"> dayTempRange() {
+</span><span style="color: #008080;"> 3</span>     <span style="color: #0000ff;">return</span><span style="color: #000000;"> {
+</span><span style="color: #008080;"> 4</span>         low: 0<span style="color: #000000;">,
+</span><span style="color: #008080;"> 5</span>         high: 40
+<span style="color: #008080;"> 6</span> <span style="color: #000000;">    };
+</span><span style="color: #008080;"> 7</span> <span style="color: #000000;">}
+</span><span style="color: #008080;"> 8</span> 
+<span style="color: #008080;"> 9</span> <span style="color: #0000ff;">var</span> low =<span style="color: #000000;"> dayTempRange().low;
+</span><span style="color: #008080;">10</span> <span style="color: #0000ff;">var</span> high =<span style="color: #000000;"> dayTempRange().high;
+</span><span style="color: #008080;">11</span> <span style="color: #0000ff;">var</span> withPlan =<span style="color: #000000;"> someMethod(low, high);
+</span><span style="color: #008080;">12</span> 
+<span style="color: #008080;">13</span> <span style="color: #008000;">//</span><span style="color: #008000;">重构后</span>
+<span style="color: #008080;">14</span> <span style="color: #0000ff;">var</span> withPlan = someMethod(dayTempRange());</pre>
+</div>
+<p>有时候我们会将来自同一对象的数据分为若干项传递给一个函数，这样会有一个问题：万一将来被调用函数需要新的数据项怎么办？</p>
+<p>我是不是还需要修改对此函数的所有调用？？？想来就觉得恐怖，整个对象传入可以避免这个问题</p>
+<p>PS：在js中我们都是整个传递的......</p>
+<p>但，这样做也不是完全没有问题的，原来依赖数值的函数现在需要依赖对象了，这样会带来依赖结果的恶化</p>
+<h2>范例</h2>
+<p>我们有一个Room的类，他会记录房间一天最高与最低温度，然后将预计温度与实际温度做对比，再告诉用户当天是否符合要求</p>
+<div class="cnblogs_code">
+<pre><span style="color: #008080;"> 1</span> <span style="color: #0000ff;">var</span> Room =<span style="color: #000000;"> base.Class({
+</span><span style="color: #008080;"> 2</span>     withinPlan: <span style="color: #0000ff;">function</span><span style="color: #000000;"> (plan) {
+</span><span style="color: #008080;"> 3</span>         <span style="color: #0000ff;">var</span> low = <span style="color: #0000ff;">this</span><span style="color: #000000;">.dayTempRange().low;
+</span><span style="color: #008080;"> 4</span>         <span style="color: #0000ff;">var</span> high = <span style="color: #0000ff;">this</span><span style="color: #000000;">.dayTempRange().high;
+</span><span style="color: #008080;"> 5</span>         <span style="color: #0000ff;">var</span> withPlan =<span style="color: #000000;"> plan.withinPlan(low, high);
+</span><span style="color: #008080;"> 6</span> <span style="color: #000000;">    },
+</span><span style="color: #008080;"> 7</span>     daysTempRange: <span style="color: #0000ff;">function</span><span style="color: #000000;"> () {
+</span><span style="color: #008080;"> 8</span> <span style="color: #000000;">    }
+</span><span style="color: #008080;"> 9</span> <span style="color: #000000;">});
+</span><span style="color: #008080;">10</span> 
+<span style="color: #008080;">11</span> <span style="color: #0000ff;">var</span> HeatingPlan =<span style="color: #000000;"> base.Class({
+</span><span style="color: #008080;">12</span>     _propertys_: <span style="color: #0000ff;">function</span><span style="color: #000000;"> () {
+</span><span style="color: #008080;">13</span>         <span style="color: #0000ff;">this</span>.range =<span style="color: #000000;"> {};
+</span><span style="color: #008080;">14</span> <span style="color: #000000;">    },
+</span><span style="color: #008080;">15</span>     withinPlan: <span style="color: #0000ff;">function</span><span style="color: #000000;"> (low, high) {
+</span><span style="color: #008080;">16</span>         <span style="color: #0000ff;">return</span> (low &gt;= <span style="color: #0000ff;">this</span>.range.getLow()) &amp;&amp; high &lt;= <span style="color: #0000ff;">this</span><span style="color: #000000;">.range.getHigh();
+</span><span style="color: #008080;">17</span> <span style="color: #000000;">    }
+</span><span style="color: #008080;">18</span> });</pre>
+</div>
+<p>我们并不需要将TempRange对象的信息拆开单独传递，只需要将整个对象传递给withinPlan即可</p>
+<div class="cnblogs_code">
+<pre>withinPlan: <span style="color: #0000ff;">function</span><span style="color: #000000;"> (roomRange) {
+    </span><span style="color: #0000ff;">return</span> (roomRange.getLow() &gt;= <span style="color: #0000ff;">this</span>.range.getLow()) &amp;&amp; (roomRange.getHigh() &lt;= <span style="color: #0000ff;">this</span><span style="color: #000000;">.range.getHigh());
+}</span></pre>
+</div>
+<h1><span style="line-height: 1.5;">以函数取代参数</span></h1>
+<p><span style="line-height: 1.5;">对象调用某个函数，并将所得结果作为参数，传递给另一个函数，而接受该参数的函数本身也能调用那个函数，那么去除该参数项，直接调用即可</span></p>
+<div class="cnblogs_code">
+<pre><span style="color: #008080;">1</span> <span style="color: #0000ff;">var</span> basePrice = quantity *<span style="color: #000000;"> price;
+</span><span style="color: #008080;">2</span> <span style="color: #0000ff;">var</span> discount =<span style="color: #000000;"> getDiscount();
+</span><span style="color: #008080;">3</span> <span style="color: #0000ff;">var</span> finalPrice = discountedPrice(basePrice, discount);</pre>
+</div>
+<p>调整为这个样子，在函数内部自己调用函数</p>
+<div class="cnblogs_code">
+<pre><span style="color: #0000ff;">var</span> finalPrice = discountedPrice(basePrice);</pre>
+</div>
+<p>如果函数可以通过其他途径获得参数值，那么他就不应该通过参数取得该值，过长的参数列表会增加程序阅读者的难度，因此我们应该控制参数长度</p>
+<h2>范例</h2>
+<p>我们有一个用于计算订单折扣的价格，我们来看看他的实现</p>
+<div class="cnblogs_code">
+<pre><span style="color: #008080;"> 1</span> <span style="color: #0000ff;">function</span><span style="color: #000000;"> getPrice() {
+</span><span style="color: #008080;"> 2</span>     <span style="color: #0000ff;">var</span> basePrice = num *<span style="color: #000000;"> price;
+</span><span style="color: #008080;"> 3</span>     <span style="color: #0000ff;">var</span><span style="color: #000000;"> discountLevel;
+</span><span style="color: #008080;"> 4</span>     <span style="color: #0000ff;">if</span> (num &gt; 100) discountLevel = 2<span style="color: #000000;">;
+</span><span style="color: #008080;"> 5</span>     <span style="color: #0000ff;">else</span> discountLevel = 1<span style="color: #000000;">;
+</span><span style="color: #008080;"> 6</span>     <span style="color: #0000ff;">var</span> finalPrice =<span style="color: #000000;"> discountedPrice(basePrice, discountLevel);
+</span><span style="color: #008080;"> 7</span> <span style="color: #000000;">}
+</span><span style="color: #008080;"> 8</span> <span style="color: #0000ff;">function</span><span style="color: #000000;"> discountedPrice(basePrice, discountLevel) {
+</span><span style="color: #008080;"> 9</span>     <span style="color: #0000ff;">if</span> (discountLevel == 2) <span style="color: #0000ff;">return</span> basePrice * 0.1<span style="color: #000000;">;
+</span><span style="color: #008080;">10</span>     <span style="color: #0000ff;">return</span> basePrice * 0.05<span style="color: #000000;">;
+</span><span style="color: #008080;">11</span> }</pre>
+</div>
+<p>首先，我们将计算折扣等级的代码提炼出来/顺便将获得basePrice提炼了吧</p>
+<div class="cnblogs_code">
+<pre><span style="color: #008080;"> 1</span> <span style="color: #0000ff;">function</span><span style="color: #000000;"> getPrice() {
+</span><span style="color: #008080;"> 2</span>     <span style="color: #0000ff;">var</span> finalPrice =<span style="color: #000000;"> discountedPrice();
+</span><span style="color: #008080;"> 3</span> <span style="color: #000000;">}
+</span><span style="color: #008080;"> 4</span> <span style="color: #0000ff;">function</span><span style="color: #000000;"> discountedPrice() {
+</span><span style="color: #008080;"> 5</span>     <span style="color: #0000ff;">if</span> (getDiscountLevel() == 2) <span style="color: #0000ff;">return</span> getBasePrice() * 0.1<span style="color: #000000;">;
+</span><span style="color: #008080;"> 6</span>     <span style="color: #0000ff;">return</span> getBasePrice() * 0.05<span style="color: #000000;">;
+</span><span style="color: #008080;"> 7</span> <span style="color: #000000;">}
+</span><span style="color: #008080;"> 8</span> <span style="color: #0000ff;">function</span><span style="color: #000000;"> getBasePrice() {
+</span><span style="color: #008080;"> 9</span>     <span style="color: #0000ff;">return</span> num *<span style="color: #000000;"> price;
+</span><span style="color: #008080;">10</span> <span style="color: #000000;">}
+</span><span style="color: #008080;">11</span> <span style="color: #0000ff;">function</span><span style="color: #000000;"> getDiscountLevel() {
+</span><span style="color: #008080;">12</span>     <span style="color: #0000ff;">if</span> (num &gt; 100) <span style="color: #0000ff;">return</span> 2<span style="color: #000000;">;
+</span><span style="color: #008080;">13</span>     <span style="color: #0000ff;">else</span> <span style="color: #0000ff;">return</span> 1<span style="color: #000000;">;
+</span><span style="color: #008080;">14</span> }</pre>
+</div>
+<p>这样干完后，我们每个函数的长度都会很小，看上去美极了。。。。。。（但是阅读时在不同函数跳来跳去也容易晕，所以函数的位置排版也是学问）</p>
+<h1>引入参数对象</h1>
+<p>某些参数总是很自然的出现，以一个对象取代这些参数</p>
+<p>我们常常会看到一组特定的参数被一起传递，可能有好几个函数都使用这一组参数，这些参数可能属于同一个类，也可能属于不同的类</p>
+<p>这样的参数就是&ldquo;data clumps（数据泥团）&rdquo;，我们可以运用一个对象包装所有这些数据，再以对象取代之</p>
+<h2>范例</h2>
+<p><span style="line-height: 1.5;">我们有一个账面和帐项的程序，表示账项的Entry实际只是简单的数据容器</span></p>
+<div class="cnblogs_code">
+<pre><span style="color: #008080;"> 1</span> <span style="color: #0000ff;">var</span> Entry =<span style="color: #000000;"> base.Class({
+</span><span style="color: #008080;"> 2</span>     _propertys_: <span style="color: #0000ff;">function</span><span style="color: #000000;"> () {
+</span><span style="color: #008080;"> 3</span> 
+<span style="color: #008080;"> 4</span> <span style="color: #000000;">    },
+</span><span style="color: #008080;"> 5</span>     init: <span style="color: #0000ff;">function</span><span style="color: #000000;"> (value, chargeDate) {
+</span><span style="color: #008080;"> 6</span>         <span style="color: #0000ff;">this</span>.chargeDate =<span style="color: #000000;"> chargeDate;
+</span><span style="color: #008080;"> 7</span>         <span style="color: #0000ff;">this</span>.value =<span style="color: #000000;"> value;
+</span><span style="color: #008080;"> 8</span> <span style="color: #000000;">    },
+</span><span style="color: #008080;"> 9</span>     getValue: <span style="color: #0000ff;">function</span><span style="color: #000000;"> () {
+</span><span style="color: #008080;">10</span>         <span style="color: #0000ff;">return</span> <span style="color: #0000ff;">this</span><span style="color: #000000;">.value;
+</span><span style="color: #008080;">11</span> <span style="color: #000000;">    }
+</span><span style="color: #008080;">12</span> });</pre>
+</div>
+<p>我们的关注焦点是用以表示&ldquo;账目&rdquo;的Account，他保存了一组Entry对象，并有一个函数用来计算两个日期间账目总和</p>
+<div class="cnblogs_code">
+<pre><span style="color: #008080;"> 1</span> <span style="color: #0000ff;">var</span> Account =<span style="color: #000000;"> base.Class({
+</span><span style="color: #008080;"> 2</span>     _propertys_: <span style="color: #0000ff;">function</span><span style="color: #000000;"> () {
+</span><span style="color: #008080;"> 3</span> <span style="color: #000000;">    },
+</span><span style="color: #008080;"> 4</span>     init: <span style="color: #0000ff;">function</span><span style="color: #000000;"> (entries) {
+</span><span style="color: #008080;"> 5</span>         <span style="color: #0000ff;">this</span>.entries = entries || []; <span style="color: #008000;">//</span><span style="color: #008000;">一组账目项</span>
+<span style="color: #008080;"> 6</span> <span style="color: #000000;">    },
+</span><span style="color: #008080;"> 7</span>     getFlowBetween: <span style="color: #0000ff;">function</span><span style="color: #000000;"> (start, end) {
+</span><span style="color: #008080;"> 8</span>         <span style="color: #0000ff;">var</span> result = 0<span style="color: #000000;">;
+</span><span style="color: #008080;"> 9</span>         <span style="color: #0000ff;">for</span> (<span style="color: #0000ff;">var</span> k <span style="color: #0000ff;">in</span> <span style="color: #0000ff;">this</span><span style="color: #000000;">.entries) {
+</span><span style="color: #008080;">10</span>             <span style="color: #0000ff;">if</span> (<span style="color: #0000ff;">this</span>.entries[k].getDate() &gt;= start || <span style="color: #0000ff;">this</span>.entries[k].getDate() &lt;=<span style="color: #000000;"> end) {
+</span><span style="color: #008080;">11</span>                 result += <span style="color: #0000ff;">this</span><span style="color: #000000;">.entries[k].getValue();
+</span><span style="color: #008080;">12</span> <span style="color: #000000;">            }
+</span><span style="color: #008080;">13</span> <span style="color: #000000;">        }
+</span><span style="color: #008080;">14</span>         <span style="color: #0000ff;">return</span><span style="color: #000000;"> result;
+</span><span style="color: #008080;">15</span> <span style="color: #000000;">    }
+</span><span style="color: #008080;">16</span> });</pre>
+</div>
+<p>我们的代码中会出现表示日期的范围或者数值的范围，这个时候，我们可以使用范围对象取代之，我们首先需要声明一个简单的数据容器</p>
+<div class="cnblogs_code">
+<pre><span style="color: #008080;"> 1</span> <span style="color: #0000ff;">var</span> DateRange =<span style="color: #000000;"> base.Class({
+</span><span style="color: #008080;"> 2</span>     init: <span style="color: #0000ff;">function</span><span style="color: #000000;"> (start, end) {
+</span><span style="color: #008080;"> 3</span>         <span style="color: #0000ff;">this</span>.start =<span style="color: #000000;"> start;
+</span><span style="color: #008080;"> 4</span>         <span style="color: #0000ff;">this</span>.end =<span style="color: #000000;"> end;
+</span><span style="color: #008080;"> 5</span> <span style="color: #000000;">    },
+</span><span style="color: #008080;"> 6</span>     getStart: <span style="color: #0000ff;">function</span><span style="color: #000000;"> () {
+</span><span style="color: #008080;"> 7</span>         <span style="color: #0000ff;">return</span> <span style="color: #0000ff;">this</span><span style="color: #000000;">.start;
+</span><span style="color: #008080;"> 8</span> <span style="color: #000000;">    },
+</span><span style="color: #008080;"> 9</span>     getEnd: <span style="color: #0000ff;">function</span><span style="color: #000000;"> () {
+</span><span style="color: #008080;">10</span>         <span style="color: #0000ff;">return</span> <span style="color: #0000ff;">this</span><span style="color: #000000;">.end;
+</span><span style="color: #008080;">11</span> <span style="color: #000000;">    }
+</span><span style="color: #008080;">12</span> });</pre>
+</div>
+<p>接下来，我们就可以将DateRange对象加到函数中了</p>
+<div class="cnblogs_code">
+<pre><span style="color: #008080;"> 1</span> <span style="color: #0000ff;">var</span> Account =<span style="color: #000000;"> base.Class({
+</span><span style="color: #008080;"> 2</span>     _propertys_: <span style="color: #0000ff;">function</span><span style="color: #000000;"> () {
+</span><span style="color: #008080;"> 3</span> <span style="color: #000000;">    },
+</span><span style="color: #008080;"> 4</span>     init: <span style="color: #0000ff;">function</span><span style="color: #000000;"> (entries) {
+</span><span style="color: #008080;"> 5</span>         <span style="color: #0000ff;">this</span>.entries = entries || []; <span style="color: #008000;">//</span><span style="color: #008000;">一组账目项</span>
+<span style="color: #008080;"> 6</span> <span style="color: #000000;">    },
+</span><span style="color: #008080;"> 7</span>     getFlowBetween: <span style="color: #0000ff;">function</span><span style="color: #000000;"> (dateRange) {
+</span><span style="color: #008080;"> 8</span>         <span style="color: #0000ff;">var</span> result = 0<span style="color: #000000;">;
+</span><span style="color: #008080;"> 9</span>         <span style="color: #0000ff;">for</span> (<span style="color: #0000ff;">var</span> k <span style="color: #0000ff;">in</span> <span style="color: #0000ff;">this</span><span style="color: #000000;">.entries) {
+</span><span style="color: #008080;">10</span>             <span style="color: #0000ff;">if</span> (<span style="color: #0000ff;">this</span>.entries[k].getDate() &gt;= dateRange.getStart() || <span style="color: #0000ff;">this</span>.entries[k].getDate() &lt;=<span style="color: #000000;"> dateRange.getEnd()) {
+</span><span style="color: #008080;">11</span>                 result += <span style="color: #0000ff;">this</span><span style="color: #000000;">.entries[k].getValue();
+</span><span style="color: #008080;">12</span> <span style="color: #000000;">            }
+</span><span style="color: #008080;">13</span> <span style="color: #000000;">        }
+</span><span style="color: #008080;">14</span>         <span style="color: #0000ff;">return</span><span style="color: #000000;"> result;
+</span><span style="color: #008080;">15</span> <span style="color: #000000;">    }
+</span><span style="color: #008080;">16</span> });</pre>
+</div>
+<p>既然已经这样了，我们不妨将getFlowBetween中计算的逻辑搬出来吧，最后形成了这样的代码：</p>
+<div class="cnblogs_code">
+<pre><span style="color: #008080;"> 1</span> <span style="color: #0000ff;">var</span> Entry =<span style="color: #000000;"> base.Class({
+</span><span style="color: #008080;"> 2</span>     _propertys_: <span style="color: #0000ff;">function</span><span style="color: #000000;"> () {
+</span><span style="color: #008080;"> 3</span> <span style="color: #000000;">    },
+</span><span style="color: #008080;"> 4</span>     init: <span style="color: #0000ff;">function</span><span style="color: #000000;"> (value, chargeDate) {
+</span><span style="color: #008080;"> 5</span>         <span style="color: #0000ff;">this</span>.chargeDate =<span style="color: #000000;"> chargeDate;
+</span><span style="color: #008080;"> 6</span>         <span style="color: #0000ff;">this</span>.value =<span style="color: #000000;"> value;
+</span><span style="color: #008080;"> 7</span> <span style="color: #000000;">    },
+</span><span style="color: #008080;"> 8</span>     getValue: <span style="color: #0000ff;">function</span><span style="color: #000000;"> () {
+</span><span style="color: #008080;"> 9</span>         <span style="color: #0000ff;">return</span> <span style="color: #0000ff;">this</span><span style="color: #000000;">.value;
+</span><span style="color: #008080;">10</span> <span style="color: #000000;">    },
+</span><span style="color: #008080;">11</span>     getDate: <span style="color: #0000ff;">function</span><span style="color: #000000;"> () {
+</span><span style="color: #008080;">12</span>         <span style="color: #0000ff;">return</span> <span style="color: #0000ff;">this</span><span style="color: #000000;">.chargeDate;
+</span><span style="color: #008080;">13</span> <span style="color: #000000;">    }
+</span><span style="color: #008080;">14</span> <span style="color: #000000;">});
+</span><span style="color: #008080;">15</span> <span style="color: #0000ff;">var</span> DateRange =<span style="color: #000000;"> base.Class({
+</span><span style="color: #008080;">16</span>     init: <span style="color: #0000ff;">function</span><span style="color: #000000;"> (start, end) {
+</span><span style="color: #008080;">17</span>         <span style="color: #0000ff;">this</span>.start =<span style="color: #000000;"> start;
+</span><span style="color: #008080;">18</span>         <span style="color: #0000ff;">this</span>.end =<span style="color: #000000;"> end;
+</span><span style="color: #008080;">19</span> <span style="color: #000000;">    },
+</span><span style="color: #008080;">20</span>     getStart: <span style="color: #0000ff;">function</span><span style="color: #000000;"> () {
+</span><span style="color: #008080;">21</span>         <span style="color: #0000ff;">return</span> <span style="color: #0000ff;">this</span><span style="color: #000000;">.start;
+</span><span style="color: #008080;">22</span> <span style="color: #000000;">    },
+</span><span style="color: #008080;">23</span>     getEnd: <span style="color: #0000ff;">function</span><span style="color: #000000;"> () {
+</span><span style="color: #008080;">24</span>         <span style="color: #0000ff;">return</span> <span style="color: #0000ff;">this</span><span style="color: #000000;">.end;
+</span><span style="color: #008080;">25</span> <span style="color: #000000;">    },
+</span><span style="color: #008080;">26</span>     isInclude: <span style="color: #0000ff;">function</span><span style="color: #000000;"> (arg) {
+</span><span style="color: #008080;">27</span>         <span style="color: #0000ff;">if</span> (arg &gt;= <span style="color: #0000ff;">this</span>.getStart() || arg &lt;= <span style="color: #0000ff;">this</span><span style="color: #000000;">.getEnd()) {
+</span><span style="color: #008080;">28</span>             <span style="color: #0000ff;">return</span> <span style="color: #0000ff;">true</span><span style="color: #000000;">;
+</span><span style="color: #008080;">29</span> <span style="color: #000000;">        }
+</span><span style="color: #008080;">30</span>         <span style="color: #0000ff;">return</span> <span style="color: #0000ff;">false</span><span style="color: #000000;">;
+</span><span style="color: #008080;">31</span> <span style="color: #000000;">    }
+</span><span style="color: #008080;">32</span> <span style="color: #000000;">});
+</span><span style="color: #008080;">33</span> <span style="color: #0000ff;">var</span> Account =<span style="color: #000000;"> base.Class({
+</span><span style="color: #008080;">34</span>     _propertys_: <span style="color: #0000ff;">function</span><span style="color: #000000;"> () {
+</span><span style="color: #008080;">35</span> <span style="color: #000000;">    },
+</span><span style="color: #008080;">36</span>     init: <span style="color: #0000ff;">function</span><span style="color: #000000;"> (entries) {
+</span><span style="color: #008080;">37</span>         <span style="color: #0000ff;">this</span>.entries = entries || []; <span style="color: #008000;">//</span><span style="color: #008000;">一组账目项</span>
+<span style="color: #008080;">38</span> <span style="color: #000000;">    },
+</span><span style="color: #008080;">39</span>     getFlowBetween: <span style="color: #0000ff;">function</span><span style="color: #000000;"> (dateRange) {
+</span><span style="color: #008080;">40</span>         <span style="color: #0000ff;">var</span> result = 0<span style="color: #000000;">;
+</span><span style="color: #008080;">41</span>         <span style="color: #0000ff;">for</span> (<span style="color: #0000ff;">var</span> k <span style="color: #0000ff;">in</span> <span style="color: #0000ff;">this</span><span style="color: #000000;">.entries) {
+</span><span style="color: #008080;">42</span>             <span style="color: #0000ff;">if</span> (dateRange.isInclude(<span style="color: #0000ff;">this</span>.entries[k].getDate())) result += <span style="color: #0000ff;">this</span><span style="color: #000000;">.entries[k].getValue();
+</span><span style="color: #008080;">43</span> <span style="color: #000000;">        }
+</span><span style="color: #008080;">44</span>         <span style="color: #0000ff;">return</span><span style="color: #000000;"> result;
+</span><span style="color: #008080;">45</span> <span style="color: #000000;">    }
+</span><span style="color: #008080;">46</span> });</pre>
+</div>
+<h1>移除设值函数</h1>
+<p><span style="line-height: 1.5;">类中的某个字段应该在对象创建时被赋值，然后就不再改变，那么去掉字段的所有设值函数</span></p>
+<p><span style="line-height: 1.5;">这个很好理解，如果我们为某个字段用到了设值函数，就意味着该字段可写，如果不希望在创建后辈修改就不要搞设值函数了，比如上例的开始于结束时间，一旦初始化就不允许修改</span></p>
+<p><span style="line-height: 1.5;">这个就不写例子了</span></p>
+<h1><span style="line-height: 1.5;">隐藏函数</span></h1>
+<p><span style="line-height: 1.5;">有一个函数，从来没有实例用到他，那么我们需要将他隐藏，</span><span style="line-height: 1.5;">在js中没有private的概念，我们可以使用以下方法隐藏</span></p>
+<div class="cnblogs_code">
+<pre><span style="color: #008080;"> 1</span> (<span style="color: #0000ff;">function</span><span style="color: #000000;"> () { 
+</span><span style="color: #008080;"> 2</span>     <span style="color: #008000;">//</span><span style="color: #008000;">方法一</span>
+<span style="color: #008080;"> 3</span>     <span style="color: #0000ff;">var</span> privateMethed = <span style="color: #0000ff;">function</span><span style="color: #000000;"> (){};    
+</span><span style="color: #008080;"> 4</span>     <span style="color: #0000ff;">var</span> _Class=<span style="color: #000000;"> base.Class({
+</span><span style="color: #008080;"> 5</span>         <span style="color: #008000;">//</span><span style="color: #008000;">方法二</span>
+<span style="color: #008080;"> 6</span>         _privateMethed: <span style="color: #0000ff;">function</span><span style="color: #000000;"> () {
+</span><span style="color: #008080;"> 7</span> 
+<span style="color: #008080;"> 8</span> <span style="color: #000000;">        }
+</span><span style="color: #008080;"> 9</span> <span style="color: #000000;">    });
+</span><span style="color: #008080;">10</span> })();</pre>
+</div>
+<p>上面的方法都是可以的，如果是与类无关的工具方法，可以放到类定义外面，如果会用到this指向的话，就加个标志在前面吧，我们看不见......</p>
+<p>PS：这项重构难度其实较高，我们在做一个程序或者功能时，开始就必须想到要对外提供哪些接口，需要提供的接口才暴露，否则不可暴露</p>
+<h1>以工厂函数取代构造函数</h1>
+<p><span style="line-height: 1.5;">我们有时希望在创建对象时候不仅是简单的构造动作，那么就是要工厂函数吧</span></p>
+<div class="cnblogs_code">
+<pre><span style="color: #008080;"> 1</span> <span style="color: #0000ff;">var</span> Employee =<span style="color: #000000;"> base.Class({
+</span><span style="color: #008080;"> 2</span>     _propertys_: <span style="color: #0000ff;">function</span><span style="color: #000000;"> () {
+</span><span style="color: #008080;"> 3</span> <span style="color: #000000;">    },
+</span><span style="color: #008080;"> 4</span>     init: <span style="color: #0000ff;">function</span><span style="color: #000000;"> (arg) {
+</span><span style="color: #008080;"> 5</span>         <span style="color: #0000ff;">this</span>.type =<span style="color: #000000;"> arg;
+</span><span style="color: #008080;"> 6</span> <span style="color: #000000;">    }
+</span><span style="color: #008080;"> 7</span> <span style="color: #000000;">});
+</span><span style="color: #008080;"> 8</span> <span style="color: #008000;">//</span><span style="color: #008000;">改为这样</span>
+<span style="color: #008080;"> 9</span> <span style="color: #0000ff;">function</span><span style="color: #000000;"> create(arg) {
+</span><span style="color: #008080;">10</span>     <span style="color: #0000ff;">return</span> <span style="color: #0000ff;">new</span><span style="color: #000000;"> Employee(arg);
+</span><span style="color: #008080;">11</span> }</pre>
+</div>
+<p>使用该方法最主要的原因是在派生子类过程中以工厂函数取代类型码，我们可能常常需要根据类型码选择创建响应对象</p>
+<h1>封装向下转型</h1>
+<p><span style="line-height: 1.5;">某个函数返回对象，需要由函数调用者执行向下转型将向下转型动作移到函数中</span></p>
+<p><span style="line-height: 1.5;">PS，转型对JS来说就是渣，所以我根本不关注了......</span></p>
+<h1><span style="line-height: 1.5;">结语</span></h1>
+<p>本章暂时到这里，至此我们重构的学习终于过了一大半了，争取最近结束第一次学习，尼玛我发现现在学东西变慢了......</p>
+<p><span style="line-height: 1.5;">&nbsp;</span></p>
+                </div>
+
+                <div class='span3 sidebar'>
+                    <h2>导航栏</h2>
+                    <ul class="nav nav-tabs nav-stacked">
+                             				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/javascriptzdyxhxzsdyjxyzyddf/index.html">javascript中的一些核心知识点以及需要注意的地方</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/[zd]webappdyhzlyzydqdyhdpyjlkkb/index.html">[置顶]【webapp的优化整理】要做移动前端优化的朋友进来看看吧</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/[zd]yddjrwtyjjavascriptsjjzxjsjydjr/index.html">[置顶]【移动端兼容问题研究】javascript事件机制详解（涉及移动兼容）</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/gruntzhb30fzxhsygruntdbqddm/index.html">【grunt整合版】30分钟学会使用grunt打包前端代码</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/gruntdyd30fzxhsygruntdbqddm/index.html">【grunt第一弹】30分钟学会使用grunt打包前端代码</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/gruntdsdgruntzqdsjxmzdyy/index.html">【grunt第三弹】grunt在前端实际项目中的应用</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/gruntded30fzxhsygruntdbqddm02/index.html">【grunt第二弹】30分钟学会使用grunt打包前端代码（02）</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/IScrollsrxxtpyddhadlqs/index.html">【IScroll深入学习】突破移动端黑暗的利器（上）</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/IScrollsrxxjjIScrollynzz/index.html">【IScroll深入学习】解决IScroll疑难杂症</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/iScrollymxx00mniScroll/index.html">【iScroll源码学习00】模拟iScroll</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/iScrollymxx01zbjd/index.html">【iScroll源码学习01】准备阶段</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/iScrollymxx02fjiScrollsghxsjd/index.html">【iScroll源码学习02】分解iScroll三个核心事件点</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/iScrollymxx03iScrollsjjzygdtdsx/index.html">【iScroll源码学习03】iScroll事件机制与滚动条的实现</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/iScrollymxx04flIScrollhx/index.html">【iScroll源码学习04】分离IScroll核心</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/javascriptpxdytyyjc/index.html">【javascript培训第一天】语言基础</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/javascriptpxdstcybl/index.html">【javascript培训第三天】查遗补漏</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/javascriptpxdetDOMyBOM/index.html">【javascript培训第二天】DOM与BOM</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/javascriptjzdsk01mkhbc/index.html">【javascript激增的思考01】模块化编程</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/javascriptjzdsk02mkhyMVC/index.html">【javascript激增的思考02】模块化与MVC</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/javascriptjzdsk03MVVMyKnockout/index.html">【javascript激增的思考03】MVVM与Knockout</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/javascriptjzdsk04MVCyBackbonejs(beta)/index.html">【javascript激增的思考04】MVC与Backbonejs(beta)</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/javascriptmxdxzlrwmyqltkdzb01/index.html">【javascript面向对象之路】让我们一起来坦克大战吧01</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/NodeJSxxbj04xwfbxt/index.html">【NodeJS学习笔记04】新闻发布系统</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/requireJSymxx01ljzgrequireJSdjg/index.html">【requireJS源码学习01】了解整个requireJS的结构</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/requireJSymxx02datamainjzdsx/index.html">【requireJS源码学习02】datamain加载的实现</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/requireJSymxx03xjrequireJSdjzlc/index.html">【requireJS源码学习03】细究requireJS的加载流程</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/UIcjkfygjdrlcjs/index.html">【UI插件】开发一个简单日历插件（上）</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/UIcjjddrlcjxxxMVCsx/index.html">【UI插件】简单的日历插件（下）——学习MVC思想</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/zeptoxxbj01hxff$()/index.html">【zepto学习笔记01】核心方法$()</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/zeptoxxbj01hxff$()b/index.html">【zepto学习笔记01】核心方法$()（补）</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/zeptoxxbj02lsd/index.html">【zepto学习笔记02】零碎点</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/zeptoxxbj03sjjz/index.html">【zepto学习笔记03】事件机制</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/ycmsztjavascriptzdjc/index.html">【一次面试】再谈javascript中的继承</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/ztbackbone01mxModel/index.html">【再探backbone01】模型Model</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/ztbackbone02jhCollection/index.html">【再探backbone02】集合Collection</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/ztbackbone03bkydyyysltgym/index.html">【再探backbone03】博客园单页应用实例（提供源码）</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/ztbackbone04dyyydjslycl/index.html">【再探backbone04】单页应用的基石路由处理</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/ctUnderscorezsmbyq/index.html">【初探Underscore】再说模版引擎</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/ckjavascriptamzAjaxjsxnszddAjax/index.html">【初窥javascript奥秘之Ajax】简述下你所知道的Ajax？</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/ckjavascriptamzsjmpnxnwmyqmdp/index.html">【初窥javascript奥秘之事件冒泡】那些年我们一起冒的泡</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/ckjavascriptamzsjjzldtygdj/index.html">【初窥javascript奥秘之事件机制】论“点透”与“鬼点击”</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/ckjavascriptamzrrzmbddthisnzdxzthiszxnlm/index.html">【初窥javascript奥秘之让人捉摸不定的this】你知道现在this指向哪里吗？？？</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/ckjavascriptamzbbydxbdhlqbcl/index.html">【初窥javascript奥秘之闭包】叶大侠病都好了，求不踩了：）</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/ckjavascriptamzmxdxfzyjc/index.html">【初窥javascript奥秘之面向对象】封装与继承</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/qdmdsjdjgjdnzdljm/index.html">【前端盲点】事件的几个阶段你真的了解么？？？</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/dyyyviewymodelxgsl/index.html">【单页应用】view与model相关梳理</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/dyyyyqldyyybsxjdwbgns/index.html">【单页应用】一起来单页应用吧，实现简单微博功能！（上）</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/dyyyqjkzqappyggxsm/index.html">【单页应用】全局控制器app应该干些什么？</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/dyyywmgrhclkjdcccjgx/index.html">【单页应用】我们该如何处理框架弹出层层级关系？</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/dyyyljMVC/index.html">【单页应用】理解MVC</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/dyyyztxjzviewzjygrhtx/index.html">【单页应用之通信机制】view之间应该如何通信</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/dyyyjkzHistoryxsHistorydgdyyydm/index.html">【单页应用巨坑之History】细数History带给单页应用的噩梦</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/xtszeptofindysyjiosdcjpknrnhtt/index.html">【小贴士】zeptofind元素以及ios弹出键盘可能让你很头疼</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/xtsgytransitionEndanimatedygyqgs/index.html">【小贴士】关于transitionEndanimate的一个有趣故事</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/xtsgzzdbbysjwtdzzmp/index.html">【小贴士】工作中的”闭包“与事件委托的”阻止冒泡“</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/xtstytjavascriptzdreplace/index.html">【小贴士】探一探javascript中的replace</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/xtsxnjpyfixeddgydddt/index.html">【小贴士】虚拟键盘与fixed带给移动端的痛！</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/ttjavascriptsjjzdcsxyl/index.html">【探讨】javascript事件机制底层实现原理</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/mkhbcljrequireJSsxygjddmkjzq/index.html">【模块化编程】理解requireJS实现一个简单的模块加载器</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/zyJavaScriptmfjmtsdqlxkjzbfgndcljz/index.html">【转】【译】JavaScript魔法揭秘探索当前流行框架中部分功能的处理机制</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/zxjavascriptgszl01javascriptcszds/index.html">【追寻javascript高手之路01】javascript参数知多少？</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/zxjavascriptgszl02blzyyzds/index.html">【追寻javascript高手之路02】变量、作用域知多少？</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/zxjavascriptgszl03javascriptdxdld/index.html">【追寻javascript高手之路03】javascript对象大乱斗</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/zxjavascriptgszl04ljprototype/index.html">【追寻javascript高手之路04】理解prototype</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/zxjavascriptgszl05ljsjl/index.html">【追寻javascript高手之路05】理解事件流</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/zgbj04zxzzsj(2)/index.html">【重构笔记04】重新组织数据(2)</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/zgbj05jhtjbds/index.html">【重构笔记05】简化条件表达式</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/zgbj06jhhsdy/index.html">【重构笔记06】简化函数调用</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/ycmshgttbxysjfl/index.html">一次面试回顾——探讨表现与数据分离</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/dhzwebappzdxz/index.html">动画在webapp中的现状</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/ysandriodlqhthdomclicksjqtsxwttj/index.html">原生andriod浏览器回退后dom（click）事件全体失效问题探究</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/scsbdjxysdsbsjytouchsjdnxs/index.html">手持设备点击响应速度，鼠标事件与touch事件的那些事</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/mnbjQueryzeptohxymfx/index.html">迷你版jQuery——zepto核心源码分析</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/dbsgzdlwmlyqxjdddomxzqb/index.html">都别说工资低了，我们来一起写简单的dom选择器吧！</a></li>
+    				                                         
+                    </ul>
+                </div>
+            </div>
+
+        </div>
+    </body>
+</html>

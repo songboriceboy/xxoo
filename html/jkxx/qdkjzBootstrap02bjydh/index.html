@@ -1,0 +1,309 @@
+﻿<!DOCTYPE html>
+
+<html lang="zh">
+    <head>
+        <meta charset="utf-8">
+        <meta name="description" content="android,ios" />
+        <meta name="keywords" content="android,ios" />
+
+        <title>叶小钗</title>
+        <style type='text/css'>
+            body {
+                background-color: #CCC;
+            }
+        </style>
+        <link rel="stylesheet" href="../../../css/bootstrap.css" />
+    </head>
+
+    <body>
+        <div class="container">
+
+            <h1>叶小钗</h1>
+
+            <div class='navbar navbar-inverse'>
+                <div class='navbar-inner nav-collapse' style="height: auto;">
+                    <ul class="nav">
+                              				<li><a href="http://songboriceboy.github.io/xxoo/html/blade/index.html">blade</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/css/index.html">css</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/HTML5&CSS3/index.html">HTML5&CSS3</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/index.html">javascript</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Javaxx/index.html">Java学习</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/nodejs/index.html">nodejs</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/requirejs/index.html">requirejs</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/index.html">Web前端</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/xxgw/index.html">学习感悟</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/gzdd/index.html">工作点滴</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/jkxx/index.html">接口学习</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/wfl/index.html">未分类</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/ydkf/index.html">移动开发</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/sjms/index.html">设计模式</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/mst/index.html">面试题</a></li>
+    				                      </ul>
+                </div>
+            </div>
+
+            <div id='content' class='row-fluid'>
+
+                <div class='span9 main'>
+				<div style="color:blue" align=center>【前端框架之Bootstrap02】布局与导航</div><br><h1>前言</h1>
+<p>距离上次有几天时间了，其实我这段时间也多多少少在看这块，但是效果不好啊！</p>
+<p>我就在那里捣鼓捣鼓，搞了半天还是一头雾水，可能是老夫真的老了吧，学习新东西还是不行了！</p>
+<p>所以老夫这里就要开始无耻了，我准备一点一点的研究之，有时候抄袭官网大家就多包涵了哦。</p>
+<p>我最近也使用了bootstrap来布局，来搞导航。但是效果很不理想，所以我这里先来系统的看看这两块，若是仍然一头雾水的话，那么。。。。我就再学习就完了。</p>
+<p>好了，废话结束，我们进入今天的学习吧。</p>
+<h1>栅格系统</h1>
+<p>说道栅格系统，我们还是先解释一下他吧，虽然大家都知道：</p>
+<div class="cnblogs_code">
+<pre><span style="color: #800000;">栅格系统英文为&ldquo;grid systems&rdquo;，也有人翻译为&ldquo;网格系统&rdquo;，其实是一回事。
+不过从定义上说，栅格更为准确些，从维基百科查到栅格的定义为：栅格设计系统（又称网格设计系统、
+标准尺寸系统、程序版面设计、瑞士平面设计风格、国际主义平面设计风格），是一种平面设计的方法与风格。运用固定的格子设计版面布局，
+其风格工整简洁，在二战后大受欢迎，已成为今日出版物设计的主流风格之一。</span></pre>
+</div>
+<p>以上不是我们关注的重点，所以我们直接看bootstrap的实现吧，我们先来看看他的描述：</p>
+<div class="cnblogs_code">
+<pre><span style="color: #800000;">对于简单的两列式布局，创建一个 .row 容器，并在容器中加入合适数量的 .span* 列即可。
+由于默认是12列的栅格，所有 .span* 列所跨越的栅格数之和最多是12(或者等于其父容器的栅格数)。</span></pre>
+</div>
+<h1>最基本的栅格系统</h1>
+<div class="cnblogs_code">
+<pre><span style="color: #008080;"> 1</span> <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">html </span><span style="color: #ff0000;">xmlns</span><span style="color: #0000ff;">="http://www.w3.org/1999/xhtml"</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 2</span> <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">head</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 3</span>     <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">title</span><span style="color: #0000ff;">&gt;&lt;/</span><span style="color: #800000;">title</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 4</span>     <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">link </span><span style="color: #ff0000;">href</span><span style="color: #0000ff;">="css/bootstrap.css"</span><span style="color: #ff0000;"> rel</span><span style="color: #0000ff;">="stylesheet"</span><span style="color: #ff0000;"> type</span><span style="color: #0000ff;">="text/css"</span> <span style="color: #0000ff;">/&gt;</span>
+<span style="color: #008080;"> 5</span>     <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">link </span><span style="color: #ff0000;">href</span><span style="color: #0000ff;">="css/bootstrap-responsive.css"</span><span style="color: #ff0000;"> rel</span><span style="color: #0000ff;">="stylesheet"</span><span style="color: #ff0000;"> type</span><span style="color: #0000ff;">="text/css"</span> <span style="color: #0000ff;">/&gt;</span>
+<span style="color: #008080;"> 6</span>     <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">script </span><span style="color: #ff0000;">src</span><span style="color: #0000ff;">="js/bootstrap.js"</span><span style="color: #ff0000;"> type</span><span style="color: #0000ff;">="text/javascript"</span><span style="color: #0000ff;">&gt;&lt;/</span><span style="color: #800000;">script</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 7</span>     <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">style </span><span style="color: #ff0000;">type</span><span style="color: #0000ff;">="text/css"</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 8</span> <span style="background-color: #f5f5f5; color: #800000;">    .span4 </span><span style="background-color: #f5f5f5; color: #000000;">{</span><span style="background-color: #f5f5f5; color: #ff0000;"> background-color</span><span style="background-color: #f5f5f5; color: #000000;">:</span><span style="background-color: #f5f5f5; color: #0000ff;"> #EEEEEE</span><span style="background-color: #f5f5f5; color: #000000;">;</span> <span style="background-color: #f5f5f5; color: #000000;">}</span>
+<span style="color: #008080;"> 9</span> <span style="background-color: #f5f5f5; color: #800000;">    .span8 </span><span style="background-color: #f5f5f5; color: #000000;">{</span><span style="background-color: #f5f5f5; color: #ff0000;"> background-color</span><span style="background-color: #f5f5f5; color: #000000;">:</span><span style="background-color: #f5f5f5; color: #0000ff;"> #EEEEEE</span><span style="background-color: #f5f5f5; color: #000000;">;</span> <span style="background-color: #f5f5f5; color: #000000;">}</span>
+<span style="color: #008080;">10</span>     
+<span style="color: #008080;">11</span>     <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">style</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">12</span> <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">head</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">13</span> <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">body</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">14</span>     <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">div </span><span style="color: #ff0000;">class</span><span style="color: #0000ff;">="row"</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">15</span>         <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">div </span><span style="color: #ff0000;">class</span><span style="color: #0000ff;">="span4"</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">16</span>             我在左边<span style="color: #0000ff;">&lt;</span><span style="color: #800000;">br </span><span style="color: #0000ff;">/&gt;&lt;</span><span style="color: #800000;">br </span><span style="color: #0000ff;">/&gt;&lt;</span><span style="color: #800000;">br </span><span style="color: #0000ff;">/&gt;&lt;/</span><span style="color: #800000;">div</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">17</span>         <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">div </span><span style="color: #ff0000;">class</span><span style="color: #0000ff;">="span8"</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">18</span>             我在右边<span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">div</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">19</span>     <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">div</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">20</span> <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">body</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">21</span> <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">html</span><span style="color: #0000ff;">&gt;</span></pre>
+</div>
+<p><img src="42530645775668.x-png" alt=""></p>
+<p>我学聪明了，我之前就抄了下代码、看了下效果然后就完了，我今天聪明了！！！我绝对不会去看那5000行css代码，于是我们来看页面上的css吧。。。</p>
+<div class="cnblogs_code">
+<pre><span style="color: #008080;">1</span> <span style="color: #800000;">.row </span>{<span style="color: #ff0000;"> margin-left</span>:<span style="color: #0000ff;"> -20px</span>; }
+<span style="color: #008080;">2</span> <span style="color: #800000;">.row:before, .row:after </span>{<span style="color: #ff0000;"> content</span>:<span style="color: #0000ff;"> ""</span>;<span style="color: #ff0000;"> display</span>:<span style="color: #0000ff;"> table</span>;<span style="color: #ff0000;"> line-height</span>:<span style="color: #0000ff;"> 0</span>; }
+<span style="color: #008080;">3</span> <span style="color: #800000;">.row:after </span>{<span style="color: #ff0000;"> clear</span>:<span style="color: #0000ff;"> both</span>; }
+<span style="color: #008080;">4</span> <span style="color: #800000;">.span4 </span>{<span style="color: #ff0000;"> width</span>:<span style="color: #0000ff;"> 228px</span>; }
+<span style="color: #008080;">5</span> <span style="color: #800000;">.row </span>{<span style="color: #ff0000;"> margin-left</span>:<span style="color: #0000ff;"> -20px</span>; }
+<span style="color: #008080;">6</span> <span style="color: #800000;">.row:before, .row:after </span>{<span style="color: #ff0000;"> content</span>:<span style="color: #0000ff;"> ""</span>;<span style="color: #ff0000;"> display</span>:<span style="color: #0000ff;"> table</span>;<span style="color: #ff0000;"> line-height</span>:<span style="color: #0000ff;"> 0</span>; }
+<span style="color: #008080;">7</span> <span style="color: #800000;">.row:after </span>{<span style="color: #ff0000;"> clear</span>:<span style="color: #0000ff;"> both</span>; }
+<span style="color: #008080;">8</span> <span style="color: #800000;">[class*="span"] </span>{<span style="color: #ff0000;"> float</span>:<span style="color: #0000ff;"> left</span>;<span style="color: #ff0000;"> margin-left</span>:<span style="color: #0000ff;"> 20px</span>;<span style="color: #ff0000;"> min-height</span>:<span style="color: #0000ff;"> 1px</span>; }</pre>
+</div>
+<p>这个span是float，按照float不应该用于布局的说法，我其实会小小的抱怨一番的，但是还是先接受之，起分别心不好。</p>
+<p>按照他这种做法，每起一行就需要一个row容器，所以我们多搞两列试试。</p>
+<div class="cnblogs_code">
+<pre><span style="color: #008080;"> 1</span> <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">body</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 2</span>     <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">div </span><span style="color: #ff0000;">class</span><span style="color: #0000ff;">="row"</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 3</span>         <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">div </span><span style="color: #ff0000;">class</span><span style="color: #0000ff;">="span4"</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 4</span>             我在左边<span style="color: #0000ff;">&lt;</span><span style="color: #800000;">br </span><span style="color: #0000ff;">/&gt;</span>
+<span style="color: #008080;"> 5</span>             <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">br </span><span style="color: #0000ff;">/&gt;</span>
+<span style="color: #008080;"> 6</span>             <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">br </span><span style="color: #0000ff;">/&gt;</span>
+<span style="color: #008080;"> 7</span>         <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">div</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 8</span>         <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">div </span><span style="color: #ff0000;">class</span><span style="color: #0000ff;">="span8"</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 9</span>             我在右边<span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">div</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">10</span>     <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">div</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">11</span>     <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">div </span><span style="color: #ff0000;">class</span><span style="color: #0000ff;">="row"</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">12</span>         <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">div </span><span style="color: #ff0000;">class</span><span style="color: #0000ff;">="span8"</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">13</span>             我在左边<span style="color: #0000ff;">&lt;</span><span style="color: #800000;">br </span><span style="color: #0000ff;">/&gt;</span>
+<span style="color: #008080;">14</span>             <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">br </span><span style="color: #0000ff;">/&gt;</span>
+<span style="color: #008080;">15</span>             <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">br </span><span style="color: #0000ff;">/&gt;</span>
+<span style="color: #008080;">16</span>         <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">div</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">17</span>         <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">div </span><span style="color: #ff0000;">class</span><span style="color: #0000ff;">="span4"</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">18</span>             我在右边<span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">div</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">19</span>     <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">div</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">20</span>      <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">div </span><span style="color: #ff0000;">class</span><span style="color: #0000ff;">="row"</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">21</span>         <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">div </span><span style="color: #ff0000;">class</span><span style="color: #0000ff;">="span6"</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">22</span>             我在左边<span style="color: #0000ff;">&lt;</span><span style="color: #800000;">br </span><span style="color: #0000ff;">/&gt;</span>
+<span style="color: #008080;">23</span>             <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">br </span><span style="color: #0000ff;">/&gt;</span>
+<span style="color: #008080;">24</span>             <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">br </span><span style="color: #0000ff;">/&gt;</span>
+<span style="color: #008080;">25</span>         <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">div</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">26</span>         <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">div </span><span style="color: #ff0000;">class</span><span style="color: #0000ff;">="span6"</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">27</span>             我在右边<span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">div</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">28</span>     <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">div</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">29</span> <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">body</span><span style="color: #0000ff;">&gt;</span></pre>
+</div>
+<p><img src="43688218576089.x-png" alt="" width="948" height="245"></p>
+<p>我们需要保证每一行里面的&ldquo;span&rdquo;相加之和是12即可，而且他支持响应式布局的，其实说响应式布局不合适，我们来看看屏幕变小会怎样：</p>
+<div class="cnblogs_code">
+<pre><span style="color: #008080;"> 1</span> <span style="color: #800000;">@media (max-width: 767px) </span>{
+<span style="color: #008080;"> 2</span> <span style="color: #ff0000;">[class*="span"],
+</span><span style="color: #008080;"> 3</span> <span style="color: #ff0000;">  .uneditable-input[class*="span"],
+</span><span style="color: #008080;"> 4</span> <span style="color: #ff0000;">  .row-fluid [class*="span"] {
+</span><span style="color: #008080;"> 5</span> <span style="color: #ff0000;">    display</span>:<span style="color: #0000ff;"> block</span>;
+<span style="color: #008080;"> 6</span> <span style="color: #ff0000;">    float</span>:<span style="color: #0000ff;"> none</span>;
+<span style="color: #008080;"> 7</span> <span style="color: #ff0000;">    width</span>:<span style="color: #0000ff;"> 100%</span>;
+<span style="color: #008080;"> 8</span> <span style="color: #ff0000;">    margin-left</span>:<span style="color: #0000ff;"> 0</span>;
+<span style="color: #008080;"> 9</span> <span style="color: #ff0000;">    -webkit-box-sizing</span>:<span style="color: #0000ff;"> border-box</span>;
+<span style="color: #008080;">10</span> <span style="color: #ff0000;">       -moz-box-sizing</span>:<span style="color: #0000ff;"> border-box</span>;
+<span style="color: #008080;">11</span> <span style="color: #ff0000;">            box-sizing</span>:<span style="color: #0000ff;"> border-box</span>;
+<span style="color: #008080;">12</span>   }
+<span style="color: #008080;">13</span> <span style="color: #800000;">}</span></pre>
+</div>
+<p>我们看到在小于一定数值的时候，span的宽度会变为100%，所以我们就不要去惹他了。。</p>
+<p><img src="18317925656773.x-png" alt=""></p>
+<h1>偏移列</h1>
+<p>bootstrap定义了很多类，他的类搞得很完善了，比如我们要把列向右移动的话就可以使用.offset*。</p>
+<p>.offset4 可以将span向右移动4个列的宽度，于是我们来试试：</p>
+<p><img src="41943356248821.x-png" alt=""></p>
+<h1>嵌套列</h1>
+<p>嵌套的情况总是无处不在，我们来在第一个列里面嵌套一番吧，嵌套也是需要row容器的：</p>
+<div class="cnblogs_code">
+<pre><span style="color: #008080;"> 1</span> <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">div </span><span style="color: #ff0000;">class</span><span style="color: #0000ff;">="row"</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 2</span>     <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">div </span><span style="color: #ff0000;">class</span><span style="color: #0000ff;">="span2"</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 3</span>         我在左边<span style="color: #0000ff;">&lt;</span><span style="color: #800000;">br </span><span style="color: #0000ff;">/&gt;</span>
+<span style="color: #008080;"> 4</span>         <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">br </span><span style="color: #0000ff;">/&gt;</span>
+<span style="color: #008080;"> 5</span>         <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">br </span><span style="color: #0000ff;">/&gt;</span>
+<span style="color: #008080;"> 6</span>     <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">div</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 7</span>     <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">div </span><span style="color: #ff0000;">class</span><span style="color: #0000ff;">="span10"</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 8</span> <span style="color: #000000;">    嵌了一个套
+</span><span style="color: #008080;"> 9</span>         <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">div </span><span style="color: #ff0000;">class</span><span style="color: #0000ff;">="row "</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">10</span>             <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">div </span><span style="color: #ff0000;">class</span><span style="color: #0000ff;">="span4"</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">11</span>                 我在左边<span style="color: #0000ff;">&lt;</span><span style="color: #800000;">br </span><span style="color: #0000ff;">/&gt;</span>
+<span style="color: #008080;">12</span>                 <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">br </span><span style="color: #0000ff;">/&gt;</span>
+<span style="color: #008080;">13</span>             <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">div</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">14</span>             <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">div </span><span style="color: #ff0000;">class</span><span style="color: #0000ff;">="span6"</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">15</span>                 我在右边<span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">div</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">16</span>         <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">div</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">17</span>     <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">div</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">18</span> <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">div</span><span style="color: #0000ff;">&gt;</span></pre>
+</div>
+<p><img src="8195056146152.x-png" alt=""></p>
+<p>我这样一嵌套，结果嵌套里面两个又不按套路出牌了。。。这是怎么回事呢？？？哎，我也不知道，于是来摸索下吧。</p>
+<p>他这个span 有个margin-left: 20px 的属性，所以导致换行了，我以为应该会自己处理呢。。。所以这里就用流式布局吧：</p>
+<div class="cnblogs_code">
+<pre><span style="color: #008080;"> 1</span> <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">div </span><span style="color: #ff0000;">class</span><span style="color: #0000ff;">="row"</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 2</span>     <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">div </span><span style="color: #ff0000;">class</span><span style="color: #0000ff;">="span2"</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 3</span>         我在左边<span style="color: #0000ff;">&lt;</span><span style="color: #800000;">br </span><span style="color: #0000ff;">/&gt;</span>
+<span style="color: #008080;"> 4</span>         <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">br </span><span style="color: #0000ff;">/&gt;</span>
+<span style="color: #008080;"> 5</span>         <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">br </span><span style="color: #0000ff;">/&gt;</span>
+<span style="color: #008080;"> 6</span>     <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">div</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 7</span>     <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">div </span><span style="color: #ff0000;">class</span><span style="color: #0000ff;">="span10"</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 8</span> <span style="color: #000000;">    嵌了一个套
+</span><span style="color: #008080;"> 9</span>         <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">div </span><span style="color: #ff0000;">class</span><span style="color: #0000ff;">="row-fluid "</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">10</span>             <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">div </span><span style="color: #ff0000;">class</span><span style="color: #0000ff;">="span4"</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">11</span>                 我在左边<span style="color: #0000ff;">&lt;</span><span style="color: #800000;">br </span><span style="color: #0000ff;">/&gt;</span>
+<span style="color: #008080;">12</span>                 <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">br </span><span style="color: #0000ff;">/&gt;</span>
+<span style="color: #008080;">13</span>             <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">div</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">14</span>             <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">div </span><span style="color: #ff0000;">class</span><span style="color: #0000ff;">="span8"</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">15</span>                 我在右边<span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">div</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">16</span>         <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">div</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">17</span>     <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">div</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">18</span> <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">div</span><span style="color: #0000ff;">&gt;</span></pre>
+</div>
+<p>布局暂时写到这里，我们接下来看看导航。</p>
+<h1>导航</h1>
+<p>首先，我们来看看最基本的导航样式：</p>
+<div class="cnblogs_code">
+<pre><span style="color: #008080;">1</span> <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">ul </span><span style="color: #ff0000;">class</span><span style="color: #0000ff;">="nav nav-tabs"</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">2</span>     <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">li </span><span style="color: #ff0000;">class</span><span style="color: #0000ff;">="active"</span><span style="color: #0000ff;">&gt;&lt;</span><span style="color: #800000;">a </span><span style="color: #ff0000;">href</span><span style="color: #0000ff;">="#"</span><span style="color: #0000ff;">&gt;</span>首页<span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">a</span><span style="color: #0000ff;">&gt;</span> <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">li</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">3</span>     <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">li</span><span style="color: #0000ff;">&gt;&lt;</span><span style="color: #800000;">a </span><span style="color: #ff0000;">href</span><span style="color: #0000ff;">="#"</span><span style="color: #0000ff;">&gt;</span>我的博客<span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">a</span><span style="color: #0000ff;">&gt;&lt;/</span><span style="color: #800000;">li</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">4</span>     <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">li</span><span style="color: #0000ff;">&gt;&lt;</span><span style="color: #800000;">a </span><span style="color: #ff0000;">href</span><span style="color: #0000ff;">="#"</span><span style="color: #0000ff;">&gt;</span>联系我们<span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">a</span><span style="color: #0000ff;">&gt;&lt;/</span><span style="color: #800000;">li</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">5</span> <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">ul</span><span style="color: #0000ff;">&gt;</span></pre>
+</div>
+<p><img src="49596039697049.png" alt=""></p>
+<p>于是一个导航就出来啦，我们看他看着还不错呢！于是我们看下他的代码，我这里看几个关键点便是：</p>
+<div class="cnblogs_code">
+<pre><span style="color: #800000;">.nav-tabs </span>{<span style="color: #ff0000;">
+    border-bottom</span>:<span style="color: #0000ff;"> 1px solid #DDDDDD</span>;
+}<span style="color: #800000;">
+.nav-tabs &gt; li </span>{<span style="color: #ff0000;">
+    margin-bottom</span>:<span style="color: #0000ff;"> -1px</span>;
+}<span style="color: #800000;">
+.nav-tabs &gt; li, .nav-pills &gt; li </span>{<span style="color: #ff0000;">
+    float</span>:<span style="color: #0000ff;"> left</span>;
+}<span style="color: #800000;">
+.nav-tabs &gt; .active &gt; a, .nav-tabs &gt; .active &gt; a:hover, .nav-tabs &gt; .active &gt; a:focus </span>{<span style="color: #ff0000;">
+    -moz-border-bottom-colors</span>:<span style="color: #0000ff;"> none</span>;<span style="color: #ff0000;">
+    -moz-border-left-colors</span>:<span style="color: #0000ff;"> none</span>;<span style="color: #ff0000;">
+    -moz-border-right-colors</span>:<span style="color: #0000ff;"> none</span>;<span style="color: #ff0000;">
+    -moz-border-top-colors</span>:<span style="color: #0000ff;"> none</span>;<span style="color: #ff0000;">
+    background-color</span>:<span style="color: #0000ff;"> #FFFFFF</span>;<span style="color: #ff0000;">
+    border-color</span>:<span style="color: #0000ff;"> #DDDDDD #DDDDDD transparent</span>;<span style="color: #ff0000;">
+    border-image</span>:<span style="color: #0000ff;"> none</span>;<span style="color: #ff0000;">
+    border-style</span>:<span style="color: #0000ff;"> solid</span>;<span style="color: #ff0000;">
+    border-width</span>:<span style="color: #0000ff;"> 1px</span>;<span style="color: #ff0000;">
+    color</span>:<span style="color: #0000ff;"> #555555</span>;<span style="color: #ff0000;">
+    cursor</span>:<span style="color: #0000ff;"> default</span>;
+}<span style="color: #800000;">
+.nav-tabs &gt; li &gt; a </span>{<span style="color: #ff0000;">
+    border</span>:<span style="color: #0000ff;"> 1px solid transparent</span>;<span style="color: #ff0000;">
+    border-radius</span>:<span style="color: #0000ff;"> 4px 4px 0 0</span>;<span style="color: #ff0000;">
+    line-height</span>:<span style="color: #0000ff;"> 20px</span>;<span style="color: #ff0000;">
+    padding-bottom</span>:<span style="color: #0000ff;"> 8px</span>;<span style="color: #ff0000;">
+    padding-top</span>:<span style="color: #0000ff;"> 8px</span>;
+}<span style="color: #800000;">
+.nav-tabs &gt; li &gt; a, .nav-pills &gt; li &gt; a </span>{<span style="color: #ff0000;">
+    line-height</span>:<span style="color: #0000ff;"> 14px</span>;<span style="color: #ff0000;">
+    margin-right</span>:<span style="color: #0000ff;"> 2px</span>;<span style="color: #ff0000;">
+    padding-left</span>:<span style="color: #0000ff;"> 12px</span>;<span style="color: #ff0000;">
+    padding-right</span>:<span style="color: #0000ff;"> 12px</span>;
+}<span style="color: #800000;">
+.nav &gt; li &gt; a </span>{<span style="color: #ff0000;">
+    display</span>:<span style="color: #0000ff;"> block</span>;
+}<span style="color: #800000;">
+a </span>{<span style="color: #ff0000;">
+    color</span>:<span style="color: #0000ff;"> #0088CC</span>;<span style="color: #ff0000;">
+    text-decoration</span>:<span style="color: #0000ff;"> none</span>;
+}</pre>
+</div>
+<p>这块CSS基本可以完成功能了，但是这种导航不好看，还真不好看呢。所以我们看看其它的样式吧：</p>
+<div class="cnblogs_code">
+<pre><span style="color: #0000ff;">&lt;</span><span style="color: #800000;">ul </span><span style="color: #ff0000;">class</span><span style="color: #0000ff;">="nav nav-pills"</span><span style="color: #0000ff;">&gt;</span></pre>
+</div>
+<p><img src="36076305557843.png" alt=""></p>
+<p>只是换了个class就改变了我们的导航，真的不错哦，这个导航还是挺好看的。</p>
+<p>加一个<code>nav-stacked</code>后又可以水平排列了，这个样式用于手机是很不错的</p>
+<p><img src="50202336725023.png" alt=""></p>
+<h1>导航条</h1>
+<p>导航条是我们真实需要的，一般都会有个颜色很不错的导航条，我们来看看bootstrap的导航呢。</p>
+<div class="cnblogs_code">
+<pre><span style="color: #008080;"> 1</span> <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">div </span><span style="color: #ff0000;">class</span><span style="color: #0000ff;">="navbar"</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 2</span>     <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">div </span><span style="color: #ff0000;">class</span><span style="color: #0000ff;">="navbar-inner"</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 3</span>         <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">a </span><span style="color: #ff0000;">class</span><span style="color: #0000ff;">="brand"</span><span style="color: #ff0000;"> href</span><span style="color: #0000ff;">="#"</span><span style="color: #0000ff;">&gt;</span>叶小钗<span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">a</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 4</span>         <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">ul </span><span style="color: #ff0000;">class</span><span style="color: #0000ff;">="nav"</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 5</span>             <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">li </span><span style="color: #ff0000;">class</span><span style="color: #0000ff;">="active"</span><span style="color: #0000ff;">&gt;&lt;</span><span style="color: #800000;">a </span><span style="color: #ff0000;">href</span><span style="color: #0000ff;">="#"</span><span style="color: #0000ff;">&gt;</span>首页<span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">a</span><span style="color: #0000ff;">&gt;&lt;/</span><span style="color: #800000;">li</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 6</span>             <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">li</span><span style="color: #0000ff;">&gt;&lt;</span><span style="color: #800000;">a </span><span style="color: #ff0000;">href</span><span style="color: #0000ff;">="#"</span><span style="color: #0000ff;">&gt;</span>我的博客<span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">a</span><span style="color: #0000ff;">&gt;&lt;/</span><span style="color: #800000;">li</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 7</span>             <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">li</span><span style="color: #0000ff;">&gt;&lt;</span><span style="color: #800000;">a </span><span style="color: #ff0000;">href</span><span style="color: #0000ff;">="#"</span><span style="color: #0000ff;">&gt;</span>关于我们<span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">a</span><span style="color: #0000ff;">&gt;&lt;/</span><span style="color: #800000;">li</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 8</span>         <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">ul</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 9</span>     <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">div</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">10</span> <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">div</span><span style="color: #0000ff;">&gt;</span></pre>
+</div>
+<p><img src="5327208841353.png" alt=""></p>
+<p>这个导航条还是挺好看的，就是感觉他有点暗淡。。。。</p>
+<h2>品牌</h2>
+<p><span class="tag">&lt;a</span><span class="atn">class</span><span class="pun">=</span><span class="atv">"brand"</span><span class="atn">href</span><span class="pun">=</span><span class="atv">"#"</span><span class="tag">&gt;</span><span class="pln">Project name</span><span class="tag">&lt;/a&gt;</span>这块地方展示的是品牌名称</p>
+<p>PS：他的CSS中用了大量的float: left，我怎么感觉有点不爽呢！</p>
+<h2>分隔符</h2>
+<p><span class="tag">&lt;li</span><span class="atn">class</span><span class="pun">=</span><span class="atv">"divider-vertical"</span><span class="tag">&gt;&lt;/li&gt;</span></p>
+<p>需要分隔符的地方加一个这个家伙就可以了：</p>
+<p><img src="18356606540655.png" alt=""></p>
+<h1>结语</h1>
+<p>今天简单的看了下导航和布局，其实两块地方还是有很多东西的，比如现在的导航其实还是有许多东西要自己做的。</p>
+<p>bootstrap提供了一些很不错的东西，能不能用好就是我们自己的事情啦。中文了大家午安。</p>
+                </div>
+
+                <div class='span3 sidebar'>
+                    <h2>导航栏</h2>
+                    <ul class="nav nav-tabs nav-stacked">
+                             				<li><a href="http://songboriceboy.github.io/xxoo/html/jkxx/GoogleFusionTablesAPIctdtyyjs/index.html">【GoogleFusionTablesAPI初探】地图与云计算</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/jkxx/qdkjzBootstrap01wmyqlkkzgjhssm/index.html">【前端框架之Bootstrap01】我们一起来看看这个家伙是什么</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/jkxx/qdkjzBootstrap02bjydh/index.html">【前端框架之Bootstrap02】布局与导航</a></li>
+    				                                         
+                    </ul>
+                </div>
+            </div>
+
+        </div>
+    </body>
+</html>

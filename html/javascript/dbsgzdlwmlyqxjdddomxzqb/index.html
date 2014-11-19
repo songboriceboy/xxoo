@@ -1,0 +1,830 @@
+﻿<!DOCTYPE html>
+
+<html lang="zh">
+    <head>
+        <meta charset="utf-8">
+        <meta name="description" content="android,ios" />
+        <meta name="keywords" content="android,ios" />
+
+        <title>叶小钗</title>
+        <style type='text/css'>
+            body {
+                background-color: #CCC;
+            }
+        </style>
+        <link rel="stylesheet" href="../../../css/bootstrap.css" />
+    </head>
+
+    <body>
+        <div class="container">
+
+            <h1>叶小钗</h1>
+
+            <div class='navbar navbar-inverse'>
+                <div class='navbar-inner nav-collapse' style="height: auto;">
+                    <ul class="nav">
+                              				<li><a href="http://songboriceboy.github.io/xxoo/html/blade/index.html">blade</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/css/index.html">css</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/HTML5&CSS3/index.html">HTML5&CSS3</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/index.html">javascript</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Javaxx/index.html">Java学习</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/nodejs/index.html">nodejs</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/requirejs/index.html">requirejs</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/index.html">Web前端</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/xxgw/index.html">学习感悟</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/gzdd/index.html">工作点滴</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/jkxx/index.html">接口学习</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/wfl/index.html">未分类</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/ydkf/index.html">移动开发</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/sjms/index.html">设计模式</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/mst/index.html">面试题</a></li>
+    				                      </ul>
+                </div>
+            </div>
+
+            <div id='content' class='row-fluid'>
+
+                <div class='span9 main'>
+				<div style="color:blue" align=center>都别说工资低了，我们来一起写简单的dom选择器吧！</div><br><h1>前言</h1>
+<p>我师父（<a class="gray" href="http://www.cnblogs.com/aaronjs/" target="_blank">http://www.cnblogs.com/aaronjs/</a>）说应当阅读框架（jquery），所以老夫就准备开始看了</p>
+<p>然后公司的师兄原来写了个dom选择器，感觉不错啊！！！原来自己从来没有想过能写这些，所以我们今天一起来试试吧</p>
+<p>我写的这个很简单，就是最简单的那种了，但是公司师兄写的很好。。。。。。</p>
+<h1>简单dom选择器</h1>
+<p>先上个完整的代码吧，因为我已经写起了：</p>
+<div class="cnblogs_code" onclick="cnblogs_code_show('8a7b775c-7c1b-4703-93f4-1cf7aa2646b0')"><img id="code_img_closed_8a7b775c-7c1b-4703-93f4-1cf7aa2646b0" class="code_img_closed" src="43570758473519.gif" alt=""><img id="code_img_opened_8a7b775c-7c1b-4703-93f4-1cf7aa2646b0" class="code_img_opened" style="display: none;" onclick="cnblogs_code_hide('8a7b775c-7c1b-4703-93f4-1cf7aa2646b0',event)" src="16365178109279.gif" alt="">
+<div id="cnblogs_code_open_8a7b775c-7c1b-4703-93f4-1cf7aa2646b0" class="cnblogs_code_hide">
+<pre><span style="color: #008080;">  1</span> <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">html </span><span style="color: #ff0000;">xmlns</span><span style="color: #0000ff;">="http://www.w3.org/1999/xhtml"</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">  2</span> <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">head</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">  3</span>     <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">title</span><span style="color: #0000ff;">&gt;&lt;/</span><span style="color: #800000;">title</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">  4</span> <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">head</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">  5</span> <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">body</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">  6</span>     <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">div </span><span style="color: #ff0000;">id</span><span style="color: #0000ff;">="parent"</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">  7</span>         <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">div </span><span style="color: #ff0000;">class</span><span style="color: #0000ff;">="child1"</span><span style="color: #ff0000;"> id</span><span style="color: #0000ff;">="c"</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">  8</span>             <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">div</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">  9</span>             <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">div</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 10</span>             <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">input </span><span style="color: #ff0000;">type</span><span style="color: #0000ff;">="button"</span><span style="color: #ff0000;"> value</span><span style="color: #0000ff;">="测试"</span><span style="color: #ff0000;">  class</span><span style="color: #0000ff;">="child1.1"</span> <span style="color: #0000ff;">/&gt;</span>
+<span style="color: #008080;"> 11</span>         <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">div</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 12</span>         <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">div </span><span style="color: #ff0000;">class</span><span style="color: #0000ff;">="child1"</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 13</span>         <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">div</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 14</span>         <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">div </span><span style="color: #ff0000;">class</span><span style="color: #0000ff;">="child2"</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 15</span>         <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">div</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 16</span>         <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">div </span><span style="color: #ff0000;">class</span><span style="color: #0000ff;">="child2 child1"</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 17</span>             <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">div </span><span style="color: #ff0000;">class</span><span style="color: #0000ff;">="child1.1"</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 18</span>                 <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">input </span><span style="color: #ff0000;">class</span><span style="color: #0000ff;">="l"</span><span style="color: #ff0000;"> value</span><span style="color: #0000ff;">="三层测试"</span> <span style="color: #0000ff;">/&gt;</span>
+<span style="color: #008080;"> 19</span>             <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">div</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 20</span>         <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">div</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 21</span>         <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">input </span><span style="color: #ff0000;">type</span><span style="color: #0000ff;">="button"</span><span style="color: #ff0000;"> value</span><span style="color: #0000ff;">="测试2"</span> <span style="color: #0000ff;">/&gt;</span>
+<span style="color: #008080;"> 22</span>     <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">div</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 23</span>     <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">script </span><span style="color: #ff0000;">type</span><span style="color: #0000ff;">="text/javascript"</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 24</span>         
+<span style="color: #008080;"> 25</span> <span style="background-color: #f5f5f5; color: #000000;">        (</span><span style="background-color: #f5f5f5; color: #0000ff;">function</span><span style="background-color: #f5f5f5; color: #000000;"> () {
+</span><span style="color: #008080;"> 26</span>             <span style="background-color: #f5f5f5; color: #0000ff;">var</span><span style="background-color: #f5f5f5; color: #000000;"> queryFunc </span><span style="background-color: #f5f5f5; color: #000000;">=</span><span style="background-color: #f5f5f5; color: #000000;"> {
+</span><span style="color: #008080;"> 27</span>                 <span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">#</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">: </span><span style="background-color: #f5f5f5; color: #0000ff;">function</span><span style="background-color: #f5f5f5; color: #000000;"> (id) {
+</span><span style="color: #008080;"> 28</span>                     <span style="background-color: #f5f5f5; color: #0000ff;">var</span><span style="background-color: #f5f5f5; color: #000000;"> arr </span><span style="background-color: #f5f5f5; color: #000000;">=</span><span style="background-color: #f5f5f5; color: #000000;"> [];
+</span><span style="color: #008080;"> 29</span> <span style="background-color: #f5f5f5; color: #000000;">                    arr.push(document.getElementById(id))
+</span><span style="color: #008080;"> 30</span>                     <span style="background-color: #f5f5f5; color: #0000ff;">return</span><span style="background-color: #f5f5f5; color: #000000;"> arr;
+</span><span style="color: #008080;"> 31</span> <span style="background-color: #f5f5f5; color: #000000;">                },
+</span><span style="color: #008080;"> 32</span>                 <span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">.</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">: </span><span style="background-color: #f5f5f5; color: #0000ff;">function</span><span style="background-color: #f5f5f5; color: #000000;"> (className) {
+</span><span style="color: #008080;"> 33</span>                     <span style="background-color: #f5f5f5; color: #0000ff;">var</span><span style="background-color: #f5f5f5; color: #000000;"> els </span><span style="background-color: #f5f5f5; color: #000000;">=</span><span style="background-color: #f5f5f5; color: #000000;"> document.getElementsByTagName(</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">*</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">);
+</span><span style="color: #008080;"> 34</span>                     <span style="background-color: #f5f5f5; color: #0000ff;">var</span><span style="background-color: #f5f5f5; color: #000000;"> reg </span><span style="background-color: #f5f5f5; color: #000000;">=</span> <span style="background-color: #f5f5f5; color: #0000ff;">new</span><span style="background-color: #f5f5f5; color: #000000;"> RegExp(</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">(^|\\s)</span><span style="background-color: #f5f5f5; color: #000000;">'</span> <span style="background-color: #f5f5f5; color: #000000;">+</span><span style="background-color: #f5f5f5; color: #000000;"> className </span><span style="background-color: #f5f5f5; color: #000000;">+</span> <span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">(\\s|$)</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">);
+</span><span style="color: #008080;"> 35</span>                     <span style="background-color: #f5f5f5; color: #0000ff;">var</span><span style="background-color: #f5f5f5; color: #000000;"> arr </span><span style="background-color: #f5f5f5; color: #000000;">=</span><span style="background-color: #f5f5f5; color: #000000;"> [];
+</span><span style="color: #008080;"> 36</span>                     <span style="background-color: #f5f5f5; color: #0000ff;">for</span><span style="background-color: #f5f5f5; color: #000000;"> (</span><span style="background-color: #f5f5f5; color: #0000ff;">var</span><span style="background-color: #f5f5f5; color: #000000;"> i </span><span style="background-color: #f5f5f5; color: #000000;">=</span> <span style="background-color: #f5f5f5; color: #000000;">0</span><span style="background-color: #f5f5f5; color: #000000;">, len </span><span style="background-color: #f5f5f5; color: #000000;">=</span><span style="background-color: #f5f5f5; color: #000000;"> els.length; i </span><span style="background-color: #f5f5f5; color: #000000;">&lt;</span><span style="background-color: #f5f5f5; color: #000000;"> len; i</span><span style="background-color: #f5f5f5; color: #000000;">++</span><span style="background-color: #f5f5f5; color: #000000;">) {
+</span><span style="color: #008080;"> 37</span>                         <span style="background-color: #f5f5f5; color: #0000ff;">if</span><span style="background-color: #f5f5f5; color: #000000;"> (reg.test(els[i].className)) {
+</span><span style="color: #008080;"> 38</span> <span style="background-color: #f5f5f5; color: #000000;">                            arr.push(els[i]);
+</span><span style="color: #008080;"> 39</span> <span style="background-color: #f5f5f5; color: #000000;">                        }
+</span><span style="color: #008080;"> 40</span> <span style="background-color: #f5f5f5; color: #000000;">                    }
+</span><span style="color: #008080;"> 41</span>                     <span style="background-color: #f5f5f5; color: #0000ff;">return</span><span style="background-color: #f5f5f5; color: #000000;"> arr;
+</span><span style="color: #008080;"> 42</span> <span style="background-color: #f5f5f5; color: #000000;">                },
+</span><span style="color: #008080;"> 43</span>                 <span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">tag</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">: </span><span style="background-color: #f5f5f5; color: #0000ff;">function</span><span style="background-color: #f5f5f5; color: #000000;"> (tag) {
+</span><span style="color: #008080;"> 44</span>                     <span style="background-color: #f5f5f5; color: #0000ff;">return</span><span style="background-color: #f5f5f5; color: #000000;"> document.getElementsByTagName(tag);
+</span><span style="color: #008080;"> 45</span> <span style="background-color: #f5f5f5; color: #000000;">                }
+</span><span style="color: #008080;"> 46</span> <span style="background-color: #f5f5f5; color: #000000;">            };
+</span><span style="color: #008080;"> 47</span> 
+<span style="color: #008080;"> 48</span>             <span style="background-color: #f5f5f5; color: #0000ff;">var</span><span style="background-color: #f5f5f5; color: #000000;"> filterFunc </span><span style="background-color: #f5f5f5; color: #000000;">=</span><span style="background-color: #f5f5f5; color: #000000;"> {
+</span><span style="color: #008080;"> 49</span>                 <span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">#</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">: </span><span style="background-color: #f5f5f5; color: #0000ff;">function</span><span style="background-color: #f5f5f5; color: #000000;"> (el, id) {
+</span><span style="color: #008080;"> 50</span>                     <span style="background-color: #f5f5f5; color: #0000ff;">return</span> <span style="background-color: #f5f5f5; color: #0000ff;">this</span><span style="background-color: #f5f5f5; color: #000000;">.commomFunc(el, </span><span style="background-color: #f5f5f5; color: #0000ff;">function</span><span style="background-color: #f5f5f5; color: #000000;"> (p) {
+</span><span style="color: #008080;"> 51</span>                         <span style="background-color: #f5f5f5; color: #0000ff;">if</span><span style="background-color: #f5f5f5; color: #000000;"> (p.id </span><span style="background-color: #f5f5f5; color: #000000;">==</span><span style="background-color: #f5f5f5; color: #000000;"> id) {
+</span><span style="color: #008080;"> 52</span>                             <span style="background-color: #f5f5f5; color: #0000ff;">return</span> <span style="background-color: #f5f5f5; color: #0000ff;">true</span><span style="background-color: #f5f5f5; color: #000000;">;
+</span><span style="color: #008080;"> 53</span> <span style="background-color: #f5f5f5; color: #000000;">                        }
+</span><span style="color: #008080;"> 54</span> <span style="background-color: #f5f5f5; color: #000000;">                    });
+</span><span style="color: #008080;"> 55</span> <span style="background-color: #f5f5f5; color: #000000;">                },
+</span><span style="color: #008080;"> 56</span>                 <span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">.</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">: </span><span style="background-color: #f5f5f5; color: #0000ff;">function</span><span style="background-color: #f5f5f5; color: #000000;"> (el, className) {
+</span><span style="color: #008080;"> 57</span>                     <span style="background-color: #f5f5f5; color: #0000ff;">var</span><span style="background-color: #f5f5f5; color: #000000;"> reg </span><span style="background-color: #f5f5f5; color: #000000;">=</span> <span style="background-color: #f5f5f5; color: #0000ff;">new</span><span style="background-color: #f5f5f5; color: #000000;"> RegExp(</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">(^|\\s)</span><span style="background-color: #f5f5f5; color: #000000;">'</span> <span style="background-color: #f5f5f5; color: #000000;">+</span><span style="background-color: #f5f5f5; color: #000000;"> className </span><span style="background-color: #f5f5f5; color: #000000;">+</span> <span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">(\\s|$)</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">);
+</span><span style="color: #008080;"> 58</span>                     <span style="background-color: #f5f5f5; color: #0000ff;">return</span> <span style="background-color: #f5f5f5; color: #0000ff;">this</span><span style="background-color: #f5f5f5; color: #000000;">.commomFunc(el, </span><span style="background-color: #f5f5f5; color: #0000ff;">function</span><span style="background-color: #f5f5f5; color: #000000;"> (p) {
+</span><span style="color: #008080;"> 59</span>                         <span style="background-color: #f5f5f5; color: #0000ff;">if</span><span style="background-color: #f5f5f5; color: #000000;"> (reg.test(p.className)) {
+</span><span style="color: #008080;"> 60</span>                             <span style="background-color: #f5f5f5; color: #0000ff;">return</span> <span style="background-color: #f5f5f5; color: #0000ff;">true</span><span style="background-color: #f5f5f5; color: #000000;">;
+</span><span style="color: #008080;"> 61</span> <span style="background-color: #f5f5f5; color: #000000;">                        }
+</span><span style="color: #008080;"> 62</span> <span style="background-color: #f5f5f5; color: #000000;">                    });
+</span><span style="color: #008080;"> 63</span> <span style="background-color: #f5f5f5; color: #000000;">                },
+</span><span style="color: #008080;"> 64</span>                 <span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">tag</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">: </span><span style="background-color: #f5f5f5; color: #0000ff;">function</span><span style="background-color: #f5f5f5; color: #000000;"> (el, tag) {
+</span><span style="color: #008080;"> 65</span>                     <span style="background-color: #f5f5f5; color: #0000ff;">return</span> <span style="background-color: #f5f5f5; color: #0000ff;">this</span><span style="background-color: #f5f5f5; color: #000000;">.commomFunc(el, </span><span style="background-color: #f5f5f5; color: #0000ff;">function</span><span style="background-color: #f5f5f5; color: #000000;"> (p) {
+</span><span style="color: #008080;"> 66</span>                         <span style="background-color: #f5f5f5; color: #0000ff;">if</span><span style="background-color: #f5f5f5; color: #000000;"> (p.tagName.toLowerCase() </span><span style="background-color: #f5f5f5; color: #000000;">==</span><span style="background-color: #f5f5f5; color: #000000;"> tag) {
+</span><span style="color: #008080;"> 67</span>                             <span style="background-color: #f5f5f5; color: #0000ff;">return</span> <span style="background-color: #f5f5f5; color: #0000ff;">true</span><span style="background-color: #f5f5f5; color: #000000;">;
+</span><span style="color: #008080;"> 68</span> <span style="background-color: #f5f5f5; color: #000000;">                        }
+</span><span style="color: #008080;"> 69</span> <span style="background-color: #f5f5f5; color: #000000;">                    });
+</span><span style="color: #008080;"> 70</span> <span style="background-color: #f5f5f5; color: #000000;">                },
+</span><span style="color: #008080;"> 71</span> <span style="background-color: #f5f5f5; color: #000000;">                commomFunc: </span><span style="background-color: #f5f5f5; color: #0000ff;">function</span><span style="background-color: #f5f5f5; color: #000000;"> (el, callback) {
+</span><span style="color: #008080;"> 72</span>                     <span style="background-color: #f5f5f5; color: #0000ff;">var</span><span style="background-color: #f5f5f5; color: #000000;"> p </span><span style="background-color: #f5f5f5; color: #000000;">=</span><span style="background-color: #f5f5f5; color: #000000;"> el;
+</span><span style="color: #008080;"> 73</span>                     <span style="background-color: #f5f5f5; color: #0000ff;">var</span><span style="background-color: #f5f5f5; color: #000000;"> end </span><span style="background-color: #f5f5f5; color: #000000;">=</span> <span style="background-color: #f5f5f5; color: #0000ff;">false</span><span style="background-color: #f5f5f5; color: #000000;">;
+</span><span style="color: #008080;"> 74</span>                     <span style="background-color: #f5f5f5; color: #0000ff;">while</span><span style="background-color: #f5f5f5; color: #000000;"> (</span><span style="background-color: #f5f5f5; color: #000000;">!</span><span style="background-color: #f5f5f5; color: #000000;">end) {
+</span><span style="color: #008080;"> 75</span> <span style="background-color: #f5f5f5; color: #000000;">                        p </span><span style="background-color: #f5f5f5; color: #000000;">=</span><span style="background-color: #f5f5f5; color: #000000;"> p.parentNode </span><span style="background-color: #f5f5f5; color: #000000;">||</span><span style="background-color: #f5f5f5; color: #000000;"> p.parentElement </span><span style="background-color: #f5f5f5; color: #000000;">||</span> <span style="background-color: #f5f5f5; color: #0000ff;">null</span><span style="background-color: #f5f5f5; color: #000000;">;
+</span><span style="color: #008080;"> 76</span>                         <span style="background-color: #f5f5f5; color: #0000ff;">if</span><span style="background-color: #f5f5f5; color: #000000;"> (</span><span style="background-color: #f5f5f5; color: #000000;">!</span><span style="background-color: #f5f5f5; color: #000000;">p) </span><span style="background-color: #f5f5f5; color: #0000ff;">return</span> <span style="background-color: #f5f5f5; color: #0000ff;">false</span><span style="background-color: #f5f5f5; color: #000000;">;
+</span><span style="color: #008080;"> 77</span>                         <span style="background-color: #f5f5f5; color: #0000ff;">var</span><span style="background-color: #f5f5f5; color: #000000;"> b </span><span style="background-color: #f5f5f5; color: #000000;">=</span><span style="background-color: #f5f5f5; color: #000000;"> callback </span><span style="background-color: #f5f5f5; color: #000000;">&amp;&amp;</span><span style="background-color: #f5f5f5; color: #000000;"> callback(p);
+</span><span style="color: #008080;"> 78</span>                         <span style="background-color: #f5f5f5; color: #0000ff;">if</span><span style="background-color: #f5f5f5; color: #000000;"> (b) </span><span style="background-color: #f5f5f5; color: #0000ff;">return</span><span style="background-color: #f5f5f5; color: #000000;"> b;
+</span><span style="color: #008080;"> 79</span>                         <span style="background-color: #f5f5f5; color: #0000ff;">if</span><span style="background-color: #f5f5f5; color: #000000;"> (p.tagName </span><span style="background-color: #f5f5f5; color: #000000;">==</span> <span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">BODY</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">) {
+</span><span style="color: #008080;"> 80</span> <span style="background-color: #f5f5f5; color: #000000;">                            end </span><span style="background-color: #f5f5f5; color: #000000;">=</span> <span style="background-color: #f5f5f5; color: #0000ff;">true</span><span style="background-color: #f5f5f5; color: #000000;">;
+</span><span style="color: #008080;"> 81</span> <span style="background-color: #f5f5f5; color: #000000;">                        }
+</span><span style="color: #008080;"> 82</span> <span style="background-color: #f5f5f5; color: #000000;">                    }
+</span><span style="color: #008080;"> 83</span>                     <span style="background-color: #f5f5f5; color: #0000ff;">return</span> <span style="background-color: #f5f5f5; color: #0000ff;">false</span><span style="background-color: #f5f5f5; color: #000000;">;
+</span><span style="color: #008080;"> 84</span> <span style="background-color: #f5f5f5; color: #000000;">                }
+</span><span style="color: #008080;"> 85</span> <span style="background-color: #f5f5f5; color: #000000;">            };
+</span><span style="color: #008080;"> 86</span> 
+<span style="color: #008080;"> 87</span>             <span style="background-color: #f5f5f5; color: #0000ff;">var</span><span style="background-color: #f5f5f5; color: #000000;"> getKV </span><span style="background-color: #f5f5f5; color: #000000;">=</span> <span style="background-color: #f5f5f5; color: #0000ff;">function</span><span style="background-color: #f5f5f5; color: #000000;"> (str) {
+</span><span style="color: #008080;"> 88</span>                 <span style="background-color: #f5f5f5; color: #0000ff;">if</span><span style="background-color: #f5f5f5; color: #000000;"> (</span><span style="background-color: #f5f5f5; color: #000000;">!</span><span style="background-color: #f5f5f5; color: #000000;">str </span><span style="background-color: #f5f5f5; color: #000000;">||</span> <span style="background-color: #f5f5f5; color: #0000ff;">typeof</span><span style="background-color: #f5f5f5; color: #000000;"> str </span><span style="background-color: #f5f5f5; color: #000000;">!=</span> <span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">string</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">) </span><span style="background-color: #f5f5f5; color: #0000ff;">return</span> <span style="background-color: #f5f5f5; color: #0000ff;">null</span><span style="background-color: #f5f5f5; color: #000000;">;
+</span><span style="color: #008080;"> 89</span>                 <span style="background-color: #f5f5f5; color: #0000ff;">var</span><span style="background-color: #f5f5f5; color: #000000;"> k </span><span style="background-color: #f5f5f5; color: #000000;">=</span><span style="background-color: #f5f5f5; color: #000000;"> str.substring(</span><span style="background-color: #f5f5f5; color: #000000;">0</span><span style="background-color: #f5f5f5; color: #000000;">, </span><span style="background-color: #f5f5f5; color: #000000;">1</span><span style="background-color: #f5f5f5; color: #000000;">);
+</span><span style="color: #008080;"> 90</span>                 <span style="background-color: #f5f5f5; color: #0000ff;">var</span><span style="background-color: #f5f5f5; color: #000000;"> v </span><span style="background-color: #f5f5f5; color: #000000;">=</span><span style="background-color: #f5f5f5; color: #000000;"> str;
+</span><span style="color: #008080;"> 91</span>                 <span style="background-color: #f5f5f5; color: #0000ff;">if</span><span style="background-color: #f5f5f5; color: #000000;"> (k </span><span style="background-color: #f5f5f5; color: #000000;">==</span> <span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">.</span><span style="background-color: #f5f5f5; color: #000000;">'</span> <span style="background-color: #f5f5f5; color: #000000;">||</span><span style="background-color: #f5f5f5; color: #000000;"> k </span><span style="background-color: #f5f5f5; color: #000000;">==</span> <span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">#</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">) {
+</span><span style="color: #008080;"> 92</span> <span style="background-color: #f5f5f5; color: #000000;">                    v </span><span style="background-color: #f5f5f5; color: #000000;">=</span><span style="background-color: #f5f5f5; color: #000000;"> str.substring(</span><span style="background-color: #f5f5f5; color: #000000;">1</span><span style="background-color: #f5f5f5; color: #000000;">, str.length);
+</span><span style="color: #008080;"> 93</span> <span style="background-color: #f5f5f5; color: #000000;">                } </span><span style="background-color: #f5f5f5; color: #0000ff;">else</span><span style="background-color: #f5f5f5; color: #000000;"> {
+</span><span style="color: #008080;"> 94</span> <span style="background-color: #f5f5f5; color: #000000;">                    k </span><span style="background-color: #f5f5f5; color: #000000;">=</span> <span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">tag</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">;
+</span><span style="color: #008080;"> 95</span> <span style="background-color: #f5f5f5; color: #000000;">                }
+</span><span style="color: #008080;"> 96</span>                 <span style="background-color: #f5f5f5; color: #0000ff;">return</span><span style="background-color: #f5f5f5; color: #000000;"> {
+</span><span style="color: #008080;"> 97</span> <span style="background-color: #f5f5f5; color: #000000;">                    k: k,
+</span><span style="color: #008080;"> 98</span> <span style="background-color: #f5f5f5; color: #000000;">                    v: v
+</span><span style="color: #008080;"> 99</span> <span style="background-color: #f5f5f5; color: #000000;">                };
+</span><span style="color: #008080;">100</span> <span style="background-color: #f5f5f5; color: #000000;">            }
+</span><span style="color: #008080;">101</span> 
+<span style="color: #008080;">102</span>             <span style="background-color: #f5f5f5; color: #0000ff;">var</span><span style="background-color: #f5f5f5; color: #000000;"> query </span><span style="background-color: #f5f5f5; color: #000000;">=</span> <span style="background-color: #f5f5f5; color: #0000ff;">function</span><span style="background-color: #f5f5f5; color: #000000;"> (str) {
+</span><span style="color: #008080;">103</span>                 <span style="background-color: #f5f5f5; color: #0000ff;">var</span><span style="background-color: #f5f5f5; color: #000000;"> kv </span><span style="background-color: #f5f5f5; color: #000000;">=</span><span style="background-color: #f5f5f5; color: #000000;"> getKV(str)
+</span><span style="color: #008080;">104</span>                 <span style="background-color: #f5f5f5; color: #0000ff;">return</span><span style="background-color: #f5f5f5; color: #000000;"> (queryFunc[kv.k] </span><span style="background-color: #f5f5f5; color: #000000;">&amp;&amp;</span><span style="background-color: #f5f5f5; color: #000000;"> queryFunc[kv.k](kv.v));
+</span><span style="color: #008080;">105</span> <span style="background-color: #f5f5f5; color: #000000;">            };
+</span><span style="color: #008080;">106</span>             <span style="background-color: #f5f5f5; color: #0000ff;">var</span><span style="background-color: #f5f5f5; color: #000000;"> filter </span><span style="background-color: #f5f5f5; color: #000000;">=</span> <span style="background-color: #f5f5f5; color: #0000ff;">function</span><span style="background-color: #f5f5f5; color: #000000;"> (el, str) {
+</span><span style="color: #008080;">107</span>                 <span style="background-color: #f5f5f5; color: #0000ff;">var</span><span style="background-color: #f5f5f5; color: #000000;"> kv </span><span style="background-color: #f5f5f5; color: #000000;">=</span><span style="background-color: #f5f5f5; color: #000000;"> getKV(str);
+</span><span style="color: #008080;">108</span>                 <span style="background-color: #f5f5f5; color: #0000ff;">return</span><span style="background-color: #f5f5f5; color: #000000;"> (filterFunc[kv.k] </span><span style="background-color: #f5f5f5; color: #000000;">&amp;&amp;</span><span style="background-color: #f5f5f5; color: #000000;"> filterFunc[kv.k](el, kv.v));
+</span><span style="color: #008080;">109</span> <span style="background-color: #f5f5f5; color: #000000;">            };
+</span><span style="color: #008080;">110</span>             <span style="background-color: #f5f5f5; color: #0000ff;">var</span><span style="background-color: #f5f5f5; color: #000000;"> explodeSelector </span><span style="background-color: #f5f5f5; color: #000000;">=</span> <span style="background-color: #f5f5f5; color: #0000ff;">function</span><span style="background-color: #f5f5f5; color: #000000;"> (str) {
+</span><span style="color: #008080;">111</span>                 <span style="background-color: #f5f5f5; color: #0000ff;">if</span><span style="background-color: #f5f5f5; color: #000000;"> (</span><span style="background-color: #f5f5f5; color: #000000;">!</span><span style="background-color: #f5f5f5; color: #000000;">str) </span><span style="background-color: #f5f5f5; color: #0000ff;">return</span><span style="background-color: #f5f5f5; color: #000000;"> [];
+</span><span style="color: #008080;">112</span>                 <span style="background-color: #f5f5f5; color: #008000;">//</span><span style="background-color: #f5f5f5; color: #008000;">第一步去掉多余的空格</span>
+<span style="color: #008080;">113</span> <span style="background-color: #f5f5f5; color: #000000;">                str </span><span style="background-color: #f5f5f5; color: #000000;">=</span><span style="background-color: #f5f5f5; color: #000000;"> str.replace(</span><span style="background-color: #f5f5f5; color: #000000;">/</span><span style="background-color: #f5f5f5; color: #000000;">\s+</span><span style="background-color: #f5f5f5; color: #000000;">/</span><span style="background-color: #f5f5f5; color: #000000;">g, </span><span style="background-color: #f5f5f5; color: #000000;">'</span> <span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">);
+</span><span style="color: #008080;">114</span>                 <span style="background-color: #f5f5f5; color: #0000ff;">var</span><span style="background-color: #f5f5f5; color: #000000;"> arr </span><span style="background-color: #f5f5f5; color: #000000;">=</span><span style="background-color: #f5f5f5; color: #000000;"> str.split(</span><span style="background-color: #f5f5f5; color: #000000;">'</span> <span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">);
+</span><span style="color: #008080;">115</span>                 <span style="background-color: #f5f5f5; color: #0000ff;">return</span><span style="background-color: #f5f5f5; color: #000000;"> arr;
+</span><span style="color: #008080;">116</span> <span style="background-color: #f5f5f5; color: #000000;">            };
+</span><span style="color: #008080;">117</span>             <span style="background-color: #f5f5f5; color: #008000;">//</span><span style="background-color: #f5f5f5; color: #008000;">筛选元素是否具有该属性</span>
+<span style="color: #008080;">118</span> 
+<span style="color: #008080;">119</span>             <span style="background-color: #f5f5f5; color: #0000ff;">var</span><span style="background-color: #f5f5f5; color: #000000;"> queryAll </span><span style="background-color: #f5f5f5; color: #000000;">=</span> <span style="background-color: #f5f5f5; color: #0000ff;">function</span><span style="background-color: #f5f5f5; color: #000000;"> (str) {
+</span><span style="color: #008080;">120</span>                 <span style="background-color: #f5f5f5; color: #0000ff;">var</span><span style="background-color: #f5f5f5; color: #000000;"> arrSelector </span><span style="background-color: #f5f5f5; color: #000000;">=</span><span style="background-color: #f5f5f5; color: #000000;"> explodeSelector(str);
+</span><span style="color: #008080;">121</span>                 <span style="background-color: #f5f5f5; color: #0000ff;">var</span><span style="background-color: #f5f5f5; color: #000000;"> len </span><span style="background-color: #f5f5f5; color: #000000;">=</span><span style="background-color: #f5f5f5; color: #000000;"> arrSelector.length;
+</span><span style="color: #008080;">122</span> 
+<span style="color: #008080;">123</span>                 <span style="background-color: #f5f5f5; color: #008000;">//</span><span style="background-color: #f5f5f5; color: #008000;">当前索引</span>
+<span style="color: #008080;">124</span>                 <span style="background-color: #f5f5f5; color: #0000ff;">var</span><span style="background-color: #f5f5f5; color: #000000;"> index </span><span style="background-color: #f5f5f5; color: #000000;">=</span><span style="background-color: #f5f5f5; color: #000000;"> len </span><span style="background-color: #f5f5f5; color: #000000;">-</span> <span style="background-color: #f5f5f5; color: #000000;">2</span><span style="background-color: #f5f5f5; color: #000000;">;
+</span><span style="color: #008080;">125</span>                 <span style="background-color: #f5f5f5; color: #0000ff;">var</span><span style="background-color: #f5f5f5; color: #000000;"> curDom </span><span style="background-color: #f5f5f5; color: #000000;">=</span> <span style="background-color: #f5f5f5; color: #0000ff;">null</span><span style="background-color: #f5f5f5; color: #000000;">;
+</span><span style="color: #008080;">126</span>                 <span style="background-color: #f5f5f5; color: #0000ff;">var</span><span style="background-color: #f5f5f5; color: #000000;"> curSelector </span><span style="background-color: #f5f5f5; color: #000000;">=</span> <span style="background-color: #f5f5f5; color: #0000ff;">null</span><span style="background-color: #f5f5f5; color: #000000;">;
+</span><span style="color: #008080;">127</span> 
+<span style="color: #008080;">128</span>                 <span style="background-color: #f5f5f5; color: #008000;">//</span><span style="background-color: #f5f5f5; color: #008000;">第一轮筛选出来的元素</span>
+<span style="color: #008080;">129</span>                 <span style="background-color: #f5f5f5; color: #0000ff;">var</span><span style="background-color: #f5f5f5; color: #000000;"> els </span><span style="background-color: #f5f5f5; color: #000000;">=</span><span style="background-color: #f5f5f5; color: #000000;"> query(arrSelector[len </span><span style="background-color: #f5f5f5; color: #000000;">-</span> <span style="background-color: #f5f5f5; color: #000000;">1</span><span style="background-color: #f5f5f5; color: #000000;">]);
+</span><span style="color: #008080;">130</span>                 <span style="background-color: #f5f5f5; color: #008000;">//</span><span style="background-color: #f5f5f5; color: #008000;">只有一个选择器便直接返回了</span>
+<span style="color: #008080;">131</span>                 <span style="background-color: #f5f5f5; color: #0000ff;">if</span><span style="background-color: #f5f5f5; color: #000000;"> (len </span><span style="background-color: #f5f5f5; color: #000000;">==</span> <span style="background-color: #f5f5f5; color: #000000;">1</span><span style="background-color: #f5f5f5; color: #000000;">) </span><span style="background-color: #f5f5f5; color: #0000ff;">return</span><span style="background-color: #f5f5f5; color: #000000;"> els;
+</span><span style="color: #008080;">132</span> 
+<span style="color: #008080;">133</span>                 <span style="background-color: #f5f5f5; color: #0000ff;">while</span><span style="background-color: #f5f5f5; color: #000000;"> (index </span><span style="background-color: #f5f5f5; color: #000000;">!=</span> <span style="background-color: #f5f5f5; color: #000000;">-</span><span style="background-color: #f5f5f5; color: #000000;">1</span><span style="background-color: #f5f5f5; color: #000000;">) {
+</span><span style="color: #008080;">134</span>                     <span style="background-color: #f5f5f5; color: #008000;">//</span><span style="background-color: #f5f5f5; color: #008000;">获取当前的筛选选择器</span>
+<span style="color: #008080;">135</span> <span style="background-color: #f5f5f5; color: #000000;">                    curSelector </span><span style="background-color: #f5f5f5; color: #000000;">=</span><span style="background-color: #f5f5f5; color: #000000;"> arrSelector[index];
+</span><span style="color: #008080;">136</span>                     <span style="background-color: #f5f5f5; color: #0000ff;">var</span><span style="background-color: #f5f5f5; color: #000000;"> tmpArr </span><span style="background-color: #f5f5f5; color: #000000;">=</span><span style="background-color: #f5f5f5; color: #000000;"> [];
+</span><span style="color: #008080;">137</span>                     <span style="background-color: #f5f5f5; color: #0000ff;">for</span><span style="background-color: #f5f5f5; color: #000000;"> (</span><span style="background-color: #f5f5f5; color: #0000ff;">var</span><span style="background-color: #f5f5f5; color: #000000;"> i </span><span style="background-color: #f5f5f5; color: #000000;">=</span> <span style="background-color: #f5f5f5; color: #000000;">0</span><span style="background-color: #f5f5f5; color: #000000;">, len </span><span style="background-color: #f5f5f5; color: #000000;">=</span><span style="background-color: #f5f5f5; color: #000000;"> els.length; i </span><span style="background-color: #f5f5f5; color: #000000;">&lt;</span><span style="background-color: #f5f5f5; color: #000000;"> len; i</span><span style="background-color: #f5f5f5; color: #000000;">++</span><span style="background-color: #f5f5f5; color: #000000;">) {
+</span><span style="color: #008080;">138</span>                         <span style="background-color: #f5f5f5; color: #0000ff;">var</span><span style="background-color: #f5f5f5; color: #000000;"> tmpEl </span><span style="background-color: #f5f5f5; color: #000000;">=</span><span style="background-color: #f5f5f5; color: #000000;"> els[i];
+</span><span style="color: #008080;">139</span>                         <span style="background-color: #f5f5f5; color: #0000ff;">if</span><span style="background-color: #f5f5f5; color: #000000;"> (filter(tmpEl, curSelector))
+</span><span style="color: #008080;">140</span> <span style="background-color: #f5f5f5; color: #000000;">                            tmpArr.push(tmpEl);
+</span><span style="color: #008080;">141</span> <span style="background-color: #f5f5f5; color: #000000;">                    }
+</span><span style="color: #008080;">142</span> <span style="background-color: #f5f5f5; color: #000000;">                    els </span><span style="background-color: #f5f5f5; color: #000000;">=</span><span style="background-color: #f5f5f5; color: #000000;"> tmpArr;
+</span><span style="color: #008080;">143</span> <span style="background-color: #f5f5f5; color: #000000;">                    index</span><span style="background-color: #f5f5f5; color: #000000;">--</span><span style="background-color: #f5f5f5; color: #000000;">;
+</span><span style="color: #008080;">144</span> <span style="background-color: #f5f5f5; color: #000000;">                }
+</span><span style="color: #008080;">145</span>                 <span style="background-color: #f5f5f5; color: #0000ff;">return</span><span style="background-color: #f5f5f5; color: #000000;"> els;
+</span><span style="color: #008080;">146</span> <span style="background-color: #f5f5f5; color: #000000;">            };
+</span><span style="color: #008080;">147</span> <span style="background-color: #f5f5f5; color: #000000;">            window.queryAll </span><span style="background-color: #f5f5f5; color: #000000;">=</span><span style="background-color: #f5f5f5; color: #000000;"> queryAll;
+</span><span style="color: #008080;">148</span> <span style="background-color: #f5f5f5; color: #000000;">        })();
+</span><span style="color: #008080;">149</span> 
+<span style="color: #008080;">150</span>         <span style="background-color: #f5f5f5; color: #0000ff;">var</span><span style="background-color: #f5f5f5; color: #000000;"> selector </span><span style="background-color: #f5f5f5; color: #000000;">=</span><span style="background-color: #f5f5f5; color: #000000;"> [
+</span><span style="color: #008080;">151</span>             <span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">div</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">,
+</span><span style="color: #008080;">152</span>             <span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">div input</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">,
+</span><span style="color: #008080;">153</span>             <span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">#parent</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">,
+</span><span style="color: #008080;">154</span>             <span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">#parent .child1</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">,
+</span><span style="color: #008080;">155</span>             <span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">#parent .child2</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">,
+</span><span style="color: #008080;">156</span>             <span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">.child1     .child1.1</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">,
+</span><span style="color: #008080;">157</span>             <span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">#c .child1.1</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">,
+</span><span style="color: #008080;">158</span>             <span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">#parent .child1    .child1.1 input</span><span style="background-color: #f5f5f5; color: #000000;">'</span>
+<span style="color: #008080;">159</span> <span style="background-color: #f5f5f5; color: #000000;">        ];
+</span><span style="color: #008080;">160</span> 
+<span style="color: #008080;">161</span>         <span style="background-color: #f5f5f5; color: #0000ff;">for</span><span style="background-color: #f5f5f5; color: #000000;"> (</span><span style="background-color: #f5f5f5; color: #0000ff;">var</span><span style="background-color: #f5f5f5; color: #000000;"> i </span><span style="background-color: #f5f5f5; color: #0000ff;">in</span><span style="background-color: #f5f5f5; color: #000000;"> selector) {
+</span><span style="color: #008080;">162</span> <span style="background-color: #f5f5f5; color: #000000;">            console.log(selector[i] </span><span style="background-color: #f5f5f5; color: #000000;">+</span> <span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">&mdash;&mdash;</span><span style="background-color: #f5f5f5; color: #000000;">'</span> <span style="background-color: #f5f5f5; color: #000000;">+</span><span style="background-color: #f5f5f5; color: #000000;"> queryAll(selector[i]));
+</span><span style="color: #008080;">163</span>             <span style="background-color: #f5f5f5; color: #0000ff;">var</span><span style="background-color: #f5f5f5; color: #000000;"> s </span><span style="background-color: #f5f5f5; color: #000000;">=</span> <span style="background-color: #f5f5f5; color: #000000;">''</span><span style="background-color: #f5f5f5; color: #000000;">;
+</span><span style="color: #008080;">164</span> <span style="background-color: #f5f5f5; color: #000000;">        }
+</span><span style="color: #008080;">165</span> 
+<span style="color: #008080;">166</span>     <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">script</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">167</span> <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">body</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">168</span> <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">html</span><span style="color: #0000ff;">&gt;</span></pre>
+</div>
+<span class="cnblogs_code_collapse">View Code </span></div>
+<div class="cnblogs_code">
+<pre><span style="color: #008080;"> 1</span> <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">div </span><span style="color: #ff0000;">id</span><span style="color: #0000ff;">="parent"</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 2</span>     <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">div </span><span style="color: #ff0000;">class</span><span style="color: #0000ff;">="child1"</span><span style="color: #ff0000;"> id</span><span style="color: #0000ff;">="c"</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 3</span>         <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">div</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 4</span>         <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">div</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 5</span>         <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">input </span><span style="color: #ff0000;">type</span><span style="color: #0000ff;">="button"</span><span style="color: #ff0000;"> value</span><span style="color: #0000ff;">="测试"</span><span style="color: #ff0000;">  class</span><span style="color: #0000ff;">="child1.1"</span> <span style="color: #0000ff;">/&gt;</span>
+<span style="color: #008080;"> 6</span>     <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">div</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 7</span>     <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">div </span><span style="color: #ff0000;">class</span><span style="color: #0000ff;">="child1"</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 8</span>     <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">div</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 9</span>     <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">div </span><span style="color: #ff0000;">class</span><span style="color: #0000ff;">="child2"</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">10</span>     <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">div</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">11</span>     <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">div </span><span style="color: #ff0000;">class</span><span style="color: #0000ff;">="child2 child1"</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">12</span>         <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">div </span><span style="color: #ff0000;">class</span><span style="color: #0000ff;">="child1.1"</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">13</span>             <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">input </span><span style="color: #ff0000;">class</span><span style="color: #0000ff;">="l"</span><span style="color: #ff0000;"> value</span><span style="color: #0000ff;">="三层测试"</span> <span style="color: #0000ff;">/&gt;</span>
+<span style="color: #008080;">14</span>         <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">div</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">15</span>     <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">div</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">16</span>     <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">input </span><span style="color: #ff0000;">type</span><span style="color: #0000ff;">="button"</span><span style="color: #ff0000;"> value</span><span style="color: #0000ff;">="测试2"</span> <span style="color: #0000ff;">/&gt;</span>
+<span style="color: #008080;">17</span> <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">div</span><span style="color: #0000ff;">&gt;</span></pre>
+</div>
+<p><img src="32955108210737.png" alt=""></p>
+<p>简单的结果，然后我们来简单看看我丑陋的代码：</p>
+<div class="cnblogs_code">
+<pre><span style="color: #008080;">  1</span> (<span style="color: #0000ff;">function</span><span style="color: #000000;"> () {
+</span><span style="color: #008080;">  2</span>     <span style="color: #0000ff;">var</span> queryFunc =<span style="color: #000000;"> {
+</span><span style="color: #008080;">  3</span>         '#': <span style="color: #0000ff;">function</span><span style="color: #000000;"> (id) {
+</span><span style="color: #008080;">  4</span>             <span style="color: #0000ff;">var</span> arr =<span style="color: #000000;"> [];
+</span><span style="color: #008080;">  5</span> <span style="color: #000000;">            arr.push(document.getElementById(id))
+</span><span style="color: #008080;">  6</span>             <span style="color: #0000ff;">return</span><span style="color: #000000;"> arr;
+</span><span style="color: #008080;">  7</span> <span style="color: #000000;">        },
+</span><span style="color: #008080;">  8</span>         '.': <span style="color: #0000ff;">function</span><span style="color: #000000;"> (className) {
+</span><span style="color: #008080;">  9</span>             <span style="color: #0000ff;">var</span> els = document.getElementsByTagName('*'<span style="color: #000000;">);
+</span><span style="color: #008080;"> 10</span>             <span style="color: #0000ff;">var</span> reg = <span style="color: #0000ff;">new</span> RegExp('(^|\\s)' + className + '(\\s|$)'<span style="color: #000000;">);
+</span><span style="color: #008080;"> 11</span>             <span style="color: #0000ff;">var</span> arr =<span style="color: #000000;"> [];
+</span><span style="color: #008080;"> 12</span>             <span style="color: #0000ff;">for</span> (<span style="color: #0000ff;">var</span> i = 0, len = els.length; i &lt; len; i++<span style="color: #000000;">) {
+</span><span style="color: #008080;"> 13</span>                 <span style="color: #0000ff;">if</span><span style="color: #000000;"> (reg.test(els[i].className)) {
+</span><span style="color: #008080;"> 14</span> <span style="color: #000000;">                    arr.push(els[i]);
+</span><span style="color: #008080;"> 15</span> <span style="color: #000000;">                }
+</span><span style="color: #008080;"> 16</span> <span style="color: #000000;">            }
+</span><span style="color: #008080;"> 17</span>             <span style="color: #0000ff;">return</span><span style="color: #000000;"> arr;
+</span><span style="color: #008080;"> 18</span> <span style="color: #000000;">        },
+</span><span style="color: #008080;"> 19</span>         'tag': <span style="color: #0000ff;">function</span><span style="color: #000000;"> (tag) {
+</span><span style="color: #008080;"> 20</span>             <span style="color: #0000ff;">return</span><span style="color: #000000;"> document.getElementsByTagName(tag);
+</span><span style="color: #008080;"> 21</span> <span style="color: #000000;">        }
+</span><span style="color: #008080;"> 22</span> <span style="color: #000000;">    };
+</span><span style="color: #008080;"> 23</span> 
+<span style="color: #008080;"> 24</span>     <span style="color: #0000ff;">var</span> filterFunc =<span style="color: #000000;"> {
+</span><span style="color: #008080;"> 25</span>         '#': <span style="color: #0000ff;">function</span><span style="color: #000000;"> (el, id) {
+</span><span style="color: #008080;"> 26</span>             <span style="color: #0000ff;">return</span> <span style="color: #0000ff;">this</span>.commomFunc(el, <span style="color: #0000ff;">function</span><span style="color: #000000;"> (p) {
+</span><span style="color: #008080;"> 27</span>                 <span style="color: #0000ff;">if</span> (p.id ==<span style="color: #000000;"> id) {
+</span><span style="color: #008080;"> 28</span>                     <span style="color: #0000ff;">return</span> <span style="color: #0000ff;">true</span><span style="color: #000000;">;
+</span><span style="color: #008080;"> 29</span> <span style="color: #000000;">                }
+</span><span style="color: #008080;"> 30</span> <span style="color: #000000;">            });
+</span><span style="color: #008080;"> 31</span> <span style="color: #000000;">        },
+</span><span style="color: #008080;"> 32</span>         '.': <span style="color: #0000ff;">function</span><span style="color: #000000;"> (el, className) {
+</span><span style="color: #008080;"> 33</span>             <span style="color: #0000ff;">var</span> reg = <span style="color: #0000ff;">new</span> RegExp('(^|\\s)' + className + '(\\s|$)'<span style="color: #000000;">);
+</span><span style="color: #008080;"> 34</span>             <span style="color: #0000ff;">return</span> <span style="color: #0000ff;">this</span>.commomFunc(el, <span style="color: #0000ff;">function</span><span style="color: #000000;"> (p) {
+</span><span style="color: #008080;"> 35</span>                 <span style="color: #0000ff;">if</span><span style="color: #000000;"> (reg.test(p.className)) {
+</span><span style="color: #008080;"> 36</span>                     <span style="color: #0000ff;">return</span> <span style="color: #0000ff;">true</span><span style="color: #000000;">;
+</span><span style="color: #008080;"> 37</span> <span style="color: #000000;">                }
+</span><span style="color: #008080;"> 38</span> <span style="color: #000000;">            });
+</span><span style="color: #008080;"> 39</span> <span style="color: #000000;">        },
+</span><span style="color: #008080;"> 40</span>         'tag': <span style="color: #0000ff;">function</span><span style="color: #000000;"> (el, tag) {
+</span><span style="color: #008080;"> 41</span>             <span style="color: #0000ff;">return</span> <span style="color: #0000ff;">this</span>.commomFunc(el, <span style="color: #0000ff;">function</span><span style="color: #000000;"> (p) {
+</span><span style="color: #008080;"> 42</span>                 <span style="color: #0000ff;">if</span> (p.tagName.toLowerCase() ==<span style="color: #000000;"> tag) {
+</span><span style="color: #008080;"> 43</span>                     <span style="color: #0000ff;">return</span> <span style="color: #0000ff;">true</span><span style="color: #000000;">;
+</span><span style="color: #008080;"> 44</span> <span style="color: #000000;">                }
+</span><span style="color: #008080;"> 45</span> <span style="color: #000000;">            });
+</span><span style="color: #008080;"> 46</span> <span style="color: #000000;">        },
+</span><span style="color: #008080;"> 47</span>         commomFunc: <span style="color: #0000ff;">function</span><span style="color: #000000;"> (el, callback) {
+</span><span style="color: #008080;"> 48</span>             <span style="color: #0000ff;">var</span> p =<span style="color: #000000;"> el;
+</span><span style="color: #008080;"> 49</span>             <span style="color: #0000ff;">var</span> end = <span style="color: #0000ff;">false</span><span style="color: #000000;">;
+</span><span style="color: #008080;"> 50</span>             <span style="color: #0000ff;">while</span> (!<span style="color: #000000;">end) {
+</span><span style="color: #008080;"> 51</span>                 p = p.parentNode || p.parentElement || <span style="color: #0000ff;">null</span><span style="color: #000000;">;
+</span><span style="color: #008080;"> 52</span>                 <span style="color: #0000ff;">if</span> (!p) <span style="color: #0000ff;">return</span> <span style="color: #0000ff;">false</span><span style="color: #000000;">;
+</span><span style="color: #008080;"> 53</span>                 <span style="color: #0000ff;">var</span> b = callback &amp;&amp;<span style="color: #000000;"> callback(p);
+</span><span style="color: #008080;"> 54</span>                 <span style="color: #0000ff;">if</span> (b) <span style="color: #0000ff;">return</span><span style="color: #000000;"> b;
+</span><span style="color: #008080;"> 55</span>                 <span style="color: #0000ff;">if</span> (p.tagName == 'BODY'<span style="color: #000000;">) {
+</span><span style="color: #008080;"> 56</span>                     end = <span style="color: #0000ff;">true</span><span style="color: #000000;">;
+</span><span style="color: #008080;"> 57</span> <span style="color: #000000;">                }
+</span><span style="color: #008080;"> 58</span> <span style="color: #000000;">            }
+</span><span style="color: #008080;"> 59</span>             <span style="color: #0000ff;">return</span> <span style="color: #0000ff;">false</span><span style="color: #000000;">;
+</span><span style="color: #008080;"> 60</span> <span style="color: #000000;">        }
+</span><span style="color: #008080;"> 61</span> <span style="color: #000000;">    };
+</span><span style="color: #008080;"> 62</span> 
+<span style="color: #008080;"> 63</span>     <span style="color: #0000ff;">var</span> getKV = <span style="color: #0000ff;">function</span><span style="color: #000000;"> (str) {
+</span><span style="color: #008080;"> 64</span>         <span style="color: #0000ff;">if</span> (!str || <span style="color: #0000ff;">typeof</span> str != 'string') <span style="color: #0000ff;">return</span> <span style="color: #0000ff;">null</span><span style="color: #000000;">;
+</span><span style="color: #008080;"> 65</span>         <span style="color: #0000ff;">var</span> k = str.substring(0, 1<span style="color: #000000;">);
+</span><span style="color: #008080;"> 66</span>         <span style="color: #0000ff;">var</span> v =<span style="color: #000000;"> str;
+</span><span style="color: #008080;"> 67</span>         <span style="color: #0000ff;">if</span> (k == '.' || k == '#'<span style="color: #000000;">) {
+</span><span style="color: #008080;"> 68</span>             v = str.substring(1<span style="color: #000000;">, str.length);
+</span><span style="color: #008080;"> 69</span>         } <span style="color: #0000ff;">else</span><span style="color: #000000;"> {
+</span><span style="color: #008080;"> 70</span>             k = 'tag'<span style="color: #000000;">;
+</span><span style="color: #008080;"> 71</span> <span style="color: #000000;">        }
+</span><span style="color: #008080;"> 72</span>         <span style="color: #0000ff;">return</span><span style="color: #000000;"> {
+</span><span style="color: #008080;"> 73</span> <span style="color: #000000;">            k: k,
+</span><span style="color: #008080;"> 74</span> <span style="color: #000000;">            v: v
+</span><span style="color: #008080;"> 75</span> <span style="color: #000000;">        };
+</span><span style="color: #008080;"> 76</span> <span style="color: #000000;">    }
+</span><span style="color: #008080;"> 77</span> 
+<span style="color: #008080;"> 78</span>     <span style="color: #0000ff;">var</span> query = <span style="color: #0000ff;">function</span><span style="color: #000000;"> (str) {
+</span><span style="color: #008080;"> 79</span>         <span style="color: #0000ff;">var</span> kv =<span style="color: #000000;"> getKV(str)
+</span><span style="color: #008080;"> 80</span>         <span style="color: #0000ff;">return</span> (queryFunc[kv.k] &amp;&amp;<span style="color: #000000;"> queryFunc[kv.k](kv.v));
+</span><span style="color: #008080;"> 81</span> <span style="color: #000000;">    };
+</span><span style="color: #008080;"> 82</span>     <span style="color: #0000ff;">var</span> filter = <span style="color: #0000ff;">function</span><span style="color: #000000;"> (el, str) {
+</span><span style="color: #008080;"> 83</span>         <span style="color: #0000ff;">var</span> kv =<span style="color: #000000;"> getKV(str);
+</span><span style="color: #008080;"> 84</span>         <span style="color: #0000ff;">return</span> (filterFunc[kv.k] &amp;&amp;<span style="color: #000000;"> filterFunc[kv.k](el, kv.v));
+</span><span style="color: #008080;"> 85</span> <span style="color: #000000;">    };
+</span><span style="color: #008080;"> 86</span>     <span style="color: #0000ff;">var</span> explodeSelector = <span style="color: #0000ff;">function</span><span style="color: #000000;"> (str) {
+</span><span style="color: #008080;"> 87</span>         <span style="color: #0000ff;">if</span> (!str) <span style="color: #0000ff;">return</span><span style="color: #000000;"> [];
+</span><span style="color: #008080;"> 88</span>         <span style="color: #008000;">//</span><span style="color: #008000;">第一步去掉多余的空格</span>
+<span style="color: #008080;"> 89</span>         str = str.replace(/\s+/g, ' '<span style="color: #000000;">);
+</span><span style="color: #008080;"> 90</span>         <span style="color: #0000ff;">var</span> arr = str.split(' '<span style="color: #000000;">);
+</span><span style="color: #008080;"> 91</span>         <span style="color: #0000ff;">return</span><span style="color: #000000;"> arr;
+</span><span style="color: #008080;"> 92</span> <span style="color: #000000;">    };
+</span><span style="color: #008080;"> 93</span>     <span style="color: #008000;">//</span><span style="color: #008000;">筛选元素是否具有该属性</span>
+<span style="color: #008080;"> 94</span> 
+<span style="color: #008080;"> 95</span>     <span style="color: #0000ff;">var</span> queryAll = <span style="color: #0000ff;">function</span><span style="color: #000000;"> (str) {
+</span><span style="color: #008080;"> 96</span>         <span style="color: #0000ff;">var</span> arrSelector =<span style="color: #000000;"> explodeSelector(str);
+</span><span style="color: #008080;"> 97</span>         <span style="color: #0000ff;">var</span> len =<span style="color: #000000;"> arrSelector.length;
+</span><span style="color: #008080;"> 98</span> 
+<span style="color: #008080;"> 99</span>         <span style="color: #008000;">//</span><span style="color: #008000;">当前索引</span>
+<span style="color: #008080;">100</span>         <span style="color: #0000ff;">var</span> index = len - 2<span style="color: #000000;">;
+</span><span style="color: #008080;">101</span>         <span style="color: #0000ff;">var</span> curDom = <span style="color: #0000ff;">null</span><span style="color: #000000;">;
+</span><span style="color: #008080;">102</span>         <span style="color: #0000ff;">var</span> curSelector = <span style="color: #0000ff;">null</span><span style="color: #000000;">;
+</span><span style="color: #008080;">103</span> 
+<span style="color: #008080;">104</span>         <span style="color: #008000;">//</span><span style="color: #008000;">第一轮筛选出来的元素</span>
+<span style="color: #008080;">105</span>         <span style="color: #0000ff;">var</span> els = query(arrSelector[len - 1<span style="color: #000000;">]);
+</span><span style="color: #008080;">106</span>         <span style="color: #008000;">//</span><span style="color: #008000;">只有一个选择器便直接返回了</span>
+<span style="color: #008080;">107</span>         <span style="color: #0000ff;">if</span> (len == 1) <span style="color: #0000ff;">return</span><span style="color: #000000;"> els;
+</span><span style="color: #008080;">108</span> 
+<span style="color: #008080;">109</span>         <span style="color: #0000ff;">while</span> (index != -1<span style="color: #000000;">) {
+</span><span style="color: #008080;">110</span>             <span style="color: #008000;">//</span><span style="color: #008000;">获取当前的筛选选择器</span>
+<span style="color: #008080;">111</span>             curSelector =<span style="color: #000000;"> arrSelector[index];
+</span><span style="color: #008080;">112</span>             <span style="color: #0000ff;">var</span> tmpArr =<span style="color: #000000;"> [];
+</span><span style="color: #008080;">113</span>             <span style="color: #0000ff;">for</span> (<span style="color: #0000ff;">var</span> i = 0, len = els.length; i &lt; len; i++<span style="color: #000000;">) {
+</span><span style="color: #008080;">114</span>                 <span style="color: #0000ff;">var</span> tmpEl =<span style="color: #000000;"> els[i];
+</span><span style="color: #008080;">115</span>                 <span style="color: #0000ff;">if</span><span style="color: #000000;"> (filter(tmpEl, curSelector))
+</span><span style="color: #008080;">116</span> <span style="color: #000000;">                    tmpArr.push(tmpEl);
+</span><span style="color: #008080;">117</span> <span style="color: #000000;">            }
+</span><span style="color: #008080;">118</span>             els =<span style="color: #000000;"> tmpArr;
+</span><span style="color: #008080;">119</span>             index--<span style="color: #000000;">;
+</span><span style="color: #008080;">120</span> <span style="color: #000000;">        }
+</span><span style="color: #008080;">121</span>         <span style="color: #0000ff;">return</span><span style="color: #000000;"> els;
+</span><span style="color: #008080;">122</span> <span style="color: #000000;">    };
+</span><span style="color: #008080;">123</span>     window.queryAll =<span style="color: #000000;"> queryAll;
+</span><span style="color: #008080;">124</span> })();</pre>
+</div>
+<h2>基本思路</h2>
+<p>① 获取选择器字符串，并将之分解为一个数组</p>
+<div class="cnblogs_code">
+<pre><span style="color: #0000ff;">var</span> explodeSelector = <span style="color: #0000ff;">function</span><span style="color: #000000;"> (str) {
+    </span><span style="color: #0000ff;">if</span> (!str) <span style="color: #0000ff;">return</span><span style="color: #000000;"> [];
+    </span><span style="color: #008000;">//</span><span style="color: #008000;">第一步去掉多余的空格</span>
+    str = str.replace(/\s+/g, ' '<span style="color: #000000;">);
+    </span><span style="color: #0000ff;">var</span> arr = str.split(' '<span style="color: #000000;">);
+    </span><span style="color: #0000ff;">return</span><span style="color: #000000;"> arr;
+};</span></pre>
+</div>
+<p>② 与CSS选择器一致，根据各种条件选取相关元素</p>
+<div class="cnblogs_code">
+<pre><span style="color: #008080;"> 1</span> <span style="color: #0000ff;">var</span> queryFunc =<span style="color: #000000;"> {
+</span><span style="color: #008080;"> 2</span>     '#': <span style="color: #0000ff;">function</span><span style="color: #000000;"> (id) {
+</span><span style="color: #008080;"> 3</span>         <span style="color: #0000ff;">var</span> arr =<span style="color: #000000;"> [];
+</span><span style="color: #008080;"> 4</span> <span style="color: #000000;">        arr.push(document.getElementById(id))
+</span><span style="color: #008080;"> 5</span>         <span style="color: #0000ff;">return</span><span style="color: #000000;"> arr;
+</span><span style="color: #008080;"> 6</span> <span style="color: #000000;">    },
+</span><span style="color: #008080;"> 7</span>     '.': <span style="color: #0000ff;">function</span><span style="color: #000000;"> (className) {
+</span><span style="color: #008080;"> 8</span>         <span style="color: #0000ff;">var</span> els = document.getElementsByTagName('*'<span style="color: #000000;">);
+</span><span style="color: #008080;"> 9</span>         <span style="color: #0000ff;">var</span> reg = <span style="color: #0000ff;">new</span> RegExp('(^|\\s)' + className + '(\\s|$)'<span style="color: #000000;">);
+</span><span style="color: #008080;">10</span>         <span style="color: #0000ff;">var</span> arr =<span style="color: #000000;"> [];
+</span><span style="color: #008080;">11</span>         <span style="color: #0000ff;">for</span> (<span style="color: #0000ff;">var</span> i = 0, len = els.length; i &lt; len; i++<span style="color: #000000;">) {
+</span><span style="color: #008080;">12</span>             <span style="color: #0000ff;">if</span><span style="color: #000000;"> (reg.test(els[i].className)) {
+</span><span style="color: #008080;">13</span> <span style="color: #000000;">                arr.push(els[i]);
+</span><span style="color: #008080;">14</span> <span style="color: #000000;">            }
+</span><span style="color: #008080;">15</span> <span style="color: #000000;">        }
+</span><span style="color: #008080;">16</span>         <span style="color: #0000ff;">return</span><span style="color: #000000;"> arr;
+</span><span style="color: #008080;">17</span> <span style="color: #000000;">    },
+</span><span style="color: #008080;">18</span>     'tag': <span style="color: #0000ff;">function</span><span style="color: #000000;"> (tag) {
+</span><span style="color: #008080;">19</span>         <span style="color: #0000ff;">return</span><span style="color: #000000;"> document.getElementsByTagName(tag);
+</span><span style="color: #008080;">20</span> <span style="color: #000000;">    }
+</span><span style="color: #008080;">21</span> };</pre>
+</div>
+<p>③ 根据选择器与获得的dom数组，判断其父元素是否具有相关属性（id，className，tag），有便留下来，没有就不管他</p>
+<p>过滤下来的就是我们要的元素：</p>
+<div class="cnblogs_code">
+<pre><span style="color: #008080;"> 1</span> <span style="color: #0000ff;">var</span> filterFunc =<span style="color: #000000;"> {
+</span><span style="color: #008080;"> 2</span>     '#': <span style="color: #0000ff;">function</span><span style="color: #000000;"> (el, id) {
+</span><span style="color: #008080;"> 3</span>         <span style="color: #0000ff;">return</span> <span style="color: #0000ff;">this</span>.commomFunc(el, <span style="color: #0000ff;">function</span><span style="color: #000000;"> (p) {
+</span><span style="color: #008080;"> 4</span>             <span style="color: #0000ff;">if</span> (p.id ==<span style="color: #000000;"> id) {
+</span><span style="color: #008080;"> 5</span>                 <span style="color: #0000ff;">return</span> <span style="color: #0000ff;">true</span><span style="color: #000000;">;
+</span><span style="color: #008080;"> 6</span> <span style="color: #000000;">            }
+</span><span style="color: #008080;"> 7</span> <span style="color: #000000;">        });
+</span><span style="color: #008080;"> 8</span> <span style="color: #000000;">    },
+</span><span style="color: #008080;"> 9</span>     '.': <span style="color: #0000ff;">function</span><span style="color: #000000;"> (el, className) {
+</span><span style="color: #008080;">10</span>         <span style="color: #0000ff;">var</span> reg = <span style="color: #0000ff;">new</span> RegExp('(^|\\s)' + className + '(\\s|$)'<span style="color: #000000;">);
+</span><span style="color: #008080;">11</span>         <span style="color: #0000ff;">return</span> <span style="color: #0000ff;">this</span>.commomFunc(el, <span style="color: #0000ff;">function</span><span style="color: #000000;"> (p) {
+</span><span style="color: #008080;">12</span>             <span style="color: #0000ff;">if</span><span style="color: #000000;"> (reg.test(p.className)) {
+</span><span style="color: #008080;">13</span>                 <span style="color: #0000ff;">return</span> <span style="color: #0000ff;">true</span><span style="color: #000000;">;
+</span><span style="color: #008080;">14</span> <span style="color: #000000;">            }
+</span><span style="color: #008080;">15</span> <span style="color: #000000;">        });
+</span><span style="color: #008080;">16</span> <span style="color: #000000;">    },
+</span><span style="color: #008080;">17</span>     'tag': <span style="color: #0000ff;">function</span><span style="color: #000000;"> (el, tag) {
+</span><span style="color: #008080;">18</span>         <span style="color: #0000ff;">return</span> <span style="color: #0000ff;">this</span>.commomFunc(el, <span style="color: #0000ff;">function</span><span style="color: #000000;"> (p) {
+</span><span style="color: #008080;">19</span>             <span style="color: #0000ff;">if</span> (p.tagName.toLowerCase() ==<span style="color: #000000;"> tag) {
+</span><span style="color: #008080;">20</span>                 <span style="color: #0000ff;">return</span> <span style="color: #0000ff;">true</span><span style="color: #000000;">;
+</span><span style="color: #008080;">21</span> <span style="color: #000000;">            }
+</span><span style="color: #008080;">22</span> <span style="color: #000000;">        });
+</span><span style="color: #008080;">23</span> <span style="color: #000000;">    },
+</span><span style="color: #008080;">24</span>     commomFunc: <span style="color: #0000ff;">function</span><span style="color: #000000;"> (el, callback) {
+</span><span style="color: #008080;">25</span>         <span style="color: #0000ff;">var</span> p =<span style="color: #000000;"> el;
+</span><span style="color: #008080;">26</span>         <span style="color: #0000ff;">var</span> end = <span style="color: #0000ff;">false</span><span style="color: #000000;">;
+</span><span style="color: #008080;">27</span>         <span style="color: #0000ff;">while</span> (!<span style="color: #000000;">end) {
+</span><span style="color: #008080;">28</span>             p = p.parentNode || p.parentElement || <span style="color: #0000ff;">null</span><span style="color: #000000;">;
+</span><span style="color: #008080;">29</span>             <span style="color: #0000ff;">if</span> (!p) <span style="color: #0000ff;">return</span> <span style="color: #0000ff;">false</span><span style="color: #000000;">;
+</span><span style="color: #008080;">30</span>             <span style="color: #0000ff;">var</span> b = callback &amp;&amp;<span style="color: #000000;"> callback(p);
+</span><span style="color: #008080;">31</span>             <span style="color: #0000ff;">if</span> (b) <span style="color: #0000ff;">return</span><span style="color: #000000;"> b;
+</span><span style="color: #008080;">32</span>             <span style="color: #0000ff;">if</span> (p.tagName == 'BODY'<span style="color: #000000;">) {
+</span><span style="color: #008080;">33</span>                 end = <span style="color: #0000ff;">true</span><span style="color: #000000;">;
+</span><span style="color: #008080;">34</span> <span style="color: #000000;">            }
+</span><span style="color: #008080;">35</span> <span style="color: #000000;">        }
+</span><span style="color: #008080;">36</span>         <span style="color: #0000ff;">return</span> <span style="color: #0000ff;">false</span><span style="color: #000000;">;
+</span><span style="color: #008080;">37</span> <span style="color: #000000;">    }
+</span><span style="color: #008080;">38</span> };</pre>
+</div>
+<div class="cnblogs_code">
+<pre><span style="color: #008080;"> 1</span> <span style="color: #0000ff;">var</span> queryAll = <span style="color: #0000ff;">function</span><span style="color: #000000;"> (str) {
+</span><span style="color: #008080;"> 2</span>     <span style="color: #0000ff;">var</span> arrSelector =<span style="color: #000000;"> explodeSelector(str);
+</span><span style="color: #008080;"> 3</span>     <span style="color: #0000ff;">var</span> len =<span style="color: #000000;"> arrSelector.length;
+</span><span style="color: #008080;"> 4</span> 
+<span style="color: #008080;"> 5</span>     <span style="color: #008000;">//</span><span style="color: #008000;">当前索引</span>
+<span style="color: #008080;"> 6</span>     <span style="color: #0000ff;">var</span> index = len - 2<span style="color: #000000;">;
+</span><span style="color: #008080;"> 7</span>     <span style="color: #0000ff;">var</span> curDom = <span style="color: #0000ff;">null</span><span style="color: #000000;">;
+</span><span style="color: #008080;"> 8</span>     <span style="color: #0000ff;">var</span> curSelector = <span style="color: #0000ff;">null</span><span style="color: #000000;">;
+</span><span style="color: #008080;"> 9</span> 
+<span style="color: #008080;">10</span>     <span style="color: #008000;">//</span><span style="color: #008000;">第一轮筛选出来的元素</span>
+<span style="color: #008080;">11</span>     <span style="color: #0000ff;">var</span> els = query(arrSelector[len - 1<span style="color: #000000;">]);
+</span><span style="color: #008080;">12</span>     <span style="color: #008000;">//</span><span style="color: #008000;">只有一个选择器便直接返回了</span>
+<span style="color: #008080;">13</span>     <span style="color: #0000ff;">if</span> (len == 1) <span style="color: #0000ff;">return</span><span style="color: #000000;"> els;
+</span><span style="color: #008080;">14</span> 
+<span style="color: #008080;">15</span>     <span style="color: #0000ff;">while</span> (index != -1<span style="color: #000000;">) {
+</span><span style="color: #008080;">16</span>         <span style="color: #008000;">//</span><span style="color: #008000;">获取当前的筛选选择器</span>
+<span style="color: #008080;">17</span>         curSelector =<span style="color: #000000;"> arrSelector[index];
+</span><span style="color: #008080;">18</span>         <span style="color: #0000ff;">var</span> tmpArr =<span style="color: #000000;"> [];
+</span><span style="color: #008080;">19</span>         <span style="color: #0000ff;">for</span> (<span style="color: #0000ff;">var</span> i = 0, len = els.length; i &lt; len; i++<span style="color: #000000;">) {
+</span><span style="color: #008080;">20</span>             <span style="color: #0000ff;">var</span> tmpEl =<span style="color: #000000;"> els[i];
+</span><span style="color: #008080;">21</span>             <span style="color: #0000ff;">if</span><span style="color: #000000;"> (filter(tmpEl, curSelector))
+</span><span style="color: #008080;">22</span> <span style="color: #000000;">                tmpArr.push(tmpEl);
+</span><span style="color: #008080;">23</span> <span style="color: #000000;">        }
+</span><span style="color: #008080;">24</span>         els =<span style="color: #000000;"> tmpArr;
+</span><span style="color: #008080;">25</span>         index--<span style="color: #000000;">;
+</span><span style="color: #008080;">26</span> <span style="color: #000000;">    }
+</span><span style="color: #008080;">27</span>     <span style="color: #0000ff;">return</span><span style="color: #000000;"> els;
+</span><span style="color: #008080;">28</span> };</pre>
+</div>
+<p>④，然后，就没有然后了。。。。</p>
+<h1>不足与提高</h1>
+<p>这个代码明显就是玩具，三无产品：</p>
+<p>① 无测试</p>
+<p>② 无子选择器/兄弟选择器</p>
+<p>③ 无性能</p>
+<p>但是，以上东西暂时和我无关啦，因为学习嘛。。。。</p>
+<p>最后附上师兄选择器代码：</p>
+<div class="cnblogs_code" onclick="cnblogs_code_show('43a4b41c-a44e-4c44-b9c9-8fbe7c02d475')"><img id="code_img_closed_43a4b41c-a44e-4c44-b9c9-8fbe7c02d475" class="code_img_closed" src="43570758473519.gif" alt=""><img id="code_img_opened_43a4b41c-a44e-4c44-b9c9-8fbe7c02d475" class="code_img_opened" style="display: none;" onclick="cnblogs_code_hide('43a4b41c-a44e-4c44-b9c9-8fbe7c02d475',event)" src="16365178109279.gif" alt="">
+<div id="cnblogs_code_open_43a4b41c-a44e-4c44-b9c9-8fbe7c02d475" class="cnblogs_code_hide">
+<pre><span style="color: #008080;">  1</span> &lt;!doctype html&gt;
+<span style="color: #008080;">  2</span> &lt;html&gt;
+<span style="color: #008080;">  3</span> &lt;head&gt;
+<span style="color: #008080;">  4</span>     &lt;title&gt;aiQuery test&lt;/title&gt;
+<span style="color: #008080;">  5</span>     &lt;script type="text/javascript"&gt;
+<span style="color: #008080;">  6</span>         <span style="color: #008000;">/*</span><span style="color: #008000;">*
+</span><span style="color: #008080;">  7</span> <span style="color: #008000;">        * aiQuery
+</span><span style="color: #008080;">  8</span> <span style="color: #008000;">        * @author ouxingzhi 
+</span><span style="color: #008080;">  9</span>         <span style="color: #008000;">*/</span>
+<span style="color: #008080;"> 10</span>         <span style="color: #0000ff;">void</span> <span style="color: #0000ff;">function</span><span style="color: #000000;"> (window, document, undefined) {
+</span><span style="color: #008080;"> 11</span>             <span style="color: #0000ff;">var</span> location =<span style="color: #000000;"> window.location,
+</span><span style="color: #008080;"> 12</span>        Slice =<span style="color: #000000;"> [].slice,
+</span><span style="color: #008080;"> 13</span>        RegTrim = /(?:^\s+|\s+$)/<span style="color: #000000;">,
+</span><span style="color: #008080;"> 14</span>        RegBlank = /\s+/<span style="color: #000000;">,
+</span><span style="color: #008080;"> 15</span>        RegOperate = /\s*(?:\s|&gt;|\+|~(?!\=))\s*/<span style="color: #000000;">i,
+</span><span style="color: #008080;"> 16</span>        RegElement = /^([\w\-]+|\*)?(?:\#([\w\-]+))?(?:\.([\w\-]+))?(?:\[([\w-]+)(?:([~|\^|\$|\*|\|]?=)['"]?([\w-]+)['"]?)?\])?(?:\:([\w-]+(?:\([\w-]+\))?))?$/<span style="color: #000000;">i;
+</span><span style="color: #008080;"> 17</span>             <span style="color: #0000ff;">function</span><span style="color: #000000;"> AIQuery(Selector, Content) {
+</span><span style="color: #008080;"> 18</span>                 Selector = Selector.replace(RegTrim, ''<span style="color: #000000;">);
+</span><span style="color: #008080;"> 19</span>                 Content = Content ||<span style="color: #000000;"> document;
+</span><span style="color: #008080;"> 20</span>                 <span style="color: #0000ff;">if</span><span style="color: #000000;"> (Content.querySelectorAll) {
+</span><span style="color: #008080;"> 21</span>                     <span style="color: #0000ff;">return</span><span style="color: #000000;"> Slice.call(Content.querySelectorAll(Selector));
+</span><span style="color: #008080;"> 22</span>                 } <span style="color: #0000ff;">else</span><span style="color: #000000;"> {
+</span><span style="color: #008080;"> 23</span>                     <span style="color: #0000ff;">return</span><span style="color: #000000;"> querySelectorAll(Selector, Content)
+</span><span style="color: #008080;"> 24</span> <span style="color: #000000;">                }
+</span><span style="color: #008080;"> 25</span> <span style="color: #000000;">            }
+</span><span style="color: #008080;"> 26</span>             <span style="color: #0000ff;">function</span><span style="color: #000000;"> querySelectorAll(Selector, Content) {
+</span><span style="color: #008080;"> 27</span>                 <span style="color: #0000ff;">var</span> Groups = Selector.split(/\s*\,\s*/<span style="color: #000000;">img),
+</span><span style="color: #008080;"> 28</span>            Results =<span style="color: #000000;"> [];
+</span><span style="color: #008080;"> 29</span>                 <span style="color: #0000ff;">for</span> (<span style="color: #0000ff;">var</span> i = 0<span style="color: #000000;">,
+</span><span style="color: #008080;"> 30</span>            len = Groups.length; i &lt; len; i++<span style="color: #000000;">) {
+</span><span style="color: #008080;"> 31</span>                     Results =<span style="color: #000000;"> Results.concat(Find(Groups[i], Content))
+</span><span style="color: #008080;"> 32</span> <span style="color: #000000;">                }
+</span><span style="color: #008080;"> 33</span>                 <span style="color: #0000ff;">return</span><span style="color: #000000;"> Results
+</span><span style="color: #008080;"> 34</span> <span style="color: #000000;">            }
+</span><span style="color: #008080;"> 35</span>             <span style="color: #0000ff;">function</span><span style="color: #000000;"> Find(Selector, Content) {
+</span><span style="color: #008080;"> 36</span>                 <span style="color: #0000ff;">var</span> Results =<span style="color: #000000;"> [],
+</span><span style="color: #008080;"> 37</span>            atoms =<span style="color: #000000;"> Selector.split(RegOperate),
+</span><span style="color: #008080;"> 38</span>            operates =<span style="color: #000000;"> Selector.match(RegOperate);
+</span><span style="color: #008080;"> 39</span>                 operates = operates ||<span style="color: #000000;"> [];
+</span><span style="color: #008080;"> 40</span>                 <span style="color: #0000ff;">for</span> (<span style="color: #0000ff;">var</span> i = 0<span style="color: #000000;">,
+</span><span style="color: #008080;"> 41</span>            len = operates.length; i &lt; len; i++) (operates[i] = /^\s+$/.test(operates[i]) ? ' ' : operates[i].replace(RegTrim, ''<span style="color: #000000;">));
+</span><span style="color: #008080;"> 42</span>                 <span style="color: #0000ff;">var</span> Results = EachTo(' '<span style="color: #000000;">, atoms.shift(), operates, atoms, Content);
+</span><span style="color: #008080;"> 43</span>                 <span style="color: #0000ff;">return</span><span style="color: #000000;"> Results
+</span><span style="color: #008080;"> 44</span> <span style="color: #000000;">            }
+</span><span style="color: #008080;"> 45</span>             <span style="color: #0000ff;">function</span><span style="color: #000000;"> EachTo(op, at, operates, atoms, Content) {
+</span><span style="color: #008080;"> 46</span>                 <span style="color: #0000ff;">var</span> Results =<span style="color: #000000;"> [],
+</span><span style="color: #008080;"> 47</span>            Median =<span style="color: #000000;"> [],
+</span><span style="color: #008080;"> 48</span> <span style="color: #000000;">           operate,
+</span><span style="color: #008080;"> 49</span> <span style="color: #000000;">           atom;
+</span><span style="color: #008080;"> 50</span>                 <span style="color: #0000ff;">if</span> (Content.constructor === Array || 'length' <span style="color: #0000ff;">in</span><span style="color: #000000;"> Content) {
+</span><span style="color: #008080;"> 51</span>                     <span style="color: #0000ff;">for</span> (<span style="color: #0000ff;">var</span> i = 0<span style="color: #000000;">,
+</span><span style="color: #008080;"> 52</span>                len = Content.length; i &lt; len; i++<span style="color: #000000;">) {
+</span><span style="color: #008080;"> 53</span>                         Results = Results.concat(EachTo(op, at, operates.slice(0), atoms.slice(0<span style="color: #000000;">), Content[i]))
+</span><span style="color: #008080;"> 54</span> <span style="color: #000000;">                    }
+</span><span style="color: #008080;"> 55</span>                 } <span style="color: #0000ff;">else</span> <span style="color: #0000ff;">if</span> (Content.constructor ===<span style="color: #000000;"> String) {
+</span><span style="color: #008080;"> 56</span>                     Content =<span style="color: #000000;"> Find(Content, document);
+</span><span style="color: #008080;"> 57</span>                     Results.concat(EachTo(op, at, operates.slice(0), atoms.slice(0<span style="color: #000000;">), Content[i]))
+</span><span style="color: #008080;"> 58</span>                 } <span style="color: #0000ff;">else</span><span style="color: #000000;"> {
+</span><span style="color: #008080;"> 59</span>                     Median =<span style="color: #000000;"> GetElementByAny(op, at, Content);
+</span><span style="color: #008080;"> 60</span>                     <span style="color: #0000ff;">if</span><span style="color: #000000;"> (Median) {
+</span><span style="color: #008080;"> 61</span>                         <span style="color: #0000ff;">if</span> (operates &amp;&amp; operates.length &amp;&amp; atoms &amp;&amp;<span style="color: #000000;"> atoms.length) {
+</span><span style="color: #008080;"> 62</span>                             Results =<span style="color: #000000;"> EachTo(operates.shift(), atoms.shift(), operates, atoms, Median)
+</span><span style="color: #008080;"> 63</span>                         } <span style="color: #0000ff;">else</span><span style="color: #000000;"> {
+</span><span style="color: #008080;"> 64</span>                             Results =<span style="color: #000000;"> Median
+</span><span style="color: #008080;"> 65</span> <span style="color: #000000;">                        }
+</span><span style="color: #008080;"> 66</span> <span style="color: #000000;">                    }
+</span><span style="color: #008080;"> 67</span> <span style="color: #000000;">                }
+</span><span style="color: #008080;"> 68</span>                 <span style="color: #0000ff;">return</span><span style="color: #000000;"> Results
+</span><span style="color: #008080;"> 69</span> <span style="color: #000000;">            }
+</span><span style="color: #008080;"> 70</span>             <span style="color: #0000ff;">function</span><span style="color: #000000;"> GetElementByAny(op, at, Content) {
+</span><span style="color: #008080;"> 71</span>                 <span style="color: #0000ff;">if</span> (<span style="color: #0000ff;">typeof</span> OperateFunction[op] !== 'undefined'<span style="color: #000000;">) {
+</span><span style="color: #008080;"> 72</span>                     <span style="color: #0000ff;">return</span><span style="color: #000000;"> OperateFunction[op](at, Content)
+</span><span style="color: #008080;"> 73</span> <span style="color: #000000;">                }
+</span><span style="color: #008080;"> 74</span> <span style="color: #000000;">            }
+</span><span style="color: #008080;"> 75</span>             <span style="color: #0000ff;">var</span> OperateFunction =<span style="color: #000000;"> {
+</span><span style="color: #008080;"> 76</span>                 ' ': <span style="color: #0000ff;">function</span><span style="color: #000000;"> (at, Content) {
+</span><span style="color: #008080;"> 77</span>                     <span style="color: #0000ff;">var</span> einfo =<span style="color: #000000;"> buildElementInfo(at),
+</span><span style="color: #008080;"> 78</span>                preNodes =<span style="color: #000000;"> [];
+</span><span style="color: #008080;"> 79</span>                     <span style="color: #0000ff;">if</span> (!einfo) <span style="color: #0000ff;">return</span><span style="color: #000000;"> [];
+</span><span style="color: #008080;"> 80</span>                     <span style="color: #0000ff;">if</span><span style="color: #000000;"> (einfo.Id) {
+</span><span style="color: #008080;"> 81</span>                         preNodes =<span style="color: #000000;"> document.getElementById(einfo.Id);
+</span><span style="color: #008080;"> 82</span>                         preNodes = preNodes ?<span style="color: #000000;"> [preNodes] : []
+</span><span style="color: #008080;"> 83</span>                     } <span style="color: #0000ff;">else</span> <span style="color: #0000ff;">if</span> (einfo.ClassName &amp;&amp;<span style="color: #000000;"> Content.getElementsByClassName) {
+</span><span style="color: #008080;"> 84</span>                         preNodes =<span style="color: #000000;"> Content.getElementsByClassName(einfo.ClassName);
+</span><span style="color: #008080;"> 85</span>                         preNodes = preNodes ||<span style="color: #000000;"> []
+</span><span style="color: #008080;"> 86</span>                     } <span style="color: #0000ff;">else</span> <span style="color: #0000ff;">if</span> (einfo.TagName &amp;&amp;<span style="color: #000000;"> Content.getElementsByTagName) {
+</span><span style="color: #008080;"> 87</span>                         preNodes =<span style="color: #000000;"> Content.getElementsByTagName(einfo.TagName);
+</span><span style="color: #008080;"> 88</span>                         preNodes = preNodes ||<span style="color: #000000;"> []
+</span><span style="color: #008080;"> 89</span>                     } <span style="color: #0000ff;">else</span><span style="color: #000000;"> {
+</span><span style="color: #008080;"> 90</span>                         preNodes = Content.getElementsByTagName('*'<span style="color: #000000;">);
+</span><span style="color: #008080;"> 91</span>                         preNodes = preNodes ||<span style="color: #000000;"> []
+</span><span style="color: #008080;"> 92</span> <span style="color: #000000;">                    };
+</span><span style="color: #008080;"> 93</span>                     <span style="color: #0000ff;">return</span><span style="color: #000000;"> filterNode(einfo, preNodes)
+</span><span style="color: #008080;"> 94</span> <span style="color: #000000;">                },
+</span><span style="color: #008080;"> 95</span>                 '&gt;': <span style="color: #0000ff;">function</span><span style="color: #000000;"> (at, Content) {
+</span><span style="color: #008080;"> 96</span>                     <span style="color: #0000ff;">var</span> einfo =<span style="color: #000000;"> buildElementInfo(at);
+</span><span style="color: #008080;"> 97</span>                     preNodes = Content.childNodes ||<span style="color: #000000;"> [];
+</span><span style="color: #008080;"> 98</span>                     <span style="color: #0000ff;">if</span> (!einfo) <span style="color: #0000ff;">return</span><span style="color: #000000;"> [];
+</span><span style="color: #008080;"> 99</span>                     <span style="color: #0000ff;">return</span><span style="color: #000000;"> filterNode(einfo, preNodes)
+</span><span style="color: #008080;">100</span> <span style="color: #000000;">                },
+</span><span style="color: #008080;">101</span>                 '+': <span style="color: #0000ff;">function</span><span style="color: #000000;"> (at, Content) {
+</span><span style="color: #008080;">102</span>                     <span style="color: #0000ff;">if</span> (Content === document) <span style="color: #0000ff;">return</span><span style="color: #000000;"> [];
+</span><span style="color: #008080;">103</span>                     <span style="color: #0000ff;">var</span> einfo =<span style="color: #000000;"> buildElementInfo(at);
+</span><span style="color: #008080;">104</span>                     <span style="color: #0000ff;">if</span> (!einfo) <span style="color: #0000ff;">return</span><span style="color: #000000;"> [];
+</span><span style="color: #008080;">105</span>                     <span style="color: #0000ff;">var</span> results =<span style="color: #000000;"> [],
+</span><span style="color: #008080;">106</span>                preNodes = (<span style="color: #0000ff;">function</span><span style="color: #000000;"> () {
+</span><span style="color: #008080;">107</span>                    <span style="color: #0000ff;">var</span> nextNode =<span style="color: #000000;"> Content.nextSibling;
+</span><span style="color: #008080;">108</span>                    <span style="color: #0000ff;">while</span> (nextNode &amp;&amp; nextNode.nodeType != 1<span style="color: #000000;">) {
+</span><span style="color: #008080;">109</span>                        nextNode =<span style="color: #000000;"> nextNode.nextSibling
+</span><span style="color: #008080;">110</span> <span style="color: #000000;">                   }
+</span><span style="color: #008080;">111</span>                    <span style="color: #0000ff;">return</span><span style="color: #000000;"> nextNode
+</span><span style="color: #008080;">112</span> <span style="color: #000000;">               })();
+</span><span style="color: #008080;">113</span>                     preNodes = preNodes ?<span style="color: #000000;"> [preNodes] : [];
+</span><span style="color: #008080;">114</span>                     <span style="color: #0000ff;">if</span><span style="color: #000000;"> (preNodes.length) {
+</span><span style="color: #008080;">115</span>                         results =<span style="color: #000000;"> filterNode(einfo, preNodes)
+</span><span style="color: #008080;">116</span>                     } <span style="color: #0000ff;">else</span><span style="color: #000000;"> {
+</span><span style="color: #008080;">117</span>                         results =<span style="color: #000000;"> []
+</span><span style="color: #008080;">118</span> <span style="color: #000000;">                    }
+</span><span style="color: #008080;">119</span>                     <span style="color: #0000ff;">return</span><span style="color: #000000;"> results
+</span><span style="color: #008080;">120</span> <span style="color: #000000;">                },
+</span><span style="color: #008080;">121</span>                 '~': <span style="color: #0000ff;">function</span><span style="color: #000000;"> (at, Content) {
+</span><span style="color: #008080;">122</span>                     <span style="color: #0000ff;">if</span> (Content === document) <span style="color: #0000ff;">return</span><span style="color: #000000;"> [];
+</span><span style="color: #008080;">123</span>                     <span style="color: #0000ff;">var</span> einfo =<span style="color: #000000;"> buildElementInfo(at),
+</span><span style="color: #008080;">124</span>                preNodes =<span style="color: #000000;"> [];
+</span><span style="color: #008080;">125</span>                     <span style="color: #0000ff;">if</span> (!einfo) <span style="color: #0000ff;">return</span><span style="color: #000000;"> [];
+</span><span style="color: #008080;">126</span>                     <span style="color: #0000ff;">var</span> sibling = Content.parentNode ? Content.parentNode.childNodes : <span style="color: #0000ff;">null</span><span style="color: #000000;">;
+</span><span style="color: #008080;">127</span>                     <span style="color: #0000ff;">if</span><span style="color: #000000;"> (sibling) {
+</span><span style="color: #008080;">128</span>                         <span style="color: #0000ff;">for</span> (<span style="color: #0000ff;">var</span> i = 0<span style="color: #000000;">,
+</span><span style="color: #008080;">129</span>                    len = sibling.length; i &lt; len; i++) <span style="color: #0000ff;">if</span> (Content !==<span style="color: #000000;"> sibling[i]) preNodes.push(sibling[i])
+</span><span style="color: #008080;">130</span> <span style="color: #000000;">                    }
+</span><span style="color: #008080;">131</span>                     <span style="color: #0000ff;">return</span><span style="color: #000000;"> filterNode(einfo, preNodes)
+</span><span style="color: #008080;">132</span> <span style="color: #000000;">                }
+</span><span style="color: #008080;">133</span> <span style="color: #000000;">            };
+</span><span style="color: #008080;">134</span>             <span style="color: #0000ff;">function</span><span style="color: #000000;"> buildElementInfo(at) {
+</span><span style="color: #008080;">135</span>                 <span style="color: #0000ff;">var</span> Einfo =<span style="color: #000000;"> RegElement.exec(at);
+</span><span style="color: #008080;">136</span>                 <span style="color: #0000ff;">if</span> (!Einfo) <span style="color: #0000ff;">return</span><span style="color: #000000;">;
+</span><span style="color: #008080;">137</span>                 <span style="color: #0000ff;">return</span><span style="color: #000000;"> {
+</span><span style="color: #008080;">138</span>                     TagName: Einfo[1] ||<span style="color: #000000;"> undefined,
+</span><span style="color: #008080;">139</span>                     Id: Einfo[2] ||<span style="color: #000000;"> undefined,
+</span><span style="color: #008080;">140</span>                     ClassName: Einfo[3] ||<span style="color: #000000;"> undefined,
+</span><span style="color: #008080;">141</span>                     AttrName: Einfo[4] ||<span style="color: #000000;"> undefined,
+</span><span style="color: #008080;">142</span>                     AttrOper: Einfo[5] ||<span style="color: #000000;"> undefined,
+</span><span style="color: #008080;">143</span>                     AttrVal: Einfo[6] ||<span style="color: #000000;"> undefined,
+</span><span style="color: #008080;">144</span>                     FakeClass: Einfo[7] ||<span style="color: #000000;"> undefined
+</span><span style="color: #008080;">145</span> <span style="color: #000000;">                }
+</span><span style="color: #008080;">146</span> <span style="color: #000000;">            }
+</span><span style="color: #008080;">147</span>             <span style="color: #0000ff;">function</span><span style="color: #000000;"> filterNode(Einfo, Nodes) {
+</span><span style="color: #008080;">148</span>                 <span style="color: #0000ff;">var</span> results =<span style="color: #000000;"> [],
+
+</span><span style="color: #008080;">149</span> <span style="color: #000000;">               RegClassName,
+</span><span style="color: #008080;">150</span> <span style="color: #000000;">               isMatch;
+</span><span style="color: #008080;">151</span>                 <span style="color: #0000ff;">if</span> (Einfo.ClassName) RegClassName = <span style="color: #0000ff;">new</span> RegExp('\\b' + Einfo.ClassName + '\\b', 'i'<span style="color: #000000;">);
+</span><span style="color: #008080;">152</span>                 <span style="color: #0000ff;">for</span> (<span style="color: #0000ff;">var</span> i = 0<span style="color: #000000;">,
+</span><span style="color: #008080;">153</span>            len = Nodes.length; i &lt; len; i++<span style="color: #000000;">) {
+</span><span style="color: #008080;">154</span>                     isMatch = <span style="color: #0000ff;">true</span><span style="color: #000000;">;
+</span><span style="color: #008080;">155</span>                     <span style="color: #0000ff;">if</span> (Einfo.TagName !== undefined &amp;&amp; Einfo.TagName.toUpperCase() !== Nodes[i].nodeName) isMatch = <span style="color: #0000ff;">false</span><span style="color: #000000;">;
+</span><span style="color: #008080;">156</span>                     <span style="color: #0000ff;">if</span> (Einfo.Id !== undefined &amp;&amp; Einfo.Id !== Nodes[i].id) isMatch = <span style="color: #0000ff;">false</span><span style="color: #000000;">;
+</span><span style="color: #008080;">157</span>                     <span style="color: #0000ff;">if</span> (Einfo.ClassName !== undefined &amp;&amp; !Nodes[i].className.match(RegClassName)) isMatch = <span style="color: #0000ff;">false</span><span style="color: #000000;">;
+</span><span style="color: #008080;">158</span>                     isMatch =<span style="color: #000000;"> isMatchAttribute(Einfo, Nodes[i], isMatch);
+</span><span style="color: #008080;">159</span>                     isMatch =<span style="color: #000000;"> isMatchFakeClass(Einfo, Nodes[i], isMatch);
+</span><span style="color: #008080;">160</span>                     <span style="color: #0000ff;">if</span><span style="color: #000000;"> (isMatch) results.push(Nodes[i])
+</span><span style="color: #008080;">161</span> <span style="color: #000000;">                }
+</span><span style="color: #008080;">162</span>                 <span style="color: #0000ff;">return</span><span style="color: #000000;"> results
+</span><span style="color: #008080;">163</span> <span style="color: #000000;">            }
+</span><span style="color: #008080;">164</span>             <span style="color: #0000ff;">function</span><span style="color: #000000;"> isMatchAttribute(Einfo, node, isMatch) {
+</span><span style="color: #008080;">165</span>                 <span style="color: #0000ff;">if</span> (Einfo.AttrName === undefined &amp;&amp; Einfo.AttrOper === undefined &amp;&amp; Einfo.AttrVal === undefined) { } <span style="color: #0000ff;">else</span> <span style="color: #0000ff;">if</span> (Einfo.AttrName !== undefined &amp;&amp; Einfo.AttrOper === undefined &amp;&amp; Einfo.AttrVal === undefined &amp;&amp; node.getAttribute &amp;&amp; node.getAttribute(Einfo.AttrName) !== <span style="color: #0000ff;">null</span><span style="color: #000000;">) {
+</span><span style="color: #008080;">166</span>                     isMatch = <span style="color: #0000ff;">true</span>
+<span style="color: #008080;">167</span>                 } <span style="color: #0000ff;">else</span> <span style="color: #0000ff;">if</span> (Einfo.AttrName !== undefined &amp;&amp; Einfo.AttrOper !== undefined &amp;&amp; Einfo.AttrVal !== undefined &amp;&amp;<span style="color: #000000;"> node.getAttribute) {
+</span><span style="color: #008080;">168</span>                     <span style="color: #0000ff;">switch</span><span style="color: #000000;"> (Einfo.AttrOper) {
+</span><span style="color: #008080;">169</span>                         <span style="color: #0000ff;">case</span> '='<span style="color: #000000;">:
+</span><span style="color: #008080;">170</span>                             isMatch = node.getAttribute(Einfo.AttrName) ===<span style="color: #000000;"> Einfo.AttrVal;
+</span><span style="color: #008080;">171</span>                             <span style="color: #0000ff;">break</span><span style="color: #000000;">;
+</span><span style="color: #008080;">172</span>                         <span style="color: #0000ff;">case</span> '~='<span style="color: #000000;">:
+</span><span style="color: #008080;">173</span>                             isMatch = !!(node.getAttribute(Einfo.AttrName) &amp;&amp; node.getAttribute(Einfo.AttrName).match(<span style="color: #0000ff;">new</span> RegExp('(?:^|\\s+)' + Einfo.AttrVal + '(?:$|\\s+)', 'i'<span style="color: #000000;">)));
+</span><span style="color: #008080;">174</span>                             <span style="color: #0000ff;">break</span><span style="color: #000000;">;
+</span><span style="color: #008080;">175</span>                         <span style="color: #0000ff;">case</span> '^='<span style="color: #000000;">:
+</span><span style="color: #008080;">176</span>                             isMatch = !!(node.getAttribute(Einfo.AttrName) &amp;&amp; node.getAttribute(Einfo.AttrName).match(<span style="color: #0000ff;">new</span> RegExp('^' + Einfo.AttrVal, 'i'<span style="color: #000000;">)));
+</span><span style="color: #008080;">177</span>                             <span style="color: #0000ff;">break</span><span style="color: #000000;">;
+</span><span style="color: #008080;">178</span>                         <span style="color: #0000ff;">case</span> '$='<span style="color: #000000;">:
+</span><span style="color: #008080;">179</span>                             isMatch = !!(node.getAttribute(Einfo.AttrName) &amp;&amp; node.getAttribute(Einfo.AttrName).match(<span style="color: #0000ff;">new</span> RegExp(Einfo.AttrVal + '$', 'i'<span style="color: #000000;">)));
+</span><span style="color: #008080;">180</span>                             <span style="color: #0000ff;">break</span><span style="color: #000000;">;
+</span><span style="color: #008080;">181</span>                         <span style="color: #0000ff;">case</span> '*='<span style="color: #000000;">:
+</span><span style="color: #008080;">182</span>                             isMatch = !!(node.getAttribute(Einfo.AttrName) &amp;&amp; node.getAttribute(Einfo.AttrName).match(<span style="color: #0000ff;">new</span> RegExp(Einfo.AttrVal, 'i'<span style="color: #000000;">)));
+</span><span style="color: #008080;">183</span>                             <span style="color: #0000ff;">break</span><span style="color: #000000;">;
+</span><span style="color: #008080;">184</span>                         <span style="color: #0000ff;">case</span> '|='<span style="color: #000000;">:
+</span><span style="color: #008080;">185</span>                             isMatch = !!(node.getAttribute(Einfo.AttrName) &amp;&amp; node.getAttribute(Einfo.AttrName).match(<span style="color: #0000ff;">new</span> RegExp('(?:^|\\-)' + Einfo.AttrVal + '(?:$|\\-)', 'i'<span style="color: #000000;">)));
+</span><span style="color: #008080;">186</span>                             <span style="color: #0000ff;">break</span>
+<span style="color: #008080;">187</span> <span style="color: #000000;">                    }
+</span><span style="color: #008080;">188</span> <span style="color: #000000;">                }
+</span><span style="color: #008080;">189</span>                 <span style="color: #0000ff;">return</span><span style="color: #000000;"> isMatch
+</span><span style="color: #008080;">190</span> <span style="color: #000000;">            }
+</span><span style="color: #008080;">191</span>             <span style="color: #0000ff;">function</span><span style="color: #000000;"> isMatchFakeClass(Einfo, node, isMatch) {
+</span><span style="color: #008080;">192</span>                 <span style="color: #0000ff;">if</span> (Einfo.FakeClass === undefined) { } <span style="color: #0000ff;">else</span><span style="color: #000000;"> {
+</span><span style="color: #008080;">193</span>                     <span style="color: #0000ff;">switch</span><span style="color: #000000;"> (Einfo.FakeClass) {
+</span><span style="color: #008080;">194</span>                         <span style="color: #0000ff;">case</span> 'empty'<span style="color: #000000;">:
+</span><span style="color: #008080;">195</span>                             isMatch = node.innerHTML.replace(RegTrim, '').length == 0<span style="color: #000000;">;
+</span><span style="color: #008080;">196</span>                             <span style="color: #0000ff;">break</span><span style="color: #000000;">;
+</span><span style="color: #008080;">197</span>                         <span style="color: #0000ff;">case</span> 'checked'<span style="color: #000000;">:
+</span><span style="color: #008080;">198</span>                             <span style="color: #0000ff;">if</span> (node.nodeName.match(/(?:INPUT|TEXTAREA|BUTTON|SELECT|OPTION)/i)) isMatch = !!<span style="color: #000000;">node.checked;
+</span><span style="color: #008080;">199</span>                             <span style="color: #0000ff;">break</span><span style="color: #000000;">;
+</span><span style="color: #008080;">200</span>                         <span style="color: #0000ff;">case</span> 'enabled'<span style="color: #000000;">:
+</span><span style="color: #008080;">201</span>                             <span style="color: #0000ff;">if</span> (node.nodeName.match(/(?:INPUT|TEXTAREA|BUTTON|SELECT|OPTION)/i)) isMatch = !!<span style="color: #000000;">node.disabled;
+</span><span style="color: #008080;">202</span>                             <span style="color: #0000ff;">break</span><span style="color: #000000;">;
+</span><span style="color: #008080;">203</span>                         <span style="color: #0000ff;">case</span> 'disabled'<span style="color: #000000;">:
+</span><span style="color: #008080;">204</span>                             <span style="color: #0000ff;">if</span> (node.nodeName.match(/(?:INPUT|TEXTAREA|BUTTON|SELECT|OPTION)/i)) isMatch = !!<span style="color: #000000;">node.disabled;
+</span><span style="color: #008080;">205</span>                             <span style="color: #0000ff;">break</span><span style="color: #000000;">;
+</span><span style="color: #008080;">206</span>                         <span style="color: #0000ff;">case</span> 'target'<span style="color: #000000;">:
+</span><span style="color: #008080;">207</span>                             <span style="color: #0000ff;">var</span> hash = location.hash.replace('#', ''<span style="color: #000000;">);
+</span><span style="color: #008080;">208</span>                             isMatch = hash === node.id || (node.name &amp;&amp; hash ===<span style="color: #000000;"> node.name);
+</span><span style="color: #008080;">209</span>                             <span style="color: #0000ff;">break</span>
+<span style="color: #008080;">210</span> <span style="color: #000000;">                    }
+</span><span style="color: #008080;">211</span> <span style="color: #000000;">                }
+</span><span style="color: #008080;">212</span>                 <span style="color: #0000ff;">return</span><span style="color: #000000;"> isMatch
+</span><span style="color: #008080;">213</span> <span style="color: #000000;">            }
+</span><span style="color: #008080;">214</span>             window['aiQuery'] =<span style="color: #000000;"> AIQuery;
+</span><span style="color: #008080;">215</span> <span style="color: #000000;">        } (window, document);
+</span><span style="color: #008080;">216</span>            &lt;/script&gt;
+<span style="color: #008080;">217</span> &lt;/head&gt;
+<span style="color: #008080;">218</span> &lt;body&gt;
+<span style="color: #008080;">219</span>     &lt;div class="aaa"&gt;
+<span style="color: #008080;">220</span>         &lt;div class="bbb"&gt;
+<span style="color: #008080;">221</span>             &lt;label&gt;
+<span style="color: #008080;">222</span>                 用户名:&lt;/label&gt;
+<span style="color: #008080;">223</span>             &lt;input type="text" id="username" /&gt;
+<span style="color: #008080;">224</span>         &lt;/div&gt;
+<span style="color: #008080;">225</span>         &lt;pre&gt;
+<span style="color: #008080;">226</span> <span style="color: #008000;">//</span><span style="color: #008000;">使用方法</span>
+<span style="color: #008080;">227</span> alert(aiQuery('.aaa .bbb [type=text]'<span style="color: #000000;">));
+</span><span style="color: #008080;">228</span> alert(aiQuery('.aaa label + input'<span style="color: #000000;">));
+</span><span style="color: #008080;">229</span> alert(aiQuery('#username'<span style="color: #000000;">));
+</span><span style="color: #008080;">230</span> &lt;/pre&gt;
+<span style="color: #008080;">231</span>     &lt;/div&gt;
+<span style="color: #008080;">232</span>     &lt;script type="text/javascript"&gt;
+<span style="color: #008080;">233</span>         alert(aiQuery('.aaa .bbb [type=text]'<span style="color: #000000;">));
+</span><span style="color: #008080;">234</span>         alert(aiQuery('.aaa label + input'<span style="color: #000000;">));
+</span><span style="color: #008080;">235</span>         alert(aiQuery('#username'<span style="color: #000000;">));
+</span><span style="color: #008080;">236</span>            &lt;/script&gt;
+<span style="color: #008080;">237</span> &lt;/body&gt;
+<span style="color: #008080;">238</span> &lt;/html&gt;</pre>
+</div>
+<span class="cnblogs_code_collapse">View Code </span></div>
+<p>然后，就没有然后了。。。</p>
+<h1>小插曲-浮点数计算</h1>
+<p>今天项目重遇到一个问题，我和我的小伙伴都惊呆了：</p>
+<p><img src="38700186419576.png" alt=""></p>
+<p>你没有看错，33.1 * 3 就是那么多！！！</p>
+<p>尼玛已证明这是一个js的bug，我可以这么说么？？？</p>
+<p>解决方案，求回复（我会说我想骗点回复么？？？）</p>
+<p>&nbsp;</p>
+<div class="cnblogs_code">
+<pre>parseInt(33.1 * 3 * 100) / 100</pre>
+</div>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+                </div>
+
+                <div class='span3 sidebar'>
+                    <h2>导航栏</h2>
+                    <ul class="nav nav-tabs nav-stacked">
+                             				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/javascriptzdyxhxzsdyjxyzyddf/index.html">javascript中的一些核心知识点以及需要注意的地方</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/[zd]webappdyhzlyzydqdyhdpyjlkkb/index.html">[置顶]【webapp的优化整理】要做移动前端优化的朋友进来看看吧</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/[zd]yddjrwtyjjavascriptsjjzxjsjydjr/index.html">[置顶]【移动端兼容问题研究】javascript事件机制详解（涉及移动兼容）</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/gruntzhb30fzxhsygruntdbqddm/index.html">【grunt整合版】30分钟学会使用grunt打包前端代码</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/gruntdyd30fzxhsygruntdbqddm/index.html">【grunt第一弹】30分钟学会使用grunt打包前端代码</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/gruntdsdgruntzqdsjxmzdyy/index.html">【grunt第三弹】grunt在前端实际项目中的应用</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/gruntded30fzxhsygruntdbqddm02/index.html">【grunt第二弹】30分钟学会使用grunt打包前端代码（02）</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/IScrollsrxxtpyddhadlqs/index.html">【IScroll深入学习】突破移动端黑暗的利器（上）</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/IScrollsrxxjjIScrollynzz/index.html">【IScroll深入学习】解决IScroll疑难杂症</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/iScrollymxx00mniScroll/index.html">【iScroll源码学习00】模拟iScroll</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/iScrollymxx01zbjd/index.html">【iScroll源码学习01】准备阶段</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/iScrollymxx02fjiScrollsghxsjd/index.html">【iScroll源码学习02】分解iScroll三个核心事件点</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/iScrollymxx03iScrollsjjzygdtdsx/index.html">【iScroll源码学习03】iScroll事件机制与滚动条的实现</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/iScrollymxx04flIScrollhx/index.html">【iScroll源码学习04】分离IScroll核心</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/javascriptpxdytyyjc/index.html">【javascript培训第一天】语言基础</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/javascriptpxdstcybl/index.html">【javascript培训第三天】查遗补漏</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/javascriptpxdetDOMyBOM/index.html">【javascript培训第二天】DOM与BOM</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/javascriptjzdsk01mkhbc/index.html">【javascript激增的思考01】模块化编程</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/javascriptjzdsk02mkhyMVC/index.html">【javascript激增的思考02】模块化与MVC</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/javascriptjzdsk03MVVMyKnockout/index.html">【javascript激增的思考03】MVVM与Knockout</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/javascriptjzdsk04MVCyBackbonejs(beta)/index.html">【javascript激增的思考04】MVC与Backbonejs(beta)</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/javascriptmxdxzlrwmyqltkdzb01/index.html">【javascript面向对象之路】让我们一起来坦克大战吧01</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/NodeJSxxbj04xwfbxt/index.html">【NodeJS学习笔记04】新闻发布系统</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/requireJSymxx01ljzgrequireJSdjg/index.html">【requireJS源码学习01】了解整个requireJS的结构</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/requireJSymxx02datamainjzdsx/index.html">【requireJS源码学习02】datamain加载的实现</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/requireJSymxx03xjrequireJSdjzlc/index.html">【requireJS源码学习03】细究requireJS的加载流程</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/UIcjkfygjdrlcjs/index.html">【UI插件】开发一个简单日历插件（上）</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/UIcjjddrlcjxxxMVCsx/index.html">【UI插件】简单的日历插件（下）——学习MVC思想</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/zeptoxxbj01hxff$()/index.html">【zepto学习笔记01】核心方法$()</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/zeptoxxbj01hxff$()b/index.html">【zepto学习笔记01】核心方法$()（补）</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/zeptoxxbj02lsd/index.html">【zepto学习笔记02】零碎点</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/zeptoxxbj03sjjz/index.html">【zepto学习笔记03】事件机制</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/ycmsztjavascriptzdjc/index.html">【一次面试】再谈javascript中的继承</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/ztbackbone01mxModel/index.html">【再探backbone01】模型Model</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/ztbackbone02jhCollection/index.html">【再探backbone02】集合Collection</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/ztbackbone03bkydyyysltgym/index.html">【再探backbone03】博客园单页应用实例（提供源码）</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/ztbackbone04dyyydjslycl/index.html">【再探backbone04】单页应用的基石路由处理</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/ctUnderscorezsmbyq/index.html">【初探Underscore】再说模版引擎</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/ckjavascriptamzAjaxjsxnszddAjax/index.html">【初窥javascript奥秘之Ajax】简述下你所知道的Ajax？</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/ckjavascriptamzsjmpnxnwmyqmdp/index.html">【初窥javascript奥秘之事件冒泡】那些年我们一起冒的泡</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/ckjavascriptamzsjjzldtygdj/index.html">【初窥javascript奥秘之事件机制】论“点透”与“鬼点击”</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/ckjavascriptamzrrzmbddthisnzdxzthiszxnlm/index.html">【初窥javascript奥秘之让人捉摸不定的this】你知道现在this指向哪里吗？？？</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/ckjavascriptamzbbydxbdhlqbcl/index.html">【初窥javascript奥秘之闭包】叶大侠病都好了，求不踩了：）</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/ckjavascriptamzmxdxfzyjc/index.html">【初窥javascript奥秘之面向对象】封装与继承</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/qdmdsjdjgjdnzdljm/index.html">【前端盲点】事件的几个阶段你真的了解么？？？</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/dyyyviewymodelxgsl/index.html">【单页应用】view与model相关梳理</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/dyyyyqldyyybsxjdwbgns/index.html">【单页应用】一起来单页应用吧，实现简单微博功能！（上）</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/dyyyqjkzqappyggxsm/index.html">【单页应用】全局控制器app应该干些什么？</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/dyyywmgrhclkjdcccjgx/index.html">【单页应用】我们该如何处理框架弹出层层级关系？</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/dyyyljMVC/index.html">【单页应用】理解MVC</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/dyyyztxjzviewzjygrhtx/index.html">【单页应用之通信机制】view之间应该如何通信</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/dyyyjkzHistoryxsHistorydgdyyydm/index.html">【单页应用巨坑之History】细数History带给单页应用的噩梦</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/xtszeptofindysyjiosdcjpknrnhtt/index.html">【小贴士】zeptofind元素以及ios弹出键盘可能让你很头疼</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/xtsgytransitionEndanimatedygyqgs/index.html">【小贴士】关于transitionEndanimate的一个有趣故事</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/xtsgzzdbbysjwtdzzmp/index.html">【小贴士】工作中的”闭包“与事件委托的”阻止冒泡“</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/xtstytjavascriptzdreplace/index.html">【小贴士】探一探javascript中的replace</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/xtsxnjpyfixeddgydddt/index.html">【小贴士】虚拟键盘与fixed带给移动端的痛！</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/ttjavascriptsjjzdcsxyl/index.html">【探讨】javascript事件机制底层实现原理</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/mkhbcljrequireJSsxygjddmkjzq/index.html">【模块化编程】理解requireJS实现一个简单的模块加载器</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/zyJavaScriptmfjmtsdqlxkjzbfgndcljz/index.html">【转】【译】JavaScript魔法揭秘探索当前流行框架中部分功能的处理机制</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/zxjavascriptgszl01javascriptcszds/index.html">【追寻javascript高手之路01】javascript参数知多少？</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/zxjavascriptgszl02blzyyzds/index.html">【追寻javascript高手之路02】变量、作用域知多少？</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/zxjavascriptgszl03javascriptdxdld/index.html">【追寻javascript高手之路03】javascript对象大乱斗</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/zxjavascriptgszl04ljprototype/index.html">【追寻javascript高手之路04】理解prototype</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/zxjavascriptgszl05ljsjl/index.html">【追寻javascript高手之路05】理解事件流</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/zgbj04zxzzsj(2)/index.html">【重构笔记04】重新组织数据(2)</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/zgbj05jhtjbds/index.html">【重构笔记05】简化条件表达式</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/zgbj06jhhsdy/index.html">【重构笔记06】简化函数调用</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/ycmshgttbxysjfl/index.html">一次面试回顾——探讨表现与数据分离</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/dhzwebappzdxz/index.html">动画在webapp中的现状</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/ysandriodlqhthdomclicksjqtsxwttj/index.html">原生andriod浏览器回退后dom（click）事件全体失效问题探究</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/scsbdjxysdsbsjytouchsjdnxs/index.html">手持设备点击响应速度，鼠标事件与touch事件的那些事</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/mnbjQueryzeptohxymfx/index.html">迷你版jQuery——zepto核心源码分析</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/dbsgzdlwmlyqxjdddomxzqb/index.html">都别说工资低了，我们来一起写简单的dom选择器吧！</a></li>
+    				                                         
+                    </ul>
+                </div>
+            </div>
+
+        </div>
+    </body>
+</html>

@@ -1,0 +1,122 @@
+﻿<!DOCTYPE html>
+
+<html lang="zh">
+    <head>
+        <meta charset="utf-8">
+        <meta name="description" content="android,ios" />
+        <meta name="keywords" content="android,ios" />
+
+        <title>叶小钗</title>
+        <style type='text/css'>
+            body {
+                background-color: #CCC;
+            }
+        </style>
+        <link rel="stylesheet" href="../../../css/bootstrap.css" />
+    </head>
+
+    <body>
+        <div class="container">
+
+            <h1>叶小钗</h1>
+
+            <div class='navbar navbar-inverse'>
+                <div class='navbar-inner nav-collapse' style="height: auto;">
+                    <ul class="nav">
+                              				<li><a href="http://songboriceboy.github.io/xxoo/html/blade/index.html">blade</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/css/index.html">css</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/HTML5&CSS3/index.html">HTML5&CSS3</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/index.html">javascript</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Javaxx/index.html">Java学习</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/nodejs/index.html">nodejs</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/requirejs/index.html">requirejs</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/index.html">Web前端</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/xxgw/index.html">学习感悟</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/gzdd/index.html">工作点滴</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/jkxx/index.html">接口学习</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/wfl/index.html">未分类</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/ydkf/index.html">移动开发</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/sjms/index.html">设计模式</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/mst/index.html">面试题</a></li>
+    				                      </ul>
+                </div>
+            </div>
+
+            <div id='content' class='row-fluid'>
+
+                <div class='span9 main'>
+				<div style="color:blue" align=center>【CSS3初探之盒相关样式】我们一人一个框。。。</div><br><h1>前言</h1>
+<p>本章将介绍CSS3中各种盒的知识点；主要包含以下内容：</p>
+<p>CSS3中各种各样盒的类型概念、浏览器支持情况；</p>
+<p>当盒中内容超出容纳范围时，如何利用属性来让浏览器按照自己想要的方式对盒中内容进行显示；</p>
+<p>掌握给盒添加阴影的属性；</p>
+<p>掌握几种&ldquo;box-sizing&rdquo;属性值的不同含义，能够正确的使用box-sizing属性来定义样式中给定的元素的宽度值和高度值中是否包含内部补白区域，以及边框的高度和宽度；</p>
+<h1>盒的类型</h1>
+<p><strong>inline-block</strong></p>
+<p>css中我们使用display来定义盒的类型，总体上分为block与inline类型。</p>
+<p>css2.1追加了一个盒类型：inline-block，他属于block类型之一，但在显示上具有inline的特点，ie8以下不支持该属性。</p>
+<p>因为width和height用作block元素上，所以对inline元素使用width和height是没用的。</p>
+<p>曾经我们若是要实现分列显示多个block元素是要借助于float属性的，</p>
+<p>但是float是魔鬼，他根本就不应该用于布局，他会吞噬元素/破坏元素，让元素高度失效，最后让元素脱离文档流，</p>
+<p>float还会引起父级元素的&ldquo;塌方&rdquo;，然后我们又需要清除浮动，而且浮动可能引起很多bug，所以应该尽量少用他布局。</p>
+<p>比如一行多列布局，我们完全就可以用inline-block属性替代之，bug也会少很多的。</p>
+<p><strong>inline-table</strong></p>
+<p>用于表格前后文字不换行，并可设置vertical-align 设置外部文字top对齐或者bottom对齐。</p>
+<p><strong>list-item</strong></p>
+<p>可以将div变为列表显示，个人认为意义不大。</p>
+<p><strong>run-in/compact</strong></p>
+<p>将元素指定为以上两个类型时，若果元素后面还有block类型的元素，run-in元素将会被包含在block元素的内部，而compact类型的元素将被放置在左边。</p>
+<h1>对于盒模型容纳不下的元素</h1>
+<p>如果块级元素拥有高宽，设置overflow可以控制显示....该属性较熟悉变不研究了。</p>
+<p>在css中有一个非常有用的属性&ldquo;text-overflow&rdquo;，若是文字超出宽度，便会显示&ldquo;...&rdquo;省去了我们js操作的过程。</p>
+<p>这节基本没什么东西。。。。</p>
+<h1>对盒使用阴影</h1>
+<p>好东西来了，这章梦游到现在，其实就是为了它，这是个相当有用的属性，和为文本设置阴影联合起来，会让你的网站增色不少。</p>
+<p><img src="14744419536376.jpg" alt=""></p>
+<p>真是漂亮啊，各位就是简单的操作下自己博客的h1元素，为其加上背景为其文字加上阴影，你会发现，你写的博客好看多了。</p>
+<h1>box-sizing属性</h1>
+<p>box-sizing属性的解析我前前后后读了几次都没能理解，&ldquo;使用width属性与height属性来指定元素的高度和高度&rdquo;。。。</p>
+<p>这是干什么的呢？我们继续看下去，发现好像就是IE6对box的相关解释哇。。。。</p>
+<h1>结语</h1>
+<p>莫名其妙的一章又完了，css确实难学。。。</p>
+<p>&nbsp;</p>
+                </div>
+
+                <div class='span3 sidebar'>
+                    <h2>导航栏</h2>
+                    <ul class="nav nav-tabs nav-stacked">
+                             				<li><a href="http://songboriceboy.github.io/xxoo/html/HTML5&CSS3/CSS3ctzMediaQuerieszywcldCSS3wmlgzzzj/index.html">【CSS3初探之MediaQueries】终于完成了的CSS3，我们来个终章总结！</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/HTML5&CSS3/CSS3ctzbxydhlrjtdCSS3/index.html">【CSS3初探之变形与动画】令人惊叹的CSS3</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/HTML5&CSS3/CSS3ctzztwbxgrrkblsdCSS3/index.html">【CSS3初探之字体、文本相关】让人开不了始的CSS3。。。</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/HTML5&CSS3/CSS3ctzhxgyswmyrygk/index.html">【CSS3初探之盒相关样式】我们一人一个框。。。</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/HTML5&CSS3/CSS3ctzbjbkxgqdyldclyjqdwfzofferqdyt/index.html">【CSS3初探之背景边框相关】奇葩的与老大吵了一架，奇葩的五分钟offer，奇葩的一天。。。</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/HTML5&CSS3/HTML5&CSS3jjxx02HeaderdsxCSSzdbj/index.html">【HTML5&CSS3进阶学习02】Header的实现·CSS中的布局</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/HTML5&CSS3/HTML5ctzformbqjfbdyzzjwjscjctf/index.html">【HTML5初探之form标签】解放表单验证、增加文件上传、集成拖放</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/HTML5&CSS3/HTML5ctzGeolocationAPIrwmhqnsddz/index.html">【HTML5初探之GeolocationAPI】让我们获取女神的地址</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/HTML5&CSS3/HTML5ctzWebWorkerswyyndxc/index.html">【HTML5初探之WebWorkers】网页也能多线程</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/HTML5&CSS3/HTML5ctzdmtysspbfHTML5Flashscswd/index.html">【HTML5初探之多媒体元素】视频播放HTML5、Flash谁才是王道？</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/HTML5&CSS3/HTML5ctzbdccrgmysjk/index.html">【HTML5初探之本地存储】如果没有数据库。。。</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/HTML5&CSS3/HTML5ctzlxyyrhdzlqqwlldwz/index.html">【HTML5初探之离线应用】如何打造零请求、无流量的网站？</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/HTML5&CSS3/HTML5ctzhztxskwcanvasysylxydwebym/index.html">【HTML5初探之绘制图像（上）】看我canvas元素引领下一代web页面</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/HTML5&CSS3/HTML5ctzhztxxkwcanvasysylxydwebym/index.html">【HTML5初探之绘制图像（下）】看我canvas元素引领下一代web页面</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/HTML5&CSS3/HTML5ctztxAPIkymjbzgsjtsbsm/index.html">【HTML5初探之通信API】跨域门槛不再高、数据推送不是梦</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/HTML5&CSS3/xpldbkrwmdbkgjplrwmdbkzcxysbj/index.html">【写漂亮的博客】让我们的博客更加漂亮，让我们的博客支持响应式布局！</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/HTML5&CSS3/ctHTML5zsyxbqbjyhtml5bjwdbky/index.html">【初探HTML5之使用新标签布局】用html5布局我的博客页！</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/HTML5&CSS3/szHTML5yCSS3mfzzwkymlfym/index.html">【实战HTML5与CSS3】免费制作威客页面啦（附源码）</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/HTML5&CSS3/szHTML5yCSS3yHTML5hCSS3zzyms/index.html">【实战HTML5与CSS3】用HTML5和CSS3制作页面（上）</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/HTML5&CSS3/szHTML5yCSS3dypctssmlddhxldtpbz/index.html">【实战HTML5与CSS3第一篇】初探水深，美丽的导航，绚丽的图片爆炸！！</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/HTML5&CSS3/szHTML5yCSS3dspwdygHTML5wydsl(tgym)/index.html">【实战HTML5与CSS3第三篇】我第一个HTML5网页诞生了(提供源码)</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/HTML5&CSS3/szHTML5yCSS3depxldksdh/index.html">【实战HTML5与CSS3第二篇】绚丽的快速导航！</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/HTML5&CSS3/tsHTML5ded01HTML5dqsjsyjls/index.html">【探索HTML5第二弹01】HTML5的前世今生以及来世</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/HTML5&CSS3/tsHTML5ded03zjdtyydsjkwmgoogledtkykxsm/index.html">【探索HTML5第二弹03】走近地图应用的世界，看我们google地图可以看些什么！</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/HTML5&CSS3/tsHTML5ded04xysbjsrwmyqlxysbjb/index.html">【探索HTML5第二弹04】响应式布局（上），让我们一起来响应式布局吧</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/HTML5&CSS3/tsHTML5ded05xysbjzybybxysbj/index.html">【探索HTML5第二弹05】响应式布局（中），一步一步响应式布局</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/HTML5&CSS3/rhtzCSS3ddh/index.html">如何停止CSS3的动画？</a></li>
+    				                                         
+                    </ul>
+                </div>
+            </div>
+
+        </div>
+    </body>
+</html>

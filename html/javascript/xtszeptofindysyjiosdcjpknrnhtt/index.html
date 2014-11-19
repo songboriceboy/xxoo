@@ -1,0 +1,266 @@
+﻿<!DOCTYPE html>
+
+<html lang="zh">
+    <head>
+        <meta charset="utf-8">
+        <meta name="description" content="android,ios" />
+        <meta name="keywords" content="android,ios" />
+
+        <title>叶小钗</title>
+        <style type='text/css'>
+            body {
+                background-color: #CCC;
+            }
+        </style>
+        <link rel="stylesheet" href="../../../css/bootstrap.css" />
+    </head>
+
+    <body>
+        <div class="container">
+
+            <h1>叶小钗</h1>
+
+            <div class='navbar navbar-inverse'>
+                <div class='navbar-inner nav-collapse' style="height: auto;">
+                    <ul class="nav">
+                              				<li><a href="http://songboriceboy.github.io/xxoo/html/blade/index.html">blade</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/css/index.html">css</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/HTML5&CSS3/index.html">HTML5&CSS3</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/index.html">javascript</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Javaxx/index.html">Java学习</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/nodejs/index.html">nodejs</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/requirejs/index.html">requirejs</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/index.html">Web前端</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/xxgw/index.html">学习感悟</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/gzdd/index.html">工作点滴</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/jkxx/index.html">接口学习</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/wfl/index.html">未分类</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/ydkf/index.html">移动开发</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/sjms/index.html">设计模式</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/mst/index.html">面试题</a></li>
+    				                      </ul>
+                </div>
+            </div>
+
+            <div id='content' class='row-fluid'>
+
+                <div class='span9 main'>
+				<div style="color:blue" align=center>【小贴士】zeptofind元素以及ios弹出键盘可能让你很头疼</div><br><h1>前言</h1>
+<p>在此，我不得不说移动端的兼容问题很多，并且很令人头疼，这不，这个星期又有两个让我逮着了，一个是使用zepto过程中出现的问题，一个是ios虚拟键盘的问题</p>
+<p>我这里做一次记录，以免以后忘了，同时希望对后面做移动开发的朋友有一定帮助，首先，我们调一个简单的来说</p>
+<h1>zepto与<span>querySelectorAll</span></h1>
+<p>首先，W3C提供了新的查询接口，querySelector与querySelectorAll</p>
+<p>其中querySelector返回的是一个对象选择第一个对象，querySelectorAll返回的一个集合(NodeList)</p>
+<p>以百度首页来说，会出现这样的现象：</p>
+<p><img src="17412947640188.png" alt=""></p>
+<p>其他地方可能还会说道queryselectorAll的BUG，那些我暂且不关注，这简单拷贝下别人的就说下我遇到的问题</p>
+<div class="cnblogs_code">
+<pre><span style="color: #008080;"> 1</span> <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">div </span><span style="color: #ff0000;">id</span><span style="color: #0000ff;">="test1"</span><span style="color: #0000ff;">&gt;&lt;</span><span style="color: #800000;">a </span><span style="color: #ff0000;">href</span><span style="color: #0000ff;">="http://www.hujuntao.com/"</span><span style="color: #0000ff;">&gt;</span>设计蜂巢<span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">a</span><span style="color: #0000ff;">&gt;&lt;/</span><span style="color: #800000;">div</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 2</span> <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">p </span><span style="color: #ff0000;">id</span><span style="color: #0000ff;">="bar"</span><span style="color: #0000ff;">&gt;</span>111<span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">p</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 3</span> <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">script</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 4</span> <span style="background-color: #f5f5f5; color: #0000ff;">var</span><span style="background-color: #f5f5f5; color: #000000;"> d1 </span><span style="background-color: #f5f5f5; color: #000000;">=</span><span style="background-color: #f5f5f5; color: #000000;"> document.getElementById(</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">test1</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">),
+</span><span style="color: #008080;"> 5</span> <span style="background-color: #f5f5f5; color: #000000;">obj1 </span><span style="background-color: #f5f5f5; color: #000000;">=</span><span style="background-color: #f5f5f5; color: #000000;"> d1.querySelector(</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">div a</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">),
+</span><span style="color: #008080;"> 6</span> <span style="background-color: #f5f5f5; color: #000000;">obj2 </span><span style="background-color: #f5f5f5; color: #000000;">=</span><span style="background-color: #f5f5f5; color: #000000;"> d1.querySelectorAll(</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">div a</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">);
+</span><span style="color: #008080;"> 7</span> <span style="background-color: #f5f5f5; color: #000000;">obj3 </span><span style="background-color: #f5f5f5; color: #000000;">=</span><span style="background-color: #f5f5f5; color: #000000;"> $(d1).find(</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">div a</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">);
+</span><span style="color: #008080;"> 8</span> <span style="background-color: #f5f5f5; color: #000000;">console.log(obj1) </span><span style="background-color: #f5f5f5; color: #008000;">//</span><span style="background-color: #f5f5f5; color: #008000;">&lt;a href="http://www.hujuntao.com/"&gt;设计蜂巢&lt;/a&gt;</span>
+<span style="color: #008080;"> 9</span> <span style="background-color: #f5f5f5; color: #000000;">console.log(obj2.length) </span><span style="background-color: #f5f5f5; color: #008000;">//</span><span style="background-color: #f5f5f5; color: #008000;">1</span>
+<span style="color: #008080;">10</span> <span style="background-color: #f5f5f5; color: #000000;">console.log(obj3) </span><span style="background-color: #f5f5f5; color: #008000;">//</span><span style="background-color: #f5f5f5; color: #008000;">null</span>
+<span style="color: #008080;">11</span> <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">script</span><span style="color: #0000ff;">&gt;</span></pre>
+</div>
+<p>从这个例子来说，querySelectorAll实现是有问题的，但是我们暂时不关注他</p>
+<p><span style="line-height: 1.5;">因为，我们的项目是单页应用，所以不可避免的，view与view之间可能出现id重复，这个时候使用zepto的选择器会不会遇到问题呢？</span></p>
+<div class="cnblogs_code">
+<pre><span style="color: #0000ff;">var</span> el = $(<span style="color: #800000;">'</span><span style="color: #800000;">#el</span><span style="color: #800000;">'</span>)<span style="color: #008000;">//</span><span style="color: #008000;">获取元素</span>
+<span style="color: #0000ff;">var</span> node = el.find(<span style="color: #800000;">'</span><span style="color: #800000;">......</span><span style="color: #800000;">'</span>)</pre>
+</div>
+<p>答案当然是会的，并且是在IOS7下面会遇到问题，不得不说乔帮主一死，丐帮堕落了......</p>
+<p>前段时间Arron做过一个研究</p>
+<div class="cnblogs_code">
+<pre><span style="color: #0000ff;">var</span> element   = $('&lt;div id = "aaron"&gt;...填充大量结构...&lt;/div&gt;'<span style="color: #000000;">);
+
+$(root).html(element)
+
+$(</span>'#aaron')  <span style="color: #008000;">//</span><span style="color: #008000;">为空</span></pre>
+</div>
+<div class="cnblogs_code">
+<pre><span style="color: #800000;">这个是很简单的一段代码，按照常规的认识，JS主线程与GUI的渲染线程是互斥的，所以在执行JS的时候，GUI应该就是挂起的， 同理执行GUI的时候亦然， 因为JS可以动态操作节点，所以如果我们在GUI绘制的时候做操作明显就会打乱了，所以互斥的解释也合理
+但是实际上这样并不能直接获取到$('#aaron')，PC上基本不会出现，常规的办法都是加setTimeout<br></span></pre>
+</div>
+<p><span style="line-height: 1.5;">这个例子旨在说明在移动端获取元素会出问题，这不这个星期我马上遇到了一个问题，并且和上面的情况还不一样呢：</span></p>
+<div class="cnblogs_code">
+<pre><span style="color: #800000;">在IOS7下面，View之间的切换后，如果此时操作了DOM，并且view之间有一个重复id元素，并且我们还会用到
+则此时this.$el.find('#id')这个会选取到两个元素......</span></pre>
+</div>
+<p>PS：其中$el为backbone render时候返回的html元素，</p>
+<p>这是一个什么问题呢？简单来说如下：</p>
+<div class="cnblogs_code">
+<pre><span style="color: #0000ff;">&lt;</span><span style="color: #800000;">div </span><span style="color: #ff0000;">id</span><span style="color: #0000ff;">="foo"</span><span style="color: #0000ff;">&gt;</span>
+   <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">p </span><span style="color: #ff0000;">id</span><span style="color: #0000ff;">="t"</span><span style="color: #0000ff;">&gt;</span>This is a sample error<span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">p</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">div</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #0000ff;">&lt;</span><span style="color: #800000;">div </span><span style="color: #ff0000;">id</span><span style="color: #0000ff;">="foo1"</span><span style="color: #0000ff;">&gt;</span>
+   <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">p </span><span style="color: #ff0000;">id</span><span style="color: #0000ff;">="t"</span><span style="color: #0000ff;">&gt;</span>This is a sample error<span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">p</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">div</span><span style="color: #0000ff;">&gt;</span></pre>
+</div>
+<div class="cnblogs_code">
+<pre><span style="color: #0000ff;">var</span> el = document.getElementById('#foo'<span style="color: #000000;">)
+el.querySelectorAll(</span>'#t')</pre>
+</div>
+<p>这个在IOS7下有一定几率会返回一个数组，并且里面装的是两个元素（意思是两个id为t的元素都被选出来的了......）</p>
+<p>这个就是我们遇到的一个问题，应该说这个问题很隐蔽，于是我就看了下zepto里面的实现：</p>
+<div class="cnblogs_code">
+<pre><span style="color: #008080;"> 1</span> zepto.qsa = <span style="color: #0000ff;">function</span><span style="color: #000000;">(element, selector){
+</span><span style="color: #008080;"> 2</span>     <span style="color: #0000ff;">var</span><span style="color: #000000;"> found,
+</span><span style="color: #008080;"> 3</span>         maybeID = selector[0] == '#'<span style="color: #000000;">,
+</span><span style="color: #008080;"> 4</span>         maybeClass = !maybeID &amp;&amp; selector[0] == '.'<span style="color: #000000;">,
+</span><span style="color: #008080;"> 5</span>         nameOnly = maybeID || maybeClass ? selector.slice(1) : selector, <span style="color: #008000;">//</span><span style="color: #008000;"> Ensure that a 1 char tag name still gets checked</span>
+<span style="color: #008080;"> 6</span>         isSimple =<span style="color: #000000;"> simpleSelectorRE.test(nameOnly)
+</span><span style="color: #008080;"> 7</span>     <span style="color: #0000ff;">return</span> (isDocument(element) &amp;&amp; isSimple &amp;&amp; maybeID) ?
+<span style="color: #008080;"> 8</span>       ( (found = element.getElementById(nameOnly)) ?<span style="color: #000000;"> [found] : [] ) :
+</span><span style="color: #008080;"> 9</span>       (element.nodeType !== 1 &amp;&amp; element.nodeType !== 9) ?<span style="color: #000000;"> [] :
+</span><span style="color: #008080;">10</span> <span style="color: #000000;">      slice.call(
+</span><span style="color: #008080;">11</span>         isSimple &amp;&amp; !maybeID ?
+<span style="color: #008080;">12</span>           maybeClass ? element.getElementsByClassName(nameOnly) : <span style="color: #008000;">//</span><span style="color: #008000;"> If it's simple, it could be a class</span>
+<span style="color: #008080;">13</span>           element.getElementsByTagName(selector) : <span style="color: #008000;">//</span><span style="color: #008000;"> Or a tag</span>
+<span style="color: #008080;">14</span>           element.querySelectorAll(selector) <span style="color: #008000;">//</span><span style="color: #008000;"> Or it's not simple, and we need to query all</span>
+<span style="color: #008080;">15</span> <span style="color: #000000;">      )
+</span><span style="color: #008080;">16</span>   }</pre>
+</div>
+<p>element存在的情况最后使用querySelectAll选取元素，我们这里不是dom不存在而是多选了一个dom，所以这里需要针对ios7做一个适配</p>
+<div class="cnblogs_code">
+<pre><span style="color: #008080;"> 1</span>   zepto.qsa = <span style="color: #0000ff;">function</span><span style="color: #000000;">(element, selector){
+</span><span style="color: #008080;"> 2</span>     <span style="color: #0000ff;">var</span><span style="color: #000000;"> found,
+</span><span style="color: #008080;"> 3</span>         maybeID = selector[0] == '#'<span style="color: #000000;">,
+</span><span style="color: #008080;"> 4</span>         maybeClass = !maybeID &amp;&amp; selector[0] == '.'<span style="color: #000000;">,
+</span><span style="color: #008080;"> 5</span>         nameOnly = maybeID || maybeClass ? selector.slice(1) : selector, <span style="color: #008000;">//</span><span style="color: #008000;"> Ensure that a 1 char tag name still gets checked</span>
+<span style="color: #008080;"> 6</span>         isSimple =<span style="color: #000000;"> simpleSelectorRE.test(nameOnly)
+</span><span style="color: #008080;"> 7</span>         <span style="color: #0000ff;">var</span> doms = (isDocument(element) &amp;&amp; isSimple &amp;&amp; maybeID) ?
+<span style="color: #008080;"> 8</span>       ( (found = element.getElementById(nameOnly)) ?<span style="color: #000000;"> [found] : [] ) :
+</span><span style="color: #008080;"> 9</span>       (element.nodeType !== 1 &amp;&amp; element.nodeType !== 9) ?<span style="color: #000000;"> [] :
+</span><span style="color: #008080;">10</span> <span style="color: #000000;">      slice.call(
+</span><span style="color: #008080;">11</span>         isSimple &amp;&amp; !maybeID ?
+<span style="color: #008080;">12</span>           maybeClass ? element.getElementsByClassName(nameOnly) : <span style="color: #008000;">//</span><span style="color: #008000;"> If it's simple, it could be a class</span>
+<span style="color: #008080;">13</span>           element.getElementsByTagName(selector) : <span style="color: #008000;">//</span><span style="color: #008000;"> Or a tag</span>
+<span style="color: #008080;">14</span>           element.querySelectorAll(selector) <span style="color: #008000;">//</span><span style="color: #008000;"> Or it's not simple, and we need to query all</span>
+<span style="color: #008080;">15</span> <span style="color: #000000;">      )
+</span><span style="color: #008080;">16</span>         <span style="color: #008000;">//</span><span style="color: #008000;">这里需要做判断.......判断逻辑自己去搞</span>
+<span style="color: #008080;">17</span>         <span style="color: #0000ff;">var</span> _tmp =<span style="color: #000000;"> [];
+</span><span style="color: #008080;">18</span>         <span style="color: #0000ff;">if</span>(ios7 &amp;&amp;<span style="color: #000000;"> element){
+</span><span style="color: #008080;">19</span>           <span style="color: #0000ff;">for</span>(<span style="color: #0000ff;">var</span> i = 0, len &lt; doms.length; i &lt; len; i++<span style="color: #000000;">) {
+</span><span style="color: #008080;">20</span>             <span style="color: #0000ff;">if</span><span style="color: #000000;">(element.contains(doms[i])) _tmp.push(doms[i])
+</span><span style="color: #008080;">21</span> <span style="color: #000000;">          }
+</span><span style="color: #008080;">22</span>           <span style="color: #0000ff;">return</span><span style="color: #000000;"> _tmp;
+</span><span style="color: #008080;">23</span>         } <span style="color: #0000ff;">else</span> { <span style="color: #0000ff;">return</span><span style="color: #000000;"> doms }
+</span><span style="color: #008080;">24</span>   }</pre>
+</div>
+<p>这里代码做一下处理，针对IOS7应该就没问题了.......于是进入今天第二个话题</p>
+<p>这里给出测试地址：<a href="http://sandbox.runjs.cn/show/w5q7inp1">http://sandbox.runjs.cn/show/w5q7inp1</a></p>
+<h1>手机弹出虚拟键盘</h1>
+<p>之前忧患深第一次出剑时候，他说了一句：你见过吾之六凡灭剑么？然后出剑</p>
+<p>于是，在此我想问一句：你见过IOS弹不出来键盘么......尼玛真的弹不出来啊！！！碰上fastclick的话更有不一样的感觉</p>
+<p>我们在手机上想弹出键盘，需要的就是让文本框获取焦点，文本框获取焦点便会弹出键盘，但是我这里提出一个问题</p>
+<div class="cnblogs_code">
+<pre><span style="color: #800000;">弹出键盘==文本框获取焦点
+文本框获取焦点!=弹出键盘</span></pre>
+</div>
+<p>经过我的研究一定要这种情况下才会弹出键盘：</p>
+<div class="cnblogs_code">
+<pre><span style="color: #800000;">① 文本框获取焦点
+
+② 手指触屏（网页区域，混合开发触屏app头不能让webview弹出键盘）
+
+③ 没有延迟（不会ajax回调，不会延迟）</span></pre>
+</div>
+<p><span style="line-height: 1.5;">我这里举一个例子，并且此例子与fastclick还有一定关系，如果没有关系这里就没有意义了：</span></p>
+<p><strong><span style="font-size: 16px;"><a href="http://sandbox.runjs.cn/show/0bmobuyy">http://sandbox.runjs.cn/show/0bmobuyy</a></span></strong></p>
+<p>如果你使用ios访问这个链接，你会发现，其中的input已经获取了焦点，这个时候你快速的点击文本框就不会弹出键盘</p>
+<p>这个情况导致的原因就是文本框已经获取焦点了，再去点击就不会弹出键盘，当然这个情况只是在使用fastclick的情况下</p>
+<p>但是，弹出键盘还是得满足以上情况，缺一不可</p>
+<h1>结语</h1>
+<p>今天没有用公司的电脑，状态不好，暂时到此</p>
+                </div>
+
+                <div class='span3 sidebar'>
+                    <h2>导航栏</h2>
+                    <ul class="nav nav-tabs nav-stacked">
+                             				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/javascriptzdyxhxzsdyjxyzyddf/index.html">javascript中的一些核心知识点以及需要注意的地方</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/[zd]webappdyhzlyzydqdyhdpyjlkkb/index.html">[置顶]【webapp的优化整理】要做移动前端优化的朋友进来看看吧</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/[zd]yddjrwtyjjavascriptsjjzxjsjydjr/index.html">[置顶]【移动端兼容问题研究】javascript事件机制详解（涉及移动兼容）</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/gruntzhb30fzxhsygruntdbqddm/index.html">【grunt整合版】30分钟学会使用grunt打包前端代码</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/gruntdyd30fzxhsygruntdbqddm/index.html">【grunt第一弹】30分钟学会使用grunt打包前端代码</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/gruntdsdgruntzqdsjxmzdyy/index.html">【grunt第三弹】grunt在前端实际项目中的应用</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/gruntded30fzxhsygruntdbqddm02/index.html">【grunt第二弹】30分钟学会使用grunt打包前端代码（02）</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/IScrollsrxxtpyddhadlqs/index.html">【IScroll深入学习】突破移动端黑暗的利器（上）</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/IScrollsrxxjjIScrollynzz/index.html">【IScroll深入学习】解决IScroll疑难杂症</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/iScrollymxx00mniScroll/index.html">【iScroll源码学习00】模拟iScroll</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/iScrollymxx01zbjd/index.html">【iScroll源码学习01】准备阶段</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/iScrollymxx02fjiScrollsghxsjd/index.html">【iScroll源码学习02】分解iScroll三个核心事件点</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/iScrollymxx03iScrollsjjzygdtdsx/index.html">【iScroll源码学习03】iScroll事件机制与滚动条的实现</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/iScrollymxx04flIScrollhx/index.html">【iScroll源码学习04】分离IScroll核心</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/javascriptpxdytyyjc/index.html">【javascript培训第一天】语言基础</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/javascriptpxdstcybl/index.html">【javascript培训第三天】查遗补漏</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/javascriptpxdetDOMyBOM/index.html">【javascript培训第二天】DOM与BOM</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/javascriptjzdsk01mkhbc/index.html">【javascript激增的思考01】模块化编程</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/javascriptjzdsk02mkhyMVC/index.html">【javascript激增的思考02】模块化与MVC</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/javascriptjzdsk03MVVMyKnockout/index.html">【javascript激增的思考03】MVVM与Knockout</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/javascriptjzdsk04MVCyBackbonejs(beta)/index.html">【javascript激增的思考04】MVC与Backbonejs(beta)</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/javascriptmxdxzlrwmyqltkdzb01/index.html">【javascript面向对象之路】让我们一起来坦克大战吧01</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/NodeJSxxbj04xwfbxt/index.html">【NodeJS学习笔记04】新闻发布系统</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/requireJSymxx01ljzgrequireJSdjg/index.html">【requireJS源码学习01】了解整个requireJS的结构</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/requireJSymxx02datamainjzdsx/index.html">【requireJS源码学习02】datamain加载的实现</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/requireJSymxx03xjrequireJSdjzlc/index.html">【requireJS源码学习03】细究requireJS的加载流程</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/UIcjkfygjdrlcjs/index.html">【UI插件】开发一个简单日历插件（上）</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/UIcjjddrlcjxxxMVCsx/index.html">【UI插件】简单的日历插件（下）——学习MVC思想</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/zeptoxxbj01hxff$()/index.html">【zepto学习笔记01】核心方法$()</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/zeptoxxbj01hxff$()b/index.html">【zepto学习笔记01】核心方法$()（补）</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/zeptoxxbj02lsd/index.html">【zepto学习笔记02】零碎点</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/zeptoxxbj03sjjz/index.html">【zepto学习笔记03】事件机制</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/ycmsztjavascriptzdjc/index.html">【一次面试】再谈javascript中的继承</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/ztbackbone01mxModel/index.html">【再探backbone01】模型Model</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/ztbackbone02jhCollection/index.html">【再探backbone02】集合Collection</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/ztbackbone03bkydyyysltgym/index.html">【再探backbone03】博客园单页应用实例（提供源码）</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/ztbackbone04dyyydjslycl/index.html">【再探backbone04】单页应用的基石路由处理</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/ctUnderscorezsmbyq/index.html">【初探Underscore】再说模版引擎</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/ckjavascriptamzAjaxjsxnszddAjax/index.html">【初窥javascript奥秘之Ajax】简述下你所知道的Ajax？</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/ckjavascriptamzsjmpnxnwmyqmdp/index.html">【初窥javascript奥秘之事件冒泡】那些年我们一起冒的泡</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/ckjavascriptamzsjjzldtygdj/index.html">【初窥javascript奥秘之事件机制】论“点透”与“鬼点击”</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/ckjavascriptamzrrzmbddthisnzdxzthiszxnlm/index.html">【初窥javascript奥秘之让人捉摸不定的this】你知道现在this指向哪里吗？？？</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/ckjavascriptamzbbydxbdhlqbcl/index.html">【初窥javascript奥秘之闭包】叶大侠病都好了，求不踩了：）</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/ckjavascriptamzmxdxfzyjc/index.html">【初窥javascript奥秘之面向对象】封装与继承</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/qdmdsjdjgjdnzdljm/index.html">【前端盲点】事件的几个阶段你真的了解么？？？</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/dyyyviewymodelxgsl/index.html">【单页应用】view与model相关梳理</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/dyyyyqldyyybsxjdwbgns/index.html">【单页应用】一起来单页应用吧，实现简单微博功能！（上）</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/dyyyqjkzqappyggxsm/index.html">【单页应用】全局控制器app应该干些什么？</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/dyyywmgrhclkjdcccjgx/index.html">【单页应用】我们该如何处理框架弹出层层级关系？</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/dyyyljMVC/index.html">【单页应用】理解MVC</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/dyyyztxjzviewzjygrhtx/index.html">【单页应用之通信机制】view之间应该如何通信</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/dyyyjkzHistoryxsHistorydgdyyydm/index.html">【单页应用巨坑之History】细数History带给单页应用的噩梦</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/xtszeptofindysyjiosdcjpknrnhtt/index.html">【小贴士】zeptofind元素以及ios弹出键盘可能让你很头疼</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/xtsgytransitionEndanimatedygyqgs/index.html">【小贴士】关于transitionEndanimate的一个有趣故事</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/xtsgzzdbbysjwtdzzmp/index.html">【小贴士】工作中的”闭包“与事件委托的”阻止冒泡“</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/xtstytjavascriptzdreplace/index.html">【小贴士】探一探javascript中的replace</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/xtsxnjpyfixeddgydddt/index.html">【小贴士】虚拟键盘与fixed带给移动端的痛！</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/ttjavascriptsjjzdcsxyl/index.html">【探讨】javascript事件机制底层实现原理</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/mkhbcljrequireJSsxygjddmkjzq/index.html">【模块化编程】理解requireJS实现一个简单的模块加载器</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/zyJavaScriptmfjmtsdqlxkjzbfgndcljz/index.html">【转】【译】JavaScript魔法揭秘探索当前流行框架中部分功能的处理机制</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/zxjavascriptgszl01javascriptcszds/index.html">【追寻javascript高手之路01】javascript参数知多少？</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/zxjavascriptgszl02blzyyzds/index.html">【追寻javascript高手之路02】变量、作用域知多少？</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/zxjavascriptgszl03javascriptdxdld/index.html">【追寻javascript高手之路03】javascript对象大乱斗</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/zxjavascriptgszl04ljprototype/index.html">【追寻javascript高手之路04】理解prototype</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/zxjavascriptgszl05ljsjl/index.html">【追寻javascript高手之路05】理解事件流</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/zgbj04zxzzsj(2)/index.html">【重构笔记04】重新组织数据(2)</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/zgbj05jhtjbds/index.html">【重构笔记05】简化条件表达式</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/zgbj06jhhsdy/index.html">【重构笔记06】简化函数调用</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/ycmshgttbxysjfl/index.html">一次面试回顾——探讨表现与数据分离</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/dhzwebappzdxz/index.html">动画在webapp中的现状</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/ysandriodlqhthdomclicksjqtsxwttj/index.html">原生andriod浏览器回退后dom（click）事件全体失效问题探究</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/scsbdjxysdsbsjytouchsjdnxs/index.html">手持设备点击响应速度，鼠标事件与touch事件的那些事</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/mnbjQueryzeptohxymfx/index.html">迷你版jQuery——zepto核心源码分析</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/dbsgzdlwmlyqxjdddomxzqb/index.html">都别说工资低了，我们来一起写简单的dom选择器吧！</a></li>
+    				                                         
+                    </ul>
+                </div>
+            </div>
+
+        </div>
+    </body>
+</html>

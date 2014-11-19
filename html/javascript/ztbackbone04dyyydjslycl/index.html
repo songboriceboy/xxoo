@@ -1,0 +1,426 @@
+﻿<!DOCTYPE html>
+
+<html lang="zh">
+    <head>
+        <meta charset="utf-8">
+        <meta name="description" content="android,ios" />
+        <meta name="keywords" content="android,ios" />
+
+        <title>叶小钗</title>
+        <style type='text/css'>
+            body {
+                background-color: #CCC;
+            }
+        </style>
+        <link rel="stylesheet" href="../../../css/bootstrap.css" />
+    </head>
+
+    <body>
+        <div class="container">
+
+            <h1>叶小钗</h1>
+
+            <div class='navbar navbar-inverse'>
+                <div class='navbar-inner nav-collapse' style="height: auto;">
+                    <ul class="nav">
+                              				<li><a href="http://songboriceboy.github.io/xxoo/html/blade/index.html">blade</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/css/index.html">css</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/HTML5&CSS3/index.html">HTML5&CSS3</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/index.html">javascript</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Javaxx/index.html">Java学习</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/nodejs/index.html">nodejs</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/requirejs/index.html">requirejs</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/index.html">Web前端</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/xxgw/index.html">学习感悟</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/gzdd/index.html">工作点滴</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/jkxx/index.html">接口学习</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/wfl/index.html">未分类</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/ydkf/index.html">移动开发</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/sjms/index.html">设计模式</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/mst/index.html">面试题</a></li>
+    				                      </ul>
+                </div>
+            </div>
+
+            <div id='content' class='row-fluid'>
+
+                <div class='span9 main'>
+				<div style="color:blue" align=center>【再探backbone04】单页应用的基石路由处理</div><br><h1>前言</h1>
+<p>首先发一点牢骚，互联网公司变化就是快，我去一个团队往往就一年时间该团队就得解散，这不，公司居然把无线团队解散了，我只能说，我那个去！！！</p>
+<p>我去年还到处让人来呢，一个兴兴向荣的团队说没就没了啊！我找谁哭去......</p>
+<p>于是我们团队一个大哥说他去哪哪就解散，我老大说他去哪哪就倒霉，如此看来，不是我们导致团队解散，而是所有的团队变化都快啊。。。。。。</p>
+<p>于是换了个团队，近几周情绪较低落啊，但是低落也不能不干实事，所以在此收拾心情明天开始好好干事情吧！</p>
+<p>在去年的时候，我们初略的学习了下backbone，一方面是因为期间比较忙，另一方面是因为没有使用backbone开发项目，所以到路由一节就有点断断续续了</p>
+<p>于是这个星期正好有空，我们来回看下backbone路由相关的知识点，这里以之前的demo为例</p>
+<h1>pushState</h1>
+<p>在介绍backbone路由之前，我们简单说一下pushState，pushState的出现与Ajax有莫大的关系，无刷新操作带来了很多优点，但是也会造成一些问题</p>
+<p>这些问题中有两个问题让人比较头疼：</p>
+<p>① SEO</p>
+<p>② 浏览器后退</p>
+<p>SEO不在我们今天的考虑范畴，所以我们来看看让人头疼的浏览器后退问题，这里就不得不提pushState了</p>
+<p>pushState的提出便是为了即实现局部刷新，又同时改变浏览器URL，并且很友好的支持浏览器前进后退功能</p>
+<p>之前我们为了实现同样的功能会注册hashChange事件，劫持浏览器的跳转，但是这样做不太标准，于是我们来见识一下pushState</p>
+<div class="cnblogs_code">
+<pre><span style="color: #000000;">window.history.pushState({
+  title: title,
+  url: url,
+  XXX: xxx
+}, document.title, url)</span></pre>
+</div>
+<p>与之对应的是popstate事件，该事件会在浏览器前进后退时候触发，他会捕捉当前URL中的data，这里以一个例子说明</p>
+<p>首先第一步，为简单Ajax：</p>
+<div class="cnblogs_code">
+<pre><span style="color: #0000ff;">&lt;</span><span style="color: #800000;">html </span><span style="color: #ff0000;">xmlns</span><span style="color: #0000ff;">="http://www.w3.org/1999/xhtml"</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #0000ff;">&lt;</span><span style="color: #800000;">head</span><span style="color: #0000ff;">&gt;</span>
+  <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">title</span><span style="color: #0000ff;">&gt;&lt;/</span><span style="color: #800000;">title</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">head</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #0000ff;">&lt;</span><span style="color: #800000;">body</span><span style="color: #0000ff;">&gt;</span>
+  <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">ul </span><span style="color: #ff0000;">id</span><span style="color: #0000ff;">="sec"</span><span style="color: #0000ff;">&gt;</span>
+    <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">li </span><span style="color: #ff0000;">data-key</span><span style="color: #0000ff;">="1"</span><span style="color: #0000ff;">&gt;</span>北京<span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">li</span><span style="color: #0000ff;">&gt;</span>
+    <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">li </span><span style="color: #ff0000;">data-key</span><span style="color: #0000ff;">="2"</span><span style="color: #0000ff;">&gt;</span>上海<span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">li</span><span style="color: #0000ff;">&gt;</span>
+    <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">li </span><span style="color: #ff0000;">data-key</span><span style="color: #0000ff;">="3"</span><span style="color: #0000ff;">&gt;</span>成都<span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">li</span><span style="color: #0000ff;">&gt;</span>
+  <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">ul</span><span style="color: #0000ff;">&gt;</span>
+  <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">h1 </span><span style="color: #ff0000;">id</span><span style="color: #0000ff;">="city"</span><span style="color: #0000ff;">&gt;</span>
+  <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">h1</span><span style="color: #0000ff;">&gt;</span>
+  <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">script </span><span style="color: #ff0000;">src</span><span style="color: #0000ff;">="../../jquery-1.7.1.js"</span><span style="color: #ff0000;"> type</span><span style="color: #0000ff;">="text/javascript"</span><span style="color: #0000ff;">&gt;&lt;/</span><span style="color: #800000;">script</span><span style="color: #0000ff;">&gt;</span>
+  <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">script </span><span style="color: #ff0000;">type</span><span style="color: #0000ff;">="text/javascript"</span><span style="color: #0000ff;">&gt;</span><span style="background-color: #f5f5f5; color: #000000;">
+    $(</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">#sec li</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">).on(</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">click</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">, </span><span style="background-color: #f5f5f5; color: #0000ff;">function</span><span style="background-color: #f5f5f5; color: #000000;"> (e) {
+      </span><span style="background-color: #f5f5f5; color: #0000ff;">var</span><span style="background-color: #f5f5f5; color: #000000;"> el </span><span style="background-color: #f5f5f5; color: #000000;">=</span><span style="background-color: #f5f5f5; color: #000000;"> $(e.target);
+      $.get(</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">./Handler.ashx</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">, { id: el.attr(</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">data-key</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">) }, </span><span style="background-color: #f5f5f5; color: #0000ff;">function</span><span style="background-color: #f5f5f5; color: #000000;"> (data) {
+
+        $(</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">#city</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">).html(data);
+        </span><span style="background-color: #f5f5f5; color: #0000ff;">var</span><span style="background-color: #f5f5f5; color: #000000;"> s </span><span style="background-color: #f5f5f5; color: #000000;">=</span> <span style="background-color: #f5f5f5; color: #000000;">''</span><span style="background-color: #f5f5f5; color: #000000;">;
+      });
+    });
+</span><span style="background-color: #f5f5f5; color: #008000;">//</span><span style="background-color: #f5f5f5; color: #008000;">    window.addEventListener("popstate", function (e) {</span><span style="background-color: #f5f5f5; color: #008000;">
+//</span><span style="background-color: #f5f5f5; color: #008000;">      var s = '';</span><span style="background-color: #f5f5f5; color: #008000;">
+//</span><span style="background-color: #f5f5f5; color: #008000;">    });</span>
+  <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">script</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">body</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">html</span><span style="color: #0000ff;">&gt;</span></pre>
+</div>
+<p>对应服务器程序：</p>
+<div class="cnblogs_code" onclick="cnblogs_code_show('f51c1e8b-8c72-4858-8d86-512cf6372944')"><img id="code_img_closed_f51c1e8b-8c72-4858-8d86-512cf6372944" class="code_img_closed" src="43570758473519.gif" alt=""><img id="code_img_opened_f51c1e8b-8c72-4858-8d86-512cf6372944" class="code_img_opened" style="display: none;" onclick="cnblogs_code_hide('f51c1e8b-8c72-4858-8d86-512cf6372944',event)" src="16365178109279.gif" alt="">
+<div id="cnblogs_code_open_f51c1e8b-8c72-4858-8d86-512cf6372944" class="cnblogs_code_hide">
+<pre><span style="color: #0000ff;">public</span> <span style="color: #0000ff;">class</span><span style="color: #000000;"> Handler : IHttpHandler {
+    
+    </span><span style="color: #0000ff;">public</span> <span style="color: #0000ff;">void</span><span style="color: #000000;"> ProcessRequest (HttpContext context) {
+        context.Response.ContentType </span>= <span style="color: #800000;">"</span><span style="color: #800000;">text/plain</span><span style="color: #800000;">"</span><span style="color: #000000;">;
+
+        </span><span style="color: #0000ff;">string</span> name = <span style="color: #800000;">"</span><span style="color: #800000;">无名</span><span style="color: #800000;">"</span><span style="color: #000000;">;
+
+        </span><span style="color: #0000ff;">string</span> id = <span style="color: #800000;">"</span><span style="color: #800000;">0</span><span style="color: #800000;">"</span><span style="color: #000000;">;
+
+        id </span>= context.Request.QueryString[<span style="color: #800000;">"</span><span style="color: #800000;">id</span><span style="color: #800000;">"</span><span style="color: #000000;">];
+
+        </span><span style="color: #0000ff;">if</span> (id == <span style="color: #800000;">"</span><span style="color: #800000;">1</span><span style="color: #800000;">"</span>) name = <span style="color: #800000;">"</span><span style="color: #800000;">北京</span><span style="color: #800000;">"</span><span style="color: #000000;">;
+        </span><span style="color: #0000ff;">if</span> (id == <span style="color: #800000;">"</span><span style="color: #800000;">2</span><span style="color: #800000;">"</span>) name = <span style="color: #800000;">"</span><span style="color: #800000;">上海</span><span style="color: #800000;">"</span><span style="color: #000000;">;
+        </span><span style="color: #0000ff;">if</span> (id == <span style="color: #800000;">"</span><span style="color: #800000;">3</span><span style="color: #800000;">"</span>) name = <span style="color: #800000;">"</span><span style="color: #800000;">成都</span><span style="color: #800000;">"</span><span style="color: #000000;">;
+      
+        context.Response.Write(name);
+    }
+ 
+    </span><span style="color: #0000ff;">public</span> <span style="color: #0000ff;">bool</span><span style="color: #000000;"> IsReusable {
+          </span><span style="color: #0000ff;">get</span><span style="color: #000000;"> {
+            </span><span style="color: #0000ff;">return</span> <span style="color: #0000ff;">false</span><span style="color: #000000;">;
+        }
+    }
+
+}</span></pre>
+</div>
+<span class="cnblogs_code_collapse">View Code</span></div>
+<p>这个时候便是点击一个项目便从服务器取得一个项目显示，这里有两个新需求：</p>
+<p>① url需要跟着变</p>
+<p>② 可前进后退，于是我们这么修改</p>
+<div class="cnblogs_code">
+<pre><span style="color: #008080;"> 1</span> $('#sec li').on('click', <span style="color: #0000ff;">function</span><span style="color: #000000;"> (e) {
+</span><span style="color: #008080;"> 2</span>   <span style="color: #0000ff;">var</span> el =<span style="color: #000000;"> $(e.target);
+</span><span style="color: #008080;"> 3</span>   $.get('./Handler.ashx', { id: el.attr('data-key') }, <span style="color: #0000ff;">function</span><span style="color: #000000;"> (data) {
+</span><span style="color: #008080;"> 4</span>     $('#city'<span style="color: #000000;">).html(data);
+</span><span style="color: #008080;"> 5</span>     <span style="color: #008000;">//</span><span style="color: #008000;">新增pushState逻辑</span>
+<span style="color: #008080;"> 6</span>     <span style="color: #0000ff;">var</span> state =<span style="color: #000000;"> {};
+</span><span style="color: #008080;"> 7</span>     state.title =<span style="color: #000000;"> data;
+</span><span style="color: #008080;"> 8</span>     document.title =<span style="color: #000000;"> data;
+</span><span style="color: #008080;"> 9</span>     history.pushState(state, data, location.href.split("?")[0] + '?cityId=' + el.attr('data-key'<span style="color: #000000;">));
+</span><span style="color: #008080;">10</span>     <span style="color: #0000ff;">var</span> s = ''<span style="color: #000000;">;
+</span><span style="color: #008080;">11</span> <span style="color: #000000;">  });
+</span><span style="color: #008080;">12</span> });</pre>
+</div>
+<p>这个时候每次点击URL就会跟着改变了，但是并不会跳转哦</p>
+<p><img src="34595537896190.png" alt=""><img src="46436415440873.png" alt=""></p>
+<p>最后加上前进后退逻辑</p>
+<div class="cnblogs_code">
+<pre><span style="color: #008080;"> 1</span> $('#sec li').on('click', <span style="color: #0000ff;">function</span><span style="color: #000000;"> (e) {
+</span><span style="color: #008080;"> 2</span>   <span style="color: #0000ff;">var</span> el =<span style="color: #000000;"> $(e.target);
+</span><span style="color: #008080;"> 3</span>   $.get('./Handler.ashx', { id: el.attr('data-key') }, <span style="color: #0000ff;">function</span><span style="color: #000000;"> (data) {
+</span><span style="color: #008080;"> 4</span>     $('#city'<span style="color: #000000;">).html(data);
+</span><span style="color: #008080;"> 5</span>     <span style="color: #008000;">//</span><span style="color: #008000;">新增pushState逻辑</span>
+<span style="color: #008080;"> 6</span>     <span style="color: #0000ff;">var</span> state =<span style="color: #000000;"> {};
+</span><span style="color: #008080;"> 7</span>     state.title =<span style="color: #000000;"> data;
+</span><span style="color: #008080;"> 8</span>     document.title =<span style="color: #000000;"> data;
+</span><span style="color: #008080;"> 9</span>     history.pushState(state, data, location.href.split("?")[0] + '?cityId=' + el.attr('data-key'<span style="color: #000000;">));
+</span><span style="color: #008080;">10</span>     <span style="color: #0000ff;">var</span> s = ''<span style="color: #000000;">;
+</span><span style="color: #008080;">11</span> <span style="color: #000000;">  });
+</span><span style="color: #008080;">12</span> <span style="color: #000000;">});
+</span><span style="color: #008080;">13</span> window.addEventListener("popstate", <span style="color: #0000ff;">function</span><span style="color: #000000;"> (e) {
+</span><span style="color: #008080;">14</span>   <span style="color: #0000ff;">var</span> state =<span style="color: #000000;"> history.state;//<span>e.state</span>
+</span><span style="color: #008080;">15</span>   document.title =<span style="color: #000000;"> state.title;
+</span><span style="color: #008080;">16</span>   $('#city'<span style="color: #000000;">).html(state.title);
+</span><span style="color: #008080;">17</span>   <span style="color: #0000ff;">var</span> s = ''<span style="color: #000000;">;
+</span><span style="color: #008080;">18</span> });</pre>
+</div>
+<p>如此便能简单达到目的，对于其讲解暂时到此，<span style="line-height: 1.5;">为什么这里会提到pushState呢，因为在单页应用中，路由的处理是一个问题，而pushState是个很好的处理方案</span></p>
+<p><span style="line-height: 1.5;">但不是没有问题的，</span><span style="line-height: 1.5;">pushState只支持IE10，所以意味着直接抛弃了winphone为IE9的手机，有几个人投诉winphone不能访问就得扣工资</span>&nbsp;</p>
+<h2>popstate与hashChange</h2>
+<p>这里我们顺带说下popstate与hashChange直接的关系，事实上他们之间没有关系<br>http://www.google.com/path?query=querystring#hashstring</p>
+<p>① http://为协议<br>② www.google.com为host<br>③ path为path，也就是我们的子目录，每个子目录可以干很多事情<br>④ #hashstring为hash相关</p>
+<p>①-③的变化会触发服务器请求，会刷新页面，hash改变不会触发服务器请求<br>所以最初的单页应用，很多都是以hashChange为主，Backbone也不例外初始状态下是监控hashChange<br>而pushState的提出多少改变了这一现状，我们可以改变前面的东西而不引起服务器请求，pushState基本就是干这个事情的</p>
+<p>popstate 为1-3环节的变化引起的回调<br>hashChange 为hash变化引起的回调，是不同滴<br>一个单页应用一般只会注册一个事件，我们之前是hashChange，今天试一试pushState</p>
+<h1><span style="line-height: 1.5;">backbone简单应用</span></h1>
+<p><span style="line-height: 1.5;">了解了pushState后，再让我们回到今天的正题，</span><span style="line-height: 1.5;">其实，我们团队自己也有一套单页应用框架，前段时间与backbone做了一次竞品分析</span></p>
+<p><span style="line-height: 1.5;">事实上的结果是使用backbone代码量会少一点，所以backbone仍然有一定优势</span></p>
+<p><span style="line-height: 1.5;">PS：当时没好意思给老板汇报给糊弄过去了</span></p>
+<p><span style="line-height: 1.5;"><span>下载源码：</span><a id="" href="http://files.cnblogs.com/yexiaochai/02backbone.zip">02backbone.zip</a></span></p>
+<p><span style="line-height: 1.5;"><img src="21119609212629.png" alt="" width="278" height="452">&nbsp;<img src="19412068192606.png" alt="" width="278" height="452"></span></p>
+<p><span style="line-height: 1.5;">这里还是简单做一下解释：</span></p>
+<p><span style="line-height: 1.5;">这里主要定义了两个视图，index（列表）以及detail，以及对应的model信息，这些我们不予关注，我们将关注点放到路由一块</span></p>
+<div class="cnblogs_code">
+<pre><span style="color: #008080;"> 1</span> <span style="color: #0000ff;">var</span> App =<span style="color: #000000;"> Backbone.Router.extend({
+</span><span style="color: #008080;"> 2</span> <span style="color: #000000;">  routes: {
+</span><span style="color: #008080;"> 3</span>     "": "index",    <span style="color: #008000;">//</span><span style="color: #008000;"> #index</span>
+<span style="color: #008080;"> 4</span>     "index": "index",    <span style="color: #008000;">//</span><span style="color: #008000;"> #index</span>
+<span style="color: #008080;"> 5</span>     "detail": "detail"    <span style="color: #008000;">//</span><span style="color: #008000;"> #detail</span>
+<span style="color: #008080;"> 6</span> <span style="color: #000000;">  },
+</span><span style="color: #008080;"> 7</span>   index: <span style="color: #0000ff;">function</span><span style="color: #000000;"> () {
+</span><span style="color: #008080;"> 8</span>     <span style="color: #0000ff;">var</span> index = <span style="color: #0000ff;">new</span> Index(<span style="color: #0000ff;">this</span><span style="color: #000000;">.interface);
+</span><span style="color: #008080;"> 9</span> 
+<span style="color: #008080;">10</span> <span style="color: #000000;">  },
+</span><span style="color: #008080;">11</span>   detail: <span style="color: #0000ff;">function</span><span style="color: #000000;"> () {
+</span><span style="color: #008080;">12</span>     <span style="color: #0000ff;">var</span> detail = <span style="color: #0000ff;">new</span> Detail(<span style="color: #0000ff;">this</span><span style="color: #000000;">.interface);
+</span><span style="color: #008080;">13</span> 
+<span style="color: #008080;">14</span> <span style="color: #000000;">  },
+</span><span style="color: #008080;">15</span>   initialize: <span style="color: #0000ff;">function</span><span style="color: #000000;"> () {
+</span><span style="color: #008080;">16</span> 
+<span style="color: #008080;">17</span> <span style="color: #000000;">  },
+</span><span style="color: #008080;">18</span> <span style="color: #000000;">  interface: {
+</span><span style="color: #008080;">19</span>     forward: <span style="color: #0000ff;">function</span><span style="color: #000000;"> (url) {
+</span><span style="color: #008080;">20</span>       window.location.href = ('#' + url).replace(/^#+/, '#'<span style="color: #000000;">);
+</span><span style="color: #008080;">21</span> <span style="color: #000000;">    }
+</span><span style="color: #008080;">22</span> 
+<span style="color: #008080;">23</span> <span style="color: #000000;">  }
+</span><span style="color: #008080;">24</span> <span style="color: #000000;">});
+</span><span style="color: #008080;">25</span> 
+<span style="color: #008080;">26</span> <span style="color: #0000ff;">var</span> app = <span style="color: #0000ff;">new</span><span style="color: #000000;"> App();
+</span><span style="color: #008080;">27</span> Backbone.history.start();</pre>
+</div>
+<p>由于app中initialize什么都没有干，所以实例化并未执行任何处理，入口在history.start处</p>
+<h2>Backbone.history</h2>
+<p><span style="line-height: 1.5;">Backbone全局有一个处理hash的实例，其构造函数为History</span></p>
+<div class="cnblogs_code">
+<pre><span style="color: #0000ff;">var</span> History = Backbone.History = <span style="color: #0000ff;">function</span><span style="color: #000000;"> () {
+  </span><span style="color: #0000ff;">this</span>.handlers =<span style="color: #000000;"> [];
+  _.bindAll(</span><span style="color: #0000ff;">this</span>, 'checkUrl'<span style="color: #000000;">);
+
+  </span><span style="color: #008000;">//</span><span style="color: #008000;"> Ensure that `History` can be used outside of the browser.</span>
+  <span style="color: #0000ff;">if</span> (<span style="color: #0000ff;">typeof</span> window !== 'undefined'<span style="color: #000000;">) {
+    </span><span style="color: #0000ff;">this</span>.location =<span style="color: #000000;"> window.location;
+    </span><span style="color: #0000ff;">this</span>.history =<span style="color: #000000;"> window.history;
+  }
+};</span></pre>
+</div>
+<p>我们调用的start其实是他的一个原型方法，这里便用到了pushState</p>
+<div class="cnblogs_code" onclick="cnblogs_code_show('34c6e7ec-948d-4281-8c07-b743f757285d')"><img id="code_img_closed_34c6e7ec-948d-4281-8c07-b743f757285d" class="code_img_closed" src="43570758473519.gif" alt=""><img id="code_img_opened_34c6e7ec-948d-4281-8c07-b743f757285d" class="code_img_opened" style="display: none;" onclick="cnblogs_code_hide('34c6e7ec-948d-4281-8c07-b743f757285d',event)" src="16365178109279.gif" alt="">
+<div id="cnblogs_code_open_34c6e7ec-948d-4281-8c07-b743f757285d" class="cnblogs_code_hide">
+<pre>start: <span style="color: #0000ff;">function</span><span style="color: #000000;"> (options) {
+  </span><span style="color: #0000ff;">if</span> (History.started) <span style="color: #0000ff;">throw</span> <span style="color: #0000ff;">new</span> Error("Backbone.history has already been started"<span style="color: #000000;">);
+  History.started </span>= <span style="color: #0000ff;">true</span><span style="color: #000000;">;
+
+  </span><span style="color: #008000;">//</span><span style="color: #008000;"> Figure out the initial configuration. Do we need an iframe?</span>
+  <span style="color: #008000;">//</span><span style="color: #008000;"> Is pushState desired ... is it available?</span>
+  <span style="color: #0000ff;">this</span>.options = _.extend({}, { root: '/' }, <span style="color: #0000ff;">this</span><span style="color: #000000;">.options, options);
+  </span><span style="color: #0000ff;">this</span>.root = <span style="color: #0000ff;">this</span><span style="color: #000000;">.options.root;
+  </span><span style="color: #0000ff;">this</span>._wantsHashChange = <span style="color: #0000ff;">this</span>.options.hashChange !== <span style="color: #0000ff;">false</span><span style="color: #000000;">;
+  </span><span style="color: #0000ff;">this</span>._wantsPushState = !!<span style="color: #0000ff;">this</span><span style="color: #000000;">.options.pushState;
+  </span><span style="color: #0000ff;">this</span>._hasPushState = !!(<span style="color: #0000ff;">this</span>.options.pushState &amp;&amp; <span style="color: #0000ff;">this</span>.history &amp;&amp; <span style="color: #0000ff;">this</span><span style="color: #000000;">.history.pushState);
+  </span><span style="color: #0000ff;">var</span> fragment = <span style="color: #0000ff;">this</span><span style="color: #000000;">.getFragment();
+  </span><span style="color: #0000ff;">var</span> docMode =<span style="color: #000000;"> document.documentMode;
+  </span><span style="color: #0000ff;">var</span> oldIE = (isExplorer.exec(navigator.userAgent.toLowerCase()) &amp;&amp; (!docMode || docMode &lt;= 7<span style="color: #000000;">));
+
+  </span><span style="color: #008000;">//</span><span style="color: #008000;"> Normalize root to always include a leading and trailing slash.</span>
+  <span style="color: #0000ff;">this</span>.root = ('/' + <span style="color: #0000ff;">this</span>.root + '/').replace(rootStripper, '/'<span style="color: #000000;">);
+
+  </span><span style="color: #0000ff;">if</span> (oldIE &amp;&amp; <span style="color: #0000ff;">this</span><span style="color: #000000;">._wantsHashChange) {
+    </span><span style="color: #0000ff;">this</span>.iframe = Backbone.$('&lt;iframe src="javascript:0" tabindex="-1" /&gt;').hide().appendTo('body')[0<span style="color: #000000;">].contentWindow;
+    </span><span style="color: #0000ff;">this</span><span style="color: #000000;">.navigate(fragment);
+  }
+
+  </span><span style="color: #008000;">//</span><span style="color: #008000;"> Depending on whether we're using pushState or hashes, and whether</span>
+  <span style="color: #008000;">//</span><span style="color: #008000;"> 'onhashchange' is supported, determine how we check the URL state.</span>
+  <span style="color: #0000ff;">if</span> (<span style="color: #0000ff;">this</span><span style="color: #000000;">._hasPushState) {
+    Backbone.$(window).on(</span>'popstate', <span style="color: #0000ff;">this</span><span style="color: #000000;">.checkUrl);
+  } </span><span style="color: #0000ff;">else</span> <span style="color: #0000ff;">if</span> (<span style="color: #0000ff;">this</span>._wantsHashChange &amp;&amp; ('onhashchange' <span style="color: #0000ff;">in</span> window) &amp;&amp; !<span style="color: #000000;">oldIE) {
+    Backbone.$(window).on(</span>'hashchange', <span style="color: #0000ff;">this</span><span style="color: #000000;">.checkUrl);
+  } </span><span style="color: #0000ff;">else</span> <span style="color: #0000ff;">if</span> (<span style="color: #0000ff;">this</span><span style="color: #000000;">._wantsHashChange) {
+    </span><span style="color: #0000ff;">this</span>._checkUrlInterval = setInterval(<span style="color: #0000ff;">this</span>.checkUrl, <span style="color: #0000ff;">this</span><span style="color: #000000;">.interval);
+  }
+
+  </span><span style="color: #008000;">//</span><span style="color: #008000;"> Determine if we need to change the base url, for a pushState link</span>
+  <span style="color: #008000;">//</span><span style="color: #008000;"> opened by a non-pushState browser.</span>
+  <span style="color: #0000ff;">this</span>.fragment =<span style="color: #000000;"> fragment;
+  </span><span style="color: #0000ff;">var</span> loc = <span style="color: #0000ff;">this</span><span style="color: #000000;">.location;
+  </span><span style="color: #0000ff;">var</span> atRoot = loc.pathname.replace(/[^\/]$/, '$&amp;/') === <span style="color: #0000ff;">this</span><span style="color: #000000;">.root;
+
+  </span><span style="color: #008000;">//</span><span style="color: #008000;"> If we've started off with a route from a `pushState`-enabled browser,</span>
+  <span style="color: #008000;">//</span><span style="color: #008000;"> but we're currently in a browser that doesn't support it...</span>
+  <span style="color: #0000ff;">if</span> (<span style="color: #0000ff;">this</span>._wantsHashChange &amp;&amp; <span style="color: #0000ff;">this</span>._wantsPushState &amp;&amp; !<span style="color: #0000ff;">this</span>._hasPushState &amp;&amp; !<span style="color: #000000;">atRoot) {
+    </span><span style="color: #0000ff;">this</span>.fragment = <span style="color: #0000ff;">this</span>.getFragment(<span style="color: #0000ff;">null</span>, <span style="color: #0000ff;">true</span><span style="color: #000000;">);
+    </span><span style="color: #0000ff;">this</span>.location.replace(<span style="color: #0000ff;">this</span>.root + <span style="color: #0000ff;">this</span>.location.search + '#' + <span style="color: #0000ff;">this</span><span style="color: #000000;">.fragment);
+    </span><span style="color: #008000;">//</span><span style="color: #008000;"> Return immediately as browser will do redirect to new url</span>
+    <span style="color: #0000ff;">return</span> <span style="color: #0000ff;">true</span><span style="color: #000000;">;
+
+    </span><span style="color: #008000;">//</span><span style="color: #008000;"> Or if we've started out with a hash-based route, but we're currently</span>
+    <span style="color: #008000;">//</span><span style="color: #008000;"> in a browser where it could be `pushState`-based instead...</span>
+  } <span style="color: #0000ff;">else</span> <span style="color: #0000ff;">if</span> (<span style="color: #0000ff;">this</span>._wantsPushState &amp;&amp; <span style="color: #0000ff;">this</span>._hasPushState &amp;&amp; atRoot &amp;&amp;<span style="color: #000000;"> loc.hash) {
+    </span><span style="color: #0000ff;">this</span>.fragment = <span style="color: #0000ff;">this</span>.getHash().replace(routeStripper, ''<span style="color: #000000;">);
+    </span><span style="color: #0000ff;">this</span>.history.replaceState({}, document.title, <span style="color: #0000ff;">this</span>.root + <span style="color: #0000ff;">this</span>.fragment +<span style="color: #000000;"> loc.search);
+  }
+
+  </span><span style="color: #0000ff;">if</span> (!<span style="color: #0000ff;">this</span>.options.silent) <span style="color: #0000ff;">return</span> <span style="color: #0000ff;">this</span><span style="color: #000000;">.loadUrl();
+},</span></pre>
+</div>
+<span class="cnblogs_code_collapse">View Code</span></div>
+<p>好的代码是会检测兼容性的，若是支持便使用pushState，不支持便还是使用hashChange</p>
+<div class="cnblogs_code">
+<pre><span style="color: #0000ff;">if</span> (<span style="color: #0000ff;">this</span><span style="color: #000000;">._hasPushState) {
+  Backbone.$(window).on(</span>'popstate', <span style="color: #0000ff;">this</span><span style="color: #000000;">.checkUrl);
+} </span><span style="color: #0000ff;">else</span> <span style="color: #0000ff;">if</span> (<span style="color: #0000ff;">this</span>._wantsHashChange &amp;&amp; ('onhashchange' <span style="color: #0000ff;">in</span> window) &amp;&amp; !<span style="color: #000000;">oldIE) {
+  Backbone.$(window).on(</span>'hashchange', <span style="color: #0000ff;">this</span><span style="color: #000000;">.checkUrl);
+} </span><span style="color: #0000ff;">else</span> <span style="color: #0000ff;">if</span> (<span style="color: #0000ff;">this</span><span style="color: #000000;">._wantsHashChange) {
+  </span><span style="color: #0000ff;">this</span>._checkUrlInterval = setInterval(<span style="color: #0000ff;">this</span>.checkUrl, <span style="color: #0000ff;">this</span><span style="color: #000000;">.interval);
+}</span></pre>
+</div>
+<p>值得注意的是，要使用的话调用方法有所不同</p>
+<div class="cnblogs_code">
+<pre>Backbone.history.start({ pushState: <span style="color: #0000ff;">true</span> });</pre>
+</div>
+<p>所以默认情况使用的是hashChange，我们这先继续往下看，统一的入口是loadUrl</p>
+<div class="cnblogs_code">
+<pre>loadUrl: <span style="color: #0000ff;">function</span><span style="color: #000000;"> (fragmentOverride) {
+  </span><span style="color: #0000ff;">var</span> fragment = <span style="color: #0000ff;">this</span>.fragment = <span style="color: #0000ff;">this</span><span style="color: #000000;">.getFragment(fragmentOverride);
+  </span><span style="color: #0000ff;">var</span> matched = _.any(<span style="color: #0000ff;">this</span>.handlers, <span style="color: #0000ff;">function</span><span style="color: #000000;"> (handler) {
+    </span><span style="color: #0000ff;">if</span><span style="color: #000000;"> (handler.route.test(fragment)) {
+      handler.callback(fragment);
+      </span><span style="color: #0000ff;">return</span> <span style="color: #0000ff;">true</span><span style="color: #000000;">;
+    }
+  });
+  </span><span style="color: #0000ff;">return</span><span style="color: #000000;"> matched;
+},</span></pre>
+</div>
+<p>这里会的handlers事实上是Router里面定义的集合</p>
+<p><span style="line-height: 1.5;"><img src="26873018927780.png" alt=""></span></p>
+<p><span style="line-height: 1.5;">这个值是实例化Router时候导入的，这里暂时不予关注</span></p>
+<div class="cnblogs_code">
+<pre><span style="color: #0000ff;">this</span>._bindRoutes();</pre>
+</div>
+<p>因为首次url为''，所以会执行相关的路由回调，这里是执行实例化Index view的操作</p>
+<p>我们点击列表项会触发hashChange，最后又会执行loadUrl，此时因为hash已经变成了detail，所以会执行对应的回调</p>
+<p><img src="22511377349506.png" alt=""></p>
+<p>所以，一轮下来，我们发现Backbone初始化状态并未使用pushState，而是简单的hashChange处理路由，开启pushState规则会有一点点变化</p>
+<p>我去有道云笔记看了下，他也是使用Backbone的项目，并且启用了pushState，但是其操作中后退功能做的并不好，事实上他后退没有操作</p>
+<p><img src="17922388896650.png" alt=""></p>
+<p><span style="line-height: 1.5;">我们这里要使用pushState，对forward接口的代码需要做一定调整，第一个要调整的就是&ldquo;#&rdquo;，我们得使用标准的&ldquo;?&rdquo;</span></p>
+<p>我们这里直接使用Backbone自带的navigation了，开启pushState的情况下，每次会在后面加一个&ldquo;/view&rdquo;<br>然后设置trigger为true，便会触发检查url找到对应路由后会执行相关回调</p>
+<p>最开始，我这里开启pushState不成功，是因为要设置root的关系......不正在使用下，就算看到源码也不知道在干什么<br>if (!fragment.indexOf(root)) fragment = fragment.substr(root.length);</p>
+<p>如此一来，我们整个逻辑也就结束了</p>
+<h1>阶段总结</h1>
+<p>Backbone路由一块事实上分为两个大块，Router以及History<br>用户在Router中定义相关规则，然后开启history.start进行路由监控，一来就会执行默认的回调<br>所以，Router本身除了定义路由规则，全部调用的是Backbone.history的方法<br>Backbone.History的主要关注点事实上是 popstate(hashChange)的回调checkUrl，无论我们触发navigate或者点击浏览器后退<br>皆是进入此入口，再回调至Router定义的回调，从而实现相关逻辑</p>
+<p>片面想法<br>我其实也是初次实际使用Backbone的路由功能，Backbone的Router以及History事实上作为了控制器而存在<br>但是，我对这样的应用却有不一样的想法<br>首先，全部的路由都定义到Router里面有点过重，虽然现在不会有过于复杂的路由配置，难保以后不会出现<br>其次，作为控制器而言，若是用户不做一定扩展的话，很多特性加不上去，比如我要实现View以及View之间的通信就缺少依据<br>最后，以上皆是我移动片面的想法，初学者嘛......</p>
+<p>我们这个周末学习了Backbone，却忘了发出来，现在发出来，希望对各位有帮助</p>
+<p><span style="line-height: 1.5;">&nbsp;</span></p>
+                </div>
+
+                <div class='span3 sidebar'>
+                    <h2>导航栏</h2>
+                    <ul class="nav nav-tabs nav-stacked">
+                             				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/javascriptzdyxhxzsdyjxyzyddf/index.html">javascript中的一些核心知识点以及需要注意的地方</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/[zd]webappdyhzlyzydqdyhdpyjlkkb/index.html">[置顶]【webapp的优化整理】要做移动前端优化的朋友进来看看吧</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/[zd]yddjrwtyjjavascriptsjjzxjsjydjr/index.html">[置顶]【移动端兼容问题研究】javascript事件机制详解（涉及移动兼容）</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/gruntzhb30fzxhsygruntdbqddm/index.html">【grunt整合版】30分钟学会使用grunt打包前端代码</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/gruntdyd30fzxhsygruntdbqddm/index.html">【grunt第一弹】30分钟学会使用grunt打包前端代码</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/gruntdsdgruntzqdsjxmzdyy/index.html">【grunt第三弹】grunt在前端实际项目中的应用</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/gruntded30fzxhsygruntdbqddm02/index.html">【grunt第二弹】30分钟学会使用grunt打包前端代码（02）</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/IScrollsrxxtpyddhadlqs/index.html">【IScroll深入学习】突破移动端黑暗的利器（上）</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/IScrollsrxxjjIScrollynzz/index.html">【IScroll深入学习】解决IScroll疑难杂症</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/iScrollymxx00mniScroll/index.html">【iScroll源码学习00】模拟iScroll</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/iScrollymxx01zbjd/index.html">【iScroll源码学习01】准备阶段</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/iScrollymxx02fjiScrollsghxsjd/index.html">【iScroll源码学习02】分解iScroll三个核心事件点</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/iScrollymxx03iScrollsjjzygdtdsx/index.html">【iScroll源码学习03】iScroll事件机制与滚动条的实现</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/iScrollymxx04flIScrollhx/index.html">【iScroll源码学习04】分离IScroll核心</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/javascriptpxdytyyjc/index.html">【javascript培训第一天】语言基础</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/javascriptpxdstcybl/index.html">【javascript培训第三天】查遗补漏</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/javascriptpxdetDOMyBOM/index.html">【javascript培训第二天】DOM与BOM</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/javascriptjzdsk01mkhbc/index.html">【javascript激增的思考01】模块化编程</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/javascriptjzdsk02mkhyMVC/index.html">【javascript激增的思考02】模块化与MVC</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/javascriptjzdsk03MVVMyKnockout/index.html">【javascript激增的思考03】MVVM与Knockout</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/javascriptjzdsk04MVCyBackbonejs(beta)/index.html">【javascript激增的思考04】MVC与Backbonejs(beta)</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/javascriptmxdxzlrwmyqltkdzb01/index.html">【javascript面向对象之路】让我们一起来坦克大战吧01</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/NodeJSxxbj04xwfbxt/index.html">【NodeJS学习笔记04】新闻发布系统</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/requireJSymxx01ljzgrequireJSdjg/index.html">【requireJS源码学习01】了解整个requireJS的结构</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/requireJSymxx02datamainjzdsx/index.html">【requireJS源码学习02】datamain加载的实现</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/requireJSymxx03xjrequireJSdjzlc/index.html">【requireJS源码学习03】细究requireJS的加载流程</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/UIcjkfygjdrlcjs/index.html">【UI插件】开发一个简单日历插件（上）</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/UIcjjddrlcjxxxMVCsx/index.html">【UI插件】简单的日历插件（下）——学习MVC思想</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/zeptoxxbj01hxff$()/index.html">【zepto学习笔记01】核心方法$()</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/zeptoxxbj01hxff$()b/index.html">【zepto学习笔记01】核心方法$()（补）</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/zeptoxxbj02lsd/index.html">【zepto学习笔记02】零碎点</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/zeptoxxbj03sjjz/index.html">【zepto学习笔记03】事件机制</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/ycmsztjavascriptzdjc/index.html">【一次面试】再谈javascript中的继承</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/ztbackbone01mxModel/index.html">【再探backbone01】模型Model</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/ztbackbone02jhCollection/index.html">【再探backbone02】集合Collection</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/ztbackbone03bkydyyysltgym/index.html">【再探backbone03】博客园单页应用实例（提供源码）</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/ztbackbone04dyyydjslycl/index.html">【再探backbone04】单页应用的基石路由处理</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/ctUnderscorezsmbyq/index.html">【初探Underscore】再说模版引擎</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/ckjavascriptamzAjaxjsxnszddAjax/index.html">【初窥javascript奥秘之Ajax】简述下你所知道的Ajax？</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/ckjavascriptamzsjmpnxnwmyqmdp/index.html">【初窥javascript奥秘之事件冒泡】那些年我们一起冒的泡</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/ckjavascriptamzsjjzldtygdj/index.html">【初窥javascript奥秘之事件机制】论“点透”与“鬼点击”</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/ckjavascriptamzrrzmbddthisnzdxzthiszxnlm/index.html">【初窥javascript奥秘之让人捉摸不定的this】你知道现在this指向哪里吗？？？</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/ckjavascriptamzbbydxbdhlqbcl/index.html">【初窥javascript奥秘之闭包】叶大侠病都好了，求不踩了：）</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/ckjavascriptamzmxdxfzyjc/index.html">【初窥javascript奥秘之面向对象】封装与继承</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/qdmdsjdjgjdnzdljm/index.html">【前端盲点】事件的几个阶段你真的了解么？？？</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/dyyyviewymodelxgsl/index.html">【单页应用】view与model相关梳理</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/dyyyyqldyyybsxjdwbgns/index.html">【单页应用】一起来单页应用吧，实现简单微博功能！（上）</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/dyyyqjkzqappyggxsm/index.html">【单页应用】全局控制器app应该干些什么？</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/dyyywmgrhclkjdcccjgx/index.html">【单页应用】我们该如何处理框架弹出层层级关系？</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/dyyyljMVC/index.html">【单页应用】理解MVC</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/dyyyztxjzviewzjygrhtx/index.html">【单页应用之通信机制】view之间应该如何通信</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/dyyyjkzHistoryxsHistorydgdyyydm/index.html">【单页应用巨坑之History】细数History带给单页应用的噩梦</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/xtszeptofindysyjiosdcjpknrnhtt/index.html">【小贴士】zeptofind元素以及ios弹出键盘可能让你很头疼</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/xtsgytransitionEndanimatedygyqgs/index.html">【小贴士】关于transitionEndanimate的一个有趣故事</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/xtsgzzdbbysjwtdzzmp/index.html">【小贴士】工作中的”闭包“与事件委托的”阻止冒泡“</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/xtstytjavascriptzdreplace/index.html">【小贴士】探一探javascript中的replace</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/xtsxnjpyfixeddgydddt/index.html">【小贴士】虚拟键盘与fixed带给移动端的痛！</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/ttjavascriptsjjzdcsxyl/index.html">【探讨】javascript事件机制底层实现原理</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/mkhbcljrequireJSsxygjddmkjzq/index.html">【模块化编程】理解requireJS实现一个简单的模块加载器</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/zyJavaScriptmfjmtsdqlxkjzbfgndcljz/index.html">【转】【译】JavaScript魔法揭秘探索当前流行框架中部分功能的处理机制</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/zxjavascriptgszl01javascriptcszds/index.html">【追寻javascript高手之路01】javascript参数知多少？</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/zxjavascriptgszl02blzyyzds/index.html">【追寻javascript高手之路02】变量、作用域知多少？</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/zxjavascriptgszl03javascriptdxdld/index.html">【追寻javascript高手之路03】javascript对象大乱斗</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/zxjavascriptgszl04ljprototype/index.html">【追寻javascript高手之路04】理解prototype</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/zxjavascriptgszl05ljsjl/index.html">【追寻javascript高手之路05】理解事件流</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/zgbj04zxzzsj(2)/index.html">【重构笔记04】重新组织数据(2)</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/zgbj05jhtjbds/index.html">【重构笔记05】简化条件表达式</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/zgbj06jhhsdy/index.html">【重构笔记06】简化函数调用</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/ycmshgttbxysjfl/index.html">一次面试回顾——探讨表现与数据分离</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/dhzwebappzdxz/index.html">动画在webapp中的现状</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/ysandriodlqhthdomclicksjqtsxwttj/index.html">原生andriod浏览器回退后dom（click）事件全体失效问题探究</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/scsbdjxysdsbsjytouchsjdnxs/index.html">手持设备点击响应速度，鼠标事件与touch事件的那些事</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/mnbjQueryzeptohxymfx/index.html">迷你版jQuery——zepto核心源码分析</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/dbsgzdlwmlyqxjdddomxzqb/index.html">都别说工资低了，我们来一起写简单的dom选择器吧！</a></li>
+    				                                         
+                    </ul>
+                </div>
+            </div>
+
+        </div>
+    </body>
+</html>

@@ -1,0 +1,409 @@
+﻿<!DOCTYPE html>
+
+<html lang="zh">
+    <head>
+        <meta charset="utf-8">
+        <meta name="description" content="android,ios" />
+        <meta name="keywords" content="android,ios" />
+
+        <title>叶小钗</title>
+        <style type='text/css'>
+            body {
+                background-color: #CCC;
+            }
+        </style>
+        <link rel="stylesheet" href="../../../css/bootstrap.css" />
+    </head>
+
+    <body>
+        <div class="container">
+
+            <h1>叶小钗</h1>
+
+            <div class='navbar navbar-inverse'>
+                <div class='navbar-inner nav-collapse' style="height: auto;">
+                    <ul class="nav">
+                              				<li><a href="http://songboriceboy.github.io/xxoo/html/blade/index.html">blade</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/css/index.html">css</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/HTML5&CSS3/index.html">HTML5&CSS3</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/index.html">javascript</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Javaxx/index.html">Java学习</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/nodejs/index.html">nodejs</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/requirejs/index.html">requirejs</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/index.html">Web前端</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/xxgw/index.html">学习感悟</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/gzdd/index.html">工作点滴</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/jkxx/index.html">接口学习</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/wfl/index.html">未分类</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/ydkf/index.html">移动开发</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/sjms/index.html">设计模式</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/mst/index.html">面试题</a></li>
+    				                      </ul>
+                </div>
+            </div>
+
+            <div id='content' class='row-fluid'>
+
+                <div class='span9 main'>
+				<div style="color:blue" align=center>探讨webapp的SEO难题（上）</div><br><h1>前言</h1>
+<div>网络蜘蛛无法解析javascript，至少百度是不能的，神马搜索差的更远，而我们的webapp的渲染展示完全由javascript驱动</div>
+<div>所以蜘蛛访问webapp页面会得到一个白页面，比如，我们期待SEO看到的是这个样子的网页</div>
+<div><img src="1586809438175.png" alt="" width="448" height="261"></div>
+<div>其实他看到的是这个样子的代码：</div>
+<p><img src="42938055431445.png" alt="" width="519" height="364"></p>
+<div>那么这个问题应该如何处理呢？比较早的处理方案是提供两套代码，一套用于webapp一套用于SEO，比如：</div>
+<div>webapp/blade/demo/debug.html是用于webapp的</div>
+<div>而html5/blade/demo/debug.html就是用于SEO访问的</div>
+<div>这样做确实是解决了SEO的问题，业务团队却需要写两套代码，这个情况是开发也不是不可接受的，举个例子来说</div>
+<div>webapp一般是纯粹的前端开发，而且逻辑会相对复杂，而seo开发一定是会服务器端语言的</div>
+<div>也就是说要完成此等开发需要预期1.3-1.5倍的工作量（SEO页面往往比较简单只做纯粹展示），而开发需要掌握前后端，而这个后端可能是php，java,.net</div>
+<div>这个样子除了有点耗费人力之外没有什么问题，因为从重构角度来说，不相关的模块就是应该分离，显然这里的webapp与seo就是两个东西</div>
+<div>这里是典型的业务关联，而非功能关联，写在一起总会遇到适配问题，但抱着一套代码解决两个问题的信念，我们今天来探索如何使用一套代码完成webapp与seo两个功能</div>
+<div><span style="color: #ff0000;">PS：此文只是个人粗浅的理解，若是有误请您指正</span></div>
+<h1>.net解决思路</h1>
+<div>这里要webapp与SEO使用同一套代码完成不同的渲染的话，其实基本前提是必须的：</div>
+<div>① 数据为先，而且是所有需要的数据必须事先定义，是否允许异步我们不予理睬，但是必须是实现准备好数据接口定义！</div>
+<div>由于数据接口事先定义好了，webapp的数据请求就有两种方式，同步、异步</div>
+<div>② 数据可以与html一起返回，写入到页面，不然就是先吐出html，然后前端解析后Ajax请求数据，渲染模板</div>
+<div>这里处理的一个重点大家都发现了，他就是<span style="color: #ff0000;"><strong>首屏渲染</strong></span>！所谓SEO其实就是要做到首屏渲染</div>
+<div>PS：这里可能会发生数据交错依赖的需求，我们这里暂时不予理睬</div>
+<div>而对于SEO，浏览器访问后需要直接返回完好无损的HTML，这里便必须同步处理，所以我们首屏的webapp的数据也采用一并返回的方法</div>
+<div>这里服务器只会提供统一的restful接口，webapp使用underscore渲染页面，需要产生相同的数据就需要一个前提：</div>
+<div>服务器需要解析前端webapp underscore模板的能力！这里便提供了初步的方案，简单模拟如下index.html：</div>
+<div class="cnblogs_code">
+<pre><span style="color: #0000ff;">&lt;</span><span style="color: #800000;">script </span><span style="color: #ff0000;">type</span><span style="color: #0000ff;">="text/blade_config"</span><span style="color: #0000ff;">&gt;</span><span style="background-color: #f5f5f5; color: #000000;">
+  {
+    url: </span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">restful/index</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">,
+    template: </span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">indexTmpt</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">
+  }
+</span><span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">script</span><span style="color: #0000ff;">&gt;</span></pre>
+</div>
+<div class="cnblogs_code">
+<pre><span style="color: #0000ff;">&lt;</span><span style="color: #800000;">script </span><span style="color: #ff0000;">id</span><span style="color: #0000ff;">="indexTmpt"</span><span style="color: #ff0000;"> type</span><span style="color: #0000ff;">="text/blade_template"</span><span style="color: #0000ff;">&gt;</span>
+  <span style="background-color: #f5f5f5; color: #000000;">&lt;</span><span style="background-color: #f5f5f5; color: #000000;">ul</span><span style="background-color: #f5f5f5; color: #000000;">&gt;</span>
+    <span style="background-color: #f5f5f5; color: #000000;">&lt;%</span> <span style="background-color: #f5f5f5; color: #0000ff;">for</span><span style="background-color: #f5f5f5; color: #000000;">(</span><span style="background-color: #f5f5f5; color: #0000ff;">var</span><span style="background-color: #f5f5f5; color: #000000;"> i </span><span style="background-color: #f5f5f5; color: #000000;">=</span> <span style="background-color: #f5f5f5; color: #000000;">0</span><span style="background-color: #f5f5f5; color: #000000;">, len </span><span style="background-color: #f5f5f5; color: #000000;">=</span><span style="background-color: #f5f5f5; color: #000000;"> data.length; i </span><span style="background-color: #f5f5f5; color: #000000;">&lt;</span><span style="background-color: #f5f5f5; color: #000000;"> len; i</span><span style="background-color: #f5f5f5; color: #000000;">++</span><span style="background-color: #f5f5f5; color: #000000;">) { </span><span style="background-color: #f5f5f5; color: #000000;">%&gt;</span>
+      <span style="background-color: #f5f5f5; color: #000000;">&lt;</span><span style="background-color: #f5f5f5; color: #000000;">li</span><span style="background-color: #f5f5f5; color: #000000;">&gt;&lt;%=</span><span style="background-color: #f5f5f5; color: #000000;">data[i].name </span><span style="background-color: #f5f5f5; color: #000000;">%&gt;&lt;</span><span style="background-color: #f5f5f5; color: #000000;">/</span><span style="background-color: #f5f5f5; color: #000000;">li&gt;</span>
+    <span style="background-color: #f5f5f5; color: #000000;">&lt;%</span><span style="background-color: #f5f5f5; color: #000000;"> } </span><span style="background-color: #f5f5f5; color: #000000;">%&gt;</span>
+  <span style="background-color: #f5f5f5; color: #000000;">&lt;</span><span style="background-color: #f5f5f5; color: #000000;">/</span><span style="background-color: #f5f5f5; color: #000000;">ul&gt;</span>
+<span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">script</span><span style="color: #0000ff;">&gt;</span></pre>
+</div>
+<div class="cnblogs_code">
+<pre><span style="color: #008000;">//</span><span style="color: #008000;">模拟数据返回</span>
+data =<span style="color: #000000;"> [
+  {id: </span>0, name: 'item_0'<span style="color: #000000;">},
+  {id: </span>1, name: 'item_1'<span style="color: #000000;">},
+  {id: </span>2, name: 'item_2'<span style="color: #000000;">}
+]</span></pre>
+</div>
+<h3>这里期待的webapp处理逻辑：</h3>
+<div>① 服务器解析config中的data，请求url后封装为数据</div>
+<div>② 服务器处理模板与data，生成html，返回返回</div>
+<div>当然这里可以将data返回页面由前端渲染，但是这样意义不大，不然直接渲染算了</div>
+<h3>期待的seo处理逻辑：</h3>
+<div>① 解析config，请求url生成data</div>
+<div>② 根据前端模板，生成最终html</div>
+<div>其实SEO的逻辑与前端一致了，没有什么不同，只不过生成静态html后的处理逻辑差距便大了</div>
+<h3>为什么不直接服务器吐出完整html？</h3>
+<div>到这里其实很多朋友就会开始质疑了，既然如此，我们何必要定义config中的url，或者template，这里直接使用服务器端渲染给给前端不好么？</div>
+<div>这里还省了很多看似莫名其妙的配置，其实这样做还是有道理的</div>
+<div>本来SEO需要会服务器端语言的，而一旦我们给出config中的约定与模板后，事实上整个便与服务器端没有任何联系了</div>
+<div>虽说他与服务器端吐出差距不大，但是我业务开发人员事实上只需要掌握前端技能，这个设计的原因便是如此</div>
+<div>整个程序对前端来说依旧只需要restful与模板，我可以单个前端同时完成webapp与seo，这就是其意义所在</div>
+<h3>这个方案的代价是：</h3>
+<div>① blade中的静态html需要变成动态脚本，这样服务器才能解析内容（比如index.html-&gt;index.aspx）</div>
+<div>② 之前形成的编写方式需要改变，这里只是需要onShow、onHide事件点</div>
+<div>③ 需要按套路出牌，必须定义url与template等东西</div>
+<div>凡是有优点就有缺点，这样做的优点是：</div>
+<div>① 一套代码解决webapp seo难题</div>
+<div>② 可以使用.net解析模板，整个服务器来说比较稳定</div>
+<div>缺点是：</div>
+<div>① 对前端规范约束太多，碰到复杂业务逻辑会比较头疼，比如模板嵌套，数据依赖，这里的配置就麻烦了</div>
+<div>② 不太&ldquo;webapp&rdquo;，诚然，此种做法不太webapp</div>
+<div>③ 脆弱，问题同样来源于模板，一次模板语法解析错误，会造成服务器端抛错，整个程序便死掉了</div>
+<div>这个问题的提出其实有点吹毛求疵，因为模板就前端解析也会经常出错，但是这里的不同点是前端稍微好调试点，如果抛给服务器端的话其调试成本会增加</div>
+<h3>.net解析javascript</h3>
+<div>扯了这么多，小钗这里为了证明自己原来是搞.net的这里做一个简单实现，这里便出现了第一个难点：</div>
+<div>因为我们模板是underscore的语法（模板暂时不考虑嵌套），那么.net如何解析javascript代码呢？？</div>
+<div>.net解析javascript需要引入第三方库，借助一些javascript引擎，就如node之于V8；.net的话我们这里暂时使用IronJS做处理</div>
+<div><strong>https://github.com/fholm/IronJS</strong></div>
+<div>这里小钗不得不汗颜，一件事情，就是C#已经变成这个样子了，我却根本不知道......</div>
+<div><img src="20557309643143.png" alt=""></div>
+<div>PS：尼玛这个狗东西，我看得懂个毛线啊！！！所以本着不丢脸的原则，我们这里省略一万字</div>
+<div>我们这里直接提供一个思路即可，因为该方案不是今日的重点，我的重心依旧是放在nodeJS上的，这里的思路是：</div>
+<p>① 解析页面的config信息，取出url以及template</p>
+<p>② 根据url发出请求返回数据，这里由于是局域网应该很快</p>
+<p>③ 解析template，根据data生成静态html</p>
+<p>④ 其它处理，返回客户端</p>
+<h3><span style="line-height: 1.5;">模拟处理逻辑</span></h3>
+<p><span style="line-height: 1.5;">我们这里略去url请求一步，假设数据已经返回，否则这里又要写.net程序</span></p>
+<div class="cnblogs_code">
+<pre><span style="color: #0000ff;">var</span> data =<span style="color: #000000;"> [
+  {id: </span>0, name: 'item_0'<span style="color: #000000;">},
+  {id: </span>1, name: 'item_1'<span style="color: #000000;">},
+  {id: </span>2, name: 'item_2'<span style="color: #000000;">}
+];</span></pre>
+</div>
+<p><span style="line-height: 1.5;">这里的模板字符串为：</span></p>
+<div class="cnblogs_code">
+<pre><span style="color: #0000ff;">var</span> template =<span style="color: #000000;"> [
+  </span>'&lt;ul&gt;'<span style="color: #000000;">,
+    </span>'&lt;% for(var i = 0, len = data.length; i &lt; len; i++) { %&gt;'<span style="color: #000000;">,
+      </span>'&lt;li&gt;&lt;%=data[i].name %&gt;&lt;/li&gt;'<span style="color: #000000;">,
+    </span>'&lt;% } %&gt;'<span style="color: #000000;">,
+  </span>'&lt;/ul&gt;'<span style="color: #000000;">
+].join(</span>'');</pre>
+</div>
+<p>然后我们要做的就是解析这个模板，生成对应的模板解析函数，这里是调试代码：</p>
+<div class="cnblogs_code" onclick="cnblogs_code_show('4d53b4ed-4059-4ff0-ad6f-5d26681d22f9')"><img id="code_img_closed_4d53b4ed-4059-4ff0-ad6f-5d26681d22f9" class="code_img_closed" src="43570758473519.gif" alt=""><img id="code_img_opened_4d53b4ed-4059-4ff0-ad6f-5d26681d22f9" class="code_img_opened" style="display: none;" onclick="cnblogs_code_hide('4d53b4ed-4059-4ff0-ad6f-5d26681d22f9',event)" src="16365178109279.gif" alt="">
+<div id="cnblogs_code_open_4d53b4ed-4059-4ff0-ad6f-5d26681d22f9" class="cnblogs_code_hide">
+<pre><span style="color: #0000ff;">var</span> data =<span style="color: #000000;"> [
+  { id: </span>0, name: 'item_0'<span style="color: #000000;"> },
+  { id: </span>1, name: 'item_1'<span style="color: #000000;"> },
+  { id: </span>2, name: 'item_2'<span style="color: #000000;"> }
+];
+
+</span><span style="color: #0000ff;">var</span> template =<span style="color: #000000;"> [
+  </span>'&lt;ul&gt;'<span style="color: #000000;">,
+    </span>'&lt;% for(var i = 0, len = data.length; i &lt; len; i++) { %&gt;'<span style="color: #000000;">,
+      </span>'&lt;li&gt;&lt;%=data[i].name %&gt;&lt;/li&gt;'<span style="color: #000000;">,
+    </span>'&lt;% } %&gt;'<span style="color: #000000;">,
+  </span>'&lt;/ul&gt;'<span style="color: #000000;">
+].join(</span>''<span style="color: #000000;">);
+
+</span><span style="color: #0000ff;">var</span> templateHandler = <span style="color: #0000ff;">function</span><span style="color: #000000;"> (text, data) {
+
+  </span><span style="color: #0000ff;">var</span> noMatch = /(.)^/<span style="color: #000000;">;
+
+  </span><span style="color: #0000ff;">var</span> escapes =<span style="color: #000000;"> {
+    </span>"'": "'"<span style="color: #000000;">,
+    </span>'\\': '\\'<span style="color: #000000;">,
+    </span>'\r': 'r'<span style="color: #000000;">,
+    </span>'\n': 'n'<span style="color: #000000;">,
+    </span>'\t': 't'<span style="color: #000000;">,
+    </span>'\u2028': 'u2028'<span style="color: #000000;">,
+    </span>'\u2029': 'u2029'<span style="color: #000000;">
+  };
+
+  </span><span style="color: #0000ff;">var</span> escaper = /\\|'|\r|\n|\t|\u2028|\u2029/<span style="color: #000000;">g;
+
+  </span><span style="color: #0000ff;">var</span> templateSettings =<span style="color: #000000;"> {
+    evaluate: </span>/&lt;%([\s\S]+?)%&gt;/<span style="color: #000000;">g,
+    interpolate: </span>/&lt;%=([\s\S]+?)%&gt;/<span style="color: #000000;">g,
+    escape: </span>/&lt;%-([\s\S]+?)%&gt;/<span style="color: #000000;">g
+  };
+
+  </span><span style="color: #0000ff;">var</span><span style="color: #000000;"> render;
+  settings </span>=<span style="color: #000000;"> templateSettings;
+  </span><span style="color: #0000ff;">var</span> matcher = <span style="color: #0000ff;">new</span><span style="color: #000000;"> RegExp([
+      (settings.escape </span>||<span style="color: #000000;"> noMatch).source,
+      (settings.interpolate </span>||<span style="color: #000000;"> noMatch).source,
+      (settings.evaluate </span>||<span style="color: #000000;"> noMatch).source
+    ].join(</span>'|') + '|$', 'g'<span style="color: #000000;">);
+
+  </span><span style="color: #0000ff;">var</span> index = 0<span style="color: #000000;">;
+  </span><span style="color: #0000ff;">var</span> source = "__p+='"<span style="color: #000000;">;
+  text.replace(matcher, </span><span style="color: #0000ff;">function</span><span style="color: #000000;"> (match, escape, interpolate, evaluate, offset) {
+    source </span>+=<span style="color: #000000;"> text.slice(index, offset)
+        .replace(escaper, </span><span style="color: #0000ff;">function</span> (match) { <span style="color: #0000ff;">return</span> '\\' +<span style="color: #000000;"> escapes[match]; });
+
+    </span><span style="color: #0000ff;">if</span><span style="color: #000000;"> (escape) {
+      source </span>+= "'+\n((__t=(" + escape + "))==null?'':escape(__t))+\n'"<span style="color: #000000;">;
+    }
+    </span><span style="color: #0000ff;">if</span><span style="color: #000000;"> (interpolate) {
+      source </span>+= "'+\n((__t=(" + interpolate + "))==null?'':__t)+\n'"<span style="color: #000000;">;
+    }
+    </span><span style="color: #0000ff;">if</span><span style="color: #000000;"> (evaluate) {
+      source </span>+= "';\n" + evaluate + "\n__p+='"<span style="color: #000000;">;
+    }
+    index </span>= offset +<span style="color: #000000;"> match.length;
+    </span><span style="color: #0000ff;">return</span><span style="color: #000000;"> match;
+  });
+  source </span>+= "';\n"<span style="color: #000000;">;
+
+  </span><span style="color: #0000ff;">if</span> (!settings.variable) source = 'with(obj||{}){\n' + source + '}\n'<span style="color: #000000;">;
+
+  source </span>= "var __t,__p='',__j=Array.prototype.join," +
+      "print=function(){__p+=__j.call(arguments,'');};\n" +<span style="color: #000000;">
+      source </span>+ "return __p;\n"<span style="color: #000000;">;
+
+  </span><span style="color: #0000ff;">return</span><span style="color: #000000;"> source;
+
+  </span><span style="color: #0000ff;">try</span><span style="color: #000000;"> {
+    render </span>= <span style="color: #0000ff;">new</span> Function(settings.variable || 'obj'<span style="color: #000000;">, source);
+  } </span><span style="color: #0000ff;">catch</span><span style="color: #000000;"> (e) {
+    e.source </span>=<span style="color: #000000;"> source;
+    </span><span style="color: #0000ff;">throw</span><span style="color: #000000;"> e;
+  }
+
+  
+
+  </span><span style="color: #0000ff;">if</span> (data) <span style="color: #0000ff;">return</span><span style="color: #000000;"> render(data);
+  </span><span style="color: #0000ff;">var</span> template = <span style="color: #0000ff;">function</span><span style="color: #000000;"> (data) {
+    </span><span style="color: #0000ff;">return</span> render.call(<span style="color: #0000ff;">this</span><span style="color: #000000;">, data);
+  };
+
+  template.source </span>= 'function(' + (settings.variable || 'obj') + '){\n' + source + '}'<span style="color: #000000;">;
+
+  </span><span style="color: #0000ff;">return</span><span style="color: #000000;"> template;
+}
+
+templateHandler(template, data)</span></pre>
+</div>
+<span class="cnblogs_code_collapse">View Code</span></div>
+<p>首次调试爆了很多错误，而且服务器端的调试比较费力，错了只能靠经验去猜测</p>
+<p><img src="32968157911654.png" alt="" width="759" height="472"></p>
+<p>这里返回的是需要构造成函数的字符串，但是我们看到我们的&ldquo;ul&rdquo;等标签被吃掉了！！！</p>
+<div class="cnblogs_code">
+<pre><span style="color: #0000ff;">var</span> __t,__p='',__j=Array.prototype.join,print=<span style="color: #0000ff;">function</span>(){__p+=__j.call(arguments,''<span style="color: #000000;">);};
+</span><span style="color: #0000ff;">with</span>(obj||<span style="color: #000000;">{}){
+__p</span>+=''<span style="color: #000000;">;
+ </span><span style="color: #0000ff;">for</span>(<span style="color: #0000ff;">var</span> i = 0, len = data.length; i &lt; len; i++<span style="color: #000000;">) { 
+__p</span>+=''+<span style="color: #000000;">
+((__t</span>=(data[i].name ))==<span style="color: #0000ff;">null</span>?'':__t)+
+''<span style="color: #000000;">;
+ } 
+__p</span>+=''<span style="color: #000000;">;
+}
+</span><span style="color: #0000ff;">return</span> __p;</pre>
+</div>
+<p><span style="line-height: 1.5;">我们这里一旦调用就抛了一个错误，这个时候一般是模板或者传入数据出错了，可惜的是他是对其中一段语法不可解析！这里从侧面反映出一个问题：</span></p>
+<p><span style="color: #ff0000;">该方法若是模板出错会导致程序无法运行，如果是node的话很可能就crash了！</span></p>
+<p><span style="color: #ff0000;">PS:这里由于CLR4解析javascript的时候字符串的replace遇到正则时有问题，在此逗留3小时，这里把我搞惨了，定位就很久最后还得重写模板解析！！！</span></p>
+<div class="cnblogs_code" onclick="cnblogs_code_show('771b0274-d955-4df3-a530-ed3207cc32de')"><img id="code_img_closed_771b0274-d955-4df3-a530-ed3207cc32de" class="code_img_closed" src="43570758473519.gif" alt=""><img id="code_img_opened_771b0274-d955-4df3-a530-ed3207cc32de" class="code_img_opened" style="display: none;" onclick="cnblogs_code_hide('771b0274-d955-4df3-a530-ed3207cc32de',event)" src="16365178109279.gif" alt="">
+<div id="cnblogs_code_open_771b0274-d955-4df3-a530-ed3207cc32de" class="cnblogs_code_hide">
+<pre><span style="color: #008080;">  1</span> <span style="color: #0000ff;">var</span> data =<span style="color: #000000;"> [
+</span><span style="color: #008080;">  2</span>   { id: 0, name: 'item_0'<span style="color: #000000;"> },
+</span><span style="color: #008080;">  3</span>   { id: 1, name: 'item_1'<span style="color: #000000;"> },
+</span><span style="color: #008080;">  4</span>   { id: 2, name: 'item_2'<span style="color: #000000;"> }
+</span><span style="color: #008080;">  5</span> <span style="color: #000000;">];
+</span><span style="color: #008080;">  6</span> 
+<span style="color: #008080;">  7</span> <span style="color: #0000ff;">var</span> template =<span style="color: #000000;"> [
+</span><span style="color: #008080;">  8</span>   '&lt;ul&gt;'<span style="color: #000000;">,
+</span><span style="color: #008080;">  9</span>     '&lt;% for(var i = 0, len = data.length; i &lt; len; i++) { %&gt;'<span style="color: #000000;">,
+</span><span style="color: #008080;"> 10</span>       '&lt;li&gt;&lt;%=data[i].name %&gt;&lt;/li&gt;'<span style="color: #000000;">,
+</span><span style="color: #008080;"> 11</span>     '&lt;% } %&gt;'<span style="color: #000000;">,
+</span><span style="color: #008080;"> 12</span>   '&lt;/ul&gt;'
+<span style="color: #008080;"> 13</span> ].join(''<span style="color: #000000;">);
+</span><span style="color: #008080;"> 14</span> 
+<span style="color: #008080;"> 15</span> <span style="color: #0000ff;">var</span> templateHandler = <span style="color: #0000ff;">function</span><span style="color: #000000;"> (text, data) {
+</span><span style="color: #008080;"> 16</span> 
+<span style="color: #008080;"> 17</span>   <span style="color: #0000ff;">var</span> noMatch = /(.)^/<span style="color: #000000;">;
+</span><span style="color: #008080;"> 18</span> 
+<span style="color: #008080;"> 19</span>   <span style="color: #0000ff;">var</span> escapes =<span style="color: #000000;"> {
+</span><span style="color: #008080;"> 20</span>     "'": "'"<span style="color: #000000;">,
+</span><span style="color: #008080;"> 21</span>     '\\': '\\'<span style="color: #000000;">,
+</span><span style="color: #008080;"> 22</span>     '\r': 'r'<span style="color: #000000;">,
+</span><span style="color: #008080;"> 23</span>     '\n': 'n'<span style="color: #000000;">,
+</span><span style="color: #008080;"> 24</span>     '\t': 't'<span style="color: #000000;">,
+</span><span style="color: #008080;"> 25</span>     '\u2028': 'u2028'<span style="color: #000000;">,
+</span><span style="color: #008080;"> 26</span>     '\u2029': 'u2029'
+<span style="color: #008080;"> 27</span> <span style="color: #000000;">  };
+</span><span style="color: #008080;"> 28</span> 
+<span style="color: #008080;"> 29</span>   <span style="color: #0000ff;">var</span> escaper = /\\|'|\r|\n|\t|\u2028|\u2029/<span style="color: #000000;">g;
+</span><span style="color: #008080;"> 30</span> 
+<span style="color: #008080;"> 31</span>   <span style="color: #0000ff;">var</span> templateSettings =<span style="color: #000000;"> {
+</span><span style="color: #008080;"> 32</span>     evaluate: /&lt;%([\s\S]+?)%&gt;/<span style="color: #000000;">g,
+</span><span style="color: #008080;"> 33</span>     interpolate: /&lt;%=([\s\S]+?)%&gt;/<span style="color: #000000;">g
+</span><span style="color: #008080;"> 34</span> <span style="color: #000000;">  };
+</span><span style="color: #008080;"> 35</span> 
+<span style="color: #008080;"> 36</span>   <span style="color: #0000ff;">var</span><span style="color: #000000;"> render;
+</span><span style="color: #008080;"> 37</span>   <span style="color: #0000ff;">var</span> settings =<span style="color: #000000;"> templateSettings;
+</span><span style="color: #008080;"> 38</span> 
+<span style="color: #008080;"> 39</span>   <span style="color: #0000ff;">var</span> matcher = <span style="color: #0000ff;">new</span><span style="color: #000000;"> RegExp([
+</span><span style="color: #008080;"> 40</span>       (settings.interpolate ||<span style="color: #000000;"> noMatch).source,
+</span><span style="color: #008080;"> 41</span>       (settings.evaluate ||<span style="color: #000000;"> noMatch).source
+</span><span style="color: #008080;"> 42</span>     ].join('|') + '|$', 'g'<span style="color: #000000;">);
+</span><span style="color: #008080;"> 43</span> 
+<span style="color: #008080;"> 44</span>   <span style="color: #0000ff;">var</span> index = 0<span style="color: #000000;">;
+</span><span style="color: #008080;"> 45</span>   <span style="color: #0000ff;">var</span> source = "__p+='"<span style="color: #000000;">;
+</span><span style="color: #008080;"> 46</span>   <span style="color: #0000ff;">var</span> _text =<span style="color: #000000;"> text;
+</span><span style="color: #008080;"> 47</span> 
+<span style="color: #008080;"> 48</span>   <span style="color: #0000ff;">var</span><span style="color: #000000;"> _treg;
+</span><span style="color: #008080;"> 49</span> 
+<span style="color: #008080;"> 50</span>   <span style="color: #0000ff;">while</span> (1<span style="color: #000000;">) {
+</span><span style="color: #008080;"> 51</span> 
+<span style="color: #008080;"> 52</span>     <span style="color: #0000ff;">var</span> matcher = <span style="color: #0000ff;">new</span><span style="color: #000000;"> RegExp([
+</span><span style="color: #008080;"> 53</span>       (settings.interpolate ||<span style="color: #000000;"> noMatch).source,
+</span><span style="color: #008080;"> 54</span>       (settings.evaluate ||<span style="color: #000000;"> noMatch).source
+</span><span style="color: #008080;"> 55</span>     ].join('|') + '|$', 'g'<span style="color: #000000;">);
+</span><span style="color: #008080;"> 56</span> 
+<span style="color: #008080;"> 57</span>     (<span style="color: #0000ff;">function</span><span style="color: #000000;"> () {
+</span><span style="color: #008080;"> 58</span>       _treg =<span style="color: #000000;"> matcher.exec(_text)
+</span><span style="color: #008080;"> 59</span> <span style="color: #000000;">    })();
+</span><span style="color: #008080;"> 60</span> 
+<span style="color: #008080;"> 61</span>     <span style="color: #0000ff;">var</span> t_str = _treg[0<span style="color: #000000;">];
+</span><span style="color: #008080;"> 62</span>     <span style="color: #0000ff;">var</span> t_len =<span style="color: #000000;"> t_str.length;
+</span><span style="color: #008080;"> 63</span>     <span style="color: #0000ff;">var</span> t_index =<span style="color: #000000;"> _treg.index;
+</span><span style="color: #008080;"> 64</span> 
+<span style="color: #008080;"> 65</span>     source += _text.slice(index, t_index).replace(escaper, <span style="color: #0000ff;">function</span> (match) { <span style="color: #0000ff;">return</span> '\\' +<span style="color: #000000;"> escapes[match]; });
+</span><span style="color: #008080;"> 66</span>     _text = _text.slice(t_index +<span style="color: #000000;"> t_len);
+</span><span style="color: #008080;"> 67</span> 
+<span style="color: #008080;"> 68</span>     <span style="color: #0000ff;">if</span> (_treg[2<span style="color: #000000;">]) {
+</span><span style="color: #008080;"> 69</span>       source += "';\n" + _treg[2] + "\n__p+='"<span style="color: #000000;">;
+</span><span style="color: #008080;"> 70</span> <span style="color: #000000;">    }
+</span><span style="color: #008080;"> 71</span>     <span style="color: #0000ff;">if</span> (_treg[1<span style="color: #000000;">]) {
+</span><span style="color: #008080;"> 72</span>       source += "'+\n" + _treg[1] + "\n'"<span style="color: #000000;">;
+</span><span style="color: #008080;"> 73</span> <span style="color: #000000;">    }
+</span><span style="color: #008080;"> 74</span>     <span style="color: #0000ff;">if</span> (_text.length == 0) <span style="color: #0000ff;">break</span><span style="color: #000000;">;
+</span><span style="color: #008080;"> 75</span> 
+<span style="color: #008080;"> 76</span> <span style="color: #000000;">  }
+</span><span style="color: #008080;"> 77</span>   source += "';\n"<span style="color: #000000;">;
+</span><span style="color: #008080;"> 78</span> 
+<span style="color: #008080;"> 79</span>   <span style="color: #0000ff;">if</span> (!settings.variable) source = 'with(obj||{}){\n' + source + '}\n'<span style="color: #000000;">;
+</span><span style="color: #008080;"> 80</span> 
+<span style="color: #008080;"> 81</span>   source = "var __t,__p='',__j=Array.prototype.join," +
+<span style="color: #008080;"> 82</span>       "print=function(){__p+=__j.call(arguments,'');};\n" +
+<span style="color: #008080;"> 83</span>       source + "return __p;\n"<span style="color: #000000;">;
+</span><span style="color: #008080;"> 84</span> 
+<span style="color: #008080;"> 85</span>   <span style="color: #0000ff;">try</span><span style="color: #000000;"> {
+</span><span style="color: #008080;"> 86</span>     render = <span style="color: #0000ff;">new</span> Function(settings.variable || 'obj'<span style="color: #000000;">, source);
+</span><span style="color: #008080;"> 87</span>   } <span style="color: #0000ff;">catch</span><span style="color: #000000;"> (e) {
+</span><span style="color: #008080;"> 88</span>     e.source =<span style="color: #000000;"> source;
+</span><span style="color: #008080;"> 89</span>     <span style="color: #0000ff;">throw</span><span style="color: #000000;"> e;
+</span><span style="color: #008080;"> 90</span> <span style="color: #000000;">  }
+</span><span style="color: #008080;"> 91</span> 
+<span style="color: #008080;"> 92</span>   <span style="color: #008000;">//</span><span style="color: #008000;">return source;</span>
+<span style="color: #008080;"> 93</span> 
+<span style="color: #008080;"> 94</span>   <span style="color: #0000ff;">if</span> (data) <span style="color: #0000ff;">return</span><span style="color: #000000;"> render(data);
+</span><span style="color: #008080;"> 95</span>   <span style="color: #0000ff;">var</span> template = <span style="color: #0000ff;">function</span><span style="color: #000000;"> (data) {
+</span><span style="color: #008080;"> 96</span>     <span style="color: #0000ff;">return</span> render.call(<span style="color: #0000ff;">this</span><span style="color: #000000;">, data);
+</span><span style="color: #008080;"> 97</span> <span style="color: #000000;">  };
+</span><span style="color: #008080;"> 98</span> 
+<span style="color: #008080;"> 99</span>   template.source = 'function(' + (settings.variable || 'obj') + '){\n' + source + '}'<span style="color: #000000;">;
+</span><span style="color: #008080;">100</span> 
+<span style="color: #008080;">101</span>   <span style="color: #0000ff;">return</span><span style="color: #000000;"> template;
+</span><span style="color: #008080;">102</span> <span style="color: #000000;">}
+</span><span style="color: #008080;">103</span> 
+<span style="color: #008080;">104</span> templateHandler(template, { data: data })</pre>
+</div>
+<span style="color: #ff0000;"><strong><span class="cnblogs_code_collapse">正确的代码</span></strong></span></div>
+<p><img src="42181165756684.png" alt=""></p>
+<p>我这里使用生命在调试啊！！！因为服务器解析javascript时候，很多东西都不支持，感觉有点回到了c++！！！</p>
+<h3>小结</h3>
+<p>这里字符串解析成功，我们这部分也就告一段落了，本身.net方案也不是这次的重点，这里提供基本思路各位自己去看看吧，总之调试很坑</p>
+<h1><span style="line-height: 1.5;">下期预告</span></h1>
+<p><span style="line-height: 1.5;">对javascript来说，nodeJS自然是亲爹，我们这次的主要方案其实是基于nodeJS的，这里的期望：</span></p>
+<p><span style="line-height: 1.5;">① 用户请求过来时候首先判断是否为网络爬虫</span></p>
+<p><span style="line-height: 1.5;">② 网络爬虫访问seo/index.html，用户访问webapp/index.html</span></p>
+<p><span style="color: #333300;">当然，我们做demo时候不会这么麻烦，我们直接为其添加一个seo=true的标志位在url即可</span></p>
+<p>nodeJS实现SEO的方案重点依旧在首屏渲染，我们这里首先基于blade做两个页面，然后以此扩展seo的方案</p>
+<p>当然此块内容有点小复杂，加之，小钗对nodeJS停留在学习阶段，这块需要学习，而且最近有些其它事情扰心，暂时便搁置了</p>
+<p>这块的内容可能与RapidJS（clouda前身）有关，有兴趣的同学可以先去看看</p>
+<p><span style="color: #ff0000;">文中有误请您指出，若您对webapp的seo有什么好的想法请留言</span></p>
+                </div>
+
+                <div class='span3 sidebar'>
+                    <h2>导航栏</h2>
+                    <ul class="nav nav-tabs nav-stacked">
+                             				<li><a href="http://songboriceboy.github.io/xxoo/html/blade/[zd]bladelrcqyqjryddwebappkfb/index.html">[置顶]【blade利刃出鞘】一起进入移动端webapp开发吧</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/blade/blade04ymxdxdffxjavascripttkdz/index.html">【blade04】用面向对象的方法写javascript坦克大战</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/blade/bladedUIsjljqdMVCyfcsx/index.html">【blade的UI设计】理解前端MVC与分层思想</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/blade/ttwebappdSEOnts/index.html">探讨webapp的SEO难题（上）</a></li>
+    				                                         
+                    </ul>
+                </div>
+            </div>
+
+        </div>
+    </body>
+</html>

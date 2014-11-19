@@ -1,0 +1,456 @@
+﻿<!DOCTYPE html>
+
+<html lang="zh">
+    <head>
+        <meta charset="utf-8">
+        <meta name="description" content="android,ios" />
+        <meta name="keywords" content="android,ios" />
+
+        <title>叶小钗</title>
+        <style type='text/css'>
+            body {
+                background-color: #CCC;
+            }
+        </style>
+        <link rel="stylesheet" href="../../../css/bootstrap.css" />
+    </head>
+
+    <body>
+        <div class="container">
+
+            <h1>叶小钗</h1>
+
+            <div class='navbar navbar-inverse'>
+                <div class='navbar-inner nav-collapse' style="height: auto;">
+                    <ul class="nav">
+                              				<li><a href="http://songboriceboy.github.io/xxoo/html/blade/index.html">blade</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/css/index.html">css</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/HTML5&CSS3/index.html">HTML5&CSS3</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/index.html">javascript</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Javaxx/index.html">Java学习</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/nodejs/index.html">nodejs</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/requirejs/index.html">requirejs</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/index.html">Web前端</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/xxgw/index.html">学习感悟</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/gzdd/index.html">工作点滴</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/jkxx/index.html">接口学习</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/wfl/index.html">未分类</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/ydkf/index.html">移动开发</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/sjms/index.html">设计模式</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/mst/index.html">面试题</a></li>
+    				                      </ul>
+                </div>
+            </div>
+
+            <div id='content' class='row-fluid'>
+
+                <div class='span9 main'>
+				<div style="color:blue" align=center>【重构笔记05】简化条件表达式</div><br><h1>前言</h1>
+<p>条件逻辑往往十分复杂，我们今天就看看有哪些怎样才能够简化条件表达式的逻辑<br>分解条件表达式，可以将条件逻辑分成若干小块，这样就可以将分支逻辑与操作细节分离</p>
+<h1>合并条件表达式</h1>
+<p>我们代码中如果出现一系列条件测试，而且他们都获得相同的结果，那么将这些测试合并为一个条件表达式，并将这个表达式提炼为一个独立函数</p>
+<p>有时候我们会发现这样一连串检查，检查条件各不相同，最终的行为却一致，如果出现这种情况，就应该使用&ldquo;逻辑或&rdquo;和&ldquo;逻辑与&rdquo;将它们合并为一个条件表达式<br>之所以要合并条件代码，有两个重要原因，首先，合并后的条件代码会告诉你实际上只有一次条件检查，只不过有多个并列条件需要检查而已<br>从而使这一次检查的用意更清晰，当然，合并前与合并后的代码有相同的效果，但原先代码传达的信息却是&ldquo;这里有一些各自独立的条件测试，他们只是刚好同时发生&rdquo;，这项重构往往可以为你提炼方法做准备<br>但是如果条件检查却是是独立的，不是同一次检查，就不要使用此项重构</p>
+<div class="cnblogs_code">
+<pre><span style="color: #008080;"> 1</span> <span style="color: #0000ff;">function</span><span style="color: #000000;"> disabilityAmount() {
+</span><span style="color: #008080;"> 2</span>     <span style="color: #0000ff;">if</span> (_a &lt; 2) <span style="color: #0000ff;">return</span> 0<span style="color: #000000;">;
+</span><span style="color: #008080;"> 3</span>     <span style="color: #0000ff;">if</span> (_b &gt; 12<span style="color: #000000;">) return0;
+</span><span style="color: #008080;"> 4</span>     <span style="color: #0000ff;">if</span><span style="color: #000000;"> (_c) return0;
+</span><span style="color: #008080;"> 5</span> <span style="color: #000000;">}
+</span><span style="color: #008080;"> 6</span> <span style="color: #008000;">//</span><span style="color: #008000;">改成这个样式</span>
+<span style="color: #008080;"> 7</span> <span style="color: #0000ff;">function</span><span style="color: #000000;"> disabilityAmount() {
+</span><span style="color: #008080;"> 8</span>     <span style="color: #0000ff;">if</span> (isNotEligibleForDisablity()) <span style="color: #0000ff;">return</span> 0<span style="color: #000000;">;
+</span><span style="color: #008080;"> 9</span> <span style="color: #000000;">}
+</span><span style="color: #008080;">10</span> <span style="color: #0000ff;">function</span><span style="color: #000000;"> isNotEligibleForDisablity() {
+</span><span style="color: #008080;">11</span>     <span style="color: #0000ff;">return</span> (_a &lt; 2) &amp;&amp; (_b &gt; 12) &amp;&amp;<span style="color: #000000;"> (_c);
+</span><span style="color: #008080;">12</span> }</pre>
+</div>
+<h1>合并重复的条件片段</h1>
+<p>在条件表达式的每个分支上有着相同的一段代码，那么将这段代码搬到条件表达式外面</p>
+<p>有时候我们发现我们的代码中一组条件表达式的所有分支都执行了相同的某段代码，这个时候我们应该将这段代码搬到条件表达式外面去<br>这样代码才能更清楚的表达哪些东西随条件变化而变化，哪些东西保持不变</p>
+<div class="cnblogs_code">
+<pre><span style="color: #008080;"> 1</span> <span style="color: #0000ff;">if</span><span style="color: #000000;"> (isSpecialDeal()) {
+</span><span style="color: #008080;"> 2</span>     total = price * 0.95<span style="color: #000000;">;
+</span><span style="color: #008080;"> 3</span> <span style="color: #000000;">    send();
+</span><span style="color: #008080;"> 4</span> } <span style="color: #0000ff;">else</span><span style="color: #000000;"> {
+</span><span style="color: #008080;"> 5</span>     total = price * 0.98<span style="color: #000000;">;
+</span><span style="color: #008080;"> 6</span> <span style="color: #000000;">    send();
+</span><span style="color: #008080;"> 7</span> <span style="color: #000000;">}
+</span><span style="color: #008080;"> 8</span> <span style="color: #008000;">//</span><span style="color: #008000;">重构</span>
+<span style="color: #008080;"> 9</span> <span style="color: #0000ff;">if</span><span style="color: #000000;"> (isSpecialDeal()) {
+</span><span style="color: #008080;">10</span>     total = price * 0.95<span style="color: #000000;">;
+</span><span style="color: #008080;">11</span> } <span style="color: #0000ff;">else</span><span style="color: #000000;"> {
+</span><span style="color: #008080;">12</span>     total = price * 0.98<span style="color: #000000;">;
+</span><span style="color: #008080;">13</span> <span style="color: #000000;">}
+</span><span style="color: #008080;">14</span> send();</pre>
+</div>
+<h1>移除控制标记</h1>
+<p>在一系列布尔表达式中，某个变量带有控制标记（control flag）的作用，那么以break语句或者return取代之<br>这样的控制标记带来的麻烦超过了他带来的便利，人们之所以会使用这样的控制标记，是因为结构化编程原则告诉我们<br>每个子程序只能有一个入口和出口<br>单一入口是对的，但是单一出口则会让我们的代码增加讨厌的控制标记，降低程序可读性，这就是break与continue出现的原因（用它跳出复杂的条件语句），去掉控制标记的效果会让你大吃一惊（据说会让条件语句清晰不少）</p>
+<h2>怎么做</h2>
+<p>① 对控制标记的处理，最显而易见的办法就是使用break与continue语句<br>② 找出跳出逻辑的标记值<br>③ 找出对标记变量赋值的语句，替换为break或continue<br>④ 替换后测试<br>也可以使用以下方法<br>① 将整段逻辑提炼为一个函数<br>② 找出跳出逻辑的控制标记替换为return</p>
+<p>return语句可以清晰的表述清楚不再执行函数中的其它任何代码，于是我们来个例子吧</p>
+<div class="cnblogs_code">
+<pre><span style="color: #008080;"> 1</span> <span style="color: #0000ff;">function</span><span style="color: #000000;"> checkSecurity(people) {
+</span><span style="color: #008080;"> 2</span>     <span style="color: #0000ff;">var</span> found = <span style="color: #0000ff;">false</span><span style="color: #000000;">;
+</span><span style="color: #008080;"> 3</span>     <span style="color: #0000ff;">for</span> (<span style="color: #0000ff;">var</span> i = 0; i &lt; people.length; i++<span style="color: #000000;">) {
+</span><span style="color: #008080;"> 4</span>         <span style="color: #0000ff;">if</span> (!<span style="color: #000000;">found) {
+</span><span style="color: #008080;"> 5</span>             <span style="color: #0000ff;">if</span> (people[i] == 'Don'<span style="color: #000000;">) {
+</span><span style="color: #008080;"> 6</span> <span style="color: #000000;">                sendAlert();
+</span><span style="color: #008080;"> 7</span>                 found = <span style="color: #0000ff;">true</span><span style="color: #000000;">;
+</span><span style="color: #008080;"> 8</span> <span style="color: #000000;">            }
+</span><span style="color: #008080;"> 9</span>             <span style="color: #0000ff;">if</span> (people[i] == 'John'<span style="color: #000000;">) {
+</span><span style="color: #008080;">10</span> <span style="color: #000000;">                sendAlert();
+</span><span style="color: #008080;">11</span>                 found = <span style="color: #0000ff;">true</span><span style="color: #000000;">;
+</span><span style="color: #008080;">12</span> <span style="color: #000000;">            }
+</span><span style="color: #008080;">13</span> <span style="color: #000000;">        }
+</span><span style="color: #008080;">14</span> <span style="color: #000000;">    }
+</span><span style="color: #008080;">15</span> <span style="color: #000000;">}
+</span><span style="color: #008080;">16</span> 
+<span style="color: #008080;">17</span> <span style="color: #008000;">//</span><span style="color: #008000;">这种情况控制标记很容易找出，稍微变一下就可以了：</span>
+<span style="color: #008080;">18</span> 
+<span style="color: #008080;">19</span> <span style="color: #0000ff;">function</span><span style="color: #000000;"> checkSecurity(people) {
+</span><span style="color: #008080;">20</span>     <span style="color: #0000ff;">for</span> (<span style="color: #0000ff;">var</span> i = 0; i &lt; people.length; i++<span style="color: #000000;">) {
+</span><span style="color: #008080;">21</span>         <span style="color: #0000ff;">if</span> (people[i] == 'Don'<span style="color: #000000;">) {
+</span><span style="color: #008080;">22</span> <span style="color: #000000;">            sendAlert();
+</span><span style="color: #008080;">23</span>             <span style="color: #0000ff;">break</span><span style="color: #000000;">;
+</span><span style="color: #008080;">24</span> <span style="color: #000000;">        }
+</span><span style="color: #008080;">25</span>         <span style="color: #0000ff;">if</span> (people[i] == 'John'<span style="color: #000000;">) {
+</span><span style="color: #008080;">26</span> <span style="color: #000000;">            sendAlert();
+</span><span style="color: #008080;">27</span>             <span style="color: #0000ff;">break</span><span style="color: #000000;">;
+</span><span style="color: #008080;">28</span> <span style="color: #000000;">        }
+</span><span style="color: #008080;">29</span> <span style="color: #000000;">    }
+</span><span style="color: #008080;">30</span> <span style="color: #000000;">}
+</span><span style="color: #008080;">31</span> 
+<span style="color: #008080;">32</span> <span style="color: #008000;">//</span><span style="color: #008000;">我们甚至可以将里面判断的逻辑独立为一个函数</span>
+<span style="color: #008080;">33</span> <span style="color: #0000ff;">function</span><span style="color: #000000;"> findInSet(names, arr) {
+</span><span style="color: #008080;">34</span>     <span style="color: #0000ff;">if</span> (<span style="color: #0000ff;">typeof</span> names != 'object') names =<span style="color: #000000;"> [names];
+</span><span style="color: #008080;">35</span>     <span style="color: #0000ff;">for</span> (<span style="color: #0000ff;">var</span> k <span style="color: #0000ff;">in</span><span style="color: #000000;"> names) {
+</span><span style="color: #008080;">36</span>         <span style="color: #0000ff;">for</span> (<span style="color: #0000ff;">var</span> i = 0, len = arr.length; i &lt; len; i++<span style="color: #000000;">) {
+</span><span style="color: #008080;">37</span>             <span style="color: #0000ff;">if</span> (arr[i] == names[k]) <span style="color: #0000ff;">return</span> <span style="color: #0000ff;">true</span><span style="color: #000000;">;
+</span><span style="color: #008080;">38</span> <span style="color: #000000;">        }
+</span><span style="color: #008080;">39</span> <span style="color: #000000;">    }
+</span><span style="color: #008080;">40</span>     <span style="color: #0000ff;">return</span> <span style="color: #0000ff;">false</span><span style="color: #000000;">;
+</span><span style="color: #008080;">41</span> <span style="color: #000000;">}
+</span><span style="color: #008080;">42</span> <span style="color: #0000ff;">function</span><span style="color: #000000;"> checkSecurity(people) {
+</span><span style="color: #008080;">43</span>     <span style="color: #0000ff;">for</span> (<span style="color: #0000ff;">var</span> i = 0; i &lt; people.length; i++<span style="color: #000000;">) {
+</span><span style="color: #008080;">44</span>         <span style="color: #0000ff;">if</span> (findInSet(['Don', 'John'<span style="color: #000000;">], people)) {
+</span><span style="color: #008080;">45</span> <span style="color: #000000;">            sendAlert();
+</span><span style="color: #008080;">46</span>             <span style="color: #0000ff;">break</span><span style="color: #000000;">;
+</span><span style="color: #008080;">47</span> <span style="color: #000000;">        }
+</span><span style="color: #008080;">48</span> <span style="color: #000000;">    }
+</span><span style="color: #008080;">49</span> }</pre>
+</div>
+<h1>以卫语句取代嵌套条件表达</h1>
+<p>在函数中的条件逻辑使人难以看清楚正常的执行路径，这个时候可以使用卫语句表现所有特殊情况</p>
+<div class="cnblogs_code">
+<pre><span style="color: #008080;"> 1</span> <span style="color: #0000ff;">function</span><span style="color: #000000;"> getPayAmount() {
+</span><span style="color: #008080;"> 2</span>     <span style="color: #0000ff;">var</span><span style="color: #000000;"> result;
+</span><span style="color: #008080;"> 3</span>     <span style="color: #0000ff;">if</span> (<span style="color: #0000ff;">this</span>.isDead) { result = <span style="color: #0000ff;">this</span>.deadAmount(); } <span style="color: #0000ff;">else</span><span style="color: #000000;"> {
+</span><span style="color: #008080;"> 4</span>         <span style="color: #0000ff;">if</span> (<span style="color: #0000ff;">this</span>.isRetired) result = <span style="color: #0000ff;">this</span><span style="color: #000000;">.retiredAmount();
+</span><span style="color: #008080;"> 5</span>         <span style="color: #0000ff;">else</span> result = <span style="color: #0000ff;">this</span><span style="color: #000000;">.nomalAmount()
+</span><span style="color: #008080;"> 6</span> <span style="color: #000000;">    }
+</span><span style="color: #008080;"> 7</span>     <span style="color: #0000ff;">return</span><span style="color: #000000;"> result;
+</span><span style="color: #008080;"> 8</span> <span style="color: #000000;">}
+</span><span style="color: #008080;"> 9</span> 
+<span style="color: #008080;">10</span> <span style="color: #008000;">//
+</span><span style="color: #008080;">11</span> <span style="color: #0000ff;">function</span><span style="color: #000000;"> getPayAmount() {
+</span><span style="color: #008080;">12</span>     <span style="color: #0000ff;">var</span><span style="color: #000000;"> result;
+</span><span style="color: #008080;">13</span>     <span style="color: #0000ff;">if</span> (<span style="color: #0000ff;">this</span>.isDead) <span style="color: #0000ff;">return</span> <span style="color: #0000ff;">this</span><span style="color: #000000;">.deadAmount();
+</span><span style="color: #008080;">14</span>     <span style="color: #0000ff;">if</span> (<span style="color: #0000ff;">this</span>.isRetired) <span style="color: #0000ff;">return</span> <span style="color: #0000ff;">this</span><span style="color: #000000;">.retiredAmount();
+</span><span style="color: #008080;">15</span>     <span style="color: #0000ff;">return</span> <span style="color: #0000ff;">this</span><span style="color: #000000;">.nomalAmount()
+</span><span style="color: #008080;">16</span> }</pre>
+</div>
+<p>根据经验，条件表达式通常有两种表现形式，第一种形式是：所有分支都属于正常行为，第二种形式则是条件表达式提供的答案中只有一种是正常行为，其他都是不正常见的情况<br>这两类条件表达式有不同的用途这一点应该通过代码表现出来，如果两条分支都是正常行为，就应该使用if else 了<br>如果某个分支及其罕见，就应该单独检查该条件，并在该条件为真时从函数返回，这样的检查就是传说中的&ldquo;卫语句&rdquo;</p>
+<p>该重构方法的精髓就是给某个分支特别重视，如果使用if else，你对if和else重视是同等的<br>卫语句就告诉用户，这种情况罕见，但是真的发生了就需要做一些整理工作了<br>每个函数都只能有一个入口和一个出口，这个思想可能需要更新下了，作者认为代码清晰最重要（我也认为单一出口有用......）</p>
+<h1>以多态取代条件表达式</h1>
+<p>你手上有多个条件表达式，它根据对象类型的不同而选择不同的行为<br>那么将这个条件表达式的每个分支放进一个子类内的复写函数中，然后抽象原始函数声明</p>
+<p>面向对象术语中，&ldquo;多态&rdquo;一词尤其高端大气上档次，多态的最大好处就是<br>如果你需要根据对象的不同类型二采取不同的行为，多态让我们不同写明显的条件表达式<br>多态能够带来很多好处，如果同一组条件表达式在程序许多地点出现，那么使用多态的收益是最大的<br>使用条件表达式时，如果你想添加一种写类型，就必须查找并更新更多的条件表达式<br>如果改用多态，只需建立一个新的子类，并在其中提供适当的函数就行了，类的用户不需要了解这个子类，大大降低依赖</p>
+<h2>怎么做</h2>
+<p>使用简化条件表达式之前，首先必须有一个继承关系，我们一般使用以子类取代类型码，<br>但如果需要在对象创建好自豪修改类型码，就要使用state/strategy模式<br>① 如果处理的条件表达式是一个更大函数的一部分，首先分析条件表达式，然后提炼函数分离到独立函数<br>② 如果有必要使用移动方法将条件表达式放到继承的顶端<br>③ 任选一个子类，在其中建立一个函数，使之复写超类中容纳条件表达式的函数，将与该子类相关的条件表达式的分支复制到新函数中<br>④ 针对条件表达式的每个分支，重复上述过程，直到所有分支都移动到子类函数</p>
+<p>来个例子吧，说多了意义不大</p>
+<p>首先这是我们要用到的工具类：</p>
+<div class="cnblogs_code" onclick="cnblogs_code_show('e9a6bf49-c2ce-4698-9cc8-34805eb2ab74')"><img id="code_img_closed_e9a6bf49-c2ce-4698-9cc8-34805eb2ab74" class="code_img_closed" src="43570758473519.gif" alt=""><img id="code_img_opened_e9a6bf49-c2ce-4698-9cc8-34805eb2ab74" class="code_img_opened" style="display: none;" onclick="cnblogs_code_hide('e9a6bf49-c2ce-4698-9cc8-34805eb2ab74',event)" src="16365178109279.gif" alt="">
+<div id="cnblogs_code_open_e9a6bf49-c2ce-4698-9cc8-34805eb2ab74" class="cnblogs_code_hide">
+<pre><span style="color: #008080;"> 1</span> <span style="color: #0000ff;">var</span> base =<span style="color: #000000;"> {};
+</span><span style="color: #008080;"> 2</span> <span style="color: #0000ff;">var</span> slice =<span style="color: #000000;"> [].slice;
+</span><span style="color: #008080;"> 3</span> <span style="color: #0000ff;">var</span> bind = <span style="color: #0000ff;">function</span><span style="color: #000000;"> (scope, fun, args) {
+</span><span style="color: #008080;"> 4</span>     args = args ||<span style="color: #000000;"> [];
+</span><span style="color: #008080;"> 5</span>     <span style="color: #0000ff;">return</span> <span style="color: #0000ff;">function</span><span style="color: #000000;"> () {
+</span><span style="color: #008080;"> 6</span> <span style="color: #000000;">        fun.apply(scope, args.concat(slice.call(arguments)));
+</span><span style="color: #008080;"> 7</span> <span style="color: #000000;">    };
+</span><span style="color: #008080;"> 8</span> <span style="color: #000000;">};
+</span><span style="color: #008080;"> 9</span> 
+<span style="color: #008080;">10</span> base.Class = <span style="color: #0000ff;">function</span><span style="color: #000000;"> (supClass, childAttr) {
+</span><span style="color: #008080;">11</span>     <span style="color: #008000;">//</span><span style="color: #008000;">若是第一个是类，便是继承；如果第一个是对象，第二个参数无意义，便是新建一个类</span>
+<span style="color: #008080;">12</span>     <span style="color: #0000ff;">if</span> (<span style="color: #0000ff;">typeof</span> supClass === 'object'<span style="color: #000000;">) {
+</span><span style="color: #008080;">13</span>         childAttr =<span style="color: #000000;"> supClass;
+</span><span style="color: #008080;">14</span>         supClass = <span style="color: #0000ff;">function</span><span style="color: #000000;"> () { };
+</span><span style="color: #008080;">15</span> <span style="color: #000000;">    }
+</span><span style="color: #008080;">16</span>     <span style="color: #008000;">//</span><span style="color: #008000;">新建临时类，最后作为新类返回，可能是继承可能是新类</span>
+<span style="color: #008080;">17</span>     <span style="color: #008000;">/*</span><span style="color: #008000;">**
+</span><span style="color: #008080;">18</span> <span style="color: #008000;">    这里非常关键，为整个方法的入口，一定得看到初始化后，这里会执行构造函数
+</span><span style="color: #008080;">19</span> <span style="color: #008000;">    **</span><span style="color: #008000;">*/</span>
+<span style="color: #008080;">20</span>     <span style="color: #0000ff;">var</span> newClass = <span style="color: #0000ff;">function</span><span style="color: #000000;"> () {
+</span><span style="color: #008080;">21</span>         <span style="color: #008000;">//</span><span style="color: #008000;">每个类都会使用该函数，作为第一步初始化，告诉类有哪些属性</span>
+<span style="color: #008080;">22</span>         <span style="color: #0000ff;">this</span>._propertys_ &amp;&amp; <span style="color: #0000ff;">this</span><span style="color: #000000;">._propertys_();
+</span><span style="color: #008080;">23</span>         <span style="color: #008000;">//</span><span style="color: #008000;">第二步初始化，相当于子类的构造函数，比较重要，初始化方法不一定会出现</span>
+<span style="color: #008080;">24</span>         <span style="color: #0000ff;">this</span>.init &amp;&amp; <span style="color: #0000ff;">this</span>.init.apply(<span style="color: #0000ff;">this</span><span style="color: #000000;">, arguments);
+</span><span style="color: #008080;">25</span> <span style="color: #000000;">    };
+</span><span style="color: #008080;">26</span>     <span style="color: #008000;">//</span><span style="color: #008000;">发生继承关系，可能为空类</span>
+<span style="color: #008080;">27</span>     newClass.prototype = <span style="color: #0000ff;">new</span><span style="color: #000000;"> supClass();
+</span><span style="color: #008080;">28</span> 
+<span style="color: #008080;">29</span>     <span style="color: #008000;">//</span><span style="color: #008000;">新建类必定会包含初始化函数，要么继承，如果没继承，这里也会新建</span>
+<span style="color: #008080;">30</span>     <span style="color: #0000ff;">var</span> supInit = newClass.prototype.init || <span style="color: #0000ff;">function</span><span style="color: #000000;"> () { };
+</span><span style="color: #008080;">31</span>     <span style="color: #008000;">//</span><span style="color: #008000;">传入的子对象可能包含他的初始化方法，如果有一定要使用，至于父类使用与否看子类心情</span>
+<span style="color: #008080;">32</span>     <span style="color: #0000ff;">var</span> childInit = childAttr.init || <span style="color: #0000ff;">function</span><span style="color: #000000;"> () { };
+</span><span style="color: #008080;">33</span>     <span style="color: #008000;">//</span><span style="color: #008000;">父类的properys方法便是指定会具有哪些属性，一定会执行</span>
+<span style="color: #008080;">34</span>     <span style="color: #0000ff;">var</span> _supAttr = newClass.prototype._propertys_ || <span style="color: #0000ff;">function</span><span style="color: #000000;"> () { };
+</span><span style="color: #008080;">35</span>     <span style="color: #008000;">//</span><span style="color: #008000;">子类的初始化也一定会触发，先执行父类再执行子类</span>
+<span style="color: #008080;">36</span>     <span style="color: #0000ff;">var</span> _childAttr = childAttr._propertys_ || <span style="color: #0000ff;">function</span><span style="color: #000000;"> () { };
+</span><span style="color: #008080;">37</span> 
+<span style="color: #008080;">38</span>     <span style="color: #008000;">//</span><span style="color: #008000;">为新建类（可能继承可能新建）初始化原型，上面的会重写，没有就不管他</span>
+<span style="color: #008080;">39</span>     <span style="color: #0000ff;">for</span> (<span style="color: #0000ff;">var</span> k <span style="color: #0000ff;">in</span><span style="color: #000000;"> childAttr) {
+</span><span style="color: #008080;">40</span>         childAttr.hasOwnProperty(k) &amp;&amp; (newClass.prototype[k] =<span style="color: #000000;"> childAttr[k]);
+</span><span style="color: #008080;">41</span> <span style="color: #000000;">    }
+</span><span style="color: #008080;">42</span> 
+<span style="color: #008080;">43</span>     <span style="color: #008000;">//</span><span style="color: #008000;">处理继承情况</span>
+<span style="color: #008080;">44</span>     <span style="color: #0000ff;">if</span> (arguments.length &amp;&amp; arguments[0].prototype &amp;&amp; arguments[0].prototype.init ===<span style="color: #000000;"> supInit) {
+</span><span style="color: #008080;">45</span>         <span style="color: #008000;">//</span><span style="color: #008000;">根据父类重写新建类构造时会用到的方法</span>
+<span style="color: #008080;">46</span>         newClass.prototype.init = <span style="color: #0000ff;">function</span><span style="color: #000000;"> () {
+</span><span style="color: #008080;">47</span>             <span style="color: #0000ff;">var</span> scope = <span style="color: #0000ff;">this</span><span style="color: #000000;">;
+</span><span style="color: #008080;">48</span>             <span style="color: #0000ff;">var</span> args = [<span style="color: #0000ff;">function</span><span style="color: #000000;"> () {
+</span><span style="color: #008080;">49</span>                 <span style="color: #008000;">//</span><span style="color: #008000;">第一个参数为父类的初始化函数，执行与否看子类心情</span>
+<span style="color: #008080;">50</span> <span style="color: #000000;">                supInit.apply(scope, arguments)
+</span><span style="color: #008080;">51</span> <span style="color: #000000;">            } ];
+</span><span style="color: #008080;">52</span> <span style="color: #000000;">            childInit.apply(scope, args.concat(slice.call(arguments)));
+</span><span style="color: #008080;">53</span> <span style="color: #000000;">        };
+</span><span style="color: #008080;">54</span> <span style="color: #000000;">    }
+</span><span style="color: #008080;">55</span>     <span style="color: #008000;">//</span><span style="color: #008000;">前面说到的，父类与子类的初始化方法一定会执行，先父后子</span>
+<span style="color: #008080;">56</span>     newClass.prototype._propertys_ = <span style="color: #0000ff;">function</span><span style="color: #000000;"> () {
+</span><span style="color: #008080;">57</span>         _supAttr.call(<span style="color: #0000ff;">this</span><span style="color: #000000;">);
+</span><span style="color: #008080;">58</span>         _childAttr.call(<span style="color: #0000ff;">this</span><span style="color: #000000;">);
+</span><span style="color: #008080;">59</span> <span style="color: #000000;">    };
+</span><span style="color: #008080;">60</span> 
+<span style="color: #008080;">61</span>     <span style="color: #008000;">//</span><span style="color: #008000;">成员属性也得继承</span>
+<span style="color: #008080;">62</span>     <span style="color: #0000ff;">for</span> (<span style="color: #0000ff;">var</span> k <span style="color: #0000ff;">in</span><span style="color: #000000;"> supClass) {
+</span><span style="color: #008080;">63</span>         supClass.hasOwnProperty(k) &amp;&amp; (newClass[k] =<span style="color: #000000;"> supClass[k]);
+</span><span style="color: #008080;">64</span> <span style="color: #000000;">    }
+</span><span style="color: #008080;">65</span>     <span style="color: #0000ff;">return</span><span style="color: #000000;"> newClass;
+</span><span style="color: #008080;">66</span> };</pre>
+</div>
+<span class="cnblogs_code_collapse">View Code </span></div>
+<div class="cnblogs_code">
+<pre><span style="color: #008080;"> 1</span> <span style="color: #0000ff;">var</span> EmployeeType =<span style="color: #000000;"> base.Class({
+</span><span style="color: #008080;"> 2</span>     _propertys_: <span style="color: #0000ff;">function</span><span style="color: #000000;"> () {
+</span><span style="color: #008080;"> 3</span> <span style="color: #000000;">    },
+</span><span style="color: #008080;"> 4</span>     init: <span style="color: #0000ff;">function</span><span style="color: #000000;"> (code) {
+</span><span style="color: #008080;"> 5</span>         <span style="color: #0000ff;">switch</span><span style="color: #000000;"> (code) {
+</span><span style="color: #008080;"> 6</span>             <span style="color: #0000ff;">case</span> EmployeeType.ENGINEER: <span style="color: #0000ff;">return</span> <span style="color: #0000ff;">new</span><span style="color: #000000;"> Engineer();
+</span><span style="color: #008080;"> 7</span>             <span style="color: #0000ff;">case</span> EmployeeType.SALESMAN: <span style="color: #0000ff;">return</span> <span style="color: #0000ff;">new</span><span style="color: #000000;"> Saleman();
+</span><span style="color: #008080;"> 8</span>             <span style="color: #0000ff;">case</span> EmployeeType.MANAGER: <span style="color: #0000ff;">return</span> <span style="color: #0000ff;">new</span><span style="color: #000000;"> Manager();
+</span><span style="color: #008080;"> 9</span>             <span style="color: #0000ff;">default</span>: <span style="color: #0000ff;">throw</span> 'incorrect employee code'<span style="color: #000000;">;
+</span><span style="color: #008080;">10</span> <span style="color: #000000;">        }
+</span><span style="color: #008080;">11</span> <span style="color: #000000;">    },
+</span><span style="color: #008080;">12</span>     payAmount: <span style="color: #0000ff;">function</span><span style="color: #000000;"> (emp) {
+</span><span style="color: #008080;">13</span>         <span style="color: #0000ff;">switch</span> (<span style="color: #0000ff;">this</span><span style="color: #000000;">.getType()) {
+</span><span style="color: #008080;">14</span>             <span style="color: #0000ff;">case</span> EmployeeType.ENGINEER: <span style="color: #0000ff;">return</span><span style="color: #000000;"> rmp.getMonthlySalary();
+</span><span style="color: #008080;">15</span>             <span style="color: #0000ff;">case</span> EmployeeType.SALESMAN: <span style="color: #0000ff;">return</span> emp.getMonthlySalary() +<span style="color: #000000;"> emp.getCommission();
+</span><span style="color: #008080;">16</span>             <span style="color: #0000ff;">case</span> EmployeeType.MANAGER: <span style="color: #0000ff;">return</span> emp.getMonthlySalary() +<span style="color: #000000;"> emp.getBonus();
+</span><span style="color: #008080;">17</span>             <span style="color: #0000ff;">default</span>: <span style="color: #0000ff;">throw</span> 'incorrect employee'<span style="color: #000000;">;
+</span><span style="color: #008080;">18</span> <span style="color: #000000;">        }
+</span><span style="color: #008080;">19</span> <span style="color: #000000;">    }
+</span><span style="color: #008080;">20</span> <span style="color: #000000;">});
+</span><span style="color: #008080;">21</span> EmployeeType.ENGINEER = 0<span style="color: #000000;">;
+</span><span style="color: #008080;">22</span> EmployeeType.SALESMAN = 1<span style="color: #000000;">;
+</span><span style="color: #008080;">23</span> EmployeeType.MANAGER = 2<span style="color: #000000;">;
+</span><span style="color: #008080;">24</span> 
+<span style="color: #008080;">25</span> <span style="color: #0000ff;">var</span> Employee =<span style="color: #000000;"> base.Class({
+</span><span style="color: #008080;">26</span>     _propertys_: <span style="color: #0000ff;">function</span><span style="color: #000000;"> () {
+</span><span style="color: #008080;">27</span>         <span style="color: #0000ff;">this</span><span style="color: #000000;">.monthlySalary;
+</span><span style="color: #008080;">28</span>         <span style="color: #0000ff;">this</span><span style="color: #000000;">.commission;
+</span><span style="color: #008080;">29</span>         <span style="color: #0000ff;">this</span><span style="color: #000000;">.bonus;
+</span><span style="color: #008080;">30</span> <span style="color: #000000;">    },
+</span><span style="color: #008080;">31</span>     init: <span style="color: #0000ff;">function</span><span style="color: #000000;"> (type) {
+</span><span style="color: #008080;">32</span>         <span style="color: #0000ff;">this</span>.type = <span style="color: #0000ff;">new</span><span style="color: #000000;"> EmployeeType(type);
+</span><span style="color: #008080;">33</span> <span style="color: #000000;">    },
+</span><span style="color: #008080;">34</span>     getMonthlySalary: <span style="color: #0000ff;">function</span><span style="color: #000000;"> () {
+</span><span style="color: #008080;">35</span>         <span style="color: #0000ff;">return</span> <span style="color: #0000ff;">this</span><span style="color: #000000;">.monthlySalary;
+</span><span style="color: #008080;">36</span> <span style="color: #000000;">    }, 
+</span><span style="color: #008080;">37</span>     getCommission: <span style="color: #0000ff;">function</span><span style="color: #000000;"> () {
+</span><span style="color: #008080;">38</span>         <span style="color: #0000ff;">return</span> <span style="color: #0000ff;">this</span><span style="color: #000000;">.commission;
+</span><span style="color: #008080;">39</span> <span style="color: #000000;">    }, 
+</span><span style="color: #008080;">40</span>     getBonus: <span style="color: #0000ff;">function</span><span style="color: #000000;"> () {
+</span><span style="color: #008080;">41</span>         <span style="color: #0000ff;">return</span> <span style="color: #0000ff;">this</span><span style="color: #000000;">.bonus;
+</span><span style="color: #008080;">42</span> <span style="color: #000000;">    },
+</span><span style="color: #008080;">43</span>     payAmount: <span style="color: #0000ff;">function</span><span style="color: #000000;"> () {
+</span><span style="color: #008080;">44</span>         <span style="color: #0000ff;">return</span> <span style="color: #0000ff;">this</span><span style="color: #000000;">.type.payAmount();
+</span><span style="color: #008080;">45</span> <span style="color: #000000;">    }
+</span><span style="color: #008080;">46</span> });</pre>
+</div>
+<h3>简单调整</h3>
+<div class="cnblogs_code">
+<pre><span style="color: #008080;"> 1</span> <span style="color: #008000;">/*</span><span style="color: #008000;">逻辑代码</span><span style="color: #008000;">*/</span>
+<span style="color: #008080;"> 2</span> <span style="color: #0000ff;">var</span> EmployeeType =<span style="color: #000000;"> base.Class({
+</span><span style="color: #008080;"> 3</span>     _propertys_: <span style="color: #0000ff;">function</span><span style="color: #000000;"> () {
+</span><span style="color: #008080;"> 4</span> <span style="color: #000000;">    },
+</span><span style="color: #008080;"> 5</span>     getType: <span style="color: #0000ff;">function</span><span style="color: #000000;"> (code) {
+</span><span style="color: #008080;"> 6</span>         <span style="color: #0000ff;">switch</span><span style="color: #000000;"> (code) {
+</span><span style="color: #008080;"> 7</span>             <span style="color: #0000ff;">case</span> EmployeeType.ENGINEER: <span style="color: #0000ff;">return</span> <span style="color: #0000ff;">new</span><span style="color: #000000;"> Engineer();
+</span><span style="color: #008080;"> 8</span>             <span style="color: #0000ff;">case</span> EmployeeType.SALESMAN: <span style="color: #0000ff;">return</span> <span style="color: #0000ff;">new</span><span style="color: #000000;"> Saleman();
+</span><span style="color: #008080;"> 9</span>             <span style="color: #0000ff;">case</span> EmployeeType.MANAGER: <span style="color: #0000ff;">return</span> <span style="color: #0000ff;">new</span><span style="color: #000000;"> Manager();
+</span><span style="color: #008080;">10</span> <span style="color: #000000;">        }
+</span><span style="color: #008080;">11</span> <span style="color: #000000;">    },
+</span><span style="color: #008080;">12</span>     payAmount: <span style="color: #0000ff;">function</span><span style="color: #000000;"> (emp) {
+</span><span style="color: #008080;">13</span>         <span style="color: #008000;">//</span><span style="color: #008000;">        switch (this.getType()) {</span>
+<span style="color: #008080;">14</span>         <span style="color: #008000;">//</span><span style="color: #008000;">            case EmployeeType.ENGINEER: return rmp.getMonthlySalary();</span>
+<span style="color: #008080;">15</span>         <span style="color: #008000;">//</span><span style="color: #008000;">            case EmployeeType.SALESMAN: return emp.getMonthlySalary() + emp.getCommission();</span>
+<span style="color: #008080;">16</span>         <span style="color: #008000;">//</span><span style="color: #008000;">            case EmployeeType.MANAGER: return emp.getMonthlySalary() + emp.getBonus();</span>
+<span style="color: #008080;">17</span>         <span style="color: #008000;">//</span><span style="color: #008000;">            default: throw 'incorrect employee';</span>
+<span style="color: #008080;">18</span>         <span style="color: #008000;">//</span><span style="color: #008000;">        }</span>
+<span style="color: #008080;">19</span> <span style="color: #000000;">    }
+</span><span style="color: #008080;">20</span> <span style="color: #000000;">});
+</span><span style="color: #008080;">21</span> EmployeeType.ENGINEER = 0<span style="color: #000000;">;
+</span><span style="color: #008080;">22</span> EmployeeType.SALESMAN = 1<span style="color: #000000;">;
+</span><span style="color: #008080;">23</span> EmployeeType.MANAGER = 2<span style="color: #000000;">;
+</span><span style="color: #008080;">24</span> 
+<span style="color: #008080;">25</span> <span style="color: #0000ff;">var</span> Engineer =<span style="color: #000000;"> base.Class(EmployeeType, {
+</span><span style="color: #008080;">26</span>     init: <span style="color: #0000ff;">function</span><span style="color: #000000;"> (_superInit_) {
+</span><span style="color: #008080;">27</span> <span style="color: #000000;">    },
+</span><span style="color: #008080;">28</span>     payAmount: <span style="color: #0000ff;">function</span><span style="color: #000000;"> (emp) {
+</span><span style="color: #008080;">29</span>         <span style="color: #0000ff;">return</span><span style="color: #000000;"> emp.getMonthlySalary();
+</span><span style="color: #008080;">30</span> <span style="color: #000000;">    }
+</span><span style="color: #008080;">31</span> <span style="color: #000000;">});
+</span><span style="color: #008080;">32</span> <span style="color: #0000ff;">var</span> Saleman =<span style="color: #000000;"> base.Class(EmployeeType, {
+</span><span style="color: #008080;">33</span>     init: <span style="color: #0000ff;">function</span><span style="color: #000000;"> (_superInit_) { },
+</span><span style="color: #008080;">34</span>     payAmount: <span style="color: #0000ff;">function</span><span style="color: #000000;"> (emp) {
+</span><span style="color: #008080;">35</span>         <span style="color: #0000ff;">return</span> emp.getMonthlySalary() +<span style="color: #000000;"> emp.getCommission();
+</span><span style="color: #008080;">36</span> <span style="color: #000000;">    }
+</span><span style="color: #008080;">37</span> <span style="color: #000000;">});
+</span><span style="color: #008080;">38</span> <span style="color: #0000ff;">var</span> Manager =<span style="color: #000000;"> base.Class(EmployeeType, {
+</span><span style="color: #008080;">39</span>     init: <span style="color: #0000ff;">function</span><span style="color: #000000;"> (_superInit_) { },
+</span><span style="color: #008080;">40</span>     payAmount: <span style="color: #0000ff;">function</span><span style="color: #000000;"> (emp) {
+</span><span style="color: #008080;">41</span>         <span style="color: #0000ff;">return</span> emp.getMonthlySalary() +<span style="color: #000000;"> emp.getBonus();
+</span><span style="color: #008080;">42</span> <span style="color: #000000;">    }
+</span><span style="color: #008080;">43</span> <span style="color: #000000;">});
+</span><span style="color: #008080;">44</span> 
+<span style="color: #008080;">45</span> <span style="color: #0000ff;">var</span> Employee =<span style="color: #000000;"> base.Class({
+</span><span style="color: #008080;">46</span>     _propertys_: <span style="color: #0000ff;">function</span><span style="color: #000000;"> () {
+</span><span style="color: #008080;">47</span>         <span style="color: #0000ff;">this</span>.monthlySalary = 11<span style="color: #000000;">;
+</span><span style="color: #008080;">48</span>         <span style="color: #0000ff;">this</span>.commission = 22<span style="color: #000000;">;
+</span><span style="color: #008080;">49</span>         <span style="color: #0000ff;">this</span>.bonus = 33<span style="color: #000000;">;
+</span><span style="color: #008080;">50</span> <span style="color: #000000;">    },
+</span><span style="color: #008080;">51</span>     init: <span style="color: #0000ff;">function</span><span style="color: #000000;"> (type) {
+</span><span style="color: #008080;">52</span>         <span style="color: #0000ff;">this</span>.type = <span style="color: #0000ff;">new</span><span style="color: #000000;"> EmployeeType();
+</span><span style="color: #008080;">53</span>         <span style="color: #0000ff;">this</span>.type = <span style="color: #0000ff;">this</span><span style="color: #000000;">.type.getType(type);
+</span><span style="color: #008080;">54</span> <span style="color: #000000;">    },
+</span><span style="color: #008080;">55</span>     getMonthlySalary: <span style="color: #0000ff;">function</span><span style="color: #000000;"> () {
+</span><span style="color: #008080;">56</span>         <span style="color: #0000ff;">return</span> <span style="color: #0000ff;">this</span><span style="color: #000000;">.monthlySalary;
+</span><span style="color: #008080;">57</span> <span style="color: #000000;">    },
+</span><span style="color: #008080;">58</span>     getCommission: <span style="color: #0000ff;">function</span><span style="color: #000000;"> () {
+</span><span style="color: #008080;">59</span>         <span style="color: #0000ff;">return</span> <span style="color: #0000ff;">this</span><span style="color: #000000;">.commission;
+</span><span style="color: #008080;">60</span> <span style="color: #000000;">    },
+</span><span style="color: #008080;">61</span>     getBonus: <span style="color: #0000ff;">function</span><span style="color: #000000;"> () {
+</span><span style="color: #008080;">62</span>         <span style="color: #0000ff;">return</span> <span style="color: #0000ff;">this</span><span style="color: #000000;">.bonus;
+</span><span style="color: #008080;">63</span> <span style="color: #000000;">    },
+</span><span style="color: #008080;">64</span>     payAmount: <span style="color: #0000ff;">function</span><span style="color: #000000;"> () {
+</span><span style="color: #008080;">65</span>         <span style="color: #0000ff;">return</span> <span style="color: #0000ff;">this</span>.type.payAmount(<span style="color: #0000ff;">this</span><span style="color: #000000;">);
+</span><span style="color: #008080;">66</span> <span style="color: #000000;">    }
+</span><span style="color: #008080;">67</span> <span style="color: #000000;">});
+</span><span style="color: #008080;">68</span> 
+<span style="color: #008080;">69</span> <span style="color: #0000ff;">var</span> e0 = <span style="color: #0000ff;">new</span> Employee(0<span style="color: #000000;">);
+</span><span style="color: #008080;">70</span> <span style="color: #0000ff;">var</span> e1 = <span style="color: #0000ff;">new</span> Employee(1<span style="color: #000000;">);
+</span><span style="color: #008080;">71</span> <span style="color: #0000ff;">var</span> e2 = <span style="color: #0000ff;">new</span> Employee(2<span style="color: #000000;">);
+</span><span style="color: #008080;">72</span> 
+<span style="color: #008080;">73</span> <span style="color: #000000;">console.log(e0.payAmount());
+</span><span style="color: #008080;">74</span> <span style="color: #000000;">console.log(e1.payAmount());
+</span><span style="color: #008080;">75</span> console.log(e2.payAmount());</pre>
+</div>
+<p><img src="15619326432116.png" alt=""></p>
+<h1>结语</h1>
+<p><span style="line-height: 1.5;">这次是初次学习重构，一些没明白的，我们二次学习再搞懂吧</span></p>
+                </div>
+
+                <div class='span3 sidebar'>
+                    <h2>导航栏</h2>
+                    <ul class="nav nav-tabs nav-stacked">
+                             				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/javascriptzdyxhxzsdyjxyzyddf/index.html">javascript中的一些核心知识点以及需要注意的地方</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/[zd]webappdyhzlyzydqdyhdpyjlkkb/index.html">[置顶]【webapp的优化整理】要做移动前端优化的朋友进来看看吧</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/[zd]yddjrwtyjjavascriptsjjzxjsjydjr/index.html">[置顶]【移动端兼容问题研究】javascript事件机制详解（涉及移动兼容）</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/gruntzhb30fzxhsygruntdbqddm/index.html">【grunt整合版】30分钟学会使用grunt打包前端代码</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/gruntdyd30fzxhsygruntdbqddm/index.html">【grunt第一弹】30分钟学会使用grunt打包前端代码</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/gruntdsdgruntzqdsjxmzdyy/index.html">【grunt第三弹】grunt在前端实际项目中的应用</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/gruntded30fzxhsygruntdbqddm02/index.html">【grunt第二弹】30分钟学会使用grunt打包前端代码（02）</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/IScrollsrxxtpyddhadlqs/index.html">【IScroll深入学习】突破移动端黑暗的利器（上）</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/IScrollsrxxjjIScrollynzz/index.html">【IScroll深入学习】解决IScroll疑难杂症</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/iScrollymxx00mniScroll/index.html">【iScroll源码学习00】模拟iScroll</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/iScrollymxx01zbjd/index.html">【iScroll源码学习01】准备阶段</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/iScrollymxx02fjiScrollsghxsjd/index.html">【iScroll源码学习02】分解iScroll三个核心事件点</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/iScrollymxx03iScrollsjjzygdtdsx/index.html">【iScroll源码学习03】iScroll事件机制与滚动条的实现</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/iScrollymxx04flIScrollhx/index.html">【iScroll源码学习04】分离IScroll核心</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/javascriptpxdytyyjc/index.html">【javascript培训第一天】语言基础</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/javascriptpxdstcybl/index.html">【javascript培训第三天】查遗补漏</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/javascriptpxdetDOMyBOM/index.html">【javascript培训第二天】DOM与BOM</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/javascriptjzdsk01mkhbc/index.html">【javascript激增的思考01】模块化编程</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/javascriptjzdsk02mkhyMVC/index.html">【javascript激增的思考02】模块化与MVC</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/javascriptjzdsk03MVVMyKnockout/index.html">【javascript激增的思考03】MVVM与Knockout</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/javascriptjzdsk04MVCyBackbonejs(beta)/index.html">【javascript激增的思考04】MVC与Backbonejs(beta)</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/javascriptmxdxzlrwmyqltkdzb01/index.html">【javascript面向对象之路】让我们一起来坦克大战吧01</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/NodeJSxxbj04xwfbxt/index.html">【NodeJS学习笔记04】新闻发布系统</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/requireJSymxx01ljzgrequireJSdjg/index.html">【requireJS源码学习01】了解整个requireJS的结构</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/requireJSymxx02datamainjzdsx/index.html">【requireJS源码学习02】datamain加载的实现</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/requireJSymxx03xjrequireJSdjzlc/index.html">【requireJS源码学习03】细究requireJS的加载流程</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/UIcjkfygjdrlcjs/index.html">【UI插件】开发一个简单日历插件（上）</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/UIcjjddrlcjxxxMVCsx/index.html">【UI插件】简单的日历插件（下）——学习MVC思想</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/zeptoxxbj01hxff$()/index.html">【zepto学习笔记01】核心方法$()</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/zeptoxxbj01hxff$()b/index.html">【zepto学习笔记01】核心方法$()（补）</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/zeptoxxbj02lsd/index.html">【zepto学习笔记02】零碎点</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/zeptoxxbj03sjjz/index.html">【zepto学习笔记03】事件机制</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/ycmsztjavascriptzdjc/index.html">【一次面试】再谈javascript中的继承</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/ztbackbone01mxModel/index.html">【再探backbone01】模型Model</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/ztbackbone02jhCollection/index.html">【再探backbone02】集合Collection</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/ztbackbone03bkydyyysltgym/index.html">【再探backbone03】博客园单页应用实例（提供源码）</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/ztbackbone04dyyydjslycl/index.html">【再探backbone04】单页应用的基石路由处理</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/ctUnderscorezsmbyq/index.html">【初探Underscore】再说模版引擎</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/ckjavascriptamzAjaxjsxnszddAjax/index.html">【初窥javascript奥秘之Ajax】简述下你所知道的Ajax？</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/ckjavascriptamzsjmpnxnwmyqmdp/index.html">【初窥javascript奥秘之事件冒泡】那些年我们一起冒的泡</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/ckjavascriptamzsjjzldtygdj/index.html">【初窥javascript奥秘之事件机制】论“点透”与“鬼点击”</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/ckjavascriptamzrrzmbddthisnzdxzthiszxnlm/index.html">【初窥javascript奥秘之让人捉摸不定的this】你知道现在this指向哪里吗？？？</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/ckjavascriptamzbbydxbdhlqbcl/index.html">【初窥javascript奥秘之闭包】叶大侠病都好了，求不踩了：）</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/ckjavascriptamzmxdxfzyjc/index.html">【初窥javascript奥秘之面向对象】封装与继承</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/qdmdsjdjgjdnzdljm/index.html">【前端盲点】事件的几个阶段你真的了解么？？？</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/dyyyviewymodelxgsl/index.html">【单页应用】view与model相关梳理</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/dyyyyqldyyybsxjdwbgns/index.html">【单页应用】一起来单页应用吧，实现简单微博功能！（上）</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/dyyyqjkzqappyggxsm/index.html">【单页应用】全局控制器app应该干些什么？</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/dyyywmgrhclkjdcccjgx/index.html">【单页应用】我们该如何处理框架弹出层层级关系？</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/dyyyljMVC/index.html">【单页应用】理解MVC</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/dyyyztxjzviewzjygrhtx/index.html">【单页应用之通信机制】view之间应该如何通信</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/dyyyjkzHistoryxsHistorydgdyyydm/index.html">【单页应用巨坑之History】细数History带给单页应用的噩梦</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/xtszeptofindysyjiosdcjpknrnhtt/index.html">【小贴士】zeptofind元素以及ios弹出键盘可能让你很头疼</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/xtsgytransitionEndanimatedygyqgs/index.html">【小贴士】关于transitionEndanimate的一个有趣故事</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/xtsgzzdbbysjwtdzzmp/index.html">【小贴士】工作中的”闭包“与事件委托的”阻止冒泡“</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/xtstytjavascriptzdreplace/index.html">【小贴士】探一探javascript中的replace</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/xtsxnjpyfixeddgydddt/index.html">【小贴士】虚拟键盘与fixed带给移动端的痛！</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/ttjavascriptsjjzdcsxyl/index.html">【探讨】javascript事件机制底层实现原理</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/mkhbcljrequireJSsxygjddmkjzq/index.html">【模块化编程】理解requireJS实现一个简单的模块加载器</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/zyJavaScriptmfjmtsdqlxkjzbfgndcljz/index.html">【转】【译】JavaScript魔法揭秘探索当前流行框架中部分功能的处理机制</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/zxjavascriptgszl01javascriptcszds/index.html">【追寻javascript高手之路01】javascript参数知多少？</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/zxjavascriptgszl02blzyyzds/index.html">【追寻javascript高手之路02】变量、作用域知多少？</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/zxjavascriptgszl03javascriptdxdld/index.html">【追寻javascript高手之路03】javascript对象大乱斗</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/zxjavascriptgszl04ljprototype/index.html">【追寻javascript高手之路04】理解prototype</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/zxjavascriptgszl05ljsjl/index.html">【追寻javascript高手之路05】理解事件流</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/zgbj04zxzzsj(2)/index.html">【重构笔记04】重新组织数据(2)</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/zgbj05jhtjbds/index.html">【重构笔记05】简化条件表达式</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/zgbj06jhhsdy/index.html">【重构笔记06】简化函数调用</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/ycmshgttbxysjfl/index.html">一次面试回顾——探讨表现与数据分离</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/dhzwebappzdxz/index.html">动画在webapp中的现状</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/ysandriodlqhthdomclicksjqtsxwttj/index.html">原生andriod浏览器回退后dom（click）事件全体失效问题探究</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/scsbdjxysdsbsjytouchsjdnxs/index.html">手持设备点击响应速度，鼠标事件与touch事件的那些事</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/mnbjQueryzeptohxymfx/index.html">迷你版jQuery——zepto核心源码分析</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/dbsgzdlwmlyqxjdddomxzqb/index.html">都别说工资低了，我们来一起写简单的dom选择器吧！</a></li>
+    				                                         
+                    </ul>
+                </div>
+            </div>
+
+        </div>
+    </body>
+</html>

@@ -1,0 +1,563 @@
+﻿<!DOCTYPE html>
+
+<html lang="zh">
+    <head>
+        <meta charset="utf-8">
+        <meta name="description" content="android,ios" />
+        <meta name="keywords" content="android,ios" />
+
+        <title>叶小钗</title>
+        <style type='text/css'>
+            body {
+                background-color: #CCC;
+            }
+        </style>
+        <link rel="stylesheet" href="../../../css/bootstrap.css" />
+    </head>
+
+    <body>
+        <div class="container">
+
+            <h1>叶小钗</h1>
+
+            <div class='navbar navbar-inverse'>
+                <div class='navbar-inner nav-collapse' style="height: auto;">
+                    <ul class="nav">
+                              				<li><a href="http://songboriceboy.github.io/xxoo/html/blade/index.html">blade</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/css/index.html">css</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/HTML5&CSS3/index.html">HTML5&CSS3</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/index.html">javascript</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Javaxx/index.html">Java学习</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/nodejs/index.html">nodejs</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/requirejs/index.html">requirejs</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/index.html">Web前端</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/xxgw/index.html">学习感悟</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/gzdd/index.html">工作点滴</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/jkxx/index.html">接口学习</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/wfl/index.html">未分类</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/ydkf/index.html">移动开发</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/sjms/index.html">设计模式</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/mst/index.html">面试题</a></li>
+    				                      </ul>
+                </div>
+            </div>
+
+            <div id='content' class='row-fluid'>
+
+                <div class='span9 main'>
+				<div style="color:blue" align=center>【NodeJS学习笔记03】先运行起来再说</div><br><h1>前言</h1>
+<p>最近同事推荐了一个不错的网址：<a href="https://github.com/nswbmw/N-blog/wiki/_pages">https://github.com/nswbmw/N-blog/wiki/_pages</a></p>
+<p>里面的教程很是详细，我们现在跟着他的节奏学习下NodeJS，一个简单的博客</p>
+<p>我们这次来个过年七天乐......看看能不能nodeJS来个入门</p>
+<h1>让nodeJS跑起来</h1>
+<p>第一步当然是安装nodeJS环境了，现在windows安装nodeJS比较快了，直接下载即可：</p>
+<p><a href="http://www.nodejs.org/download/">http://www.nodejs.org/download/</a></p>
+<p>这里根据需要下载，下载完成后直接下一步下一步即可，完了我们就具有nodeJS环境了</p>
+<p>第二步，为了方便我们后面操作，我们直接在D盘见了一个文件夹blog</p>
+<p>然后打开windows命令行工具，进入d盘，输入：</p>
+<div class="cnblogs_code">
+<pre>express -e blog</pre>
+</div>
+<p>然后里面可能有依赖包，我们需要进入blog目录安装（安装的配置由package.json提供）：</p>
+<div class="cnblogs_code">
+<pre>npm install</pre>
+</div>
+<p>这个样子，我们依赖包就下载下来了，其中依赖包与java的包文件，.net的bll文件应该是一个概念</p>
+<p>这个时候，我们的程序已经可以运行了：</p>
+<div class="cnblogs_code">
+<pre>node app</pre>
+</div>
+<div class="cnblogs_code">
+<pre>D:\blog&gt;<span style="color: #000000;">node app
+Express server listening on port </span>3000</pre>
+</div>
+<p>这个时候打开浏览器就有反应了：</p>
+<p><img src="37545017806678.png" alt=""></p>
+<p>这里我们使用的是express（一个流行的nodeJSweb开发框架），并且使用了ejs模板引擎</p>
+<h1>文件结构</h1>
+<p>初始化文件目录结构如下：</p>
+<p><img src="438693310435267.png" alt=""></p>
+<p>app.js 为入口文件</p>
+<p>package.json 为模块依赖文件，我们使用npm install时候他会以其配置在网上下载相关包</p>
+<p>node_modules 为下载下来的模块文件（package.json）</p>
+<p>public 存放静态资源文件</p>
+<p>routes 存放路由文件</p>
+<p>views 存放相关视图模板文件</p>
+<p>这个样子，我们基本目录结构就出来了，我们这里先简单说下node_modules这个目录</p>
+<h2>node_modules/ejs</h2>
+<p><span style="line-height: 1.5;">我们刚刚说了，这里面存放着下载下来的模块，说白了就是js文件集合</span></p>
+<p><span style="line-height: 1.5;"><img src="48571086357415.png" alt=""></span></p>
+<div class="cnblogs_code" onclick="cnblogs_code_show('583048b0-06af-400c-82fe-c3d6f21f8004')"><img id="code_img_closed_583048b0-06af-400c-82fe-c3d6f21f8004" class="code_img_closed" src="43570758473519.gif" alt=""><img id="code_img_opened_583048b0-06af-400c-82fe-c3d6f21f8004" class="code_img_opened" style="display: none;" onclick="cnblogs_code_hide('583048b0-06af-400c-82fe-c3d6f21f8004',event)" src="16365178109279.gif" alt="">
+<div id="cnblogs_code_open_583048b0-06af-400c-82fe-c3d6f21f8004" class="cnblogs_code_hide">
+<pre><span style="color: #008080;"> 1</span> <span style="color: #0000ff;">var</span> parse = exports.parse = <span style="color: #0000ff;">function</span><span style="color: #000000;">(str, options){
+</span><span style="color: #008080;"> 2</span>   <span style="color: #0000ff;">var</span> options = options ||<span style="color: #000000;"> {}
+</span><span style="color: #008080;"> 3</span>     , open = options.open || exports.open || '&lt;%'
+<span style="color: #008080;"> 4</span>     , close = options.close || exports.close || '%&gt;'
+<span style="color: #008080;"> 5</span>     , filename =<span style="color: #000000;"> options.filename
+</span><span style="color: #008080;"> 6</span>     , compileDebug = options.compileDebug !== <span style="color: #0000ff;">false</span>
+<span style="color: #008080;"> 7</span>     , buf = ""<span style="color: #000000;">;
+</span><span style="color: #008080;"> 8</span> 
+<span style="color: #008080;"> 9</span>   buf += 'var buf = [];'<span style="color: #000000;">;
+</span><span style="color: #008080;">10</span>   <span style="color: #0000ff;">if</span> (<span style="color: #0000ff;">false</span> !== options._with) buf += '\nwith (locals || {}) { (function(){ '<span style="color: #000000;">;
+</span><span style="color: #008080;">11</span>   buf += '\n buf.push(\''<span style="color: #000000;">;
+</span><span style="color: #008080;">12</span> 
+<span style="color: #008080;">13</span>   <span style="color: #0000ff;">var</span> lineno = 1<span style="color: #000000;">;
+</span><span style="color: #008080;">14</span> 
+<span style="color: #008080;">15</span>   <span style="color: #0000ff;">var</span> consumeEOL = <span style="color: #0000ff;">false</span><span style="color: #000000;">;
+</span><span style="color: #008080;">16</span>   <span style="color: #0000ff;">for</span> (<span style="color: #0000ff;">var</span> i = 0, len = str.length; i &lt; len; ++<span style="color: #000000;">i) {
+</span><span style="color: #008080;">17</span>     <span style="color: #0000ff;">var</span> stri =<span style="color: #000000;"> str[i];
+</span><span style="color: #008080;">18</span>     <span style="color: #0000ff;">if</span> (str.slice(i, open.length + i) ==<span style="color: #000000;"> open) {
+</span><span style="color: #008080;">19</span>       i +=<span style="color: #000000;"> open.length
+</span><span style="color: #008080;">20</span>   
+<span style="color: #008080;">21</span>       <span style="color: #0000ff;">var</span> prefix, postfix, line = (compileDebug ? '__stack.lineno=' : '') +<span style="color: #000000;"> lineno;
+</span><span style="color: #008080;">22</span>       <span style="color: #0000ff;">switch</span><span style="color: #000000;"> (str[i]) {
+</span><span style="color: #008080;">23</span>         <span style="color: #0000ff;">case</span> '='<span style="color: #000000;">:
+</span><span style="color: #008080;">24</span>           prefix = "', escape((" + line + ', '<span style="color: #000000;">;
+</span><span style="color: #008080;">25</span>           postfix = ")), '"<span style="color: #000000;">;
+</span><span style="color: #008080;">26</span>           ++<span style="color: #000000;">i;
+</span><span style="color: #008080;">27</span>           <span style="color: #0000ff;">break</span><span style="color: #000000;">;
+</span><span style="color: #008080;">28</span>         <span style="color: #0000ff;">case</span> '-'<span style="color: #000000;">:
+</span><span style="color: #008080;">29</span>           prefix = "', (" + line + ', '<span style="color: #000000;">;
+</span><span style="color: #008080;">30</span>           postfix = "), '"<span style="color: #000000;">;
+</span><span style="color: #008080;">31</span>           ++<span style="color: #000000;">i;
+</span><span style="color: #008080;">32</span>           <span style="color: #0000ff;">break</span><span style="color: #000000;">;
+</span><span style="color: #008080;">33</span>         <span style="color: #0000ff;">default</span><span style="color: #000000;">:
+</span><span style="color: #008080;">34</span>           prefix = "');" + line + ';'<span style="color: #000000;">;
+</span><span style="color: #008080;">35</span>           postfix = "; buf.push('"<span style="color: #000000;">;
+</span><span style="color: #008080;">36</span> <span style="color: #000000;">      }
+</span><span style="color: #008080;">37</span> 
+<span style="color: #008080;">38</span>       <span style="color: #0000ff;">var</span> end =<span style="color: #000000;"> str.indexOf(close, i)
+</span><span style="color: #008080;">39</span>         , js =<span style="color: #000000;"> str.substring(i, end)
+</span><span style="color: #008080;">40</span>         , start =<span style="color: #000000;"> i
+</span><span style="color: #008080;">41</span>         , include = <span style="color: #0000ff;">null</span>
+<span style="color: #008080;">42</span>         , n = 0<span style="color: #000000;">;
+</span><span style="color: #008080;">43</span> 
+<span style="color: #008080;">44</span>       <span style="color: #0000ff;">if</span> ('-' == js[js.length-1<span style="color: #000000;">]){
+</span><span style="color: #008080;">45</span>         js = js.substring(0, js.length - 2<span style="color: #000000;">);
+</span><span style="color: #008080;">46</span>         consumeEOL = <span style="color: #0000ff;">true</span><span style="color: #000000;">;
+</span><span style="color: #008080;">47</span> <span style="color: #000000;">      }
+</span><span style="color: #008080;">48</span> 
+<span style="color: #008080;">49</span>       <span style="color: #0000ff;">if</span> (0 == js.trim().indexOf('include'<span style="color: #000000;">)) {
+</span><span style="color: #008080;">50</span>         <span style="color: #0000ff;">var</span> name = js.trim().slice(7<span style="color: #000000;">).trim();
+</span><span style="color: #008080;">51</span>         <span style="color: #0000ff;">if</span> (!filename) <span style="color: #0000ff;">throw</span> <span style="color: #0000ff;">new</span> Error('filename option is required for includes'<span style="color: #000000;">);
+</span><span style="color: #008080;">52</span>         <span style="color: #0000ff;">var</span> path =<span style="color: #000000;"> resolveInclude(name, filename);
+</span><span style="color: #008080;">53</span>         include = read(path, 'utf8'<span style="color: #000000;">);
+</span><span style="color: #008080;">54</span>         include = exports.parse(include, { filename: path, _with: <span style="color: #0000ff;">false</span><span style="color: #000000;">, open: open, close: close, compileDebug: compileDebug });
+</span><span style="color: #008080;">55</span>         buf += "' + (function(){" + include + "})() + '"<span style="color: #000000;">;
+</span><span style="color: #008080;">56</span>         js = ''<span style="color: #000000;">;
+</span><span style="color: #008080;">57</span> <span style="color: #000000;">      }
+</span><span style="color: #008080;">58</span> 
+<span style="color: #008080;">59</span>       <span style="color: #0000ff;">while</span> (~(n = js.indexOf("\n", n))) n++, lineno++<span style="color: #000000;">;
+</span><span style="color: #008080;">60</span>       <span style="color: #0000ff;">if</span> (js.substr(0, 1) == ':') js =<span style="color: #000000;"> filtered(js);
+</span><span style="color: #008080;">61</span>       <span style="color: #0000ff;">if</span><span style="color: #000000;"> (js) {
+</span><span style="color: #008080;">62</span>         <span style="color: #0000ff;">if</span> (js.lastIndexOf('//') &gt; js.lastIndexOf('\n')) js += '\n'<span style="color: #000000;">;
+</span><span style="color: #008080;">63</span>         buf +=<span style="color: #000000;"> prefix;
+</span><span style="color: #008080;">64</span>         buf +=<span style="color: #000000;"> js;
+</span><span style="color: #008080;">65</span>         buf +=<span style="color: #000000;"> postfix;
+</span><span style="color: #008080;">66</span> <span style="color: #000000;">      }
+</span><span style="color: #008080;">67</span>       i += end - start + close.length - 1<span style="color: #000000;">;
+</span><span style="color: #008080;">68</span> 
+<span style="color: #008080;">69</span>     } <span style="color: #0000ff;">else</span> <span style="color: #0000ff;">if</span> (stri == "\\"<span style="color: #000000;">) {
+</span><span style="color: #008080;">70</span>       buf += "\\\\"<span style="color: #000000;">;
+</span><span style="color: #008080;">71</span>     } <span style="color: #0000ff;">else</span> <span style="color: #0000ff;">if</span> (stri == "'"<span style="color: #000000;">) {
+</span><span style="color: #008080;">72</span>       buf += "\\'"<span style="color: #000000;">;
+</span><span style="color: #008080;">73</span>     } <span style="color: #0000ff;">else</span> <span style="color: #0000ff;">if</span> (stri == "\r"<span style="color: #000000;">) {
+</span><span style="color: #008080;">74</span>       <span style="color: #008000;">//</span><span style="color: #008000;"> ignore</span>
+<span style="color: #008080;">75</span>     } <span style="color: #0000ff;">else</span> <span style="color: #0000ff;">if</span> (stri == "\n"<span style="color: #000000;">) {
+</span><span style="color: #008080;">76</span>       <span style="color: #0000ff;">if</span><span style="color: #000000;"> (consumeEOL) {
+</span><span style="color: #008080;">77</span>         consumeEOL = <span style="color: #0000ff;">false</span><span style="color: #000000;">;
+</span><span style="color: #008080;">78</span>       } <span style="color: #0000ff;">else</span><span style="color: #000000;"> {
+</span><span style="color: #008080;">79</span>         buf += "\\n"<span style="color: #000000;">;
+</span><span style="color: #008080;">80</span>         lineno++<span style="color: #000000;">;
+</span><span style="color: #008080;">81</span> <span style="color: #000000;">      }
+</span><span style="color: #008080;">82</span>     } <span style="color: #0000ff;">else</span><span style="color: #000000;"> {
+</span><span style="color: #008080;">83</span>       buf +=<span style="color: #000000;"> stri;
+</span><span style="color: #008080;">84</span> <span style="color: #000000;">    }
+</span><span style="color: #008080;">85</span> <span style="color: #000000;">  }
+</span><span style="color: #008080;">86</span> 
+<span style="color: #008080;">87</span>   <span style="color: #0000ff;">if</span> (<span style="color: #0000ff;">false</span> !== options._with) buf += "'); })();\n} \nreturn buf.join('');"<span style="color: #000000;">;
+</span><span style="color: #008080;">88</span>   <span style="color: #0000ff;">else</span> buf += "');\nreturn buf.join('');"<span style="color: #000000;">;
+</span><span style="color: #008080;">89</span>   <span style="color: #0000ff;">return</span><span style="color: #000000;"> buf;
+</span><span style="color: #008080;">90</span> };</pre>
+</div>
+<span class="cnblogs_code_collapse">View Code </span></div>
+<p><span style="line-height: 1.5;">就如，我们这里使用到的ejs模板以及express模块，然后我们好奇的走进了ejs的程序看看究竟有何不同</span></p>
+<p><span style="line-height: 1.5;">打开，ejs.js后，我们抽一点代码出来看：</span><span style="line-height: 1.5;">这段代码我们比较熟悉，他与underscore的模板引擎代码思想一致，都是将模板解析为字符串</span></p>
+<p>然后通过eval或者new Function的方法将之转换为函数，并且传入自己的数据对象好解析</p>
+<p>至于具体工作流程，现在我们还不知道，只能放到后面点研究了，好了我们现在进入其他模块</p>
+<h2>app.js</h2>
+<p><span style="line-height: 1.5;">作为入口文件，app.js扮演着举足轻重的角色：</span></p>
+<div class="cnblogs_code">
+<pre><span style="color: #008080;"> 1</span> <span style="color: #008000;">/*</span><span style="color: #008000;">*
+</span><span style="color: #008080;"> 2</span> <span style="color: #008000;"> * Module dependencies.
+</span><span style="color: #008080;"> 3</span>  <span style="color: #008000;">*/</span>
+<span style="color: #008080;"> 4</span> 
+<span style="color: #008080;"> 5</span> <span style="color: #0000ff;">var</span> express = require('express'<span style="color: #000000;">);
+</span><span style="color: #008080;"> 6</span> <span style="color: #0000ff;">var</span> routes = require('./routes'<span style="color: #000000;">);
+</span><span style="color: #008080;"> 7</span> <span style="color: #0000ff;">var</span> user = require('./routes/user'<span style="color: #000000;">);
+</span><span style="color: #008080;"> 8</span> <span style="color: #0000ff;">var</span> http = require('http'<span style="color: #000000;">);
+</span><span style="color: #008080;"> 9</span> <span style="color: #0000ff;">var</span> path = require('path'<span style="color: #000000;">);
+</span><span style="color: #008080;">10</span> 
+<span style="color: #008080;">11</span> <span style="color: #0000ff;">var</span> app =<span style="color: #000000;"> express();
+</span><span style="color: #008080;">12</span> 
+<span style="color: #008080;">13</span> <span style="color: #008000;">//</span><span style="color: #008000;"> all environments</span>
+<span style="color: #008080;">14</span> app.set('port', process.env.PORT || 3000<span style="color: #000000;">);
+</span><span style="color: #008080;">15</span> app.set('views', path.join(__dirname, 'views'<span style="color: #000000;">));
+</span><span style="color: #008080;">16</span> app.set('view engine', 'ejs'<span style="color: #000000;">);
+</span><span style="color: #008080;">17</span> <span style="color: #000000;">app.use(express.favicon());
+</span><span style="color: #008080;">18</span> app.use(express.logger('dev'<span style="color: #000000;">));
+</span><span style="color: #008080;">19</span> <span style="color: #000000;">app.use(express.json());
+</span><span style="color: #008080;">20</span> <span style="color: #000000;">app.use(express.urlencoded());
+</span><span style="color: #008080;">21</span> <span style="color: #000000;">app.use(express.methodOverride());
+</span><span style="color: #008080;">22</span> <span style="color: #000000;">app.use(app.router);
+</span><span style="color: #008080;">23</span> app.use(express.static(path.join(__dirname, 'public'<span style="color: #000000;">)));
+</span><span style="color: #008080;">24</span> 
+<span style="color: #008080;">25</span> <span style="color: #008000;">//</span><span style="color: #008000;"> development only</span>
+<span style="color: #008080;">26</span> <span style="color: #0000ff;">if</span> ('development' == app.get('env'<span style="color: #000000;">)) {
+</span><span style="color: #008080;">27</span> <span style="color: #000000;">  app.use(express.errorHandler());
+</span><span style="color: #008080;">28</span> <span style="color: #000000;">}
+</span><span style="color: #008080;">29</span> 
+<span style="color: #008080;">30</span> app.get('/'<span style="color: #000000;">, routes.index);
+</span><span style="color: #008080;">31</span> app.get('/users'<span style="color: #000000;">, user.list);
+</span><span style="color: #008080;">32</span> 
+<span style="color: #008080;">33</span> http.createServer(app).listen(app.get('port'), <span style="color: #0000ff;">function</span><span style="color: #000000;">(){
+</span><span style="color: #008080;">34</span>   console.log('Express server listening on port ' + app.get('port'<span style="color: #000000;">));
+</span><span style="color: #008080;">35</span> });</pre>
+</div>
+<p>我们通过require()命令加载express、http模块，并且会加载routes目录下index user等模板文件</p>
+<p>app.set('port', process.env.PORT || 3000)为设置启动时候的端口</p>
+<p>app.set('views', __dirname + '/views')为设置存放模板文件的路径，其中__dirname为全局变量，存放当前脚本所在目录，我们这样可以查看：</p>
+<div class="cnblogs_code">
+<pre>console.log(__dirname);<span style="color: #008000;">//</span><span style="color: #008000;">index.js加入以下代码</span><span style="color: #008000;">
+/*</span><span style="color: #008000;">*
+D:\blog&gt;node app
+Express server li
+D:\blog\routes
+</span><span style="color: #008000;">*/</span></pre>
+</div>
+<p>至于这个__dirname是如何获得的，我们暂时也不需要关注</p>
+<p>app.set('view engine', 'ejs') 为设置模板引擎为ejs</p>
+<p>app.use(express.favicon())&nbsp;是设置图标想修改的话就自己去搞public下面的images文件</p>
+<p>app.use(express.logger('dev')); express依赖于connect这里就内建中间件会输出一些日志</p>
+<p>app.use(express.json()); 用以解析请求体，这里就会把字符串动态转换为json对象</p>
+<p>app.use(express.methodOverride()); connect内建中间件，用以处理post请求，并可以伪装put等http方法</p>
+<p>app.use(app.router); 调用路由器解析规则</p>
+<p><span style="line-height: 1.5;">app.use(express.static(path.join(__dirname, 'public'))); connect内建中间件，设置根目录下的public存放静态文件</span></p>
+<div class="cnblogs_code">
+<pre><span style="color: #0000ff;">if</span> ('development' == app.get('env'<span style="color: #000000;">)) {
+  app.use(express.errorHandler());
+}</span></pre>
+</div>
+<p>这句话意思是开发状况下要输出错误信息</p>
+<div class="cnblogs_code">
+<pre>app.get('/'<span style="color: #000000;">, routes.index);
+app.get(</span>'/users', user.list);</pre>
+</div>
+<p>这两句都是访问时刻具体的处理文件了，比如这里直接访问时默认访问的是routes.index</p>
+<p>然后其内部才真正解析模板数据：</p>
+<div class="cnblogs_code">
+<pre>exports.index = <span style="color: #0000ff;">function</span><span style="color: #000000;"> (req, res) {
+  console.log(__dirname);
+  res.render(</span>'index', { title: 'Express'<span style="color: #000000;"> });
+};</span></pre>
+</div>
+<div class="cnblogs_code">
+<pre>http.createServer(app).listen(app.get('port'), <span style="color: #0000ff;">function</span><span style="color: #000000;"> () {
+  console.log(</span>'Express server listening on port ' + app.get('port'<span style="color: #000000;">));
+});</span></pre>
+</div>
+<p>最后会调用上述代码创建http服务器并监听3000端口，成功后便可在网页上访问了</p>
+<h1>路由</h1>
+<p><span style="line-height: 1.5;">前面我们使用这个方法构建路由</span></p>
+<div class="cnblogs_code">
+<pre>app.get('/', routes.index);</pre>
+</div>
+<p>上面代码可以使用这个代码取代（写在app里面）</p>
+<div class="cnblogs_code">
+<pre>app.get('/', <span style="color: #0000ff;">function</span><span style="color: #000000;"> (req, res) {
+  res.render(</span>'index', { title: 'Express'<span style="color: #000000;"> });
+});</span></pre>
+</div>
+<p>这段代码的意思是访问主页时，调用ejs模板引擎，来渲染index.ejs模板文件</p>
+<p>现在再做一点修改，以上代码实现了路由功能，但是我们不能将路由相关代码放到app中，路由多了后app就会变得臃肿，所以我们将相关配置放入index中</p>
+<p>所以删除app中相关路由功能，在app结尾加入代码：</p>
+<div class="cnblogs_code">
+<pre>routes(app);</pre>
+</div>
+<p>然后修改index.js</p>
+<div class="cnblogs_code">
+<pre>module.exports = <span style="color: #0000ff;">function</span><span style="color: #000000;">(app) {
+  app.get(</span>'/', <span style="color: #0000ff;">function</span><span style="color: #000000;"> (req, res) {
+    res.render(</span>'index', { title: 'Express'<span style="color: #000000;"> });
+  });
+};</span></pre>
+</div>
+<p>这个代码是怎么组织的现在还不清楚，也不去关注了，我们后面慢慢看</p>
+<h2>路由规则</h2>
+<p>express封装了多种http请求，我们一般使用get/post两种</p>
+<div class="cnblogs_code">
+<pre><span style="color: #000000;">app.get();
+app.post();</span></pre>
+</div>
+<p>第一个参数为请求路径，第二个参数为回调函数，还是两个参数为request与response</p>
+<p><span style="line-height: 1.5;">然后，对于req（request）又有以下规则</span></p>
+<p><span style="line-height: 1.5;">req.query 处理get请求，获取get请求参数</span></p>
+<p><span style="line-height: 1.5;">req.params 处理/:xxx形式的get或者post请求</span></p>
+<p><span style="line-height: 1.5;">req.body 处理post请求，获取post请求体</span></p>
+<p><span style="line-height: 1.5;">req.params 处理get和post请求，但查找优先级为req.params-&gt;req.body-&gt;req.query</span></p>
+<p><span style="line-height: 1.5;">路径规则还支持正则，具体我们以后再说......</span></p>
+<h2><span style="line-height: 1.5;">添加路由规则</span></h2>
+<p><span style="line-height: 1.5;">当我们访问不存在的链接时：</span></p>
+<p><span style="line-height: 1.5;"><img src="17129699271848.png" alt=""></span></p>
+<p><span style="line-height: 1.5;">因为不存在/y的路由规则，他也不说public下的文件，所以就404了</span></p>
+<p><span style="line-height: 1.5;">现在我们在index.js中添加相关路由：<br></span></p>
+<div class="cnblogs_code">
+<pre>module.exports = <span style="color: #0000ff;">function</span><span style="color: #000000;"> (app) {
+  app.get(</span>'/', <span style="color: #0000ff;">function</span><span style="color: #000000;"> (req, res) {
+    res.render(</span>'index', { title: 'Express'<span style="color: #000000;"> });
+  });
+
+  app.get(</span>'/y', <span style="color: #0000ff;">function</span><span style="color: #000000;"> (req, res) {
+    res.send(</span>'叶小钗'<span style="color: #000000;">);
+  });
+};</span></pre>
+</div>
+<p>这里我页面乱码了：</p>
+<p><img src="46441865653037.png" alt=""></p>
+<p>原因是下载下来后，我的文件是gbk的编码，我们要将他改成utf-8就可以了，模板引擎这块我们就不管他了，我们进入下一节</p>
+<h1>注册功能</h1>
+<p><span style="line-height: 1.5;">这里我们跟着原博主一起做一个注册的简单功能，这里使用mongo db作为数据库，后面我们再依次完善功能</span></p>
+<p><span style="line-height: 1.5;">新建一个register路由，并且为其新建register模板，于是我们开始吧</span></p>
+<p><span style="line-height: 1.5;">① 在index中新建路由</span></p>
+<div class="cnblogs_code">
+<pre>app.get('/register', <span style="color: #0000ff;">function</span><span style="color: #000000;"> (req, res) {
+  res.render(</span>'index', { title: '注册页面'<span style="color: #000000;"> });
+});</span></pre>
+</div>
+<div class="cnblogs_code">
+<pre>module.exports = <span style="color: #0000ff;">function</span><span style="color: #000000;"> (app) {
+  app.get(</span>'/', <span style="color: #0000ff;">function</span><span style="color: #000000;"> (req, res) {
+    res.render(</span>'index', { title: 'Express'<span style="color: #000000;"> });
+  });
+
+  app.get(</span>'/y', <span style="color: #0000ff;">function</span><span style="color: #000000;"> (req, res) {
+    res.send(</span>'叶小钗'<span style="color: #000000;">);
+  });
+
+  app.get(</span>'/register', <span style="color: #0000ff;">function</span><span style="color: #000000;"> (req, res) {
+    res.render(</span>'register', { title: '注册页面'<span style="color: #000000;"> });
+
+  });</span></pre>
+</div>
+<div class="cnblogs_code">
+<pre><span style="color: #0000ff;">&lt;!</span><span style="color: #ff00ff;">DOCTYPE html</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #0000ff;">&lt;</span><span style="color: #800000;">html</span><span style="color: #0000ff;">&gt;</span>
+  <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">head</span><span style="color: #0000ff;">&gt;</span>
+    <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">title</span><span style="color: #0000ff;">&gt;</span><span style="background-color: #ffff00; color: #000000;">&lt;%</span><span style="background-color: #f5f5f5; color: #000000;">=</span><span style="background-color: #f5f5f5; color: #000000;"> title </span><span style="background-color: #ffff00; color: #000000;">%&gt;</span><span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">title</span><span style="color: #0000ff;">&gt;</span>
+    <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">link </span><span style="color: #ff0000;">rel</span><span style="color: #0000ff;">='stylesheet' </span><span style="color: #ff0000;">href</span><span style="color: #0000ff;">='/stylesheets/style.css' </span><span style="color: #0000ff;">/&gt;</span>
+  <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">head</span><span style="color: #0000ff;">&gt;</span>
+  <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">body</span><span style="color: #0000ff;">&gt;</span>
+    <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">h1</span><span style="color: #0000ff;">&gt;</span><span style="background-color: #ffff00; color: #000000;">&lt;%</span><span style="background-color: #f5f5f5; color: #000000;">=</span><span style="background-color: #f5f5f5; color: #000000;"> title </span><span style="background-color: #ffff00; color: #000000;">%&gt;</span><span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">h1</span><span style="color: #0000ff;">&gt;</span>
+    <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">form </span><span style="color: #ff0000;">method</span><span style="color: #0000ff;">="post"</span><span style="color: #0000ff;">&gt;</span>
+        <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">div</span><span style="color: #0000ff;">&gt;</span>用户名：<span style="color: #0000ff;">&lt;</span><span style="color: #800000;">input </span><span style="color: #ff0000;">type</span><span style="color: #0000ff;">="text"</span><span style="color: #ff0000;"> name</span><span style="color: #0000ff;">="name"</span><span style="color: #0000ff;">/&gt;&lt;/</span><span style="color: #800000;">div</span><span style="color: #0000ff;">&gt;</span>
+        <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">div</span><span style="color: #0000ff;">&gt;</span>密码：<span style="color: #0000ff;">&lt;</span><span style="color: #800000;">input </span><span style="color: #ff0000;">type</span><span style="color: #0000ff;">="password"</span><span style="color: #ff0000;"> name</span><span style="color: #0000ff;">="password"</span><span style="color: #0000ff;">/&gt;&lt;/</span><span style="color: #800000;">div</span><span style="color: #0000ff;">&gt;</span>
+        <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">div</span><span style="color: #0000ff;">&gt;&lt;</span><span style="color: #800000;">input </span><span style="color: #ff0000;">type</span><span style="color: #0000ff;">="submit"</span><span style="color: #ff0000;"> value</span><span style="color: #0000ff;">="登陆"</span><span style="color: #0000ff;">/&gt;&lt;/</span><span style="color: #800000;">div</span><span style="color: #0000ff;">&gt;</span>
+    <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">form</span><span style="color: #0000ff;">&gt;</span>
+  <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">body</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">html</span><span style="color: #0000ff;">&gt;</span></pre>
+</div>
+<p>这个样子，我们页面就形成了：</p>
+<p><img src="10915177951343.png" alt=""></p>
+<p>基本程序有了，我们现在需要数据库支持，于是我们要安装mongoDB环境</p>
+<h2>MongoDB</h2>
+<p><span style="line-height: 1.5;">MongoDB是一个基于分布式文件存储的NoSQL的一种，由C++编写，MongoDB支持的数据结构松散，类似json，我们知道json可以支持任何类型，所以可以搞出很复杂的结构</span></p>
+<div class="cnblogs_code">
+<pre><span style="color: #000000;">{
+  id: </span>1<span style="color: #000000;">,
+  name: </span>'叶小钗'<span style="color: #000000;">,
+  frinds: [
+  { id: </span>2, name: '素还真'<span style="color: #000000;"> },
+  { id: </span>3, name: '一页书'<span style="color: #000000;"> }
+  ]
+}</span></pre>
+</div>
+<h2>安装MongoDB</h2>
+<p><span style="line-height: 1.5;">首先去<a href="http://www.mongodb.org/downloads">http://www.mongodb.org/downloads</a>下载安装文件，然后将文件拷贝到D盘改名mongodb，然后在里面新建blog文件夹<br></span></p>
+<p><span style="line-height: 1.5;">然后打开命令行工具将目录切换至bin，输入：</span>&nbsp;</p>
+<div class="cnblogs_code">
+<pre>mongod -dbpath d:\mongodb\blog</pre>
+</div>
+<p><span style="line-height: 1.5;">设置blog文件夹为工程目录并启动数据库，为了方便以后我们写一个命令以后直接点击就启动数据库了：</span></p>
+<div class="cnblogs_code">
+<pre>d:\mongodb\bin\mongod.exe -dbpath d:\mongodb\blog</pre>
+</div>
+<h2>链接MongoDB</h2>
+<p><span style="line-height: 1.5;">数据库安装成功后，我们的程序还需要相关的&ldquo;驱动&rdquo;程序才能链接数据库，这个时候当然要下载包......</span></p>
+<p><span style="line-height: 1.5;">打开package.json在dependencies新加一行</span></p>
+<div class="cnblogs_code">
+<pre><span style="color: #000000;">{
+  </span>"name": "application-name"<span style="color: #000000;">,
+  </span>"version": "0.0.1"<span style="color: #000000;">,
+  </span>"private": <span style="color: #0000ff;">true</span><span style="color: #000000;">,
+  </span>"scripts"<span style="color: #000000;">: {
+    </span>"start": "node app.js"<span style="color: #000000;">
+  },
+  </span>"dependencies"<span style="color: #000000;">: {
+    </span>"express": "3.4.8"<span style="color: #000000;">,
+    </span>"ejs": "*"<span style="color: #000000;">,
+    </span>"mongodb": "*"<span style="color: #000000;">
+  }
+}</span></pre>
+</div>
+<p>然后运行npm install下载新的依赖包，这个样子与mongoDB相关的驱动就有了，要链接mysql等数据库还需要其他依赖包</p>
+<p>这时在根目录下创建setting.js文件，保存数据库连接信息</p>
+<div class="cnblogs_code">
+<pre>module.exports =<span style="color: #000000;"> {
+  cookieSecret: </span>'myblog'<span style="color: #000000;">,
+  db: </span>'blog'<span style="color: #000000;">,
+  host: </span>'localhost'<span style="color: #000000;">
+}; </span></pre>
+</div>
+<p>db是数据库名称，host是数据库地址，cookieSecret用于cookie加密与数据库无关</p>
+<p><span style="line-height: 1.5;">接下来根目录下新建models文件夹，并在models文件夹下新建db.js</span></p>
+<div class="cnblogs_code">
+<pre><span style="color: #0000ff;">var</span> settings = require('../settings'<span style="color: #000000;">),
+    Db </span>= require('mongodb'<span style="color: #000000;">).Db,
+    Connection </span>= require('mongodb'<span style="color: #000000;">).Connection,
+    Server </span>= require('mongodb'<span style="color: #000000;">).Server;
+module.exports </span>= <span style="color: #0000ff;">new</span> Db(settings.db, <span style="color: #0000ff;">new</span> Server(settings.host, Connection.DEFAULT_PORT), {safe: <span style="color: #0000ff;">true</span>});</pre>
+</div>
+<div class="cnblogs_code">
+<pre><span style="color: #0000ff;">new</span> Db(settings.db, <span style="color: #0000ff;">new</span> Server(settings.host, Connection.DEFAULT_PORT), { safe: <span style="color: #0000ff;">true</span> });</pre>
+</div>
+<p>设置数据库名，数据库地址和数据库端口创建一个数据库实例，并通过module.exports导出实例，这样就可以通过require对数据库进行读写</p>
+<p><span style="line-height: 1.5;">需要成功写入数据库，服务器端程序就需要处理post信息，于是我们在models文件夹下新建user.js</span></p>
+<div class="cnblogs_code">
+<pre><span style="color: #0000ff;">var</span> mongodb = require(<span style="color: #800000;">'</span><span style="color: #800000;">./db</span><span style="color: #800000;">'</span><span style="color: #000000;">);
+
+function User(user) {
+  </span><span style="color: #0000ff;">this</span>.name =<span style="color: #000000;"> user.name;
+  </span><span style="color: #0000ff;">this</span>.password =<span style="color: #000000;"> user.password;
+};
+
+module.exports </span>=<span style="color: #000000;"> User;
+
+</span><span style="color: #008000;">//</span><span style="color: #008000;">存储用户信息</span>
+User.prototype.save =<span style="color: #000000;"> function (callback) {
+  </span><span style="color: #008000;">//</span><span style="color: #008000;">要存入数据库的用户文档</span>
+  <span style="color: #0000ff;">var</span> user =<span style="color: #000000;"> {
+    name: </span><span style="color: #0000ff;">this</span><span style="color: #000000;">.name,
+    password: </span><span style="color: #0000ff;">this</span><span style="color: #000000;">.password
+  };
+  </span><span style="color: #008000;">//</span><span style="color: #008000;">打开数据库</span>
+<span style="color: #000000;">  mongodb.open(function (err, db) {
+    </span><span style="color: #0000ff;">if</span><span style="color: #000000;"> (err) {
+      </span><span style="color: #0000ff;">return</span> callback(err); <span style="color: #008000;">//</span><span style="color: #008000;">错误，返回 err 信息</span>
+<span style="color: #000000;">    }
+    </span><span style="color: #008000;">//</span><span style="color: #008000;">读取 users 集合</span>
+    db.collection(<span style="color: #800000;">'</span><span style="color: #800000;">users</span><span style="color: #800000;">'</span><span style="color: #000000;">, function (err, collection) {
+      </span><span style="color: #0000ff;">if</span><span style="color: #000000;"> (err) {
+        mongodb.close();
+        </span><span style="color: #0000ff;">return</span> callback(err); <span style="color: #008000;">//</span><span style="color: #008000;">错误，返回 err 信息</span>
+<span style="color: #000000;">      }
+      </span><span style="color: #008000;">//</span><span style="color: #008000;">将用户数据插入 users 集合</span>
+<span style="color: #000000;">      collection.insert(user, {
+        safe: </span><span style="color: #0000ff;">true</span><span style="color: #000000;">
+      }, function (err, user) {
+        mongodb.close();
+        </span><span style="color: #0000ff;">if</span><span style="color: #000000;"> (err) {
+          </span><span style="color: #0000ff;">return</span> callback(err); <span style="color: #008000;">//</span><span style="color: #008000;">错误，返回 err 信息</span>
+<span style="color: #000000;">        }
+        callback(</span><span style="color: #0000ff;">null</span>, user[<span style="color: #800080;">0</span>]); <span style="color: #008000;">//</span><span style="color: #008000;">成功！err 为 null，并返回存储后的用户文档</span>
+<span style="color: #000000;">      });
+    });
+  });
+};</span></pre>
+</div>
+<div class="cnblogs_code">
+<pre><span style="color: #008000;">//</span><span style="color: #008000;">读取用户信息</span>
+User.get = <span style="color: #0000ff;">function</span><span style="color: #000000;">(name, callback) {
+  </span><span style="color: #008000;">//</span><span style="color: #008000;">打开数据库</span>
+  mongodb.open(<span style="color: #0000ff;">function</span><span style="color: #000000;"> (err, db) {
+    </span><span style="color: #0000ff;">if</span><span style="color: #000000;"> (err) {
+      </span><span style="color: #0000ff;">return</span> callback(err);<span style="color: #008000;">//</span><span style="color: #008000;">错误，返回 err 信息</span>
+<span style="color: #000000;">    }
+    </span><span style="color: #008000;">//</span><span style="color: #008000;">读取 users 集合</span>
+    db.collection('users', <span style="color: #0000ff;">function</span><span style="color: #000000;"> (err, collection) {
+      </span><span style="color: #0000ff;">if</span><span style="color: #000000;"> (err) {
+        mongodb.close();
+        </span><span style="color: #0000ff;">return</span> callback(err);<span style="color: #008000;">//</span><span style="color: #008000;">错误，返回 err 信息</span>
+<span style="color: #000000;">      }
+      </span><span style="color: #008000;">//</span><span style="color: #008000;">查找用户名（name键）值为 name 一个文档</span>
+<span style="color: #000000;">      collection.findOne({
+        name: name
+      }, </span><span style="color: #0000ff;">function</span><span style="color: #000000;"> (err, user) {
+        mongodb.close();
+        </span><span style="color: #0000ff;">if</span><span style="color: #000000;"> (err) {
+          </span><span style="color: #0000ff;">return</span> callback(err);<span style="color: #008000;">//</span><span style="color: #008000;">失败！返回 err 信息</span>
+<span style="color: #000000;">        }
+        callback(</span><span style="color: #0000ff;">null</span>, user);<span style="color: #008000;">//</span><span style="color: #008000;">成功！返回查询的用户信息</span>
+<span style="color: #000000;">      });
+    });
+  });
+};</span></pre>
+</div>
+<p>这里一个写数据，一个读数据，处理程序有了，现在需要在index.js前面加上如下程序</p>
+<div class="cnblogs_code">
+<pre><span style="color: #0000ff;">var</span> User = require('../models/user.js');</pre>
+</div>
+<p>再修改其中的app.post('/register')</p>
+<div class="cnblogs_code">
+<pre>app.post('/register', <span style="color: #0000ff;">function</span><span style="color: #000000;"> (req, res) {
+  </span><span style="color: #0000ff;">var</span> name =<span style="color: #000000;"> req.body.name;
+  </span><span style="color: #0000ff;">var</span> pwd =<span style="color: #000000;"> req.body.password;
+  </span><span style="color: #0000ff;">var</span> newUser = <span style="color: #0000ff;">new</span><span style="color: #000000;"> User({
+    name: name,
+    password: pwd
+  });
+  newUser.save(</span><span style="color: #0000ff;">function</span><span style="color: #000000;"> (err, user) {
+    </span><span style="color: #008000;">//</span><span style="color: #008000;">相关操作，写入session</span>
+<span style="color: #000000;">    res.send(user);
+  });
+});</span></pre>
+</div>
+<p>然后点击注册后便会有反应了</p>
+<p><span style="line-height: 1.5;"><img src="8781709633589.png" alt=""><img src="18266646958735.png" alt=""></span></p>
+<p>&nbsp;</p>
+<p><span style="line-height: 1.5;">如果此时不能确定是否写入数据库，便可进入数据库查询一番，首先切换至数据库目录</span></p>
+<div class="cnblogs_code">
+<pre>D:\mongodb\bin&gt;</pre>
+</div>
+<p>输入：</p>
+<div class="cnblogs_code">
+<pre>mongo</pre>
+</div>
+<p>然后切换其数据库连接至blog</p>
+<div class="cnblogs_code">
+<pre>use blog</pre>
+</div>
+<p>最后输入</p>
+<div class="cnblogs_code">
+<pre>db.users.find()</pre>
+</div>
+<p><img src="47513645809188.png" alt=""></p>
+<p>我们大家就开心的看到数据写入了，于是今天的学习暂时告一段落</p>
+<h1>结语</h1>
+<p><span style="line-height: 1.5;">今天我们跟着一篇博客完成了从安装到写入数据库的操作，明天让我们来将其它方面加入，逐步深化nodeJS的学习</span></p>
+<p>&nbsp;</p>
+                </div>
+
+                <div class='span3 sidebar'>
+                    <h2>导航栏</h2>
+                    <ul class="nav nav-tabs nav-stacked">
+                             				<li><a href="http://songboriceboy.github.io/xxoo/html/nodejs/NodeJSxxbj01bxjll/index.html">【NodeJS学习笔记01】不学就老了</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/nodejs/NodeJSxxbj02rmzyhzy/index.html">【NodeJS学习笔记02】入门资源很重要</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/nodejs/NodeJSxxbj03xyxqlzs/index.html">【NodeJS学习笔记03】先运行起来再说</a></li>
+    				                                         
+                    </ul>
+                </div>
+            </div>
+
+        </div>
+    </body>
+</html>

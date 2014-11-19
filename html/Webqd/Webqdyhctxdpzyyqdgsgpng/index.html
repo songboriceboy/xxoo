@@ -1,0 +1,161 @@
+﻿<!DOCTYPE html>
+
+<html lang="zh">
+    <head>
+        <meta charset="utf-8">
+        <meta name="description" content="android,ios" />
+        <meta name="keywords" content="android,ios" />
+
+        <title>叶小钗</title>
+        <style type='text/css'>
+            body {
+                background-color: #CCC;
+            }
+        </style>
+        <link rel="stylesheet" href="../../../css/bootstrap.css" />
+    </head>
+
+    <body>
+        <div class="container">
+
+            <h1>叶小钗</h1>
+
+            <div class='navbar navbar-inverse'>
+                <div class='navbar-inner nav-collapse' style="height: auto;">
+                    <ul class="nav">
+                              				<li><a href="http://songboriceboy.github.io/xxoo/html/blade/index.html">blade</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/css/index.html">css</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/HTML5&CSS3/index.html">HTML5&CSS3</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/index.html">javascript</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Javaxx/index.html">Java学习</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/nodejs/index.html">nodejs</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/requirejs/index.html">requirejs</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/index.html">Web前端</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/xxgw/index.html">学习感悟</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/gzdd/index.html">工作点滴</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/jkxx/index.html">接口学习</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/wfl/index.html">未分类</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/ydkf/index.html">移动开发</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/sjms/index.html">设计模式</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/mst/index.html">面试题</a></li>
+    				                      </ul>
+                </div>
+            </div>
+
+            <div id='content' class='row-fluid'>
+
+                <div class='span9 main'>
+				<div style="color:blue" align=center>Web前端优化初探，小弟抛砖引玉，期待高手共破难关！</div><br><h1>前言</h1>
+<p>其实没想过写前端优化这篇文章来的，因为我自知现在水平达不到这个高度！</p>
+<p>但是，你知道面试官很烦的，他每次面试非要问你浏览器兼容与前端优化......，所以我又不得不在这两个上面做一定研究。</p>
+<p>上面几个问题，没一定功力的前端不可能答得好的。对于优化这块东西，我也很多正在摸索，实在觉得现在拿不出手啊！但是时间不等人。</p>
+<p>比如这段时间参加的一个面试，面试官就非要将我做的页面想象得很卡，而且指定就是前端卡，让我优化，还问我平时会不会注意一些优化的东西。</p>
+<p>说实话，平时写代码时候，我惊奇的发现一个事实：</p>
+<div class="cnblogs_code">
+<pre>1 我会不自主的将css写成一排：<br><span style="font-family: Courier New; background-color: #f5f5f5;">#tabs { border-bottom: 1px solid #1C87D5; padding: 5px 5px 0; }</span><br>2 我写js时，两个等号一定要空格：<br><span style="font-family: Courier New; background-color: #f5f5f5;">var con = document.getElementById('content'); //不用编辑器我写出来的代码排版也不会差</span><br>3 在写页面时候我会花10分钟纠结我这里是不是多了一个div<br>......</pre>
+</div>
+<p>通过以上事实，我觉得我已经养成一种规范的&ldquo;强迫症了&rdquo;，这里不是要说自己编码多好，而是想说明：</p>
+<p>很多优化在平时在意或者不在意之间就已经做了，到后面你就不自主认为他不是优化而是必须了，比如：</p>
+<div class="cnblogs_code">
+<pre><span style="color: #0000ff;">for</span>(<span style="color: #0000ff;">var</span> i = 0, len = args.length; i &lt; len; i++) {}</pre>
+</div>
+<p>但是，我能做的也就是以上的水准罢了，要在往下深入便真的需要具体的项目历练了，所以一旦真正要说到优化，我强烈感觉自己不够格！</p>
+<p>不够格不是不研究的理由，不够格我们可以看够格的文章，所以小弟今日就来学习一番，<span style="color: #ff0000;">此篇文章参考了以下资料</span>：</p>
+<p><a href="http://www.zhangxinxu.com/wordpress/2013/04/%E5%89%8D%E7%AB%AF%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96%E7%BB%8F%E9%AA%8C%E5%88%86%E4%BA%AB/">梳理：提高前端性能方面的处理以及不足</a></p>
+<p><a href="http://kb.cnblogs.com/page/169820/">浏览器的重绘与重排</a></p>
+<p>于是让我们开始吧！！！在这里我提出一个优化总纲：<strong><span style="color: #ff0000;">零流量，无请求</span></strong>！</p>
+<h1>基本的优化</h1>
+<div class="cnblogs_code">
+<pre>1<span style="color: #000000;"> css放在顶部
+有时候我们还会将他直接放到页面里面，原因是防止页面裸奔
+</span>2<span style="color: #000000;"> js文件外部引用，放到尾部
+script标签没出现一次便会让页面等待期解释执行（这样是有道理的），js逻辑结束后才能继续渲染页面<br>3 语义化标签<br>该优化我都差点忽略了，做这个时候还需要注意seo<br>4 减少请求文件体积：图片合并/外部文件压缩<br>5 缓存ajax请求<br>6 注意控制cookie大小和污染<br>因为cookie是本地文件，每次浏览器都会去读取响应的cookie<br>7 万万不要使用css表达式<br>......</span></pre>
+</div>
+<p>现在我们来补充点重要知识：浏览器的重绘与重排</p>
+<h1>浏览器的重绘与重排</h1>
+<p>在前端交互中，很多特效会引起浏览器的重绘（redraw）和重排（reflow），需要付出高昂的性能代价（对于不熟悉的我，会有怎样的弊端小的还不得而知呢）。</p>
+<p>浏览器从下载文档到显示页面的过程便包含了重绘和重排，通常在文档初步加载时，浏览器引擎将会解析html文档来构建DOM树，之后根据DOM元素的几何属性构建一棵用于渲染的树。</p>
+<p>渲染树的每个节点都有大小和边距等属性，类似于盒模型（由于隐藏元素不需要显示，渲染树中并不包含DOM树中的隐藏元素）。</p>
+<p>当渲染树构建完毕后，浏览器就可以将元素放置到正确的位置了，再根据渲染树节点的样式属性绘制出页面。</p>
+<p>由于浏览器的流式布局，对渲染树的计算通常只需要遍历一次，<span style="color: #ff0000;">但table元素需要花上三倍的时间来确定其在渲染树中节点的属性</span>，这也是为什么我们要避免使用table布局的一个原因。</p>
+<div class="cnblogs_code">
+<pre>重绘是一个元素外观的改变所触发的浏览器行为，例如改变visibility、outline、背景色等属性，<br>浏览器会根据元素新属性重新绘制，使元素呈现新的外观，重绘不会带来重新布局，不一定引发重排</pre>
+</div>
+<div class="cnblogs_code">
+<pre><span style="color: #000000;">重排是比较明显的一种改变，可以理解为渲染树需要重新计算，以下常见操作会触发重排：
+</span>1 dom元素的集合属性变化；当dom元素的几何属性变化时，渲染树中的相关节点就会失效，浏览器会根据dom元素的变化重新构建渲染树中失效的节点。<br>之后会根据新的渲染树重新绘制这部分页面，而且一个元素的重排可能引起连锁反应，如：<br>容器节点渲染树发送变化时，会导致子节点重新计算，也会触发后续兄弟节点重排，最后每个元素都要重排，性能代价很高。<br><br>2 dom树的结构变化；当dom树结构发送变化时（节点增加移动），会触发重排，<br>浏览器引擎布局过程类似于树结构的前序遍历，当前元素不会影响前面已经遍历过的元素。<br>所以在在body最后插入元素对页面影响很小，以后少往前面插入元素了。<br><br>3 js获取某些属性时也会引起重排；每获取一次便会重排一次，所以获取以下属性后最好缓存：<br>offset相关属性；scroll相关属性、client相关属性。<br><br>另外浏览器大小改变、元素样式改变也会引起重排</pre>
+</div>
+<p>1 对元素样式的多次改变可以变为一次：比如几次操作style属性的话，就可以给他赋予一个css</p>
+<p>2 将需要多次重排的元素设为绝对定位（position或者fixed），元素脱离文档流便不会影响其他元素</p>
+<p>3 由于display: none的元素不在渲染树中，对隐藏元素的操作不会引发其他元素的重排，若是要对一个元素进行复杂操作可以先隐藏之，操作结束后在显示。</p>
+<p>4 在在内存中多次操作节点，完成后再添加到文档，例如获取后台数据后，可以先在内存构造完整的html片段，再一次加到文档中去，切记一行行添加</p>
+<p>5 使用会引起缓存的属性时，缓存之！</p>
+<p>6 为包含图片的元素设定固定高度，以免图片加载结束引起页面下沉而整个重排！任何可能导致页面抖动、位移的因素都应该扼杀，比如页面比较长的话，一开始就让滚动条出现吧，你会发现页面抖动过多你笔记本的风扇会很兴奋的！</p>
+<p>7 对于首屏不加载的内容可以使用异步加载方式存储html字符串，按需加载，降低首页渲染时间。</p>
+<p>写到这里，我突然发现我曾经十分的戳。。。。很多没注意</p>
+<h1>静态资源</h1>
+<p>1 我们的页面会出现许多小图标，但很多小图标完全可以用css实现，比如三角形，在css3规模化使用后，更加应该利用他减少外部图片的引用。</p>
+<p>2 资源复用，比如我们一个图片按钮就应该用于各种尺寸。</p>
+<p>3 避免404错误</p>
+<h1>js/html相关</h1>
+<p>1 ajax数据缓存，情况允许使用本地存储</p>
+<p>2 图片/广告位使用滚动显示加载（<span style="color: #ff0000;">原因不明</span>）</p>
+<p>3 下拉菜单/弹出层中的隐藏内容可以使用&lt;textarea&gt;隐藏，需要才真正显示（这招高）</p>
+<p>4 无关紧要数据延迟加载（iframe）</p>
+<p>5 事件延迟加载，比如鼠标移到某个文字上需要加载数据并且显示，但是鼠标可能无意义移上去，这种情况下便应该取消事件（又如鼠标按下1秒才可拖动层）</p>
+<p>6 避免dom操作，减少事件绑定，减少请求数，遍历数据而非遍历dom</p>
+<p>7 若是一个层可拖动的话，不要鼠标每移动1px就改变元素位置，而是其累计5px以上才移动</p>
+<p>8 js模块化，若是引起闭包的话，要有意识的清理没用的变量</p>
+<h1>总结</h1>
+<p>优化这个命题对我来说还是太大了，我们应该在工作过程中有意识的注意身边的每一个有意思有创意的功能点，看看自己会如何实现的，</p>
+<p>我相信长此以往，我有一天也可以对前端优化侃侃而谈，变成真正的高手。</p>
+<p><span style="color: #ff0000;"><strong>针对前端若是您有好的建议，请一定提出来哦！</strong></span></p>
+<p>&nbsp;</p>
+                </div>
+
+                <div class='span3 sidebar'>
+                    <h2>导航栏</h2>
+                    <ul class="nav nav-tabs nav-stacked">
+                             				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/Fiddlerznqddsq/index.html">Fiddler真乃前端大杀器！！！</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/Requirejs/index.html">Requirejs</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/RequireJSyBackbonejdzh/index.html">RequireJS与Backbone简单整合</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/RequireJSxxbj/index.html">RequireJS学习笔记</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/Webqdyhctxdpzyyqdgsgpng/index.html">Web前端优化初探，小弟抛砖引玉，期待高手共破难关！</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/Webqdlqjrctxsqwpzyyqdgsgpng/index.html">Web前端浏览器兼容初探，小生浅文抛砖引玉，期待高手攻破难关！</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/jqueryfdataListxnyhmbybysxtgxn10bys/index.html">【jquery仿dataList——性能优化】模板预编译思想提高性能10倍以上！！！</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/jqueryfdataListyyzmfigoogledzhtdpxzdhfp/index.html">【jquery仿dataList】应用之——模仿igoogle【定制化、拖动排序，最大化、分屏】</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/jqueryfdatalistdygwtqzszmxxsjlkzDIVdjjbf/index.html">【jquery仿datalist的一个问题，求助】——设置每行显示几列，块状DIV的解决办法</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/jquerymfnetkjcbGridViewmxsxjqjdyy/index.html">【jquery模仿net控件】初步GridView模型实现，及其简单应用</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/jquerymfnetkjjdfykj10fsgridviewsycs/index.html">【jquery模仿net控件】简单分页控件10，附上gridview使用测试</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/jquerymfnetkjjdddatalistkjgxjqjdyy/index.html">【jquery模仿net控件】简单的datalist控件更新，及其简单应用</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/jquerymfnetkjjdddropdownlistydatalist/index.html">【jquery模仿net控件】简单的dropdownlist与datalist</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/jquerybnetkjdropdownlistfymhydjzdzzpz/index.html">【jquery版net控件—dropdownlist】附源码，欢迎大家指点、指正、拍砖！！！</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/positionykyhfzddccyslsbdws/index.html">【position也可以很复杂】当弹出层遇上了鼠标定位（上）</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/positionykyhfzddccyslsbdwx/index.html">【position也可以很复杂】当弹出层遇上了鼠标定位（下）</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/SEOzmlwljnmtsbwmlyqkkSEOb/index.html">【SEO】周末了，为了纪念明天上班，我们来一起看看SEO吧</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/webqdyhqdwyhyrzrz/index.html">【web前端优化】前端无优化，庸人自扰之！</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/webqdyhzreflowjsymdhl/index.html">【web前端优化之reflow】减少页面的回流</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/webqdyhztpycjzctzwbsxwbk/index.html">【web前端优化之图片延迟加载初探】中午不睡，下午崩溃</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/webqdyhztpmhdqxkwQQkjrhxsxp/index.html">【web前端优化之图片模糊到清晰】看我QQ空间如何显示相片</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/webqdpxzqhddphsywmsxdDatalistsmwtb/index.html">【web前端培训之前后端的配合（上）】以我们熟悉的Datalist说明问题吧</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/webqdpxzqhddphzjxzrdgs/index.html">【web前端培训之前后端的配合（中）】继续昨日的故事</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/dyyygybkydbfgqym/index.html">【单页应用】关于博客园的补发（高清有码）。。。</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/xtsstringifysBUGlocalstoragesxxmSafarialertksfycjzym10pxbp/index.html">【小贴士】【stringify神BUG】【localstorage失效】【消灭Safarialert框】【是否延迟加载】【页面10px白屏】</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/dalhdmsthhdsdmstjsh/index.html">【答阿里寒冬面试题】呵呵，大神的面试题就是好！</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/ycsjmstdldgwxxdgjxxdff/index.html">一次上机面试题带来的感悟【学习的感觉、学习的方法】</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/ydmstdldqdyhsxxxdp/index.html">一道面试题带来的前端优化——实现星星点评</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/zysyzjjhfzwebqdbfxlgxmndjjfa/index.html">只言碎语总结，今后发展web前端，并分享两个项目难点解决方案。</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/gwjlytbllbnwmljxwwdbdyzb/index.html">各位加了一天班累了吧？那我们来继续未完的表单验证吧</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/gwzmwlytllbwmyqlzldmstbjstbdy/index.html">各位周末玩了一天累了吧，我们一起来做两道面试题吧（据说淘宝的哟）！</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/jyjQuerydxlcdcjzwsy/index.html">基于jQuery的下拉菜单插件，诸位上眼！！！</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/jyjQuerydxlcdcd02zwsy/index.html">基于jQuery的下拉菜单菜单【02】，诸位上眼！！！</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/gzzpddyxdxdccktfybwjsc/index.html">工作中碰到的一些东西【弹出窗口】【拖放】【异步文件上传】</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/gzlygxqgwydllbnwmyqlbdyzyfb/index.html">工作了一个星期各位一定累了吧，那我们一起来表单验证一番吧！</a></li>
+    				                                         
+                    </ul>
+                </div>
+            </div>
+
+        </div>
+    </body>
+</html>

@@ -1,0 +1,312 @@
+﻿<!DOCTYPE html>
+
+<html lang="zh">
+    <head>
+        <meta charset="utf-8">
+        <meta name="description" content="android,ios" />
+        <meta name="keywords" content="android,ios" />
+
+        <title>叶小钗</title>
+        <style type='text/css'>
+            body {
+                background-color: #CCC;
+            }
+        </style>
+        <link rel="stylesheet" href="../../../css/bootstrap.css" />
+    </head>
+
+    <body>
+        <div class="container">
+
+            <h1>叶小钗</h1>
+
+            <div class='navbar navbar-inverse'>
+                <div class='navbar-inner nav-collapse' style="height: auto;">
+                    <ul class="nav">
+                              				<li><a href="http://songboriceboy.github.io/xxoo/html/blade/index.html">blade</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/css/index.html">css</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/HTML5&CSS3/index.html">HTML5&CSS3</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/index.html">javascript</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Javaxx/index.html">Java学习</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/nodejs/index.html">nodejs</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/requirejs/index.html">requirejs</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/index.html">Web前端</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/xxgw/index.html">学习感悟</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/gzdd/index.html">工作点滴</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/jkxx/index.html">接口学习</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/wfl/index.html">未分类</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/ydkf/index.html">移动开发</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/sjms/index.html">设计模式</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/mst/index.html">面试题</a></li>
+    				                      </ul>
+                </div>
+            </div>
+
+            <div id='content' class='row-fluid'>
+
+                <div class='span9 main'>
+				<div style="color:blue" align=center>【重构笔记03】对象之间搬迁特性</div><br><h1>前言</h1>
+<p>在面向对象设计过程中，&ldquo;决定把责任放在那儿&rdquo;即使不是最重要的事，也是最重要的事之一。<br>这个思想其实对类较重要，在js中，函数应该完成什么职责，也需要分清楚，不要函数做了自己的事情，又做了一部分其它函数的事情。</p>
+<p>在js中，往往只有一个类，面向对象的思想其实比较难，没有一定功力不能很好的运用，我也在学习<br>很多js中其实就只有一个类，一个插件就是一个类，而且这个类还是假的，继承、封装神马的要理解还是不容易的，所以路还长！</p>
+<h1>搬迁函数</h1>
+<p>我们的程序中如果有个函数与其所驻类的另一个类有更多的交流（调用后者、或者被后者调用）<br>那么在该函数最常引用的类中建立一个有着类似行为的新函数，将久函数变成一个单纯的委托函数，或者移除旧函数</p>
+<p>搬迁函数是重构理论的支柱，如果一个类有太多行为，或者一个类与另一个类有太多合作而成高度耦合，我们就需要搬迁函数<br>PS：其实在单页应用中，MVC的结构很可能导致这种情况发现，后面点我们搞点代码出来看看</p>
+<p>我们的程序中会有这样的函数，使用另一个对象次数比使用自己的次数还多，搬迁时这就是函数归属的重要依据</p>
+<p>来一个例子吧，这里利用一个表示&ldquo;账户&rdquo;的Account类来说明</p>
+<div class="cnblogs_code">
+<pre><span style="color: #008080;"> 1</span> <span style="color: #0000ff;">var</span> AccountType = <span style="color: #0000ff;">function</span><span style="color: #000000;"> () {};
+</span><span style="color: #008080;"> 2</span> AccountType.prototype =<span style="color: #000000;"> {
+</span><span style="color: #008080;"> 3</span>     isPremium: <span style="color: #0000ff;">function</span> () { <span style="color: #0000ff;">return</span> <span style="color: #0000ff;">true</span><span style="color: #000000;">; }
+</span><span style="color: #008080;"> 4</span> <span style="color: #000000;">};
+</span><span style="color: #008080;"> 5</span> <span style="color: #0000ff;">var</span> Account = <span style="color: #0000ff;">function</span><span style="color: #000000;"> () {
+</span><span style="color: #008080;"> 6</span>     <span style="color: #0000ff;">this</span>._type = <span style="color: #0000ff;">new</span><span style="color: #000000;"> AccountType();
+</span><span style="color: #008080;"> 7</span>     <span style="color: #0000ff;">this</span><span style="color: #000000;">._daysOverdran;
+</span><span style="color: #008080;"> 8</span> <span style="color: #000000;">};
+</span><span style="color: #008080;"> 9</span> Account.prototype =<span style="color: #000000;"> {
+</span><span style="color: #008080;">10</span>     overdraftCharge: <span style="color: #0000ff;">function</span><span style="color: #000000;"> () {
+</span><span style="color: #008080;">11</span>         <span style="color: #0000ff;">if</span> (<span style="color: #0000ff;">this</span><span style="color: #000000;">._type.isPremium()) {
+</span><span style="color: #008080;">12</span>             <span style="color: #0000ff;">var</span> result = 10<span style="color: #000000;">;
+</span><span style="color: #008080;">13</span>             <span style="color: #0000ff;">if</span> (<span style="color: #0000ff;">this</span>._daysOverdran &gt; 7) result += (<span style="color: #0000ff;">this</span>._daysOverdrawn - 7) * 0.85<span style="color: #000000;">;
+</span><span style="color: #008080;">14</span>             <span style="color: #0000ff;">return</span><span style="color: #000000;"> result;
+</span><span style="color: #008080;">15</span>         } <span style="color: #0000ff;">else</span><span style="color: #000000;"> {
+</span><span style="color: #008080;">16</span>             <span style="color: #0000ff;">return</span> <span style="color: #0000ff;">this</span>._daysOverdran * 1.75<span style="color: #000000;">;
+</span><span style="color: #008080;">17</span> <span style="color: #000000;">        }
+</span><span style="color: #008080;">18</span> <span style="color: #000000;">    },
+</span><span style="color: #008080;">19</span>     bankCharge: <span style="color: #0000ff;">function</span><span style="color: #000000;"> () {
+</span><span style="color: #008080;">20</span>         <span style="color: #0000ff;">var</span> result = 4.5<span style="color: #000000;">;
+</span><span style="color: #008080;">21</span>         <span style="color: #0000ff;">if</span> (<span style="color: #0000ff;">this</span>._daysOverdran &gt; 0) result += <span style="color: #0000ff;">this</span><span style="color: #000000;">.overdraftCharge();
+</span><span style="color: #008080;">22</span>         <span style="color: #0000ff;">return</span><span style="color: #000000;"> result;
+</span><span style="color: #008080;">23</span> <span style="color: #000000;">    }
+</span><span style="color: #008080;">24</span> };</pre>
+</div>
+<p>在这个程序中，加入有几种新账户，每一种都有自己的&ldquo;透支金额计费规则&rdquo;，所以overdraftCharge可能需要搬迁到AccountType中去</p>
+<h2>如何做</h2>
+<p>首先，我们要观察overdraftCharge使用的每一项特性，考虑那些特性是否可与他一起搬迁</p>
+<p>这个程序中，_dayOverdrawn会被留下，因为这个值会随不同账号变化而变化，于是调整后的代码如下：</p>
+<div class="cnblogs_code">
+<pre><span style="color: #008080;"> 1</span> <span style="color: #0000ff;">var</span> AccountType = <span style="color: #0000ff;">function</span><span style="color: #000000;"> () {};
+</span><span style="color: #008080;"> 2</span> AccountType.prototype =<span style="color: #000000;"> {
+</span><span style="color: #008080;"> 3</span>     isPremium: <span style="color: #0000ff;">function</span> () { <span style="color: #0000ff;">return</span> <span style="color: #0000ff;">true</span><span style="color: #000000;">; },
+</span><span style="color: #008080;"> 4</span>     overdraftCharge: <span style="color: #0000ff;">function</span><span style="color: #000000;"> (account) {
+</span><span style="color: #008080;"> 5</span>         <span style="color: #0000ff;">if</span> (<span style="color: #0000ff;">this</span><span style="color: #000000;">.isPremium()) {
+</span><span style="color: #008080;"> 6</span>             <span style="color: #0000ff;">var</span> result = 10<span style="color: #000000;">;
+</span><span style="color: #008080;"> 7</span>             <span style="color: #0000ff;">if</span> (account.getDaysOverdran() &gt; 7) result += (account.getDaysOverdran() - 7) * 0.85<span style="color: #000000;">;
+</span><span style="color: #008080;"> 8</span>             <span style="color: #0000ff;">return</span><span style="color: #000000;"> result;
+</span><span style="color: #008080;"> 9</span>         } <span style="color: #0000ff;">else</span><span style="color: #000000;"> {
+</span><span style="color: #008080;">10</span>             <span style="color: #0000ff;">return</span> account.getDaysOverdran() * 1.75<span style="color: #000000;">;
+</span><span style="color: #008080;">11</span> <span style="color: #000000;">        }
+</span><span style="color: #008080;">12</span> <span style="color: #000000;">    }
+</span><span style="color: #008080;">13</span> <span style="color: #000000;">};
+</span><span style="color: #008080;">14</span> <span style="color: #0000ff;">var</span> Account = <span style="color: #0000ff;">function</span><span style="color: #000000;"> () {
+</span><span style="color: #008080;">15</span>     <span style="color: #0000ff;">this</span>._type = <span style="color: #0000ff;">new</span><span style="color: #000000;"> AccountType();
+</span><span style="color: #008080;">16</span>     <span style="color: #0000ff;">this</span><span style="color: #000000;">._daysOverdran;
+</span><span style="color: #008080;">17</span> <span style="color: #000000;">};
+</span><span style="color: #008080;">18</span> Account.prototype =<span style="color: #000000;"> {
+</span><span style="color: #008080;">19</span>     bankCharge: <span style="color: #0000ff;">function</span><span style="color: #000000;"> () {
+</span><span style="color: #008080;">20</span>         <span style="color: #0000ff;">var</span> result = 4.5<span style="color: #000000;">;
+</span><span style="color: #008080;">21</span>         <span style="color: #0000ff;">if</span> (<span style="color: #0000ff;">this</span>._daysOverdran &gt; 0) result += <span style="color: #0000ff;">this</span>._type.overdraftCharge(<span style="color: #0000ff;">this</span><span style="color: #000000;">);
+</span><span style="color: #008080;">22</span>         <span style="color: #0000ff;">return</span><span style="color: #000000;"> result;
+</span><span style="color: #008080;">23</span> <span style="color: #000000;">    }
+</span><span style="color: #008080;">24</span> };</pre>
+</div>
+<p>这里也可以将daysOverdrawn作为参数传入，但是如果后面会传入多个字段，就要改代码，所以直接传入对象吧</p>
+<h1>搬移字段</h1>
+<p>搬移字段在再js程序中可能用得会多一点，在我们的程序中，某个字段被自己类之外的类多次使用的话</p>
+<p>那么，在目标类新建一个字段，修改源字段的所有用户，让他们使用新字段</p>
+<h2>为什么这么干？</h2>
+<p>在类之间移动状态和行为，是重构过程中必不可少的措施，随着系统发展，我们会发现，自己需要新的类，并需要将现有工作责任移动新类中</p>
+<p>但是这个星期看似合理正确的设计决策，下个星期可能就错了的情况也不是没有</p>
+<p>如果我们发现，一个字段被其它类过多使用，那么我们就该抛弃他了</p>
+<h2>范例</h2>
+<p>继续我们上面的例子吧</p>
+<div class="cnblogs_code">
+<pre><span style="color: #008080;">1</span> <span style="color: #0000ff;">var</span> Account = <span style="color: #0000ff;">function</span><span style="color: #000000;"> () {
+</span><span style="color: #008080;">2</span>     <span style="color: #0000ff;">this</span>._type = <span style="color: #0000ff;">new</span><span style="color: #000000;"> AccountType();
+</span><span style="color: #008080;">3</span>     <span style="color: #0000ff;">this</span><span style="color: #000000;">._interestRate;
+</span><span style="color: #008080;">4</span> <span style="color: #000000;">};
+</span><span style="color: #008080;">5</span> Account.prototype =<span style="color: #000000;"> {
+</span><span style="color: #008080;">6</span>     interestForAmount_days: <span style="color: #0000ff;">function</span><span style="color: #000000;"> (amount, days) {
+</span><span style="color: #008080;">7</span>         <span style="color: #0000ff;">return</span> <span style="color: #0000ff;">this</span>._interestRate * amount * days / 365<span style="color: #000000;">;
+</span><span style="color: #008080;">8</span> <span style="color: #000000;">    }
+</span><span style="color: #008080;">9</span> };</pre>
+</div>
+<p>我们现在想把表示利率的_interestRate搬移到AccountType类去，目前已经有几个函数引用他了，interestForAmount_days是其中之一</p>
+<p>所以我们现在AccountType中建立_interestRate字段与相应函数，以下是重构后的代码</p>
+<div class="cnblogs_code">
+<pre><span style="color: #008080;"> 1</span> <span style="color: #0000ff;">var</span> AccountType = <span style="color: #0000ff;">function</span><span style="color: #000000;"> () {
+</span><span style="color: #008080;"> 2</span>     <span style="color: #0000ff;">this</span><span style="color: #000000;">._interestRate;
+</span><span style="color: #008080;"> 3</span> <span style="color: #000000;">};
+</span><span style="color: #008080;"> 4</span> AccountType.prototype =<span style="color: #000000;"> {
+</span><span style="color: #008080;"> 5</span>     getInterestRate: <span style="color: #0000ff;">function</span><span style="color: #000000;"> () {
+</span><span style="color: #008080;"> 6</span>         <span style="color: #0000ff;">return</span> <span style="color: #0000ff;">this</span><span style="color: #000000;">._interestRate;
+</span><span style="color: #008080;"> 7</span> <span style="color: #000000;">    }
+</span><span style="color: #008080;"> 8</span> <span style="color: #000000;">};
+</span><span style="color: #008080;"> 9</span> <span style="color: #0000ff;">var</span> Account = <span style="color: #0000ff;">function</span><span style="color: #000000;"> () {
+</span><span style="color: #008080;">10</span>     <span style="color: #0000ff;">this</span>._type = <span style="color: #0000ff;">new</span><span style="color: #000000;"> AccountType();
+</span><span style="color: #008080;">11</span> <span style="color: #000000;">};
+</span><span style="color: #008080;">12</span> Account.prototype =<span style="color: #000000;"> {
+</span><span style="color: #008080;">13</span>     interestForAmount_days: <span style="color: #0000ff;">function</span><span style="color: #000000;"> (amount, days) {
+</span><span style="color: #008080;">14</span>         <span style="color: #0000ff;">return</span> <span style="color: #0000ff;">this</span>.type.getInterestRate() * amount * days / 365<span style="color: #000000;">;
+</span><span style="color: #008080;">15</span> <span style="color: #000000;">    }
+</span><span style="color: #008080;">16</span> };</pre>
+</div>
+<h1>提炼类</h1>
+<p>某个类做了应该两个类做的事，那么就新建一个类，将相关的字段和函数移过去</p>
+<p>PS：我们从开始到现在就了解了，重构的一大手段就是消除临时变量，另一个方法就是职责分离了</p>
+<p>我们经常听到这句话，一个类应该是一个清除的抽象，处理一些明确的责任，但在实际工作中，类会不断扩张</p>
+<p>我们会在这加一些功能，然后在那加一些数据，给某个类添加一项新任务时，你会觉得不值得为这项责任分离出一个单独的类</p>
+<p>于是责任不断增加，这个类最后就会越来越复杂，很快这个类就连自己也不想读了</p>
+<p>这样的类往往有大量的函数和数据，所以不好理解，这个时候我们需要考虑应该分离哪部分，并将它们写到一个单独的类中</p>
+<p>如果这些数据和某些函数总是一起出现，某些数据经常同时变化，那么就分离吧</p>
+<p>PS：说了这么多还是虚的，来一段代码吧</p>
+<div class="cnblogs_code">
+<pre><span style="color: #008080;"> 1</span> <span style="color: #0000ff;">var</span> Person = <span style="color: #0000ff;">function</span><span style="color: #000000;"> () {
+</span><span style="color: #008080;"> 2</span>     <span style="color: #0000ff;">this</span><span style="color: #000000;">._name;
+</span><span style="color: #008080;"> 3</span>     <span style="color: #0000ff;">this</span><span style="color: #000000;">._officeAreaCode;
+</span><span style="color: #008080;"> 4</span>     <span style="color: #0000ff;">this</span><span style="color: #000000;">._officeNumber;
+</span><span style="color: #008080;"> 5</span> <span style="color: #000000;">};
+</span><span style="color: #008080;"> 6</span> Person.prototype =<span style="color: #000000;"> {
+</span><span style="color: #008080;"> 7</span>     getName: <span style="color: #0000ff;">function</span> () { <span style="color: #0000ff;">return</span> <span style="color: #0000ff;">this</span><span style="color: #000000;">._name; },
+</span><span style="color: #008080;"> 8</span>     getTel: <span style="color: #0000ff;">function</span><span style="color: #000000;"> () {
+</span><span style="color: #008080;"> 9</span>         <span style="color: #0000ff;">return</span> '(' + <span style="color: #0000ff;">this</span>._officeAreaCode + ')' + <span style="color: #0000ff;">this</span><span style="color: #000000;">._officeNumberl;
+</span><span style="color: #008080;">10</span> <span style="color: #000000;">    },
+</span><span style="color: #008080;">11</span>     getOfficeAreaCode: <span style="color: #0000ff;">function</span><span style="color: #000000;"> () {
+</span><span style="color: #008080;">12</span>         <span style="color: #0000ff;">return</span> <span style="color: #0000ff;">this</span><span style="color: #000000;">._officeAreaCode;
+</span><span style="color: #008080;">13</span> <span style="color: #000000;">    },
+</span><span style="color: #008080;">14</span>     setOfficeAreaCode: <span style="color: #0000ff;">function</span><span style="color: #000000;"> (arg) {
+</span><span style="color: #008080;">15</span>         <span style="color: #0000ff;">this</span>._officeAreaCode =<span style="color: #000000;"> arg;
+</span><span style="color: #008080;">16</span> <span style="color: #000000;">    },
+</span><span style="color: #008080;">17</span>     getOfficeNumber: <span style="color: #0000ff;">function</span><span style="color: #000000;"> () {
+</span><span style="color: #008080;">18</span>         <span style="color: #0000ff;">return</span> <span style="color: #0000ff;">this</span><span style="color: #000000;">._officeNumber;
+</span><span style="color: #008080;">19</span> <span style="color: #000000;">    },
+</span><span style="color: #008080;">20</span>     setOfficeNumber: <span style="color: #0000ff;">function</span><span style="color: #000000;"> (arg) {
+</span><span style="color: #008080;">21</span>         <span style="color: #0000ff;">this</span>._officeNumber =<span style="color: #000000;"> arg;
+</span><span style="color: #008080;">22</span> <span style="color: #000000;">    }
+</span><span style="color: #008080;">23</span> };</pre>
+</div>
+<p>这里，我们可以将电话号码相关行为分离到一个独立的类中，优化后的代码：</p>
+<div class="cnblogs_code">
+<pre><span style="color: #008080;"> 1</span> <span style="color: #0000ff;">var</span> Tel = <span style="color: #0000ff;">function</span><span style="color: #000000;"> () {
+</span><span style="color: #008080;"> 2</span>     <span style="color: #0000ff;">this</span><span style="color: #000000;">._number;
+</span><span style="color: #008080;"> 3</span>     <span style="color: #0000ff;">this</span><span style="color: #000000;">._areaCode;
+</span><span style="color: #008080;"> 4</span> <span style="color: #000000;">};
+</span><span style="color: #008080;"> 5</span> Tel.prototype =<span style="color: #000000;"> {
+</span><span style="color: #008080;"> 6</span>     getAreaCode: <span style="color: #0000ff;">function</span><span style="color: #000000;"> () {
+</span><span style="color: #008080;"> 7</span>         <span style="color: #0000ff;">return</span> <span style="color: #0000ff;">this</span><span style="color: #000000;">._areaCode;
+</span><span style="color: #008080;"> 8</span> <span style="color: #000000;">    },
+</span><span style="color: #008080;"> 9</span>     setAreaCode: <span style="color: #0000ff;">function</span><span style="color: #000000;"> (arg) {
+</span><span style="color: #008080;">10</span>         <span style="color: #0000ff;">this</span>._areaCode =<span style="color: #000000;"> arg;
+</span><span style="color: #008080;">11</span> <span style="color: #000000;">    },
+</span><span style="color: #008080;">12</span>     getNumber: <span style="color: #0000ff;">function</span><span style="color: #000000;"> () {
+</span><span style="color: #008080;">13</span>         <span style="color: #0000ff;">return</span> <span style="color: #0000ff;">this</span><span style="color: #000000;">._number;
+</span><span style="color: #008080;">14</span> <span style="color: #000000;">    },
+</span><span style="color: #008080;">15</span>     setNumber: <span style="color: #0000ff;">function</span><span style="color: #000000;"> (arg) {
+</span><span style="color: #008080;">16</span>         <span style="color: #0000ff;">this</span>._number =<span style="color: #000000;"> arg;
+</span><span style="color: #008080;">17</span> <span style="color: #000000;">    }
+</span><span style="color: #008080;">18</span> <span style="color: #000000;">};
+</span><span style="color: #008080;">19</span> <span style="color: #0000ff;">var</span> Person = <span style="color: #0000ff;">function</span><span style="color: #000000;"> () {
+</span><span style="color: #008080;">20</span>     <span style="color: #0000ff;">this</span><span style="color: #000000;">._name;
+</span><span style="color: #008080;">21</span>     <span style="color: #0000ff;">this</span>.tel = <span style="color: #0000ff;">new</span><span style="color: #000000;"> Tel();
+</span><span style="color: #008080;">22</span> <span style="color: #000000;">};
+</span><span style="color: #008080;">23</span> Person.prototype =<span style="color: #000000;"> {
+</span><span style="color: #008080;">24</span>     getName: <span style="color: #0000ff;">function</span> () { <span style="color: #0000ff;">return</span> <span style="color: #0000ff;">this</span><span style="color: #000000;">._name; },
+</span><span style="color: #008080;">25</span>     getTel: <span style="color: #0000ff;">function</span><span style="color: #000000;"> () {
+</span><span style="color: #008080;">26</span>         <span style="color: #0000ff;">return</span> '(' + <span style="color: #0000ff;">this</span>.tel.getAreaCode() + ')' + <span style="color: #0000ff;">this</span><span style="color: #000000;">.tel.getNumber();
+</span><span style="color: #008080;">27</span> <span style="color: #000000;">    }
+</span><span style="color: #008080;">28</span> };</pre>
+</div>
+<p>想想，Person当然不只Tel这点属性，Tel也可能会有其它动作，如果写在一起，后面代码膨胀是可以预见的</p>
+<h2>将类内联化</h2>
+<p>如果某个类没做什么事情，那么将类消除吧，将他完成的特性移动到另一个类中，这个方法与提炼类完全相反</p>
+<p>范例就是将上面的代码写回去......</p>
+<h1>隐藏委托关系</h1>
+<p>客户通过一个委托来调用另一个对象，在服务器上建立客户的所有函数，用以隐藏委托关系</p>
+<p>&ldquo;封装&rdquo;即使不是对象最关键的特征，也是最关键的特征之一</p>
+<p>封装意味着每个对象都应该尽可能少了解系统其它部分，如此一来，其它地方变化了，就管我屁事了（变化比较容易进行）</p>
+<h2>范例</h2>
+<p>本例中，出了人以为，多了一个部门的类啦：</p>
+<div class="cnblogs_code">
+<pre><span style="color: #008080;"> 1</span> <span style="color: #0000ff;">var</span> Department = <span style="color: #0000ff;">function</span><span style="color: #000000;"> (manager) {
+</span><span style="color: #008080;"> 2</span>     <span style="color: #0000ff;">this</span><span style="color: #000000;">._chargeCode;
+</span><span style="color: #008080;"> 3</span>     <span style="color: #0000ff;">this</span>._manager =<span style="color: #000000;"> manager;
+</span><span style="color: #008080;"> 4</span> <span style="color: #000000;">};
+</span><span style="color: #008080;"> 5</span> Department.prototype =<span style="color: #000000;"> {
+</span><span style="color: #008080;"> 6</span>     getManager: <span style="color: #0000ff;">function</span><span style="color: #000000;"> () {
+</span><span style="color: #008080;"> 7</span>         <span style="color: #0000ff;">return</span> <span style="color: #0000ff;">this</span><span style="color: #000000;">._manager;
+</span><span style="color: #008080;"> 8</span> <span style="color: #000000;">    }
+</span><span style="color: #008080;"> 9</span> <span style="color: #000000;">};
+</span><span style="color: #008080;">10</span> <span style="color: #0000ff;">var</span> Person = <span style="color: #0000ff;">function</span><span style="color: #000000;"> () {
+</span><span style="color: #008080;">11</span>     <span style="color: #0000ff;">this</span><span style="color: #000000;">._department;
+</span><span style="color: #008080;">12</span> <span style="color: #000000;">};
+</span><span style="color: #008080;">13</span> Person.prototype =<span style="color: #000000;"> {
+</span><span style="color: #008080;">14</span>     getDepartment: <span style="color: #0000ff;">function</span><span style="color: #000000;"> () {
+</span><span style="color: #008080;">15</span>         <span style="color: #0000ff;">return</span> <span style="color: #0000ff;">this</span><span style="color: #000000;">._department;
+</span><span style="color: #008080;">16</span> <span style="color: #000000;">    }
+</span><span style="color: #008080;">17</span> };</pre>
+</div>
+<p>如果客户想知道某人的经理是谁，他必须先取得Department对象</p>
+<div class="cnblogs_code">
+<pre>manager = p.getDepartment().getManager()</pre>
+</div>
+<p>这样有一个问题就是，对用户揭露了Department的工作原理，于是客户指定通过Department可以追踪经理信息，如果可以隐藏Department的话，就可以减少耦合</p>
+<p>这里就来一个委托：</p>
+<div class="cnblogs_code">
+<pre><span style="color: #008080;"> 1</span> <span style="color: #0000ff;">var</span> Department = <span style="color: #0000ff;">function</span><span style="color: #000000;"> (manager) {
+</span><span style="color: #008080;"> 2</span>     <span style="color: #0000ff;">this</span><span style="color: #000000;">._chargeCode;
+</span><span style="color: #008080;"> 3</span>     <span style="color: #0000ff;">this</span>._manager =<span style="color: #000000;"> manager;
+</span><span style="color: #008080;"> 4</span> <span style="color: #000000;">};
+</span><span style="color: #008080;"> 5</span> Department.prototype =<span style="color: #000000;"> {
+</span><span style="color: #008080;"> 6</span>     getManager: <span style="color: #0000ff;">function</span><span style="color: #000000;"> () {
+</span><span style="color: #008080;"> 7</span>         <span style="color: #0000ff;">return</span> <span style="color: #0000ff;">this</span><span style="color: #000000;">._manager;
+</span><span style="color: #008080;"> 8</span> <span style="color: #000000;">    }
+</span><span style="color: #008080;"> 9</span> <span style="color: #000000;">};
+</span><span style="color: #008080;">10</span> <span style="color: #0000ff;">var</span> Person = <span style="color: #0000ff;">function</span><span style="color: #000000;"> () {
+</span><span style="color: #008080;">11</span>     <span style="color: #0000ff;">this</span><span style="color: #000000;">._department;
+</span><span style="color: #008080;">12</span> <span style="color: #000000;">};
+</span><span style="color: #008080;">13</span> Person.prototype =<span style="color: #000000;"> {
+</span><span style="color: #008080;">14</span>     getDepartment: <span style="color: #0000ff;">function</span><span style="color: #000000;"> () {
+</span><span style="color: #008080;">15</span>         <span style="color: #0000ff;">return</span> <span style="color: #0000ff;">this</span><span style="color: #000000;">._department;
+</span><span style="color: #008080;">16</span> <span style="color: #000000;">    },
+</span><span style="color: #008080;">17</span>     getManager: <span style="color: #0000ff;">function</span><span style="color: #000000;"> () {
+</span><span style="color: #008080;">18</span>         <span style="color: #0000ff;">return</span> <span style="color: #0000ff;">this</span><span style="color: #000000;">._department.getManager();
+</span><span style="color: #008080;">19</span> <span style="color: #000000;">    }
+</span><span style="color: #008080;">20</span> };</pre>
+</div>
+<p>这样的话，用户就不知道有Department这个东西了</p>
+<h2>移除中间人</h2>
+<p>某个类做了过多的简单委托动作，那么就让用户之间调用委托类吧</p>
+<p>这个与上面的是反着的，各位对照着看吧</p>
+<h1>引入外加函数</h1>
+<p>我们有时需要为提供服务的类增加一个函数，但我们无法修改这个类，那么在客户类中建立一个函数，并以第一参数形式传入一个服务器类实例</p>
+<div class="cnblogs_code">
+<pre><span style="color: #008080;">1</span> <span style="color: #0000ff;">var</span> d = <span style="color: #0000ff;">new</span> Date(previousEnd.getYear(), previousEnd.getMonth(), previousEnd.getDay() + 1<span style="color: #000000;">);
+</span><span style="color: #008080;">2</span> 
+<span style="color: #008080;">3</span> <span style="color: #0000ff;">var</span> d =<span style="color: #000000;"> nextDay(previousEnd);
+</span><span style="color: #008080;">4</span> <span style="color: #0000ff;">function</span><span style="color: #000000;"> nextDay(arg) {
+</span><span style="color: #008080;">5</span>     <span style="color: #0000ff;">return</span> <span style="color: #0000ff;">new</span> Date(arg.getYear(), arg.getMonth(), arg.getDay() + 1<span style="color: #000000;">);
+</span><span style="color: #008080;">6</span> }</pre>
+</div>
+<p>这种事情发生的很多，我们正在使用一个类，他提供了很多服务，但是我们突然需要一个新类，这个类却无法提供，那么我们可能会咒骂，完了修改源码</p>
+<p>如果源码不能修改，我们就得在客户端补齐函数啦</p>
+<h2>引入本地扩展</h2>
+<p>你需要为服务类提供一些额外函数，但你无法修改这个类，建立一个新类，使他包含这些额外的函数，让这个扩展成为源类的子类或者包装类</p>
+<p>这个与上面类似，小的要看神都龙王去了，所以暂时到这吧......</p>
+                </div>
+
+                <div class='span3 sidebar'>
+                    <h2>导航栏</h2>
+                    <ul class="nav nav-tabs nav-stacked">
+                             				<li><a href="http://songboriceboy.github.io/xxoo/html/sjms/MVCxxbj01ckam/index.html">【MVC学习笔记01】初窥奥秘</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/sjms/zgbj01dygalbqcj/index.html">【重构笔记01】第一个案例补齐插件</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/sjms/zgbj02zxzzhs/index.html">【重构笔记02】重新组织函数</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/sjms/zgbj03dxzjbqtx/index.html">【重构笔记03】对象之间搬迁特性</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/sjms/zgbj04zxzzsjwhxmblsmssjyxwfl/index.html">【重构笔记04】重新组织数据（我好像明白了什么是数据与行为分离）</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/sjms/ctBackbone/index.html">初探Backbone</a></li>
+    				                                         
+                    </ul>
+                </div>
+            </div>
+
+        </div>
+    </body>
+</html>

@@ -1,0 +1,486 @@
+﻿<!DOCTYPE html>
+
+<html lang="zh">
+    <head>
+        <meta charset="utf-8">
+        <meta name="description" content="android,ios" />
+        <meta name="keywords" content="android,ios" />
+
+        <title>叶小钗</title>
+        <style type='text/css'>
+            body {
+                background-color: #CCC;
+            }
+        </style>
+        <link rel="stylesheet" href="../../../css/bootstrap.css" />
+    </head>
+
+    <body>
+        <div class="container">
+
+            <h1>叶小钗</h1>
+
+            <div class='navbar navbar-inverse'>
+                <div class='navbar-inner nav-collapse' style="height: auto;">
+                    <ul class="nav">
+                              				<li><a href="http://songboriceboy.github.io/xxoo/html/blade/index.html">blade</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/css/index.html">css</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/HTML5&CSS3/index.html">HTML5&CSS3</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/index.html">javascript</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Javaxx/index.html">Java学习</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/nodejs/index.html">nodejs</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/requirejs/index.html">requirejs</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/index.html">Web前端</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/xxgw/index.html">学习感悟</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/gzdd/index.html">工作点滴</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/jkxx/index.html">接口学习</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/wfl/index.html">未分类</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/ydkf/index.html">移动开发</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/sjms/index.html">设计模式</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/mst/index.html">面试题</a></li>
+    				                      </ul>
+                </div>
+            </div>
+
+            <div id='content' class='row-fluid'>
+
+                <div class='span9 main'>
+				<div style="color:blue" align=center>【HTML5CSS3进阶学习01】气泡组件的实现</div><br><h1>前言</h1>
+<p>气泡组件在实际工作中非常普遍，无论是网页中还是app中，比如：</p>
+<p><img src="6432787504295.png" alt=""></p>
+<p><img src="13712837211330.png" alt=""></p>
+<p><img src="5993299125504.png" alt=""></p>
+<p><img src="6072910325821.png" alt=""></p>
+<p><img src="521770310295313.png" alt=""></p>
+<p>我们这里所谓气泡组件是指列表型气泡组件，这里就其dom实现，css实现，js实现做一个讨论，最后对一些细节点做一些说明，希望对各位有用</p>
+<p><span style="color: #ff0000;"><strong>小钗最近初学CSS，这里做一个专题，便于自身CSS提升，文章有不少问题与可优化点，请各位指导</strong></span></p>
+<h1>组件分类</h1>
+<p>单由气泡组件来说，他仍然属于&ldquo;弹出层&rdquo;类组件，也就是说其会具有这些特性：</p>
+<p>① 布局为脱离文档流</p>
+<p>② 可以具有mask蒙版，并且可配置点击蒙版是否关闭的特性</p>
+<p>③ 可选的特性有点击浏览器回退关闭组件以及动画的显示与隐藏动画特性</p>
+<p>其中比较不同的是：</p>
+<p>① 不是居中定位</p>
+<p>② 具有一个箭头标识，并且可以设置再上或者在下</p>
+<p>③ 因为具有箭头，而且这个箭头是相对于一个元素的，一般意义上我们任务是相对某个按钮，所以说具有一个triggerEL</p>
+<p>所以单从这里论述来说，我们的组件名为BubbleLayer，其应该继承与一个通用的Layer</p>
+<p>但是，就由Layer来说，其最少会具有以下通用特性：</p>
+<p>① 创建&mdash;&mdash;create</p>
+<p>② 显示&mdash;&mdash;show</p>
+<p>③ 隐藏&mdash;&mdash;hide</p>
+<p>④ 摧毁&mdash;&mdash;destroy</p>
+<p>而以上特性并不是Layer组件所特有的，而是所有组件所特有，所以在Layer之上还应该存在一个AbstractView的抽象组件</p>
+<p>至此继承关系便出来了，抛开多余的接口不看，简单来说是这样的：</p>
+<p><img src="30497046204900.png" alt=""></p>
+<h1>组件dom层面实现</h1>
+<h3>最简单实现</h3>
+<p>单从dom实现来说，其实一个简单的ul便可以完成任务</p>
+<div class="cnblogs_code">
+<pre><span style="color: #008080;">1</span> <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">ul </span><span style="color: #ff0000;">class</span><span style="color: #0000ff;">="cui-bubble-layer"</span><span style="color: #ff0000;"> style</span><span style="color: #0000ff;">="position: absolute; top: 110px; left: 220px;"</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">2</span>   <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">li </span><span style="color: #ff0000;">data-index</span><span style="color: #0000ff;">="0"</span><span style="color: #ff0000;"> data-flag</span><span style="color: #0000ff;">="c"</span><span style="color: #0000ff;">&gt;</span>价格：￥35<span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">li</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">3</span>   <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">li </span><span style="color: #ff0000;">data-index</span><span style="color: #0000ff;">="1"</span><span style="color: #ff0000;"> data-flag</span><span style="color: #0000ff;">="c"</span><span style="color: #0000ff;">&gt;</span>评分：80<span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">li</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">4</span>   <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">li </span><span style="color: #ff0000;">data-index</span><span style="color: #0000ff;">="2"</span><span style="color: #ff0000;"> data-flag</span><span style="color: #0000ff;">="c"</span><span style="color: #0000ff;">&gt;</span>级别：5<span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">li</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">5</span> <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">ul</span><span style="color: #0000ff;">&gt;</span></pre>
+</div>
+<p>当然这里要有相关的css</p>
+<div class="cnblogs_code">
+<pre><span style="color: #008080;">1</span> <span style="color: #800000;">.cui-bubble-layer </span>{
+<span style="color: #008080;">2</span> <span style="color: #ff0000;">    background</span>:<span style="color: #0000ff;"> #f2f2f2</span>;
+<span style="color: #008080;">3</span> <span style="color: #ff0000;">    border</span>:<span style="color: #0000ff;"> #bcbcbc 1px solid</span>;
+<span style="color: #008080;">4</span> <span style="color: #ff0000;">    border-radius</span>:<span style="color: #0000ff;"> 3px
+</span><span style="color: #008080;">5</span> }</pre>
+</div>
+<p>至此形成的效果是酱紫滴：</p>
+<p><img src="6195946401760.png" alt=""></p>
+<div class="cnblogs_code" onclick="cnblogs_code_show('62f7c881-41ae-46e5-99be-1bf886a0410c')"><img id="code_img_closed_62f7c881-41ae-46e5-99be-1bf886a0410c" class="code_img_closed" src="43570758473519.gif" alt=""><img id="code_img_opened_62f7c881-41ae-46e5-99be-1bf886a0410c" class="code_img_opened" style="display: none;" onclick="cnblogs_code_hide('62f7c881-41ae-46e5-99be-1bf886a0410c',event)" src="16365178109279.gif" alt="">
+<div id="cnblogs_code_open_62f7c881-41ae-46e5-99be-1bf886a0410c" class="cnblogs_code_hide">
+<pre><span style="color: #008080;"> 1</span> <span style="color: #0000ff;">&lt;!</span><span style="color: #ff00ff;">doctype html</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 2</span> <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">html</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 3</span> <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">head</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 4</span>   <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">meta </span><span style="color: #ff0000;">charset</span><span style="color: #0000ff;">="utf-8"</span> <span style="color: #0000ff;">/&gt;</span>
+<span style="color: #008080;"> 5</span>   <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">title</span><span style="color: #0000ff;">&gt;</span>Blade Demo<span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">title</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 6</span>   <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">meta </span><span style="color: #ff0000;">name</span><span style="color: #0000ff;">="viewport"</span><span style="color: #ff0000;"> content</span><span style="color: #0000ff;">="width=device-width,initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no"</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 7</span>   <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">meta </span><span style="color: #ff0000;">content</span><span style="color: #0000ff;">="telephone=no"</span><span style="color: #ff0000;"> name</span><span style="color: #0000ff;">="format-detection"</span> <span style="color: #0000ff;">/&gt;</span>
+<span style="color: #008080;"> 8</span>   <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">meta </span><span style="color: #ff0000;">name</span><span style="color: #0000ff;">="apple-mobile-web-app-capable"</span><span style="color: #ff0000;"> content</span><span style="color: #0000ff;">="yes"</span> <span style="color: #0000ff;">/&gt;</span>
+<span style="color: #008080;"> 9</span>   <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">style </span><span style="color: #ff0000;">type</span><span style="color: #0000ff;">="text/css"</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">10</span> <span style="background-color: #f5f5f5; color: #800000;">    body, button, input, select, textarea </span><span style="background-color: #f5f5f5; color: #000000;">{</span><span style="background-color: #f5f5f5; color: #ff0000;"> font</span><span style="background-color: #f5f5f5; color: #000000;">:</span><span style="background-color: #f5f5f5; color: #0000ff;"> 400 14px/1.5 Arial, "Lucida Grande" ,Verdana, "Microsoft YaHei" ,hei</span><span style="background-color: #f5f5f5; color: #000000;">;</span> <span style="background-color: #f5f5f5; color: #000000;">}</span>
+<span style="color: #008080;">11</span> <span style="background-color: #f5f5f5; color: #800000;">    body, div, dl, dt, dd, ul, ol, li, h1, h2, h3, h4, h5, h6, pre, code, form, fieldset, legend, input, textarea, p, blockquote, th, td, hr, button, article, aside, details, figcaption, figure, footer, header, hgroup, menu, nav, section </span><span style="background-color: #f5f5f5; color: #000000;">{</span><span style="background-color: #f5f5f5; color: #ff0000;"> margin</span><span style="background-color: #f5f5f5; color: #000000;">:</span><span style="background-color: #f5f5f5; color: #0000ff;"> 0</span><span style="background-color: #f5f5f5; color: #000000;">;</span><span style="background-color: #f5f5f5; color: #ff0000;"> padding</span><span style="background-color: #f5f5f5; color: #000000;">:</span><span style="background-color: #f5f5f5; color: #0000ff;"> 0</span><span style="background-color: #f5f5f5; color: #000000;">;</span> <span style="background-color: #f5f5f5; color: #000000;">}</span>
+<span style="color: #008080;">12</span> <span style="background-color: #f5f5f5; color: #800000;">    body </span><span style="background-color: #f5f5f5; color: #000000;">{</span><span style="background-color: #f5f5f5; color: #ff0000;"> background</span><span style="background-color: #f5f5f5; color: #000000;">:</span><span style="background-color: #f5f5f5; color: #0000ff;"> #f5f5f5</span><span style="background-color: #f5f5f5; color: #000000;">;</span> <span style="background-color: #f5f5f5; color: #000000;">}</span>
+<span style="color: #008080;">13</span> <span style="background-color: #f5f5f5; color: #800000;">    ul, ol </span><span style="background-color: #f5f5f5; color: #000000;">{</span><span style="background-color: #f5f5f5; color: #ff0000;"> list-style</span><span style="background-color: #f5f5f5; color: #000000;">:</span><span style="background-color: #f5f5f5; color: #0000ff;"> none</span><span style="background-color: #f5f5f5; color: #000000;">;</span> <span style="background-color: #f5f5f5; color: #000000;">}</span>
+<span style="color: #008080;">14</span>     
+<span style="color: #008080;">15</span> <span style="background-color: #f5f5f5; color: #800000;">    .cui-bubble-layer </span><span style="background-color: #f5f5f5; color: #000000;">{</span><span style="background-color: #f5f5f5; color: #ff0000;"> background</span><span style="background-color: #f5f5f5; color: #000000;">:</span><span style="background-color: #f5f5f5; color: #0000ff;"> #f2f2f2</span><span style="background-color: #f5f5f5; color: #000000;">;</span><span style="background-color: #f5f5f5; color: #ff0000;"> border</span><span style="background-color: #f5f5f5; color: #000000;">:</span><span style="background-color: #f5f5f5; color: #0000ff;"> #bcbcbc 1px solid</span><span style="background-color: #f5f5f5; color: #000000;">;</span><span style="background-color: #f5f5f5; color: #ff0000;"> border-radius</span><span style="background-color: #f5f5f5; color: #000000;">:</span><span style="background-color: #f5f5f5; color: #0000ff;"> 3px</span><span style="background-color: #f5f5f5; color: #000000;">;</span> <span style="background-color: #f5f5f5; color: #000000;">}</span>
+<span style="color: #008080;">16</span>   <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">style</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">17</span> <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">head</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">18</span> <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">body</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">19</span>   <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">ul </span><span style="color: #ff0000;">class</span><span style="color: #0000ff;">="cui-bubble-layer"</span><span style="color: #ff0000;"> style</span><span style="color: #0000ff;">="position: absolute; top: 110px; left: 220px;"</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">20</span>     <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">li </span><span style="color: #ff0000;">data-index</span><span style="color: #0000ff;">="0"</span><span style="color: #ff0000;"> data-flag</span><span style="color: #0000ff;">="c"</span><span style="color: #0000ff;">&gt;</span>价格：￥35<span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">li</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">21</span>     <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">li </span><span style="color: #ff0000;">data-index</span><span style="color: #0000ff;">="1"</span><span style="color: #ff0000;"> data-flag</span><span style="color: #0000ff;">="c"</span><span style="color: #0000ff;">&gt;</span>评分：80<span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">li</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">22</span>     <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">li </span><span style="color: #ff0000;">data-index</span><span style="color: #0000ff;">="2"</span><span style="color: #ff0000;"> data-flag</span><span style="color: #0000ff;">="c"</span><span style="color: #0000ff;">&gt;</span>级别：5<span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">li</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">23</span>   <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">ul</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">24</span> <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">body</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">25</span> <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">html</span><span style="color: #0000ff;">&gt;</span></pre>
+</div>
+<span class="cnblogs_code_collapse">View Code</span></div>
+<p>这个时候在为其加一个伪类，做点样式上的调整，便基本实现了，这里用到了伪类的知识点：</p>
+<div class="cnblogs_code">
+<pre><span style="color: #800000;">cui-bubble-layer:before </span>{<span style="color: #ff0000;"> <br>position</span>:<span style="color: #0000ff;"> absolute</span>;<span style="color: #ff0000;"> content</span>:<span style="color: #0000ff;"> ""</span>;<span style="color: #ff0000;"> width</span>:<span style="color: #0000ff;"> 10px</span>;<span style="color: #ff0000;"> height</span>:<span style="color: #0000ff;"> 10px</span>;<span style="color: #ff0000;"> -webkit-transform</span>:<span style="color: #0000ff;"> rotate(45deg)</span>;<span style="color: #ff0000;"> <br>background</span>:<span style="color: #0000ff;"> #f2f2f2</span>;<span style="color: #ff0000;"> <br>border-top</span>:<span style="color: #0000ff;"> #bcbcbc 1px solid</span>;<span style="color: #ff0000;"> <br>border-left</span>:<span style="color: #0000ff;"> #bcbcbc 1px solid</span>;<span style="color: #ff0000;"> <br>top</span>:<span style="color: #0000ff;"> -6px</span>;<span style="color: #ff0000;"> left</span>:<span style="color: #0000ff;"> 50%</span>;<span style="color: #ff0000;"> margin-left</span>:<span style="color: #0000ff;"> -5px</span>;<span style="color: #ff0000;"> z-index</span>:<span style="color: #0000ff;"> 1</span>;<br>}</pre>
+</div>
+<p>这里设置了一个绝对定位的矩形框，为其两个边框设置了值，然后变形偏斜45度形成小三角，然后大家都知道了</p>
+<div class="cnblogs_code" onclick="cnblogs_code_show('a86760fc-05a7-45f1-a150-ebefaf8dd00a')"><img id="code_img_closed_a86760fc-05a7-45f1-a150-ebefaf8dd00a" class="code_img_closed" src="43570758473519.gif" alt=""><img id="code_img_opened_a86760fc-05a7-45f1-a150-ebefaf8dd00a" class="code_img_opened" style="display: none;" onclick="cnblogs_code_hide('a86760fc-05a7-45f1-a150-ebefaf8dd00a',event)" src="16365178109279.gif" alt="">
+<div id="cnblogs_code_open_a86760fc-05a7-45f1-a150-ebefaf8dd00a" class="cnblogs_code_hide">
+<pre><span style="color: #0000ff;">&lt;!</span><span style="color: #ff00ff;">doctype html</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #0000ff;">&lt;</span><span style="color: #800000;">html</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #0000ff;">&lt;</span><span style="color: #800000;">head</span><span style="color: #0000ff;">&gt;</span>
+  <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">meta </span><span style="color: #ff0000;">charset</span><span style="color: #0000ff;">="utf-8"</span> <span style="color: #0000ff;">/&gt;</span>
+  <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">title</span><span style="color: #0000ff;">&gt;</span>Blade Demo<span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">title</span><span style="color: #0000ff;">&gt;</span>
+  <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">meta </span><span style="color: #ff0000;">name</span><span style="color: #0000ff;">="viewport"</span><span style="color: #ff0000;"> content</span><span style="color: #0000ff;">="width=device-width,initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no"</span><span style="color: #0000ff;">&gt;</span>
+  <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">meta </span><span style="color: #ff0000;">content</span><span style="color: #0000ff;">="telephone=no"</span><span style="color: #ff0000;"> name</span><span style="color: #0000ff;">="format-detection"</span> <span style="color: #0000ff;">/&gt;</span>
+  <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">meta </span><span style="color: #ff0000;">name</span><span style="color: #0000ff;">="apple-mobile-web-app-capable"</span><span style="color: #ff0000;"> content</span><span style="color: #0000ff;">="yes"</span> <span style="color: #0000ff;">/&gt;</span>
+  <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">style </span><span style="color: #ff0000;">type</span><span style="color: #0000ff;">="text/css"</span><span style="color: #0000ff;">&gt;</span><span style="background-color: #f5f5f5; color: #800000;">
+    body, button, input, select, textarea </span><span style="background-color: #f5f5f5; color: #000000;">{</span><span style="background-color: #f5f5f5; color: #ff0000;"> font</span><span style="background-color: #f5f5f5; color: #000000;">:</span><span style="background-color: #f5f5f5; color: #0000ff;"> 400 14px/1.5 Arial, "Lucida Grande" ,Verdana, "Microsoft YaHei" ,hei</span><span style="background-color: #f5f5f5; color: #000000;">;</span> <span style="background-color: #f5f5f5; color: #000000;">}</span><span style="background-color: #f5f5f5; color: #800000;">
+    body, div, dl, dt, dd, ul, ol, li, h1, h2, h3, h4, h5, h6, pre, code, form, fieldset, legend, input, textarea, p, blockquote, th, td, hr, button, article, aside, details, figcaption, figure, footer, header, hgroup, menu, nav, section </span><span style="background-color: #f5f5f5; color: #000000;">{</span><span style="background-color: #f5f5f5; color: #ff0000;"> margin</span><span style="background-color: #f5f5f5; color: #000000;">:</span><span style="background-color: #f5f5f5; color: #0000ff;"> 0</span><span style="background-color: #f5f5f5; color: #000000;">;</span><span style="background-color: #f5f5f5; color: #ff0000;"> padding</span><span style="background-color: #f5f5f5; color: #000000;">:</span><span style="background-color: #f5f5f5; color: #0000ff;"> 0</span><span style="background-color: #f5f5f5; color: #000000;">;</span> <span style="background-color: #f5f5f5; color: #000000;">}</span><span style="background-color: #f5f5f5; color: #800000;">
+    body </span><span style="background-color: #f5f5f5; color: #000000;">{</span><span style="background-color: #f5f5f5; color: #ff0000;"> background</span><span style="background-color: #f5f5f5; color: #000000;">:</span><span style="background-color: #f5f5f5; color: #0000ff;"> #f5f5f5</span><span style="background-color: #f5f5f5; color: #000000;">;</span> <span style="background-color: #f5f5f5; color: #000000;">}</span><span style="background-color: #f5f5f5; color: #800000;">
+    ul, ol </span><span style="background-color: #f5f5f5; color: #000000;">{</span><span style="background-color: #f5f5f5; color: #ff0000;"> list-style</span><span style="background-color: #f5f5f5; color: #000000;">:</span><span style="background-color: #f5f5f5; color: #0000ff;"> none</span><span style="background-color: #f5f5f5; color: #000000;">;</span> <span style="background-color: #f5f5f5; color: #000000;">}</span><span style="background-color: #f5f5f5; color: #800000;">
+    
+    .cui-bubble-layer </span><span style="background-color: #f5f5f5; color: #000000;">{</span><span style="background-color: #f5f5f5; color: #ff0000;"> background</span><span style="background-color: #f5f5f5; color: #000000;">:</span><span style="background-color: #f5f5f5; color: #0000ff;"> #f2f2f2</span><span style="background-color: #f5f5f5; color: #000000;">;</span><span style="background-color: #f5f5f5; color: #ff0000;"> border</span><span style="background-color: #f5f5f5; color: #000000;">:</span><span style="background-color: #f5f5f5; color: #0000ff;"> #bcbcbc 1px solid</span><span style="background-color: #f5f5f5; color: #000000;">;</span><span style="background-color: #f5f5f5; color: #ff0000;"> border-radius</span><span style="background-color: #f5f5f5; color: #000000;">:</span><span style="background-color: #f5f5f5; color: #0000ff;"> 3px</span><span style="background-color: #f5f5f5; color: #000000;">;</span> <span style="background-color: #f5f5f5; color: #000000;">}</span><span style="background-color: #f5f5f5; color: #800000;">
+    .cui-bubble-layer &gt; li </span><span style="background-color: #f5f5f5; color: #000000;">{</span><span style="background-color: #f5f5f5; color: #ff0000;"> padding</span><span style="background-color: #f5f5f5; color: #000000;">:</span><span style="background-color: #f5f5f5; color: #0000ff;"> 5px 10px</span><span style="background-color: #f5f5f5; color: #000000;">;</span> <span style="background-color: #f5f5f5; color: #000000;">}</span><span style="background-color: #f5f5f5; color: #800000;">
+    .cui-bubble-layer:before </span><span style="background-color: #f5f5f5; color: #000000;">{</span><span style="background-color: #f5f5f5; color: #ff0000;"> position</span><span style="background-color: #f5f5f5; color: #000000;">:</span><span style="background-color: #f5f5f5; color: #0000ff;"> absolute</span><span style="background-color: #f5f5f5; color: #000000;">;</span><span style="background-color: #f5f5f5; color: #ff0000;"> content</span><span style="background-color: #f5f5f5; color: #000000;">:</span><span style="background-color: #f5f5f5; color: #0000ff;"> ""</span><span style="background-color: #f5f5f5; color: #000000;">;</span><span style="background-color: #f5f5f5; color: #ff0000;"> width</span><span style="background-color: #f5f5f5; color: #000000;">:</span><span style="background-color: #f5f5f5; color: #0000ff;"> 10px</span><span style="background-color: #f5f5f5; color: #000000;">;</span><span style="background-color: #f5f5f5; color: #ff0000;"> height</span><span style="background-color: #f5f5f5; color: #000000;">:</span><span style="background-color: #f5f5f5; color: #0000ff;"> 10px</span><span style="background-color: #f5f5f5; color: #000000;">;</span><span style="background-color: #f5f5f5; color: #ff0000;"> -webkit-transform</span><span style="background-color: #f5f5f5; color: #000000;">:</span><span style="background-color: #f5f5f5; color: #0000ff;"> rotate(45deg)</span><span style="background-color: #f5f5f5; color: #000000;">;</span><span style="background-color: #f5f5f5; color: #ff0000;"> background</span><span style="background-color: #f5f5f5; color: #000000;">:</span><span style="background-color: #f5f5f5; color: #0000ff;"> #f2f2f2</span><span style="background-color: #f5f5f5; color: #000000;">;</span><span style="background-color: #f5f5f5; color: #ff0000;"> border-top</span><span style="background-color: #f5f5f5; color: #000000;">:</span><span style="background-color: #f5f5f5; color: #0000ff;"> #bcbcbc 1px solid</span><span style="background-color: #f5f5f5; color: #000000;">;</span><span style="background-color: #f5f5f5; color: #ff0000;"> border-left</span><span style="background-color: #f5f5f5; color: #000000;">:</span><span style="background-color: #f5f5f5; color: #0000ff;"> #bcbcbc 1px solid</span><span style="background-color: #f5f5f5; color: #000000;">;</span><span style="background-color: #f5f5f5; color: #ff0000;"> top</span><span style="background-color: #f5f5f5; color: #000000;">:</span><span style="background-color: #f5f5f5; color: #0000ff;"> -6px</span><span style="background-color: #f5f5f5; color: #000000;">;</span><span style="background-color: #f5f5f5; color: #ff0000;"> left</span><span style="background-color: #f5f5f5; color: #000000;">:</span><span style="background-color: #f5f5f5; color: #0000ff;"> 50%</span><span style="background-color: #f5f5f5; color: #000000;">;</span><span style="background-color: #f5f5f5; color: #ff0000;"> margin-left</span><span style="background-color: #f5f5f5; color: #000000;">:</span><span style="background-color: #f5f5f5; color: #0000ff;"> -5px</span><span style="background-color: #f5f5f5; color: #000000;">;</span><span style="background-color: #f5f5f5; color: #ff0000;"> z-index</span><span style="background-color: #f5f5f5; color: #000000;">:</span><span style="background-color: #f5f5f5; color: #0000ff;"> 1</span><span style="background-color: #f5f5f5; color: #000000;">;</span><span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">style</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">head</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #0000ff;">&lt;</span><span style="color: #800000;">body</span><span style="color: #0000ff;">&gt;</span>
+  <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">ul </span><span style="color: #ff0000;">class</span><span style="color: #0000ff;">="cui-bubble-layer"</span><span style="color: #ff0000;"> style</span><span style="color: #0000ff;">="position: absolute; top: 110px; left: 220px;"</span><span style="color: #0000ff;">&gt;</span>
+    <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">li </span><span style="color: #ff0000;">data-index</span><span style="color: #0000ff;">="0"</span><span style="color: #ff0000;"> data-flag</span><span style="color: #0000ff;">="c"</span><span style="color: #0000ff;">&gt;</span>价格：￥35<span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">li</span><span style="color: #0000ff;">&gt;</span>
+    <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">li </span><span style="color: #ff0000;">data-index</span><span style="color: #0000ff;">="1"</span><span style="color: #ff0000;"> data-flag</span><span style="color: #0000ff;">="c"</span><span style="color: #0000ff;">&gt;</span>评分：80<span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">li</span><span style="color: #0000ff;">&gt;</span>
+    <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">li </span><span style="color: #ff0000;">data-index</span><span style="color: #0000ff;">="2"</span><span style="color: #ff0000;"> data-flag</span><span style="color: #0000ff;">="c"</span><span style="color: #0000ff;">&gt;</span>级别：5<span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">li</span><span style="color: #0000ff;">&gt;</span>
+  <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">ul</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">body</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">html</span><span style="color: #0000ff;">&gt;</span></pre>
+</div>
+<span class="cnblogs_code_collapse">View Code</span></div>
+<p><img src="2898539143730.png" alt=""></p>
+<p><a href="http://sandbox.runjs.cn/show/9ywitfn8" target="_blank">http://sandbox.runjs.cn/show/9ywitfn8</a></p>
+<h3>不足与扩展</h3>
+<p>上面作为基本实现，没有什么问题，但是其实际应用场景会有以下不足：</p>
+<p>① 基本的ul层级需要一个包裹层，包裹层具有一个up或者down的class，然后在决定那个箭头是向上还是向下</p>
+<p>② 我们这里<span style="color: #ff0000;">不能使用伪类</span>，其原因是，我们的小三角标签并不是一定在中间，其具有一定滑动的特性，也就是说，这个小三角需要被js控制其左右位置，他需要是一个标签</p>
+<p>根据以上所述，我们的结构似乎应该是这个样子滴：</p>
+<div class="cnblogs_code">
+<pre><span style="color: #008080;">1</span> <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">section </span><span style="color: #ff0000;">class</span><span style="color: #0000ff;">="cui-bubble-layer up-or-down-class"</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">2</span>   <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">i </span><span style="color: #ff0000;">class</span><span style="color: #0000ff;">="cui-icon-triangle"</span><span style="color: #0000ff;">&gt;&lt;/</span><span style="color: #800000;">i</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">3</span>   <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">ul</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">4</span>     <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">li </span><span style="color: #ff0000;">data-index</span><span style="color: #0000ff;">="0"</span><span style="color: #ff0000;"> data-flag</span><span style="color: #0000ff;">="c"</span><span style="color: #0000ff;">&gt;</span>价格：￥35<span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">li</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">5</span>     <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">li </span><span style="color: #ff0000;">data-index</span><span style="color: #0000ff;">="1"</span><span style="color: #ff0000;"> data-flag</span><span style="color: #0000ff;">="c"</span><span style="color: #0000ff;">&gt;</span>评分：80<span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">li</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">6</span>     <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">li </span><span style="color: #ff0000;">data-index</span><span style="color: #0000ff;">="2"</span><span style="color: #ff0000;"> data-flag</span><span style="color: #0000ff;">="c"</span><span style="color: #0000ff;">&gt;</span>级别：5<span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">li</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">7</span>   <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">ul</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">8</span> <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">section</span><span style="color: #0000ff;">&gt;</span></pre>
+</div>
+<p>① 根元素上我们可以设置当前应该是up还是down的样式</p>
+<p>② i标签根据根元素的up或者down选择是向上还是向下，并且该标签可被js操作</p>
+<p>到此，似乎整个组件便比较完全了，但是真实的情况却不是如此，怎么说了，上面的结构太局限了</p>
+<p>该组件需要一个容器，这个容器标签应该位于ul之上，这个时候容器内部所装载的dom结构便可以不是ul而是其他什么结构了</p>
+<p>其次，在手机上，我们可视项目在4S手机上不会超过5个，往往是4个，所以我们应该在其容器上设置类似overflow之类的可滚动属性</p>
+<h3>组件回归&middot;最终结构</h3>
+<p>由上所述，基于其是继承至Layer的事实，我们可以形成这样的结构：</p>
+<div class="cnblogs_code">
+<pre><span style="color: #008080;"> 1</span> <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">section </span><span style="color: #ff0000;">class</span><span style="color: #0000ff;">="cui-pop cui-bubble-layer"</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 2</span>   <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">i </span><span style="color: #ff0000;">class</span><span style="color: #0000ff;">="cui-pop-triangle"</span><span style="color: #0000ff;">&gt;&lt;/</span><span style="color: #800000;">i</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 3</span>   <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">div </span><span style="color: #ff0000;">class</span><span style="color: #0000ff;">="cui-pop-head"</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 4</span>   <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">div</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 5</span>   <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">div </span><span style="color: #ff0000;">class</span><span style="color: #0000ff;">="cui-pop-body"</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 6</span>     <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">ul</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 7</span>       <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">li </span><span style="color: #ff0000;">data-index</span><span style="color: #0000ff;">="0"</span><span style="color: #ff0000;"> data-flag</span><span style="color: #0000ff;">="c"</span><span style="color: #0000ff;">&gt;</span>价格：￥35<span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">li</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 8</span>       <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">li </span><span style="color: #ff0000;">data-index</span><span style="color: #0000ff;">="1"</span><span style="color: #ff0000;"> data-flag</span><span style="color: #0000ff;">="c"</span><span style="color: #0000ff;">&gt;</span>评分：80<span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">li</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 9</span>       <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">li </span><span style="color: #ff0000;">data-index</span><span style="color: #0000ff;">="2"</span><span style="color: #ff0000;"> data-flag</span><span style="color: #0000ff;">="c"</span><span style="color: #0000ff;">&gt;</span>级别：5<span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">li</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">10</span>     <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">ul</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">11</span>   <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">div</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">12</span>   <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">div </span><span style="color: #ff0000;">class</span><span style="color: #0000ff;">="cui-pop-footer"</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">13</span>   <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">div</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">14</span> <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">section</span><span style="color: #0000ff;">&gt;</span></pre>
+</div>
+<p>这个也可以是我们整个弹出层类的基本结构，我们可以在此上做很多扩展，但是这里我们不扯太多，单就气泡组件做论述</p>
+<p>就气泡组件，其结构是：</p>
+<div class="cnblogs_code">
+<pre><span style="color: #008080;"> 1</span> <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">section </span><span style="color: #ff0000;">class</span><span style="color: #0000ff;">="cui-pop cui-bubble-layer"</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 2</span>   <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">i </span><span style="color: #ff0000;">class</span><span style="color: #0000ff;">="cui-pop-triangle"</span><span style="color: #0000ff;">&gt;&lt;/</span><span style="color: #800000;">i</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 3</span>   <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">div </span><span style="color: #ff0000;">class</span><span style="color: #0000ff;">="cui-pop-body"</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 4</span>     <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">ul</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 5</span>       <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">li </span><span style="color: #ff0000;">data-index</span><span style="color: #0000ff;">="0"</span><span style="color: #ff0000;"> data-flag</span><span style="color: #0000ff;">="c"</span><span style="color: #0000ff;">&gt;</span>价格：￥35<span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">li</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 6</span>       <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">li </span><span style="color: #ff0000;">data-index</span><span style="color: #0000ff;">="1"</span><span style="color: #ff0000;"> data-flag</span><span style="color: #0000ff;">="c"</span><span style="color: #0000ff;">&gt;</span>评分：80<span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">li</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 7</span>       <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">li </span><span style="color: #ff0000;">data-index</span><span style="color: #0000ff;">="2"</span><span style="color: #ff0000;"> data-flag</span><span style="color: #0000ff;">="c"</span><span style="color: #0000ff;">&gt;</span>级别：5<span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">li</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 8</span>     <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">ul</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 9</span>   <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">div</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">10</span> <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">section</span><span style="color: #0000ff;">&gt;</span></pre>
+</div>
+<h1>js层面的实现</h1>
+<p>这里仍然是采用的blade中的那一套继承机制，如果有不明白又有点兴趣的同学请移步：<a id="cb_post_title_url" class="postTitle2" href="http://www.cnblogs.com/yexiaochai/p/3888373.html">【blade的UI设计】理解前端MVC与分层思想</a></p>
+<h3>关于模板</h3>
+<p>因为我们这一部分的主题为重构相关，所以我们这里的关注点是CSS，我们首先生成我们的模板：</p>
+<div class="cnblogs_code">
+<pre><span style="color: #008080;"> 1</span> <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">section </span><span style="color: #ff0000;">class</span><span style="color: #0000ff;">="cui-pop &lt;%=wrapperClass %&gt; &lt;%if(dir == 'up'){ %&gt; &lt;%=upClass %&gt; &lt;% } else { %&gt; &lt;%=downClass %&gt; &lt;% } %&gt;"</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 2</span>   <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">i </span><span style="color: #ff0000;">class</span><span style="color: #0000ff;">="cui-pop-triangle"</span><span style="color: #0000ff;">&gt;&lt;/</span><span style="color: #800000;">i</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 3</span>   <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">div </span><span style="color: #ff0000;">class</span><span style="color: #0000ff;">="cui-pop-body"</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 4</span>     <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">ul </span><span style="color: #ff0000;">class</span><span style="color: #0000ff;">="cui-pop-list &lt;%=itemStyleClass %&gt;"</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 5</span>     <span style="background-color: #ffff00; color: #000000;">&lt;%</span> <span style="background-color: #f5f5f5; color: #0000ff;">for</span><span style="background-color: #f5f5f5; color: #000000;">(var i </span><span style="background-color: #f5f5f5; color: #000000;">=</span> <span style="background-color: #f5f5f5; color: #800080;">0</span><span style="background-color: #f5f5f5; color: #000000;">, </span><span style="background-color: #f5f5f5; color: #0000ff;">len</span> <span style="background-color: #f5f5f5; color: #000000;">=</span><span style="background-color: #f5f5f5; color: #000000;"> data.length; i </span><span style="background-color: #f5f5f5; color: #000000;">&lt;</span> <span style="background-color: #f5f5f5; color: #0000ff;">len</span><span style="background-color: #f5f5f5; color: #000000;">; i</span><span style="background-color: #f5f5f5; color: #000000;">++</span><span style="background-color: #f5f5f5; color: #000000;">) { </span><span style="background-color: #ffff00; color: #000000;">%&gt;</span>
+<span style="color: #008080;"> 6</span>       <span style="background-color: #ffff00; color: #000000;">&lt;%</span><span style="background-color: #f5f5f5; color: #000000;"> var itemData </span><span style="background-color: #f5f5f5; color: #000000;">=</span><span style="background-color: #f5f5f5; color: #000000;"> data[i]; </span><span style="background-color: #ffff00; color: #000000;">%&gt;</span>
+<span style="color: #008080;"> 7</span>       <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">li </span><span style="color: #ff0000;">data-index</span><span style="color: #0000ff;">="&lt;%=i%&gt;"</span><span style="color: #ff0000;"> data-flag</span><span style="color: #0000ff;">="c"</span><span style="color: #ff0000;"> class</span><span style="color: #0000ff;">="&lt;% if(index == i){ %&gt;&lt;%=curClass %&gt;&lt;%} %&gt;"</span> <span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 8</span>         <span style="background-color: #ffff00; color: #000000;">&lt;%</span><span style="background-color: #f5f5f5; color: #0000ff;">if</span><span style="background-color: #f5f5f5; color: #000000;">(typeof itemFn </span><span style="background-color: #f5f5f5; color: #000000;">==</span> <span style="background-color: #f5f5f5; color: #008000;">'</span><span style="background-color: #f5f5f5; color: #008000;">function') { %&gt;&lt;%=itemFn.call(itemData) %&gt; &lt;% } else { %&gt;&lt;%=itemData.name%&gt;&lt;%} %&gt;</span>
+<span style="color: #008080;"> 9</span>     <span style="background-color: #f5f5f5; color: #000000;">&lt;</span><span style="background-color: #f5f5f5; color: #000000;">% } </span><span style="background-color: #ffff00; color: #000000;">%&gt;</span>
+<span style="color: #008080;">10</span>     <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">ul</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">11</span>   <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">div</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">12</span> <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">section</span><span style="color: #0000ff;">&gt;</span></pre>
+</div>
+<p><span style="line-height: 1.5;">这里给出了几个关键的定制化点：</span></p>
+<p>① wrapperClass用以添加业务团队定制化的class以改变根元素的class，如此的好处是便于业务团队定制化气泡组件的样式</p>
+<p>② 给出了项目列表Ul的可定制化className，通用单单只是方便业务团队做样式改变</p>
+<p>③ 默认情况下返回的是传入项目的name字段，但是用户可传入一个itemFn的回调，定制化返回</p>
+<p>以上模板基本可满足条件，如果不满足，便可把整个模板作为参数传入了</p>
+<h3>关于js实现</h3>
+<p>由于继承的实现，我们大部分工作已经被做了，我们只需要在几个关键地方编写代码即可</p>
+<div class="cnblogs_code" onclick="cnblogs_code_show('8c43749a-a9ea-4f8b-a846-5a910402a191')"><img id="code_img_closed_8c43749a-a9ea-4f8b-a846-5a910402a191" class="code_img_closed" src="43570758473519.gif" alt=""><img id="code_img_opened_8c43749a-a9ea-4f8b-a846-5a910402a191" class="code_img_opened" style="display: none;" onclick="cnblogs_code_hide('8c43749a-a9ea-4f8b-a846-5a910402a191',event)" src="16365178109279.gif" alt="">
+<div id="cnblogs_code_open_8c43749a-a9ea-4f8b-a846-5a910402a191" class="cnblogs_code_hide">
+<pre><span style="color: #008080;">  1</span> define(['UILayer', getAppUITemplatePath('ui.bubble.layer')], <span style="color: #0000ff;">function</span><span style="color: #000000;"> (UILayer, template) {
+</span><span style="color: #008080;">  2</span>   <span style="color: #0000ff;">return</span><span style="color: #000000;"> _.inherit(UILayer, {
+</span><span style="color: #008080;">  3</span>     propertys: <span style="color: #0000ff;">function</span><span style="color: #000000;"> ($super) {
+</span><span style="color: #008080;">  4</span> <span style="color: #000000;">      $super();
+</span><span style="color: #008080;">  5</span>       <span style="color: #008000;">//</span><span style="color: #008000;">html模板</span>
+<span style="color: #008080;">  6</span>       <span style="color: #0000ff;">this</span>.template =<span style="color: #000000;"> template;
+</span><span style="color: #008080;">  7</span>       <span style="color: #0000ff;">this</span>.needMask = <span style="color: #0000ff;">false</span><span style="color: #000000;">;
+</span><span style="color: #008080;">  8</span> 
+<span style="color: #008080;">  9</span>       <span style="color: #0000ff;">this</span>.datamodel =<span style="color: #000000;"> {
+</span><span style="color: #008080;"> 10</span> <span style="color: #000000;">        data: [],
+</span><span style="color: #008080;"> 11</span>         wrapperClass: 'cui-bubble-layer'<span style="color: #000000;">,
+</span><span style="color: #008080;"> 12</span>         upClass: 'cui-pop--triangle-up'<span style="color: #000000;">,
+</span><span style="color: #008080;"> 13</span>         downClass: 'cui-pop--triangle-down'<span style="color: #000000;">,
+</span><span style="color: #008080;"> 14</span>         curClass: 'active'<span style="color: #000000;">,
+</span><span style="color: #008080;"> 15</span>         itemStyleClass: ''<span style="color: #000000;">,
+</span><span style="color: #008080;"> 16</span>         needBorder: <span style="color: #0000ff;">true</span><span style="color: #000000;">,
+</span><span style="color: #008080;"> 17</span>         index: -1<span style="color: #000000;">,
+</span><span style="color: #008080;"> 18</span>         dir: 'up'  <span style="color: #008000;">//</span><span style="color: #008000;">箭头方向默认值</span>
+<span style="color: #008080;"> 19</span> <span style="color: #000000;">      };
+</span><span style="color: #008080;"> 20</span> 
+<span style="color: #008080;"> 21</span>       <span style="color: #0000ff;">this</span>.events =<span style="color: #000000;"> {
+</span><span style="color: #008080;"> 22</span>         'click .cui-pop-list&gt;li': 'clickAction'
+<span style="color: #008080;"> 23</span> <span style="color: #000000;">      };
+</span><span style="color: #008080;"> 24</span> 
+<span style="color: #008080;"> 25</span>       <span style="color: #0000ff;">this</span>.onClick = <span style="color: #0000ff;">function</span><span style="color: #000000;"> (data, index, el, e) {
+</span><span style="color: #008080;"> 26</span> <span style="color: #000000;">        console.log(arguments);
+</span><span style="color: #008080;"> 27</span> <span style="color: #008000;">//</span><span style="color: #008000;">        this.setIndex(index);</span>
+<span style="color: #008080;"> 28</span> <span style="color: #000000;">      };
+</span><span style="color: #008080;"> 29</span> 
+<span style="color: #008080;"> 30</span>       <span style="color: #0000ff;">this</span>.width = <span style="color: #0000ff;">null</span><span style="color: #000000;">;
+</span><span style="color: #008080;"> 31</span> 
+<span style="color: #008080;"> 32</span>       <span style="color: #008000;">//</span><span style="color: #008000;">三角图标偏移量</span>
+<span style="color: #008080;"> 33</span>       <span style="color: #0000ff;">this</span>.triangleLeft = <span style="color: #0000ff;">null</span><span style="color: #000000;">;
+</span><span style="color: #008080;"> 34</span>       <span style="color: #0000ff;">this</span>.triangleRight = <span style="color: #0000ff;">null</span><span style="color: #000000;">;
+</span><span style="color: #008080;"> 35</span> 
+<span style="color: #008080;"> 36</span>       <span style="color: #0000ff;">this</span>.triggerEl = <span style="color: #0000ff;">null</span><span style="color: #000000;">;
+</span><span style="color: #008080;"> 37</span> 
+<span style="color: #008080;"> 38</span> <span style="color: #000000;">    },
+</span><span style="color: #008080;"> 39</span> 
+<span style="color: #008080;"> 40</span>     initialize: <span style="color: #0000ff;">function</span><span style="color: #000000;"> ($super, opts) {
+</span><span style="color: #008080;"> 41</span> <span style="color: #000000;">      $super(opts);
+</span><span style="color: #008080;"> 42</span> <span style="color: #000000;">    },
+</span><span style="color: #008080;"> 43</span> 
+<span style="color: #008080;"> 44</span>     createRoot: <span style="color: #0000ff;">function</span><span style="color: #000000;"> (html) {
+</span><span style="color: #008080;"> 45</span>       <span style="color: #0000ff;">this</span>.$el = $(html).hide().attr('id', <span style="color: #0000ff;">this</span><span style="color: #000000;">.id);
+</span><span style="color: #008080;"> 46</span> <span style="color: #000000;">    },
+</span><span style="color: #008080;"> 47</span> 
+<span style="color: #008080;"> 48</span>     clickAction: <span style="color: #0000ff;">function</span><span style="color: #000000;"> (e) {
+</span><span style="color: #008080;"> 49</span>       <span style="color: #0000ff;">var</span> el =<span style="color: #000000;"> $(e.currentTarget);
+</span><span style="color: #008080;"> 50</span>       <span style="color: #0000ff;">var</span> i = el.attr('data-index'<span style="color: #000000;">);
+</span><span style="color: #008080;"> 51</span>       <span style="color: #0000ff;">var</span> data = <span style="color: #0000ff;">this</span><span style="color: #000000;">.datamodel.data[i];
+</span><span style="color: #008080;"> 52</span>       <span style="color: #0000ff;">this</span>.onClick.call(<span style="color: #0000ff;">this</span><span style="color: #000000;">, data, i, el, e);
+</span><span style="color: #008080;"> 53</span> <span style="color: #000000;">    },
+</span><span style="color: #008080;"> 54</span> 
+<span style="color: #008080;"> 55</span>     initElement: <span style="color: #0000ff;">function</span><span style="color: #000000;"> () {
+</span><span style="color: #008080;"> 56</span>       <span style="color: #0000ff;">this</span>.el = <span style="color: #0000ff;">this</span><span style="color: #000000;">.$el;
+</span><span style="color: #008080;"> 57</span>       <span style="color: #0000ff;">this</span>.triangleEl = <span style="color: #0000ff;">this</span>.$('.cui-pop-triangle'<span style="color: #000000;">);
+</span><span style="color: #008080;"> 58</span>       <span style="color: #0000ff;">this</span>.windowWidth =<span style="color: #000000;"> $(window).width();
+</span><span style="color: #008080;"> 59</span> <span style="color: #000000;">    },
+</span><span style="color: #008080;"> 60</span> 
+<span style="color: #008080;"> 61</span>     setIndex: <span style="color: #0000ff;">function</span><span style="color: #000000;"> (i) {
+</span><span style="color: #008080;"> 62</span>       <span style="color: #0000ff;">var</span> curClass = <span style="color: #0000ff;">this</span><span style="color: #000000;">.datamodel.curClass;
+</span><span style="color: #008080;"> 63</span>       i =<span style="color: #000000;"> parseInt(i);
+</span><span style="color: #008080;"> 64</span>       <span style="color: #0000ff;">if</span> (i &lt; 0 || i &gt; <span style="color: #0000ff;">this</span>.datamodel.data.length || i == <span style="color: #0000ff;">this</span>.datamodel.index) <span style="color: #0000ff;">return</span><span style="color: #000000;">;
+</span><span style="color: #008080;"> 65</span>       <span style="color: #0000ff;">this</span>.datamodel.index =<span style="color: #000000;"> i;
+</span><span style="color: #008080;"> 66</span> 
+<span style="color: #008080;"> 67</span>       <span style="color: #008000;">//</span><span style="color: #008000;">这里不以datamodel改变引起整个dom变化了，不划算</span>
+<span style="color: #008080;"> 68</span>       <span style="color: #0000ff;">this</span>.$('.cui-pop-list li'<span style="color: #000000;">).removeClass(curClass);
+</span><span style="color: #008080;"> 69</span>       <span style="color: #0000ff;">this</span>.$('li[data-index="' + i + '"]'<span style="color: #000000;">).addClass(curClass);
+</span><span style="color: #008080;"> 70</span> <span style="color: #000000;">    },
+</span><span style="color: #008080;"> 71</span> 
+<span style="color: #008080;"> 72</span>     <span style="color: #008000;">//</span><span style="color: #008000;">位置定位</span>
+<span style="color: #008080;"> 73</span>     reposition: <span style="color: #0000ff;">function</span><span style="color: #000000;"> () {
+</span><span style="color: #008080;"> 74</span>       <span style="color: #0000ff;">if</span> (!<span style="color: #0000ff;">this</span>.triggerEl) <span style="color: #0000ff;">return</span><span style="color: #000000;">;
+</span><span style="color: #008080;"> 75</span>       <span style="color: #0000ff;">var</span> offset = <span style="color: #0000ff;">this</span><span style="color: #000000;">.triggerEl.offset();
+</span><span style="color: #008080;"> 76</span>       <span style="color: #0000ff;">var</span> step = 6, w = offset.width -<span style="color: #000000;"> step;
+</span><span style="color: #008080;"> 77</span>       <span style="color: #0000ff;">var</span> top = 0, left = 0<span style="color: #000000;">, right;
+</span><span style="color: #008080;"> 78</span>       <span style="color: #0000ff;">if</span> (<span style="color: #0000ff;">this</span>.datamodel.dir == 'up'<span style="color: #000000;">) {
+</span><span style="color: #008080;"> 79</span>         top = (offset.top + offset.height + 8) + 'px'<span style="color: #000000;">;
+</span><span style="color: #008080;"> 80</span>       } <span style="color: #0000ff;">else</span><span style="color: #000000;"> {
+</span><span style="color: #008080;"> 81</span>         top = (offset.top - <span style="color: #0000ff;">this</span>.el.offset().height - 8) + 'px'<span style="color: #000000;">;
+</span><span style="color: #008080;"> 82</span> <span style="color: #000000;">      }
+</span><span style="color: #008080;"> 83</span> 
+<span style="color: #008080;"> 84</span>       left = (offset.left + 2) + 'px'<span style="color: #000000;">;
+</span><span style="color: #008080;"> 85</span> 
+<span style="color: #008080;"> 86</span>       <span style="color: #0000ff;">if</span> (offset.left + (parseInt(<span style="color: #0000ff;">this</span>.width) || w) &gt; <span style="color: #0000ff;">this</span><span style="color: #000000;">.windowWidth) {
+</span><span style="color: #008080;"> 87</span>         <span style="color: #0000ff;">this</span><span style="color: #000000;">.el.css({
+</span><span style="color: #008080;"> 88</span>           width: <span style="color: #0000ff;">this</span>.width ||<span style="color: #000000;"> w,
+</span><span style="color: #008080;"> 89</span> <span style="color: #000000;">          top: top,
+</span><span style="color: #008080;"> 90</span>           right: '2px'
+<span style="color: #008080;"> 91</span> <span style="color: #000000;">        });
+</span><span style="color: #008080;"> 92</span>       } <span style="color: #0000ff;">else</span><span style="color: #000000;"> {
+</span><span style="color: #008080;"> 93</span>         <span style="color: #0000ff;">this</span><span style="color: #000000;">.el.css({
+</span><span style="color: #008080;"> 94</span>           width: <span style="color: #0000ff;">this</span>.width ||<span style="color: #000000;"> w,
+</span><span style="color: #008080;"> 95</span> <span style="color: #000000;">          top: top,
+</span><span style="color: #008080;"> 96</span> <span style="color: #000000;">          left: left
+</span><span style="color: #008080;"> 97</span> <span style="color: #000000;">        });
+</span><span style="color: #008080;"> 98</span> <span style="color: #000000;">      }
+</span><span style="color: #008080;"> 99</span> 
+<span style="color: #008080;">100</span>       <span style="color: #0000ff;">if</span> (<span style="color: #0000ff;">this</span><span style="color: #000000;">.triangleLeft) {
+</span><span style="color: #008080;">101</span>         <span style="color: #0000ff;">this</span>.triangleEl.css({ 'left': <span style="color: #0000ff;">this</span>.triangleLeft, 'right': 'auto'<span style="color: #000000;"> });
+</span><span style="color: #008080;">102</span> <span style="color: #000000;">      }
+</span><span style="color: #008080;">103</span>       <span style="color: #0000ff;">if</span> (<span style="color: #0000ff;">this</span><span style="color: #000000;">.triangleRight) {
+</span><span style="color: #008080;">104</span>         <span style="color: #0000ff;">this</span>.triangleEl.css({ 'right': <span style="color: #0000ff;">this</span>.triangleRight, 'left': 'auto'<span style="color: #000000;"> });
+</span><span style="color: #008080;">105</span> <span style="color: #000000;">      }
+</span><span style="color: #008080;">106</span> <span style="color: #000000;">    },
+</span><span style="color: #008080;">107</span> 
+<span style="color: #008080;">108</span>     addEvent: <span style="color: #0000ff;">function</span><span style="color: #000000;"> ($super) {
+</span><span style="color: #008080;">109</span> <span style="color: #000000;">      $super();
+</span><span style="color: #008080;">110</span>       <span style="color: #0000ff;">this</span>.on('onCreate', <span style="color: #0000ff;">function</span><span style="color: #000000;"> () {
+</span><span style="color: #008080;">111</span>         <span style="color: #0000ff;">this</span>.$el.removeClass('cui-layer'<span style="color: #000000;">);
+</span><span style="color: #008080;">112</span>         <span style="color: #0000ff;">this</span>.$el.css({ position: 'absolute'<span style="color: #000000;"> });
+</span><span style="color: #008080;">113</span> <span style="color: #000000;">      });
+</span><span style="color: #008080;">114</span>       <span style="color: #0000ff;">this</span>.on('onShow', <span style="color: #0000ff;">function</span><span style="color: #000000;"> () {
+</span><span style="color: #008080;">115</span>         <span style="color: #0000ff;">this</span>.setzIndexTop(<span style="color: #0000ff;">this</span><span style="color: #000000;">.el);
+</span><span style="color: #008080;">116</span> <span style="color: #000000;">      });
+</span><span style="color: #008080;">117</span> <span style="color: #000000;">    }
+</span><span style="color: #008080;">118</span> 
+<span style="color: #008080;">119</span> <span style="color: #000000;">  });
+</span><span style="color: #008080;">120</span> 
+<span style="color: #008080;">121</span> });</pre>
+</div>
+<span class="cnblogs_code_collapse">View Code</span></div>
+<p>这里开始调用的，便可做简单实现：</p>
+<div class="cnblogs_code">
+<pre><span style="color: #008080;"> 1</span> 'click .demo1': <span style="color: #0000ff;">function</span><span style="color: #000000;"> (e) {
+</span><span style="color: #008080;"> 2</span>   <span style="color: #0000ff;">if</span> (!<span style="color: #0000ff;">this</span><span style="color: #000000;">.demo1) {
+</span><span style="color: #008080;"> 3</span>     <span style="color: #0000ff;">var</span> data = [{ name: '&lt;span class="center"&gt;普通会员&lt;/span&gt;'<span style="color: #000000;"> },
+</span><span style="color: #008080;"> 4</span>     { name: '&lt;span class="center"&gt;vip&lt;/span&gt;'<span style="color: #000000;"> },
+</span><span style="color: #008080;"> 5</span>     { name: '&lt;span class="center"&gt;高级vip&lt;/span&gt;'<span style="color: #000000;"> },
+</span><span style="color: #008080;"> 6</span>     { name: '&lt;span class="center"&gt;钻石vip&lt;/span&gt;'<span style="color: #000000;">}];
+</span><span style="color: #008080;"> 7</span>     <span style="color: #0000ff;">this</span>.list = <span style="color: #0000ff;">new</span><span style="color: #000000;"> UIBubbleLayer({
+</span><span style="color: #008080;"> 8</span> <span style="color: #000000;">      datamodel: {
+</span><span style="color: #008080;"> 9</span> <span style="color: #000000;">        data: data
+</span><span style="color: #008080;">10</span> <span style="color: #000000;">      },
+</span><span style="color: #008080;">11</span> <span style="color: #000000;">      triggerEl: $(e.currentTarget),
+</span><span style="color: #008080;">12</span>       width: '150px'<span style="color: #000000;">,
+</span><span style="color: #008080;">13</span>       triangleLeft: '20px'
+<span style="color: #008080;">14</span> <span style="color: #000000;">    });
+</span><span style="color: #008080;">15</span> <span style="color: #000000;">  }
+</span><span style="color: #008080;">16</span>   <span style="color: #0000ff;">this</span><span style="color: #000000;">.list.show();
+</span><span style="color: #008080;">17</span> }</pre>
+</div>
+<p>稍作修改便可形成另一种样子：</p>
+<p><img src="77869810393817.png" alt=""></p>
+<p>只不过我们还得考虑这个场景的发生，在项目过多过长时我们仍需要做处理：</p>
+<p><img src="13999476862423.png" alt="" width="346" height="565"></p>
+<p>这里有很多办法可以处理，第一个是直接传入maxHeight，如果高度超出的话便出现滚动条，第二个是动态在组件内部计算，查看组件与可视区域的关系</p>
+<p>我们这里还是采用可视区域计算吧，于是对原组件做一些改造，加一个接口：</p>
+<div class="cnblogs_code">
+<pre><span style="color: #0000ff;">this</span>.checkHeightOverflow();</pre>
+</div>
+<p>就这一简单接口其实可分为几个段落的实现</p>
+<p>第一个接口为检测可视区域，这个可以被用户重写</p>
+<div class="cnblogs_code">
+<pre>isSizeOverflow</pre>
+</div>
+<p>第二个接口是如果可视区域超出，也就是第一个接口返回true时的处理逻辑</p>
+<div class="cnblogs_code">
+<pre>handleSizeOverflow</pre>
+</div>
+<p>考虑到超出的未必是高度，所以这里height改为了Size</p>
+<p>当然，这里会存在资源销毁的工作，所以会新增一个hide接口</p>
+<div class="cnblogs_code">
+<pre><span style="color: #008080;"> 1</span> isSizeOverflow: <span style="color: #0000ff;">function</span><span style="color: #000000;"> () {
+</span><span style="color: #008080;"> 2</span>   <span style="color: #0000ff;">if</span> (!<span style="color: #0000ff;">this</span>.el) <span style="color: #0000ff;">return</span> <span style="color: #0000ff;">false</span><span style="color: #000000;">;
+</span><span style="color: #008080;"> 3</span>   <span style="color: #0000ff;">if</span> (<span style="color: #0000ff;">this</span>.el.height() &gt; <span style="color: #0000ff;">this</span>.windowHeight * 0.8) <span style="color: #0000ff;">return</span> <span style="color: #0000ff;">true</span><span style="color: #000000;">;
+</span><span style="color: #008080;"> 4</span>   <span style="color: #0000ff;">return</span> <span style="color: #0000ff;">false</span><span style="color: #000000;">;
+</span><span style="color: #008080;"> 5</span> <span style="color: #000000;">},
+</span><span style="color: #008080;"> 6</span> 
+<span style="color: #008080;"> 7</span> handleSizeOverflow: <span style="color: #0000ff;">function</span><span style="color: #000000;"> () {
+</span><span style="color: #008080;"> 8</span>   <span style="color: #0000ff;">if</span> (!<span style="color: #0000ff;">this</span>.isSizeOverflow()) <span style="color: #0000ff;">return</span><span style="color: #000000;">;
+</span><span style="color: #008080;"> 9</span> 
+<span style="color: #008080;">10</span>   <span style="color: #0000ff;">this</span><span style="color: #000000;">.listWrapper.css({
+</span><span style="color: #008080;">11</span>     height: (parseInt(<span style="color: #0000ff;">this</span>.windowHeight * 0.8) + 'px'<span style="color: #000000;">),
+</span><span style="color: #008080;">12</span>     overflow: 'hidden'<span style="color: #000000;">,
+</span><span style="color: #008080;">13</span>     position: 'relative'
+<span style="color: #008080;">14</span> <span style="color: #000000;">  });
+</span><span style="color: #008080;">15</span> 
+<span style="color: #008080;">16</span>   <span style="color: #0000ff;">this</span>.listEl.css({ position: 'absolute', width: '100%'<span style="color: #000000;"> });
+</span><span style="color: #008080;">17</span> 
+<span style="color: #008080;">18</span>   <span style="color: #008000;">//</span><span style="color: #008000;">调用前需要重置位置</span>
+<span style="color: #008080;">19</span>   <span style="color: #0000ff;">this</span><span style="color: #000000;">.reposition();
+</span><span style="color: #008080;">20</span> 
+<span style="color: #008080;">21</span>   <span style="color: #0000ff;">this</span>.scroll = <span style="color: #0000ff;">new</span><span style="color: #000000;"> UIScroll({
+</span><span style="color: #008080;">22</span>     wrapper: <span style="color: #0000ff;">this</span><span style="color: #000000;">.listWrapper,
+</span><span style="color: #008080;">23</span>     scroller: <span style="color: #0000ff;">this</span><span style="color: #000000;">.listEl
+</span><span style="color: #008080;">24</span> <span style="color: #000000;">  });
+</span><span style="color: #008080;">25</span> <span style="color: #000000;">},
+</span><span style="color: #008080;">26</span> 
+<span style="color: #008080;">27</span> checkSizeOverflow: <span style="color: #0000ff;">function</span><span style="color: #000000;"> () {
+</span><span style="color: #008080;">28</span>   <span style="color: #0000ff;">this</span><span style="color: #000000;">.handleSizeOverflow();
+</span><span style="color: #008080;">29</span> <span style="color: #000000;">},
+</span><span style="color: #008080;">30</span> 
+<span style="color: #008080;">31</span> addEvent: <span style="color: #0000ff;">function</span><span style="color: #000000;"> ($super) {
+</span><span style="color: #008080;">32</span> <span style="color: #000000;">  $super();
+</span><span style="color: #008080;">33</span>   <span style="color: #0000ff;">this</span>.on('onCreate', <span style="color: #0000ff;">function</span><span style="color: #000000;"> () {
+</span><span style="color: #008080;">34</span>     <span style="color: #0000ff;">this</span>.$el.removeClass('cui-layer'<span style="color: #000000;">);
+</span><span style="color: #008080;">35</span>     <span style="color: #0000ff;">this</span>.$el.css({ position: 'absolute'<span style="color: #000000;"> });
+</span><span style="color: #008080;">36</span> <span style="color: #000000;">  });
+</span><span style="color: #008080;">37</span>   <span style="color: #0000ff;">this</span>.on('onShow', <span style="color: #0000ff;">function</span><span style="color: #000000;"> () {
+</span><span style="color: #008080;">38</span> 
+<span style="color: #008080;">39</span>     <span style="color: #008000;">//</span><span style="color: #008000;">检查可视区域是否超出;</span>
+<span style="color: #008080;">40</span>     <span style="color: #0000ff;">this</span><span style="color: #000000;">.checkSizeOverflow();
+</span><span style="color: #008080;">41</span>     <span style="color: #0000ff;">this</span>.setzIndexTop(<span style="color: #0000ff;">this</span><span style="color: #000000;">.el);
+</span><span style="color: #008080;">42</span> <span style="color: #000000;">  });
+</span><span style="color: #008080;">43</span>   <span style="color: #0000ff;">this</span>.on('onHide', <span style="color: #0000ff;">function</span><span style="color: #000000;"> () {
+</span><span style="color: #008080;">44</span>     <span style="color: #0000ff;">if</span> (<span style="color: #0000ff;">this</span>.scroll) <span style="color: #0000ff;">this</span><span style="color: #000000;">.scroll.destroy();
+</span><span style="color: #008080;">45</span> <span style="color: #000000;">  });
+</span><span style="color: #008080;">46</span> }</pre>
+</div>
+<p><img src="6178948846543.png" alt="" width="310" height="436"></p>
+<p>到此，我们的功能也基本结束了，最后实现一个定制化一点的功能，将我们的气泡组件变成黑色：</p>
+<p><img src="247662910206920.png" alt=""></p>
+<h1>结语</h1>
+<p>今天的学习到此为止，因为小钗css也算是初学，若是文中有误，请提出</p>
+<p>该组件的动画以来我准备做到Layer基类上，而是会介绍css3的动画技术，这里便不介绍了</p>
+<p>下一期，我们就mobile的整体布局，以及header组件的实现做说明学习</p>
+<p><span style="color: #ff0000;"><strong>代码地址：<a href="https://github.com/yexiaochai/cssui/tree/gh-pages" target="_blank">https://github.com/yexiaochai/cssui/tree/gh-pages</a></strong></span></p>
+<p><span style="color: #ff0000;"><strong><strong>demo地址：<a href="2718885333645.layer" target="_blank">2718885333645.layer</a></strong></strong></span></p>
+<p><iframe style="width: 320px; height: 460px;" src="2718885333645.layer" width="320" height="240"></iframe></p>
+                </div>
+
+                <div class='span3 sidebar'>
+                    <h2>导航栏</h2>
+                    <ul class="nav nav-tabs nav-stacked">
+                             				<li><a href="http://songboriceboy.github.io/xxoo/html/css/HTML5&CSS3jj03JseryCsserrhyqykdfxlzj/index.html">【HTML5&CSS3进阶03】Jser与Csser如何一起愉快的翻新老组件</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/css/HTML5&CSS3jj04CSS3dhygrhzwebappzyy/index.html">【HTML5&CSS3进阶04】CSS3动画应该如何在webapp中运用</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/css/HTML5&CSS3jjxx01qpzjdsx/index.html">【HTML5&CSS3进阶学习01】气泡组件的实现</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/css/ctHTMLbxdzzbgzrhtmlbqtshz/index.html">【初探HTML本相】道之真谛不过自然，html标签脱俗还真</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/css/qdmdDOMsjllzCSShmxsfjyhd/index.html">【前端盲点】DOM事件流论证CSS盒模型是否具有厚度</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/css/zsCSS02inlineylineheightfloatabsolutedgs/index.html">【正视CSS02】inline与lineheight、float、absolute的故事</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/css/zsCSS03blockypositioncmzwdpydwjkl/index.html">【正视CSS03】block与position，出门在外的朋友端午节快乐</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/css/zsCSS05wmcglxsmwhyx/index.html">【正视CSS05】我们错过了些什么，为何叶小钗？</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/css/zsCSS06gjwmzjdsjg/index.html">【正视CSS06】构建我们自己的世界观！</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/css/zsCSS07zkverticalalign/index.html">【正视CSS07】再看verticalalign</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/css/zsCSS08fdwzfloatnwsmyttwdys/index.html">【正视CSS08】巅峰对武之float你为什么要坍塌我的元素！！！</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/css/zsCSStszykyzBzxsmargin/index.html">【正视CSS】他山之玉可以装B之细说margin</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/css/gwzmjshdllbnwmyqlkkhddmstbjsaldy/index.html">各位周末结束后都累了吧，那我们一起来看看【寒冬】的面试题吧（据说阿里的哟）</a></li>
+    				                                         
+                    </ul>
+                </div>
+            </div>
+
+        </div>
+    </body>
+</html>

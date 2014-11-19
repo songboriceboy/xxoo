@@ -1,0 +1,467 @@
+﻿<!DOCTYPE html>
+
+<html lang="zh">
+    <head>
+        <meta charset="utf-8">
+        <meta name="description" content="android,ios" />
+        <meta name="keywords" content="android,ios" />
+
+        <title>叶小钗</title>
+        <style type='text/css'>
+            body {
+                background-color: #CCC;
+            }
+        </style>
+        <link rel="stylesheet" href="../../../css/bootstrap.css" />
+    </head>
+
+    <body>
+        <div class="container">
+
+            <h1>叶小钗</h1>
+
+            <div class='navbar navbar-inverse'>
+                <div class='navbar-inner nav-collapse' style="height: auto;">
+                    <ul class="nav">
+                              				<li><a href="http://songboriceboy.github.io/xxoo/html/blade/index.html">blade</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/css/index.html">css</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/HTML5&CSS3/index.html">HTML5&CSS3</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/index.html">javascript</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Javaxx/index.html">Java学习</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/nodejs/index.html">nodejs</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/requirejs/index.html">requirejs</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/index.html">Web前端</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/xxgw/index.html">学习感悟</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/gzdd/index.html">工作点滴</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/jkxx/index.html">接口学习</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/wfl/index.html">未分类</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/ydkf/index.html">移动开发</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/sjms/index.html">设计模式</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/mst/index.html">面试题</a></li>
+    				                      </ul>
+                </div>
+            </div>
+
+            <div id='content' class='row-fluid'>
+
+                <div class='span9 main'>
+				<div style="color:blue" align=center>Java中实现DataTable工具类，并利用其实现简单分页控件。</div><br><p>具体工具类代码，请见我上一个博客。</p>
+<h1 style="margin: 8.75pt 0pt;"><span style="mso-bookmark: _Toc16479051;"><span style="font-family: 宋体; mso-ascii-font-family: 'Times New Roman'; mso-hansi-font-family: 'Times New Roman';"><span style="font-size: large;" size="5">一、工具类的使用</span></span></span></h1>
+<h2 style="margin: auto 0pt;"><span style="font-size: large;" size="5"><span style="mso-bookmark: _Toc16479051;"><span lang="EN-US"><span style="font-family: Arial;" face="Arial">1.1 DataTable </span></span></span><span style="mso-bookmark: _Toc16479051;"><span style="font-family: 宋体; mso-ascii-font-family: Arial; mso-hansi-font-family: Arial;">工具类的使用</span></span></span></h2>
+<h3 style="margin: auto 0pt;"><span style="font-size: small;" size="3"><span style="font-family: Times New Roman;" face="Times New Roman"><st1:chsdate w:st="on" isrocdate="False" islunardate="False" day="30" month="12" year="1899"><span lang="EN-US">1.1.1</span></st1:chsdate><span lang="EN-US"> DataTable</span></span><span style="font-family: 宋体; mso-ascii-font-family: 'Times New Roman'; mso-hansi-font-family: 'Times New Roman';">简单解析</span></span></h3>
+<p style="margin: 0pt;" class="MsoNormal"><span style="font-family: 宋体; mso-ascii-font-family: 'Times New Roman'; mso-hansi-font-family: 'Times New Roman';">顾名思义，</span><span lang="EN-US"><span style="font-family: Times New Roman;" face="Times New Roman">DataTable</span></span><span style="font-family: 宋体; mso-ascii-font-family: 'Times New Roman'; mso-hansi-font-family: 'Times New Roman';">其实就是一张虚拟数据表，用于存储由数据库</span><span lang="EN-US"><span style="font-family: Times New Roman;" face="Times New Roman">select</span></span><span style="font-family: 宋体; mso-ascii-font-family: 'Times New Roman'; mso-hansi-font-family: 'Times New Roman';">出来的数据。</span></p>
+<p style="margin: 0pt;" class="MsoNormal"><span style="font-family: 宋体; mso-ascii-font-family: 'Times New Roman'; mso-hansi-font-family: 'Times New Roman';">支持多表查询，以及不同数据库查询数据表的连接。</span></p>
+<p style="margin: 0pt;" class="MsoNormal"><span lang="EN-US"><span style="font-family: Times New Roman;" face="Times New Roman">DataTable </span></span><span style="font-family: 宋体; mso-ascii-font-family: 'Times New Roman'; mso-hansi-font-family: 'Times New Roman';">其实</span><span style="font-family: Times New Roman;" face="Times New Roman"> </span><span style="font-family: 宋体; mso-ascii-font-family: 'Times New Roman'; mso-hansi-font-family: 'Times New Roman';">就是一个</span><span lang="EN-US"><span style="font-family: Times New Roman;" face="Times New Roman">List</span></span><span style="font-family: 宋体; mso-ascii-font-family: 'Times New Roman'; mso-hansi-font-family: 'Times New Roman';">，数据表包含许多行，所以我们</span><span lang="EN-US"><span style="font-family: Times New Roman;" face="Times New Roman">List</span></span><span style="font-family: 宋体; mso-ascii-font-family: 'Times New Roman'; mso-hansi-font-family: 'Times New Roman';">定义为</span><span lang="EN-US"><span style="font-family: Times New Roman;" face="Times New Roman">DataRow</span></span></p>
+<p style="margin: 0pt;" class="MsoNormal"><span style="font-family: 宋体; mso-ascii-font-family: 'Times New Roman'; mso-hansi-font-family: 'Times New Roman';">而</span><span lang="EN-US"><span style="font-family: Times New Roman;" face="Times New Roman">DataRow </span></span><span style="font-family: 宋体; mso-ascii-font-family: 'Times New Roman'; mso-hansi-font-family: 'Times New Roman';">又会包含很多列：</span><span lang="EN-US"><span style="font-family: Times New Roman;" face="Times New Roman"> DataColumn</span></span><span style="font-family: 宋体; mso-ascii-font-family: 'Times New Roman'; mso-hansi-font-family: 'Times New Roman';">（键值对）</span></p>
+<p style="margin: 0pt;" class="MsoNormal"><span style="font-family: 宋体; mso-ascii-font-family: 'Times New Roman'; mso-hansi-font-family: 'Times New Roman';">现在简单画一个图示：</span></p>
+<p style="margin: 0pt;" class="MsoNormal"><span lang="EN-US"><span style="font-family: Times New Roman;" face="Times New Roman">&nbsp;</span></span></p>
+<p><img alt="" src="50089817583307.gif"></p>
+<p style="margin: 0pt;" class="MsoNormal">
+<p style="margin: 0pt;" class="MsoNormal"><span lang="EN-US"><v:group style="width: 420pt; height: 245pt; mso-position-horizontal-relative: char; mso-position-vertical-relative: line;" id="_x0000_s1026" coordsize="7168,4200" coordorigin="2252,3554" editas="canvas"><o:lock aspectratio="t" v:ext="edit"></o:lock><v:shapetype id="_x0000_t75" coordsize="21600,21600" stroked="f" filled="f" path="m@4@5l@4@11@9@11@9@5xe" o:preferrelative="t" o:spt="75"><v:stroke joinstyle="miter"></v:stroke><v:formulas><v:f eqn="if lineDrawn pixelLineWidth 0"></v:f><v:f eqn="sum @0 1 0"></v:f><v:f eqn="sum 0 0 @1"></v:f><v:f eqn="prod @2 1 2"></v:f><v:f eqn="prod @3 21600 pixelWidth"></v:f><v:f eqn="prod @3 21600 pixelHeight"></v:f><v:f eqn="sum @0 0 1"></v:f><v:f eqn="prod @6 1 2"></v:f><v:f eqn="prod @7 21600 pixelWidth"></v:f><v:f eqn="sum @8 21600 0"></v:f><v:f eqn="prod @7 21600 pixelHeight"></v:f><v:f eqn="sum @10 21600 0"></v:f></v:formulas><v:path o:connecttype="rect" gradientshapeok="t" o:extrusionok="f"></v:path><o:lock aspectratio="t" v:ext="edit"></o:lock></v:shapetype><v:shape style="position: absolute; width: 7168px; height: 4200px; top: 3554px; left: 2252px;" id="_x0000_s1027" o:preferrelative="f" type="#_x0000_t75"><span style="font-family: Times New Roman;" face="Times New Roman"><v:fill o:detectmouseclick="t"></v:fill><v:path o:connecttype="none" o:extrusionok="t"></v:path><o:lock v:ext="edit" text="t"></o:lock></span></v:shape><v:rect style="position: absolute; width: 3441px; height: 1800px; top: 4004px; left: 2887px;" id="_x0000_s1028"><v:textbox>
+<table style="width: 100%;" cellspacing="0" cellpadding="0">
+<tbody>
+<tr>
+<td style="background-color: transparent; border: #f0f0f0;">
+<div>
+<p style="margin: 0pt;" class="MsoNormal"><span style="font-size: 7.5pt;" lang="EN-US"><span style="font-family: Times New Roman;" face="Times New Roman">DataColumn<o:p></o:p></span></span></p>
+<p style="margin: 0pt;" class="MsoNormal"><span lang="EN-US"><o:p><span style="font-family: Times New Roman; font-size: small;" size="3" face="Times New Roman">&nbsp;</span></o:p></span></p>
+</div>
+</td>
+</tr>
+</tbody>
+</table>
+</v:textbox></v:rect><v:line style="position: absolute;" id="_x0000_s1029" to="6328,4604" from="2887,4604"><span style="font-family: Times New Roman; font-size: small;" size="3" face="Times New Roman"></span></v:line><v:line style="position: absolute;" id="_x0000_s1030" to="6328,5204" from="2887,5204"><span style="font-family: Times New Roman; font-size: small;" size="3" face="Times New Roman"></span></v:line><v:line style="position: absolute;" id="_x0000_s1031" to="3747,5804" from="3747,4004"><span style="font-family: Times New Roman; font-size: small;" size="3" face="Times New Roman"></span></v:line><v:line style="position: absolute;" id="_x0000_s1032" to="4512,5804" from="4512,4004"><span style="font-family: Times New Roman; font-size: small;" size="3" face="Times New Roman"></span></v:line><v:line style="position: absolute;" id="_x0000_s1033" to="5372,5804" from="5372,4004"><span style="font-family: Times New Roman; font-size: small;" size="3" face="Times New Roman"></span></v:line><v:rect style="position: absolute; width: 2294px; height: 450px; top: 6554px; left: 3269px;" id="_x0000_s1034"><v:textbox>
+<table style="width: 100%;" cellspacing="0" cellpadding="0">
+<tbody>
+<tr>
+<td style="background-color: transparent; border: #f0f0f0;">
+<div>
+<p style="text-align: center; margin: 0pt;" class="MsoNormal" align="center"><span style="font-size: small;" size="3"><span style="font-family: 宋体; mso-ascii-font-family: 'Times New Roman'; mso-hansi-font-family: 'Times New Roman';">数据表</span><span lang="EN-US"><span style="font-family: Times New Roman;" face="Times New Roman">DataTable</span></span></span></p>
+</div>
+</td>
+</tr>
+</tbody>
+</table>
+</v:textbox></v:rect><v:line style="position: absolute; flip: y;" id="_x0000_s1035" to="4417,6554" from="4416,5804"><v:stroke endarrow="block"><span style="font-family: Times New Roman; font-size: small;" size="3" face="Times New Roman"></span></v:stroke></v:line><v:rect style="position: absolute; width: 1623px; height: 450px; top: 4004px; left: 6901px;" id="_x0000_s1036"><v:textbox>
+<table style="width: 100%;" cellspacing="0" cellpadding="0">
+<tbody>
+<tr>
+<td style="background-color: transparent; border: #f0f0f0;">
+<div>
+<p style="margin: 0pt;" class="MsoNormal"><span style="font-size: small;" size="3"><span style="font-family: 宋体; mso-ascii-font-family: 'Times New Roman'; mso-hansi-font-family: 'Times New Roman';">数据行</span><span lang="EN-US"><span style="font-family: Times New Roman;" face="Times New Roman">DataRow </span></span></span></p>
+</div>
+</td>
+</tr>
+</tbody>
+</table>
+</v:textbox></v:rect><v:line style="position: absolute; flip: x;" id="_x0000_s1037" to="6901,4304" from="6328,4304"><v:stroke endarrow="block"><span style="font-family: Times New Roman; font-size: small;" size="3" face="Times New Roman"></span></v:stroke></v:line><v:rect style="position: absolute; width: 2199px; height: 900px; top: 5054px; left: 6805px;" id="_x0000_s1038"><v:textbox>
+<table style="width: 100%;" cellspacing="0" cellpadding="0">
+<tbody>
+<tr>
+<td style="background-color: transparent; border: #f0f0f0;">
+<div>
+<p style="margin: 0pt;" class="MsoNormal"><span style="font-size: small;" size="3"><span style="font-family: 宋体; mso-ascii-font-family: 'Times New Roman'; mso-hansi-font-family: 'Times New Roman';">数据列</span><span lang="EN-US"><span style="font-family: Times New Roman;" face="Times New Roman">/</span></span><span style="font-family: 宋体; mso-ascii-font-family: 'Times New Roman'; mso-hansi-font-family: 'Times New Roman';">数据单元</span></span></p>
+<p style="margin: 0pt;" class="MsoNormal"><span lang="EN-US"><span style="font-family: Times New Roman; font-size: small;" size="3" face="Times New Roman">DataColumn</span></span></p>
+</div>
+</td>
+</tr>
+</tbody>
+</table>
+</v:textbox></v:rect><v:line style="position: absolute; flip: x y;" id="_x0000_s1039" to="6710,5504" from="3365,4304"><v:stroke endarrow="block"><span style="font-family: Times New Roman; font-size: small;" size="3" face="Times New Roman"></span></v:stroke></v:line><v:line style="position: absolute; flip: x y;" id="_x0000_s1040" to="6710,5504" from="4225,4304"><v:stroke endarrow="block"><span style="font-family: Times New Roman; font-size: small;" size="3" face="Times New Roman"></span></v:stroke></v:line><v:line style="position: absolute; flip: x y;" id="_x0000_s1041" to="6710,5504" from="3365,5054"><v:stroke endarrow="block"><span style="font-family: Times New Roman; font-size: small;" size="3" face="Times New Roman"></span></v:stroke></v:line><v:line style="position: absolute; flip: x;" id="_x0000_s1042" to="6901,4904" from="6328,4304"><v:stroke endarrow="block"><span style="font-family: Times New Roman; font-size: small;" size="3" face="Times New Roman"></span></v:stroke></v:line><w:wrap type="none"></w:wrap><w:anchorlock></w:anchorlock></v:group></span></p>
+<h3 style="margin: auto 0pt;"><span style="font-size: small;" size="3"><span style="font-family: Times New Roman;" face="Times New Roman"><st1:chsdate w:st="on" isrocdate="False" islunardate="False" day="30" month="12" year="1899"><span lang="EN-US">1.1.2</span></st1:chsdate><span lang="EN-US"> </span></span><span style="font-family: 宋体; mso-ascii-font-family: 'Times New Roman'; mso-hansi-font-family: 'Times New Roman';">简单查询使用说明（简单查询，内连接关联查询）</span></span></h3>
+<p style="margin: 0pt;" class="MsoNormal"><span style="font-family: 宋体; mso-ascii-font-family: 'Times New Roman'; mso-hansi-font-family: 'Times New Roman';">例：现在我们有两张关系表（父、子）</span><span lang="EN-US"><span style="font-family: Times New Roman;" face="Times New Roman"> :news</span></span><span style="font-family: 宋体; mso-ascii-font-family: 'Times New Roman'; mso-hansi-font-family: 'Times New Roman';">为</span><span lang="EN-US"><span style="font-family: Times New Roman;" face="Times New Roman">newsType </span></span><span style="font-family: 宋体; mso-ascii-font-family: 'Times New Roman'; mso-hansi-font-family: 'Times New Roman';">字表</span></p>
+<p style="margin: 0pt;" class="MsoNormal">
+<p style="margin: 0pt;" class="MsoNormal">
+<p style="margin: 0pt;" class="MsoNormal"><span style="font-family: 宋体; mso-ascii-font-family: 'Times New Roman'; mso-hansi-font-family: 'Times New Roman';">我们利用</span><span lang="EN-US"><span style="font-family: Times New Roman;" face="Times New Roman">DataTable</span></span><span style="font-family: 宋体; mso-ascii-font-family: 'Times New Roman'; mso-hansi-font-family: 'Times New Roman';">做一次查询</span></p>
+<p style="margin: 0pt;" class="MsoNormal">
+<p style="margin: 0pt;" class="MsoNormal"><span lang="EN-US"><span style="font-family: Times New Roman;" face="Times New Roman">&nbsp;</span></span></p>
+<p><img alt="" src="27484839476361.png"></p>
+<p><img alt="" src="51507217309783.png"></p>
+<p style="margin: 0pt;" class="MsoNormal"><span style="font-family: 宋体; mso-ascii-font-family: 'Times New Roman'; mso-hansi-font-family: 'Times New Roman';">查询结果为：</span></p>
+<p style="margin: 0pt;" class="MsoNormal">
+<p style="margin: 0pt;" class="MsoNormal"><span style="font-family: 宋体; mso-ascii-font-family: 'Times New Roman'; mso-hansi-font-family: 'Times New Roman';">其中</span><span lang="EN-US"><span style="font-family: Times New Roman;" face="Times New Roman">DataTable.outTable(dt);</span></span><span style="font-family: 宋体; mso-ascii-font-family: 'Times New Roman'; mso-hansi-font-family: 'Times New Roman';">为</span><span style="font-family: Times New Roman;" face="Times New Roman"> </span><span style="font-family: 宋体; mso-ascii-font-family: 'Times New Roman'; mso-hansi-font-family: 'Times New Roman';">封装在</span><span lang="EN-US"><span style="font-family: Times New Roman;" face="Times New Roman">DataTable</span></span><span style="font-family: 宋体; mso-ascii-font-family: 'Times New Roman'; mso-hansi-font-family: 'Times New Roman';">类中的一个静态方法，可以输出一个数据表对象，具体请自己参考代码。</span></p>
+<p><img alt="" src="33208608620226.png"></p>
+<p><img alt="" src="19928018717980.png"></p>
+<p style="margin: 0pt;" class="MsoNormal">
+<h3 style="margin: auto 0pt;"><span style="font-size: small;" size="3"><span style="font-family: Times New Roman;" face="Times New Roman"><st1:chsdate w:st="on" isrocdate="False" islunardate="False" day="30" month="12" year="1899"><span lang="EN-US">1.1.3</span></st1:chsdate><span lang="EN-US"> </span></span><span style="font-family: 宋体; mso-ascii-font-family: 'Times New Roman'; mso-hansi-font-family: 'Times New Roman';">双数据库查询（用于双数据库关联查询）</span></span></h3>
+<p style="margin: 0pt;" class="MsoNormal"><span style="font-family: 宋体; mso-ascii-font-family: 'Times New Roman'; mso-hansi-font-family: 'Times New Roman';">由于我们会经常操作双数据库，也会</span><span style="font-family: Times New Roman;" face="Times New Roman"> </span><span style="font-family: 宋体; mso-ascii-font-family: 'Times New Roman'; mso-hansi-font-family: 'Times New Roman';">常常遇到关联字段查询问题，所以</span><span lang="EN-US"><span style="font-family: Times New Roman;" face="Times New Roman">DataTable</span></span><span style="font-family: 宋体; mso-ascii-font-family: 'Times New Roman'; mso-hansi-font-family: 'Times New Roman';">中</span><span style="font-family: Times New Roman;" face="Times New Roman"> </span><span style="font-family: 宋体; mso-ascii-font-family: 'Times New Roman'; mso-hansi-font-family: 'Times New Roman';">封装了一个用于数据表连接的静态方法。</span></p>
+<p style="margin: 0pt;" class="MsoNormal"><span style="font-family: 宋体; mso-ascii-font-family: 'Times New Roman'; mso-hansi-font-family: 'Times New Roman';">以</span><span lang="EN-US"><span style="font-family: Times New Roman;" face="Times New Roman">sql server 2005 </span></span><span style="font-family: 宋体; mso-ascii-font-family: 'Times New Roman'; mso-hansi-font-family: 'Times New Roman';">中案件表</span><span lang="EN-US"><span style="font-family: Times New Roman;" face="Times New Roman">CaseView</span></span><span style="font-family: 宋体; mso-ascii-font-family: 'Times New Roman'; mso-hansi-font-family: 'Times New Roman';">以及</span><span lang="EN-US"><span style="font-family: Times New Roman;" face="Times New Roman">Oracle</span></span><span style="font-family: 宋体; mso-ascii-font-family: 'Times New Roman'; mso-hansi-font-family: 'Times New Roman';">数据库中卷宗考评为例。</span></p>
+<p style="margin: 0pt;" class="MsoNormal"><span style="font-family: 宋体; mso-ascii-font-family: 'Times New Roman'; mso-hansi-font-family: 'Times New Roman';">两表有一公共字段为案件编号，在</span><span lang="EN-US"><span style="font-family: Times New Roman;" face="Times New Roman">2005</span></span><span style="font-family: 宋体; mso-ascii-font-family: 'Times New Roman'; mso-hansi-font-family: 'Times New Roman';">中为</span><span lang="EN-US"><span style="font-family: Times New Roman;" face="Times New Roman">id </span></span><span style="font-family: 宋体; mso-ascii-font-family: 'Times New Roman'; mso-hansi-font-family: 'Times New Roman';">，在</span><span lang="EN-US"><span style="font-family: Times New Roman;" face="Times New Roman">oracle</span></span><span style="font-family: 宋体; mso-ascii-font-family: 'Times New Roman'; mso-hansi-font-family: 'Times New Roman';">中为</span><span lang="EN-US"><span style="font-family: Times New Roman;" face="Times New Roman"> ajbh</span></span><span style="font-family: 宋体; mso-ascii-font-family: 'Times New Roman'; mso-hansi-font-family: 'Times New Roman';">。</span></p>
+<p style="margin: 0pt;" class="MsoNormal"><span style="font-family: 宋体; mso-ascii-font-family: 'Times New Roman'; mso-hansi-font-family: 'Times New Roman';">现在写一查询将两数据库中表合一。</span></p>
+<p style="margin: 0pt;" class="MsoNormal">
+<p style="margin: 0pt;" class="MsoNormal">
+<p style="margin: 0pt;" class="MsoNormal">
+<p style="margin: 0pt;" class="MsoNormal"><span lang="EN-US"><span style="font-family: Times New Roman;" face="Times New Roman">&nbsp;</span></span></p>
+<p><img alt="" src="42005287448464.png"></p>
+<p style="margin: 0pt;" class="MsoNormal">
+<p style="margin: 0pt;" class="MsoNormal">
+<p style="margin: 0pt;" class="MsoNormal"><span lang="EN-US"><span style="font-family: Times New Roman;" face="Times New Roman">&nbsp;</span></span></p>
+<p><img alt="" src="35963767090161.png"></p>
+<p style="margin: 0pt;" class="MsoNormal">
+<p><img alt="" src="11413467528106.png"></p>
+<p><img alt="" src="16377945455119.png"></p>
+<p style="margin: 0pt;" class="MsoNormal">
+<p style="margin: 0pt;" class="MsoNormal"><span style="font-family: 宋体; mso-ascii-font-family: 'Times New Roman'; mso-hansi-font-family: 'Times New Roman';">其中</span><span style="font-family: Times New Roman;" face="Times New Roman"> </span><span style="font-family: 宋体; mso-ascii-font-family: 'Times New Roman'; mso-hansi-font-family: 'Times New Roman';">连接的具体方法详情，请大家自己去看工具类中方法定义。</span></p>
+<h3 style="margin: auto 0pt;"><span style="font-size: small;" size="3"><span style="font-family: Times New Roman;" face="Times New Roman"><st1:chsdate w:st="on" isrocdate="False" islunardate="False" day="30" month="12" year="1899"><span lang="EN-US">1.1.4</span></st1:chsdate><span lang="EN-US"> </span></span><span style="font-family: 宋体; mso-ascii-font-family: 'Times New Roman'; mso-hansi-font-family: 'Times New Roman';">页面中</span><span lang="EN-US"><span style="font-family: Times New Roman;" face="Times New Roman">DataTable</span></span><span style="font-family: 宋体; mso-ascii-font-family: 'Times New Roman'; mso-hansi-font-family: 'Times New Roman';">的使用</span></span></h3>
+<p style="margin: 0pt;" class="MsoNormal"><span style="font-family: 宋体; mso-ascii-font-family: 'Times New Roman'; mso-hansi-font-family: 'Times New Roman';">以卷宗管理界面为例：</span></p>
+<p style="margin: 0pt;" class="MsoNormal">
+<p style="margin: 0pt;" class="MsoNormal"><span style="font-family: 宋体; mso-ascii-font-family: 'Times New Roman'; mso-hansi-font-family: 'Times New Roman';">我们对于</span><span lang="EN-US"><span style="font-family: Times New Roman;" face="Times New Roman">Action</span></span><span style="font-family: 宋体; mso-ascii-font-family: 'Times New Roman'; mso-hansi-font-family: 'Times New Roman';">中获取</span><span lang="EN-US"><span style="font-family: Times New Roman;" face="Times New Roman">DataTable</span></span><span style="font-family: 宋体; mso-ascii-font-family: 'Times New Roman'; mso-hansi-font-family: 'Times New Roman';">代码不说，单独看看前台如何使用：</span></p>
+<p style="margin: 0pt;" class="MsoNormal">
+<p style="margin: 0pt;" class="MsoNormal"><span lang="EN-US"><span style="font-family: Times New Roman;" face="Times New Roman">Eval()</span></span><span style="font-family: 宋体; mso-ascii-font-family: 'Times New Roman'; mso-hansi-font-family: 'Times New Roman';">方法用于输出一行中对应某列来的值，具体</span><span style="font-family: Times New Roman;" face="Times New Roman"> </span><span style="font-family: 宋体; mso-ascii-font-family: 'Times New Roman'; mso-hansi-font-family: 'Times New Roman';">方法</span><span style="font-family: Times New Roman;" face="Times New Roman"> </span><span style="font-family: 宋体; mso-ascii-font-family: 'Times New Roman'; mso-hansi-font-family: 'Times New Roman';">请</span><span style="font-family: Times New Roman;" face="Times New Roman"> </span><span style="font-family: 宋体; mso-ascii-font-family: 'Times New Roman'; mso-hansi-font-family: 'Times New Roman';">大家参考工具类</span></p>
+<p style="margin: 0pt;" class="MsoNormal"><span lang="EN-US"><o:p><span style="font-family: Times New Roman;" face="Times New Roman">&nbsp;</span></o:p></span></p>
+<p style="margin: 0pt;" class="MsoNormal">
+<p><img alt="" src="10619785855323.png"></p>
+<p><img alt="" src="27457439882256.png"></p>
+<p style="margin: 0pt;" class="MsoNormal">
+<h2 style="margin: auto 0pt;"><span style="font-size: large;" size="5"><span lang="EN-US"><span style="font-family: Arial;" face="Arial">1.2 </span></span><span style="font-family: 宋体; mso-ascii-font-family: Arial; mso-hansi-font-family: Arial;">分页工具类</span></span><span style="font-family: 'Times New Roman'; font-size: 10.5pt; mso-bidi-font-size: 12.0pt;" lang="EN-US">PageUtil</span><span style="font-family: 宋体; mso-ascii-font-family: Arial; mso-hansi-font-family: Arial;"><span style="font-size: large;" size="5">的使用</span></span></h2>
+<h3 style="margin: auto 0pt;"><span style="font-size: small;" size="3"><span style="font-family: Times New Roman;" face="Times New Roman"><st1:chsdate w:st="on" isrocdate="False" islunardate="False" day="30" month="12" year="1899"><st1:chsdate w:st="on" isrocdate="False" islunardate="False" day="30" month="12" year="1899"><span lang="EN-US">1.2.1</span></st1:chsdate><span lang="EN-US"> P</span></st1:chsdate><span lang="EN-US">ageUtil</span></span><span style="font-family: 宋体; mso-ascii-font-family: 'Times New Roman'; mso-hansi-font-family: 'Times New Roman';">简单解析</span><span style="font-weight: normal; mso-bidi-font-size: 12.0pt;" lang="EN-US"><o:p></o:p></span></span></h3>
+<p style="margin: 0pt;" class="MsoNormal"><span lang="EN-US"><span style="font-family: Times New Roman;" face="Times New Roman">PageUtil </span></span><span style="font-family: 宋体; mso-ascii-font-family: 'Times New Roman'; mso-hansi-font-family: 'Times New Roman';">类包含许多方法，我这里通过一个例子告诉大家如何使用即可，想知道内部实行的同学自己去分析代码，注释很完善。</span></p>
+<h3 style="margin: auto 0pt;"><span style="font-size: small;" size="3"><span style="font-family: Times New Roman;" face="Times New Roman"><st1:chsdate w:st="on" isrocdate="False" islunardate="False" day="30" month="12" year="1899"><span lang="EN-US">1.2.2</span></st1:chsdate><span lang="EN-US"> </span></span><span style="font-family: 宋体; mso-ascii-font-family: 'Times New Roman'; mso-hansi-font-family: 'Times New Roman';">如何分页？</span></span></h3>
+<p style="margin: 0pt;" class="MsoNormal"><span style="font-family: 宋体; mso-ascii-font-family: 'Times New Roman'; mso-hansi-font-family: 'Times New Roman';">界面展示</span><span style="font-family: Times New Roman;" face="Times New Roman"> </span><span style="font-family: 宋体; mso-ascii-font-family: 'Times New Roman'; mso-hansi-font-family: 'Times New Roman';">：</span></p>
+<p style="margin: 0pt;" class="MsoNormal">
+<p style="margin: 0pt;" class="MsoNormal">
+<p style="margin: 0pt;" class="MsoNormal"><span style="font-family: 宋体; mso-ascii-font-family: 'Times New Roman'; mso-hansi-font-family: 'Times New Roman';"><span style="font-family: Verdana;" face="Verdana"></span></span>&nbsp;</p>
+<p><img alt="" src="40352947230861.png"></p>
+<p style="margin: 0pt;" class="MsoNormal"><span style="font-family: 宋体; mso-ascii-font-family: 'Times New Roman'; mso-hansi-font-family: 'Times New Roman';"></span>&nbsp;</p>
+<p><img alt="" src="17131187393628.png"></p>
+<p style="margin: 0pt;" class="MsoNormal"><span style="font-family: 宋体; mso-ascii-font-family: 'Times New Roman'; mso-hansi-font-family: 'Times New Roman';"></span>&nbsp;</p>
+<p style="margin: 0pt;" class="MsoNormal"><span style="font-family: 宋体; mso-ascii-font-family: 'Times New Roman'; mso-hansi-font-family: 'Times New Roman';"></span>&nbsp;</p>
+<p style="margin: 0pt;" class="MsoNormal"><span style="font-family: 宋体; mso-ascii-font-family: 'Times New Roman'; mso-hansi-font-family: 'Times New Roman';">对应</span><span lang="EN-US"><span style="font-family: Times New Roman;" face="Times New Roman">Action</span></span><span style="font-family: 宋体; mso-ascii-font-family: 'Times New Roman'; mso-hansi-font-family: 'Times New Roman';">：</span></p>
+<p style="margin: 0pt;" class="MsoNormal"><span style="font-family: 宋体; mso-ascii-font-family: 'Times New Roman'; mso-hansi-font-family: 'Times New Roman';"><span style="font-family: 宋体; mso-ascii-font-family: 'Times New Roman'; mso-hansi-font-family: 'Times New Roman';">核心代码</span><span lang="EN-US"><span style="font-family: Times New Roman;" face="Times New Roman">1</span></span><span style="font-family: 宋体; mso-ascii-font-family: 'Times New Roman'; mso-hansi-font-family: 'Times New Roman';">：</span></span></p>
+<p style="margin: 0pt;" class="MsoNormal"><span lang="EN-US"><span style="font-family: Times New Roman;" face="Times New Roman">PageUtil page = new PageUtil(10); // </span></span><span style="font-family: 宋体; mso-ascii-font-family: 'Times New Roman'; mso-hansi-font-family: 'Times New Roman';">分页控件，首先定义其页面大小</span></p>
+<p style="margin: 0pt;" class="MsoNormal"><span style="font-family: 宋体; mso-ascii-font-family: 'Times New Roman'; mso-hansi-font-family: 'Times New Roman';"><img alt="" src="10814046064447.png"></span></p>
+<p style="margin: 0pt;" class="MsoNormal"><span style="font-family: 宋体; mso-ascii-font-family: 'Times New Roman'; mso-hansi-font-family: 'Times New Roman';"></span>&nbsp;</p>
+<p style="margin: 0pt;" class="MsoNormal"><span style="font-family: 宋体; mso-ascii-font-family: 'Times New Roman'; mso-hansi-font-family: 'Times New Roman';">核心代码</span><span lang="EN-US"><span style="font-family: Times New Roman;" face="Times New Roman">2</span></span><span style="font-family: 宋体; mso-ascii-font-family: 'Times New Roman'; mso-hansi-font-family: 'Times New Roman';">：</span></p>
+<p><img alt="" src="4097619283372.png"></p>
+<p style="margin: 0pt;" class="MsoNormal"><span style="font-family: 宋体; mso-ascii-font-family: 'Times New Roman'; mso-hansi-font-family: 'Times New Roman';"></span>&nbsp;</p>
+<p style="margin: 0pt;" class="MsoNormal"><span style="font-family: 宋体; mso-ascii-font-family: 'Times New Roman'; mso-hansi-font-family: 'Times New Roman';"></span>&nbsp;</p>
+<p style="margin: 0pt;" class="MsoNormal"><span style="font-family: 宋体; mso-ascii-font-family: 'Times New Roman'; mso-hansi-font-family: 'Times New Roman';"></span>&nbsp;</p>
+<p style="margin: 0pt;" class="MsoNormal">
+<p style="margin: 0pt;" class="MsoNormal">
+<p style="margin: 0pt;" class="MsoNormal"><span style="font-family: 宋体; mso-ascii-font-family: 'Times New Roman'; mso-hansi-font-family: 'Times New Roman';">前台页面使用：</span></p>
+<p><img alt="" src="31843725692476.png"></p>
+<p style="margin: 0pt;" class="MsoNormal"><span style="font-family: 宋体; mso-ascii-font-family: 'Times New Roman'; mso-hansi-font-family: 'Times New Roman';"></span>&nbsp;</p>
+<p style="margin: 0pt;" class="MsoNormal"><span style="font-family: 宋体; mso-ascii-font-family: 'Times New Roman'; mso-hansi-font-family: 'Times New Roman';"></span>&nbsp;</p>
+<p style="margin: 0pt;" class="MsoNormal"><span style="font-family: 宋体; mso-ascii-font-family: 'Times New Roman'; mso-hansi-font-family: 'Times New Roman';"></span>&nbsp;</p>
+<p style="margin: 0pt;" class="MsoNormal">
+<p style="margin: 0pt;" class="MsoNormal"><span style="font-family: 宋体; mso-ascii-font-family: 'Times New Roman'; mso-hansi-font-family: 'Times New Roman';">核心界面部分：</span></p>
+<p style="margin: 0pt;" class="MsoNormal">
+<p style="margin: 0pt;" class="MsoNormal"><span lang="EN-US"><span style="font-family: Times New Roman;" face="Times New Roman">&nbsp;</span></span></p>
+<p><img alt="" src="41158636690980.png"></p>
+<p style="margin: 0pt;" class="MsoNormal">
+<p style="margin: 0pt;" class="MsoNormal"><span lang="EN-US"><o:p><span lang="EN-US"><span style="font-family: Times New Roman;" face="Times New Roman"></span></span></o:p></span>&nbsp;</p>
+<p style="margin: 0pt;" class="MsoNormal"><span lang="EN-US"><o:p><span lang="EN-US"><span lang="EN-US"><span style="font-family: Times New Roman;" face="Times New Roman"></span></span></span></o:p></span>&nbsp;</p>
+<p style="margin: 0pt;" class="MsoNormal"><span lang="EN-US"><o:p><span lang="EN-US"><span lang="EN-US"><span lang="EN-US"><span style="font-family: Times New Roman;" face="Times New Roman"></span></span></span></span></o:p></span>&nbsp;</p>
+<p style="margin: 0pt;" class="MsoNormal"><span style="font-family: 宋体; mso-ascii-font-family: 'Times New Roman'; mso-hansi-font-family: 'Times New Roman';">对应工具类中方法，有兴趣的 朋友就自己去看吧：</span></p>
+<p style="margin: 0pt;" class="MsoNormal">
+<p style="margin: 0pt;" class="MsoNormal"><span lang="EN-US"><o:p><span style="font-family: Times New Roman;" face="Times New Roman">写的 不好，但是用起来可能还有有一定好处，</span></o:p></span></p>
+<p style="margin: 0pt;" class="MsoNormal"><span lang="EN-US"><o:p><span style="font-family: Times New Roman;" face="Times New Roman">大家多批评&nbsp;</span></o:p></span></p>
+<p style="margin: 0pt;" class="MsoNormal"><span lang="EN-US"><o:p><span style="font-family: Times New Roman;" face="Times New Roman">&nbsp;</span></o:p></span></p>
+<p style="margin: 0pt;" class="MsoNormal"><span lang="EN-US"><o:p><span style="font-family: Times New Roman;" face="Times New Roman">&nbsp;对应分页代码：</span></o:p></span></p>
+<p style="margin: 0pt;" class="MsoNormal">
+<div class="cnblogs_Highlighter">
+<pre class="brush:java;gutter:false;">package cdu.yas.xykps.util;
+
+/**
+ * @功能描述 通用分页工具类
+ * @可能的错误
+ * @作者 叶小钗
+ * @修改说明
+ * @修改人
+ */
+public class PageUtil {
+
+	DataTable dt;// 要返回的数据表
+	int allRow;// 数据表总行数，总记录数
+	int totalPage;// 一共多少页
+
+	int pageIndex;// 当前页索引，当前第几页
+	// 基础数据设置
+	int pageSize; // 每页记录数，每页有多少数据行
+
+	boolean isFirstPage;// 当前是否第一页
+	boolean isLastPage;// 当前是否最后一页
+
+	// 人性化设置
+	String firstPageText = "首页";// 首页名称设置
+	String lastPageText = "尾页";// 尾页名称设置
+	String prevPageText = "上一页";// 上一页名字设置
+	String nextPageText = "下一页";// 下一页名字设置
+
+	public PageUtil() {
+		this.pageSize = 10;
+		this.pageIndex = 1;
+	}
+
+	public PageUtil(int pageSize) {
+		this.pageSize = pageSize;
+		this.pageIndex = 1;
+	}
+
+	public PageUtil(String firstPageText, String prevPageText,
+			String nextPageText, String lastPageText, int pageSize) {
+		this.pageIndex = 1;
+		this.pageSize = pageSize;
+		this.firstPageText = firstPageText;
+		this.lastPageText = lastPageText;
+		this.prevPageText = prevPageText;
+		this.nextPageText = nextPageText;
+	}
+
+	// 初始化
+	public void init() {
+		totalPage = allRow % pageSize == 0 ? allRow / pageSize : allRow
+				/ pageSize + 1;
+		this.isFirstPage = isFirstPage();
+		this.isLastPage = isLastPage();
+	}
+
+	// 判断当前是否第一页
+	private boolean isFirstPage() {
+		return pageIndex == 1;
+	}
+
+	// 判断当前是否最后一页
+	private boolean isLastPage() {
+
+		return pageIndex == totalPage;
+	}
+
+	// 最终返回菜单
+	public String getToolBar(String urlName, String objectName) {
+		String o = objectName;
+		init();
+		String s = "&lt;table width='100%' border='0' align='center'	cellpadding='0' cellspacing='0' class='right-font08'&gt;&lt;tr&gt;&lt;td width='50%'&gt;共  &lt;span class='right-text09'&gt;"
+				+ totalPage
+				+ "&lt;/span&gt; 页 | 第  &lt;span class='right-text09'&gt; "
+				+ pageIndex + "&lt;/span&gt; 页&lt;/td&gt;&lt;td width='49%' align='right'&gt;[ ";
+		if (isFirstPage)
+			s += firstPageText + " | " + prevPageText + " | ";
+		else {
+			s += "  &lt;a class='right-font08'  href=" + urlName + "?" + o
+					+ ".pageIndex=1  &gt;" + firstPageText + "&lt;/a&gt; | ";
+			s += "  &lt;a class='right-font08' href=" + urlName + "?" + o
+					+ ".pageIndex=" + (pageIndex - 1) + "&gt;" + prevPageText
+					+ "&lt;/a&gt; | ";
+		}
+		if (isLastPage)
+			s += nextPageText + " | " + lastPageText + " ] &lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;";
+		else {
+			s += "  &lt;a class='right-font08' href=" + urlName + "?" + o
+					+ ".pageIndex=" + (pageIndex + 1) + " &gt;" + nextPageText
+					+ "&lt;/a&gt; | ";
+
+			s += "  &lt;a class='right-font08' href=" + urlName + "?" + o
+					+ ".pageIndex=" + totalPage + "&gt;" + lastPageText
+					+ "&lt;/a&gt; ] &lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;";
+		}
+		return s;
+	}
+
+	// 最终返回菜单
+	public String getToolBar1(String urlName, String objectName) {
+		String o = objectName;
+		init();
+		String s = "共 " + allRow + " 条记录   共 " + totalPage + " 页   当前第 "
+				+ pageIndex + " 页    ";
+		if (isFirstPage)
+			s += firstPageText + "   " + prevPageText + "  ";
+		else {
+			s += "  &lt;a href=" + urlName + "?" + o + ".pageIndex=1  &gt;  "
+					+ firstPageText + "&lt;/a&gt; ";
+			s += "  &lt;a href=" + urlName + "?" + o + ".pageIndex="
+					+ (pageIndex - 1) + "&gt;" + prevPageText + "  &lt;/a&gt;  ";
+		}
+		if (isLastPage)
+			s += nextPageText + "  " + lastPageText + " ";
+		else {
+			s += "  &lt;a href=" + urlName + "?" + o + ".pageIndex="
+					+ (pageIndex + 1) + " &gt;" + nextPageText + "&lt;/a&gt;  ";
+
+			s += "    &lt;a href=" + urlName + "?" + o + ".pageIndex=" + totalPage
+					+ "&gt;" + lastPageText + "&lt;/a&gt;  ";
+		}
+		return s;
+	}
+
+	// 最终返回菜单
+	public String getTool(String urlName, String objectName, String id) {
+		String o = objectName;
+		init();
+		String s = "&lt;table width='100%' border='0' align='center'	cellpadding='0' cellspacing='0' &gt;&lt;tr&gt;";
+
+		s += "&lt;td width='55%' align='right'&gt; ";
+		
+		if (isFirstPage)
+			s += "[ " + prevPageText + " ] ";
+		else {
+			s += " [ &lt;a class='right-font08' href=" + urlName + "?caseId=" + id
+					+ "&amp;" + o + ".pageIndex=" + (pageIndex - 1) + "&gt;"
+					+ prevPageText + "&lt;/a&gt; ] ";
+		}
+		if (isLastPage)
+			s += " [ " + nextPageText + " ] ";
+		else {
+			s += " [ &lt;a class='right-font08' href=" + urlName + "?caseId=" + id
+					+ "&amp;" + o + ".pageIndex=" + (pageIndex + 1) + " &gt; "
+					+ nextPageText + "&lt;/a&gt; ]";
+		}
+
+		s += "&lt;/td&gt;&lt;td width='40%' align='right' &gt;共 &lt;span &gt;" + totalPage
+				+ "&lt;/span&gt; 页 | 第 &lt;span &gt;" + pageIndex
+				+ "&lt;/span&gt; 页  &lt;/td&gt;&lt;td  width='5%' &gt;&lt;/td&gt;";
+
+		s += "&lt;/tr&gt;&lt;/table&gt;";
+		return s;
+	}
+
+	// ///////// /////////////////////////////需要前台取的数据
+
+	public DataTable getDt() {
+		return dt;
+	}
+
+	public int getAllRow() {
+		return allRow;
+	}
+
+	public int getTotalPage() {
+		return totalPage;
+	}
+
+	public int getPageIndex() {
+		return pageIndex;
+	}
+
+	public int getPageSize() {
+		return pageSize;
+	}
+
+	public String getFirstPageText() {
+		return firstPageText;
+	}
+
+	public String getLastPageText() {
+		return lastPageText;
+	}
+
+	public String getPrevPageText() {
+		return prevPageText;
+	}
+
+	public String getNextPageText() {
+		return nextPageText;
+	}
+
+	public void setDt(DataTable dt) {
+		this.dt = dt;
+	}
+
+	public void setAllRow(int allRow) {
+		this.allRow = allRow;
+	}
+
+	public void setTotalPage(int totalPage) {
+		this.totalPage = totalPage;
+	}
+
+	public void setPageIndex(int pageIndex) {
+		this.pageIndex = pageIndex;
+	}
+
+	public void setPageSize(int pageSize) {
+		this.pageSize = pageSize;
+	}
+
+	public void setFirstPage(boolean isFirstPage) {
+		this.isFirstPage = isFirstPage;
+	}
+
+	public void setLastPage(boolean isLastPage) {
+		this.isLastPage = isLastPage;
+	}
+
+	public void setFirstPageText(String firstPageText) {
+		this.firstPageText = firstPageText;
+	}
+
+	public void setLastPageText(String lastPageText) {
+		this.lastPageText = lastPageText;
+	}
+
+	public void setPrevPageText(String prevPageText) {
+		this.prevPageText = prevPageText;
+	}
+
+	public void setNextPageText(String nextPageText) {
+		this.nextPageText = nextPageText;
+	}
+
+	//
+
+}
+</pre>
+</div>
+<p style="margin: 0pt;" class="MsoNormal">
+<p>
+<p style="margin: 0pt;" class="MsoNormal">
+<p style="margin: 0pt;" class="MsoNormal"><span lang="EN-US"><o:p><span style="font-family: Times New Roman;" face="Times New Roman">&nbsp;</span></o:p></span></p>
+<p style="margin: 0pt;" class="MsoNormal"><span lang="EN-US"><o:p><span style="font-family: Times New Roman;" face="Times New Roman">&nbsp;</span></o:p></span></p>
+<p style="margin: 0pt;" class="MsoNormal"><span lang="EN-US"><o:p><span style="font-family: Times New Roman;" face="Times New Roman">&nbsp;</span></o:p></span></p>
+<p style="margin: 0pt;" class="MsoNormal"><span lang="EN-US"><o:p><span style="font-family: Times New Roman;" face="Times New Roman">&nbsp;</span></o:p></span></p>
+                </div>
+
+                <div class='span3 sidebar'>
+                    <h2>导航栏</h2>
+                    <ul class="nav nav-tabs nav-stacked">
+                             				<li><a href="http://songboriceboy.github.io/xxoo/html/Javaxx/JavazsxDataTablegjlblyqsxjdfykj/index.html">Java中实现DataTable工具类，并利用其实现简单分页控件。</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Javaxx/zJavazsxnetzDataTablegnyjczssjkdListljwtjjfatj/index.html">在Java中实现net中DataTable功能以及操作双数据库的List连接问题解决方案探究</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Javaxx/zjavazsxlsynetzdDataTableqgwkkzzffkxm/index.html">在java中实现类似于net中的DataTable，请各位看看，这种方法可行吗？</a></li>
+    				                                         
+                    </ul>
+                </div>
+            </div>
+
+        </div>
+    </body>
+</html>

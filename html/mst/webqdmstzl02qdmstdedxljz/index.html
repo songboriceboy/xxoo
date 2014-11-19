@@ -1,0 +1,349 @@
+﻿<!DOCTYPE html>
+
+<html lang="zh">
+    <head>
+        <meta charset="utf-8">
+        <meta name="description" content="android,ios" />
+        <meta name="keywords" content="android,ios" />
+
+        <title>叶小钗</title>
+        <style type='text/css'>
+            body {
+                background-color: #CCC;
+            }
+        </style>
+        <link rel="stylesheet" href="../../../css/bootstrap.css" />
+    </head>
+
+    <body>
+        <div class="container">
+
+            <h1>叶小钗</h1>
+
+            <div class='navbar navbar-inverse'>
+                <div class='navbar-inner nav-collapse' style="height: auto;">
+                    <ul class="nav">
+                              				<li><a href="http://songboriceboy.github.io/xxoo/html/blade/index.html">blade</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/css/index.html">css</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/HTML5&CSS3/index.html">HTML5&CSS3</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/index.html">javascript</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Javaxx/index.html">Java学习</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/nodejs/index.html">nodejs</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/requirejs/index.html">requirejs</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/index.html">Web前端</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/xxgw/index.html">学习感悟</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/gzdd/index.html">工作点滴</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/jkxx/index.html">接口学习</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/wfl/index.html">未分类</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/ydkf/index.html">移动开发</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/sjms/index.html">设计模式</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/mst/index.html">面试题</a></li>
+    				                      </ul>
+                </div>
+            </div>
+
+            <div id='content' class='row-fluid'>
+
+                <div class='span9 main'>
+				<div style="color:blue" align=center>【web前端面试题整理02】前端面试题第二弹袭来，接招！</div><br><h1>前言</h1>
+<p>今天本来准备先了解下node.js的，但是，看看我们一个小时前与一个小时后的差距：</p>
+<p><img src="28155858865841.png" alt=""></p>
+<p>既然如此，我们继续来搜集我们的前端面试题大业吧！！！</p>
+<p>特别感谢<span style="color: #ff0000;"><strong>玉面小肥鱼</strong></span>提供哟，@玉面小飞鱼</p>
+<h1>题目一览</h1>
+<p>JavaScript编程题<br>1、实现输出document对象中所有成员的名称和类型；<br>2、如何获得一个DOM元素的绝对位置？（获得元素位置，不依赖框架）<br>3、如何利用JS生成一个table？<br>4、实现预加载一张图片，加载完成后显示在网页中并设定其高度为50px，宽度为50px；<br>5、假设有一个4行td的table，将table里面td顺序颠倒；<br>6、模拟一个HashTable类，包含有add、remove、contains、length方法；<br>7、Ajax读取一个XML文档并进行解析的实例；<br>8、JS如何实现面向对象和继承机制？<br>9、JS模块的封装方法，比如怎样实现私有变量，不能直接赋值，只能通过公有方法；<br>10、对闭包的理解，闭包的好处和坏处？<br>11、对this指针的理解，可以列举几种使用情况？<br>12、对JS中函数绑定的理解？函数绑定可以使用哪两个函数？<br>13、jQuery的特点？<br>14、简述Ajax的异步机制。Ajax有哪些好处和弊端？</p>
+<p>尼玛题还不少啊，公司一次性问完是要逆天吗？？？我们来一道一道做下吧，反正不吃亏！</p>
+<h1>第一题，document所有成员名称与属性</h1>
+<p>1、实现输出document对象中所有成员的名称和类型；</p>
+<p>拿到这道题，我们来看看他是想考察神马呢？</p>
+<p>PS：我弱弱的差点认为他考察的就是一个for in，我害怕的试了一下：</p>
+<p><img src="9049829001137.png" alt=""></p>
+<p>于是我发现他是一个对象，难道真的for in就完了？</p>
+<div class="cnblogs_code">
+<pre><span style="color: #008080;">1</span> <span style="color: #0000ff;">for</span> (<span style="color: #0000ff;">var</span> k <span style="color: #0000ff;">in</span><span style="color: #000000;"> document) {
+</span><span style="color: #008080;">2</span>     <span style="color: #0000ff;">var</span> v =<span style="color: #000000;"> document[k];
+</span><span style="color: #008080;">3</span>     alert(v + ':' + <span style="color: #0000ff;">typeof</span><span style="color: #000000;"> (v));
+</span><span style="color: #008080;">4</span> }</pre>
+</div>
+<p>最后证明确实如此。。。怎么会这么简单呢？</p>
+<p><strong>思考</strong></p>
+<p>其实我猜面试官可能会在此上做一点文章，考察面试者对for in细节的认识，因为我们的原型链问题，我们会遍历一个对象的所有属性包括原型的一直到达object，而这显然不是我们想要的，所以此点各位可以拿来说下。</p>
+<h1>第二题，获取元素位置</h1>
+<p>2、如何获得一个DOM元素的绝对位置？（获得元素位置，不依赖框架）</p>
+<p>这道题根本就是送分的（不能编码、不能设置断点情况我直接悲剧！），直接上断点：</p>
+<p><img src="10660447014053.png" alt=""></p>
+<p>所有信息一目了然，代码都省了，但是万一有坑怎么办，所以测试下IE吧：</p>
+<p><img src="20455727471428.png" alt=""></p>
+<p>看我们混杂模式也是这个样子，所以这个题是没有问题的，我们直接获取其属性即可。</p>
+<h1>第三题，生成table</h1>
+<p><span style="font: 14px/25px 'Microsoft YaHei', Tahoma, sans-serif; color: #000000; text-transform: none; text-indent: 0px; letter-spacing: normal; word-spacing: 0px; float: none; display: inline !important; white-space: normal; font-size-adjust: none; font-stretch: normal; background-color: #ffffff; -webkit-text-stroke-width: 0px;">3、如何利用JS生成一个table？</span></p>
+<p>这道题是基本的dom操作，我这边直接略去了。。。。</p>
+<h1>第四题，图片加载问题</h1>
+<p><span style="font: 14px/25px 'Microsoft YaHei', Tahoma, sans-serif; color: #000000; text-transform: none; text-indent: 0px; letter-spacing: normal; word-spacing: 0px; float: none; display: inline !important; white-space: normal; font-size-adjust: none; font-stretch: normal; background-color: #ffffff; -webkit-text-stroke-width: 0px;">实现预加载一张图片，加载完成后显示在网页中并设定其高度为50px，宽度为50px；</span></p>
+<p>这道题感觉有点意思，首先是预加载，然后是加载完毕后设置高度与宽度，那么什么是预加载呢？</p>
+<div class="cnblogs_code">
+<pre><span style="color: #800000;">顾名思义，WEB中的预加载就是在网页全部加载之前，对一些主要内容进行加载，以提供给用户更好的体验，减少等待的时间。<br>否则，如果一个页面的内容过于庞大，没有使用预加载技术的页面就会长时间的展现为一片空白，直到所有内容加载完毕。
+图片的预加载技术使用较为广泛，一般的效果是网页中的图片由模糊变得清晰。</span></pre>
+</div>
+<p>在说一个比较龊的问题，比如我们要让一张图片居中显示我们该怎样干？我们必须知道其尺寸才行，不然该功能是无法实现的。</p>
+<p>图片的高宽必须要其加载结束时候才能获取，于是我们这里来做一个实验，先来张本地图片吧：</p>
+<div class="cnblogs_code">
+<pre><span style="color: #008080;"> 1</span> <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">html </span><span style="color: #ff0000;">xmlns</span><span style="color: #0000ff;">="http://www.w3.org/1999/xhtml"</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 2</span> <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">head</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 3</span>     <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">title</span><span style="color: #0000ff;">&gt;&lt;/</span><span style="color: #800000;">title</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 4</span> <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">head</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 5</span> <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">body</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 6</span>     <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">img </span><span style="color: #ff0000;">src</span><span style="color: #0000ff;">="1.png"</span><span style="color: #ff0000;"> id</span><span style="color: #0000ff;">="img"</span> <span style="color: #0000ff;">/&gt;</span>
+<span style="color: #008080;"> 7</span>     <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">script </span><span style="color: #ff0000;">type</span><span style="color: #0000ff;">="text/javascript"</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 8</span>         <span style="background-color: #f5f5f5; color: #0000ff;">var</span><span style="background-color: #f5f5f5; color: #000000;"> img </span><span style="background-color: #f5f5f5; color: #000000;">=</span><span style="background-color: #f5f5f5; color: #000000;"> document.getElementById(</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">img</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">);
+</span><span style="color: #008080;"> 9</span>         <span style="background-color: #f5f5f5; color: #0000ff;">var</span><span style="background-color: #f5f5f5; color: #000000;"> s </span><span style="background-color: #f5f5f5; color: #000000;">=</span> <span style="background-color: #f5f5f5; color: #000000;">''</span><span style="background-color: #f5f5f5; color: #000000;">;
+</span><span style="color: #008080;">10</span>     
+<span style="color: #008080;">11</span>     <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">script</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">12</span> <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">body</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">13</span> <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">html</span><span style="color: #0000ff;">&gt;</span></pre>
+</div>
+<p><img src="30217669625627.png" alt=""></p>
+<p>这张图片在本地，他加载速度是非常快的，所以我们这里问题不大，我们现在换成网络文件吧：</p>
+<p><a href="http://t1.baidu.com/it/u=3208399380,3492442390&amp;fm=21&amp;gp=0.jpg">http://t1.baidu.com/it/u=3208399380,3492442390&amp;fm=21&amp;gp=0.jpg</a></p>
+<p>这张图片很大滴哟，我们来试试：</p>
+<div class="cnblogs_code">
+<pre><span style="color: #008080;"> 1</span> <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">html </span><span style="color: #ff0000;">xmlns</span><span style="color: #0000ff;">="http://www.w3.org/1999/xhtml"</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 2</span> <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">head</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 3</span>     <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">title</span><span style="color: #0000ff;">&gt;&lt;/</span><span style="color: #800000;">title</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 4</span> <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">head</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 5</span> <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">body</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 6</span>     <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">img </span><span style="color: #ff0000;">src</span><span style="color: #0000ff;">="http://t1.baidu.com/it/u=3208399380,3492442390&amp;fm=21&amp;gp=0.jpg"</span><span style="color: #ff0000;"> id</span><span style="color: #0000ff;">="img"</span> <span style="color: #0000ff;">/&gt;</span>
+<span style="color: #008080;"> 7</span>     <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">script </span><span style="color: #ff0000;">type</span><span style="color: #0000ff;">="text/javascript"</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 8</span>         <span style="background-color: #f5f5f5; color: #0000ff;">var</span><span style="background-color: #f5f5f5; color: #000000;"> img </span><span style="background-color: #f5f5f5; color: #000000;">=</span><span style="background-color: #f5f5f5; color: #000000;"> document.getElementById(</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">img</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">);
+</span><span style="color: #008080;"> 9</span>         <span style="background-color: #f5f5f5; color: #0000ff;">var</span><span style="background-color: #f5f5f5; color: #000000;"> s </span><span style="background-color: #f5f5f5; color: #000000;">=</span> <span style="background-color: #f5f5f5; color: #000000;">''</span><span style="background-color: #f5f5f5; color: #000000;">;
+</span><span style="color: #008080;">10</span>     
+<span style="color: #008080;">11</span>     <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">script</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">12</span> <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">body</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">13</span> <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">html</span><span style="color: #0000ff;">&gt;</span></pre>
+</div>
+<p><img src="29166517038883.png" alt=""></p>
+<p>各位请看，我们这里神马都米有了！！！这个原因大家应该比较清楚了：</p>
+<p>页面开始形成dom根据dom与css形成渲染树，这个过程结束后才会加载图片，所以我们这里获取不到图片信息很正常的。</p>
+<p><strong>一种简单的做法</strong>：</p>
+<div class="cnblogs_code">
+<pre><span style="color: #008080;"> 1</span> <span style="color: #0000ff;">var</span> imgLoad = <span style="color: #0000ff;">function</span><span style="color: #000000;"> (url, callback) {
+</span><span style="color: #008080;"> 2</span>     <span style="color: #0000ff;">var</span> img = <span style="color: #0000ff;">new</span><span style="color: #000000;"> Image();
+</span><span style="color: #008080;"> 3</span>     img.src =<span style="color: #000000;"> url;
+</span><span style="color: #008080;"> 4</span>     <span style="color: #0000ff;">if</span><span style="color: #000000;"> (img.complete) {
+</span><span style="color: #008080;"> 5</span> <span style="color: #000000;">        callback(img.width, img.height);
+</span><span style="color: #008080;"> 6</span>     } <span style="color: #0000ff;">else</span><span style="color: #000000;"> {
+</span><span style="color: #008080;"> 7</span>         img.onload = <span style="color: #0000ff;">function</span><span style="color: #000000;"> () {
+</span><span style="color: #008080;"> 8</span> <span style="color: #000000;">            callback(img.width, img.height);
+</span><span style="color: #008080;"> 9</span>             img.onload = <span style="color: #0000ff;">null</span><span style="color: #000000;">;
+</span><span style="color: #008080;">10</span> <span style="color: #000000;">        };
+</span><span style="color: #008080;">11</span> <span style="color: #000000;">    };
+</span><span style="color: #008080;">12</span> <span style="color: #000000;">};
+</span><span style="color: #008080;">13</span> imgLoad('http://t1.baidu.com/it/u=3208399380,3492442390&amp;fm=21&amp;gp=0.jpg');</pre>
+</div>
+<p>这是一种比较常见的做法，便是等图片完全加载后再显示。</p>
+<p>但是根据这个文章：<a href="http://www.planeart.cn/?p=1121">http://www.planeart.cn/?p=1121</a></p>
+<p>我们看到作者有不一样的做法，而且这里是值得我们思考与学习的：</p>
+<p>以上需要图片加载结束才会显示，他认为其速度慢了一点，其认为浏览器获取了图片的头部信息，然后写了一个js时钟来做这件事情，其详细实现我们这里就不去管它了，因为我对使用时钟是不太赞成的，但是作者的思路还是值得学习。</p>
+<p>现在再回国头来看看我们这道题，我们在callback中实现代码就可以完成这道题了，但是我这里想再看看，因为原作者说在图片完全加载完便获取了图片的高度与宽度，而且其实验也证明了这点，于是我们一起来看看图片加载流程吧。</p>
+<p><strong>图片加载流程</strong></p>
+<div class="cnblogs_code">
+<pre><span style="color: #008080;"> 1</span> <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">html </span><span style="color: #ff0000;">xmlns</span><span style="color: #0000ff;">="http://www.w3.org/1999/xhtml"</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 2</span> <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">head</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 3</span>     <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">title</span><span style="color: #0000ff;">&gt;&lt;/</span><span style="color: #800000;">title</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 4</span> <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">head</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 5</span> <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">body</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 6</span>     <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">img </span><span style="color: #ff0000;">src</span><span style="color: #0000ff;">="http://c-photo.i-part.com.tw/n1v1/4/1/9/0/780914/photo/book20/12760996629047.jpg"</span><span style="color: #ff0000;"> id</span><span style="color: #0000ff;">="img"</span> <span style="color: #0000ff;">/&gt;</span>
+<span style="color: #008080;"> 7</span>     <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">script </span><span style="color: #ff0000;">type</span><span style="color: #0000ff;">="text/javascript"</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 8</span>         <span style="background-color: #f5f5f5; color: #0000ff;">var</span><span style="background-color: #f5f5f5; color: #000000;"> img </span><span style="background-color: #f5f5f5; color: #000000;">=</span><span style="background-color: #f5f5f5; color: #000000;"> document.getElementById(</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">img</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">);
+</span><span style="color: #008080;"> 9</span> <span style="background-color: #f5f5f5; color: #000000;">        setInterval(</span><span style="background-color: #f5f5f5; color: #0000ff;">function</span><span style="background-color: #f5f5f5; color: #000000;"> () {
+</span><span style="color: #008080;">10</span>             <span style="background-color: #f5f5f5; color: #0000ff;">var</span><span style="background-color: #f5f5f5; color: #000000;"> s </span><span style="background-color: #f5f5f5; color: #000000;">=</span> <span style="background-color: #f5f5f5; color: #000000;">''</span><span style="background-color: #f5f5f5; color: #000000;">;
+</span><span style="color: #008080;">11</span> <span style="background-color: #f5f5f5; color: #000000;">        }, </span><span style="background-color: #f5f5f5; color: #000000;">100</span><span style="background-color: #f5f5f5; color: #000000;">);
+</span><span style="color: #008080;">12</span>     <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">script</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">13</span> <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">body</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">14</span> <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">html</span><span style="color: #0000ff;">&gt;</span></pre>
+</div>
+<p>经过测试，图片的尺寸确实会先出来，若是不使用定时器，我暂时也想不到办法。。。</p>
+<p>于是，此题暂时如此吧，这里还是贴出原作者的代码吧，确实不错了：</p>
+<div class="cnblogs_code" onclick="cnblogs_code_show('001a2863-465e-4534-b25a-6e53ff071ea5')"><img id="code_img_closed_001a2863-465e-4534-b25a-6e53ff071ea5" class="code_img_closed" src="43570758473519.gif" alt=""><img id="code_img_opened_001a2863-465e-4534-b25a-6e53ff071ea5" class="code_img_opened" style="display: none;" onclick="cnblogs_code_hide('001a2863-465e-4534-b25a-6e53ff071ea5',event)" src="16365178109279.gif" alt="">
+<div id="cnblogs_code_open_001a2863-465e-4534-b25a-6e53ff071ea5" class="cnblogs_code_hide">
+<pre><span style="color: #008080;"> 1</span> <span style="color: #008000;">//</span><span style="color: #008000;"> 更新：</span>
+<span style="color: #008080;"> 2</span> <span style="color: #008000;">//</span><span style="color: #008000;"> 05.27: 1、保证回调执行顺序：error &gt; ready &gt; load；2、回调函数this指向img本身</span>
+<span style="color: #008080;"> 3</span> <span style="color: #008000;">//</span><span style="color: #008000;"> 04-02: 1、增加图片完全加载后的回调 2、提高性能</span>
+<span style="color: #008080;"> 4</span> 
+<span style="color: #008080;"> 5</span> <span style="color: #008000;">/*</span><span style="color: #008000;">*
+</span><span style="color: #008080;"> 6</span> <span style="color: #008000;"> * 图片头数据加载就绪事件 - 更快获取图片尺寸
+</span><span style="color: #008080;"> 7</span> <span style="color: #008000;"> * @version    2011.05.27
+</span><span style="color: #008080;"> 8</span> <span style="color: #008000;"> * @author    TangBin
+</span><span style="color: #008080;"> 9</span> <span style="color: #008000;"> * @see        http://www.planeart.cn/?p=1121
+</span><span style="color: #008080;">10</span> <span style="color: #008000;"> * @param    {String}    图片路径
+</span><span style="color: #008080;">11</span> <span style="color: #008000;"> * @param    {Function}    尺寸就绪
+</span><span style="color: #008080;">12</span> <span style="color: #008000;"> * @param    {Function}    加载完毕 (可选)
+</span><span style="color: #008080;">13</span> <span style="color: #008000;"> * @param    {Function}    加载错误 (可选)
+</span><span style="color: #008080;">14</span> <span style="color: #008000;"> * @example imgReady('http://www.google.com.hk/intl/zh-CN/images/logo_cn.png', function () {
+</span><span style="color: #008080;">15</span> <span style="color: #008000;">        alert('size ready: width=' + this.width + '; height=' + this.height);
+</span><span style="color: #008080;">16</span> <span style="color: #008000;">    });
+</span><span style="color: #008080;">17</span>  <span style="color: #008000;">*/</span>
+<span style="color: #008080;">18</span> <span style="color: #0000ff;">var</span> imgReady = (<span style="color: #0000ff;">function</span><span style="color: #000000;"> () {
+</span><span style="color: #008080;">19</span>     <span style="color: #0000ff;">var</span> list = [], intervalId = <span style="color: #0000ff;">null</span><span style="color: #000000;">,
+</span><span style="color: #008080;">20</span> 
+<span style="color: #008080;">21</span>     <span style="color: #008000;">//</span><span style="color: #008000;"> 用来执行队列</span>
+<span style="color: #008080;">22</span>     tick = <span style="color: #0000ff;">function</span><span style="color: #000000;"> () {
+</span><span style="color: #008080;">23</span>         <span style="color: #0000ff;">var</span> i = 0<span style="color: #000000;">;
+</span><span style="color: #008080;">24</span>         <span style="color: #0000ff;">for</span> (; i &lt; list.length; i++<span style="color: #000000;">) {
+</span><span style="color: #008080;">25</span>             list[i].end ? list.splice(i--, 1<span style="color: #000000;">) : list[i]();
+</span><span style="color: #008080;">26</span> <span style="color: #000000;">        };
+</span><span style="color: #008080;">27</span>         !list.length &amp;&amp;<span style="color: #000000;"> stop();
+</span><span style="color: #008080;">28</span> <span style="color: #000000;">    },
+</span><span style="color: #008080;">29</span> 
+<span style="color: #008080;">30</span>     <span style="color: #008000;">//</span><span style="color: #008000;"> 停止所有定时器队列</span>
+<span style="color: #008080;">31</span>     stop = <span style="color: #0000ff;">function</span><span style="color: #000000;"> () {
+</span><span style="color: #008080;">32</span> <span style="color: #000000;">        clearInterval(intervalId);
+</span><span style="color: #008080;">33</span>         intervalId = <span style="color: #0000ff;">null</span><span style="color: #000000;">;
+</span><span style="color: #008080;">34</span> <span style="color: #000000;">    };
+</span><span style="color: #008080;">35</span> 
+<span style="color: #008080;">36</span>     <span style="color: #0000ff;">return</span> <span style="color: #0000ff;">function</span><span style="color: #000000;"> (url, ready, load, error) {
+</span><span style="color: #008080;">37</span>         <span style="color: #0000ff;">var</span><span style="color: #000000;"> onready, width, height, newWidth, newHeight,
+</span><span style="color: #008080;">38</span>             img = <span style="color: #0000ff;">new</span><span style="color: #000000;"> Image();
+</span><span style="color: #008080;">39</span>         
+<span style="color: #008080;">40</span>         img.src =<span style="color: #000000;"> url;
+</span><span style="color: #008080;">41</span> 
+<span style="color: #008080;">42</span>         <span style="color: #008000;">//</span><span style="color: #008000;"> 如果图片被缓存，则直接返回缓存数据</span>
+<span style="color: #008080;">43</span>         <span style="color: #0000ff;">if</span><span style="color: #000000;"> (img.complete) {
+</span><span style="color: #008080;">44</span> <span style="color: #000000;">            ready.call(img);
+</span><span style="color: #008080;">45</span>             load &amp;&amp;<span style="color: #000000;"> load.call(img);
+</span><span style="color: #008080;">46</span>             <span style="color: #0000ff;">return</span><span style="color: #000000;">;
+</span><span style="color: #008080;">47</span> <span style="color: #000000;">        };
+</span><span style="color: #008080;">48</span>         
+<span style="color: #008080;">49</span>         width =<span style="color: #000000;"> img.width;
+</span><span style="color: #008080;">50</span>         height =<span style="color: #000000;"> img.height;
+</span><span style="color: #008080;">51</span>         
+<span style="color: #008080;">52</span>         <span style="color: #008000;">//</span><span style="color: #008000;"> 加载错误后的事件</span>
+<span style="color: #008080;">53</span>         img.onerror = <span style="color: #0000ff;">function</span><span style="color: #000000;"> () {
+</span><span style="color: #008080;">54</span>             error &amp;&amp;<span style="color: #000000;"> error.call(img);
+</span><span style="color: #008080;">55</span>             onready.end = <span style="color: #0000ff;">true</span><span style="color: #000000;">;
+</span><span style="color: #008080;">56</span>             img = img.onload = img.onerror = <span style="color: #0000ff;">null</span><span style="color: #000000;">;
+</span><span style="color: #008080;">57</span> <span style="color: #000000;">        };
+</span><span style="color: #008080;">58</span>         
+<span style="color: #008080;">59</span>         <span style="color: #008000;">//</span><span style="color: #008000;"> 图片尺寸就绪</span>
+<span style="color: #008080;">60</span>         onready = <span style="color: #0000ff;">function</span><span style="color: #000000;"> () {
+</span><span style="color: #008080;">61</span>             newWidth =<span style="color: #000000;"> img.width;
+</span><span style="color: #008080;">62</span>             newHeight =<span style="color: #000000;"> img.height;
+</span><span style="color: #008080;">63</span>             <span style="color: #0000ff;">if</span> (newWidth !== width || newHeight !== height ||
+<span style="color: #008080;">64</span>                 <span style="color: #008000;">//</span><span style="color: #008000;"> 如果图片已经在其他地方加载可使用面积检测</span>
+<span style="color: #008080;">65</span>                 newWidth * newHeight &gt; 1024
+<span style="color: #008080;">66</span> <span style="color: #000000;">            ) {
+</span><span style="color: #008080;">67</span> <span style="color: #000000;">                ready.call(img);
+</span><span style="color: #008080;">68</span>                 onready.end = <span style="color: #0000ff;">true</span><span style="color: #000000;">;
+</span><span style="color: #008080;">69</span> <span style="color: #000000;">            };
+</span><span style="color: #008080;">70</span> <span style="color: #000000;">        };
+</span><span style="color: #008080;">71</span> <span style="color: #000000;">        onready();
+</span><span style="color: #008080;">72</span>         
+<span style="color: #008080;">73</span>         <span style="color: #008000;">//</span><span style="color: #008000;"> 完全加载完毕的事件</span>
+<span style="color: #008080;">74</span>         img.onload = <span style="color: #0000ff;">function</span><span style="color: #000000;"> () {
+</span><span style="color: #008080;">75</span>             <span style="color: #008000;">//</span><span style="color: #008000;"> onload在定时器时间差范围内可能比onready快</span>
+<span style="color: #008080;">76</span>             <span style="color: #008000;">//</span><span style="color: #008000;"> 这里进行检查并保证onready优先执行</span>
+<span style="color: #008080;">77</span>             !onready.end &amp;&amp;<span style="color: #000000;"> onready();
+</span><span style="color: #008080;">78</span>         
+<span style="color: #008080;">79</span>             load &amp;&amp;<span style="color: #000000;"> load.call(img);
+</span><span style="color: #008080;">80</span>             
+<span style="color: #008080;">81</span>             <span style="color: #008000;">//</span><span style="color: #008000;"> IE gif动画会循环执行onload，置空onload即可</span>
+<span style="color: #008080;">82</span>             img = img.onload = img.onerror = <span style="color: #0000ff;">null</span><span style="color: #000000;">;
+</span><span style="color: #008080;">83</span> <span style="color: #000000;">        };
+</span><span style="color: #008080;">84</span> 
+<span style="color: #008080;">85</span>         <span style="color: #008000;">//</span><span style="color: #008000;"> 加入队列中定期执行</span>
+<span style="color: #008080;">86</span>         <span style="color: #0000ff;">if</span> (!<span style="color: #000000;">onready.end) {
+</span><span style="color: #008080;">87</span> <span style="color: #000000;">            list.push(onready);
+</span><span style="color: #008080;">88</span>             <span style="color: #008000;">//</span><span style="color: #008000;"> 无论何时只允许出现一个定时器，减少浏览器性能损耗</span>
+<span style="color: #008080;">89</span>             <span style="color: #0000ff;">if</span> (intervalId === <span style="color: #0000ff;">null</span>) intervalId = setInterval(tick, 40<span style="color: #000000;">);
+</span><span style="color: #008080;">90</span> <span style="color: #000000;">        };
+</span><span style="color: #008080;">91</span> <span style="color: #000000;">    };
+</span><span style="color: #008080;">92</span> })();</pre>
+</div>
+<span class="cnblogs_code_collapse">View Code </span></div>
+<h1>第五题，td顺序颠倒</h1>
+<p><span style="font: 14px/25px 'Microsoft YaHei', Tahoma, sans-serif; color: #000000; text-transform: none; text-indent: 0px; letter-spacing: normal; word-spacing: 0px; float: none; display: inline !important; white-space: normal; font-size-adjust: none; font-stretch: normal; background-color: #ffffff; -webkit-text-stroke-width: 0px;">5、假设有一个4行td的table，将table里面td顺序颠倒；</span></p>
+<p>这道题又属于那种不使用jquery比较烦的。。。我们这里获取td的dom直接向td.parent appendChild即可，但是操作时候需要注意一点兼容性问题。</p>
+<h1>第六题，模拟HashTable</h1>
+<p>因为javascript里面的对象字面量就是hashtable，他这么一说反而让我不知道怎么干了，于是上代码吧：</p>
+<div class="cnblogs_code">
+<pre><span style="color: #008080;"> 1</span> <span style="color: #0000ff;">var</span> HashTable = <span style="color: #0000ff;">function</span><span style="color: #000000;"> () {
+</span><span style="color: #008080;"> 2</span>     <span style="color: #0000ff;">this</span>.data =<span style="color: #000000;"> {};
+</span><span style="color: #008080;"> 3</span> <span style="color: #000000;">};
+</span><span style="color: #008080;"> 4</span> HashTable.prototype.add = <span style="color: #0000ff;">function</span><span style="color: #000000;"> (k, v) {
+</span><span style="color: #008080;"> 5</span>     <span style="color: #0000ff;">this</span>.data[k] = v; <span style="color: #008000;">//</span><span style="color: #008000;">不存在便赋值，存在便更新，判断条件都给省了。。。</span>
+<span style="color: #008080;"> 6</span> <span style="color: #000000;">};
+</span><span style="color: #008080;"> 7</span> HashTable.prototype.remove = <span style="color: #0000ff;">function</span><span style="color: #000000;"> (k) {
+</span><span style="color: #008080;"> 8</span>     <span style="color: #0000ff;">if</span> (<span style="color: #0000ff;">this</span>.data[k]) <span style="color: #0000ff;">delete</span> <span style="color: #0000ff;">this</span><span style="color: #000000;">.data[k];
+</span><span style="color: #008080;"> 9</span> <span style="color: #000000;">};
+</span><span style="color: #008080;">10</span> HashTable.prototype.contains = <span style="color: #0000ff;">function</span><span style="color: #000000;"> (v) {
+</span><span style="color: #008080;">11</span>     <span style="color: #0000ff;">var</span> exist = <span style="color: #0000ff;">false</span><span style="color: #000000;">;
+</span><span style="color: #008080;">12</span>     <span style="color: #0000ff;">for</span> (<span style="color: #0000ff;">var</span> k <span style="color: #0000ff;">in</span> <span style="color: #0000ff;">this</span><span style="color: #000000;">.data) {
+</span><span style="color: #008080;">13</span>         <span style="color: #0000ff;">if</span> (v == <span style="color: #0000ff;">this</span><span style="color: #000000;">.data[k]) {
+</span><span style="color: #008080;">14</span>             exist = <span style="color: #0000ff;">true</span><span style="color: #000000;">;
+</span><span style="color: #008080;">15</span>             <span style="color: #0000ff;">break</span><span style="color: #000000;">;
+</span><span style="color: #008080;">16</span> <span style="color: #000000;">        }
+</span><span style="color: #008080;">17</span> <span style="color: #000000;">    }
+</span><span style="color: #008080;">18</span>     <span style="color: #0000ff;">return</span><span style="color: #000000;"> exist;
+</span><span style="color: #008080;">19</span> <span style="color: #000000;">};
+</span><span style="color: #008080;">20</span> HashTable.prototype.length = <span style="color: #0000ff;">function</span><span style="color: #000000;"> () {
+</span><span style="color: #008080;">21</span>     <span style="color: #0000ff;">var</span> len = 0<span style="color: #000000;">;
+</span><span style="color: #008080;">22</span>     <span style="color: #0000ff;">for</span> (<span style="color: #0000ff;">var</span> k <span style="color: #0000ff;">in</span> <span style="color: #0000ff;">this</span><span style="color: #000000;">.data) {
+</span><span style="color: #008080;">23</span>         len++<span style="color: #000000;">;
+</span><span style="color: #008080;">24</span> <span style="color: #000000;">    }
+</span><span style="color: #008080;">25</span>     <span style="color: #0000ff;">return</span><span style="color: #000000;"> len;
+</span><span style="color: #008080;">26</span> <span style="color: #000000;">};
+</span><span style="color: #008080;">27</span> <span style="color: #0000ff;">var</span> hs = <span style="color: #0000ff;">new</span><span style="color: #000000;"> HashTable();
+</span><span style="color: #008080;">28</span> 
+<span style="color: #008080;">29</span> hs.add('叶小钗', '叶小钗'<span style="color: #000000;">);
+</span><span style="color: #008080;">30</span> hs.add('一页书', '一页书'<span style="color: #000000;">);
+</span><span style="color: #008080;">31</span> hs.add('素还真', '素还真'<span style="color: #000000;">);
+</span><span style="color: #008080;">32</span> <span style="color: #0000ff;">var</span> c = hs.contains('叶小钗'<span style="color: #000000;">);
+</span><span style="color: #008080;">33</span> hs.remove('叶小钗'<span style="color: #000000;">);
+</span><span style="color: #008080;">34</span> <span style="color: #0000ff;">var</span> d = hs.contains('叶小钗'<span style="color: #000000;">);
+</span><span style="color: #008080;">35</span> <span style="color: #0000ff;">var</span> a =<span style="color: #000000;"> hs.length();
+</span><span style="color: #008080;">36</span> 
+<span style="color: #008080;">37</span> <span style="color: #0000ff;">var</span> s = '';</pre>
+</div>
+<h1>第七题，ajax解析xml</h1>
+<p><span style="font: 14px/25px 'Microsoft YaHei', Tahoma, sans-serif; color: #000000; text-transform: none; text-indent: 0px; letter-spacing: normal; word-spacing: 0px; float: none; display: inline !important; white-space: normal; font-size-adjust: none; font-stretch: normal; background-color: #ffffff; -webkit-text-stroke-width: 0px;">Ajax读取一个XML文档并进行解析的实例；</span></p>
+<p>在json出现之前，ajax返回的一般都是xml，其解析过程比较痛苦，当年做考试系统时候不知道json便解析的xml，那家伙确实费工夫，这里可以封装一个方法。我这里暂时略去，后面点补上。</p>
+<p>.......需要补上</p>
+<h1>第八题，js面向对象</h1>
+<h2 class="postTitle" style="color: #4b4b4b; text-transform: none; text-indent: 0px; letter-spacing: normal; font-family: Verdana, Geneva, Arial, Helvetica, sans-serif; font-size: 14.7px; font-style: normal; font-variant: normal; font-weight: bold; margin-bottom: 10px; word-spacing: 0px; white-space: normal; -webkit-text-stroke-width: 0px;"><a id="cb_post_title_url" class="postTitle2" style="color: #1a8bc8; text-decoration: none;" href="http://www.cnblogs.com/yexiaochai/archive/2013/04/25/3042113.html">【初窥javascript奥秘之面向对象】封装与继承</a></h2>
+<h1>第九题，模块封装</h1>
+<h2 class="postTitle" style="color: #4b4b4b; text-transform: none; text-indent: 0px; letter-spacing: normal; font-family: Verdana, Geneva, Arial, Helvetica, sans-serif; font-size: 14.7px; font-style: normal; font-variant: normal; font-weight: bold; margin-bottom: 10px; word-spacing: 0px; white-space: normal; -webkit-text-stroke-width: 0px;"><a id="cb_post_title_url" class="postTitle2" style="color: #1a8bc8; text-decoration: none;" href="http://www.cnblogs.com/yexiaochai/archive/2013/06/20/3145509.html">【javascript激增的思考01】模块化编程</a></h2>
+<h1>第十题，闭包</h1>
+<p><a id="CategoryEntryList1_EntryStoryList_Entries_TitleUrl_3" class="entrylistItemTitle" style="font: bold 13px/19px Verdana, Geneva, Arial, Helvetica, sans-serif; color: #1a8bc8; text-transform: none; text-indent: 0px; letter-spacing: normal; text-decoration: none; word-spacing: 0px; white-space: normal; font-size-adjust: none; font-stretch: normal; background-color: #ffffff; -webkit-text-stroke-width: 0px;" href="http://www.cnblogs.com/yexiaochai/archive/2013/06/15/3137288.html">【初窥javascript奥秘之闭包】叶大侠病都好了，求不踩了：）</a></p>
+<h1>第十一题，this的理解</h1>
+<p><a id="CategoryEntryList1_EntryStoryList_Entries_TitleUrl_11" class="entrylistItemTitle" style="font: bold 13px/19px Verdana, Geneva, Arial, Helvetica, sans-serif; color: #1a8bc8; text-transform: none; text-indent: 0px; letter-spacing: normal; text-decoration: none; word-spacing: 0px; white-space: normal; font-size-adjust: none; font-stretch: normal; background-color: #ffffff; -webkit-text-stroke-width: 0px;" href="http://www.cnblogs.com/yexiaochai/archive/2013/04/22/3034949.html">【初窥javascript奥秘之让人捉摸不定的this】你知道现在this指向哪里吗？？？</a></p>
+<h1>第十二题，函数绑定的理解</h1>
+<p><span style="font: 14px/25px 'Microsoft YaHei', Tahoma, sans-serif; color: #000000; text-transform: none; text-indent: 0px; letter-spacing: normal; word-spacing: 0px; float: none; display: inline !important; white-space: normal; font-size-adjust: none; font-stretch: normal; background-color: #ffffff; -webkit-text-stroke-width: 0px;">12、对JS中函数绑定的理解？函数绑定可以使用哪两个函数？</span></p>
+<p><span style="font: 14px/25px 'Microsoft YaHei', Tahoma, sans-serif; color: #000000; text-transform: none; text-indent: 0px; letter-spacing: normal; word-spacing: 0px; float: none; display: inline !important; white-space: normal; font-size-adjust: none; font-stretch: normal; background-color: #ffffff; -webkit-text-stroke-width: 0px;">这道题我完全没明白意思，可能是考察call与apply吧。</span></p>
+<h1>第十三题，jquery的特点</h1>
+<p>该题需要单独开贴讨论了，而且老夫神马都没有。</p>
+<h1>第十四题，ajax</h1>
+<p><span style="font: 14px/25px 'Microsoft YaHei', Tahoma, sans-serif; color: #000000; text-transform: none; text-indent: 0px; letter-spacing: normal; word-spacing: 0px; float: none; display: inline !important; white-space: normal; font-size-adjust: none; font-stretch: normal; background-color: #ffffff; -webkit-text-stroke-width: 0px;">14、简述Ajax的异步机制。Ajax有哪些好处和弊端？</span></p>
+<p><a id="CategoryEntryList1_EntryStoryList_Entries_TitleUrl_9" class="entrylistItemTitle" style="font: bold 13px/19px Verdana, Geneva, Arial, Helvetica, sans-serif; color: #1a8bc8; text-transform: none; text-indent: 0px; letter-spacing: normal; text-decoration: none; word-spacing: 0px; white-space: normal; font-size-adjust: none; font-stretch: normal; background-color: #ffffff; -webkit-text-stroke-width: 0px;" href="http://www.cnblogs.com/yexiaochai/archive/2013/04/24/3037069.html">【初窥javascript奥秘之Ajax】简述下你所知道的Ajax？</a></p>
+<h1>结语</h1>
+<p>感谢我们的玉面小飞鱼提供的这14道javascript的题目，我这里简要的回答了一番，很多不足，也请各位回答一篇哦，我这里下来后再继续跟进。</p>
+<p>&nbsp;</p>
+                </div>
+
+                <div class='span3 sidebar'>
+                    <h2>导航栏</h2>
+                    <ul class="nav nav-tabs nav-stacked">
+                             				<li><a href="http://songboriceboy.github.io/xxoo/html/mst/webqdmstzl01gwjbllblzdqdmstb/index.html">【web前端面试题整理01】各位加班累了吧，来做点前端面试题吧</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/mst/webqdmstzl02qdmstdedxljz/index.html">【web前端面试题整理02】前端面试题第二弹袭来，接招！</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/mst/webqdmstzl03lkydCSSxgdb/index.html">【web前端面试题整理03】来看一点CSS相关的吧</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/mst/webqdmstzl04alyxzdsmdm/index.html">【web前端面试题整理04】阿里一行之大神面对面</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/mst/webqdmstzl05zjdqdmstxxxxb/index.html">【web前端面试题整理05】做几道前端面试题休息休息吧</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/mst/webqdmstzl06cddydjmyp/index.html">【web前端面试题整理06】成都第一弹，邂逅聚美优品</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/mst/webqdmstzl07wbljbxysjfl/index.html">【web前端面试题整理07】我不理解表现与数据分离。。。</a></li>
+    				                                         
+                    </ul>
+                </div>
+            </div>
+
+        </div>
+    </body>
+</html>

@@ -1,0 +1,256 @@
+﻿<!DOCTYPE html>
+
+<html lang="zh">
+    <head>
+        <meta charset="utf-8">
+        <meta name="description" content="android,ios" />
+        <meta name="keywords" content="android,ios" />
+
+        <title>叶小钗</title>
+        <style type='text/css'>
+            body {
+                background-color: #CCC;
+            }
+        </style>
+        <link rel="stylesheet" href="../../../css/bootstrap.css" />
+    </head>
+
+    <body>
+        <div class="container">
+
+            <h1>叶小钗</h1>
+
+            <div class='navbar navbar-inverse'>
+                <div class='navbar-inner nav-collapse' style="height: auto;">
+                    <ul class="nav">
+                              				<li><a href="http://songboriceboy.github.io/xxoo/html/blade/index.html">blade</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/css/index.html">css</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/HTML5&CSS3/index.html">HTML5&CSS3</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/index.html">javascript</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Javaxx/index.html">Java学习</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/nodejs/index.html">nodejs</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/requirejs/index.html">requirejs</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/index.html">Web前端</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/xxgw/index.html">学习感悟</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/gzdd/index.html">工作点滴</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/jkxx/index.html">接口学习</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/wfl/index.html">未分类</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/ydkf/index.html">移动开发</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/sjms/index.html">设计模式</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/mst/index.html">面试题</a></li>
+    				                      </ul>
+                </div>
+            </div>
+
+            <div id='content' class='row-fluid'>
+
+                <div class='span9 main'>
+				<div style="color:blue" align=center>【jquery版net控件—dropdownlist】附源码，欢迎大家指点、指正、拍砖！</div><br><h1 style="color: #ffffff; background-color: #888888; width: 100%;"><span style="color: #ffffff; background-color: #888888; width: 100%;">前言 </span></h1>
+<p>为了2012第一个春天，为了我那卑微的工资，为了我那伟大的爱情............................</p>
+<p>其实是为了自我能力的提升罢了，呵呵！！！（也是为了涨工资吧...）</p>
+<p>小弟准备向web前段开炮，而对js与jq都是初学，现在借博客园这块宝地来督促自己，借博客园的高手来提点自己。</p>
+<p>小弟准备陆陆续续用jquery模仿一点.net的控件以提高自己，顺便看看能不能弄一点可用插件出来，各位大哥看到了多多指点哦。</p>
+<h1 style="color: #ffffff; background-color: #888888; width: 100%;"><span style="color: #ffffff; background-color: #888888; width: 100%;">控件简单应用 </span></h1>
+<h1>效果图</h1>
+<h2>1 初始化效果</h2>
+<p>&nbsp;</p>
+<p><img src="9139667726791.png" alt=""></p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<hr>
+<p>&nbsp;</p>
+<p><img src="17867018269307.png" alt=""></p>
+<hr>
+<h2>生成的html代码</h2>
+<p>&nbsp;<img src="9787266227418.png" alt=""></p>
+<h1>&nbsp;2 控件选项改变事件以及列表项点击事件（最后三项后期加入未作事件绑定）</h1>
+<p>&nbsp;</p>
+<p><img src="4093515479943.png" alt=""></p>
+<hr>
+<p><img src="27635447546670.png" alt=""></p>
+<hr>
+<p><img src="34537368788019.png" alt=""></p>
+<h1>3 前台调用代码</h1>
+<p>&nbsp;</p>
+<div class="cnblogs_Highlighter">
+<pre class="brush:javascript;gutter:true;">&lt;!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"&gt;
+&lt;html xmlns="http://www.w3.org/1999/xhtml"&gt;
+&lt;head&gt;
+    &lt;title&gt;&lt;/title&gt;
+    &lt;script src="scripts/jquery-1.4.1.js" type="text/javascript"&gt;&lt;/script&gt;
+    &lt;script src="js/dropDownList.js" type="text/javascript"&gt;&lt;/script&gt;
+    &lt;script type="text/javascript"&gt;
+        $(document).ready(function () {
+            var data = [];
+            for (var i = 0; i &lt; 3; i++) {
+                data[i] = {};
+                data[i]["v"] = "value_" + i.toString();
+                data[i]["t"] = "text_" + i.toString();
+            }
+
+            var $div = $("#divwl");
+            var drop1 = new dropDownList("drop1");
+
+            drop1.event.onChange = onSelectChanged;
+            drop1.itemEvent.onClick = onItemClick;
+            drop1.dataSource = data;
+            drop1.dataValueField = "v";
+            drop1.dataTextField = "t";
+            drop1.dataTitleField = "v";
+            drop1.dataBind($div);
+
+            drop1.setSelectedText("text_2");
+
+            //动态添加选择项，此处选择项没有事件
+            for (var i = 0; i &lt; 3; i++) {
+                var v = "inertValue_" + i;
+                var t = "insertText_" + i;
+                var _item = new item(v, t);
+                _item.load();
+                drop1.insertItem(_item);
+            }
+            drop1.style.width = '300px';
+            drop1.style.height = '25px';
+            drop1.style.background = 'Gray';
+            drop1.styleLoad();
+
+            //事件处理函数
+            function onItemClick() {
+                var sender = this;
+                var optionSender = sender.htmlElement;
+                var selectedValue = optionSender.val();
+                var item = sender;
+                var $div = $("#itemText");
+                $div.html("单项点击事件&lt;hr/&gt;" + "当前项：" + item.attribute.text + "&lt;br/&gt;当前值：" + selectedValue);
+                $div.fadeIn(500);
+                $div.fadeOut(5000);
+            }
+            function onSelectChanged() {
+                var sender = this;
+                var dropSender = sender.htmlElement;
+                var selectedValue = dropSender.val()
+                var item = sender.getSelectedItem();
+                var $div = $("#text");
+                $div.html("dropdownlist的改变事件&lt;hr/&gt;" + "当前项：" + item.attribute.text + "&lt;br/&gt;当前值：" + selectedValue);
+                $div.fadeIn(500);
+                $div.fadeOut(5000);
+            }
+            function onSelectClick() {
+                var sender = this;
+                var dropSender = sender.htmlElement;
+                var selectedValue = dropSender.val()
+                var $div = $("#text");
+                $div.html("dropdownlist的点击事件，当前值：" + selectedValue);
+                $div.fadeIn(500);
+                $div.fadeOut(5000);
+            }
+
+        });
+      
+    &lt;/script&gt;
+&lt;/head&gt;
+&lt;body&gt;
+    &lt;div id="divwl"&gt;
+    &lt;/div&gt;
+    &lt;div id="text"&gt;
+    &lt;/div&gt;
+    &lt;div id="itemText"&gt;
+    &lt;/div&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+</div>
+<h1>&nbsp;1 数据源</h1>
+<p>&nbsp;数据源为我们动态写入的数组。</p>
+<div class="cnblogs_code">
+<pre><span style="color: #0000ff;">var</span> data = [];<br>            <span style="color: #0000ff;">for</span> (<span style="color: #0000ff;">var</span> i = 0; i &lt; 3; i++) {<br>                data[i] = {};<br>                data[i]["v"] = "value_" + i.toString();<br>                data[i]["t"] = "text_" + i.toString();<br>            }<br><br>            <span style="color: #0000ff;">var</span> $div = $("#divwl");<br>            <span style="color: #0000ff;">var</span> drop1 = <span style="color: #0000ff;">new</span> dropDownList("drop1");</pre>
+</div>
+<h1>2 基本调用说明</h1>
+<div class="cnblogs_code">
+<pre><span style="color: #008080;">1</span>  drop1.event.onChange = onSelectChanged;<br><span style="color: #008080;">2</span>             drop1.itemEvent.onClick = onItemClick;<br><span style="color: #008080;">3</span>             drop1.dataSource = data;<br><span style="color: #008080;">4</span>             drop1.dataValueField = "v";<br><span style="color: #008080;">5</span>             drop1.dataTextField = "t";<br><span style="color: #008080;">6</span>             drop1.dataTitleField = "v";<br><span style="color: #008080;">7</span>             drop1.dataBind($div);<br><span style="color: #008080;">8</span> <br><span style="color: #008080;">9</span>             drop1.setSelectedText("text_2");</pre>
+</div>
+<p>与.net控件基本一致，给定数据源，但是我这里多出了一个dataTitleField用以显示提示框。</p>
+<p>其中，drop1.event.onChange = onSelectChanged;为select 的事件</p>
+<p>drop1.itemEvent.onClick = onItemClick; 为option的事件绑定</p>
+<p>注意，此处事件绑定采用的是call的用法，所以下方函数：中的this作用域环境要注意。</p>
+<h1>3 动态添加列表项</h1>
+<p>&nbsp;</p>
+<div class="cnblogs_code">
+<pre><span style="color: #008080;">1</span>  <span style="color: #008000;">//</span><span style="color: #008000;">动态添加选择项，此处选择项没有事件</span><span style="color: #008000;"><br></span><span style="color: #008080;">2</span>             <span style="color: #0000ff;">for</span> (<span style="color: #0000ff;">var</span> i = 0; i &lt; 3; i++) {<br><span style="color: #008080;">3</span>                 <span style="color: #0000ff;">var</span> v = "inertValue_" + i;<br><span style="color: #008080;">4</span>                 <span style="color: #0000ff;">var</span> t = "insertText_" + i;<br><span style="color: #008080;">5</span>                 <span style="color: #0000ff;">var</span> _item = <span style="color: #0000ff;">new</span> item(v, t);<br><span style="color: #008080;">6</span>                 _item.load();<br><span style="color: #008080;">7</span>                 drop1.insertItem(_item);<br><span style="color: #008080;">8</span>             }</pre>
+</div>
+<p>此处添加的项，便没有做事件绑定了。</p>
+<p>再下面的代码便是对应函数便不多说了。</p>
+<h1 style="color: #ffffff; background-color: #888888; width: 100%;"><span style="color: #ffffff; background-color: #888888; width: 100%;">控件数据源Ajax获取应用 </span></h1>
+<h1>&nbsp;1 效果图</h1>
+<h2>&nbsp;基本界面</h2>
+<p>&nbsp;</p>
+<p><img src="40818969369983.png" alt=""></p>
+<h2>Ajax获得json数据源：</h2>
+<pre><code class="wrappedText focusRow">[{"id":1,"name":"河北"},{"id":2,"name":"江苏"},{"id":3,"name":"四川"},{"id":4,"name":"贵州"}]</code><br><br></pre>
+<h2>对应数据库数据：</h2>
+<p><img src="5894577057823.png" alt=""></p>
+<h2>点击对应省份引发改变事件</h2>
+<p><img src="28691567286728.png" alt=""></p>
+<h2>获取数据源：</h2>
+<div class="netInfoResponseText netInfoText ">
+<pre><code class="wrappedText focusRow">[{"id":8,"provinceId":3,"name":"成都"},{"id":9,"provinceId":3,"name":"绵阳"},{"id":10,"provinceId":3,"name"</code><code class="wrappedText focusRow">:"遂宁"},{"id":11,"provinceId":3,"name":"南充"}]</code></pre>
+</div>
+<h2>前台调用代码：</h2>
+<div class="cnblogs_code">
+<pre>&lt;!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"&gt;<br>&lt;html xmlns="http://www.w3.org/1999/xhtml"&gt;<br>&lt;head&gt;<br>    &lt;title&gt;&lt;/title&gt;<br>    &lt;script src="scripts/jquery-1.4.1.js" type="text/javascript"&gt;&lt;/script&gt;<br>    &lt;script src="js/dropDownList.js" type="text/javascript"&gt;&lt;/script&gt;<br>    &lt;script type="text/javascript"&gt;<br>        $(document).ready(<span style="color: #0000ff;">function</span> () {<br>            <span style="color: #0000ff;">var</span> dataProvince = <span style="color: #0000ff;">null</span>;<br>            $.ajax({<br>                type: "post",<br>                url: "Ajax.aspx?sql=select  * from province   ",<br>                type: "json",<br>                async: <span style="color: #0000ff;">false</span>,<br>                success: <span style="color: #0000ff;">function</span> (data) {<br>                    dataProvince = data;<br>                }<br>            });<br><br>            <span style="color: #0000ff;">var</span> $div = $("#province");<br>            <span style="color: #0000ff;">var</span> drop1 = <span style="color: #0000ff;">new</span> dropDownList("dropProvince");<br>            drop1.event.onChange = onSelectChanged;<br>            drop1.dataSource = dataProvince;<br>            drop1.dataValueField = "id";<br>            drop1.dataTextField = "name";<br>            drop1.dataTitleField = "name";<br>            drop1.dataBind($div);<br>            <span style="color: #0000ff;">var</span> _item = <span style="color: #0000ff;">new</span> item("-1", "==请选择省份==");<br>            drop1.insertItem(_item);<br>            drop1.setSelectedText("==请选择省份==");<br><br>            <span style="color: #0000ff;">function</span> onSelectChanged() {<br>                <span style="color: #0000ff;">var</span> sender = <span style="color: #0000ff;">this</span>;<br>                <span style="color: #008000;">//</span><span style="color: #008000;">                var provinceId = sender.getSelectedValue();//也可以</span><span style="color: #008000;"><br></span>                <span style="color: #0000ff;">var</span> provinceId = drop1.getSelectedValue();<br><br>                <span style="color: #0000ff;">var</span> dataProvince = <span style="color: #0000ff;">null</span>;<br>                $.ajax({<br>                    type: "post",<br>                    url: "Ajax.aspx?sql=select  * from city where provinceId=" + provinceId + "   ",<br>                    type: "json",<br>                    async: <span style="color: #0000ff;">false</span>,<br>                    success: <span style="color: #0000ff;">function</span> (data) {<br>                        dataProvince = data;<br>                    }<br>                });<br>                <span style="color: #0000ff;">var</span> $div1 = $("#city");<br>                <span style="color: #0000ff;">var</span> dropCity = <span style="color: #0000ff;">new</span> dropDownList("dropCity");<br><br>                $div1.html("市：");<br>                dropCity.dataSource = dataProvince;<br>                dropCity.dataValueField = "id";<br>                dropCity.dataTextField = "name";<br>                dropCity.dataTitleField = "name";<br>                dropCity.dataBind($div1);<br><br>            }<br><br>        });<br>      <br>    &lt;/script&gt;<br>&lt;/head&gt;<br>&lt;body&gt;<br>    &lt;div id="province"&gt;<br>        省：<br>    &lt;/div&gt;<br>    &lt;hr /&gt;<br>    &lt;div id="city"&gt;<br>        市：<br>    &lt;/div&gt;<br>&lt;/body&gt;<br>&lt;/html&gt;</pre>
+</div>
+<p>这个我便暂时不说明了吧，很晚了，明天还要上班呢......</p>
+<p>因为不知道看的人多不多，也不知道大家有没有问他，若是有问题我再解答吧，具体请大家自己去运行吧。</p>
+<p>&nbsp;</p>
+<h1><a title="dropdownlist源码" href="http://files.cnblogs.com/yexiaochai/01dropDownList.zip" rel="designates">&nbsp;dropdownlist源代码</a></h1>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+                </div>
+
+                <div class='span3 sidebar'>
+                    <h2>导航栏</h2>
+                    <ul class="nav nav-tabs nav-stacked">
+                             				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/Fiddlerznqddsq/index.html">Fiddler真乃前端大杀器！！！</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/Requirejs/index.html">Requirejs</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/RequireJSyBackbonejdzh/index.html">RequireJS与Backbone简单整合</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/RequireJSxxbj/index.html">RequireJS学习笔记</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/Webqdyhctxdpzyyqdgsgpng/index.html">Web前端优化初探，小弟抛砖引玉，期待高手共破难关！</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/Webqdlqjrctxsqwpzyyqdgsgpng/index.html">Web前端浏览器兼容初探，小生浅文抛砖引玉，期待高手攻破难关！</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/jqueryfdataListxnyhmbybysxtgxn10bys/index.html">【jquery仿dataList——性能优化】模板预编译思想提高性能10倍以上！！！</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/jqueryfdataListyyzmfigoogledzhtdpxzdhfp/index.html">【jquery仿dataList】应用之——模仿igoogle【定制化、拖动排序，最大化、分屏】</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/jqueryfdatalistdygwtqzszmxxsjlkzDIVdjjbf/index.html">【jquery仿datalist的一个问题，求助】——设置每行显示几列，块状DIV的解决办法</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/jquerymfnetkjcbGridViewmxsxjqjdyy/index.html">【jquery模仿net控件】初步GridView模型实现，及其简单应用</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/jquerymfnetkjjdfykj10fsgridviewsycs/index.html">【jquery模仿net控件】简单分页控件10，附上gridview使用测试</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/jquerymfnetkjjdddatalistkjgxjqjdyy/index.html">【jquery模仿net控件】简单的datalist控件更新，及其简单应用</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/jquerymfnetkjjdddropdownlistydatalist/index.html">【jquery模仿net控件】简单的dropdownlist与datalist</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/jquerybnetkjdropdownlistfymhydjzdzzpz/index.html">【jquery版net控件—dropdownlist】附源码，欢迎大家指点、指正、拍砖！！！</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/positionykyhfzddccyslsbdws/index.html">【position也可以很复杂】当弹出层遇上了鼠标定位（上）</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/positionykyhfzddccyslsbdwx/index.html">【position也可以很复杂】当弹出层遇上了鼠标定位（下）</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/SEOzmlwljnmtsbwmlyqkkSEOb/index.html">【SEO】周末了，为了纪念明天上班，我们来一起看看SEO吧</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/webqdyhqdwyhyrzrz/index.html">【web前端优化】前端无优化，庸人自扰之！</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/webqdyhzreflowjsymdhl/index.html">【web前端优化之reflow】减少页面的回流</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/webqdyhztpycjzctzwbsxwbk/index.html">【web前端优化之图片延迟加载初探】中午不睡，下午崩溃</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/webqdyhztpmhdqxkwQQkjrhxsxp/index.html">【web前端优化之图片模糊到清晰】看我QQ空间如何显示相片</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/webqdpxzqhddphsywmsxdDatalistsmwtb/index.html">【web前端培训之前后端的配合（上）】以我们熟悉的Datalist说明问题吧</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/webqdpxzqhddphzjxzrdgs/index.html">【web前端培训之前后端的配合（中）】继续昨日的故事</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/dyyygybkydbfgqym/index.html">【单页应用】关于博客园的补发（高清有码）。。。</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/xtsstringifysBUGlocalstoragesxxmSafarialertksfycjzym10pxbp/index.html">【小贴士】【stringify神BUG】【localstorage失效】【消灭Safarialert框】【是否延迟加载】【页面10px白屏】</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/dalhdmsthhdsdmstjsh/index.html">【答阿里寒冬面试题】呵呵，大神的面试题就是好！</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/ycsjmstdldgwxxdgjxxdff/index.html">一次上机面试题带来的感悟【学习的感觉、学习的方法】</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/ydmstdldqdyhsxxxdp/index.html">一道面试题带来的前端优化——实现星星点评</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/zysyzjjhfzwebqdbfxlgxmndjjfa/index.html">只言碎语总结，今后发展web前端，并分享两个项目难点解决方案。</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/gwjlytbllbnwmljxwwdbdyzb/index.html">各位加了一天班累了吧？那我们来继续未完的表单验证吧</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/gwzmwlytllbwmyqlzldmstbjstbdy/index.html">各位周末玩了一天累了吧，我们一起来做两道面试题吧（据说淘宝的哟）！</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/jyjQuerydxlcdcjzwsy/index.html">基于jQuery的下拉菜单插件，诸位上眼！！！</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/jyjQuerydxlcdcd02zwsy/index.html">基于jQuery的下拉菜单菜单【02】，诸位上眼！！！</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/gzzpddyxdxdccktfybwjsc/index.html">工作中碰到的一些东西【弹出窗口】【拖放】【异步文件上传】</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/gzlygxqgwydllbnwmyqlbdyzyfb/index.html">工作了一个星期各位一定累了吧，那我们一起来表单验证一番吧！</a></li>
+    				                                         
+                    </ul>
+                </div>
+            </div>
+
+        </div>
+    </body>
+</html>

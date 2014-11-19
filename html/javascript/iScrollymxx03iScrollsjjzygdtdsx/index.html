@@ -1,0 +1,586 @@
+﻿<!DOCTYPE html>
+
+<html lang="zh">
+    <head>
+        <meta charset="utf-8">
+        <meta name="description" content="android,ios" />
+        <meta name="keywords" content="android,ios" />
+
+        <title>叶小钗</title>
+        <style type='text/css'>
+            body {
+                background-color: #CCC;
+            }
+        </style>
+        <link rel="stylesheet" href="../../../css/bootstrap.css" />
+    </head>
+
+    <body>
+        <div class="container">
+
+            <h1>叶小钗</h1>
+
+            <div class='navbar navbar-inverse'>
+                <div class='navbar-inner nav-collapse' style="height: auto;">
+                    <ul class="nav">
+                              				<li><a href="http://songboriceboy.github.io/xxoo/html/blade/index.html">blade</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/css/index.html">css</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/HTML5&CSS3/index.html">HTML5&CSS3</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/index.html">javascript</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Javaxx/index.html">Java学习</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/nodejs/index.html">nodejs</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/requirejs/index.html">requirejs</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/index.html">Web前端</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/xxgw/index.html">学习感悟</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/gzdd/index.html">工作点滴</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/jkxx/index.html">接口学习</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/wfl/index.html">未分类</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/ydkf/index.html">移动开发</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/sjms/index.html">设计模式</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/mst/index.html">面试题</a></li>
+    				                      </ul>
+                </div>
+            </div>
+
+            <div id='content' class='row-fluid'>
+
+                <div class='span9 main'>
+				<div style="color:blue" align=center>【iScroll源码学习03】iScroll事件机制与滚动条的实现</div><br><h1>前言</h1>
+<p>想不到又到周末了，周末的时间要抓紧学习才行，前几天我们学习了iScroll几点基础知识：</p>
+<ul>
+<li><a href="http://www.cnblogs.com/yexiaochai/p/3500538.html">1. 【iScroll源码学习02】分解iScroll三个核心事件点</a></li>
+<li><a href="http://www.cnblogs.com/yexiaochai/p/3496369.html">2. 【iScroll源码学习01】准备阶段</a></li>
+<li><a href="http://www.cnblogs.com/yexiaochai/p/3489676.html">3. 【iScroll源码学习00】模拟iScroll</a></li>
+</ul>
+<p>今天我们来学习其事件机制以及滚动条的实现，完了后我们iScroll就学习的差不多了，最后会抽离iScroll的精华部分组成一个阉割版iScroll</p>
+<p>并总结下iScroll的一些地方结束iScroll的学习，然后彻底扑向nodeJS了</p>
+<h1>iScroll事件机制</h1>
+<p>我们平时所说的事件机制其实应该分开，分成两块：</p>
+<p>① DOM的事件相关</p>
+<p>② 系统自建事件机制</p>
+<p>在我们前端的页面里面，最重要的当然是交互，交互其实就是一个个事件的体现，所以任何前端库的核心一定是其事件，iScroll就是由三大事件串联整个流程</p>
+<p>iScroll同样包括DOM事件以及自建事件，其中DOM事件便是浏览器的表现，而自建事件就是用户可以插一脚的地方了</p>
+<h2>DOM事件参数盲点</h2>
+<p><span style="line-height: 1.5;">iScroll DOM事件实现与可能让一些不熟悉javascript事件机制的同学大跌眼镜（在与<a href="http://www.cnblogs.com/aaronjs/">Aaron</a>讨论前，我其实也摸不着头脑）</span></p>
+<p><span style="line-height: 1.5;">简单来说，标准情况下我们这样实现事件注册</span></p>
+<div class="cnblogs_code">
+<pre>el.addEventListener(type, fn, capture)</pre>
+</div>
+<p>其中的所有参数都没有问题，唯独第二个参数，为什么这么说呢？请看以下代码：</p>
+<div class="cnblogs_code">
+<pre><span style="color: #008080;">1</span> <span style="color: #0000ff;">var</span> eventObj =<span style="color: #000000;"> {};
+</span><span style="color: #008080;">2</span> eventObj.a = 1<span style="color: #000000;">;
+</span><span style="color: #008080;">3</span> document.addEventListener('click', eventObj)</pre>
+</div>
+<p>各位觉得这个代码有问题吗？第二个参数显然不是一个函数，但是function也是object呢，其实这样也是javascript规范之一，不知道只是我们寡闻而已</p>
+<p>这样写有以下好处，我们的作用域就是我们的对象：</p>
+<div class="cnblogs_code">
+<pre><span style="color: #0000ff;">var</span> eventObj =<span style="color: #000000;"> {};
+eventObj.a </span>= 1<span style="color: #000000;">;
+eventObj.handleEvent </span>= <span style="color: #0000ff;">function</span><span style="color: #000000;"> () {
+  alert(</span><span style="color: #0000ff;">this</span><span style="color: #000000;">.a);
+}
+document.addEventListener(</span>'click'<span style="color: #000000;">, eventObj)
+</span><span style="color: #008000;">//</span><span style="color: #008000;">这个代码点击会弹出1</span></pre>
+</div>
+<p>这个便是一个javascript规范，我们传入的对象如果具有handleEvent 函数，便会执行，如果没有，此次注册便无意义，这样绑定的话，作用域便指向了eventObj</p>
+<h2><span style="line-height: 1.5;">iScroll DOM 事件</span></h2>
+<p><span style="line-height: 1.5;">有了以上知识，再说回iScroll的DOM事件：</span></p>
+<p><span style="line-height: 1.5;">① 构造函数会执行_initEvents方法初始化事件，我们抽出我们关心的一块：</span></p>
+<div class="cnblogs_code">
+<pre><span style="color: #008080;">1</span> eventType(<span style="color: #0000ff;">this</span>.wrapper, 'touchstart', <span style="color: #0000ff;">this</span><span style="color: #000000;">);
+</span><span style="color: #008080;">2</span> eventType(target, 'touchmove', <span style="color: #0000ff;">this</span><span style="color: #000000;">);
+</span><span style="color: #008080;">3</span> eventType(target, 'touchcancel', <span style="color: #0000ff;">this</span><span style="color: #000000;">);
+</span><span style="color: #008080;">4</span> eventType(target, 'touchend', <span style="color: #0000ff;">this</span>);</pre>
+</div>
+<div class="cnblogs_code">
+<pre><span style="color: #0000ff;">var</span> eventType = remove ? utils.removeEvent : utils.addEvent</pre>
+</div>
+<p>这个代码其实就是调用的addEvent方法：</p>
+<div class="cnblogs_code">
+<pre><span style="color: #008080;">1</span> me.addEvent = <span style="color: #0000ff;">function</span><span style="color: #000000;"> (el, type, fn, capture) {
+</span><span style="color: #008080;">2</span>   el.addEventListener(type, fn, !!<span style="color: #000000;">capture);
+</span><span style="color: #008080;">3</span> };</pre>
+</div>
+<p>那么iScroll事件绑定的具体点便捕捉到了：</p>
+<p><img src="24027136796332.png" alt=""></p>
+<p>可以看到我们这里的fn是一个对象，但是不要担心，我们的具体的方法在此：</p>
+<div class="cnblogs_code">
+<pre><span style="color: #008080;"> 1</span> handleEvent: <span style="color: #0000ff;">function</span><span style="color: #000000;"> (e) {
+</span><span style="color: #008080;"> 2</span>   <span style="color: #0000ff;">switch</span><span style="color: #000000;"> (e.type) {
+</span><span style="color: #008080;"> 3</span>     <span style="color: #0000ff;">case</span> 'touchstart'<span style="color: #000000;">:
+</span><span style="color: #008080;"> 4</span>     <span style="color: #0000ff;">case</span> 'MSPointerDown'<span style="color: #000000;">:
+</span><span style="color: #008080;"> 5</span>     <span style="color: #0000ff;">case</span> 'mousedown'<span style="color: #000000;">:
+</span><span style="color: #008080;"> 6</span>       <span style="color: #0000ff;">this</span><span style="color: #000000;">._start(e);
+</span><span style="color: #008080;"> 7</span>       <span style="color: #0000ff;">break</span><span style="color: #000000;">;
+</span><span style="color: #008080;"> 8</span>     <span style="color: #0000ff;">case</span> 'touchmove'<span style="color: #000000;">:
+</span><span style="color: #008080;"> 9</span>     <span style="color: #0000ff;">case</span> 'MSPointerMove'<span style="color: #000000;">:
+</span><span style="color: #008080;">10</span>     <span style="color: #0000ff;">case</span> 'mousemove'<span style="color: #000000;">:
+</span><span style="color: #008080;">11</span>       <span style="color: #0000ff;">this</span><span style="color: #000000;">._move(e);
+</span><span style="color: #008080;">12</span>       <span style="color: #0000ff;">break</span><span style="color: #000000;">;
+</span><span style="color: #008080;">13</span>     <span style="color: #0000ff;">case</span> 'touchend'<span style="color: #000000;">:
+</span><span style="color: #008080;">14</span>     <span style="color: #0000ff;">case</span> 'MSPointerUp'<span style="color: #000000;">:
+</span><span style="color: #008080;">15</span>     <span style="color: #0000ff;">case</span> 'mouseup'<span style="color: #000000;">:
+</span><span style="color: #008080;">16</span>     <span style="color: #0000ff;">case</span> 'touchcancel'<span style="color: #000000;">:
+</span><span style="color: #008080;">17</span>     <span style="color: #0000ff;">case</span> 'MSPointerCancel'<span style="color: #000000;">:
+</span><span style="color: #008080;">18</span>     <span style="color: #0000ff;">case</span> 'mousecancel'<span style="color: #000000;">:
+</span><span style="color: #008080;">19</span>       <span style="color: #0000ff;">this</span><span style="color: #000000;">._end(e);
+</span><span style="color: #008080;">20</span>       <span style="color: #0000ff;">break</span><span style="color: #000000;">;
+</span><span style="color: #008080;">21</span>     <span style="color: #0000ff;">case</span> 'orientationchange'<span style="color: #000000;">:
+</span><span style="color: #008080;">22</span>     <span style="color: #0000ff;">case</span> 'resize'<span style="color: #000000;">:
+</span><span style="color: #008080;">23</span>       <span style="color: #0000ff;">this</span><span style="color: #000000;">._resize();
+</span><span style="color: #008080;">24</span>       <span style="color: #0000ff;">break</span><span style="color: #000000;">;
+</span><span style="color: #008080;">25</span>     <span style="color: #0000ff;">case</span> 'transitionend'<span style="color: #000000;">:
+</span><span style="color: #008080;">26</span>     <span style="color: #0000ff;">case</span> 'webkitTransitionEnd'<span style="color: #000000;">:
+</span><span style="color: #008080;">27</span>     <span style="color: #0000ff;">case</span> 'oTransitionEnd'<span style="color: #000000;">:
+</span><span style="color: #008080;">28</span>     <span style="color: #0000ff;">case</span> 'MSTransitionEnd'<span style="color: #000000;">:
+</span><span style="color: #008080;">29</span>       <span style="color: #0000ff;">this</span><span style="color: #000000;">._transitionEnd(e);
+</span><span style="color: #008080;">30</span>       <span style="color: #0000ff;">break</span><span style="color: #000000;">;
+</span><span style="color: #008080;">31</span>     <span style="color: #0000ff;">case</span> 'wheel'<span style="color: #000000;">:
+</span><span style="color: #008080;">32</span>     <span style="color: #0000ff;">case</span> 'DOMMouseScroll'<span style="color: #000000;">:
+</span><span style="color: #008080;">33</span>     <span style="color: #0000ff;">case</span> 'mousewheel'<span style="color: #000000;">:
+</span><span style="color: #008080;">34</span>       <span style="color: #0000ff;">this</span><span style="color: #000000;">._wheel(e);
+</span><span style="color: #008080;">35</span>       <span style="color: #0000ff;">break</span><span style="color: #000000;">;
+</span><span style="color: #008080;">36</span>     <span style="color: #0000ff;">case</span> 'keydown'<span style="color: #000000;">:
+</span><span style="color: #008080;">37</span>       <span style="color: #0000ff;">this</span><span style="color: #000000;">._key(e);
+</span><span style="color: #008080;">38</span>       <span style="color: #0000ff;">break</span><span style="color: #000000;">;
+</span><span style="color: #008080;">39</span>     <span style="color: #0000ff;">case</span> 'click'<span style="color: #000000;">:
+</span><span style="color: #008080;">40</span>       <span style="color: #0000ff;">if</span> (!<span style="color: #000000;">e._constructed) {
+</span><span style="color: #008080;">41</span> <span style="color: #000000;">        e.preventDefault();
+</span><span style="color: #008080;">42</span> <span style="color: #000000;">        e.stopPropagation();
+</span><span style="color: #008080;">43</span> <span style="color: #000000;">      }
+</span><span style="color: #008080;">44</span>       <span style="color: #0000ff;">break</span><span style="color: #000000;">;
+</span><span style="color: #008080;">45</span> <span style="color: #000000;">  }
+</span><span style="color: #008080;">46</span> }</pre>
+</div>
+<p>高大帅哈，如此整个iScroll的DOM事件相关就没问题了，在具体就回到了上次的三大事件点了</p>
+<h2><span style="line-height: 1.5;">自定义事件机制</span></h2>
+<p><span style="line-height: 1.5;">其实在我们学习backbone时候我们就提到了这块操作</span></p>
+<div class="cnblogs_code">
+<pre><span style="color: #008080;"> 1</span> <span style="color: #0000ff;">var</span> Events = Backbone.Events =<span style="color: #000000;"> {
+</span><span style="color: #008080;"> 2</span> 
+<span style="color: #008080;"> 3</span>   on: <span style="color: #0000ff;">function</span><span style="color: #000000;"> (name, callback, context) {
+</span><span style="color: #008080;"> 4</span>     <span style="color: #0000ff;">if</span> (!eventsApi(<span style="color: #0000ff;">this</span>, 'on', name, [callback, context]) || !callback) <span style="color: #0000ff;">return</span> <span style="color: #0000ff;">this</span><span style="color: #000000;">;
+</span><span style="color: #008080;"> 5</span>     <span style="color: #0000ff;">this</span>._events || (<span style="color: #0000ff;">this</span>._events =<span style="color: #000000;"> {});
+</span><span style="color: #008080;"> 6</span>     <span style="color: #0000ff;">var</span> events = <span style="color: #0000ff;">this</span>._events[name] || (<span style="color: #0000ff;">this</span>._events[name] =<span style="color: #000000;"> []);
+</span><span style="color: #008080;"> 7</span>     events.push({ callback: callback, context: context, ctx: context || <span style="color: #0000ff;">this</span><span style="color: #000000;"> });
+</span><span style="color: #008080;"> 8</span>     <span style="color: #0000ff;">return</span> <span style="color: #0000ff;">this</span><span style="color: #000000;">;
+</span><span style="color: #008080;"> 9</span> <span style="color: #000000;">  },
+</span><span style="color: #008080;">10</span> 
+<span style="color: #008080;">11</span>   off: <span style="color: #0000ff;">function</span><span style="color: #000000;"> (name, callback, context) {
+</span><span style="color: #008080;">12</span>     <span style="color: #0000ff;">var</span><span style="color: #000000;"> retain, ev, events, names, i, l, j, k;
+</span><span style="color: #008080;">13</span>     <span style="color: #0000ff;">if</span> (!<span style="color: #0000ff;">this</span>._events || !eventsApi(<span style="color: #0000ff;">this</span>, 'off', name, [callback, context])) <span style="color: #0000ff;">return</span> <span style="color: #0000ff;">this</span><span style="color: #000000;">;
+</span><span style="color: #008080;">14</span>     <span style="color: #0000ff;">if</span> (!name &amp;&amp; !callback &amp;&amp; !<span style="color: #000000;">context) {
+</span><span style="color: #008080;">15</span>       <span style="color: #0000ff;">this</span>._events =<span style="color: #000000;"> {};
+</span><span style="color: #008080;">16</span>       <span style="color: #0000ff;">return</span> <span style="color: #0000ff;">this</span><span style="color: #000000;">;
+</span><span style="color: #008080;">17</span> <span style="color: #000000;">    }
+</span><span style="color: #008080;">18</span> 
+<span style="color: #008080;">19</span>     names = name ? [name] : _.keys(<span style="color: #0000ff;">this</span><span style="color: #000000;">._events);
+</span><span style="color: #008080;">20</span>     <span style="color: #0000ff;">for</span> (i = 0, l = names.length; i &lt; l; i++<span style="color: #000000;">) {
+</span><span style="color: #008080;">21</span>       name =<span style="color: #000000;"> names[i];
+</span><span style="color: #008080;">22</span>       <span style="color: #0000ff;">if</span> (events = <span style="color: #0000ff;">this</span><span style="color: #000000;">._events[name]) {
+</span><span style="color: #008080;">23</span>         <span style="color: #0000ff;">this</span>._events[name] = retain =<span style="color: #000000;"> [];
+</span><span style="color: #008080;">24</span>         <span style="color: #0000ff;">if</span> (callback ||<span style="color: #000000;"> context) {
+</span><span style="color: #008080;">25</span>           <span style="color: #0000ff;">for</span> (j = 0, k = events.length; j &lt; k; j++<span style="color: #000000;">) {
+</span><span style="color: #008080;">26</span>             ev =<span style="color: #000000;"> events[j];
+</span><span style="color: #008080;">27</span>             <span style="color: #0000ff;">if</span> ((callback &amp;&amp; callback !== ev.callback &amp;&amp; callback !== ev.callback._callback) ||
+<span style="color: #008080;">28</span>               (context &amp;&amp; context !==<span style="color: #000000;"> ev.context)) {
+</span><span style="color: #008080;">29</span> <span style="color: #000000;">              retain.push(ev);
+</span><span style="color: #008080;">30</span> <span style="color: #000000;">            }
+</span><span style="color: #008080;">31</span> <span style="color: #000000;">          }
+</span><span style="color: #008080;">32</span> <span style="color: #000000;">        }
+</span><span style="color: #008080;">33</span>         <span style="color: #0000ff;">if</span> (!retain.length) <span style="color: #0000ff;">delete</span> <span style="color: #0000ff;">this</span><span style="color: #000000;">._events[name];
+</span><span style="color: #008080;">34</span> <span style="color: #000000;">      }
+</span><span style="color: #008080;">35</span> <span style="color: #000000;">    }
+</span><span style="color: #008080;">36</span> 
+<span style="color: #008080;">37</span>     <span style="color: #0000ff;">return</span> <span style="color: #0000ff;">this</span><span style="color: #000000;">;
+</span><span style="color: #008080;">38</span> <span style="color: #000000;">  },
+</span><span style="color: #008080;">39</span> 
+<span style="color: #008080;">40</span>   trigger: <span style="color: #0000ff;">function</span><span style="color: #000000;"> (name) {
+</span><span style="color: #008080;">41</span>     <span style="color: #0000ff;">if</span> (!<span style="color: #0000ff;">this</span>._events) <span style="color: #0000ff;">return</span> <span style="color: #0000ff;">this</span><span style="color: #000000;">;
+</span><span style="color: #008080;">42</span>     <span style="color: #0000ff;">var</span> args = slice.call(arguments, 1<span style="color: #000000;">);
+</span><span style="color: #008080;">43</span>     <span style="color: #0000ff;">if</span> (!eventsApi(<span style="color: #0000ff;">this</span>, 'trigger', name, args)) <span style="color: #0000ff;">return</span> <span style="color: #0000ff;">this</span><span style="color: #000000;">;
+</span><span style="color: #008080;">44</span>     <span style="color: #0000ff;">var</span> events = <span style="color: #0000ff;">this</span><span style="color: #000000;">._events[name];
+</span><span style="color: #008080;">45</span>     <span style="color: #0000ff;">var</span> allEvents = <span style="color: #0000ff;">this</span><span style="color: #000000;">._events.all;
+</span><span style="color: #008080;">46</span>     <span style="color: #0000ff;">if</span><span style="color: #000000;"> (events) triggerEvents(events, args);
+</span><span style="color: #008080;">47</span>     <span style="color: #0000ff;">if</span><span style="color: #000000;"> (allEvents) triggerEvents(allEvents, arguments);
+</span><span style="color: #008080;">48</span>     <span style="color: #0000ff;">return</span> <span style="color: #0000ff;">this</span><span style="color: #000000;">;
+</span><span style="color: #008080;">49</span> <span style="color: #000000;">  },
+</span><span style="color: #008080;">50</span> <span style="color: #000000;">};
+</span><span style="color: #008080;">51</span> 
+<span style="color: #008080;">52</span> <span style="color: #008000;">//</span><span style="color: #008000;"> Regular expression used to split event strings.</span>
+<span style="color: #008080;">53</span> <span style="color: #0000ff;">var</span> eventSplitter = /\s+/<span style="color: #000000;">;
+</span><span style="color: #008080;">54</span> 
+<span style="color: #008080;">55</span> <span style="color: #008000;">//</span><span style="color: #008000;"> Implement fancy features of the Events API such as multiple event</span>
+<span style="color: #008080;">56</span> <span style="color: #008000;">//</span><span style="color: #008000;"> names `"change blur"` and jQuery-style event maps `{change: action}`</span>
+<span style="color: #008080;">57</span> <span style="color: #008000;">//</span><span style="color: #008000;"> in terms of the existing API.</span>
+<span style="color: #008080;">58</span> <span style="color: #0000ff;">var</span> eventsApi = <span style="color: #0000ff;">function</span><span style="color: #000000;"> (obj, action, name, rest) {
+</span><span style="color: #008080;">59</span>   <span style="color: #0000ff;">if</span> (!name) <span style="color: #0000ff;">return</span> <span style="color: #0000ff;">true</span><span style="color: #000000;">;
+</span><span style="color: #008080;">60</span> 
+<span style="color: #008080;">61</span>   <span style="color: #008000;">//</span><span style="color: #008000;"> Handle event maps.</span>
+<span style="color: #008080;">62</span>   <span style="color: #0000ff;">if</span> (<span style="color: #0000ff;">typeof</span> name === 'object'<span style="color: #000000;">) {
+</span><span style="color: #008080;">63</span>     <span style="color: #0000ff;">for</span> (<span style="color: #0000ff;">var</span> key <span style="color: #0000ff;">in</span><span style="color: #000000;"> name) {
+</span><span style="color: #008080;">64</span> <span style="color: #000000;">      obj[action].apply(obj, [key, name[key]].concat(rest));
+</span><span style="color: #008080;">65</span> <span style="color: #000000;">    }
+</span><span style="color: #008080;">66</span>     <span style="color: #0000ff;">return</span> <span style="color: #0000ff;">false</span><span style="color: #000000;">;
+</span><span style="color: #008080;">67</span> <span style="color: #000000;">  }
+</span><span style="color: #008080;">68</span> 
+<span style="color: #008080;">69</span>   <span style="color: #008000;">//</span><span style="color: #008000;"> Handle space separated event names.</span>
+<span style="color: #008080;">70</span>   <span style="color: #0000ff;">if</span><span style="color: #000000;"> (eventSplitter.test(name)) {
+</span><span style="color: #008080;">71</span>     <span style="color: #0000ff;">var</span> names =<span style="color: #000000;"> name.split(eventSplitter);
+</span><span style="color: #008080;">72</span>     <span style="color: #0000ff;">for</span> (<span style="color: #0000ff;">var</span> i = 0, l = names.length; i &lt; l; i++<span style="color: #000000;">) {
+</span><span style="color: #008080;">73</span> <span style="color: #000000;">      obj[action].apply(obj, [names[i]].concat(rest));
+</span><span style="color: #008080;">74</span> <span style="color: #000000;">    }
+</span><span style="color: #008080;">75</span>     <span style="color: #0000ff;">return</span> <span style="color: #0000ff;">false</span><span style="color: #000000;">;
+</span><span style="color: #008080;">76</span> <span style="color: #000000;">  }
+</span><span style="color: #008080;">77</span> 
+<span style="color: #008080;">78</span>   <span style="color: #0000ff;">return</span> <span style="color: #0000ff;">true</span><span style="color: #000000;">;
+</span><span style="color: #008080;">79</span> };</pre>
+</div>
+<p>所谓自建事件机制，其实是唬人的，就是用一个数组保存各个阶段的函数，到特定阶段执行便可，iScroll这块做的尤其简单，而且又注册没有注销：</p>
+<div class="cnblogs_code">
+<pre><span style="color: #008080;"> 1</span> on: <span style="color: #0000ff;">function</span><span style="color: #000000;"> (type, fn) {
+</span><span style="color: #008080;"> 2</span>   <span style="color: #0000ff;">if</span> (!<span style="color: #0000ff;">this</span><span style="color: #000000;">._events[type]) {
+</span><span style="color: #008080;"> 3</span>     <span style="color: #0000ff;">this</span>._events[type] =<span style="color: #000000;"> [];
+</span><span style="color: #008080;"> 4</span> <span style="color: #000000;">  }
+</span><span style="color: #008080;"> 5</span> 
+<span style="color: #008080;"> 6</span>   <span style="color: #0000ff;">this</span><span style="color: #000000;">._events[type].push(fn);
+</span><span style="color: #008080;"> 7</span> <span style="color: #000000;">},
+</span><span style="color: #008080;"> 8</span> 
+<span style="color: #008080;"> 9</span> _execEvent: <span style="color: #0000ff;">function</span><span style="color: #000000;"> (type) {
+</span><span style="color: #008080;">10</span>   <span style="color: #0000ff;">if</span> (!<span style="color: #0000ff;">this</span><span style="color: #000000;">._events[type]) {
+</span><span style="color: #008080;">11</span>     <span style="color: #0000ff;">return</span><span style="color: #000000;">;
+</span><span style="color: #008080;">12</span> <span style="color: #000000;">  }
+</span><span style="color: #008080;">13</span> 
+<span style="color: #008080;">14</span>   <span style="color: #0000ff;">var</span> i = 0<span style="color: #000000;">,
+</span><span style="color: #008080;">15</span>     l = <span style="color: #0000ff;">this</span><span style="color: #000000;">._events[type].length;
+</span><span style="color: #008080;">16</span> 
+<span style="color: #008080;">17</span>   <span style="color: #0000ff;">if</span> (!<span style="color: #000000;">l) {
+</span><span style="color: #008080;">18</span>     <span style="color: #0000ff;">return</span><span style="color: #000000;">;
+</span><span style="color: #008080;">19</span> <span style="color: #000000;">  }
+</span><span style="color: #008080;">20</span> 
+<span style="color: #008080;">21</span>   <span style="color: #0000ff;">for</span> (; i &lt; l; i++<span style="color: #000000;">) {
+</span><span style="color: #008080;">22</span>     <span style="color: #0000ff;">this</span>._events[type][i].call(<span style="color: #0000ff;">this</span><span style="color: #000000;">);
+</span><span style="color: #008080;">23</span> <span style="color: #000000;">  }
+</span><span style="color: #008080;">24</span> },</pre>
+</div>
+<p>iScroll在构造函数中定义了_events这一对象，然后便可以开开心心使用on注册各种各样的事件了，其中每种事件对象是一个数组</p>
+<p>定义好好，在特定阶段，比如touchstart阶段，便开开有没有注册相关事件，注册了便执行一发即可：</p>
+<div class="cnblogs_code">
+<pre><span style="color: #0000ff;">this</span>._execEvent('scrollEnd');</pre>
+</div>
+<p>这里要注意的是，他的this执行为iScroll，那么就可以使用很多有用的属性了</p>
+<p>至此，iScroll事件机制一块我们便分析结束了，接下来来简单看看我们关心的滚动条的实现</p>
+<p>这里需要注意的一点是，这种实现的好处其实一个是方便在各个阶段注册、触发相关事件，主要缘由还是便于放出接口给外部调用</p>
+<h1><span style="line-height: 1.5;">滚动条的实现</span></h1>
+<p><span style="line-height: 1.5;">其实到这里，我们队iScroll的解析都七七八八了，这里我不得不说，iScroll虽然动画感受做的好以外，还是可能导致一些问题</span></p>
+<p><span style="line-height: 1.5;">iScroll本身没什么问题，问题出在各种各样的浏览器中，据我读代码的感受以及平时工作中遇到的问题，我相信项目中使用iScroll的朋友有可能</span></p>
+<p><span style="line-height: 1.5;">当然，这些问题出现在手机中：</span></p>
+<p><span style="line-height: 1.5;">① 当滑动碰到input可能出现滑动不顺的问题</span></p>
+<p><span style="line-height: 1.5;">② 滑动时候具有input时候滑动顺畅的话，input获取焦点不易</span></p>
+<p><span style="line-height: 1.5;">③ 点击时候可能出现问题（可能不能点击，可能双次点击）</span></p>
+<p><span style="line-height: 1.5;">④ 当你在ios点击时候碰到alert类似的东西，再点其它地方事件可能会重复触发</span></p>
+<p><span style="line-height: 1.5;">⑤ ......</span></p>
+<p><span style="line-height: 1.5; color: #ff0000;">当然以上问题只是我的猜测，是否真会导致问题还得经过验证，请各位不要搭理我，如果真有类似问题，获取其它问题请留言</span></p>
+<p><span style="line-height: 1.5;">上面扯了那么多也没有什么意义，我们现在还是来看滚动条的实现吧：</span></p>
+<h2><span style="line-height: 1.5;">滚动条</span></h2>
+<p><span style="line-height: 1.5;">iScroll为滚动条单独搞了一个类出来，因为在iScroll里面的滚动条是一等公民，具有以下特性：</span></p>
+<p><span style="line-height: 1.5;">① 鼠标中间滚动</span></p>
+<p><span style="line-height: 1.5;">② 可拖动滚动条</span></p>
+<p><span style="line-height: 1.5;">其实，多数时间以上功能可以取缔，尤其在手机上，其可点击区域还是过小，单独用于手机的话，鼠标中间也无意义</span></p>
+<p><span style="line-height: 1.5;">PS：iscroll使用键盘上下键也可以滚动，真的是大而全的功能啊，但是无意义......至少在移动端意义不大，去掉还可以节约1k的流量</span></p>
+<div class="cnblogs_code">
+<pre><span style="color: #008080;"> 1</span> <span style="color: #0000ff;">function</span><span style="color: #000000;"> Indicator(scroller, options) {
+</span><span style="color: #008080;"> 2</span>   <span style="color: #0000ff;">this</span>.wrapper = <span style="color: #0000ff;">typeof</span> options.el == 'string' ?<span style="color: #000000;"> document.querySelector(options.el) : options.el;
+</span><span style="color: #008080;"> 3</span>   <span style="color: #0000ff;">this</span>.wrapperStyle = <span style="color: #0000ff;">this</span><span style="color: #000000;">.wrapper.style;
+</span><span style="color: #008080;"> 4</span>   <span style="color: #0000ff;">this</span>.indicator = <span style="color: #0000ff;">this</span>.wrapper.children[0<span style="color: #000000;">];
+</span><span style="color: #008080;"> 5</span>   <span style="color: #0000ff;">this</span>.indicatorStyle = <span style="color: #0000ff;">this</span><span style="color: #000000;">.indicator.style;
+</span><span style="color: #008080;"> 6</span>   <span style="color: #0000ff;">this</span>.scroller =<span style="color: #000000;"> scroller;
+</span><span style="color: #008080;"> 7</span> 
+<span style="color: #008080;"> 8</span>   <span style="color: #0000ff;">this</span>.options =<span style="color: #000000;"> {
+</span><span style="color: #008080;"> 9</span>     listenX: <span style="color: #0000ff;">true</span><span style="color: #000000;">,
+</span><span style="color: #008080;">10</span>     listenY: <span style="color: #0000ff;">true</span><span style="color: #000000;">,
+</span><span style="color: #008080;">11</span>     interactive: <span style="color: #0000ff;">false</span><span style="color: #000000;">,
+</span><span style="color: #008080;">12</span>     resize: <span style="color: #0000ff;">true</span><span style="color: #000000;">,
+</span><span style="color: #008080;">13</span>     defaultScrollbars: <span style="color: #0000ff;">false</span><span style="color: #000000;">,
+</span><span style="color: #008080;">14</span>     shrink: <span style="color: #0000ff;">false</span><span style="color: #000000;">,
+</span><span style="color: #008080;">15</span>     fade: <span style="color: #0000ff;">false</span><span style="color: #000000;">,
+</span><span style="color: #008080;">16</span>     speedRatioX: 0<span style="color: #000000;">,
+</span><span style="color: #008080;">17</span>     speedRatioY: 0
+<span style="color: #008080;">18</span> <span style="color: #000000;">  };
+</span><span style="color: #008080;">19</span> 
+<span style="color: #008080;">20</span>   <span style="color: #0000ff;">for</span> (<span style="color: #0000ff;">var</span> i <span style="color: #0000ff;">in</span><span style="color: #000000;"> options) {
+</span><span style="color: #008080;">21</span>     <span style="color: #0000ff;">this</span>.options[i] =<span style="color: #000000;"> options[i];
+</span><span style="color: #008080;">22</span> <span style="color: #000000;">  }
+</span><span style="color: #008080;">23</span> 
+<span style="color: #008080;">24</span>   <span style="color: #0000ff;">this</span>.sizeRatioX = 1<span style="color: #000000;">;
+</span><span style="color: #008080;">25</span>   <span style="color: #0000ff;">this</span>.sizeRatioY = 1<span style="color: #000000;">;
+</span><span style="color: #008080;">26</span>   <span style="color: #0000ff;">this</span>.maxPosX = 0<span style="color: #000000;">;
+</span><span style="color: #008080;">27</span>   <span style="color: #0000ff;">this</span>.maxPosY = 0<span style="color: #000000;">;
+</span><span style="color: #008080;">28</span> 
+<span style="color: #008080;">29</span>   <span style="color: #0000ff;">if</span> (<span style="color: #0000ff;">this</span><span style="color: #000000;">.options.interactive) {
+</span><span style="color: #008080;">30</span>     <span style="color: #0000ff;">if</span> (!<span style="color: #0000ff;">this</span><span style="color: #000000;">.options.disableTouch) {
+</span><span style="color: #008080;">31</span>       utils.addEvent(<span style="color: #0000ff;">this</span>.indicator, 'touchstart', <span style="color: #0000ff;">this</span><span style="color: #000000;">);
+</span><span style="color: #008080;">32</span>       utils.addEvent(window, 'touchend', <span style="color: #0000ff;">this</span><span style="color: #000000;">);
+</span><span style="color: #008080;">33</span> <span style="color: #000000;">    }
+</span><span style="color: #008080;">34</span>     <span style="color: #0000ff;">if</span> (!<span style="color: #0000ff;">this</span><span style="color: #000000;">.options.disablePointer) {
+</span><span style="color: #008080;">35</span>       utils.addEvent(<span style="color: #0000ff;">this</span>.indicator, 'MSPointerDown', <span style="color: #0000ff;">this</span><span style="color: #000000;">);
+</span><span style="color: #008080;">36</span>       utils.addEvent(window, 'MSPointerUp', <span style="color: #0000ff;">this</span><span style="color: #000000;">);
+</span><span style="color: #008080;">37</span> <span style="color: #000000;">    }
+</span><span style="color: #008080;">38</span>     <span style="color: #0000ff;">if</span> (!<span style="color: #0000ff;">this</span><span style="color: #000000;">.options.disableMouse) {
+</span><span style="color: #008080;">39</span>       utils.addEvent(<span style="color: #0000ff;">this</span>.indicator, 'mousedown', <span style="color: #0000ff;">this</span><span style="color: #000000;">);
+</span><span style="color: #008080;">40</span>       utils.addEvent(window, 'mouseup', <span style="color: #0000ff;">this</span><span style="color: #000000;">);
+</span><span style="color: #008080;">41</span> <span style="color: #000000;">    }
+</span><span style="color: #008080;">42</span> <span style="color: #000000;">  }
+</span><span style="color: #008080;">43</span> 
+<span style="color: #008080;">44</span>   <span style="color: #0000ff;">if</span> (<span style="color: #0000ff;">this</span><span style="color: #000000;">.options.fade) {
+</span><span style="color: #008080;">45</span>     <span style="color: #0000ff;">this</span>.wrapperStyle[utils.style.transform] = <span style="color: #0000ff;">this</span><span style="color: #000000;">.scroller.translateZ;
+</span><span style="color: #008080;">46</span>     <span style="color: #0000ff;">this</span>.wrapperStyle[utils.style.transitionDuration] = utils.isBadAndroid ? '0.001s' : '0ms'<span style="color: #000000;">;
+</span><span style="color: #008080;">47</span>     <span style="color: #0000ff;">this</span>.wrapperStyle.opacity = '0'<span style="color: #000000;">;
+</span><span style="color: #008080;">48</span> <span style="color: #000000;">  }
+</span><span style="color: #008080;">49</span> }</pre>
+</div>
+<p>设个就是滚动条的构造函数，这有一个关键点：</p>
+<div class="cnblogs_code">
+<pre>interactiveScrollbars: <span style="color: #0000ff;">true</span></pre>
+</div>
+<p>默认我们的滚动条是不会具有滚动等事件的，如果设置了此参数便具有可拖动特性了</p>
+<div class="cnblogs_code">
+<pre><span style="color: #008080;"> 1</span> <span style="color: #0000ff;">if</span> (<span style="color: #0000ff;">this</span><span style="color: #000000;">.options.interactive) {
+</span><span style="color: #008080;"> 2</span>   <span style="color: #0000ff;">if</span> (!<span style="color: #0000ff;">this</span><span style="color: #000000;">.options.disableTouch) {
+</span><span style="color: #008080;"> 3</span>     utils.addEvent(<span style="color: #0000ff;">this</span>.indicator, 'touchstart', <span style="color: #0000ff;">this</span><span style="color: #000000;">);
+</span><span style="color: #008080;"> 4</span>     utils.addEvent(window, 'touchend', <span style="color: #0000ff;">this</span><span style="color: #000000;">);
+</span><span style="color: #008080;"> 5</span> <span style="color: #000000;">  }
+</span><span style="color: #008080;"> 6</span>   <span style="color: #0000ff;">if</span> (!<span style="color: #0000ff;">this</span><span style="color: #000000;">.options.disablePointer) {
+</span><span style="color: #008080;"> 7</span>     utils.addEvent(<span style="color: #0000ff;">this</span>.indicator, 'MSPointerDown', <span style="color: #0000ff;">this</span><span style="color: #000000;">);
+</span><span style="color: #008080;"> 8</span>     utils.addEvent(window, 'MSPointerUp', <span style="color: #0000ff;">this</span><span style="color: #000000;">);
+</span><span style="color: #008080;"> 9</span> <span style="color: #000000;">  }
+</span><span style="color: #008080;">10</span>   <span style="color: #0000ff;">if</span> (!<span style="color: #0000ff;">this</span><span style="color: #000000;">.options.disableMouse) {
+</span><span style="color: #008080;">11</span>     utils.addEvent(<span style="color: #0000ff;">this</span>.indicator, 'mousedown', <span style="color: #0000ff;">this</span><span style="color: #000000;">);
+</span><span style="color: #008080;">12</span>     utils.addEvent(window, 'mouseup', <span style="color: #0000ff;">this</span><span style="color: #000000;">);
+</span><span style="color: #008080;">13</span> <span style="color: #000000;">  }
+</span><span style="color: #008080;">14</span> }</pre>
+</div>
+<p>这里虽然给滚动条绑定的事件，但是会一并操作我们的body主体，但是我们后面会直接忽略这步操作</p>
+<div class="cnblogs_code">
+<pre><span style="color: #008080;">1</span> <span style="color: #0000ff;">if</span> (<span style="color: #0000ff;">this</span><span style="color: #000000;">.options.fade) {
+</span><span style="color: #008080;">2</span>   <span style="color: #0000ff;">this</span>.wrapperStyle[utils.style.transform] = <span style="color: #0000ff;">this</span><span style="color: #000000;">.scroller.translateZ;
+</span><span style="color: #008080;">3</span>   <span style="color: #0000ff;">this</span>.wrapperStyle[utils.style.transitionDuration] = utils.isBadAndroid ? '0.001s' : '0ms'<span style="color: #000000;">;
+</span><span style="color: #008080;">4</span>   <span style="color: #0000ff;">this</span>.wrapperStyle.opacity = '0'<span style="color: #000000;">;
+</span><span style="color: #008080;">5</span> }</pre>
+</div>
+<p>然后，会给滚动条一个渐隐的效果，这个影响较小，直接使用了CSS3实现</p>
+<p>下面继续实现了他的事件handleEvent</p>
+<div class="cnblogs_code" onclick="cnblogs_code_show('ca999622-5690-4dfe-9cdb-e70a6503158d')"><img id="code_img_closed_ca999622-5690-4dfe-9cdb-e70a6503158d" class="code_img_closed" src="43570758473519.gif" alt=""><img id="code_img_opened_ca999622-5690-4dfe-9cdb-e70a6503158d" class="code_img_opened" style="display: none;" onclick="cnblogs_code_hide('ca999622-5690-4dfe-9cdb-e70a6503158d',event)" src="16365178109279.gif" alt="">
+<div id="cnblogs_code_open_ca999622-5690-4dfe-9cdb-e70a6503158d" class="cnblogs_code_hide">
+<pre><span style="color: #008080;"> 1</span> handleEvent: <span style="color: #0000ff;">function</span><span style="color: #000000;"> (e) {
+</span><span style="color: #008080;"> 2</span>   <span style="color: #0000ff;">switch</span><span style="color: #000000;"> (e.type) {
+</span><span style="color: #008080;"> 3</span>     <span style="color: #0000ff;">case</span> 'touchstart'<span style="color: #000000;">:
+</span><span style="color: #008080;"> 4</span>     <span style="color: #0000ff;">case</span> 'MSPointerDown'<span style="color: #000000;">:
+</span><span style="color: #008080;"> 5</span>     <span style="color: #0000ff;">case</span> 'mousedown'<span style="color: #000000;">:
+</span><span style="color: #008080;"> 6</span>       <span style="color: #0000ff;">this</span><span style="color: #000000;">._start(e);
+</span><span style="color: #008080;"> 7</span>       <span style="color: #0000ff;">break</span><span style="color: #000000;">;
+</span><span style="color: #008080;"> 8</span>     <span style="color: #0000ff;">case</span> 'touchmove'<span style="color: #000000;">:
+</span><span style="color: #008080;"> 9</span>     <span style="color: #0000ff;">case</span> 'MSPointerMove'<span style="color: #000000;">:
+</span><span style="color: #008080;">10</span>     <span style="color: #0000ff;">case</span> 'mousemove'<span style="color: #000000;">:
+</span><span style="color: #008080;">11</span>       <span style="color: #0000ff;">this</span><span style="color: #000000;">._move(e);
+</span><span style="color: #008080;">12</span>       <span style="color: #0000ff;">break</span><span style="color: #000000;">;
+</span><span style="color: #008080;">13</span>     <span style="color: #0000ff;">case</span> 'touchend'<span style="color: #000000;">:
+</span><span style="color: #008080;">14</span>     <span style="color: #0000ff;">case</span> 'MSPointerUp'<span style="color: #000000;">:
+</span><span style="color: #008080;">15</span>     <span style="color: #0000ff;">case</span> 'mouseup'<span style="color: #000000;">:
+</span><span style="color: #008080;">16</span>     <span style="color: #0000ff;">case</span> 'touchcancel'<span style="color: #000000;">:
+</span><span style="color: #008080;">17</span>     <span style="color: #0000ff;">case</span> 'MSPointerCancel'<span style="color: #000000;">:
+</span><span style="color: #008080;">18</span>     <span style="color: #0000ff;">case</span> 'mousecancel'<span style="color: #000000;">:
+</span><span style="color: #008080;">19</span>       <span style="color: #0000ff;">this</span><span style="color: #000000;">._end(e);
+</span><span style="color: #008080;">20</span>       <span style="color: #0000ff;">break</span><span style="color: #000000;">;
+</span><span style="color: #008080;">21</span> <span style="color: #000000;">  }
+</span><span style="color: #008080;">22</span> }</pre>
+</div>
+<span class="cnblogs_code_collapse">View Code </span></div>
+<p>接下来又是touch几个事件了：</p>
+<div class="cnblogs_code" onclick="cnblogs_code_show('d48bddff-b7ac-4eca-b092-0422291206f1')"><img id="code_img_closed_d48bddff-b7ac-4eca-b092-0422291206f1" class="code_img_closed" src="43570758473519.gif" alt=""><img id="code_img_opened_d48bddff-b7ac-4eca-b092-0422291206f1" class="code_img_opened" style="display: none;" onclick="cnblogs_code_hide('d48bddff-b7ac-4eca-b092-0422291206f1',event)" src="16365178109279.gif" alt="">
+<div id="cnblogs_code_open_d48bddff-b7ac-4eca-b092-0422291206f1" class="cnblogs_code_hide">
+<pre><span style="color: #008080;"> 1</span> _start: <span style="color: #0000ff;">function</span><span style="color: #000000;"> (e) {
+</span><span style="color: #008080;"> 2</span>   <span style="color: #0000ff;">var</span> point = e.touches ? e.touches[0<span style="color: #000000;">] : e;
+</span><span style="color: #008080;"> 3</span> 
+<span style="color: #008080;"> 4</span> <span style="color: #000000;">  e.preventDefault();
+</span><span style="color: #008080;"> 5</span> <span style="color: #000000;">  e.stopPropagation();
+</span><span style="color: #008080;"> 6</span> 
+<span style="color: #008080;"> 7</span>   <span style="color: #0000ff;">this</span><span style="color: #000000;">.transitionTime();
+</span><span style="color: #008080;"> 8</span> 
+<span style="color: #008080;"> 9</span>   <span style="color: #0000ff;">this</span>.initiated = <span style="color: #0000ff;">true</span><span style="color: #000000;">;
+</span><span style="color: #008080;">10</span>   <span style="color: #0000ff;">this</span>.moved = <span style="color: #0000ff;">false</span><span style="color: #000000;">;
+</span><span style="color: #008080;">11</span>   <span style="color: #0000ff;">this</span>.lastPointX =<span style="color: #000000;"> point.pageX;
+</span><span style="color: #008080;">12</span>   <span style="color: #0000ff;">this</span>.lastPointY =<span style="color: #000000;"> point.pageY;
+</span><span style="color: #008080;">13</span> 
+<span style="color: #008080;">14</span>   <span style="color: #0000ff;">this</span>.startTime =<span style="color: #000000;"> utils.getTime();
+</span><span style="color: #008080;">15</span> 
+<span style="color: #008080;">16</span>   <span style="color: #0000ff;">if</span> (!<span style="color: #0000ff;">this</span><span style="color: #000000;">.options.disableTouch) {
+</span><span style="color: #008080;">17</span>     utils.addEvent(window, 'touchmove', <span style="color: #0000ff;">this</span><span style="color: #000000;">);
+</span><span style="color: #008080;">18</span> <span style="color: #000000;">  }
+</span><span style="color: #008080;">19</span>   <span style="color: #0000ff;">if</span> (!<span style="color: #0000ff;">this</span><span style="color: #000000;">.options.disablePointer) {
+</span><span style="color: #008080;">20</span>     utils.addEvent(window, 'MSPointerMove', <span style="color: #0000ff;">this</span><span style="color: #000000;">);
+</span><span style="color: #008080;">21</span> <span style="color: #000000;">  }
+</span><span style="color: #008080;">22</span>   <span style="color: #0000ff;">if</span> (!<span style="color: #0000ff;">this</span><span style="color: #000000;">.options.disableMouse) {
+</span><span style="color: #008080;">23</span>     utils.addEvent(window, 'mousemove', <span style="color: #0000ff;">this</span><span style="color: #000000;">);
+</span><span style="color: #008080;">24</span> <span style="color: #000000;">  }
+</span><span style="color: #008080;">25</span> 
+<span style="color: #008080;">26</span>   <span style="color: #0000ff;">this</span>.scroller._execEvent('beforeScrollStart'<span style="color: #000000;">);
+</span><span style="color: #008080;">27</span> <span style="color: #000000;">},
+</span><span style="color: #008080;">28</span> 
+<span style="color: #008080;">29</span> _move: <span style="color: #0000ff;">function</span><span style="color: #000000;"> (e) {
+</span><span style="color: #008080;">30</span>   <span style="color: #0000ff;">var</span> point = e.touches ? e.touches[0<span style="color: #000000;">] : e,
+</span><span style="color: #008080;">31</span> <span style="color: #000000;">    deltaX, deltaY,
+</span><span style="color: #008080;">32</span> <span style="color: #000000;">    newX, newY,
+</span><span style="color: #008080;">33</span>     timestamp =<span style="color: #000000;"> utils.getTime();
+</span><span style="color: #008080;">34</span> 
+<span style="color: #008080;">35</span>   <span style="color: #0000ff;">if</span> (!<span style="color: #0000ff;">this</span><span style="color: #000000;">.moved) {
+</span><span style="color: #008080;">36</span>     <span style="color: #0000ff;">this</span>.scroller._execEvent('scrollStart'<span style="color: #000000;">);
+</span><span style="color: #008080;">37</span> <span style="color: #000000;">  }
+</span><span style="color: #008080;">38</span> 
+<span style="color: #008080;">39</span>   <span style="color: #0000ff;">this</span>.moved = <span style="color: #0000ff;">true</span><span style="color: #000000;">;
+</span><span style="color: #008080;">40</span> 
+<span style="color: #008080;">41</span>   deltaX = point.pageX - <span style="color: #0000ff;">this</span><span style="color: #000000;">.lastPointX;
+</span><span style="color: #008080;">42</span>   <span style="color: #0000ff;">this</span>.lastPointX =<span style="color: #000000;"> point.pageX;
+</span><span style="color: #008080;">43</span> 
+<span style="color: #008080;">44</span>   deltaY = point.pageY - <span style="color: #0000ff;">this</span><span style="color: #000000;">.lastPointY;
+</span><span style="color: #008080;">45</span>   <span style="color: #0000ff;">this</span>.lastPointY =<span style="color: #000000;"> point.pageY;
+</span><span style="color: #008080;">46</span> 
+<span style="color: #008080;">47</span>   newX = <span style="color: #0000ff;">this</span>.x +<span style="color: #000000;"> deltaX;
+</span><span style="color: #008080;">48</span>   newY = <span style="color: #0000ff;">this</span>.y +<span style="color: #000000;"> deltaY;
+</span><span style="color: #008080;">49</span> 
+<span style="color: #008080;">50</span>   <span style="color: #0000ff;">this</span><span style="color: #000000;">._pos(newX, newY);
+</span><span style="color: #008080;">51</span> 
+<span style="color: #008080;">52</span>   <span style="color: #008000;">//</span><span style="color: #008000;"> INSERT POINT: indicator._move</span>
+<span style="color: #008080;">53</span> 
+<span style="color: #008080;">54</span> <span style="color: #000000;">  e.preventDefault();
+</span><span style="color: #008080;">55</span> <span style="color: #000000;">  e.stopPropagation();
+</span><span style="color: #008080;">56</span> <span style="color: #000000;">},
+</span><span style="color: #008080;">57</span> 
+<span style="color: #008080;">58</span> _end: <span style="color: #0000ff;">function</span><span style="color: #000000;"> (e) {
+</span><span style="color: #008080;">59</span>   <span style="color: #0000ff;">if</span> (!<span style="color: #0000ff;">this</span><span style="color: #000000;">.initiated) {
+</span><span style="color: #008080;">60</span>     <span style="color: #0000ff;">return</span><span style="color: #000000;">;
+</span><span style="color: #008080;">61</span> <span style="color: #000000;">  }
+</span><span style="color: #008080;">62</span> 
+<span style="color: #008080;">63</span>   <span style="color: #0000ff;">this</span>.initiated = <span style="color: #0000ff;">false</span><span style="color: #000000;">;
+</span><span style="color: #008080;">64</span> 
+<span style="color: #008080;">65</span> <span style="color: #000000;">  e.preventDefault();
+</span><span style="color: #008080;">66</span> <span style="color: #000000;">  e.stopPropagation();
+</span><span style="color: #008080;">67</span> 
+<span style="color: #008080;">68</span>   utils.removeEvent(window, 'touchmove', <span style="color: #0000ff;">this</span><span style="color: #000000;">);
+</span><span style="color: #008080;">69</span>   utils.removeEvent(window, 'MSPointerMove', <span style="color: #0000ff;">this</span><span style="color: #000000;">);
+</span><span style="color: #008080;">70</span>   utils.removeEvent(window, 'mousemove', <span style="color: #0000ff;">this</span><span style="color: #000000;">);
+</span><span style="color: #008080;">71</span> 
+<span style="color: #008080;">72</span>   <span style="color: #0000ff;">if</span> (<span style="color: #0000ff;">this</span><span style="color: #000000;">.scroller.options.snap) {
+</span><span style="color: #008080;">73</span>     <span style="color: #0000ff;">var</span> snap = <span style="color: #0000ff;">this</span>.scroller._nearestSnap(<span style="color: #0000ff;">this</span>.scroller.x, <span style="color: #0000ff;">this</span><span style="color: #000000;">.scroller.y);
+</span><span style="color: #008080;">74</span> 
+<span style="color: #008080;">75</span>     <span style="color: #0000ff;">var</span> time = <span style="color: #0000ff;">this</span>.options.snapSpeed ||<span style="color: #000000;"> Math.max(
+</span><span style="color: #008080;">76</span> <span style="color: #000000;">            Math.max(
+</span><span style="color: #008080;">77</span>                 Math.min(Math.abs(<span style="color: #0000ff;">this</span>.scroller.x - snap.x), 1000<span style="color: #000000;">),
+</span><span style="color: #008080;">78</span>                 Math.min(Math.abs(<span style="color: #0000ff;">this</span>.scroller.y - snap.y), 1000<span style="color: #000000;">)
+</span><span style="color: #008080;">79</span>             ), 300<span style="color: #000000;">);
+</span><span style="color: #008080;">80</span> 
+<span style="color: #008080;">81</span>     <span style="color: #0000ff;">if</span> (<span style="color: #0000ff;">this</span>.scroller.x != snap.x || <span style="color: #0000ff;">this</span>.scroller.y !=<span style="color: #000000;"> snap.y) {
+</span><span style="color: #008080;">82</span>       <span style="color: #0000ff;">this</span>.scroller.directionX = 0<span style="color: #000000;">;
+</span><span style="color: #008080;">83</span>       <span style="color: #0000ff;">this</span>.scroller.directionY = 0<span style="color: #000000;">;
+</span><span style="color: #008080;">84</span>       <span style="color: #0000ff;">this</span>.scroller.currentPage =<span style="color: #000000;"> snap;
+</span><span style="color: #008080;">85</span>       <span style="color: #0000ff;">this</span>.scroller.scrollTo(snap.x, snap.y, time, <span style="color: #0000ff;">this</span><span style="color: #000000;">.scroller.options.bounceEasing);
+</span><span style="color: #008080;">86</span> <span style="color: #000000;">    }
+</span><span style="color: #008080;">87</span> <span style="color: #000000;">  }
+</span><span style="color: #008080;">88</span> 
+<span style="color: #008080;">89</span>   <span style="color: #0000ff;">if</span> (<span style="color: #0000ff;">this</span><span style="color: #000000;">.moved) {
+</span><span style="color: #008080;">90</span>     <span style="color: #0000ff;">this</span>.scroller._execEvent('scrollEnd'<span style="color: #000000;">);
+</span><span style="color: #008080;">91</span> <span style="color: #000000;">  }
+</span><span style="color: #008080;">92</span> },</pre>
+</div>
+<span class="cnblogs_code_collapse">View Code </span></div>
+<p>这个地方由于我们后面不会实现便直接不予关注了</p>
+<h1>结语</h1>
+<p>突然来了几个BUG，等下要发布测试环境了，今天暂时到这里，我们下次继续好了，下次我们就直接分离iScroll了，抽出我们想要的功能</p>
+                </div>
+
+                <div class='span3 sidebar'>
+                    <h2>导航栏</h2>
+                    <ul class="nav nav-tabs nav-stacked">
+                             				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/javascriptzdyxhxzsdyjxyzyddf/index.html">javascript中的一些核心知识点以及需要注意的地方</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/[zd]webappdyhzlyzydqdyhdpyjlkkb/index.html">[置顶]【webapp的优化整理】要做移动前端优化的朋友进来看看吧</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/[zd]yddjrwtyjjavascriptsjjzxjsjydjr/index.html">[置顶]【移动端兼容问题研究】javascript事件机制详解（涉及移动兼容）</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/gruntzhb30fzxhsygruntdbqddm/index.html">【grunt整合版】30分钟学会使用grunt打包前端代码</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/gruntdyd30fzxhsygruntdbqddm/index.html">【grunt第一弹】30分钟学会使用grunt打包前端代码</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/gruntdsdgruntzqdsjxmzdyy/index.html">【grunt第三弹】grunt在前端实际项目中的应用</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/gruntded30fzxhsygruntdbqddm02/index.html">【grunt第二弹】30分钟学会使用grunt打包前端代码（02）</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/IScrollsrxxtpyddhadlqs/index.html">【IScroll深入学习】突破移动端黑暗的利器（上）</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/IScrollsrxxjjIScrollynzz/index.html">【IScroll深入学习】解决IScroll疑难杂症</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/iScrollymxx00mniScroll/index.html">【iScroll源码学习00】模拟iScroll</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/iScrollymxx01zbjd/index.html">【iScroll源码学习01】准备阶段</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/iScrollymxx02fjiScrollsghxsjd/index.html">【iScroll源码学习02】分解iScroll三个核心事件点</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/iScrollymxx03iScrollsjjzygdtdsx/index.html">【iScroll源码学习03】iScroll事件机制与滚动条的实现</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/iScrollymxx04flIScrollhx/index.html">【iScroll源码学习04】分离IScroll核心</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/javascriptpxdytyyjc/index.html">【javascript培训第一天】语言基础</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/javascriptpxdstcybl/index.html">【javascript培训第三天】查遗补漏</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/javascriptpxdetDOMyBOM/index.html">【javascript培训第二天】DOM与BOM</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/javascriptjzdsk01mkhbc/index.html">【javascript激增的思考01】模块化编程</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/javascriptjzdsk02mkhyMVC/index.html">【javascript激增的思考02】模块化与MVC</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/javascriptjzdsk03MVVMyKnockout/index.html">【javascript激增的思考03】MVVM与Knockout</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/javascriptjzdsk04MVCyBackbonejs(beta)/index.html">【javascript激增的思考04】MVC与Backbonejs(beta)</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/javascriptmxdxzlrwmyqltkdzb01/index.html">【javascript面向对象之路】让我们一起来坦克大战吧01</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/NodeJSxxbj04xwfbxt/index.html">【NodeJS学习笔记04】新闻发布系统</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/requireJSymxx01ljzgrequireJSdjg/index.html">【requireJS源码学习01】了解整个requireJS的结构</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/requireJSymxx02datamainjzdsx/index.html">【requireJS源码学习02】datamain加载的实现</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/requireJSymxx03xjrequireJSdjzlc/index.html">【requireJS源码学习03】细究requireJS的加载流程</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/UIcjkfygjdrlcjs/index.html">【UI插件】开发一个简单日历插件（上）</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/UIcjjddrlcjxxxMVCsx/index.html">【UI插件】简单的日历插件（下）——学习MVC思想</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/zeptoxxbj01hxff$()/index.html">【zepto学习笔记01】核心方法$()</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/zeptoxxbj01hxff$()b/index.html">【zepto学习笔记01】核心方法$()（补）</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/zeptoxxbj02lsd/index.html">【zepto学习笔记02】零碎点</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/zeptoxxbj03sjjz/index.html">【zepto学习笔记03】事件机制</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/ycmsztjavascriptzdjc/index.html">【一次面试】再谈javascript中的继承</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/ztbackbone01mxModel/index.html">【再探backbone01】模型Model</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/ztbackbone02jhCollection/index.html">【再探backbone02】集合Collection</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/ztbackbone03bkydyyysltgym/index.html">【再探backbone03】博客园单页应用实例（提供源码）</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/ztbackbone04dyyydjslycl/index.html">【再探backbone04】单页应用的基石路由处理</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/ctUnderscorezsmbyq/index.html">【初探Underscore】再说模版引擎</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/ckjavascriptamzAjaxjsxnszddAjax/index.html">【初窥javascript奥秘之Ajax】简述下你所知道的Ajax？</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/ckjavascriptamzsjmpnxnwmyqmdp/index.html">【初窥javascript奥秘之事件冒泡】那些年我们一起冒的泡</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/ckjavascriptamzsjjzldtygdj/index.html">【初窥javascript奥秘之事件机制】论“点透”与“鬼点击”</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/ckjavascriptamzrrzmbddthisnzdxzthiszxnlm/index.html">【初窥javascript奥秘之让人捉摸不定的this】你知道现在this指向哪里吗？？？</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/ckjavascriptamzbbydxbdhlqbcl/index.html">【初窥javascript奥秘之闭包】叶大侠病都好了，求不踩了：）</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/ckjavascriptamzmxdxfzyjc/index.html">【初窥javascript奥秘之面向对象】封装与继承</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/qdmdsjdjgjdnzdljm/index.html">【前端盲点】事件的几个阶段你真的了解么？？？</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/dyyyviewymodelxgsl/index.html">【单页应用】view与model相关梳理</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/dyyyyqldyyybsxjdwbgns/index.html">【单页应用】一起来单页应用吧，实现简单微博功能！（上）</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/dyyyqjkzqappyggxsm/index.html">【单页应用】全局控制器app应该干些什么？</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/dyyywmgrhclkjdcccjgx/index.html">【单页应用】我们该如何处理框架弹出层层级关系？</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/dyyyljMVC/index.html">【单页应用】理解MVC</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/dyyyztxjzviewzjygrhtx/index.html">【单页应用之通信机制】view之间应该如何通信</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/dyyyjkzHistoryxsHistorydgdyyydm/index.html">【单页应用巨坑之History】细数History带给单页应用的噩梦</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/xtszeptofindysyjiosdcjpknrnhtt/index.html">【小贴士】zeptofind元素以及ios弹出键盘可能让你很头疼</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/xtsgytransitionEndanimatedygyqgs/index.html">【小贴士】关于transitionEndanimate的一个有趣故事</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/xtsgzzdbbysjwtdzzmp/index.html">【小贴士】工作中的”闭包“与事件委托的”阻止冒泡“</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/xtstytjavascriptzdreplace/index.html">【小贴士】探一探javascript中的replace</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/xtsxnjpyfixeddgydddt/index.html">【小贴士】虚拟键盘与fixed带给移动端的痛！</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/ttjavascriptsjjzdcsxyl/index.html">【探讨】javascript事件机制底层实现原理</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/mkhbcljrequireJSsxygjddmkjzq/index.html">【模块化编程】理解requireJS实现一个简单的模块加载器</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/zyJavaScriptmfjmtsdqlxkjzbfgndcljz/index.html">【转】【译】JavaScript魔法揭秘探索当前流行框架中部分功能的处理机制</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/zxjavascriptgszl01javascriptcszds/index.html">【追寻javascript高手之路01】javascript参数知多少？</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/zxjavascriptgszl02blzyyzds/index.html">【追寻javascript高手之路02】变量、作用域知多少？</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/zxjavascriptgszl03javascriptdxdld/index.html">【追寻javascript高手之路03】javascript对象大乱斗</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/zxjavascriptgszl04ljprototype/index.html">【追寻javascript高手之路04】理解prototype</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/zxjavascriptgszl05ljsjl/index.html">【追寻javascript高手之路05】理解事件流</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/zgbj04zxzzsj(2)/index.html">【重构笔记04】重新组织数据(2)</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/zgbj05jhtjbds/index.html">【重构笔记05】简化条件表达式</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/zgbj06jhhsdy/index.html">【重构笔记06】简化函数调用</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/ycmshgttbxysjfl/index.html">一次面试回顾——探讨表现与数据分离</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/dhzwebappzdxz/index.html">动画在webapp中的现状</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/ysandriodlqhthdomclicksjqtsxwttj/index.html">原生andriod浏览器回退后dom（click）事件全体失效问题探究</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/scsbdjxysdsbsjytouchsjdnxs/index.html">手持设备点击响应速度，鼠标事件与touch事件的那些事</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/mnbjQueryzeptohxymfx/index.html">迷你版jQuery——zepto核心源码分析</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/dbsgzdlwmlyqxjdddomxzqb/index.html">都别说工资低了，我们来一起写简单的dom选择器吧！</a></li>
+    				                                         
+                    </ul>
+                </div>
+            </div>
+
+        </div>
+    </body>
+</html>

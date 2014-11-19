@@ -1,0 +1,452 @@
+﻿<!DOCTYPE html>
+
+<html lang="zh">
+    <head>
+        <meta charset="utf-8">
+        <meta name="description" content="android,ios" />
+        <meta name="keywords" content="android,ios" />
+
+        <title>叶小钗</title>
+        <style type='text/css'>
+            body {
+                background-color: #CCC;
+            }
+        </style>
+        <link rel="stylesheet" href="../../../css/bootstrap.css" />
+    </head>
+
+    <body>
+        <div class="container">
+
+            <h1>叶小钗</h1>
+
+            <div class='navbar navbar-inverse'>
+                <div class='navbar-inner nav-collapse' style="height: auto;">
+                    <ul class="nav">
+                              				<li><a href="http://songboriceboy.github.io/xxoo/html/blade/index.html">blade</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/css/index.html">css</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/HTML5&CSS3/index.html">HTML5&CSS3</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/index.html">javascript</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Javaxx/index.html">Java学习</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/nodejs/index.html">nodejs</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/requirejs/index.html">requirejs</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/index.html">Web前端</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/xxgw/index.html">学习感悟</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/gzdd/index.html">工作点滴</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/jkxx/index.html">接口学习</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/wfl/index.html">未分类</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/ydkf/index.html">移动开发</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/sjms/index.html">设计模式</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/mst/index.html">面试题</a></li>
+    				                      </ul>
+                </div>
+            </div>
+
+            <div id='content' class='row-fluid'>
+
+                <div class='span9 main'>
+				<div style="color:blue" align=center>【答阿里寒冬面试题】呵呵，大神的面试题就是好！</div><br><h1>前言</h1>
+<p>今天微博看到了寒冬大神的面试题，觉得挺有意思的，这里就做一点解答</p>
+<div><a href="http://weibo.com/1196343093/Bhj510t50">http://weibo.com/1196343093/Bhj510t50</a></div>
+<div>
+<p>谈谈你对CSS布局的理解</p>
+<p>讲讲输入完网址按下回车，到看到网页这个过程中发生了什么。</p>
+<p>谈谈你对Web前端组件化的理解，Web Component会带来怎样的影响</p>
+<p>谈谈你对前端资源下载性能优化的经验和思考</p>
+<p>现在有很多的MV*框架，你对它们有什么看法</p>
+<p>iOS体验好在哪里，Web能赶上么？</p>
+<p>网页游戏怎么做？</p>
+<p>Hybrid技术应当如何应用？</p>
+<p>你最爱的前端框架是什么，为什么？</p>
+</div>
+<p>首先老师的题目都很大，不好答，我这里技术有缺陷，答得不好大家不要喷我，可以好好教育我嘛</p>
+<h1>浅谈CSS布局</h1>
+<h2>概述</h2>
+<div>从网页表现来看，HTML是实体本身，要实现各种优雅的布局的需要依赖CSS</div>
+<div>HTML元素两大类型为块级元素与行内元素，网页的布局一般由块级元素组织，元素不同便有不一样的表现</div>
+<div>要实现布局就要用到与布局有关的CSS属性为position，常用属性为static、absoulute、fixed、relative</div>
+<div>position的作用是改变元素的状态，由文档流转为相对文档流或者脱离文档流元素（定位元素）</div>
+<div>当然float也能引发块级元素脱离文档流，但是其表现与原理与上面不一致，而且要慎用float布局</div>
+<div>于是这里便已经有三种&ldquo;流&rdquo;了，不同的布局元素会处于不同的&ldquo;执行环境&rdquo;，在&ldquo;执行环境&rdquo;中才能方便的对其进行管理</div>
+<div>这个管理的依据便是BFC（块级作用域上下文），根据我粗浅的理解是，BFC也就是浏览器提供的一块渲染区</div>
+<div>文档流的元素处于一个渲染区，而定位元素处于另一层渲染区，float元素又会与之不同</div>
+<div>各个渲染区中的元素具有其定位规则，最简单的便是文档流中的元素，遵循其块级元素独占一行+盒模型的规则：</div>
+<div>① 块级元素独占一行，并且具有框（经典盒模型）</div>
+<div>② 块级元素间由margin属性分割，并且垂直方向的margin会取其大者</div>
+<div>③ 块级元素必定左靠这父级块级元素左边框（包含块，布局上下文）</div>
+<div>④ float元素不能影响块级元素的BFC区域，但是其高度会参与计算</div>
+<div>&nbsp;</div>
+<div>创建BFC的方式有：</div>
+<div>① float</div>
+<div>② overflow</div>
+<div>③ display（使行内元素具有BFC）</div>
+<div>④ position</div>
+<div>&nbsp;</div>
+<div>基于此，我们便可以实现我们的布局了，这里以最简单的两列布局为例（左边导航，右边内容主体）</div>
+<div>由于先出现的DOM先展示，所以内容优先原则，我们会将主体dom先展示</div>
+<div class="cnblogs_code">
+<pre>&lt;!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"&gt;
+&lt;html xmlns="http://www.w3.org/1999/xhtml"&gt;
+&lt;head&gt;
+  &lt;title&gt;&lt;/title&gt;
+  &lt;style&gt;
+    * <span>{ margin<span>: 0<span>; padding<span>: 0<span>; <span>}
+    div <span>{ border<span>: 1px solid black<span>; <span>}
+    #sidebar <span>{ position<span>: absolute<span>; left<span>: 0<span>; top<span>: 0<span>; width<span>: 95px<span>; <span>}
+    #content <span>{ margin-left<span>: 100px<span>; <span>}
+  &lt;/style&gt;
+  &lt;script src="../jquery-1.7.1.js" type="text/javascript"&gt;&lt;/script&gt;
+&lt;/head&gt;
+&lt;body&gt;
+  &lt;div id="content"&gt;<span>
+    主体
+  &lt;/div&gt;
+  &lt;div id="sidebar"&gt;<span>
+    导航
+  &lt;/div&gt;
+&lt;/body&gt;
+&lt;/html&gt;</span></span></span></span></span></span></span></span></span></span></span></span></span></span></span></span></span></span></span></span></span></span></span></span></span></span></pre>
+</div>
+<div>这里从理论上说，便是触发了siderbar元素的定位特性，其BFC与文档流不相关了</div>
+<div>当然，这里siderbar可以使用float实现，但是float本身应该用于处理文字与图片包裹的需求，我们本着职责分离的想法就别那样干了</div>
+<div>而且使用float还会引起元素坍塌，这里还要费劲去处理清除浮动</div>
+<h2>行内元素</h2>
+<div>行内元素的处理比较复杂，首先行内元素的高度由其line-height决定，所以不要妄想其设置一个行内元素的高度，这会引起意想不到的问题</div>
+<div>举一个例子来说，很多大型网站都会具有统计代码，而此类统计代码一般是以img做请求发出，这个时候可能会导致10px左右的白屏问题</div>
+<div><img src="49341746804341.png" alt=""></div>
+<div>
+<div>这个就是妄想设置行内元素高度的结果，独立的inline元素出现时，会为其创建一个line boxes作为容器（文字框）</div>
+<div>一行文字一个line Boxes，一行高度由其中最高的行内元素确定，上例中有一个height为0的img，却为其生成了一个高度为10的行高</div>
+<div>下面的代码中，div会被行内元素撑开，其高度会由span中line-height高者决定</div>
+<div>
+<div class="cnblogs_code">
+<pre>&lt;div&gt;
+  &lt;span id="span1"&gt;主体 &lt;/span&gt;&lt;span id="span2"&gt;导航 &lt;/span&gt;
+&lt;/div&gt;</pre>
+</div>
+<h2>移动端的建议</h2>
+<div>① 移动端的文档流渲染效率最高，应该避免大范围使用定位元素，在小米，三星等低端下定位元素可能渲染不出来（解决方案是引起回流）</div>
+<div>② img元素加载失败时候会有边框，需要搞掉</div>
+<div>③ 慎用fixed属性，fixed对于移动端来说有点头疼，首先会有文本聚焦fixed定位错乱问题，其次在ios4的屏幕中，如果加上浏览器上下工具条，再用fixed可视区域会变得很小</div>
+<div>④ ios是按块渲染的，布局时候可以分块，不会渲染可视区域外的内容</div>
+<div>⑤ 动画或者border-radius、box-shadow等属性皆会使手机耗电加剧（但是这个好像与我们没关系）</div>
+<div>⑥ fixed元素为其设置html可能不响应或者说渲染看不见，常见于ipod或者低端android</div>
+<div>⑦ 当然能在布局上用上一些语义化标签自然是好事，这样对SEO或者特殊人事有一定帮助，比如strong、article之类的</div>
+</div>
+</div>
+<h3>总结</h3>
+<div>因为我本身专注点在js对css了解较少只能做此解析，请尽量拍砖指正</div>
+<h1>一次请求的完整流程</h1>
+<div>我们一次网址输入会发起一连串连锁效应，但是因为我这边对HTTP一块不是十分熟悉，只能解释自己了解的</div>
+<div>一次URl输入后，其流程如下，首先是请求响应的流程：</div>
+<div>1 解析URL，解析域名生成唯一IP地址，开始搜索服务器</div>
+<div>2 找到服务器后，服务器接收请求被服务器进程拦截；一般而言，.net的程序会被IIS处理，java会被jBoss或者tomcat处理</div>
+<div>3 服务器处理请求，如果静态文件的话直接返回，若是.net或者java等动态脚本会经过服务器编译，执行其中的服务器端代码</div>
+<div>4 若是服务器端具有数据库操作的话，这里还需要与DB建立连接，操作数据库</div>
+<div>5 服务器处理结束后，生成最终的静态HTML字符串返回，开始向请求者（客户端）返回请求字符串，一次返回量过大就会分批次，这是一个优化点</div>
+<div>6 服务器响应到达浏览器，浏览器开始处理请求，进入浏览器解析流程</div>
+<p>请求返回后，便进入了我们关注的前端模块</p>
+<div>简单来说，浏览器会解析HTML生成DOM Tree，其次会根据CSS生成CSS Rule Tree，而javascript又可以根据DOM API操作DOM</div>
+<div>上面的文字描述的很简单，事实上发生的事情，却很复杂，这里与代码实现也很有关联，但是有几个关键点：</div>
+<div>页面一定会等所有的HTML结构与CSS加载下来才渲染（<span style="color: #ff0000;">webkit内核</span>）</div>
+<div>比如我们这里使用fiddler限制其外链加载，我们为其限速为10s</div>
+<div>
+<div class="cnblogs_code">
+<pre>&lt;html xmlns="http://www.w3.org/1999/xhtml"&gt;
+&lt;head&gt;
+  &lt;title&gt;&lt;/title&gt;
+  &lt;style&gt;
+    div <span>{ border<span>: 1px solid black<span>; <span>}
+    a <span>{ color<span>: Red<span>; <span>}
+  &lt;/style&gt;
+&lt;/head&gt;
+&lt;body&gt;
+  &lt;div&gt;
+    &lt;a id="span1" href="http://www.baidu.com"&gt;主体 &lt;/a&gt;&lt;span id="span2"&gt;导航 &lt;/span&gt;
+  &lt;/div&gt;
+  &lt;link href=" http://kb.cnblogs.com/style/common.css" rel="stylesheet" /&gt;
+&lt;/body&gt;
+&lt;/html&gt;</span></span></span></span></span></span></span></span></pre>
+</div>
+<p><img src="16962548632558.png" alt=""></p>
+<p><img src="16503135513511.png" alt=""></p>
+</div>
+<div><img src="11148269276819.png" alt=""></div>
+<div>
+<div>我们看到事实上62ms后页面整体dom结构就加载好了，这个时候我们是可以使用js操作dom结构的，但这里一个重点是：</div>
+<div>CSS外链加载会阻塞js的执行，并且重置CSS会引起浏览器的回流或者重绘，也就是：</div>
+<div>css外链会阻塞整个页面的渲染（显示），但是其DOM结构是可操作的，中间如果有阻塞性的操作，比如alert的话会强制浏览器绘制页面</div>
+<div>上面的特性与css外链的顺序无关，并且有几个样式相关的操作，便会执行几次，最终采用最近或者优先级最高的样式</div>
+<div>
+<div class="cnblogs_code">
+<pre>&lt;html xmlns="http://www.w3.org/1999/xhtml"&gt;
+&lt;head&gt;
+  &lt;title&gt;&lt;/title&gt;
+  &lt;style&gt;
+    div <span>{ border<span>: 1px solid black<span>; <span>}
+    a <span>{ color<span>: Red<span>; <span>}
+  &lt;/style&gt;
+&lt;/head&gt;
+&lt;body&gt;
+  &lt;div&gt;
+    &lt;a id="span1" href="http://www.baidu.com"&gt;主体 &lt;/a&gt;&lt;span id="span2"&gt;导航 &lt;/span&gt;
+  &lt;/div&gt;
+  &lt;script&gt;<span>
+    document.getElementById(<span>'<span>span2<span>'<span>).innerHTML <span>= <span>'<span>测试<span>'<span>;
+    alert(<span>1<span>) 
+  &lt;/script&gt;
+  &lt;script&gt;<span>
+    alert(<span>2<span>) 
+  &lt;/script&gt;
+  &lt;link href=" http://kb.cnblogs.com/style/common.css" rel="stylesheet" /&gt;
+&lt;/body&gt;
+&lt;/html&gt;</span></span></span></span></span></span></span></span></span></span></span></span></span></span></span></span></span></span></span></span></span></span></span></pre>
+</div>
+<p><img src="8632108224578.png" alt=""></p>
+<div>一个需要注意的地方是，<strong>chrome与firefox或者IE表现不一致，firefox与IE都是先渲染页面最后等段CSS下来后再次渲染</strong></div>
+<div>所以我们很多同学面试时说将css外链放到header中，而不是body中的理解都是一知半解，这里真实的处理办法是异步插入css外链才行</div>
+<div>至少对于chrome需要做这个处理，否则页面就是出不来，因为多数手机是webkit内核，保不齐这里出多少事情</div>
+<div>根据以上流程后，页面也基本出来了，这里简述其流程</div>
+<div>① 生成DOM树</div>
+<div>② 计算CSS样式</div>
+<div>③ 构建render Tree</div>
+<div>④ reflow，定位元素位置与大小</div>
+<div>⑤ 绘制页面</div>
+<div>上面过程如果js操作dom或者终结有一段style都会引起reflow，由于img会在文档加载结束后加载，可能会撑开页面，导致回流，所以一般需要对img设置尺寸</div>
+<div>对于这块的优化各位自己来吧，我这里便只能理解到这个程度了</div>
+<div>PS：事实上chrome获得请求时本身也有几个事件点，这里可以用其开发性能插件，但对前端基本透明，我们这里不关注了</div>
+<h1>MVC与组件化</h1>
+<div>这里我将2块题目合到一起了，我觉得这里可以连到一起做说明</div>
+<h2>View分离</h2>
+<div>很多程序的变革集中积累在VIEW一块的处理，原因是这里的需求是最复杂的，就View分离来说，最成功的我觉得是ASP到ASP.net的变革</div>
+<div>最初的ASP程序，会将C#代码写在asp代码中，这样的结果便是页面里面既有html又有C#代码，甚至一个js循环中会嵌套出C#的循环</div>
+<div>PS：你一定要相信，那个时候不会有js分成的概念，因为需求达不到</div>
+<div>所谓的View分离便是，程序员确实受不了维护显示与逻辑同时处于一个页面的程序了，于是他选择了改变，改变的结果便是拆分</div>
+<div>View分离一大核心思维便是，<strong>分得开，合得拢</strong>，他们这里引入一个codebehind方案将一个页面文件分成两个（事实上是三个）</div>
+<div>
+<p>① index.apsx</p>
+<p>② index.aspx.cs</p>
+<div class="cnblogs_code">
+<pre>&lt;%<span>@ Page Language<span>="C#"<span> AutoEventWireup<span>="true"<span> CodeFile<span>="index.aspx.cs"<span> Inherits<span>="_00综合_11mvc_index" %&gt;</span></span></span></span></span></span></span></span></pre>
+</div>
+<div class="cnblogs_code">
+<pre>public partial class<span> _00综合_10doc_write_index : System.Web.UI.Page
+{
+    protected void Page_Load(object<span> sender, EventArgs e)
+    {
+
+    }
+}</span></span></pre>
+</div>
+<p>最终这两个文件会和到一起，两个文件之间也可通信，而通信的桥梁是.net一个个被人诟病的组件，比如：</p>
+<p>① button组件</p>
+<p>② datalist</p>
+<p>③ label组件</p>
+<p>④ 伟大的gridview</p>
+<p>各个组件在C#层面上会拥有一个ID进行约束，.cs文件便可以根据该ID为其注册各个事件，这个与javascript的模型便非常类似了</p>
+<p>View分离的第一个优点便是，用户的界面变得干净了，不会有代码混杂的现象，第二个优点便是业务端的代码可以再分离，从而多了数据层、业务层等各个概念</p>
+<p>而组件的出现让.net变成了世界上开发最快的语言，这点谁也不可否认，而这些都是前端MVC出现或者组件出现的意义</p>
+<h2>前端View分离</h2>
+<p>与asp当初的情况一致，js进行dom操作或者字符串拼接的目的事实上就是想形成一个可供展示的View，前端jser已经再也不能忍受这种代码了：</p>
+<p><img src="20317698012427.png" alt=""></p>
+<p>很多时候，我们想将对应的模板单独的放到一个地方，每次样式若是有更改，只需要更改那个文件即可，只要与之呼应的&ldquo;ID&rdquo;不丢失即可，比如这样的结构和代码：</p>
+<p><img src="6222675835539.png" alt=""></p>
+<div class="cnblogs_code"><img id="code_img_closed_9640b9c6-a260-4432-9701-b53eb066808a" class="code_img_closed" src="43570758473519.gif" alt=""><span class="cnblogs_code_collapse">View Code</span></div>
+<div class="cnblogs_code">
+<pre>&lt;div class="cui-pop-box"&gt;
+  &lt;div class="cui-hd"&gt;
+      &lt;%<span>=<span>title%&gt;
+  &lt;/div&gt;
+  &lt;div class="cui-bd"&gt;
+    &lt;div class="cui-error-tips"&gt;
+      &lt;%<span>=<span>content%&gt;&lt;/div&gt;
+    &lt;div class="cui-roller-btns"&gt;
+      &lt;% for<span>(var i <span>= 0<span>, len <span>=<span> btns.length; i <span>&lt; len<span>; i<span>++<span> ) {%&gt;
+      &lt;div class="cui-flexbd &lt;%=btns[i].className%&gt;"&gt;
+        &lt;%<span>=<span>btns[i].name%&gt;&lt;/div&gt;
+      &lt;%<span> } %&gt;
+    &lt;/div&gt;
+  &lt;/div&gt;
+&lt;/div&gt;</span></span></span></span></span></span></span></span></span></span></span></span></span></span></span></span></pre>
+</div>
+<p>这样做的道理是，这个样子做到了表现与行为分离，我们分得开，然后回根据基类的一个机制，让他们最终合到一块，以完成功能</p>
+<p>这里我们依旧需要强调一个前提：&ldquo;ID&rdquo;关联不可丢失，否则&ldquo;行为&rdquo;将不可表现，只要两者间关联不丢，这里便可轻松满足以下逻辑：</p>
+<p>① CSS名修改（非标识性CSS名）</p>
+<p>② 标签改变</p>
+<p>③ 描述性文字改变</p>
+<p>......</p>
+<h2>MVC在前端</h2>
+<p>重构一书有说，重复性或者类似重复性的代码应该抽象为一个方法，程序员也不傻，在重复使用需要提示框需求后便会学会形成alert组件</p>
+<p>组件的出现是代码抽象，代码重用的标识，这个样子既可以减少工作量也可以减少代码容量，而组件的实现与MVC思维的很好诠释</p>
+<p><img src="46114648631827.png" alt=""></p>
+<p>比如以下代码：</p>
+<div class="cnblogs_code"><img id="code_img_closed_3954ccfe-5c34-467a-9184-62b6325edd97" class="code_img_closed" src="43570758473519.gif" alt=""><span class="cnblogs_code_collapse">View Code</span></div>
+<p><img src="47774578978889.png" alt=""></p>
+<p>事实上，MVC的任意一块都可以作为单独的模块实现，比如会有这样的需求：一个model实例的变化会影响两个View的显示，但是仅仅对UI一块来说我们做了如下处理：</p>
+<p>核心点变成了几个属性：</p>
+<p>① template，根据他生成UI</p>
+<p>② datamodel，根据他生成viewModel提供给template使用</p>
+<p>③ eventArr，业务事件注册点</p>
+<p>这个代码是Blade框架的UI基类，他是一个迷你MVC框架</p>
+<div class="cnblogs_code">
+<pre> 1     propertys: function<span> () {
+ 2       //模板状态
+ 3       this.template = ''<span>;
+ 4       this.datamodel =<span> {};
+ 5       this.events =<span> {};
+ 6       this.wrapper = $('body'<span>);
+ 7       this.id = _.uniqueId('ui-view-'<span>);
+ 8 
+ 9       //自定义事件
+10       //此处需要注意mask 绑定事件前后问题，考虑scroll.radio插件类型的mask应用，考虑组件通信
+11       this.eventArr =<span> {};
+12 
+13       //初始状态为实例化
+14       this.status = 'init'<span>;
+15 
+16       //      this.availableFn = function () { }
+17 
+18     },</span></span></span></span></span></span></span></span></pre>
+</div>
+<p>template作为View的实现，datamodel作为model实现，我们会根据datamodel与template生成基本的view实体</p>
+<p>这里datamodel与template之间会有一个viewModel的映射关系，是为了防止服务器端突然将title变成Title而导致模板解析错误</p>
+<p>而整个文件便是一个控制器，view有的事件行为采用javascript委托技术全部注册在根元素上，如此整个UI就活了，他的好处是：</p>
+<p>① 具有继承关系，可以拥有统一的资源释放，或者View通信机制</p>
+<p>②&nbsp;代码量也会减少</p>
+<h2>MVC与组件化的意义</h2>
+<p>MVC对前端的意义甚大，因为jser对MVC或者分模块的思维的深入理解，我们才会将前端代码做分离，这样会有效的避免多人更改一个文件的难题</p>
+<p>这对前端的推动作用不可谓不大！</p>
+<p>组件化是对重复工作，重复代码的降低，当然是好东西......</p>
+<h1>资源加载</h1>
+<p>前端优化的瓶颈始终在资源加载，只要加载快，无论你代码写的多慢（不要纠结死循环），都一定快，所以前端优化事实上一直都是一个主题：<strong>瘦身</strong></p>
+<p>压缩</p>
+<p>css sprite</p>
+<p>延迟加载（主要针对图片）</p>
+<p>按需加载（主要针对首屏未用到的UI）</p>
+<p>缓存</p>
+<p>CDN</p>
+<p>预加载</p>
+<p>等词语不断的在前端出现，但是一个不可避免的事实是，需求越发复杂，体验要求越高，所以一个前端可能的事实是：</p>
+<p>前端资源体积越来越大，避免此事发生不是前端说了算的，需要产品与交互一起努力，清晰、体验好、轻量级的设计谁不喜欢，但是广告营销也不能不考虑，总之此事路还长！</p>
+<h2>webapp的资源加载</h2>
+<p>对于webapp来说，首次加载的体积会更加大，因为其要求的库更多，并且网速更慢，这个时候可以采取fake页的方案</p>
+<p>我们应该避免页面长时间白页，这个时候便提出了fake页的概念。页面渲染只需要完整的HTML以及CSS，这个便是第一个优化点。</p>
+<p>从数据请求数以及请求量来说，webapp首页的响应应该比较慢，若是任由js加载完成再渲染页面，用户很有可能失去耐心。</p>
+<p>但是从DOMContentLoaded来看，首页事实上页面响应比较迅速，所以这个加载结束后页面第一屏便渲染结束，然后再异步加载js，当js改变后再动态改变dom结构中的一些关键点</p>
+<p>这个时候一个静态HTML页面，装载首屏的基本内容，让首页快速显示</p>
+<p>然后js加载结束后会马上重新渲染整个页面，这个样子，用户就可以很快的看到页面响应，给用户一个快的错觉，给人感觉快得多。</p>
+<h2>是否按需加载</h2>
+<p>按需加载的话确实会对首屏加载有好处，但是是否按需加载却不一定了，以下面两个体验为例:</p>
+<h3>资源完全加载</h3>
+<p><a href="49707867128708.html">49707867128708.html</a></p>
+<p><iframe src="49707867128708.html" width="450" height="700"></iframe></p>
+<h3>按需加载</h3>
+<p><a href="29212476368083.html">29212476368083.html</a></p>
+<p><iframe src="29212476368083.html" width="450" height="700"></iframe></p>
+<p><span style="line-height: 1.5; color: #ff0000;">PS：我这里debug版本点击时候未做mask处理，大家不要疯狂点击了</span></p>
+<p><span style="line-height: 1.5;">这里各位直观的感受是什么呢？是不是，</span><span style="line-height: 1.5;">首次加载后后续操作十分流畅，而按需加载的话，每次皆会感觉有点&ldquo;卡&rdquo;</span></p>
+<p><span style="line-height: 1.5;">按需加载需要加载js和模板，这个过程自然卡，所以真正是不是要按需加载，或者多少资源按需加载有个临界值，需要不断的测试才行</span></p>
+<p><span style="line-height: 1.5;">最后，要减少资源的话，代码的质量神马的也需要考虑的，但对容量来说效用可能不是太大</span></p>
+<h1><span style="line-height: 1.5;">IOS的体验</span></h1>
+<p><span style="line-height: 1.5;">IOS的体验好，主要好在两点：</span></p>
+<p><span style="line-height: 1.5;">① 清晰、简洁、傻瓜化设计，连我妈都可以轻巧的操作苹果手机其简易型可想而知</span></p>
+<p><span style="line-height: 1.5;">② 用户行为模拟，IOS体验第二点便是其无敌的动画效果</span></p>
+<p><span style="line-height: 1.5;">若是说web应用想赶上（寒冬老师这里赶上一词用得十分贴切，他要说超过估计没人理他了）native开发的话还是有可能</span></p>
+<p><span style="line-height: 1.5;">但是如果说web应用要赶上IOS的设计的话，那么还有无数荆棘需要踩过！并且有两大前提：</span></p>
+<p><span style="line-height: 1.5;">① 网速快，用户不必关心资源大</span></p>
+<p><span style="line-height: 1.5;">② 手机性能好，不说超越PC，至少能&ldquo;赶上&rdquo;PC吧</span></p>
+<p><span style="line-height: 1.5;">以上两点成立的话，web应用赶上IOS体验才变得可能，简单来说就动画而言，前端有哪些问题呢？</span></p>
+<p><span style="line-height: 1.5;">webapp中的动画</span></p>
+<div>webapp的一大优势便是在view切换时候可以拥有媲美与native的动画效果，但是很多时候那只是一种想法，真正的情况却不是这样</div>
+<div>产生此问题的原因有：</div>
+<div>① 手机CPU烂！</div>
+<div>② 手机显卡烂！就算四核其渲染也很有问题</div>
+<div>③ 高端手机浏览器会有BUG</div>
+<div>④ 低端手机支持不好（国内山寨机笑而不语）</div>
+<div>因为以上原因，事实上做webapp的都会不同程度的弱化动画，或者在局部区域使用动画</div>
+<h3>难在何处？</h3>
+<div><strong>dom树过多</strong></div>
+<div>view的移动与简单的图片slider组件相差甚剧！原因便是其dom结构可能很复杂，大dom树的移动在移动端效果很差</div>
+<div>就简单列表页来说，当项目超过100个时，使用IScroll类插件都应该很慎重，这类移动可能非常卡！</div>
+<div>而且dom树复杂度与业务直接相关，我们没有任何办法去控制dom树，因为业务代码可能不会经过我们的手，就算经过，你又肯定自己做出来的dom树有多小？不见得吧</div>
+<div><strong>长短页问题</strong></div>
+<div>所谓长短页便是一个view很长一个view很短，这里问题处理十分讨厌</div>
+<div>首先我们每次做切换需要将view位置切换至头部（window.scroll(0, 0)）如此的话ios中会引起</div>
+<div>页面viewport的变化（系统自动发生），或者会触发低端工具栏的出现，这个时候页面抖动无可避免</div>
+<div>若是每次不执行window.scroll(0, 0)，切换时候又会导致短的view不可见</div>
+<div>我现阶段想到的解决方案是，移动时候将scroll设得比较大，移动时候将bview的top值与scrollTop相同</div>
+<div>最后仍然需要执行window.scroll(0, 0)的操作，所以，这个问题只能缓解，无法解决</div>
+<div><strong>手机渲染问题</strong></div>
+<div>只要是做移动端的朋友，一定会对三星机或者一些低端机的渲染嗤之以鼻！</div>
+<div>具体表现为多次操作style后，后面的操作浏览器不会搭理你</div>
+<div>解决方案是：</div>
+<div>① 引起浏览器强烈重绘</div>
+<div>② 临时增删一个dom结构</div>
+<div>但是涉及view切换动画的话，很有可能会出现一些莫名其妙的问题！</div>
+<p>所以单单由简单的webapp的切换都如此困难，web应用想赶上IOS的话还要等几年......</p>
+<h1><span style="line-height: 1.5;">Hybrid对前端的意义</span></h1>
+<p><span style="line-height: 1.5;">应该说Ajax带动了前端的首次革命，而移动端带来了二次革命，而Hybrid将前端推上了风口浪尖！</span></p>
+<p><span style="line-height: 1.5;">原来我厂app是使用native开发的，会出现此等问题：一个应用需要养3个团队（ios、android、winphone），</span><span style="line-height: 1.5;">而且一旦业务改变会让开发抓狂！</span></p>
+<p><span style="line-height: 1.5;">而Hybrid的出现解决了此问题，一套前端代码可以用于四个地方：浏览器、ios、android、winphone，而这个却是互联网公司最需要的</span></p>
+<p><span style="line-height: 1.5;">最近两年，移动大潮袭来，各个公司皆在抢占移动端的份额，谁赢了这场战斗谁就是下一代王者，所以出现了一个事实：</span></p>
+<p><strong><span style="line-height: 1.5;">市场的占领、业务的扩展是第一位！</span></strong></p>
+<p><span style="line-height: 1.5;">所以Hybrid的市场与需求比native大，但是这不是说native没用了，因为更好的体验我们的追求，所以在Hybrid占领市场结束后，可能需要改版为native</span></p>
+<p><span style="line-height: 1.5;">除非那时前端的体验能缩小与native的距离</span></p>
+<h2><span style="line-height: 1.5;">Hybrid开发的问题</span></h2>
+<p><span style="line-height: 1.5;">Hybrid提高了前端开发的门槛，因为Hybrid的调试难，但是业内也出现了一些调试的方案，我这里有一套Hybrid调试的技巧，有兴趣可以交流</span></p>
+<p><span style="line-height: 1.5;">Hybrid 兼容BUG多，总所周知，H5站点上看着好好的程序，一旦到了webview上就出问题了，这个调试也很痛苦</span></p>
+<p><span style="line-height: 1.5;">哎，其实Hybrid开发也只是需要一点熟悉度罢了，没有什么可说的，就此打住吧</span></p>
+<h1><span style="line-height: 1.5;">结语</span></h1>
+<p><span style="line-height: 1.5;">寒冬老师喜欢出题，我喜欢答题，其中几道题我这里没有什么概念就交白卷了，不知道我的回答是否可以及格</span></p>
+<p><span style="color: #ff0000;"><strong><span style="line-height: 1.5;">若是寒冬老师或者各位觉得我的回答能勉强及格，左边微博求粉！！！尼玛我粉丝太少了！！！</span></strong></span></p>
+</div>
+</div>
+</div>
+                </div>
+
+                <div class='span3 sidebar'>
+                    <h2>导航栏</h2>
+                    <ul class="nav nav-tabs nav-stacked">
+                             				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/Fiddlerznqddsq/index.html">Fiddler真乃前端大杀器！！！</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/Requirejs/index.html">Requirejs</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/RequireJSyBackbonejdzh/index.html">RequireJS与Backbone简单整合</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/RequireJSxxbj/index.html">RequireJS学习笔记</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/Webqdyhctxdpzyyqdgsgpng/index.html">Web前端优化初探，小弟抛砖引玉，期待高手共破难关！</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/Webqdlqjrctxsqwpzyyqdgsgpng/index.html">Web前端浏览器兼容初探，小生浅文抛砖引玉，期待高手攻破难关！</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/jqueryfdataListxnyhmbybysxtgxn10bys/index.html">【jquery仿dataList——性能优化】模板预编译思想提高性能10倍以上！！！</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/jqueryfdataListyyzmfigoogledzhtdpxzdhfp/index.html">【jquery仿dataList】应用之——模仿igoogle【定制化、拖动排序，最大化、分屏】</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/jqueryfdatalistdygwtqzszmxxsjlkzDIVdjjbf/index.html">【jquery仿datalist的一个问题，求助】——设置每行显示几列，块状DIV的解决办法</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/jquerymfnetkjcbGridViewmxsxjqjdyy/index.html">【jquery模仿net控件】初步GridView模型实现，及其简单应用</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/jquerymfnetkjjdfykj10fsgridviewsycs/index.html">【jquery模仿net控件】简单分页控件10，附上gridview使用测试</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/jquerymfnetkjjdddatalistkjgxjqjdyy/index.html">【jquery模仿net控件】简单的datalist控件更新，及其简单应用</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/jquerymfnetkjjdddropdownlistydatalist/index.html">【jquery模仿net控件】简单的dropdownlist与datalist</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/jquerybnetkjdropdownlistfymhydjzdzzpz/index.html">【jquery版net控件—dropdownlist】附源码，欢迎大家指点、指正、拍砖！！！</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/positionykyhfzddccyslsbdws/index.html">【position也可以很复杂】当弹出层遇上了鼠标定位（上）</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/positionykyhfzddccyslsbdwx/index.html">【position也可以很复杂】当弹出层遇上了鼠标定位（下）</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/SEOzmlwljnmtsbwmlyqkkSEOb/index.html">【SEO】周末了，为了纪念明天上班，我们来一起看看SEO吧</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/webqdyhqdwyhyrzrz/index.html">【web前端优化】前端无优化，庸人自扰之！</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/webqdyhzreflowjsymdhl/index.html">【web前端优化之reflow】减少页面的回流</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/webqdyhztpycjzctzwbsxwbk/index.html">【web前端优化之图片延迟加载初探】中午不睡，下午崩溃</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/webqdyhztpmhdqxkwQQkjrhxsxp/index.html">【web前端优化之图片模糊到清晰】看我QQ空间如何显示相片</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/webqdpxzqhddphsywmsxdDatalistsmwtb/index.html">【web前端培训之前后端的配合（上）】以我们熟悉的Datalist说明问题吧</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/webqdpxzqhddphzjxzrdgs/index.html">【web前端培训之前后端的配合（中）】继续昨日的故事</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/dyyygybkydbfgqym/index.html">【单页应用】关于博客园的补发（高清有码）。。。</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/xtsstringifysBUGlocalstoragesxxmSafarialertksfycjzym10pxbp/index.html">【小贴士】【stringify神BUG】【localstorage失效】【消灭Safarialert框】【是否延迟加载】【页面10px白屏】</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/dalhdmsthhdsdmstjsh/index.html">【答阿里寒冬面试题】呵呵，大神的面试题就是好！</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/ycsjmstdldgwxxdgjxxdff/index.html">一次上机面试题带来的感悟【学习的感觉、学习的方法】</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/ydmstdldqdyhsxxxdp/index.html">一道面试题带来的前端优化——实现星星点评</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/zysyzjjhfzwebqdbfxlgxmndjjfa/index.html">只言碎语总结，今后发展web前端，并分享两个项目难点解决方案。</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/gwjlytbllbnwmljxwwdbdyzb/index.html">各位加了一天班累了吧？那我们来继续未完的表单验证吧</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/gwzmwlytllbwmyqlzldmstbjstbdy/index.html">各位周末玩了一天累了吧，我们一起来做两道面试题吧（据说淘宝的哟）！</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/jyjQuerydxlcdcjzwsy/index.html">基于jQuery的下拉菜单插件，诸位上眼！！！</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/jyjQuerydxlcdcd02zwsy/index.html">基于jQuery的下拉菜单菜单【02】，诸位上眼！！！</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/gzzpddyxdxdccktfybwjsc/index.html">工作中碰到的一些东西【弹出窗口】【拖放】【异步文件上传】</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/gzlygxqgwydllbnwmyqlbdyzyfb/index.html">工作了一个星期各位一定累了吧，那我们一起来表单验证一番吧！</a></li>
+    				                                         
+                    </ul>
+                </div>
+            </div>
+
+        </div>
+    </body>
+</html>

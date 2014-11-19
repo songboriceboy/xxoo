@@ -1,0 +1,671 @@
+﻿<!DOCTYPE html>
+
+<html lang="zh">
+    <head>
+        <meta charset="utf-8">
+        <meta name="description" content="android,ios" />
+        <meta name="keywords" content="android,ios" />
+
+        <title>叶小钗</title>
+        <style type='text/css'>
+            body {
+                background-color: #CCC;
+            }
+        </style>
+        <link rel="stylesheet" href="../../../css/bootstrap.css" />
+    </head>
+
+    <body>
+        <div class="container">
+
+            <h1>叶小钗</h1>
+
+            <div class='navbar navbar-inverse'>
+                <div class='navbar-inner nav-collapse' style="height: auto;">
+                    <ul class="nav">
+                              				<li><a href="http://songboriceboy.github.io/xxoo/html/blade/index.html">blade</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/css/index.html">css</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/HTML5&CSS3/index.html">HTML5&CSS3</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/index.html">javascript</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Javaxx/index.html">Java学习</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/nodejs/index.html">nodejs</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/requirejs/index.html">requirejs</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/index.html">Web前端</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/xxgw/index.html">学习感悟</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/gzdd/index.html">工作点滴</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/jkxx/index.html">接口学习</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/wfl/index.html">未分类</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/ydkf/index.html">移动开发</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/sjms/index.html">设计模式</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/mst/index.html">面试题</a></li>
+    				                      </ul>
+                </div>
+            </div>
+
+            <div id='content' class='row-fluid'>
+
+                <div class='span9 main'>
+				<div style="color:blue" align=center>【zepto学习笔记02】零碎点</div><br><h1>前言</h1>
+<p>上次我们看了zepto的选择器方面的东西，其实zepto简单很大程度是因为他用了最新的检索器querySelectorAll，<br>今天我们来学习下zepto的一些零碎点的地方吧，主要根据zepto官方文档顺序来</p>
+<h1>contains (parent, node)</h1>
+<p>该方法用于检测父节点是否包含给定的dom节点，如果两者相同则返回false<br>contains 为javascript的基本语法，首先在ie中，最后其它浏览器也扩展了，如果a包含b则返回true</p>
+<div class="cnblogs_code">
+<pre><span style="color: #008080;">1</span> p = document.getElementById('parent'<span style="color: #000000;">),
+</span><span style="color: #008080;">2</span> c = document.getElementById('child'<span style="color: #000000;">);
+</span><span style="color: #008080;">3</span> log(p.contains(c)); <span style="color: #008000;">//</span><span style="color: #008000;">true</span>
+<span style="color: #008080;">4</span> log(c.contains(p));<span style="color: #008000;">//</span><span style="color: #008000;">false</span></pre>
+</div>
+<p>这个是zepto的实现，与其说实现不如说是封装</p>
+<div class="cnblogs_code">
+<pre><span style="color: #008080;">1</span> $.contains = <span style="color: #0000ff;">function</span><span style="color: #000000;"> (parent, node) {
+</span><span style="color: #008080;">2</span>     <span style="color: #0000ff;">return</span> parent !== node &amp;&amp;<span style="color: #000000;"> parent.contains(node)
+</span><span style="color: #008080;">3</span> }</pre>
+</div>
+<h1>each</h1>
+<p>each这个方法我们平时用的比较多，并且感觉很好用，很多朋友使用for可能会导致这样那样的问题，但是使用each却变好了<br>是因为each封装了一个闭包，所以可以解决一些初学朋友的BUG，到时隐藏的BUG总会爆发，先遇到也不是什么坏事<br>zepto的实现如下：</p>
+<div class="cnblogs_code">
+<pre><span style="color: #008080;"> 1</span> $.each = <span style="color: #0000ff;">function</span><span style="color: #000000;"> (elements, callback) {
+</span><span style="color: #008080;"> 2</span>     <span style="color: #0000ff;">var</span><span style="color: #000000;"> i, key
+</span><span style="color: #008080;"> 3</span>     <span style="color: #0000ff;">if</span><span style="color: #000000;"> (likeArray(elements)) {
+</span><span style="color: #008080;"> 4</span>         <span style="color: #0000ff;">for</span> (i = 0; i &lt; elements.length; i++<span style="color: #000000;">)
+</span><span style="color: #008080;"> 5</span>             <span style="color: #0000ff;">if</span> (callback.call(elements[i], i, elements[i]) === <span style="color: #0000ff;">false</span>) <span style="color: #0000ff;">return</span><span style="color: #000000;"> elements
+</span><span style="color: #008080;"> 6</span>     } <span style="color: #0000ff;">else</span><span style="color: #000000;"> {
+</span><span style="color: #008080;"> 7</span>         <span style="color: #0000ff;">for</span> (key <span style="color: #0000ff;">in</span><span style="color: #000000;"> elements)
+</span><span style="color: #008080;"> 8</span>             <span style="color: #0000ff;">if</span> (callback.call(elements[key], key, elements[key]) === <span style="color: #0000ff;">false</span>) <span style="color: #0000ff;">return</span><span style="color: #000000;"> elements
+</span><span style="color: #008080;"> 9</span> <span style="color: #000000;">    }
+</span><span style="color: #008080;">10</span>     <span style="color: #0000ff;">return</span><span style="color: #000000;"> elements
+</span><span style="color: #008080;">11</span> }</pre>
+</div>
+<p>如果我们的回调有一个返回了false，那么就会跳出整个循环，我曾经看到有人在里面写break，break对js有点不靠谱的</p>
+<p>我们这里提一个可能发生的问题，代码可能没有实际意义，大概可以表达意思：</p>
+<div class="cnblogs_code">
+<pre><span style="color: #008080;"> 1</span> <span style="color: #0000ff;">var</span> sum1 = 0, sum2 = 0, sum3 = 0; len = 2<span style="color: #000000;">;
+</span><span style="color: #008080;"> 2</span> <span style="color: #0000ff;">var</span> arr =<span style="color: #000000;"> [];
+</span><span style="color: #008080;"> 3</span> <span style="color: #0000ff;">for</span> (<span style="color: #0000ff;">var</span> i = 0; i &lt; len; i++<span style="color: #000000;">) {
+</span><span style="color: #008080;"> 4</span> <span style="color: #000000;">    arr.push(i)
+</span><span style="color: #008080;"> 5</span> <span style="color: #000000;">}
+</span><span style="color: #008080;"> 6</span> <span style="color: #0000ff;">for</span> (<span style="color: #0000ff;">var</span> i = 0; i &lt; len; i++<span style="color: #000000;">) {
+</span><span style="color: #008080;"> 7</span>     setTimeout(<span style="color: #0000ff;">function</span><span style="color: #000000;"> () {
+</span><span style="color: #008080;"> 8</span>         sum1 +=<span style="color: #000000;"> arr[i];
+</span><span style="color: #008080;"> 9</span>     }, 0<span style="color: #000000;">);
+</span><span style="color: #008080;">10</span> <span style="color: #000000;">}
+</span><span style="color: #008080;">11</span> $.each(arr, <span style="color: #0000ff;">function</span><span style="color: #000000;"> (i, v) {
+</span><span style="color: #008080;">12</span>     setTimeout(<span style="color: #0000ff;">function</span><span style="color: #000000;"> () {
+</span><span style="color: #008080;">13</span>         sum2 +=<span style="color: #000000;"> v;
+</span><span style="color: #008080;">14</span>     }, 0<span style="color: #000000;">);
+</span><span style="color: #008080;">15</span> <span style="color: #000000;">});
+</span><span style="color: #008080;">16</span> <span style="color: #0000ff;">for</span> (<span style="color: #0000ff;">var</span> i = 0; i &lt; len; i++<span style="color: #000000;">) {
+</span><span style="color: #008080;">17</span>     sum3++<span style="color: #000000;">;
+</span><span style="color: #008080;">18</span> <span style="color: #000000;">}
+</span><span style="color: #008080;">19</span> <span style="color: #008000;">//</span><span style="color: #008000;">sum3不管，答出len=2与len=200000时，sum1,sum2的值</span>
+<span style="color: #008080;">20</span> <span style="color: #000000;">console.log(sum1);
+</span><span style="color: #008080;">21</span> <span style="color: #000000;">console.log(sum2);
+</span><span style="color: #008080;">22</span> console.log(sum3);</pre>
+</div>
+<p>这个例子是我昨天一个问题思考出来的，答案非常经典，因为本来我是想要说明闭包的问题，却不自主的引入了另外一个神器</p>
+<h2>settimeout</h2>
+<p>这样写的话，无论如何sum1与sum2都是0，就算把len改的很大，明明已经过了1s了答案依旧是0<br>由此各位可以意识到settimeout不是我最初想象那么简单了，并不是多少秒后就会执行，而是完全从主干流程脱离出来<br>主干如果进行复杂的代码运算，甚至耗费几秒，我们的settimeout也不会执行</p>
+<p>比如我们说下一个例子：</p>
+<div class="cnblogs_code">
+<pre><span style="color: #008080;"> 1</span> <span style="color: #0000ff;">&lt;!</span><span style="color: #ff00ff;">DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 2</span> <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">html </span><span style="color: #ff0000;">xmlns</span><span style="color: #0000ff;">="http://www.w3.org/1999/xhtml"</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 3</span> <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">head</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 4</span>     <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">title</span><span style="color: #0000ff;">&gt;&lt;/</span><span style="color: #800000;">title</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 5</span>     <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">meta </span><span style="color: #ff0000;">name</span><span style="color: #0000ff;">="viewport"</span><span style="color: #ff0000;"> content</span><span style="color: #0000ff;">="width=device-width,initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no"</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 6</span>     <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">style</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 7</span> <span style="background-color: #f5f5f5; color: #800000;">        #list </span><span style="background-color: #f5f5f5; color: #000000;">{</span><span style="background-color: #f5f5f5; color: #ff0000;"> display</span><span style="background-color: #f5f5f5; color: #000000;">:</span><span style="background-color: #f5f5f5; color: #0000ff;"> block</span><span style="background-color: #f5f5f5; color: #000000;">;</span><span style="background-color: #f5f5f5; color: #ff0000;"> position</span><span style="background-color: #f5f5f5; color: #000000;">:</span><span style="background-color: #f5f5f5; color: #0000ff;"> absolute</span><span style="background-color: #f5f5f5; color: #000000;">;</span><span style="background-color: #f5f5f5; color: #ff0000;"> top</span><span style="background-color: #f5f5f5; color: #000000;">:</span><span style="background-color: #f5f5f5; color: #0000ff;"> 100px</span><span style="background-color: #f5f5f5; color: #000000;">;</span><span style="background-color: #f5f5f5; color: #ff0000;"> left</span><span style="background-color: #f5f5f5; color: #000000;">:</span><span style="background-color: #f5f5f5; color: #0000ff;"> 10px</span><span style="background-color: #f5f5f5; color: #000000;">;</span><span style="background-color: #f5f5f5; color: #ff0000;"> width</span><span style="background-color: #f5f5f5; color: #000000;">:</span><span style="background-color: #f5f5f5; color: #0000ff;"> 200px</span><span style="background-color: #f5f5f5; color: #000000;">;</span><span style="background-color: #f5f5f5; color: #ff0000;"> height</span><span style="background-color: #f5f5f5; color: #000000;">:</span><span style="background-color: #f5f5f5; color: #0000ff;"> 100px</span><span style="background-color: #f5f5f5; color: #000000;">;</span> <span style="background-color: #f5f5f5; color: #000000;">}</span>
+<span style="color: #008080;"> 8</span> <span style="background-color: #f5f5f5; color: #800000;">        div </span><span style="background-color: #f5f5f5; color: #000000;">{</span><span style="background-color: #f5f5f5; color: #ff0000;"> display</span><span style="background-color: #f5f5f5; color: #000000;">:</span><span style="background-color: #f5f5f5; color: #0000ff;"> block</span><span style="background-color: #f5f5f5; color: #000000;">;</span><span style="background-color: #f5f5f5; color: #ff0000;"> border</span><span style="background-color: #f5f5f5; color: #000000;">:</span><span style="background-color: #f5f5f5; color: #0000ff;"> 1px solid black</span><span style="background-color: #f5f5f5; color: #000000;">;</span><span style="background-color: #f5f5f5; color: #ff0000;"> height</span><span style="background-color: #f5f5f5; color: #000000;">:</span><span style="background-color: #f5f5f5; color: #0000ff;"> 500px</span><span style="background-color: #f5f5f5; color: #000000;">;</span><span style="background-color: #f5f5f5; color: #ff0000;"> width</span><span style="background-color: #f5f5f5; color: #000000;">:</span><span style="background-color: #f5f5f5; color: #0000ff;"> 100%</span><span style="background-color: #f5f5f5; color: #000000;">;</span> <span style="background-color: #f5f5f5; color: #000000;">}</span>
+<span style="color: #008080;"> 9</span> <span style="background-color: #f5f5f5; color: #800000;">        #input </span><span style="background-color: #f5f5f5; color: #000000;">{</span><span style="background-color: #f5f5f5; color: #ff0000;"> width</span><span style="background-color: #f5f5f5; color: #000000;">:</span><span style="background-color: #f5f5f5; color: #0000ff;"> 80px</span><span style="background-color: #f5f5f5; color: #000000;">;</span><span style="background-color: #f5f5f5; color: #ff0000;"> height</span><span style="background-color: #f5f5f5; color: #000000;">:</span><span style="background-color: #f5f5f5; color: #0000ff;"> 200px</span><span style="background-color: #f5f5f5; color: #000000;">;</span><span style="background-color: #f5f5f5; color: #ff0000;"> display</span><span style="background-color: #f5f5f5; color: #000000;">:</span><span style="background-color: #f5f5f5; color: #0000ff;"> block</span><span style="background-color: #f5f5f5; color: #000000;">;</span> <span style="background-color: #f5f5f5; color: #000000;">}</span>
+<span style="color: #008080;">10</span>     <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">style</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">11</span>     <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">script </span><span style="color: #ff0000;">id</span><span style="color: #0000ff;">="others_zepto_10rc1"</span><span style="color: #ff0000;"> type</span><span style="color: #0000ff;">="text/javascript"</span><span style="color: #ff0000;"> class</span><span style="color: #0000ff;">="library"</span><span style="color: #ff0000;"> src</span><span style="color: #0000ff;">="/js/sandbox/other/zepto.min.js"</span><span style="color: #0000ff;">&gt;&lt;/</span><span style="color: #800000;">script</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">12</span> <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">head</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">13</span> <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">body</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">14</span>     <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">input </span><span style="color: #ff0000;">type</span><span style="color: #0000ff;">="button"</span><span style="color: #ff0000;"> value</span><span style="color: #0000ff;">="获取焦点"</span><span style="color: #ff0000;"> id</span><span style="color: #0000ff;">="bt"</span> <span style="color: #0000ff;">/&gt;</span>
+<span style="color: #008080;">15</span>     <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">div </span><span style="color: #ff0000;">id</span><span style="color: #0000ff;">="divBt"</span><span style="color: #ff0000;"> style</span><span style="color: #0000ff;">="width: 100px; height: 40px; background-color: Red;"</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">16</span>         div按钮<span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">div</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">17</span>     <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">br </span><span style="color: #0000ff;">/&gt;</span>
+<span style="color: #008080;">18</span>     <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">div </span><span style="color: #ff0000;">id</span><span style="color: #0000ff;">="d"</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">19</span>         <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">input </span><span style="color: #ff0000;">type</span><span style="color: #0000ff;">="text"</span><span style="color: #ff0000;"> id</span><span style="color: #0000ff;">="input"</span> <span style="color: #0000ff;">/&gt;</span>
+<span style="color: #008080;">20</span>         <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">div </span><span style="color: #ff0000;">id</span><span style="color: #0000ff;">="list"</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">21</span>         <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">div</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">22</span>     <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">div</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">23</span> <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">body</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">24</span> <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">script </span><span style="color: #ff0000;">type</span><span style="color: #0000ff;">="text/javascript"</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">25</span>     <span style="background-color: #f5f5f5; color: #0000ff;">var</span><span style="background-color: #f5f5f5; color: #000000;"> list </span><span style="background-color: #f5f5f5; color: #000000;">=</span><span style="background-color: #f5f5f5; color: #000000;"> $(</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">#list</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">);
+</span><span style="color: #008080;">26</span>     <span style="background-color: #f5f5f5; color: #0000ff;">var</span><span style="background-color: #f5f5f5; color: #000000;"> d </span><span style="background-color: #f5f5f5; color: #000000;">=</span><span style="background-color: #f5f5f5; color: #000000;"> $(</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">#d</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">);
+</span><span style="color: #008080;">27</span>     <span style="background-color: #f5f5f5; color: #0000ff;">var</span><span style="background-color: #f5f5f5; color: #000000;"> input </span><span style="background-color: #f5f5f5; color: #000000;">=</span><span style="background-color: #f5f5f5; color: #000000;"> $(</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">#input</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">);
+</span><span style="color: #008080;">28</span> <span style="background-color: #f5f5f5; color: #000000;">    input.tap(</span><span style="background-color: #f5f5f5; color: #0000ff;">function</span><span style="background-color: #f5f5f5; color: #000000;"> (e) {
+</span><span style="color: #008080;">29</span> <span style="background-color: #f5f5f5; color: #000000;">        e.stopPropagation();
+</span><span style="color: #008080;">30</span> <span style="background-color: #f5f5f5; color: #000000;">        e.preventDefault();
+</span><span style="color: #008080;">31</span> <span style="background-color: #f5f5f5; color: #000000;">        input.val(</span><span style="background-color: #f5f5f5; color: #0000ff;">new</span><span style="background-color: #f5f5f5; color: #000000;"> Date().getTime());
+</span><span style="color: #008080;">32</span>         <span style="background-color: #f5f5f5; color: #0000ff;">return</span> <span style="background-color: #f5f5f5; color: #0000ff;">false</span><span style="background-color: #f5f5f5; color: #000000;">;
+</span><span style="color: #008080;">33</span> <span style="background-color: #f5f5f5; color: #000000;">    });
+</span><span style="color: #008080;">34</span> <span style="background-color: #f5f5f5; color: #000000;">    list.tap(</span><span style="background-color: #f5f5f5; color: #0000ff;">function</span><span style="background-color: #f5f5f5; color: #000000;"> (e) {
+</span><span style="color: #008080;">35</span> <span style="background-color: #f5f5f5; color: #000000;">        $(</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">body</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">).css(</span><span style="background-color: #f5f5f5; color: #000000;">"</span><span style="background-color: #f5f5f5; color: #000000;">pointer-events</span><span style="background-color: #f5f5f5; color: #000000;">"</span><span style="background-color: #f5f5f5; color: #000000;">, </span><span style="background-color: #f5f5f5; color: #000000;">"</span><span style="background-color: #f5f5f5; color: #000000;">none</span><span style="background-color: #f5f5f5; color: #000000;">"</span><span style="background-color: #f5f5f5; color: #000000;">);
+</span><span style="color: #008080;">36</span> <span style="background-color: #f5f5f5; color: #000000;">        list.hide();
+</span><span style="color: #008080;">37</span> <span style="background-color: #f5f5f5; color: #000000;">        console.log(e);
+</span><span style="color: #008080;">38</span> <span style="background-color: #f5f5f5; color: #000000;">        setTimeout(</span><span style="background-color: #f5f5f5; color: #0000ff;">function</span><span style="background-color: #f5f5f5; color: #000000;"> () {
+</span><span style="color: #008080;">39</span> <span style="background-color: #f5f5f5; color: #000000;">            e.stopPropagation();
+</span><span style="color: #008080;">40</span> <span style="background-color: #f5f5f5; color: #000000;">            console.log(e);
+</span><span style="color: #008080;">41</span> <span style="background-color: #f5f5f5; color: #000000;">        }, </span><span style="background-color: #f5f5f5; color: #000000;">0</span><span style="background-color: #f5f5f5; color: #000000;">)
+</span><span style="color: #008080;">42</span> <span style="background-color: #f5f5f5; color: #000000;">        setTimeout(</span><span style="background-color: #f5f5f5; color: #0000ff;">function</span><span style="background-color: #f5f5f5; color: #000000;"> () {
+</span><span style="color: #008080;">43</span> <span style="background-color: #f5f5f5; color: #000000;">            list.show();
+</span><span style="color: #008080;">44</span> <span style="background-color: #f5f5f5; color: #000000;">        }, </span><span style="background-color: #f5f5f5; color: #000000;">1250</span><span style="background-color: #f5f5f5; color: #000000;">);
+</span><span style="color: #008080;">45</span> <span style="background-color: #f5f5f5; color: #000000;">        setTimeout(</span><span style="background-color: #f5f5f5; color: #0000ff;">function</span><span style="background-color: #f5f5f5; color: #000000;"> () {
+</span><span style="color: #008080;">46</span> <span style="background-color: #f5f5f5; color: #000000;">            $(</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">body</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">).css(</span><span style="background-color: #f5f5f5; color: #000000;">"</span><span style="background-color: #f5f5f5; color: #000000;">pointer-events</span><span style="background-color: #f5f5f5; color: #000000;">"</span><span style="background-color: #f5f5f5; color: #000000;">, </span><span style="background-color: #f5f5f5; color: #000000;">"</span><span style="background-color: #f5f5f5; color: #000000;">auto</span><span style="background-color: #f5f5f5; color: #000000;">"</span><span style="background-color: #f5f5f5; color: #000000;">);
+</span><span style="color: #008080;">47</span> <span style="background-color: #f5f5f5; color: #000000;">        }, </span><span style="background-color: #f5f5f5; color: #000000;">50</span><span style="background-color: #f5f5f5; color: #000000;">);
+</span><span style="color: #008080;">48</span> <span style="background-color: #f5f5f5; color: #000000;">    });
+</span><span style="color: #008080;">49</span> <span style="background-color: #f5f5f5; color: #000000;">    d.tap(</span><span style="background-color: #f5f5f5; color: #0000ff;">function</span><span style="background-color: #f5f5f5; color: #000000;"> () {
+</span><span style="color: #008080;">50</span> <span style="background-color: #f5f5f5; color: #000000;">        d.append($(</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">&lt;p&gt;div tap&lt;/p&gt;</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">));
+</span><span style="color: #008080;">51</span> <span style="background-color: #f5f5f5; color: #000000;">    });
+</span><span style="color: #008080;">52</span> <span style="background-color: #f5f5f5; color: #000000;">    $(</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">#bt</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">).tap(</span><span style="background-color: #f5f5f5; color: #0000ff;">function</span><span style="background-color: #f5f5f5; color: #000000;"> () {
+</span><span style="color: #008080;">53</span>         <span style="background-color: #f5f5f5; color: #0000ff;">var</span><span style="background-color: #f5f5f5; color: #000000;"> s </span><span style="background-color: #f5f5f5; color: #000000;">=</span><span style="background-color: #f5f5f5; color: #000000;"> input.val() </span><span style="background-color: #f5f5f5; color: #000000;">+</span> <span style="background-color: #f5f5f5; color: #0000ff;">new</span><span style="background-color: #f5f5f5; color: #000000;"> Date().getTime();
+</span><span style="color: #008080;">54</span> <span style="background-color: #f5f5f5; color: #000000;">        input.val(s)
+</span><span style="color: #008080;">55</span> <span style="background-color: #f5f5f5; color: #000000;">        input.focus();
+</span><span style="color: #008080;">56</span> <span style="background-color: #f5f5f5; color: #000000;">    });
+</span><span style="color: #008080;">57</span> <span style="background-color: #f5f5f5; color: #000000;">    $(</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">#divBt</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">).tap(</span><span style="background-color: #f5f5f5; color: #0000ff;">function</span><span style="background-color: #f5f5f5; color: #000000;"> () {
+</span><span style="color: #008080;">58</span> <span style="background-color: #f5f5f5; color: #000000;">        input.focus();
+</span><span style="color: #008080;">59</span> <span style="background-color: #f5f5f5; color: #000000;">    });
+</span><span style="color: #008080;">60</span> <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">script</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">61</span> <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">html</span><span style="color: #0000ff;">&gt;</span></pre>
+</div>
+<p>这个例子是我最近遇到的一个问题，个人认为比较经典，我们点击里面的div会冒泡执行外面的div事件，但是我们可以 e.stopPropagation();<br>这样阻止冒泡，但是如果我们代码写成这样的话：</p>
+<div class="cnblogs_code">
+<pre><span style="color: #008080;">1</span> <span style="color: #000000;">setTimeout(function () {
+</span><span style="color: #008080;">2</span> <span style="color: #000000;">    list.show();
+</span><span style="color: #008080;">3</span> }, 1250);</pre>
+</div>
+<p><span style="line-height: 1.5;">那么对不起，阻止冒泡是不起作用的</span></p>
+<p>这个问题影响比较深远比如zepto的touch源码最后关键部分：</p>
+<div class="cnblogs_code">
+<pre><span style="color: #008080;"> 1</span> on('touchend MSPointerUp', <span style="color: #0000ff;">function</span><span style="color: #000000;"> (e) {
+</span><span style="color: #008080;"> 2</span>     <span style="color: #008000;">//</span><span style="color: #008000;"> ......</span>
+<span style="color: #008080;"> 3</span>     <span style="color: #0000ff;">else</span> <span style="color: #0000ff;">if</span> ('last' <span style="color: #0000ff;">in</span><span style="color: #000000;"> touch)
+</span><span style="color: #008080;"> 4</span>         <span style="color: #0000ff;">if</span> (deltaX &lt; 30 &amp;&amp; deltaY &lt; 30<span style="color: #000000;">) {
+</span><span style="color: #008080;"> 5</span>             tapTimeout = setTimeout(<span style="color: #0000ff;">function</span><span style="color: #000000;"> () {
+</span><span style="color: #008080;"> 6</span>                 <span style="color: #0000ff;">var</span> event = $.Event('tap'<span style="color: #000000;">)
+</span><span style="color: #008080;"> 7</span>                 event.cancelTouch =<span style="color: #000000;"> cancelAll
+</span><span style="color: #008080;"> 8</span>                 touch.el.trigger &amp;&amp;<span style="color: #000000;"> touch.el.trigger(event)
+</span><span style="color: #008080;"> 9</span>                 <span style="color: #0000ff;">if</span><span style="color: #000000;"> (touch.isDoubleTap) {
+</span><span style="color: #008080;">10</span>                     touch.el.trigger &amp;&amp; touch.el.trigger('doubleTap'<span style="color: #000000;">)
+</span><span style="color: #008080;">11</span>                     touch =<span style="color: #000000;"> {}
+</span><span style="color: #008080;">12</span> <span style="color: #000000;">                }
+</span><span style="color: #008080;">13</span>                 <span style="color: #0000ff;">else</span><span style="color: #000000;"> {
+</span><span style="color: #008080;">14</span>                     touchTimeout = setTimeout(<span style="color: #0000ff;">function</span><span style="color: #000000;"> () {
+</span><span style="color: #008080;">15</span>                         touchTimeout = <span style="color: #0000ff;">null</span>
+<span style="color: #008080;">16</span>                         touch.el.trigger &amp;&amp; touch.el.trigger('singleTap'<span style="color: #000000;">)
+</span><span style="color: #008080;">17</span>                         touch =<span style="color: #000000;"> {}
+</span><span style="color: #008080;">18</span>                     }, 250<span style="color: #000000;">)
+</span><span style="color: #008080;">19</span> <span style="color: #000000;">                }
+</span><span style="color: #008080;">20</span>             }, 0<span style="color: #000000;">)
+</span><span style="color: #008080;">21</span>         } <span style="color: #0000ff;">else</span><span style="color: #000000;"> {
+</span><span style="color: #008080;">22</span>             touch =<span style="color: #000000;"> {}
+</span><span style="color: #008080;">23</span> <span style="color: #000000;">        }
+</span><span style="color: #008080;">24</span>     deltaX = deltaY = 0
+<span style="color: #008080;">25</span> })</pre>
+</div>
+<p>这里触发了tap事件（touch.el.trigger(event) ），但是在这个位置执行什么阻止冒泡等操作毫无意义，原因就是外层的settimeout(function(){}, 0)</p>
+<p>好了，这里扯得有点远，我们继续刚刚的闭包问题，如果我们将最后打印改成这样，答案依旧难辨，因为我们看着题目容易臆测，而忽略实际问题：</p>
+<div class="cnblogs_code">
+<pre><span style="color: #008080;">1</span> setTimeout(<span style="color: #0000ff;">function</span><span style="color: #000000;"> () {
+</span><span style="color: #008080;">2</span> <span style="color: #000000;">    console.log(sum1);
+</span><span style="color: #008080;">3</span> <span style="color: #000000;">    console.log(sum2);
+</span><span style="color: #008080;">4</span> <span style="color: #000000;">    console.log(sum3);
+</span><span style="color: #008080;">5</span> }, 1)</pre>
+</div>
+<p>这里sum1的值居然是NaN，因为我以为他会是0undefined，所以不能臆测啊！<br>这里说回来大家都会知道产生了闭包，而each解决了闭包问题，而for最后i的值是2，而我们的arr自然取不到值<br>PS：不知道这个例子可以说明each的用途没有......</p>
+<h1>$.extend(target, [source, [source2, ...]])</h1>
+<p>该方法比较有用，用于通过源对象扩展目标对象属性，源对象属性将覆盖目标对象属性，默认为浅赋值，true的话便会连余下对象一起复制</p>
+<div class="cnblogs_code">
+<pre><span style="color: #008080;"> 1</span> <span style="color: #0000ff;">var</span><span style="color: #000000;"> target
+</span><span style="color: #008080;"> 2</span>     =<span style="color: #000000;"> { one:
+</span><span style="color: #008080;"> 3</span>     'patridge'
+<span style="color: #008080;"> 4</span> <span style="color: #000000;">    },
+</span><span style="color: #008080;"> 5</span>     source =<span style="color: #000000;"> {
+</span><span style="color: #008080;"> 6</span>         two: 'turtle doves'
+<span style="color: #008080;"> 7</span> <span style="color: #000000;">    }
+</span><span style="color: #008080;"> 8</span> <span style="color: #000000;">$.extend(target, source)
+</span><span style="color: #008080;"> 9</span> <span style="color: #008000;">//</span><span style="color: #008000;">=&gt; { one: 'patridge',</span>
+<span style="color: #008080;">10</span> <span style="color: #008000;">//</span><span style="color: #008000;"> two: 'turtle doves' }</span></pre>
+</div>
+<p>我们来看看源码实现：</p>
+<div class="cnblogs_code">
+<pre><span style="color: #008080;"> 1</span> <span style="color: #0000ff;">function</span><span style="color: #000000;"> extend(target, source, deep) {
+</span><span style="color: #008080;"> 2</span>     <span style="color: #0000ff;">for</span> (key <span style="color: #0000ff;">in</span><span style="color: #000000;"> source)
+</span><span style="color: #008080;"> 3</span>     <span style="color: #008000;">//</span><span style="color: #008000;">如果深度扩展</span>
+<span style="color: #008080;"> 4</span>         <span style="color: #0000ff;">if</span> (deep &amp;&amp; (isPlainObject(source[key]) ||<span style="color: #000000;"> isArray(source[key]))) {
+</span><span style="color: #008080;"> 5</span>             <span style="color: #008000;">//</span><span style="color: #008000;">如果要扩展的数据是对象且target相对应的key不是对象</span>
+<span style="color: #008080;"> 6</span>             <span style="color: #0000ff;">if</span> (isPlainObject(source[key]) &amp;&amp; !isPlainObject(target[key])) target[key] =<span style="color: #000000;"> {}
+</span><span style="color: #008080;"> 7</span>             <span style="color: #008000;">//</span><span style="color: #008000;">如果要扩展的数据是数组且target相对应的key不是数组</span>
+<span style="color: #008080;"> 8</span>             <span style="color: #0000ff;">if</span> (isArray(source[key]) &amp;&amp; !isArray(target[key])) target[key] =<span style="color: #000000;"> []
+</span><span style="color: #008080;"> 9</span> <span style="color: #000000;">            extend(target[key], source[key], deep)
+</span><span style="color: #008080;">10</span>         } <span style="color: #0000ff;">else</span> <span style="color: #0000ff;">if</span> (source[key] !== undefined) target[key] =<span style="color: #000000;"> source[key]
+</span><span style="color: #008080;">11</span> }</pre>
+</div>
+<p>这个代码很清晰，不是深度扩展时候仅仅是单纯的复制，由此可能可以回答一些可能被问到的问题：<br>源对象和复制对象有相同的属性会被覆盖吗？答案是会的</p>
+<p>然后看这个深度拷贝，就会递归的将复制对象的对象给复制过去</p>
+<p>PS：深度克隆与浅克隆的区别是复制对象变了源对象相关属性不会跟着改变，这就是区别（在java就是引用与值的区别）</p>
+<h1>$.grep(items, function(item){ ... })</h1>
+<p>这个方法是用于筛选数组的，新数组只包含回调函数中返回 ture 的数组项，这个代码就不关注了，他底层还是调用的javascript数组的方法</p>
+<div class="cnblogs_code">
+<pre><span style="color: #008080;"> 1</span> <span style="color: #0000ff;">if</span> (!<span style="color: #000000;">Array.prototype.filter)
+</span><span style="color: #008080;"> 2</span> <span style="color: #000000;">{
+</span><span style="color: #008080;"> 3</span>     Array.prototype.filter = <span style="color: #0000ff;">function</span>(fun <span style="color: #008000;">/*</span><span style="color: #008000;">, thisp</span><span style="color: #008000;">*/</span><span style="color: #000000;">)
+</span><span style="color: #008080;"> 4</span> <span style="color: #000000;">    {
+</span><span style="color: #008080;"> 5</span>         <span style="color: #0000ff;">var</span> len = <span style="color: #0000ff;">this</span><span style="color: #000000;">.length;
+</span><span style="color: #008080;"> 6</span>         <span style="color: #0000ff;">if</span> (<span style="color: #0000ff;">typeof</span> fun != "function"<span style="color: #000000;">)
+</span><span style="color: #008080;"> 7</span>             <span style="color: #0000ff;">throw</span> <span style="color: #0000ff;">new</span><span style="color: #000000;"> TypeError();
+</span><span style="color: #008080;"> 8</span>  
+<span style="color: #008080;"> 9</span>         <span style="color: #0000ff;">var</span> res = <span style="color: #0000ff;">new</span><span style="color: #000000;"> Array();
+</span><span style="color: #008080;">10</span>         <span style="color: #0000ff;">var</span> thisp = arguments[1<span style="color: #000000;">];
+</span><span style="color: #008080;">11</span>         <span style="color: #0000ff;">for</span> (<span style="color: #0000ff;">var</span> i = 0; i &lt; len; i++<span style="color: #000000;">)
+</span><span style="color: #008080;">12</span> <span style="color: #000000;">        {
+</span><span style="color: #008080;">13</span>             <span style="color: #0000ff;">if</span> (i <span style="color: #0000ff;">in</span> <span style="color: #0000ff;">this</span><span style="color: #000000;">)
+</span><span style="color: #008080;">14</span> <span style="color: #000000;">            {
+</span><span style="color: #008080;">15</span>                 <span style="color: #0000ff;">var</span> val = <span style="color: #0000ff;">this</span>[i]; <span style="color: #008000;">//</span><span style="color: #008000;"> in case fun mutates this</span>
+<span style="color: #008080;">16</span>                 <span style="color: #0000ff;">if</span> (fun.call(thisp, val, i, <span style="color: #0000ff;">this</span><span style="color: #000000;">))
+</span><span style="color: #008080;">17</span> <span style="color: #000000;">                    res.push(val);
+</span><span style="color: #008080;">18</span> <span style="color: #000000;">            }
+</span><span style="color: #008080;">19</span> <span style="color: #000000;">        }
+</span><span style="color: #008080;">20</span>         <span style="color: #0000ff;">return</span><span style="color: #000000;"> res;
+</span><span style="color: #008080;">21</span> <span style="color: #000000;">    };
+</span><span style="color: #008080;">22</span> <span style="color: #000000;">}
+</span><span style="color: #008080;">23</span> 
+<span style="color: #008080;">24</span> $.inArray(element, array, [fromIndex])</pre>
+</div>
+<p>搜索数组中指定值并返回它的索引（如果没有找到则返回-1）。[fromIndex] 参数可选，表示从哪个索引值开始向后查找。<br>这个函数底层依旧是调用javascript数组原生的方法：</p>
+<div class="cnblogs_code">
+<pre><span style="color: #008080;">1</span> $.inArray = <span style="color: #0000ff;">function</span><span style="color: #000000;"> (elem, array, i) {
+</span><span style="color: #008080;">2</span>     <span style="color: #0000ff;">return</span><span style="color: #000000;"> emptyArray.indexOf.call(array, elem, i)
+</span><span style="color: #008080;">3</span> }</pre>
+</div>
+<h1>$.parseJSON(string)&nbsp;</h1>
+<p>这个方法在最新的javascript语法出来时非常有用，我们原来一般是这样干的：</p>
+<div class="cnblogs_code">
+<pre><span style="color: #0000ff;">var</span> json = eval('(' + str + ')');</pre>
+</div>
+<p>后面我们就这样干了：</p>
+<div class="cnblogs_code">
+<pre><span style="color: #0000ff;">if</span> (window.JSON) $.parseJSON = JSON.parse</pre>
+</div>
+<p>所以这个方法，我们暂时不必关注了，因为zepto面向的是高版本浏览器，所以他基本也不关注这个问题</p>
+<p>好了，我们看到这里有几个方法比较重要了！</p>
+<h1>add(selector, [context])</h1>
+<p>添加元素到匹配的元素集合。如果content参数存在，只在content中进行查找，否则在document中查找。</p>
+<div class="cnblogs_code">
+<pre><span style="color: #008080;"> 1</span> <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">ul</span><span style="color: #0000ff;">&gt;</span>    
+<span style="color: #008080;"> 2</span>     <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">li</span><span style="color: #0000ff;">&gt;</span>list item 1<span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">li</span><span style="color: #0000ff;">&gt;</span>    
+<span style="color: #008080;"> 3</span>     <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">li</span><span style="color: #0000ff;">&gt;</span>list item 2<span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">li</span><span style="color: #0000ff;">&gt;</span>    
+<span style="color: #008080;"> 4</span>     <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">li</span><span style="color: #0000ff;">&gt;</span>list item 3<span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">li</span><span style="color: #0000ff;">&gt;</span>  
+<span style="color: #008080;"> 5</span> <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">ul</span><span style="color: #0000ff;">&gt;</span>  
+<span style="color: #008080;"> 6</span> <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">p</span><span style="color: #0000ff;">&gt;</span>a paragraph<span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">p</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 7</span> 
+<span style="color: #008080;"> 8</span> <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">script </span><span style="color: #ff0000;">type</span><span style="color: #0000ff;">="text/javascript"</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 9</span> <span style="background-color: #f5f5f5; color: #000000;">    $(</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">li</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">).add(</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">p</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">).css(</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">background-color</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">, </span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">red</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">);
+</span><span style="color: #008080;">10</span> <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">script</span><span style="color: #0000ff;">&gt;</span></pre>
+</div>
+<div class="cnblogs_code">
+<pre><span style="color: #008080;">1</span> add: <span style="color: #0000ff;">function</span><span style="color: #000000;"> (selector, context) {
+</span><span style="color: #008080;">2</span>     <span style="color: #0000ff;">return</span> $(uniq(<span style="color: #0000ff;">this</span>.concat($(selector, context)))) <span style="color: #008000;">//</span><span style="color: #008000;">追加并去重</span>
+<span style="color: #008080;">3</span> <span style="color: #000000;">},
+</span><span style="color: #008080;">4</span> 
+<span style="color: #008080;">5</span> uniq = <span style="color: #0000ff;">function</span><span style="color: #000000;"> (array) {
+</span><span style="color: #008080;">6</span>     <span style="color: #0000ff;">return</span> filter.call(array, <span style="color: #0000ff;">function</span><span style="color: #000000;"> (item, idx) {
+</span><span style="color: #008080;">7</span>         <span style="color: #0000ff;">return</span> array.indexOf(item) ==<span style="color: #000000;"> idx
+</span><span style="color: #008080;">8</span> <span style="color: #000000;">    })
+</span><span style="color: #008080;">9</span> }</pre>
+</div>
+<p>PS：concat是数组本身的方法</p>
+<p>我们这里来一点点搞下这个代码逻辑：<br>① $(selector, context)<br>该方法为一个dom选择器，根据我们上次的研究，他会返回我们的封装后的dom集合</p>
+<p>② this.concat(el)<br>我们知道this当前指向就是被包装的dom数组对象，所以这里就将两个方法连接起来了<br>现在不管真实页面结构渲染是否变化，反正包装的dom结构被连接了</p>
+<p>③ uniq(el)<br>稍后，这个代码读了后我整个人迷糊了！！！我们来看个例子</p>
+<div class="cnblogs_code">
+<pre><span style="color: #008080;"> 1</span> <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">html </span><span style="color: #ff0000;">xmlns</span><span style="color: #0000ff;">="http://www.w3.org/1999/xhtml"</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 2</span> <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">head</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 3</span>     <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">title</span><span style="color: #0000ff;">&gt;&lt;/</span><span style="color: #800000;">title</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 4</span>     <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">script </span><span style="color: #ff0000;">id</span><span style="color: #0000ff;">="others_zepto_10rc1"</span><span style="color: #ff0000;"> type</span><span style="color: #0000ff;">="text/javascript"</span><span style="color: #ff0000;"> class</span><span style="color: #0000ff;">="library"</span><span style="color: #ff0000;"> src</span><span style="color: #0000ff;">="/js/sandbox/other/zepto.min.js"</span><span style="color: #0000ff;">&gt;&lt;/</span><span style="color: #800000;">script</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 5</span>     <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">script </span><span style="color: #ff0000;">src</span><span style="color: #0000ff;">="../../zepto.js"</span><span style="color: #ff0000;"> type</span><span style="color: #0000ff;">="text/javascript"</span><span style="color: #0000ff;">&gt;&lt;/</span><span style="color: #800000;">script</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 6</span> <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">head</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 7</span> <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">body</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 8</span>     <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">ul</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 9</span>         <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">li</span><span style="color: #0000ff;">&gt;</span>list item 1<span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">li</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">10</span>         <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">li</span><span style="color: #0000ff;">&gt;</span>list item 2<span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">li</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">11</span>         <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">li</span><span style="color: #0000ff;">&gt;</span>list item 3<span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">li</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">12</span>     <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">ul</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">13</span>     <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">p</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">14</span>         a paragraph<span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">p</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">15</span> <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">body</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">16</span> <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">script </span><span style="color: #ff0000;">type</span><span style="color: #0000ff;">="text/javascript"</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">17</span> <span style="background-color: #f5f5f5; color: #000000;">    $(</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">ul</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">).add(</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">p</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">).css(</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">background-color</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">, </span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">red</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">);
+</span><span style="color: #008080;">18</span> <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">script</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">19</span> <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">html</span><span style="color: #0000ff;">&gt;</span></pre>
+</div>
+<p>按照他的意思，我们ul就应该加到p后面，但是运行结构并不是这样的......所以该方法暂时忽略......</p>
+<h1>addClass</h1>
+<p>好了，我们来看看我们的addClass是干什么的</p>
+<div class="cnblogs_code">
+<pre><span style="color: #008080;"> 1</span> addClass: <span style="color: #0000ff;">function</span><span style="color: #000000;"> (name) {
+</span><span style="color: #008080;"> 2</span>     <span style="color: #0000ff;">return</span> <span style="color: #0000ff;">this</span>.each(<span style="color: #0000ff;">function</span><span style="color: #000000;"> (idx) {
+</span><span style="color: #008080;"> 3</span>         classList =<span style="color: #000000;"> []
+</span><span style="color: #008080;"> 4</span>         <span style="color: #0000ff;">var</span> cls = className(<span style="color: #0000ff;">this</span><span style="color: #000000;">),
+</span><span style="color: #008080;"> 5</span> newName = funcArg(<span style="color: #0000ff;">this</span><span style="color: #000000;">, name, idx, cls)
+</span><span style="color: #008080;"> 6</span>         <span style="color: #008000;">//</span><span style="color: #008000;">处理同时多个类的情况，用空格分开</span>
+<span style="color: #008080;"> 7</span>         newName.split(/\s+/g).forEach(<span style="color: #0000ff;">function</span><span style="color: #000000;"> (klass) {
+</span><span style="color: #008080;"> 8</span>             <span style="color: #0000ff;">if</span> (!$(<span style="color: #0000ff;">this</span><span style="color: #000000;">).hasClass(klass)) classList.push(klass)
+</span><span style="color: #008080;"> 9</span>         }, <span style="color: #0000ff;">this</span><span style="color: #000000;">)
+</span><span style="color: #008080;">10</span>         classList.length &amp;&amp; className(<span style="color: #0000ff;">this</span>, cls + (cls ? " " : "") + classList.join(" "<span style="color: #000000;">))
+</span><span style="color: #008080;">11</span> <span style="color: #000000;">    })
+</span><span style="color: #008080;">12</span> },</pre>
+</div>
+<p>这个each是可以理解的，就是操作每一个dom结构，所以我们将代码看成这个样子:</p>
+<div class="cnblogs_code">
+<pre><span style="color: #008080;"> 1</span> classList =<span style="color: #000000;"> []
+</span><span style="color: #008080;"> 2</span> <span style="color: #0000ff;">var</span> cls = className(<span style="color: #0000ff;">this</span><span style="color: #000000;">),
+</span><span style="color: #008080;"> 3</span> newName = funcArg(<span style="color: #0000ff;">this</span><span style="color: #000000;">, name, idx, cls)
+</span><span style="color: #008080;"> 4</span> <span style="color: #008000;">//</span><span style="color: #008000;">处理同时多个类的情况，用空格分开</span>
+<span style="color: #008080;"> 5</span> newName.split(/\s+/g).forEach(<span style="color: #0000ff;">function</span><span style="color: #000000;"> (klass) {
+</span><span style="color: #008080;"> 6</span>     <span style="color: #0000ff;">if</span> (!$(<span style="color: #0000ff;">this</span><span style="color: #000000;">).hasClass(klass)) classList.push(klass)
+</span><span style="color: #008080;"> 7</span> }, <span style="color: #0000ff;">this</span><span style="color: #000000;">)
+</span><span style="color: #008080;"> 8</span> classList.length &amp;&amp; className(<span style="color: #0000ff;">this</span>, cls + (cls ? " " : "") + classList.join(" "<span style="color: #000000;">))
+</span><span style="color: #008080;"> 9</span> 
+<span style="color: #008080;">10</span> <span style="color: #000000;">这里有使用了className方法，所以我们来看看：
+</span><span style="color: #008080;">11</span> 
+<span style="color: #008080;">12</span> <span style="color: #0000ff;">function</span><span style="color: #000000;"> className(node, value) {
+</span><span style="color: #008080;">13</span>     <span style="color: #0000ff;">var</span> klass = node.className, svg = klass &amp;&amp; klass.baseVal !==<span style="color: #000000;"> undefined
+</span><span style="color: #008080;">14</span>     <span style="color: #0000ff;">if</span> (value === undefined) <span style="color: #0000ff;">return</span> svg ?<span style="color: #000000;"> klass.baseVal : klass
+</span><span style="color: #008080;">15</span>     svg ? (klass.baseVal = value) : (node.className =<span style="color: #000000;"> value)
+</span><span style="color: #008080;">16</span> }</pre>
+</div>
+<p>多余的东西也不管，意思就是没有value就是获取值，有就是设置，这里是原生的dom操作</p>
+<p>然后是funcArg方法</p>
+<div class="cnblogs_code">
+<pre><span style="color: #008080;">1</span> <span style="color: #008000;">//</span><span style="color: #008000;">这个函数在整个库中取着很得要的作用，处理arg为函数或者值的情况</span>
+<span style="color: #008080;">2</span> <span style="color: #008000;">//</span><span style="color: #008000;">下面很多设置元素属性时的函数都有用到</span>
+<span style="color: #008080;">3</span> <span style="color: #0000ff;">function</span><span style="color: #000000;"> funcArg(context, arg, idx, payload) {
+</span><span style="color: #008080;">4</span>     <span style="color: #0000ff;">return</span> isFunction(arg) ?<span style="color: #000000;"> arg.call(context, idx, payload) : arg
+</span><span style="color: #008080;">5</span> }</pre>
+</div>
+<p>这个第二个参数可以是一个函数，如果是就执行，并使用本身作为作用域，如果不是就自己返回，我们现在的做法就直接返回class名了</p>
+<p>下面的代码就比较简单了，就是拼接字符串，组成新的class，然后赋给dom就结束了，所以addClass也就结束了，removeClass我们就不管了</p>
+<h1>append</h1>
+<p>这个方法非常庞大，虽然只有这么一个方法，但是before、after等都在这里实现了</p>
+<div class="cnblogs_code">
+<pre><span style="color: #008080;"> 1</span> adjacencyOperators = ['after', 'prepend', 'before', 'append'<span style="color: #000000;">]
+</span><span style="color: #008080;"> 2</span> adjacencyOperators.forEach(<span style="color: #0000ff;">function</span><span style="color: #000000;"> (operator, operatorIndex) {
+</span><span style="color: #008080;"> 3</span>     <span style="color: #0000ff;">var</span> inside = operatorIndex % 2 <span style="color: #008000;">//</span><span style="color: #008000;">=&gt; prepend, append</span>
+<span style="color: #008080;"> 4</span>     $.fn[operator] = <span style="color: #0000ff;">function</span><span style="color: #000000;"> () {
+</span><span style="color: #008080;"> 5</span>         <span style="color: #008000;">//</span><span style="color: #008000;"> arguments can be nodes, arrays of nodes, Zepto objects and HTML strings</span>
+<span style="color: #008080;"> 6</span>         <span style="color: #0000ff;">var</span> argType, nodes = $.map(arguments, <span style="color: #0000ff;">function</span><span style="color: #000000;"> (arg) {
+</span><span style="color: #008080;"> 7</span>             argType =<span style="color: #000000;"> type(arg)
+</span><span style="color: #008080;"> 8</span>             <span style="color: #0000ff;">return</span> argType == "object" || argType == "array" || arg == <span style="color: #0000ff;">null</span> ?<span style="color: #000000;"> arg : zepto.fragment(arg)
+</span><span style="color: #008080;"> 9</span> <span style="color: #000000;">        }),
+</span><span style="color: #008080;">10</span>         parent, copyByClone = <span style="color: #0000ff;">this</span>.length &gt; 1 <span style="color: #008000;">//</span><span style="color: #008000;">如果集合的长度大于集，则需要clone被插入的节点</span>
+<span style="color: #008080;">11</span>         <span style="color: #0000ff;">if</span> (nodes.length &lt; 1) <span style="color: #0000ff;">return</span> <span style="color: #0000ff;">this</span>
+<span style="color: #008080;">12</span>         <span style="color: #0000ff;">return</span> <span style="color: #0000ff;">this</span>.each(<span style="color: #0000ff;">function</span><span style="color: #000000;"> (_, target) {
+</span><span style="color: #008080;">13</span>             parent = inside ?<span style="color: #000000;"> target : target.parentNode
+</span><span style="color: #008080;">14</span>             <span style="color: #008000;">//</span><span style="color: #008000;">通过改变target将after，prepend，append操作转成before操作，insertBefore的第二个参数为null时等于appendChild操作</span>
+<span style="color: #008080;">15</span>             target = operatorIndex == 0 ? target.nextSibling : operatorIndex == 1 ? target.firstChild : operatorIndex == 2 ? target : <span style="color: #0000ff;">null</span>
+<span style="color: #008080;">16</span>             nodes.forEach(<span style="color: #0000ff;">function</span><span style="color: #000000;"> (node) {
+</span><span style="color: #008080;">17</span>                 <span style="color: #0000ff;">if</span> (copyByClone) node = node.cloneNode(<span style="color: #0000ff;">true</span><span style="color: #000000;">)
+</span><span style="color: #008080;">18</span>                 <span style="color: #0000ff;">else</span> <span style="color: #0000ff;">if</span> (!parent) <span style="color: #0000ff;">return</span><span style="color: #000000;"> $(node).remove()
+</span><span style="color: #008080;">19</span>                 <span style="color: #008000;">//</span><span style="color: #008000;">插入节点后，如果被插入的节点是SCRIPT，则执行里面的内容并将window设为上下文</span>
+<span style="color: #008080;">20</span>                 traverseNode(parent.insertBefore(node, target), <span style="color: #0000ff;">function</span><span style="color: #000000;"> (el) {
+</span><span style="color: #008080;">21</span>                     <span style="color: #0000ff;">if</span> (el.nodeName != <span style="color: #0000ff;">null</span> &amp;&amp; el.nodeName.toUpperCase() === 'SCRIPT' &amp;&amp; (!el.type || el.type === 'text/javascript') &amp;&amp; !el.src) window['eval'<span style="color: #000000;">].call(window, el.innerHTML)
+</span><span style="color: #008080;">22</span> <span style="color: #000000;">                })
+</span><span style="color: #008080;">23</span> <span style="color: #000000;">            })
+</span><span style="color: #008080;">24</span> <span style="color: #000000;">        })
+</span><span style="color: #008080;">25</span> <span style="color: #000000;">    }
+</span><span style="color: #008080;">26</span>     <span style="color: #008000;">//</span><span style="color: #008000;"> after =&gt; insertAfter</span>
+<span style="color: #008080;">27</span>     <span style="color: #008000;">//</span><span style="color: #008000;"> prepend =&gt; prependTo</span>
+<span style="color: #008080;">28</span>     <span style="color: #008000;">//</span><span style="color: #008000;"> before =&gt; insertBefore</span>
+<span style="color: #008080;">29</span>     <span style="color: #008000;">//</span><span style="color: #008000;"> append =&gt; appendTo</span>
+<span style="color: #008080;">30</span>     $.fn[inside ? operator + 'To' : 'insert' + (operatorIndex ? 'Before' : 'After')] = <span style="color: #0000ff;">function</span><span style="color: #000000;"> (html) {
+</span><span style="color: #008080;">31</span>         $(html)[operator](<span style="color: #0000ff;">this</span><span style="color: #000000;">)
+</span><span style="color: #008080;">32</span>         <span style="color: #0000ff;">return</span> <span style="color: #0000ff;">this</span>
+<span style="color: #008080;">33</span> <span style="color: #000000;">    }
+</span><span style="color: #008080;">34</span> })</pre>
+</div>
+<p>这里inside只会取到0,1两种值，然后就开始初始化方法了，比如：<br>$.fn.append = function() {};<br>因为我们调用一般是这样干的：<br>$('$id').append($('dom'))<br>这里的this就是前面的dom集合，因为可能不止一个节点，所以每个节点都会被插入新节点，但是我们一般只给一个节点插东西<br>这里用到了map方法，我们来看看：</p>
+<div class="cnblogs_code">
+<pre><span style="color: #008080;"> 1</span> <span style="color: #008000;">//</span><span style="color: #008000;">遍历elements，将每条记录放入callback里进宪处理，保存处理函数返回值不为null或undefined的结果</span>
+<span style="color: #008080;"> 2</span> <span style="color: #008000;">//</span><span style="color: #008000;">注意这里没有统一的用for in,是为了避免遍历数据默认属性的情况，如数组的toString,valueOf</span>
+<span style="color: #008080;"> 3</span> $.map = <span style="color: #0000ff;">function</span><span style="color: #000000;"> (elements, callback) {
+</span><span style="color: #008080;"> 4</span>     <span style="color: #0000ff;">var</span> value, values =<span style="color: #000000;"> [],
+</span><span style="color: #008080;"> 5</span> <span style="color: #000000;">      i, key
+</span><span style="color: #008080;"> 6</span>     <span style="color: #008000;">//</span><span style="color: #008000;">如果被遍历的数据是数组或者nodeList</span>
+<span style="color: #008080;"> 7</span>     <span style="color: #0000ff;">if</span> (likeArray(elements)) <span style="color: #0000ff;">for</span> (i = 0; i &lt; elements.length; i++<span style="color: #000000;">) {
+</span><span style="color: #008080;"> 8</span>         value =<span style="color: #000000;"> callback(elements[i], i)
+</span><span style="color: #008080;"> 9</span>         <span style="color: #0000ff;">if</span> (value != <span style="color: #0000ff;">null</span><span style="color: #000000;">) values.push(value)
+</span><span style="color: #008080;">10</span>     } <span style="color: #0000ff;">else</span>
+<span style="color: #008080;">11</span>     <span style="color: #008000;">//</span><span style="color: #008000;">如果是对象</span>
+<span style="color: #008080;">12</span>         <span style="color: #0000ff;">for</span> (key <span style="color: #0000ff;">in</span><span style="color: #000000;"> elements) {
+</span><span style="color: #008080;">13</span>             value =<span style="color: #000000;"> callback(elements[key], key)
+</span><span style="color: #008080;">14</span>             <span style="color: #0000ff;">if</span> (value != <span style="color: #0000ff;">null</span><span style="color: #000000;">) values.push(value)
+</span><span style="color: #008080;">15</span> <span style="color: #000000;">        }
+</span><span style="color: #008080;">16</span>     <span style="color: #0000ff;">return</span><span style="color: #000000;"> flatten(values)
+</span><span style="color: #008080;">17</span> }</pre>
+</div>
+<p>我们从代码看来，这个方法是用于数组过滤，与filter有点类似<br>所以，这里的使用map函数保证了nodes是比较靠谱的dom节点集合，如果长度为0 就直接返回了</p>
+<p>然后下面开始遍历我们的this dom节点，依次做操作，这里有个需要注意的地方，如果this包含的节点不止一个，那么每个节点都会被插入<br>所以他这里提供了一个克隆的功能，可能出来节点，因为dom上只有一个节点，被不断的append也只是移动位置<br>cloneNode是javascript dom 本身的一个方法，直接使用即可，但是要注意id不要重复</p>
+<p>然后根据inside不同而选取不同的parentNode，这应该与插入点有关系了，因为原生javascript只支持appendChild与insertBefore<br>这里调用traverseNode方法前，就将dom操作结束了，</p>
+<p>这里还区分了是不是script标签，这里又有一个较关键的方法：traverseNode，他会执行我们的javascript</p>
+<div class="cnblogs_code">
+<pre><span style="color: #008080;">1</span> <span style="color: #0000ff;">function</span><span style="color: #000000;"> traverseNode(node, fun) {
+</span><span style="color: #008080;">2</span> <span style="color: #000000;">    fun(node)
+</span><span style="color: #008080;">3</span>     <span style="color: #0000ff;">for</span> (<span style="color: #0000ff;">var</span> key <span style="color: #0000ff;">in</span><span style="color: #000000;"> node.childNodes) traverseNode(node.childNodes[key], fun)
+</span><span style="color: #008080;">4</span> }</pre>
+</div>
+<p>这里有两个循环，外层each里层forEach，所以节点就全部插入了......至此这个方法也基本结束<br>值得一提的是最后这个代码段：</p>
+<div class="cnblogs_code">
+<pre><span style="color: #008080;">1</span> $.fn[inside ? operator + 'To' : 'insert' + (operatorIndex ? 'Before' : 'After')] = <span style="color: #0000ff;">function</span><span style="color: #000000;"> (html) {
+</span><span style="color: #008080;">2</span>     $(html)[operator](<span style="color: #0000ff;">this</span><span style="color: #000000;">)
+</span><span style="color: #008080;">3</span>     <span style="color: #0000ff;">return</span> <span style="color: #0000ff;">this</span>
+<span style="color: #008080;">4</span> <span style="color: #000000;">}
+</span><span style="color: #008080;">5</span> <span style="color: #008000;">//</span><span style="color: #008000;">相当于：</span>
+<span style="color: #008080;">6</span> $.fn.insertAfter = <span style="color: #0000ff;">function</span><span style="color: #000000;">(html) {
+</span><span style="color: #008080;">7</span> $(html).prepend(<span style="color: #0000ff;">this</span><span style="color: #000000;">);
+</span><span style="color: #008080;">8</span> <span style="color: #000000;">retrun;
+</span><span style="color: #008080;">9</span> }</pre>
+</div>
+<p>其中，this指的是包装的dom集合，html为我们传入的dom对象或者dom字符串，下面的方法就是我们上面定义的</p>
+<h1>attr(name, value)</h1>
+<p>该方法，比较常用，我们一般用他来为dom元素设置属性，获取属性，但是他还可以传入函数哦......</p>
+<div class="cnblogs_code">
+<pre><span style="color: #008080;"> 1</span> attr = <span style="color: #0000ff;">function</span><span style="color: #000000;"> (name, value) {
+</span><span style="color: #008080;"> 2</span>     <span style="color: #0000ff;">var</span><span style="color: #000000;"> result
+</span><span style="color: #008080;"> 3</span>     <span style="color: #008000;">//</span><span style="color: #008000;">当只有name且为字符串时，表示获取第一条记录的属性</span>
+<span style="color: #008080;"> 4</span>     <span style="color: #0000ff;">return</span> (<span style="color: #0000ff;">typeof</span> name == 'string' &amp;&amp; value === undefined) ?
+<span style="color: #008080;"> 5</span>     <span style="color: #008000;">//</span><span style="color: #008000;">集合没有记录或者集合的元素不是node类型，返回undefined</span>
+<span style="color: #008080;"> 6</span> (<span style="color: #0000ff;">this</span>.length == 0 || <span style="color: #0000ff;">this</span>[0].nodeType !== 1 ?<span style="color: #000000;"> undefined :
+</span><span style="color: #008080;"> 7</span>     <span style="color: #008000;">//</span><span style="color: #008000;">如果取的是input的value</span>
+<span style="color: #008080;"> 8</span> (name == 'value' &amp;&amp; <span style="color: #0000ff;">this</span>[0].nodeName == 'INPUT') ? <span style="color: #0000ff;">this</span><span style="color: #000000;">.val() :
+</span><span style="color: #008080;"> 9</span>     <span style="color: #008000;">//</span><span style="color: #008000;">注意直接定义在node上的属性，在标准浏览器和ie9,10中用getAttribute取不到,得到的结果是null</span>
+<span style="color: #008080;">10</span>     <span style="color: #008000;">//</span><span style="color: #008000;">比如div.aa = 10,用div.getAttribute('aa')得到的是null,需要用div.aa或者div['aa']这样来取</span>
+<span style="color: #008080;">11</span> (!(result = <span style="color: #0000ff;">this</span>[0].getAttribute(name)) &amp;&amp; name <span style="color: #0000ff;">in</span> <span style="color: #0000ff;">this</span>[0]) ? <span style="color: #0000ff;">this</span>[0<span style="color: #000000;">][name] : result) :
+</span><span style="color: #008080;">12</span> <span style="color: #0000ff;">this</span>.each(<span style="color: #0000ff;">function</span><span style="color: #000000;"> (idx) {
+</span><span style="color: #008080;">13</span>     <span style="color: #0000ff;">if</span> (<span style="color: #0000ff;">this</span>.nodeType !== 1) <span style="color: #0000ff;">return</span>
+<span style="color: #008080;">14</span>     <span style="color: #008000;">//</span><span style="color: #008000;">如果name是一个对象，如{'id':'test','value':11},则给数据设置属性</span>
+<span style="color: #008080;">15</span>     <span style="color: #0000ff;">if</span> (isObject(name)) <span style="color: #0000ff;">for</span> (key <span style="color: #0000ff;">in</span> name) setAttribute(<span style="color: #0000ff;">this</span><span style="color: #000000;">, key, name[key])
+</span><span style="color: #008080;">16</span>     <span style="color: #008000;">//</span><span style="color: #008000;">如果name只是一个普通的属性字符串，用funcArg来处理value是值或者function的情况最终返回一个属性值</span>
+<span style="color: #008080;">17</span>     <span style="color: #008000;">//</span><span style="color: #008000;">如果funcArg函数返回的是undefined或者null，则相当于删除元素的属性</span>
+<span style="color: #008080;">18</span>     <span style="color: #0000ff;">else</span> setAttribute(<span style="color: #0000ff;">this</span>, name, funcArg(<span style="color: #0000ff;">this</span>, value, idx, <span style="color: #0000ff;">this</span><span style="color: #000000;">.getAttribute(name)))
+</span><span style="color: #008080;">19</span> <span style="color: #000000;">})
+</span><span style="color: #008080;">20</span> }</pre>
+</div>
+<p>获取代码比较简单，值得注意的是，他只会获取我们第一个dom属性的值<br>this[0].getAttribute(name)<br>设置值的时候当然又是一个循环了（setAttribute）</p>
+<h1>css(property, value)</h1>
+<p>这个方法也比较常用，很大情况下雨attr比较类似，看源码前我们先思考下，为什么没有removeCss</p>
+<h3>为什么没有removeCss？</h3>
+<p>当然是因为，我们样式表问题，所以removeCss就没有意义了</p>
+<p>好了，现在我们来看看源码：</p>
+<div class="cnblogs_code">
+<pre><span style="color: #008080;"> 1</span> css: <span style="color: #0000ff;">function</span><span style="color: #000000;"> (property, value) {
+</span><span style="color: #008080;"> 2</span>     <span style="color: #008000;">//</span><span style="color: #008000;">获取指定的样式</span>
+<span style="color: #008080;"> 3</span>     <span style="color: #0000ff;">if</span> (arguments.length &lt; 2 &amp;&amp; <span style="color: #0000ff;">typeof</span> property == 'string') <span style="color: #0000ff;">return</span> <span style="color: #0000ff;">this</span>[0] &amp;&amp; (<span style="color: #0000ff;">this</span>[0].style[camelize(property)] || getComputedStyle(<span style="color: #0000ff;">this</span>[0], ''<span style="color: #000000;">).getPropertyValue(property))
+</span><span style="color: #008080;"> 4</span>     <span style="color: #008000;">//</span><span style="color: #008000;">设置样式</span>
+<span style="color: #008080;"> 5</span>     <span style="color: #0000ff;">var</span> css = ''
+<span style="color: #008080;"> 6</span>     <span style="color: #0000ff;">if</span> (type(property) == 'string'<span style="color: #000000;">) {
+</span><span style="color: #008080;"> 7</span>         <span style="color: #0000ff;">if</span> (!value &amp;&amp; value !== 0) <span style="color: #008000;">//</span><span style="color: #008000;">当value的值为非零的可以转成false的值时如(null,undefined)，删掉property样式</span>
+<span style="color: #008080;"> 8</span>             <span style="color: #0000ff;">this</span>.each(<span style="color: #0000ff;">function</span><span style="color: #000000;"> () {
+</span><span style="color: #008080;"> 9</span>                 <span style="color: #008000;">//</span><span style="color: #008000;">style.removeProperty 移除指定的CSS样式名(IE不支持DOM的style方法)</span>
+<span style="color: #008080;">10</span>                 <span style="color: #0000ff;">this</span><span style="color: #000000;">.style.removeProperty(dasherize(property))
+</span><span style="color: #008080;">11</span> <span style="color: #000000;">            })
+</span><span style="color: #008080;">12</span>         <span style="color: #0000ff;">else</span> css = dasherize(property) + ":" +<span style="color: #000000;"> maybeAddPx(property, value)
+</span><span style="color: #008080;">13</span>     } <span style="color: #0000ff;">else</span><span style="color: #000000;"> {
+</span><span style="color: #008080;">14</span>         <span style="color: #008000;">//</span><span style="color: #008000;">当property是对象时</span>
+<span style="color: #008080;">15</span>         <span style="color: #0000ff;">for</span> (key <span style="color: #0000ff;">in</span><span style="color: #000000;"> property)
+</span><span style="color: #008080;">16</span>             <span style="color: #0000ff;">if</span> (!property[key] &amp;&amp; property[key] !== 0<span style="color: #000000;">)
+</span><span style="color: #008080;">17</span>             <span style="color: #008000;">//</span><span style="color: #008000;">当property[key]的值为非零的可以转成false的值时，删掉key样式</span>
+<span style="color: #008080;">18</span>                 <span style="color: #0000ff;">this</span>.each(<span style="color: #0000ff;">function</span><span style="color: #000000;"> () {
+</span><span style="color: #008080;">19</span>                     <span style="color: #0000ff;">this</span><span style="color: #000000;">.style.removeProperty(dasherize(key))
+</span><span style="color: #008080;">20</span> <span style="color: #000000;">                })
+</span><span style="color: #008080;">21</span>             <span style="color: #0000ff;">else</span> css += dasherize(key) + ':' + maybeAddPx(key, property[key]) + ';'
+<span style="color: #008080;">22</span> <span style="color: #000000;">        }
+</span><span style="color: #008080;">23</span>         <span style="color: #008000;">//</span><span style="color: #008000;">设置</span>
+<span style="color: #008080;">24</span>         <span style="color: #0000ff;">return</span> <span style="color: #0000ff;">this</span>.each(<span style="color: #0000ff;">function</span><span style="color: #000000;"> () {
+</span><span style="color: #008080;">25</span>             <span style="color: #0000ff;">this</span>.style.cssText += ';' +<span style="color: #000000;"> css
+</span><span style="color: #008080;">26</span> <span style="color: #000000;">        })
+</span><span style="color: #008080;">27</span> }</pre>
+</div>
+<p>camelize是将aa-bb这种明明改为aaBb这种驼峰命名，首先比较简单，会从style里面获取style的值，不行就看样式表<br>具代码，是对象情况还要做其它处理，其中好像给css设置为null时候可以取消样式，我们来试试（IE不管）<br>最后试验证明是不靠谱的，所以我们不要向去removeCss了吧：</p>
+<div class="cnblogs_code">
+<pre><span style="color: #008080;"> 1</span> <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">html </span><span style="color: #ff0000;">xmlns</span><span style="color: #0000ff;">="http://www.w3.org/1999/xhtml"</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 2</span> <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">head</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 3</span>     <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">title</span><span style="color: #0000ff;">&gt;&lt;/</span><span style="color: #800000;">title</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 4</span>     <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">meta </span><span style="color: #ff0000;">name</span><span style="color: #0000ff;">="viewport"</span><span style="color: #ff0000;"> content</span><span style="color: #0000ff;">="width=device-width,initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no"</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 5</span>     <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">style</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 6</span> <span style="background-color: #f5f5f5; color: #800000;">        #list </span><span style="background-color: #f5f5f5; color: #000000;">{</span><span style="background-color: #f5f5f5; color: #ff0000;"> display</span><span style="background-color: #f5f5f5; color: #000000;">:</span><span style="background-color: #f5f5f5; color: #0000ff;"> block</span><span style="background-color: #f5f5f5; color: #000000;">;</span><span style="background-color: #f5f5f5; color: #ff0000;"> position</span><span style="background-color: #f5f5f5; color: #000000;">:</span><span style="background-color: #f5f5f5; color: #0000ff;"> absolute</span><span style="background-color: #f5f5f5; color: #000000;">;</span><span style="background-color: #f5f5f5; color: #ff0000;"> top</span><span style="background-color: #f5f5f5; color: #000000;">:</span><span style="background-color: #f5f5f5; color: #0000ff;"> 100px</span><span style="background-color: #f5f5f5; color: #000000;">;</span><span style="background-color: #f5f5f5; color: #ff0000;"> left</span><span style="background-color: #f5f5f5; color: #000000;">:</span><span style="background-color: #f5f5f5; color: #0000ff;"> 10px</span><span style="background-color: #f5f5f5; color: #000000;">;</span><span style="background-color: #f5f5f5; color: #ff0000;"> width</span><span style="background-color: #f5f5f5; color: #000000;">:</span><span style="background-color: #f5f5f5; color: #0000ff;"> 200px</span><span style="background-color: #f5f5f5; color: #000000;">;</span><span style="background-color: #f5f5f5; color: #ff0000;"> height</span><span style="background-color: #f5f5f5; color: #000000;">:</span><span style="background-color: #f5f5f5; color: #0000ff;"> 100px</span><span style="background-color: #f5f5f5; color: #000000;">;</span><span style="background-color: #f5f5f5; color: #ff0000;"> background-color</span><span style="background-color: #f5f5f5; color: #000000;">:</span><span style="background-color: #f5f5f5; color: #0000ff;"> black</span><span style="background-color: #f5f5f5; color: #000000;">;</span> <span style="background-color: #f5f5f5; color: #000000;">}</span>
+<span style="color: #008080;"> 7</span>     <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">style</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 8</span>     <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">script </span><span style="color: #ff0000;">src</span><span style="color: #0000ff;">="../../zepto.js"</span><span style="color: #ff0000;"> type</span><span style="color: #0000ff;">="text/javascript"</span><span style="color: #0000ff;">&gt;&lt;/</span><span style="color: #800000;">script</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 9</span> <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">head</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">10</span> <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">body</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">11</span>     <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">div </span><span style="color: #ff0000;">id</span><span style="color: #0000ff;">="list"</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">12</span>     <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">div</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">13</span> <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">body</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">14</span> <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">script </span><span style="color: #ff0000;">type</span><span style="color: #0000ff;">="text/javascript"</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">15</span> <span style="background-color: #f5f5f5; color: #000000;">    $(</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">#list</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">).css(</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">background-color</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">, </span><span style="background-color: #f5f5f5; color: #0000ff;">false</span><span style="background-color: #f5f5f5; color: #000000;">);
+</span><span style="color: #008080;">16</span> <span style="background-color: #f5f5f5; color: #000000;">    alert($(</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">#list</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">).css(</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">background-color</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">))
+</span><span style="color: #008080;">17</span> <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">script</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">18</span> <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">html</span><span style="color: #0000ff;">&gt;</span></pre>
+</div>
+<h1>width/height</h1>
+<p>这个与el.css('width')类似：</p>
+<div class="cnblogs_code">
+<pre><span style="color: #008080;"> 1</span> ['width', 'height'].forEach(<span style="color: #0000ff;">function</span><span style="color: #000000;"> (dimension) {
+</span><span style="color: #008080;"> 2</span>     $.fn[dimension] = <span style="color: #0000ff;">function</span><span style="color: #000000;"> (value) {
+</span><span style="color: #008080;"> 3</span>         <span style="color: #0000ff;">var</span> offset, el = <span style="color: #0000ff;">this</span>[0<span style="color: #000000;">],
+</span><span style="color: #008080;"> 4</span>         <span style="color: #008000;">//</span><span style="color: #008000;">将width,hegiht转成Width,Height，用于取window或者document的width和height</span>
+<span style="color: #008080;"> 5</span>     Dimension = dimension.replace(/./, <span style="color: #0000ff;">function</span><span style="color: #000000;"> (m) {
+</span><span style="color: #008080;"> 6</span>         <span style="color: #0000ff;">return</span> m[0<span style="color: #000000;">].toUpperCase()
+</span><span style="color: #008080;"> 7</span> <span style="color: #000000;">    })
+</span><span style="color: #008080;"> 8</span>         <span style="color: #008000;">//</span><span style="color: #008000;">没有参数为获取，获取window的width和height用innerWidth,innerHeight</span>
+<span style="color: #008080;"> 9</span>         <span style="color: #0000ff;">if</span> (value === undefined) <span style="color: #0000ff;">return</span> isWindow(el) ? el['inner' +<span style="color: #000000;"> Dimension] :
+</span><span style="color: #008080;">10</span>         <span style="color: #008000;">//</span><span style="color: #008000;">获取document的width和height时，用offsetWidth,offsetHeight</span>
+<span style="color: #008080;">11</span>     isDocument(el) ? el.documentElement['offset' + Dimension] : (offset = <span style="color: #0000ff;">this</span>.offset()) &amp;&amp;<span style="color: #000000;"> offset[dimension]
+</span><span style="color: #008080;">12</span>         <span style="color: #0000ff;">else</span> <span style="color: #0000ff;">return</span> <span style="color: #0000ff;">this</span>.each(<span style="color: #0000ff;">function</span><span style="color: #000000;"> (idx) {
+</span><span style="color: #008080;">13</span>             el = $(<span style="color: #0000ff;">this</span><span style="color: #000000;">)
+</span><span style="color: #008080;">14</span>             el.css(dimension, funcArg(<span style="color: #0000ff;">this</span><span style="color: #000000;">, value, idx, el[dimension]()))
+</span><span style="color: #008080;">15</span> <span style="color: #000000;">        })
+</span><span style="color: #008080;">16</span> <span style="color: #000000;">    }
+</span><span style="color: #008080;">17</span> })</pre>
+</div>
+<h1>ready</h1>
+<p>该方法也比较常用，在页面dom加载结束后执行里面的方法<br>DOMContentLoaded事件是文档加载结束后执行，老浏览器不支持就是load</p>
+<div class="cnblogs_code">
+<pre><span style="color: #008080;">1</span> ready: <span style="color: #0000ff;">function</span><span style="color: #000000;"> (callback) {
+</span><span style="color: #008080;">2</span>     <span style="color: #0000ff;">if</span><span style="color: #000000;"> (readyRE.test(document.readyState)) callback($)
+</span><span style="color: #008080;">3</span>     <span style="color: #0000ff;">else</span> document.addEventListener('DOMContentLoaded', <span style="color: #0000ff;">function</span><span style="color: #000000;"> () {
+</span><span style="color: #008080;">4</span> <span style="color: #000000;">        callback($)
+</span><span style="color: #008080;">5</span>     }, <span style="color: #0000ff;">false</span><span style="color: #000000;">)
+</span><span style="color: #008080;">6</span>     <span style="color: #0000ff;">return</span> <span style="color: #0000ff;">this</span>
+<span style="color: #008080;">7</span> },</pre>
+</div>
+<h1>结语</h1>
+<p>今天暂时到这，我们下次看看zepto事件相关的实现</p>
+                </div>
+
+                <div class='span3 sidebar'>
+                    <h2>导航栏</h2>
+                    <ul class="nav nav-tabs nav-stacked">
+                             				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/javascriptzdyxhxzsdyjxyzyddf/index.html">javascript中的一些核心知识点以及需要注意的地方</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/[zd]webappdyhzlyzydqdyhdpyjlkkb/index.html">[置顶]【webapp的优化整理】要做移动前端优化的朋友进来看看吧</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/[zd]yddjrwtyjjavascriptsjjzxjsjydjr/index.html">[置顶]【移动端兼容问题研究】javascript事件机制详解（涉及移动兼容）</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/gruntzhb30fzxhsygruntdbqddm/index.html">【grunt整合版】30分钟学会使用grunt打包前端代码</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/gruntdyd30fzxhsygruntdbqddm/index.html">【grunt第一弹】30分钟学会使用grunt打包前端代码</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/gruntdsdgruntzqdsjxmzdyy/index.html">【grunt第三弹】grunt在前端实际项目中的应用</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/gruntded30fzxhsygruntdbqddm02/index.html">【grunt第二弹】30分钟学会使用grunt打包前端代码（02）</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/IScrollsrxxtpyddhadlqs/index.html">【IScroll深入学习】突破移动端黑暗的利器（上）</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/IScrollsrxxjjIScrollynzz/index.html">【IScroll深入学习】解决IScroll疑难杂症</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/iScrollymxx00mniScroll/index.html">【iScroll源码学习00】模拟iScroll</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/iScrollymxx01zbjd/index.html">【iScroll源码学习01】准备阶段</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/iScrollymxx02fjiScrollsghxsjd/index.html">【iScroll源码学习02】分解iScroll三个核心事件点</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/iScrollymxx03iScrollsjjzygdtdsx/index.html">【iScroll源码学习03】iScroll事件机制与滚动条的实现</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/iScrollymxx04flIScrollhx/index.html">【iScroll源码学习04】分离IScroll核心</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/javascriptpxdytyyjc/index.html">【javascript培训第一天】语言基础</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/javascriptpxdstcybl/index.html">【javascript培训第三天】查遗补漏</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/javascriptpxdetDOMyBOM/index.html">【javascript培训第二天】DOM与BOM</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/javascriptjzdsk01mkhbc/index.html">【javascript激增的思考01】模块化编程</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/javascriptjzdsk02mkhyMVC/index.html">【javascript激增的思考02】模块化与MVC</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/javascriptjzdsk03MVVMyKnockout/index.html">【javascript激增的思考03】MVVM与Knockout</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/javascriptjzdsk04MVCyBackbonejs(beta)/index.html">【javascript激增的思考04】MVC与Backbonejs(beta)</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/javascriptmxdxzlrwmyqltkdzb01/index.html">【javascript面向对象之路】让我们一起来坦克大战吧01</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/NodeJSxxbj04xwfbxt/index.html">【NodeJS学习笔记04】新闻发布系统</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/requireJSymxx01ljzgrequireJSdjg/index.html">【requireJS源码学习01】了解整个requireJS的结构</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/requireJSymxx02datamainjzdsx/index.html">【requireJS源码学习02】datamain加载的实现</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/requireJSymxx03xjrequireJSdjzlc/index.html">【requireJS源码学习03】细究requireJS的加载流程</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/UIcjkfygjdrlcjs/index.html">【UI插件】开发一个简单日历插件（上）</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/UIcjjddrlcjxxxMVCsx/index.html">【UI插件】简单的日历插件（下）——学习MVC思想</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/zeptoxxbj01hxff$()/index.html">【zepto学习笔记01】核心方法$()</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/zeptoxxbj01hxff$()b/index.html">【zepto学习笔记01】核心方法$()（补）</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/zeptoxxbj02lsd/index.html">【zepto学习笔记02】零碎点</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/zeptoxxbj03sjjz/index.html">【zepto学习笔记03】事件机制</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/ycmsztjavascriptzdjc/index.html">【一次面试】再谈javascript中的继承</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/ztbackbone01mxModel/index.html">【再探backbone01】模型Model</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/ztbackbone02jhCollection/index.html">【再探backbone02】集合Collection</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/ztbackbone03bkydyyysltgym/index.html">【再探backbone03】博客园单页应用实例（提供源码）</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/ztbackbone04dyyydjslycl/index.html">【再探backbone04】单页应用的基石路由处理</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/ctUnderscorezsmbyq/index.html">【初探Underscore】再说模版引擎</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/ckjavascriptamzAjaxjsxnszddAjax/index.html">【初窥javascript奥秘之Ajax】简述下你所知道的Ajax？</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/ckjavascriptamzsjmpnxnwmyqmdp/index.html">【初窥javascript奥秘之事件冒泡】那些年我们一起冒的泡</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/ckjavascriptamzsjjzldtygdj/index.html">【初窥javascript奥秘之事件机制】论“点透”与“鬼点击”</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/ckjavascriptamzrrzmbddthisnzdxzthiszxnlm/index.html">【初窥javascript奥秘之让人捉摸不定的this】你知道现在this指向哪里吗？？？</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/ckjavascriptamzbbydxbdhlqbcl/index.html">【初窥javascript奥秘之闭包】叶大侠病都好了，求不踩了：）</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/ckjavascriptamzmxdxfzyjc/index.html">【初窥javascript奥秘之面向对象】封装与继承</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/qdmdsjdjgjdnzdljm/index.html">【前端盲点】事件的几个阶段你真的了解么？？？</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/dyyyviewymodelxgsl/index.html">【单页应用】view与model相关梳理</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/dyyyyqldyyybsxjdwbgns/index.html">【单页应用】一起来单页应用吧，实现简单微博功能！（上）</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/dyyyqjkzqappyggxsm/index.html">【单页应用】全局控制器app应该干些什么？</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/dyyywmgrhclkjdcccjgx/index.html">【单页应用】我们该如何处理框架弹出层层级关系？</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/dyyyljMVC/index.html">【单页应用】理解MVC</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/dyyyztxjzviewzjygrhtx/index.html">【单页应用之通信机制】view之间应该如何通信</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/dyyyjkzHistoryxsHistorydgdyyydm/index.html">【单页应用巨坑之History】细数History带给单页应用的噩梦</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/xtszeptofindysyjiosdcjpknrnhtt/index.html">【小贴士】zeptofind元素以及ios弹出键盘可能让你很头疼</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/xtsgytransitionEndanimatedygyqgs/index.html">【小贴士】关于transitionEndanimate的一个有趣故事</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/xtsgzzdbbysjwtdzzmp/index.html">【小贴士】工作中的”闭包“与事件委托的”阻止冒泡“</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/xtstytjavascriptzdreplace/index.html">【小贴士】探一探javascript中的replace</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/xtsxnjpyfixeddgydddt/index.html">【小贴士】虚拟键盘与fixed带给移动端的痛！</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/ttjavascriptsjjzdcsxyl/index.html">【探讨】javascript事件机制底层实现原理</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/mkhbcljrequireJSsxygjddmkjzq/index.html">【模块化编程】理解requireJS实现一个简单的模块加载器</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/zyJavaScriptmfjmtsdqlxkjzbfgndcljz/index.html">【转】【译】JavaScript魔法揭秘探索当前流行框架中部分功能的处理机制</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/zxjavascriptgszl01javascriptcszds/index.html">【追寻javascript高手之路01】javascript参数知多少？</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/zxjavascriptgszl02blzyyzds/index.html">【追寻javascript高手之路02】变量、作用域知多少？</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/zxjavascriptgszl03javascriptdxdld/index.html">【追寻javascript高手之路03】javascript对象大乱斗</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/zxjavascriptgszl04ljprototype/index.html">【追寻javascript高手之路04】理解prototype</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/zxjavascriptgszl05ljsjl/index.html">【追寻javascript高手之路05】理解事件流</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/zgbj04zxzzsj(2)/index.html">【重构笔记04】重新组织数据(2)</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/zgbj05jhtjbds/index.html">【重构笔记05】简化条件表达式</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/zgbj06jhhsdy/index.html">【重构笔记06】简化函数调用</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/ycmshgttbxysjfl/index.html">一次面试回顾——探讨表现与数据分离</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/dhzwebappzdxz/index.html">动画在webapp中的现状</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/ysandriodlqhthdomclicksjqtsxwttj/index.html">原生andriod浏览器回退后dom（click）事件全体失效问题探究</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/scsbdjxysdsbsjytouchsjdnxs/index.html">手持设备点击响应速度，鼠标事件与touch事件的那些事</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/mnbjQueryzeptohxymfx/index.html">迷你版jQuery——zepto核心源码分析</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/dbsgzdlwmlyqxjdddomxzqb/index.html">都别说工资低了，我们来一起写简单的dom选择器吧！</a></li>
+    				                                         
+                    </ul>
+                </div>
+            </div>
+
+        </div>
+    </body>
+</html>

@@ -1,0 +1,1303 @@
+﻿<!DOCTYPE html>
+
+<html lang="zh">
+    <head>
+        <meta charset="utf-8">
+        <meta name="description" content="android,ios" />
+        <meta name="keywords" content="android,ios" />
+
+        <title>叶小钗</title>
+        <style type='text/css'>
+            body {
+                background-color: #CCC;
+            }
+        </style>
+        <link rel="stylesheet" href="../../../css/bootstrap.css" />
+    </head>
+
+    <body>
+        <div class="container">
+
+            <h1>叶小钗</h1>
+
+            <div class='navbar navbar-inverse'>
+                <div class='navbar-inner nav-collapse' style="height: auto;">
+                    <ul class="nav">
+                              				<li><a href="http://songboriceboy.github.io/xxoo/html/blade/index.html">blade</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/css/index.html">css</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/HTML5&CSS3/index.html">HTML5&CSS3</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/index.html">javascript</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Javaxx/index.html">Java学习</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/nodejs/index.html">nodejs</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/requirejs/index.html">requirejs</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/index.html">Web前端</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/xxgw/index.html">学习感悟</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/gzdd/index.html">工作点滴</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/jkxx/index.html">接口学习</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/wfl/index.html">未分类</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/ydkf/index.html">移动开发</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/sjms/index.html">设计模式</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/mst/index.html">面试题</a></li>
+    				                      </ul>
+                </div>
+            </div>
+
+            <div id='content' class='row-fluid'>
+
+                <div class='span9 main'>
+				<div style="color:blue" align=center>【jquery仿dataList】应用之——模仿igoogle【定制化、拖动排序，最</div><br><p><span style="font-size: 16px;"><strong>接上一次日志哈，这一次用原来写的datalist实现了简单应用，模拟igoogle。</strong></span></p>
+<p><span style="font-size: 16px;"><strong>做的过程中发现代码很多问题，主要是流程上的问题。</strong></span></p>
+<p><span style="font-size: 16px;"><strong>主要是自己层次不够，明明已经感到这样那样的问题，都能说出来就是不知道怎么改。主要问题：</strong></span></p>
+<p><span style="font-size: 16px;"><strong>1 初始化时候参照其他jquery框架，应该达到配置最小化，却怎么都做不好</strong></span></p>
+<p><span style="font-size: 16px;"><strong>2 现在控件必须提供数据源datalist与模板template，数据源还好说，但是模板的写法真的太坑爹，现在是放在数据库里面了</strong></span></p>
+<p><span style="font-size: 16px;"><strong>以后怎么做还说不清哦</strong></span></p>
+<p><span style="font-size: 16px;"><strong>3 与.net中datalist一致，不论datalist还是item都会生成多余的标签，这里是生成的div，看上去很是别扭</strong></span></p>
+<p><span style="font-size: 16px;"><strong>4 最大问题还是，混乱！！！就像这篇文章一样，js控制力不同于服务器语言，所有整个做起来，不论事件绑定</strong></span></p>
+<p><span style="font-size: 16px;"><strong>还是其他什么定义都感觉有点混乱，流程不清，这是我主要应该改进的地方。</strong></span></p>
+<hr>
+<p><span style="font-size: 16px;"><strong>主要流程：</strong></span></p>
+<p><span style="font-size: 16px;"><strong>1 加载小工具模板:现在先一次性加载，以后用到一个保存一个作为全局参数</strong></span><br><span style="font-size: 16px;"><strong>2 加载该用户的所有小工具：现在先一次性加载，以后先加载第一页，</strong></span><br><span style="font-size: 16px;"><strong>根据页索引判断加载</strong></span><br><span style="font-size: 16px;"><strong>3 根据用户小工具数据，初始化所有小工具外框</strong></span><br><span style="font-size: 16px;"><strong>由于数据以及模板已经取出，此时加载速度应该非常快，左中右一次加载</strong></span><br><span style="font-size: 16px;"><strong>**此处注意，虽说小工具外框一样，但是新增的小工具可能会在外框加载结束后再修饰外框</strong></span><br><span style="font-size: 16px;"><strong>比如，weibo、top.....，此数据存于小工具定制列（CustomData）</strong></span><br><span style="font-size: 16px;"><strong>4 此时进行数据异步加载，</strong></span><br><span style="font-size: 16px;"><strong>***数据可以统一加载，但是此处先加载所有小工具每列前两名数据</strong></span><br><span style="font-size: 16px;"><strong>在根据后台用户干预加载那些大数据小工具，加载结束后，当用户滑动鼠标便进行以下</strong></span><br><span style="font-size: 16px;"><strong>控件加载，每次控件加载数量可配置化</strong></span><br><span style="font-size: 16px;"><strong>5 所有控件加载结束，已加载结束控件，可能会根据后台配置要求动态刷新数据</strong></span><br><span style="font-size: 16px;"><strong>此处需要做轮询</strong></span><br><span style="font-size: 16px;"><strong>6 控件加载结束后，开始做控件事件绑定</strong></span><br><span style="font-size: 16px;"><strong>***注意粒度尽量小，不要和其他模块相互影响</strong></span></p>
+<hr>
+<p><span style="font-size: 16px;"><strong>首页效果图：</strong></span></p>
+<p><span style="font-size: 16px;"><strong><img src="22167196729867.png" alt="" width="1094" height="644"></strong></span></p>
+<p><span style="font-size: 16px;"><strong><img src="1555157984536.png" alt="" width="1008" height="651"></strong></span></p>
+<p><span style="font-size: 16px;"><strong>此处点击都会触发事件，一个是异步加载选项卡数据，一个是展开摘要：</strong></span></p>
+<p><span style="font-size: 16px;"><strong><img src="240839610327330.png" alt=""></strong></span></p>
+<p><span style="font-size: 16px;"><strong><img src="64396710027886.png" alt=""></strong></span></p>
+<p><span style="font-size: 16px;"><strong><img src="45671349839297.png" alt=""></strong></span></p>
+<p><span style="font-size: 16px;"><strong>也可以延后加载，比如：开始只加载前三个模块，鼠标滑动后，再加载后面的模块：</strong></span></p>
+<p><span style="font-size: 16px;"><strong>一下是，初始化后鼠标滑动前与鼠标滑动后的效果：</strong></span></p>
+<p><span style="font-size: 16px;"><strong><img src="27155748941836.png" alt="" width="934" height="483"></strong></span></p>
+<p><span style="font-size: 16px;"><strong><img src="25228725814187.png" alt=""></strong></span></p>
+<p>&nbsp;</p>
+<hr>
+<p><span style="font-size: 16px;"><strong>分屏、分页效果</strong></span></p>
+<p><span style="font-size: 16px;"><strong>点击上面1,2,3肯定会指向不同也了，其实现在用户是我，若是用户换了也会有所不同</strong></span></p>
+<p><span style="font-size: 16px;"><strong>下面是第二页和第三页</strong></span></p>
+<p><span style="font-size: 16px;"><strong><img src="16653587389375.png" alt="" width="881" height="619"></strong></span></p>
+<p><span style="font-size: 16px;"><strong><img src="29911496851789.png" alt="" width="963" height="548"></strong></span></p>
+<hr>
+<p><span style="font-size: 16px;"><strong>拖动排序也实现了，之前想自己写一个拖动插件，拖动时实现了却发现插件非常困难，</strong></span></p>
+<p><span style="font-size: 16px;"><strong>局限于自己的层次，就直接用的jquery ui的拖动</strong></span></p>
+<p><span style="font-size: 16px;"><strong>下面是拖动排序的展示，保存到数据库的，最后一张是刷新后重新排序的图：</strong></span></p>
+<p><span style="font-size: 16px;"><strong><img src="48076637501248.png" alt="" width="899" height="525"></strong></span></p>
+<p><span style="font-size: 16px;"><strong><img src="12989998331731.png" alt="" width="954" height="468"></strong></span></p>
+<p><span style="font-size: 16px;"><strong><img src="4837706875829.png" alt="" width="809" height="508"></strong></span></p>
+<hr>
+<p><span style="font-size: 16px;"><strong>点击最大化，并实现鼠标滚动到最下边重新加载数据（滚动分页嘛）：</strong></span></p>
+<p><span style="font-size: 16px;"><strong><img src="43317038061452.png" alt="" width="964" height="443"></strong></span></p>
+<p><span style="font-size: 16px;"><strong><img src="41011999992438.png" alt="" width="979" height="493"></strong></span></p>
+<p><span style="font-size: 16px;"><strong><img src="11256107808465.png" alt="" width="922" height="515"></strong></span></p>
+<p><span style="font-size: 16px;"><strong><img src="2303318673292.png" alt="" width="947" height="458"></strong></span></p>
+<p>&nbsp;</p>
+<hr>
+<p><span style="font-size: 16px;"><strong>数据库简要设计，因为我没有安装数据库，所有优点不好弄：</strong></span></p>
+<p><span style="font-size: 16px;"><strong>设计缘由：由于今后可能不止五页，做到页数动态化</strong></span></p>
+<p>&nbsp;</p>
+<table border="1" cellspacing="0" cellpadding="0">
+<tbody>
+<tr>
+<td valign="top" width="67">
+<p align="center"><span style="font-size: 16px;"><strong>NO.</strong></span></p>
+</td>
+<td valign="top" width="133">
+<p align="center"><span style="font-size: 16px;"><strong>字段名称</strong></span></p>
+</td>
+<td valign="top" width="421">
+<p align="center"><span style="font-size: 16px;"><strong>说明</strong></span></p>
+</td>
+</tr>
+<tr>
+<td valign="top" width="67">
+<p align="center"><span style="font-size: 16px;"><strong>1</strong></span></p>
+</td>
+<td valign="top" width="133">
+<p><span style="font-size: 16px;"><strong>uuid</strong></span></p>
+</td>
+<td valign="top" width="421">
+<p><span style="font-size: 16px;"><strong>页面唯一标识</strong></span></p>
+</td>
+</tr>
+<tr>
+<td valign="top" width="67">
+<p align="center"><span style="font-size: 16px;"><strong>2</strong></span></p>
+</td>
+<td valign="top" width="133">
+<p><span style="font-size: 16px;"><strong>pageSort</strong></span></p>
+</td>
+<td valign="top" width="421">
+<p><span style="font-size: 16px;"><strong>页面排序</strong></span></p>
+</td>
+</tr>
+<tr>
+<td valign="top" width="67">
+<p align="center"><span style="font-size: 16px;"><strong>3</strong></span></p>
+</td>
+<td valign="top" width="133">
+<p><span style="font-size: 16px;"><strong>pageName</strong></span></p>
+</td>
+<td valign="top" width="421">
+<p><span style="font-size: 16px;"><strong>页面标题，默认1,2,3,4,5</strong></span></p>
+</td>
+</tr>
+<tr>
+<td valign="top" width="67">
+<p align="center"><span style="font-size: 16px;"><strong>4</strong></span></p>
+</td>
+<td valign="top" width="133">
+<p><span style="font-size: 16px;"><strong>pageDes</strong></span></p>
+</td>
+<td valign="top" width="421">
+<p><span style="font-size: 16px;"><strong>页面描述，鼠标划上显示</strong></span></p>
+</td>
+</tr>
+<tr>
+<td valign="top" width="67">
+<p align="center"><span style="font-size: 16px;"><strong>5</strong></span></p>
+</td>
+<td valign="top" width="133">
+<p>&nbsp;</p>
+</td>
+<td valign="top" width="421">
+<p>&nbsp;</p>
+</td>
+</tr>
+</tbody>
+</table>
+<p>&nbsp;</p>
+<h3><span style="font-size: 16px;"><strong>小工具模板表 templates(基本字段)</strong></span></h3>
+<p>&nbsp;</p>
+<table border="1" cellspacing="0" cellpadding="0">
+<tbody>
+<tr>
+<td valign="top" width="67">
+<p align="center"><span style="font-size: 16px;"><strong>NO.</strong></span></p>
+</td>
+<td valign="top" width="133">
+<p align="center"><span style="font-size: 16px;"><strong>字段名称</strong></span></p>
+</td>
+<td valign="top" width="421">
+<p align="center"><span style="font-size: 16px;"><strong>说明</strong></span></p>
+</td>
+</tr>
+<tr>
+<td valign="top" width="67">
+<p align="center"><span style="font-size: 16px;"><strong>1</strong></span></p>
+</td>
+<td valign="top" width="133">
+<p><span style="font-size: 16px;"><strong>uuid</strong></span></p>
+</td>
+<td valign="top" width="421">
+<p><span style="font-size: 16px;"><strong>页面唯一标识</strong></span></p>
+</td>
+</tr>
+<tr>
+<td valign="top" width="67">
+<p align="center"><span style="font-size: 16px;"><strong>2</strong></span></p>
+</td>
+<td valign="top" width="133">
+<p><span style="font-size: 16px;"><strong>templateKey</strong></span></p>
+</td>
+<td valign="top" width="421">
+<p><span style="font-size: 16px;"><strong>标识</strong></span></p>
+</td>
+</tr>
+<tr>
+<td valign="top" width="67">
+<p align="center"><span style="font-size: 16px;"><strong>3</strong></span></p>
+</td>
+<td valign="top" width="133">
+<p><span style="font-size: 16px;"><strong>templateValue</strong></span></p>
+</td>
+<td valign="top" width="421">
+<p><span style="font-size: 16px;"><strong>模板内容</strong></span></p>
+</td>
+</tr>
+<tr>
+<td valign="top" width="67">
+<p align="center"><span style="font-size: 16px;"><strong>4</strong></span></p>
+</td>
+<td valign="top" width="133">
+<p><span style="font-size: 16px;"><strong>des</strong></span></p>
+</td>
+<td valign="top" width="421">
+<p><span style="font-size: 16px;"><strong>描述</strong></span></p>
+</td>
+</tr>
+<tr>
+<td valign="top" width="67">
+<p align="center"><span style="font-size: 16px;"><strong>5</strong></span></p>
+</td>
+<td valign="top" width="133">
+<p>&nbsp;</p>
+</td>
+<td valign="top" width="421">
+<p>&nbsp;</p>
+</td>
+</tr>
+</tbody>
+</table>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<h3><span style="font-size: 16px;"><strong>小工具表 modules(基本字段)</strong></span></h3>
+<p><span style="font-size: 16px;"><strong>小工具参数化，可变参数，具有验证性</strong></span></p>
+<p>&nbsp;</p>
+<table border="1" cellspacing="0" cellpadding="0">
+<tbody>
+<tr>
+<td valign="top" width="67">
+<p align="center"><span style="font-size: 16px;"><strong>NO.</strong></span></p>
+</td>
+<td valign="top" width="133">
+<p align="center"><span style="font-size: 16px;"><strong>字段名称</strong></span></p>
+</td>
+<td valign="top" width="421">
+<p align="center"><span style="font-size: 16px;"><strong>说明</strong></span></p>
+</td>
+</tr>
+<tr>
+<td valign="top" width="67">
+<p align="center"><span style="font-size: 16px;"><strong>1</strong></span></p>
+</td>
+<td valign="top" width="133">
+<p><span style="font-size: 16px;"><strong>uuid</strong></span></p>
+</td>
+<td valign="top" width="421">
+<p><span style="font-size: 16px;"><strong>小模块唯一标识</strong></span></p>
+</td>
+</tr>
+<tr>
+<td valign="top" width="67">
+<p align="center">&nbsp;</p>
+</td>
+<td valign="top" width="133">
+<p><span style="font-size: 16px;"><strong>author</strong></span></p>
+</td>
+<td valign="top" width="421">
+<p><span style="font-size: 16px;"><strong>小工具作者</strong></span></p>
+</td>
+</tr>
+<tr>
+<td valign="top" width="67">
+<p align="center"><span style="font-size: 16px;"><strong>2</strong></span></p>
+</td>
+<td valign="top" width="133">
+<p><span style="font-size: 16px;"><strong>alias</strong></span></p>
+</td>
+<td valign="top" width="421">
+<p><span style="font-size: 16px;"><strong>模块前台标识名，对应category</strong></span></p>
+</td>
+</tr>
+<tr>
+<td valign="top" width="67">
+<p align="center"><span style="font-size: 16px;"><strong>3</strong></span></p>
+</td>
+<td valign="top" width="133">
+<p><span style="font-size: 16px;"><strong>title</strong></span></p>
+</td>
+<td valign="top" width="421">
+<p><span style="font-size: 16px;"><strong>小模块名称</strong></span></p>
+</td>
+</tr>
+<tr>
+<td valign="top" width="67">
+<p align="center"><span style="font-size: 16px;"><strong>4</strong></span></p>
+</td>
+<td valign="top" width="133">
+<p><span style="font-size: 16px;"><strong>dataSourceUrl</strong></span></p>
+</td>
+<td valign="top" width="421">
+<p><span style="font-size: 16px;"><strong>数据源链接地址</strong></span></p>
+</td>
+</tr>
+<tr>
+<td valign="top" width="67">
+<p align="center"><span style="font-size: 16px;"><strong>5</strong></span></p>
+</td>
+<td valign="top" width="133">
+<p><span style="font-size: 16px;"><strong>pageId</strong></span></p>
+</td>
+<td valign="top" width="421">
+<p><span style="font-size: 16px;"><strong>当前小工具属于第几屏，对应pages 的 uuid</strong></span></p>
+</td>
+</tr>
+<tr>
+<td valign="top" width="67">
+<p align="center"><span style="font-size: 16px;"><strong>6</strong></span></p>
+</td>
+<td valign="top" width="133">
+<p><span style="font-size: 16px;"><strong>colId</strong></span></p>
+</td>
+<td valign="top" width="421">
+<p><span style="font-size: 16px;"><strong>当前小工具属于第几列（暂分为1,2,3列）</strong></span></p>
+</td>
+</tr>
+<tr>
+<td valign="top" width="67">
+<p align="center"><span style="font-size: 16px;"><strong>7</strong></span></p>
+</td>
+<td valign="top" width="133">
+<p><span style="font-size: 16px;"><strong>sort</strong></span></p>
+</td>
+<td valign="top" width="421">
+<p><span style="font-size: 16px;"><strong>当前小工具顺序</strong></span></p>
+</td>
+</tr>
+<tr>
+<td valign="top" width="67">
+<p align="center"><span style="font-size: 16px;"><strong>8</strong></span></p>
+</td>
+<td valign="top" width="133">
+<p><span style="font-size: 16px;"><strong>templateId</strong></span></p>
+</td>
+<td valign="top" width="421">
+<p><span style="font-size: 16px;"><strong>当前小工具对应模板，对应templates表</strong></span></p>
+</td>
+</tr>
+<tr>
+<td valign="top" width="67">
+<p align="center"><span style="font-size: 16px;"><strong>9</strong></span></p>
+</td>
+<td valign="top" width="133">
+<p><span style="font-size: 16px;"><strong>type</strong></span></p>
+</td>
+<td valign="top" width="421">
+<p><span style="font-size: 16px;"><strong>当前小工具类型，frame或者json</strong></span></p>
+</td>
+</tr>
+<tr>
+<td valign="top" width="67">
+<p align="center">&nbsp;</p>
+</td>
+<td valign="top" width="133">
+<p>&nbsp;</p>
+</td>
+<td valign="top" width="421">
+<p>&nbsp;</p>
+</td>
+</tr>
+<tr>
+<td valign="top" width="67">
+<p align="center">&nbsp;</p>
+</td>
+<td valign="top" width="133">
+<p>&nbsp;</p>
+</td>
+<td valign="top" width="421">
+<p>&nbsp;</p>
+</td>
+</tr>
+</tbody>
+</table>
+<p>&nbsp;</p>
+<p><span style="font-size: 16px;"><strong>参数化后</strong></span></p>
+<table border="1" cellspacing="0" cellpadding="0">
+<tbody>
+<tr>
+<td valign="top" width="67">
+<p align="center"><span style="font-size: 16px;"><strong>NO.</strong></span></p>
+</td>
+<td valign="top" width="133">
+<p align="center"><span style="font-size: 16px;"><strong>字段名称</strong></span></p>
+</td>
+<td valign="top" width="421">
+<p align="center"><span style="font-size: 16px;"><strong>说明</strong></span></p>
+</td>
+</tr>
+<tr>
+<td valign="top" width="67">
+<p align="center"><span style="font-size: 16px;"><strong>1</strong></span></p>
+</td>
+<td valign="top" width="133">
+<p><span style="font-size: 16px;"><strong>uuid</strong></span></p>
+</td>
+<td valign="top" width="421">
+<p><span style="font-size: 16px;"><strong>小模块唯一标识</strong></span></p>
+</td>
+</tr>
+<tr>
+<td valign="top" width="67">
+<p align="center"><span style="font-size: 16px;"><strong>2</strong></span></p>
+</td>
+<td valign="top" width="133">
+<p><span style="font-size: 16px;"><strong>alias</strong></span></p>
+</td>
+<td valign="top" width="421">
+<p><span style="font-size: 16px;"><strong>模块前台标识名，对应category</strong></span></p>
+</td>
+</tr>
+<tr>
+<td valign="top" width="67">
+<p align="center"><span style="font-size: 16px;"><strong>3</strong></span></p>
+</td>
+<td valign="top" width="133">
+<p><span style="font-size: 16px;"><strong>title</strong></span></p>
+</td>
+<td valign="top" width="421">
+<p><span style="font-size: 16px;"><strong>小模块名称</strong></span></p>
+</td>
+</tr>
+<tr>
+<td valign="top" width="67">
+<p align="center"><span style="font-size: 16px;"><strong>5</strong></span></p>
+</td>
+<td valign="top" width="133">
+<p><span style="font-size: 16px;"><strong>pageId</strong></span></p>
+</td>
+<td valign="top" width="421">
+<p><span style="font-size: 16px;"><strong>当前小工具属于第几屏，对应pages 的 uuid</strong></span></p>
+</td>
+</tr>
+<tr>
+<td valign="top" width="67">
+<p align="center"><span style="font-size: 16px;"><strong>6</strong></span></p>
+</td>
+<td valign="top" width="133">
+<p><span style="font-size: 16px;"><strong>colId</strong></span></p>
+</td>
+<td valign="top" width="421">
+<p><span style="font-size: 16px;"><strong>当前小工具属于第几列（暂分为1,2,3列）</strong></span></p>
+</td>
+</tr>
+<tr>
+<td valign="top" width="67">
+<p align="center"><span style="font-size: 16px;"><strong>7</strong></span></p>
+</td>
+<td valign="top" width="133">
+<p><span style="font-size: 16px;"><strong>sort</strong></span></p>
+</td>
+<td valign="top" width="421">
+<p><span style="font-size: 16px;"><strong>当前小工具顺序</strong></span></p>
+</td>
+</tr>
+<tr>
+<td valign="top" width="67">
+<p align="center"><span style="font-size: 16px;"><strong>8</strong></span></p>
+</td>
+<td valign="top" width="133">
+<p><span style="font-size: 16px;"><strong>moduleParameter</strong></span></p>
+</td>
+<td valign="top" width="421">
+<p><span style="font-size: 16px;"><strong>当前小工具具有的参数对象，现在采用json对象</strong></span></p>
+<p><span style="font-size: 16px;"><strong>采用键值对，加一个描述字段</strong></span></p>
+<p><span style="font-size: 16px;"><strong>{dataSourceUrl:XXXXX ,templateId:XXXX , type:XXX }</strong></span></p>
+<p><span style="font-size: 16px;"><strong>以上是基本属性，应该是字段吧&hellip;..</strong></span></p>
+</td>
+</tr>
+<tr>
+<td colspan="3" valign="top" width="620">
+<p><span style="font-size: 16px;"><strong>灰色部分可以不用，直接默认在第一页第一排，默认最大</strong></span></p>
+<p><span style="font-size: 16px;"><strong>其默认值在用户小工具表中体现出来</strong></span></p>
+<p>&nbsp;</p>
+</td>
+</tr>
+</tbody>
+</table>
+<p>&nbsp;</p>
+<h3><span style="font-size: 16px;"><strong>小工具参数moduleParameter</strong></span></h3>
+<p>&nbsp;</p>
+<table border="1" cellspacing="0" cellpadding="0">
+<tbody>
+<tr>
+<td valign="top" width="67">
+<p align="center"><span style="font-size: 16px;"><strong>NO.</strong></span></p>
+</td>
+<td valign="top" width="133">
+<p align="center"><span style="font-size: 16px;"><strong>字段名称</strong></span></p>
+</td>
+<td valign="top" width="421">
+<p align="center"><span style="font-size: 16px;"><strong>说明</strong></span></p>
+</td>
+</tr>
+<tr>
+<td valign="top" width="67">
+<p align="center"><span style="font-size: 16px;"><strong>1</strong></span></p>
+</td>
+<td valign="top" width="133">
+<p><span style="font-size: 16px;"><strong>uuid</strong></span></p>
+</td>
+<td valign="top" width="421">
+<p><span style="font-size: 16px;"><strong>小模块唯一标识</strong></span></p>
+</td>
+</tr>
+<tr>
+<td valign="top" width="67">
+<p align="center"><span style="font-size: 16px;"><strong>2</strong></span></p>
+</td>
+<td valign="top" width="133">
+<p><span style="font-size: 16px;"><strong>moduleKey</strong></span></p>
+</td>
+<td valign="top" width="421">
+<p>&nbsp;</p>
+</td>
+</tr>
+<tr>
+<td valign="top" width="67">
+<p align="center"><span style="font-size: 16px;"><strong>3</strong></span></p>
+</td>
+<td valign="top" width="133">
+<p><span style="font-size: 16px;"><strong>moduleValue</strong></span></p>
+</td>
+<td valign="top" width="421">
+<p>&nbsp;</p>
+</td>
+</tr>
+<tr>
+<td valign="top" width="67">
+<p align="center"><span style="font-size: 16px;"><strong>4</strong></span></p>
+</td>
+<td valign="top" width="133">
+<p><span style="font-size: 16px;"><strong>des</strong></span></p>
+</td>
+<td valign="top" width="421">
+<p>&nbsp;</p>
+</td>
+</tr>
+<tr>
+<td valign="top" width="67">
+<p align="center"><span style="font-size: 16px;"><strong>5</strong></span></p>
+</td>
+<td valign="top" width="133">
+<p><span style="font-size: 16px;"><strong>isTransfer</strong></span></p>
+</td>
+<td valign="top" width="421">
+<p><span style="font-size: 16px;"><strong>是否形成json传向前台</strong></span></p>
+</td>
+</tr>
+<tr>
+<td valign="top" width="67">
+<p align="center">&nbsp;</p>
+</td>
+<td valign="top" width="133">
+<p>&nbsp;</p>
+</td>
+<td valign="top" width="421">
+<p>&nbsp;</p>
+</td>
+</tr>
+<tr>
+<td colspan="3" valign="top" width="620">
+<p>&nbsp;</p>
+</td>
+</tr>
+</tbody>
+</table>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<h3><span style="font-size: 16px;"><strong>用户小工具设置表（用户参数设置）</strong></span></h3>
+<p><span style="font-size: 16px;"><strong>userModules</strong></span></p>
+<table border="1" cellspacing="0" cellpadding="0">
+<tbody>
+<tr>
+<td valign="top" width="67">
+<p align="center"><span style="font-size: 16px;"><strong>NO.</strong></span></p>
+</td>
+<td valign="top" width="133">
+<p align="center"><span style="font-size: 16px;"><strong>字段名称</strong></span></p>
+</td>
+<td valign="top" width="421">
+<p align="center"><span style="font-size: 16px;"><strong>说明</strong></span></p>
+</td>
+</tr>
+<tr>
+<td valign="top" width="67">
+<p align="center"><span style="font-size: 16px;"><strong>1</strong></span></p>
+</td>
+<td valign="top" width="133">
+<p><span style="font-size: 16px;"><strong>uuid</strong></span></p>
+</td>
+<td valign="top" width="421">
+<p><span style="font-size: 16px;"><strong>小模块唯一标识</strong></span></p>
+</td>
+</tr>
+<tr>
+<td valign="top" width="67">
+<p align="center"><span style="font-size: 16px;"><strong>2</strong></span></p>
+</td>
+<td valign="top" width="133">
+<p><span style="font-size: 16px;"><strong>userId</strong></span></p>
+</td>
+<td valign="top" width="421">
+<p><span style="font-size: 16px;"><strong>用户id</strong></span></p>
+</td>
+</tr>
+<tr>
+<td valign="top" width="67">
+<p align="center"><span style="font-size: 16px;"><strong>3</strong></span></p>
+</td>
+<td valign="top" width="133">
+<p><span style="font-size: 16px;"><strong>moduleId</strong></span></p>
+</td>
+<td valign="top" width="421">
+<p><span style="font-size: 16px;"><strong>小工具Id</strong></span></p>
+</td>
+</tr>
+<tr>
+<td valign="top" width="67">
+<p align="center">&nbsp;</p>
+</td>
+<td valign="top" width="133">
+<p><span style="font-size: 16px;"><strong>userPrefers</strong></span></p>
+</td>
+<td valign="top" width="421">
+<p><span style="font-size: 16px;"><strong>用户偏好设置</strong></span></p>
+</td>
+</tr>
+<tr>
+<td valign="top" width="67">
+<p align="center">&nbsp;</p>
+</td>
+<td valign="top" width="133">
+<p>&nbsp;</p>
+</td>
+<td valign="top" width="421">
+<p>&nbsp;</p>
+</td>
+</tr>
+<tr>
+<td colspan="3" valign="top" width="620">
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+</td>
+</tr>
+</tbody>
+</table>
+<p>&nbsp;</p>
+<h3><span style="font-size: 16px;"><strong>用户小工具参数偏好userModulePre</strong></span></h3>
+<p>&nbsp;</p>
+<table border="1" cellspacing="0" cellpadding="0">
+<tbody>
+<tr>
+<td valign="top" width="67">
+<p align="center"><span style="font-size: 16px;"><strong>NO.</strong></span></p>
+</td>
+<td valign="top" width="133">
+<p align="center"><span style="font-size: 16px;"><strong>字段名称</strong></span></p>
+</td>
+<td valign="top" width="421">
+<p align="center"><span style="font-size: 16px;"><strong>说明</strong></span></p>
+</td>
+</tr>
+<tr>
+<td valign="top" width="67">
+<p align="center"><span style="font-size: 16px;"><strong>1</strong></span></p>
+</td>
+<td valign="top" width="133">
+<p><span style="font-size: 16px;"><strong>uuid</strong></span></p>
+</td>
+<td valign="top" width="421">
+<p><span style="font-size: 16px;"><strong>小模块唯一标识</strong></span></p>
+</td>
+</tr>
+<tr>
+<td valign="top" width="67">
+<p align="center"><span style="font-size: 16px;"><strong>2</strong></span></p>
+</td>
+<td valign="top" width="133">
+<p><span style="font-size: 16px;"><strong>preKey</strong></span></p>
+</td>
+<td valign="top" width="421">
+<p>&nbsp;</p>
+</td>
+</tr>
+<tr>
+<td valign="top" width="67">
+<p align="center"><span style="font-size: 16px;"><strong>3</strong></span></p>
+</td>
+<td valign="top" width="133">
+<p><span style="font-size: 16px;"><strong>preValue</strong></span></p>
+</td>
+<td valign="top" width="421">
+<p>&nbsp;</p>
+</td>
+</tr>
+<tr>
+<td valign="top" width="67">
+<p align="center"><span style="font-size: 16px;"><strong>4</strong></span></p>
+</td>
+<td valign="top" width="133">
+<p><span style="font-size: 16px;"><strong>des</strong></span></p>
+</td>
+<td valign="top" width="421">
+<p>&nbsp;</p>
+</td>
+</tr>
+<tr>
+<td valign="top" width="67">
+<p align="center"><span style="font-size: 16px;"><strong>5</strong></span></p>
+</td>
+<td valign="top" width="133">
+<p><span style="font-size: 16px;"><strong>isTransfer</strong></span></p>
+</td>
+<td valign="top" width="421">
+<p><span style="font-size: 16px;"><strong>是否形成json传向前台</strong></span></p>
+</td>
+</tr>
+<tr>
+<td valign="top" width="67">
+<p align="center">&nbsp;</p>
+</td>
+<td valign="top" width="133">
+<p>&nbsp;</p>
+</td>
+<td valign="top" width="421">
+<p>&nbsp;</p>
+</td>
+</tr>
+<tr>
+<td colspan="3" valign="top" width="620">
+<p>&nbsp;</p>
+</td>
+</tr>
+</tbody>
+</table>
+<p>&nbsp;</p>
+<h3><span style="font-size: 16px;"><strong>最终表设计</strong></span></h3>
+<p><span style="font-size: 16px;"><strong><img src="57457710181192.png" alt=""></strong></span></p>
+<p><span style="font-size: 16px;"><strong><img src="8692935829712.png" alt=""></strong></span></p>
+<p><span style="font-size: 16px;"><strong><img src="39575709274328.png" alt=""></strong></span></p>
+<hr>
+<p><span style="font-size: 16px;"><strong>核心实现代码如下：原来的datalist的代码我就不发了：</strong></span></p>
+<p>&nbsp;</p>
+<div class="cnblogs_Highlighter">
+<pre class="brush:javascript;gutter:true;">/// &lt;reference path="../scripts/jquery-1.4.1.js" /&gt;
+/// &lt;reference path="dataList.js" /&gt;
+/// &lt;reference path="itemTemplate.js" /&gt;
+//全局变量设置
+var templateWarehouse = {};
+var userModuleData = {};
+var leftColModule, centerColModule, rightColModule;
+//首页模块加载参数
+var moduleLoadPara = {};
+moduleLoadPara.index = 1; //初始化加载索引
+moduleLoadPara.num = 1; //每次索引加载个数
+moduleLoadPara.isLoad = false; //当前是否在加载
+//---------------------------------------------------------------------------
+//第一步，加载模板
+function loadTemplate() {
+    $.ajax({
+        type: "post",
+        url: "../Ajax.aspx?sql=select * from templates ",
+        type: "json",
+        async: false,
+        success: function (data) {
+            $.each(data, function (i, item) {
+                templateWarehouse[item.templateKey] = item.templateValue;
+            });
+        }
+    });
+}
+//加载所有模板数据
+function loadModuleData(isAsync) {
+    var _isAsync = false;
+    if (isAsync)
+        _isAsync = isAsync;
+    var userId = "wl";
+    $.ajax({
+        type: "post",
+        url: "../Ajax.aspx?sql=select * from modules m ,userModules um where 1=1 and m.uuid=um.moduleId and um.userId='" + userId + "'",
+        type: "json",
+        async: _isAsync,
+        success: function (data) {
+            userModuleData["1"] = [];
+            userModuleData["2"] = [];
+            userModuleData["3"] = [];
+            userModuleData["4"] = [];
+            userModuleData["5"] = [];
+            $.each(data, function (i, item) {
+                var userPrefs = item.userPrefers;
+                if (typeof (userPrefs) == "string") {
+                    userPrefs = eval("(" + userPrefs + ")"); ;
+                }
+                item.userPrefers = userPrefs;
+                userModuleData[userPrefs.pageId].push(item);
+            });
+        }
+    });
+}
+//---------------------------------------------------------------------------
+//根据用户id，按要求加载其模板
+function initModuleFrame(_pageId) {
+    var pageId = 1;
+    if (_pageId)
+        pageId = _pageId;
+    var $div = $("#main");
+    $div.html("");
+    loadColModule(pageId, "left_conter");
+    loadColModule(pageId, "cell_conter");
+    loadColModule(pageId, "right_conter");
+}
+function loadColModule(pageId, colId) {
+    var $div = $("#main");
+    var colData = getColData(pageId, colId);
+    var colModule = new dataList(colId, "commonFrame");
+    colModule.itemElementEvent = {
+        _sortItems: {
+            elementKey: ".content",
+            eventType: "ready",
+            funcName: itemSort
+        },
+        _itemMaxClick: {
+            elementKey: ".btn_close",
+            eventType: "click",
+            funcName: itemMaxClick
+        },
+        _itemMenuClick: {
+            elementKey: ".btn_more",
+            eventType: "click",
+            funcName: itemMenuClick
+        }
+    };
+    colModule.className = "column";
+    colModule.dataSource = colData;
+    colModule.dataBind($div);
+    if (colId == "left_conter") {
+        leftColModule = colModule;
+    } else if (colId == "cell_conter") {
+        centerColModule = colModule;
+    } else if (colId == "right_conter") {
+        rightColModule = colModule;
+    }
+}
+function getColData(pageId, colId) {
+    var tempData = [];
+    var data = userModuleData[pageId];
+    $.each(data, function (i, item) {
+        var userPrefs = item.userPrefers;
+        if (userPrefs.pageId == pageId &amp;&amp; userPrefs.colId == colId) {
+            tempData.push(item);
+        }
+    });
+    tempData = tempData.sort(function (a, b) {
+        if (a.userPrefers.sort &lt; b.userPrefers.sort) {
+            return -1;
+        }
+        if (a.userPrefers.sort &gt; b.userPrefers.sort) {
+            return 1;
+        }
+        return 0;
+    });
+    return tempData;
+}
+//---------------------------------------------------------------------------
+function loadItemMax(sender, param, e, isClick) {
+    var dataSourceUrl = param.dataSourceUrl;
+    var templateId = param.templateId + "-max";
+    var title = param.title;
+    var type = param.type;
+    var id = sender.id;
+    var $max = $("#list-max");
+    var $main = $("#main");
+    var $content = $("#list-max #list-max-content");
+    if (isClick)
+        $content.html("");
+    var $title = $("#list-max #list-max-title");
+    var $itemList = $("#list-max .list");
+    var $listMore = $("#list-max #list-max-more");
+    var isLoad = $listMore.val();
+    $listMore.val("-1");
+    var len = $itemList.length;
+    var _index = len + 1;
+    var itemStr = '&lt;fieldset  class="list"&gt;&lt;legend&gt;&lt;span class="index"&gt;page' + _index.toString() + '&lt;/span&gt;&lt;/legend&gt;&lt;div id="itemContent' + _index.toString() + '" style=" margin:10px 10px 10px 10px;"&gt;数据加载中......&lt;/div&gt;&lt;/fieldset&gt;';
+    $main.hide();
+    $max.show();
+    $title.html(title);
+    if (type &amp;&amp; type == "s-html") {
+        var html = '&lt;iframe scrolling="no" style="width:100%;height:200px" frameborder="0" src="' + dataSourceUrl + '"&gt;&lt;/iframe&gt;';
+        $content.html(html);
+    } else {
+        $content.append(itemStr);
+        $.ajax({
+            type: "post",
+            url: dataSourceUrl,
+            type: "json",
+            async: true,
+            success: function (data) {
+                var $itemContent = $("#list-max #itemContent" + _index.toString() + "");
+                $itemContent.html("");
+                var dataNews = data;
+                if (typeof (dataNews) == "string") {
+                    dataNews = eval("(" + data + ")"); 
+                }
+                var listMax = new dataList(id + "_max", templateId);
+                listMax.dataSource = dataNews;
+                listMax.dataBind($itemContent);
+                $listMore.val("1");
+            }
+        });
+    }
+}
+//小工具事件定义，小工具事件处理函数
+function itemMaxClick() {
+    var sender = this;
+    var param = arguments[0];
+    var e = arguments[1];
+    loadItemMax(sender, param, e, true);
+    $(document).unbind("scroll");
+    $(document).bind("scroll", function (e) {
+        var windowHeight = $(window).height();
+        var windowScrollTop = $(window).scrollTop();
+        var documentHeight = $(document).height();
+        var $listMore = $("#list-max #list-max-more");
+        var isLoad = $listMore.val();
+        if ((windowHeight + windowScrollTop + 100) &gt; documentHeight &amp;&amp; isLoad == "1") {
+            loadItemMax(sender, param, e);
+        }
+    });
+}
+//小工具事件定义，点击出现菜单栏
+function itemMenuClick() {
+    var sender = this;
+    var param = arguments[0];
+    var e = arguments[1];
+    //    alert("弹出菜单" + "--" + param.uuid1 + "--" + sender.id)
+    var uuid = param.uuid1;
+    var popupMenu = $("#popupMenu");
+
+}
+//定义小工具会用到的工具类
+var moduleInitTool = {};
+//适用于不同模板，若是有新模板，只需根据规范添加函数即可，工厂方法
+moduleInitTool.jsonModule = function (sender, param, e) {
+    var templateId = param.templateId;
+    var id = param.uuid;
+    var dataSourceUrl = param.dataSourceUrl;
+    var $itemContent = sender.getItemElement(".content");
+    if (dataSourceUrl) {
+        moduleLoadPara.isLoad = false;
+        $.ajax({
+            type: "post",
+            url: dataSourceUrl,
+            type: "json",
+            async: true,
+            success: function (data) {
+                $itemContent.html("");
+                var dataNews = data;
+                if (typeof (dataNews) == "string") {
+                    dataNews = eval("(" + data + ")"); ;
+                }
+                var listItemNews = new dataList(id + "_news", templateId);
+                listItemNews.itemElementEvent = {
+                    clickTitle: {
+                        elementKey: ".span2",
+                        eventType: "click",
+                        funcName: titleClick
+                    }
+                }
+                listItemNews.dataSource = dataNews;
+                listItemNews.dataBind($itemContent);
+                //                if (sender.id == "right_conter_id_1")
+                //                    setInterval(function () {
+                //                        alert("重新加载" + sender.id);
+                //                    }, 5000);
+                moduleLoadPara.isLoad = true;
+            }
+        });
+    }
+}
+moduleInitTool.htmlModule = function (sender, param, e) {
+    var id = param.uuid;
+    var dataSourceUrl = param.dataSourceUrl;
+    var $itemContent = sender.getItemElement(".content");
+    if (dataSourceUrl) {
+        var html = '&lt;iframe scrolling="no" style="width:100%;height:200px" frameborder="0" src="' + dataSourceUrl + '"&gt;&lt;/iframe&gt;';
+        $itemContent.html(html);
+    }
+}
+moduleInitTool.weiboModule = function (sender, param, e) {
+
+}
+moduleInitTool.labelModule = function (sender, param, e) {
+    var templateId = param.templateId;
+    var id = param.uuid;
+    var dataSourceUrl = param.dataSourceUrl;
+    var customData = param.customData;
+    var modulePara = param.moduleParameter;
+    if (typeof (modulePara) == "string") {
+        modulePara = eval("(" + modulePara + ")"); ;
+    }
+    templateWarehouse["labelHeadTemplate"] = modulePara.labelHeadTemplate;
+    var $itemContent = sender.getItemElement(".content");
+    $itemContent.html(customData);
+    var lableHead = sender.getItemElement("#labelHead");
+    moduleLoadPara.isLoad = false;
+    $.getJSON("../Ajax.aspx?sql=select * from bigType", function (data) {
+        var labelHeadList = new dataList(id + "_head", "labelHeadTemplate");
+        labelHeadList.dataSource = data;
+        labelHeadList.className = "labelHead";
+        labelHeadList.itemEvent = {
+            _labelHeadClick: {
+                eventType: "click",
+                funcName: function () {
+                    var _sender = this;
+                    var _param = arguments[0];
+                    var _e = arguments[1];
+                    var labelBody = sender.getItemElement("#labelBody");
+                    var bigTypeId = _param.id;
+                    var url = "../Ajax.aspx?sql=select * from smallType where bigTypeId=" + bigTypeId + "";
+                    $.getJSON(url, function (_data) {
+                        labelBody.html("");
+                        var labelBodyList = new dataList(bigTypeId + "_head", templateId);
+                        labelBodyList.dataSource = _data;
+                        labelBodyList.dataBind(labelBody);
+                    });
+                }
+            }
+        };
+        labelHeadList.dataBind(lableHead);
+        moduleLoadPara.isLoad = true;
+    });
+}
+
+function elementDatabind(s) {
+    var sender = this;
+    var param = arguments[0];
+    var e = arguments[1];
+    var type = param.type;
+    if (type &amp;&amp; type.length &gt; 2) {
+        var _funcName = type.substring(2) + "Module";
+        //        eval(_funcName);//此方法不能异步调用
+        var funcName = moduleInitTool[_funcName];
+        if (funcName &amp;&amp; typeof (funcName) == "function") {
+            funcName(sender, param, e);
+        }
+    }
+}
+
+function titleClick() {
+    var sender = this;
+    var param = arguments[0];
+    var e = arguments[1];
+    var summary = sender.getItemElement(".summary");
+    var isShow = summary.css("display");
+    if (isShow == "none") {
+        summary.show();
+    } else {
+        summary.hide();
+    }
+}
+//用于小工具排序
+function itemSort() {
+    var sender = this;
+    var html = sender.htmlElement;
+//    alert(html.offset().top);
+    $(".column").sortable({
+        connectWith: ".column",
+        cursor: 'move',
+        opacity: 0.7,
+        handle: " .title",
+        stop: sortItemsAjax
+    });
+}
+//向后台发送数据
+function sortItemsAjax() {
+    submitSortData("left_conter");
+    submitSortData("cell_conter");
+    submitSortData("right_conter");
+
+}
+function submitSortData(colId) {
+    var parent = $("#" + colId);
+    var $children = parent.children();
+    $children.each(function (i, item) {
+        var id = item.id;
+        var itemId = "#" + id + " #itemId";
+        var $uuid = $(itemId);
+        var uuid = $uuid.html();
+        var userPrefers = item.userPrefers;
+        $.ajax({
+            type: "post",
+            url: "../Ajax.aspx?sort=" + i + "&amp;colId=" + colId + "&amp;id=" + uuid + "&amp;no=no",
+            type: "json",
+            async: true,
+            success: function (data) {
+            }
+        });
+
+    });
+}
+//---------------------------------------------------------------------------
+//总体外部流程，外部方法
+function mainProcess() {
+    var $max = $("#list-max");
+    var $main = $("#main");
+    var $btn_Narrow = $("#list-max .btn_Narrow");
+    $btn_Narrow.unbind("click");
+    $btn_Narrow.bind("click", function () {
+        if ($max.css("display") == "none") {
+            $main.hide();
+            $max.show();
+        } else {
+            $(document).unbind("scroll");
+            var $listMore = $("#list-max #list-max-more");
+            $listMore.val("-1");
+            $main.show();
+            $max.hide();
+        }
+    });
+}
+
+
+function LaterEvent() {
+    var commomEvent = {
+        _loadItems: {
+            elementKey: ".content",
+            eventType: "ready",
+            funcName: elementDatabind
+        }
+    };
+    var num = (moduleLoadPara.index) * (moduleLoadPara.num);
+    for (var i = 0; i &lt; num; i++) {
+        if (leftColModule.items[i])
+            leftColModule.items[i].eventAdd(commomEvent);
+        if (centerColModule.items[i])
+            centerColModule.items[i].eventAdd(commomEvent);
+        if (rightColModule.items[i])
+            rightColModule.items[i].eventAdd(commomEvent);
+    }
+    moduleLoadPara.index++;
+    
+    //    leftColModule.eventAdd(commomEvent);
+    //    centerColModule.eventAdd(commomEvent);
+    //    rightColModule.eventAdd(commomEvent);
+}
+function delayLoad() {
+    var commomEvent = {
+        _loadItems: {
+            elementKey: ".content",
+            eventType: "ready",
+            funcName: elementDatabind
+        }
+    };
+    $(document).unbind("scroll");
+    $(document).bind("scroll", function (e) {
+        if (moduleLoadPara.isLoad) {
+            var num = (moduleLoadPara.index) * (moduleLoadPara.num);
+            var oldNum = (moduleLoadPara.index-1) * (moduleLoadPara.num);
+            for (var i = oldNum; i &lt; num; i++) {
+                if (leftColModule.items[i])
+                    leftColModule.items[i].eventAdd(commomEvent);
+                if (centerColModule.items[i])
+                    centerColModule.items[i].eventAdd(commomEvent);
+                if (rightColModule.items[i])
+                    rightColModule.items[i].eventAdd(commomEvent);
+            }
+            moduleLoadPara.index++;
+        }
+    });
+}
+function pageClick() {
+    for (var i = 1; i &lt;= 5; i++) {
+        var page = $("#pageIndex" + i.toString());
+        page.unbind("click");
+        page.bind("click", function (e) {
+            var _p = $(this);
+            initModuleFrame(_p.text());
+            LaterEvent();
+            var $max = $("#list-max");
+            var $main = $("#main");
+            $main.show();
+            $max.hide();
+            $(document).unbind("scroll");
+            var $listMore = $("#list-max #list-max-more");
+            $listMore.val("-1");
+            //置顶
+            $('html,body').animate({ scrollTop: '0px' }, 800);
+            //            A：return false ---&gt;In event handler ,prevents default behavior and event bubbing 。
+            //return false 在事件的处理中，可以阻止默认事件和冒泡事件。
+            //B：event.preventDefault()---&gt; In event handler ,prevent default event (allows bubbling) 。
+            //event.preventDefault()在事件的处理中，可以阻止默认事件但是允许冒泡事件的发生。
+            //C：event.stopPropagation()---&gt; In event handler ,prevent bubbling (allows default behavior).
+            //event.stopPropagation()在事件的处理中，可以阻止冒泡但是允许默认事件的发生。
+            e.stopPropagation();
+            return false;
+        });
+    }
+}
+function pageLoad() {
+    mainProcess();
+    loadTemplate();
+    loadModuleData();
+    initModuleFrame();
+     
+    LaterEvent();
+    pageClick();
+    //置顶
+    $('html,body').animate({ scrollTop: '0px' }, 800);
+    delayLoad();
+
+    //5分钟更新一次模块数据
+    var updateModuleData = setInterval("loadModuleData(true)", 50000);
+
+}
+//---------------------------------------------------------------------------
+</pre>
+</div>
+<p>&nbsp;</p>
+<p>　　</p>
+<p>&nbsp;</p>
+<p><span style="font-size: 16px;"><strong></strong></span></p>
+<hr>
+<p><span style="font-size: 16px;"><strong>代码太多不做说明了，以后肯定会封装，</strong></span></p>
+<p><span style="font-size: 16px;"><strong>就现在看来整个应用感觉问题不少，实际用处不大吧。</strong></span></p>
+<p><span style="font-size: 16px;"><strong>后面点代码整理后再一并发出吧，如果有需要的话。</strong></span></p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+                </div>
+
+                <div class='span3 sidebar'>
+                    <h2>导航栏</h2>
+                    <ul class="nav nav-tabs nav-stacked">
+                             				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/Fiddlerznqddsq/index.html">Fiddler真乃前端大杀器！！！</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/Requirejs/index.html">Requirejs</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/RequireJSyBackbonejdzh/index.html">RequireJS与Backbone简单整合</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/RequireJSxxbj/index.html">RequireJS学习笔记</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/Webqdyhctxdpzyyqdgsgpng/index.html">Web前端优化初探，小弟抛砖引玉，期待高手共破难关！</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/Webqdlqjrctxsqwpzyyqdgsgpng/index.html">Web前端浏览器兼容初探，小生浅文抛砖引玉，期待高手攻破难关！</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/jqueryfdataListxnyhmbybysxtgxn10bys/index.html">【jquery仿dataList——性能优化】模板预编译思想提高性能10倍以上！！！</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/jqueryfdataListyyzmfigoogledzhtdpxzdhfp/index.html">【jquery仿dataList】应用之——模仿igoogle【定制化、拖动排序，最大化、分屏】</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/jqueryfdatalistdygwtqzszmxxsjlkzDIVdjjbf/index.html">【jquery仿datalist的一个问题，求助】——设置每行显示几列，块状DIV的解决办法</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/jquerymfnetkjcbGridViewmxsxjqjdyy/index.html">【jquery模仿net控件】初步GridView模型实现，及其简单应用</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/jquerymfnetkjjdfykj10fsgridviewsycs/index.html">【jquery模仿net控件】简单分页控件10，附上gridview使用测试</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/jquerymfnetkjjdddatalistkjgxjqjdyy/index.html">【jquery模仿net控件】简单的datalist控件更新，及其简单应用</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/jquerymfnetkjjdddropdownlistydatalist/index.html">【jquery模仿net控件】简单的dropdownlist与datalist</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/jquerybnetkjdropdownlistfymhydjzdzzpz/index.html">【jquery版net控件—dropdownlist】附源码，欢迎大家指点、指正、拍砖！！！</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/positionykyhfzddccyslsbdws/index.html">【position也可以很复杂】当弹出层遇上了鼠标定位（上）</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/positionykyhfzddccyslsbdwx/index.html">【position也可以很复杂】当弹出层遇上了鼠标定位（下）</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/SEOzmlwljnmtsbwmlyqkkSEOb/index.html">【SEO】周末了，为了纪念明天上班，我们来一起看看SEO吧</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/webqdyhqdwyhyrzrz/index.html">【web前端优化】前端无优化，庸人自扰之！</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/webqdyhzreflowjsymdhl/index.html">【web前端优化之reflow】减少页面的回流</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/webqdyhztpycjzctzwbsxwbk/index.html">【web前端优化之图片延迟加载初探】中午不睡，下午崩溃</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/webqdyhztpmhdqxkwQQkjrhxsxp/index.html">【web前端优化之图片模糊到清晰】看我QQ空间如何显示相片</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/webqdpxzqhddphsywmsxdDatalistsmwtb/index.html">【web前端培训之前后端的配合（上）】以我们熟悉的Datalist说明问题吧</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/webqdpxzqhddphzjxzrdgs/index.html">【web前端培训之前后端的配合（中）】继续昨日的故事</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/dyyygybkydbfgqym/index.html">【单页应用】关于博客园的补发（高清有码）。。。</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/xtsstringifysBUGlocalstoragesxxmSafarialertksfycjzym10pxbp/index.html">【小贴士】【stringify神BUG】【localstorage失效】【消灭Safarialert框】【是否延迟加载】【页面10px白屏】</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/dalhdmsthhdsdmstjsh/index.html">【答阿里寒冬面试题】呵呵，大神的面试题就是好！</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/ycsjmstdldgwxxdgjxxdff/index.html">一次上机面试题带来的感悟【学习的感觉、学习的方法】</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/ydmstdldqdyhsxxxdp/index.html">一道面试题带来的前端优化——实现星星点评</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/zysyzjjhfzwebqdbfxlgxmndjjfa/index.html">只言碎语总结，今后发展web前端，并分享两个项目难点解决方案。</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/gwjlytbllbnwmljxwwdbdyzb/index.html">各位加了一天班累了吧？那我们来继续未完的表单验证吧</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/gwzmwlytllbwmyqlzldmstbjstbdy/index.html">各位周末玩了一天累了吧，我们一起来做两道面试题吧（据说淘宝的哟）！</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/jyjQuerydxlcdcjzwsy/index.html">基于jQuery的下拉菜单插件，诸位上眼！！！</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/jyjQuerydxlcdcd02zwsy/index.html">基于jQuery的下拉菜单菜单【02】，诸位上眼！！！</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/gzzpddyxdxdccktfybwjsc/index.html">工作中碰到的一些东西【弹出窗口】【拖放】【异步文件上传】</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/gzlygxqgwydllbnwmyqlbdyzyfb/index.html">工作了一个星期各位一定累了吧，那我们一起来表单验证一番吧！</a></li>
+    				                                         
+                    </ul>
+                </div>
+            </div>
+
+        </div>
+    </body>
+</html>

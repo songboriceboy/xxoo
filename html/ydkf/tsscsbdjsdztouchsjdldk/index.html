@@ -1,0 +1,234 @@
+﻿<!DOCTYPE html>
+
+<html lang="zh">
+    <head>
+        <meta charset="utf-8">
+        <meta name="description" content="android,ios" />
+        <meta name="keywords" content="android,ios" />
+
+        <title>叶小钗</title>
+        <style type='text/css'>
+            body {
+                background-color: #CCC;
+            }
+        </style>
+        <link rel="stylesheet" href="../../../css/bootstrap.css" />
+    </head>
+
+    <body>
+        <div class="container">
+
+            <h1>叶小钗</h1>
+
+            <div class='navbar navbar-inverse'>
+                <div class='navbar-inner nav-collapse' style="height: auto;">
+                    <ul class="nav">
+                              				<li><a href="http://songboriceboy.github.io/xxoo/html/blade/index.html">blade</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/css/index.html">css</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/HTML5&CSS3/index.html">HTML5&CSS3</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/index.html">javascript</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Javaxx/index.html">Java学习</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/nodejs/index.html">nodejs</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/requirejs/index.html">requirejs</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/index.html">Web前端</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/xxgw/index.html">学习感悟</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/gzdd/index.html">工作点滴</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/jkxx/index.html">接口学习</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/wfl/index.html">未分类</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/ydkf/index.html">移动开发</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/sjms/index.html">设计模式</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/mst/index.html">面试题</a></li>
+    				                      </ul>
+                </div>
+            </div>
+
+            <div id='content' class='row-fluid'>
+
+                <div class='span9 main'>
+				<div style="color:blue" align=center>提升手持设备点击速度之touch事件带来的坑！</div><br><h1>前言</h1>
+<p>上周六，我将我们项目的click换成了tap事件，于是此事如梦魇一般折磨了我一星期！！！</p>
+<p>经过我前仆后继的努力，不计代价的牺牲，不断的埋坑填坑，再埋坑的动作，最后悲伤的发现touch事件确实是个坑！</p>
+<p>但是touch事件带来的用户感受提高对我们来说是一巨大进步，所以一些问题我们必须攻克，然在下已几近黔驴技穷，最后使出了浑身解数以一恶心的手段暂时压制其问题......</p>
+<p>现在分享被折磨过程，希望对各位有所帮助</p>
+<h1>点击不起作用</h1>
+<p><span style="line-height: 1.5;">我使用的源码不是最新的，zepto初始化时便为document.body绑定touchstart、touchmove、touchend事件</span></p>
+<p>所以我们现在每一次在手机上的点击都会触发一次touch事件，由此可能引起的BUG：</p>
+<p>&nbsp;每次手指触屏都会触发touchstart等事件，可能堵塞浏览器本身行为</p>
+<p>由于我们是单页应用，初始化会为body设置height为100%，就算进入列表页或者其它，body页高度不会增加，于是就会出现不可点击现象！</p>
+<h3>以去哪儿为例</h3>
+<p><img src="30274276663374.png" alt=""></p>
+<p>由于其城市列表为absolute，其它dom皆不显示从而导致body实际高度为0，那么此时如果为城市绑定tap事件的话，那么tap事件</p>
+<h3>在ios手机上不会有作用，电脑上有用，某些android无效</h3>
+<p>此问题较容易解决：</p>
+<p>① 让body可伸缩，跟着元素扩展（不易实现）</p>
+<h3>② 将事件绑定至document（推荐）</h3>
+<h1>tap特有的点透现象</h1>
+<p>地球人都知道tap会出现点透现象，我这里上一个代码给各位测试一番</p>
+<div class="cnblogs_code">
+<pre><span style="color: #008080;"> 1</span> <span style="color: #0000ff;">&lt;!</span><span style="color: #ff00ff;">DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 2</span> <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">html </span><span style="color: #ff0000;">xmlns</span><span style="color: #0000ff;">="http://www.w3.org/1999/xhtml"</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 3</span> <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">head</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 4</span>     <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">title</span><span style="color: #0000ff;">&gt;&lt;/</span><span style="color: #800000;">title</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 5</span>     <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">meta </span><span style="color: #ff0000;">name</span><span style="color: #0000ff;">="viewport"</span><span style="color: #ff0000;"> content</span><span style="color: #0000ff;">="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no"</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 6</span>     <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">style</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 7</span> <span style="background-color: #f5f5f5; color: #800000;">        #list </span><span style="background-color: #f5f5f5; color: #000000;">{</span><span style="background-color: #f5f5f5; color: #ff0000;"> border</span><span style="background-color: #f5f5f5; color: #000000;">:</span><span style="background-color: #f5f5f5; color: #0000ff;"> 1px solid black</span><span style="background-color: #f5f5f5; color: #000000;">;</span><span style="background-color: #f5f5f5; color: #ff0000;"> position</span><span style="background-color: #f5f5f5; color: #000000;">:</span><span style="background-color: #f5f5f5; color: #0000ff;"> absolute</span><span style="background-color: #f5f5f5; color: #000000;">;</span><span style="background-color: #f5f5f5; color: #ff0000;"> top</span><span style="background-color: #f5f5f5; color: #000000;">:</span><span style="background-color: #f5f5f5; color: #0000ff;"> 0px</span><span style="background-color: #f5f5f5; color: #000000;">;</span><span style="background-color: #f5f5f5; color: #ff0000;"> left</span><span style="background-color: #f5f5f5; color: #000000;">:</span><span style="background-color: #f5f5f5; color: #0000ff;"> 10px</span><span style="background-color: #f5f5f5; color: #000000;">;</span><span style="background-color: #f5f5f5; color: #ff0000;"> width</span><span style="background-color: #f5f5f5; color: #000000;">:</span><span style="background-color: #f5f5f5; color: #0000ff;"> 200px</span><span style="background-color: #f5f5f5; color: #000000;">;</span><span style="background-color: #f5f5f5; color: #ff0000;"> height</span><span style="background-color: #f5f5f5; color: #000000;">:</span><span style="background-color: #f5f5f5; color: #0000ff;"> 100px</span><span style="background-color: #f5f5f5; color: #000000;">;</span> <span style="background-color: #f5f5f5; color: #000000;">}</span>
+<span style="color: #008080;"> 8</span> <span style="background-color: #f5f5f5; color: #800000;">        #d </span><span style="background-color: #f5f5f5; color: #000000;">{</span><span style="background-color: #f5f5f5; color: #ff0000;"> border</span><span style="background-color: #f5f5f5; color: #000000;">:</span><span style="background-color: #f5f5f5; color: #0000ff;"> 1px solid black</span><span style="background-color: #f5f5f5; color: #000000;">;</span><span style="background-color: #f5f5f5; color: #ff0000;"> height</span><span style="background-color: #f5f5f5; color: #000000;">:</span><span style="background-color: #f5f5f5; color: #0000ff;"> 300px</span><span style="background-color: #f5f5f5; color: #000000;">;</span><span style="background-color: #f5f5f5; color: #ff0000;"> width</span><span style="background-color: #f5f5f5; color: #000000;">:</span><span style="background-color: #f5f5f5; color: #0000ff;"> 100%</span><span style="background-color: #f5f5f5; color: #000000;">;</span> <span style="background-color: #f5f5f5; color: #000000;">}</span>
+<span style="color: #008080;"> 9</span>     <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">style</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">10</span> <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">head</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">11</span> <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">body</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">12</span>     <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">div </span><span style="color: #ff0000;">id</span><span style="color: #0000ff;">="d"</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">13</span>         <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">input </span><span style="color: #ff0000;">type</span><span style="color: #0000ff;">="text"</span><span style="color: #ff0000;"> id</span><span style="color: #0000ff;">="input"</span><span style="color: #ff0000;"> style</span><span style="color: #0000ff;">="width: 80px; height: 200px;"</span> <span style="color: #0000ff;">/&gt;</span>
+<span style="color: #008080;">14</span>         <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">div </span><span style="color: #ff0000;">id</span><span style="color: #0000ff;">="list"</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">15</span>         <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">div</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">16</span>     <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">div</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">17</span> <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">body</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">18</span> <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">script </span><span style="color: #ff0000;">src</span><span style="color: #0000ff;">="res/libs/zepto.js"</span><span style="color: #ff0000;"> type</span><span style="color: #0000ff;">="text/javascript"</span><span style="color: #0000ff;">&gt;&lt;/</span><span style="color: #800000;">script</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">19</span> <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">script </span><span style="color: #ff0000;">type</span><span style="color: #0000ff;">="text/javascript"</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">20</span> <span style="background-color: #f5f5f5; color: #000000;">    window.log </span><span style="background-color: #f5f5f5; color: #000000;">=</span> <span style="background-color: #f5f5f5; color: #0000ff;">function</span><span style="background-color: #f5f5f5; color: #000000;"> (msg) {
+</span><span style="color: #008080;">21</span> <span style="background-color: #f5f5f5; color: #000000;">        console.log(msg);
+</span><span style="color: #008080;">22</span>         <span style="background-color: #f5f5f5; color: #0000ff;">var</span><span style="background-color: #f5f5f5; color: #000000;"> div </span><span style="background-color: #f5f5f5; color: #000000;">=</span><span style="background-color: #f5f5f5; color: #000000;"> $(</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">#myMsg</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">);
+</span><span style="color: #008080;">23</span>         <span style="background-color: #f5f5f5; color: #0000ff;">if</span><span style="background-color: #f5f5f5; color: #000000;"> (</span><span style="background-color: #f5f5f5; color: #000000;">!</span><span style="background-color: #f5f5f5; color: #000000;">div[</span><span style="background-color: #f5f5f5; color: #000000;">0</span><span style="background-color: #f5f5f5; color: #000000;">]) div </span><span style="background-color: #f5f5f5; color: #000000;">=</span><span style="background-color: #f5f5f5; color: #000000;"> $(</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">&lt;div id="myMsg"&gt;&lt;/div&gt;</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">)
+</span><span style="color: #008080;">24</span> <span style="background-color: #f5f5f5; color: #000000;">        $(</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">#d</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">).append(div);
+</span><span style="color: #008080;">25</span> <span style="background-color: #f5f5f5; color: #000000;">        div.click(</span><span style="background-color: #f5f5f5; color: #0000ff;">function</span><span style="background-color: #f5f5f5; color: #000000;"> () {
+</span><span style="color: #008080;">26</span> <span style="background-color: #f5f5f5; color: #000000;">            div.html(</span><span style="background-color: #f5f5f5; color: #000000;">''</span><span style="background-color: #f5f5f5; color: #000000;">);
+</span><span style="color: #008080;">27</span> <span style="background-color: #f5f5f5; color: #000000;">        });
+</span><span style="color: #008080;">28</span> <span style="background-color: #f5f5f5; color: #000000;">        div.append($(</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">&lt;div&gt;</span><span style="background-color: #f5f5f5; color: #000000;">'</span> <span style="background-color: #f5f5f5; color: #000000;">+</span><span style="background-color: #f5f5f5; color: #000000;"> msg </span><span style="background-color: #f5f5f5; color: #000000;">+</span> <span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">&lt;/div&gt;</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">));
+</span><span style="color: #008080;">29</span> <span style="background-color: #f5f5f5; color: #000000;">    }
+</span><span style="color: #008080;">30</span>     <span style="background-color: #f5f5f5; color: #0000ff;">var</span><span style="background-color: #f5f5f5; color: #000000;"> list </span><span style="background-color: #f5f5f5; color: #000000;">=</span><span style="background-color: #f5f5f5; color: #000000;"> $(</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">#list</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">);
+</span><span style="color: #008080;">31</span>     <span style="background-color: #f5f5f5; color: #0000ff;">var</span><span style="background-color: #f5f5f5; color: #000000;"> d </span><span style="background-color: #f5f5f5; color: #000000;">=</span><span style="background-color: #f5f5f5; color: #000000;"> $(</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">#d</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">);
+</span><span style="color: #008080;">32</span>     <span style="background-color: #f5f5f5; color: #0000ff;">var</span><span style="background-color: #f5f5f5; color: #000000;"> input </span><span style="background-color: #f5f5f5; color: #000000;">=</span><span style="background-color: #f5f5f5; color: #000000;"> $(</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">#input</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">);
+</span><span style="color: #008080;">33</span> 
+<span style="color: #008080;">34</span> <span style="background-color: #f5f5f5; color: #000000;">    input.tap(</span><span style="background-color: #f5f5f5; color: #0000ff;">function</span><span style="background-color: #f5f5f5; color: #000000;"> (e) {
+</span><span style="color: #008080;">35</span> <span style="background-color: #f5f5f5; color: #000000;">        input.val(</span><span style="background-color: #f5f5f5; color: #0000ff;">new</span><span style="background-color: #f5f5f5; color: #000000;"> Date().getTime());
+</span><span style="color: #008080;">36</span> <span style="background-color: #f5f5f5; color: #000000;">    });
+</span><span style="color: #008080;">37</span> 
+<span style="color: #008080;">38</span> <span style="background-color: #f5f5f5; color: #000000;">    list.tap(</span><span style="background-color: #f5f5f5; color: #0000ff;">function</span><span style="background-color: #f5f5f5; color: #000000;"> (e) {
+</span><span style="color: #008080;">39</span> <span style="background-color: #f5f5f5; color: #000000;">        list.hide();
+</span><span style="color: #008080;">40</span> <span style="background-color: #f5f5f5; color: #000000;">        setTimeout(</span><span style="background-color: #f5f5f5; color: #0000ff;">function</span><span style="background-color: #f5f5f5; color: #000000;"> () {
+</span><span style="color: #008080;">41</span> <span style="background-color: #f5f5f5; color: #000000;">            list.show();
+</span><span style="color: #008080;">42</span> <span style="background-color: #f5f5f5; color: #000000;">        }, </span><span style="background-color: #f5f5f5; color: #000000;">1000</span><span style="background-color: #f5f5f5; color: #000000;">);
+</span><span style="color: #008080;">43</span> 
+<span style="color: #008080;">44</span> <span style="background-color: #f5f5f5; color: #000000;">    });
+</span><span style="color: #008080;">45</span> 
+<span style="color: #008080;">46</span> <span style="background-color: #f5f5f5; color: #000000;">    d.tap(</span><span style="background-color: #f5f5f5; color: #0000ff;">function</span><span style="background-color: #f5f5f5; color: #000000;"> () {
+</span><span style="color: #008080;">47</span> <span style="background-color: #f5f5f5; color: #000000;">        log(</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">div tap</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">);
+</span><span style="color: #008080;">48</span> <span style="background-color: #f5f5f5; color: #000000;">    });
+</span><span style="color: #008080;">49</span> <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">script</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">50</span> <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">html</span><span style="color: #0000ff;">&gt;</span></pre>
+</div>
+<p><img src="43072947041536.png" alt=""></p>
+<p>这个页面有三个元素</p>
+<p>① 父容器div，我们为他绑定了一个tap事件，会打印文字</p>
+<p>② 在上的div，我们为其绑定了一个tap事件，点击便消失</p>
+<p>③ input，主要用于测试focus问题</p>
+<p>现在开启touch事件的情况下，我们点击上面的div，他会消失，于是：</p>
+<h3>div消失会触发div（list）的tap事件</h3>
+<h3>div消失会触发input获取焦点事件</h3>
+<h2>可能导致的项目BUG</h2>
+<p><span style="line-height: 1.5;">以上问题可能导致些什么问题呢？</span></p>
+<h3><span style="line-height: 1.5;">提示层一闪而过</span></h3>
+<p><span style="line-height: 1.5;">我们可能会遇到这么一个场景：</span></p>
+<p><span style="line-height: 1.5;">表单提交页，用户提交时如果信息有误，会弹出一个提示，并且为蒙版添加click的关闭事件</span></p>
+<p><span style="line-height: 1.5;">但是有tap在的情况效果就不一样了，我们极有可能点击提交，弹出提示层，触发蒙版点击事件，蒙版关闭！！！</span></p>
+<h3><span style="line-height: 1.5;">input获取焦点弹出键盘</span></h3>
+<p><span style="line-height: 1.5;">我们可能遇到这种情况，我们在弹出层上做了一些操作后，点击弹出层关闭弹出层，但是下面有一个input（div有事件也行）</span></p>
+<p><span style="line-height: 1.5;">于是触发了div事件，于是input获取了焦点，某明奇妙的弹出来键盘！！！</span></p>
+<h2><span style="line-height: 1.5;">BUG原因</span></h2>
+<p><span style="line-height: 1.5;">以上问题是主要出现的问题，由此问题可能衍生出其它BUG，足以让我们苦不堪言！！！</span></p>
+<p><span style="line-height: 1.5;">但是引起这些问题的原因是什么呢？？？</span></p>
+<h3><span style="line-height: 1.5;">先说冒泡</span></h3>
+<p><span style="line-height: 1.5;">我们看zepto的touch事件源码，可以知道，我们一开始就将touchstart绑定到了document上，然后从e获取当前点击元素</span></p>
+<p><span style="line-height: 1.5;">完了触发touchend模拟tap等事件。</span></p>
+<p><span style="line-height: 1.5;">于是，首先我们想到了阻止冒泡是否可以解决问题：于是稍微修改下代码：</span></p>
+<div class="cnblogs_code">
+<pre><span style="color: #008080;">1</span> list.tap(<span style="color: #0000ff;">function</span><span style="color: #000000;"> (e) {
+</span><span style="color: #008080;">2</span> <span style="color: #000000;">    list.hide();
+</span><span style="color: #008080;">3</span>     setTimeout(<span style="color: #0000ff;">function</span><span style="color: #000000;"> () {
+</span><span style="color: #008080;">4</span> <span style="color: #000000;">        list.show();
+</span><span style="color: #008080;">5</span>     }, 1000<span style="color: #000000;">);
+</span><span style="color: #008080;">6</span> <span style="color: #000000;">    e.stopPropagation();
+</span><span style="color: #008080;">7</span> });</pre>
+</div>
+<p>事实证明，阻止冒泡后div（d）的tap事件不会被触发，但是input的获取焦点问题依旧不能解决</p>
+<p>至于原因，我这里也只能是猜测div（d）的触发是由于冒泡引起，而就算阻止冒泡阻止浏览器默认操作也不能阻止input获取焦点</p>
+<h2>神奇菊花解决问题</h2>
+<p><span style="line-height: 1.5;">于是经过老夫不泄的努力，终于发现一个恶心的方法，可以暂缓此问题，他就是菊花!!!!</span></p>
+<p><span style="line-height: 1.5;">先上个代码：</span></p>
+<div class="cnblogs_code">
+<pre><span style="color: #008080;"> 1</span> <span style="color: #008000;">//</span><span style="color: #008000;">该代码在zepto touch源码中</span>
+<span style="color: #008080;"> 2</span> forTap = $('#forTap'<span style="color: #000000;">);
+</span><span style="color: #008080;"> 3</span> <span style="color: #0000ff;">if</span>(!forTap[0]) { forTap = $('<span style="color: #000000;">&lt;div id="forTap" style="background: black;color: White; display: none; 
+</span><span style="color: #008080;"> 4</span> border-radius: 60px; position: absolute; z-index: 99999; width: 60px; height: 60px"&gt;&lt;/div&gt;'<span style="color: #000000;">);
+</span><span style="color: #008080;"> 5</span>     $('body'<span style="color: #000000;">).append(forTap);
+</span><span style="color: #008080;"> 6</span> <span style="color: #000000;">}
+</span><span style="color: #008080;"> 7</span> 
+<span style="color: #008080;"> 8</span> <span style="color: #008000;">//</span><span style="color: #008000;">touchstart</span>
+<span style="color: #008080;"> 9</span> <span style="color: #0000ff;">var</span> el = touch.el; touch.isShowTap = <span style="color: #0000ff;">false</span>
+<span style="color: #008080;">10</span> <span style="color: #0000ff;">while</span>(el[0].nodeName != 'BODY'<span style="color: #000000;">){
+</span><span style="color: #008080;">11</span> <span style="color: #0000ff;">if</span>(el.attr('lazyTap'<span style="color: #000000;">)) {
+</span><span style="color: #008080;">12</span>     touch.isShowTap = <span style="color: #0000ff;">true</span><span style="color: #000000;">;
+</span><span style="color: #008080;">13</span>     <span style="color: #0000ff;">break</span><span style="color: #000000;">;
+</span><span style="color: #008080;">14</span> <span style="color: #000000;">    }
+</span><span style="color: #008080;">15</span> el =<span style="color: #000000;"> el.parent();
+</span><span style="color: #008080;">16</span> <span style="color: #000000;">}
+</span><span style="color: #008080;">17</span> 
+<span style="color: #008080;">18</span> <span style="color: #008000;">//</span><span style="color: #008000;">touchend</span>
+<span style="color: #008080;">19</span> <span style="color: #0000ff;">var</span> event = $.Event('tap'<span style="color: #000000;">)
+</span><span style="color: #008080;">20</span> event.cancelTouch =<span style="color: #000000;"> cancelAll
+</span><span style="color: #008080;">21</span> 
+<span style="color: #008080;">22</span> touch.el.trigger &amp;&amp;<span style="color: #000000;"> touch.el.trigger(event)
+</span><span style="color: #008080;">23</span> 
+<span style="color: #008080;">24</span> <span style="color: #0000ff;">if</span><span style="color: #000000;">(touch.isShowTap) {
+</span><span style="color: #008080;">25</span> <span style="color: #000000;">    forTap.css({
+</span><span style="color: #008080;">26</span>         top: (e.changedTouches[0].pageY - 30) + 'px'<span style="color: #000000;">,
+</span><span style="color: #008080;">27</span>         left: (e.changedTouches[0].pageX - 30) + 'px'
+<span style="color: #008080;">28</span> <span style="color: #000000;">    }) 
+</span><span style="color: #008080;">29</span> <span style="color: #000000;">    forTap.show();
+</span><span style="color: #008080;">30</span>     setTimeout(<span style="color: #0000ff;">function</span><span style="color: #000000;"> () {
+</span><span style="color: #008080;">31</span> <span style="color: #000000;">        forTap.hide();
+</span><span style="color: #008080;">32</span>     }, 350<span style="color: #000000;">);
+</span><span style="color: #008080;">33</span> }</pre>
+</div>
+<p>大家注意看代码，我现在为我们需要延迟的元素加一个lazyTap的属性</p>
+<div class="cnblogs_code">
+<pre><span style="color: #008080;">1</span> <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">div </span><span style="color: #ff0000;">id</span><span style="color: #0000ff;">="d"</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">2</span>     <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">input </span><span style="color: #ff0000;">type</span><span style="color: #0000ff;">="text"</span><span style="color: #ff0000;"> id</span><span style="color: #0000ff;">="input"</span><span style="color: #ff0000;">  style </span><span style="color: #0000ff;">=" width: 80px; height: 200px;"</span><span style="color: #0000ff;">/&gt;</span>
+<span style="color: #008080;">3</span>     <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">div </span><span style="color: #ff0000;">id</span><span style="color: #0000ff;">="list"</span><span style="color: #ff0000;"> lazyTap</span><span style="color: #0000ff;">="true"</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">4</span>     <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">div</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">5</span> <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">div</span><span style="color: #0000ff;">&gt;</span></pre>
+</div>
+<p>于是我们现在点击div(d)时候就会马上有一朵菊花移动到他下面</p>
+<p><span style="line-height: 1.5;"><img src="19159977687744.png" alt=""></span></p>
+<p>&nbsp;</p>
+<p><span style="line-height: 1.5;">大家看到那个黑色的菊花了么？？？</span></p>
+<p><span style="line-height: 1.5;">这朵菊花会跟着被设置了lazyTap的属性触发了tap后便不会引发下面的事件，于是把菊花的背景去掉，他就是一个隐藏的菊花了。。。。。。</span></p>
+<p><span style="line-height: 1.5;">于是，到此为止吧！！！</span></p>
+<h1><span style="line-height: 1.5;">结语</span></h1>
+<p><span style="line-height: 1.5;">菊花带来的问题也有很大多，第一个就是<span style="color: #ff0000;"><strong>不专业</strong></span>，第二个就是如果为li设置了lazyTap属性，那么在Ul上面绑定的事件会不会冒泡上去，我也没有验证！！</span></p>
+<p><span style="line-height: 1.5;">但是，按道理应该被触发，</span><em id="__mceDel" style="line-height: 1.5;"><span style="line-height: 1.5;">所以！！！<span style="font-size: 15px;"><strong><span style="color: #ff0000;">如果您有什么更好的解决方案，请务必留意！！！</span></strong></span></span></em></p>
+<p>&nbsp;</p>
+                </div>
+
+                <div class='span3 sidebar'>
+                    <h2>导航栏</h2>
+                    <ul class="nav nav-tabs nav-stacked">
+                             				<li><a href="http://songboriceboy.github.io/xxoo/html/ydkf/ctydqdkf01jhyp/index.html">【初探移动前端开发01】惊鸿一瞥</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/ydkf/ctydqdkf02ydsbdym/index.html">【初探移动前端开发02】移动设备的页面</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/ydkf/ctydqdkf03jQueryMobiles/index.html">【初探移动前端开发03】jQueryMobile（上）</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/ydkf/ctydqdkf04jQueryMobile(z)/index.html">【初探移动前端开发04】jQueryMobile(中)</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/ydkf/ctydqdkf05jQueryMobile(x)/index.html">【初探移动前端开发05】jQueryMobile(下)</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/ydkf/ctydqdkf05jQueryMobile(zhb)/index.html">【初探移动前端开发05】jQueryMobile(整合版)</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/ydkf/dyyyyqldyyybsxjdwbgnx/index.html">【单页应用】一起来单页应用吧，实现简单微博功能！（下）</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/ydkf/dyyyyqldyyybsxjdwbgnzj/index.html">【单页应用】一起来单页应用吧，实现简单微博功能！（总结）</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/ydkf/dfastclickymygcdjjtapdttsydddjxysd/index.html">【读fastclick源码有感】彻底解决tap“点透”，提升移动端点击响应速度</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/ydkf/fiphonerlcj(beta)/index.html">仿iphone日历插件(beta)</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/ydkf/ydzmlwmyqlyjlqrhjcsfazappb/index.html">又到周末了，我们一起来研究【浏览器如何检测是否安装app】吧</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/ydkf/tsscsbdjsdztouchsjdldk/index.html">提升手持设备点击速度之touch事件带来的坑！</a></li>
+    				                                         
+                    </ul>
+                </div>
+            </div>
+
+        </div>
+    </body>
+</html>

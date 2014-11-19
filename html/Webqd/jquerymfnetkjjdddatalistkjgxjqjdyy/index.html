@@ -1,0 +1,882 @@
+﻿<!DOCTYPE html>
+
+<html lang="zh">
+    <head>
+        <meta charset="utf-8">
+        <meta name="description" content="android,ios" />
+        <meta name="keywords" content="android,ios" />
+
+        <title>叶小钗</title>
+        <style type='text/css'>
+            body {
+                background-color: #CCC;
+            }
+        </style>
+        <link rel="stylesheet" href="../../../css/bootstrap.css" />
+    </head>
+
+    <body>
+        <div class="container">
+
+            <h1>叶小钗</h1>
+
+            <div class='navbar navbar-inverse'>
+                <div class='navbar-inner nav-collapse' style="height: auto;">
+                    <ul class="nav">
+                              				<li><a href="http://songboriceboy.github.io/xxoo/html/blade/index.html">blade</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/css/index.html">css</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/HTML5&CSS3/index.html">HTML5&CSS3</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/index.html">javascript</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Javaxx/index.html">Java学习</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/nodejs/index.html">nodejs</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/requirejs/index.html">requirejs</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/index.html">Web前端</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/xxgw/index.html">学习感悟</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/gzdd/index.html">工作点滴</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/jkxx/index.html">接口学习</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/wfl/index.html">未分类</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/ydkf/index.html">移动开发</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/sjms/index.html">设计模式</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/mst/index.html">面试题</a></li>
+    				                      </ul>
+                </div>
+            </div>
+
+            <div id='content' class='row-fluid'>
+
+                <div class='span9 main'>
+				<div style="color:blue" align=center>【jquery模仿net控件】简单的datalist控件更新，及其简单应用</div><br><p>接上次的帖子：<a href="http://www.cnblogs.com/yexiaochai/archive/2012/01/22/2328729.html">http://www.cnblogs.com/yexiaochai/archive/2012/01/22/2328729.html</a></p>
+<p>简单的更新了一下代码，主要针对datalist，这次主要贴出更新后的代码以及演示一下例子：</p>
+<p>因为过年的关系，感觉自己很懒，贴出来算是一种自我激励吧，让自己有写下去的动力</p>
+<p><strong><span style="font-size: 18pt;">功能说明</span></strong></p>
+<hr>
+<p>&nbsp;就数据缓存一块可能要放在最后优化</p>
+<p>① datalist嵌套</p>
+<p>② datalist编辑、删除按钮出现（还有问题）</p>
+<p>③ datalist根据数据源、样式模板的不同展现方式不同</p>
+<p>④ 各个html元素事件绑定</p>
+<p><strong><span style="font-size: 18pt;">实例</span></strong></p>
+<hr>
+<p>&nbsp;我现在有一张新闻类型表；一张新闻表。</p>
+<p>&nbsp;第一个datalist将所有类型列表展示出来，</p>
+<p>&nbsp;在datalist里面嵌套一个具体新闻的datalist，现在显示三条，</p>
+<p>&nbsp;然后每个新闻类型上面有个最大化，点击则实例化一个datalist，将对应新闻类型的10条新闻列出来。</p>
+<p>具体新闻上有个还原按钮，点击则还原。</p>
+<p>&nbsp;</p>
+<p><strong><span style="font-size: 18pt;">实例贴图</span></strong></p>
+<hr>
+<p>①<span style="font-size: 16px;"><strong> datalist嵌套，新闻类型嵌套新闻</strong></span></p>
+<p>&nbsp;</p>
+<p><img src="301537910350956.png" alt=""></p>
+<p><img src="1311566347897.png" alt=""></p>
+<p><img src="30546858370628.png" alt=""></p>
+<p>&nbsp;</p>
+<p><img src="10476126954238.png" alt=""></p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p><span style="font-size: 16px;"><strong></strong></span></p>
+<p><img src="2972876012489.png" alt=""></p>
+<p><img src="30545348408943.png" alt=""></p>
+<p><span style="font-size: 16px;"><strong>&nbsp;② 点击最大化按钮界面</strong></span></p>
+<p><img src="3616199852114.png" alt=""></p>
+<p><img src="48366175325713.png" alt=""></p>
+<p><img src="12084306615636.png" alt=""></p>
+<p>点击最小化后便还原。</p>
+<p><strong><span style="font-size: 18pt;">所用到的datalist模板</span></strong></p>
+<hr>
+<p>&nbsp;</p>
+<p><img src="247067310345113.png" alt=""></p>
+<div class="cnblogs_Highlighter">
+<pre class="brush:html;gutter:false;">首页外层新闻类型datalist模板
+&lt;div&gt;
+  &lt;div id="itemId" style="display:none;"&gt;{%ItemID%}&lt;/div&gt;
+  &lt;h1&gt;{%ItemName%}&lt;/h1&gt;
+  &lt;input  class="maxOrMinSize" type="button" value="最大化" /&gt;
+&lt;/div&gt;
+&lt;div  id="itemNews"&gt;
+&lt;/div&gt;
+&lt;hr/&gt;
+</pre>
+</div>
+<p>　　</p>
+<div class="cnblogs_Highlighter">
+<pre class="brush:html;gutter:false;">首页内层datalist新闻列表模板
+&lt;div&gt;
+  {%newsName%}
+&lt;/div&gt;
+</pre>
+</div>
+<p>　　</p>
+<div class="cnblogs_Highlighter">
+<pre class="brush:html;gutter:false;">最大化后的模板
+&lt;div&gt;
+  {%newsName%}
+  &lt;input  class="newsMore" value="详情" type="button"/&gt;
+&lt;/div&gt;
+&lt;div style=" display:none;" class="newsContent"&gt;
+  {%newsContent%}
+&lt;/div&gt;
+&lt;hr/&gt;
+</pre>
+</div>
+<p>　　</p>
+<p><strong><span style="font-size: 18pt;">datalist.js以及itemTemplate.js和Ajax后台处理程序</span></strong></p>
+<hr>
+<p>&nbsp;</p>
+<div class="cnblogs_Highlighter">
+<pre class="brush:javascript;gutter:false;">/// &lt;reference path="../scripts/jquery-1.4.1.js" /&gt;
+
+/*
+思考：
+1 如何给数据项某个html标签添加事件
+因为我们并不知道生成的dom树是什么，所以模板里面的html标签无法绑定事件，暂时只能后期绑定
+
+*/
+/* 控件生成流程
+
+*/
+
+var dataList = function (id, templateUrl) {
+    this.attribute = {
+        id: id,
+        name: "",
+        title: ""
+    };
+    this.style = {
+        width: "",
+        height: ""
+    };
+    this.itemEvent = {
+        onClick: null,
+        onDblclick: null,
+        onKeydown: null,
+        onKeypress: null,
+        onKeyup: null,
+        onMousedown: null,
+        onMousemove: null,
+        onMouseout: null,
+        onMouseover: null,
+        onMouseup: null
+    };
+    this.deleteButton = {
+        html: null,
+        visible: false,
+        clickEvent: null
+    };
+    this.editButton = {
+        html: null,
+        visible: false,
+        clickEvent: null
+    };
+    this.cancelButton = {
+        html: null,
+        visible: false,
+        clickEvent: null
+    };
+    this.saveButton = {
+        html: null,
+        visible: false,
+        clickEvent: null
+    };
+
+    this.itemElementEvent = {};
+    this.className = "";
+    this.itemClassName = "";
+    this.htmlElement = null;
+    this.templateUrl = templateUrl ? templateUrl : ""; //提供项目模板地址
+    this.htmlTemplateText = "";
+    this.items = [];
+    this.dataSource = {}; //应该支持不同数据源
+};
+
+
+dataList.prototype.dataBind = function (element) {
+    this.init();
+    var sender = this;
+    sender.buttonLoad();
+    sender.attributeLoad();
+    var templateText = sender.htmlTemplateText;
+    var itemEvent = sender.itemEvent;
+    var itemElementEvents = sender.itemElementEvent;
+    var itemClassName = sender.itemClassName;
+    //需要替换itemTemplate
+    var itemIndex = 0;
+    $.each(sender.dataSource, function (dataKey, dataValue) {
+        var _item = new itemTemplate();
+        _item.parentId = sender.attribute.id;
+        _item.htmlTemplateText = templateText;
+        _item.event = itemEvent;
+        _item.elementEvent = itemElementEvents;
+        _item.className = itemClassName;
+        //传递父ID ,当前模板编号，源模板，当前项数据项源，事件绑定源
+        _item.load(itemIndex, dataValue);
+        var _itemElement = _item.htmlElement;
+        sender.items.push(_item);
+        sender.insertDomItem(_itemElement);
+        itemIndex++;
+    });
+    //呈现前，样式加载
+    sender.styleLoad();
+    element.append(sender.htmlElement);
+    //模板中的html标签的事件绑定
+    var items = sender.items;
+    $.each(items, function (i, item) {
+        item.bindAllElementEvent();
+    });
+};
+
+dataList.prototype.buttonLoad = function () {
+    var sender = this;
+    var htmlElement = sender.htmlElement;
+    var element = sender.htmlElement;
+    var id = sender.attribute.id;
+    var button = sender.deleteButton;
+    var buttonText = "删除";
+    this.buttonBind(id + "_delete", button, element, buttonText);
+    button = sender.editButton;
+    buttonText = "编辑";
+    this.buttonBind(id + "_edit", button, element, buttonText);
+    button = sender.cancelButton;
+    buttonText = "取消";
+    this.buttonBind(id + "_cancel", button, element, buttonText);
+    button = sender.saveButton;
+    buttonText = "保存";
+    this.buttonBind(id + "_save", button, element, buttonText);
+
+};
+
+dataList.prototype.buttonBind = function (id, btObj, el, buttonText) {
+    var sender = this;
+    var html = btObj.html;
+    var visible = btObj.visible;
+    var clickEvent = btObj.clickEvent;
+    if (visible) {
+        if (!html) {
+            html = $("&lt;div&gt;" + buttonText + "&lt;/div&gt;");
+        }
+        html.attr("id", id);
+        el.append(html);
+        if (clickEvent &amp;&amp; typeof (clickEvent) == "function") {
+            html.click(function () {
+                clickEvent.call(sender);
+            });
+        }
+    }
+};
+dataList.prototype.init = function () {
+    var sender = this;
+    var templateUrl = sender.templateUrl;
+    if (!templateUrl || templateUrl.length == 0)
+        templateUrl = "itemTemplate/itemTemplate.spt";
+    this.htmlTemplateText = getAjaxStr(templateUrl);
+    var htmlElement = $("&lt;div id='" + sender.attribute.id + "'&gt;&lt;/div&gt;");
+    if (sender.className &amp;&amp; sender.className.length &gt; 0)
+        htmlElement.attr("class", sender.className);
+    sender.htmlElement = htmlElement;
+};
+
+
+
+dataList.prototype.attributeLoad = function () {
+    var sender = this;
+    var element = sender.htmlElement;
+    $.each(sender.attribute, function (attributeKey, attributeValue) {
+        if (attributeKey != "id")
+            if (attributeValue &amp;&amp; attributeValue.length &gt; 0) {
+                element.attr(attributeKey, attributeValue);
+            }
+    });
+}
+
+dataList.prototype.styleLoad = function () {
+    var sender = this;
+    var element = sender.htmlElement;
+    $.each(sender.style, function (styleKey, styleValue) {
+        //                alert(styleKey + ":" + styleValue);
+        if (styleValue) {
+            //            alert(element);
+            element.css(styleKey, styleValue);
+        }
+    });
+}
+
+dataList.prototype.insertDomItem = function (domItem) {
+    var sender = this;
+    var element = sender.htmlElement;
+    element.append(domItem);
+};
+
+//异步获取文件
+function getAjaxStr(url) {
+    var templateStr = "";
+    $.ajax({
+        url: url,
+        async: false,
+        dataType: "html",
+        success: function (result) {
+            templateStr = result;
+            if (templateStr)
+                return templateStr;
+        },
+        error: function (e) {
+            alert("模板加载错误：" + e.toString());
+        }
+    });
+    return templateStr;
+}
+</pre>
+</div>
+<p>　　</p>
+<div class="cnblogs_Highlighter">
+<pre class="brush:javascript;gutter:false;">/// &lt;reference path="../scripts/jquery-1.4.1.js" /&gt;
+
+var itemTemplate = function () {
+    //源模板文本，现在为itemTemplate.spt
+    //可能是文本，可能是js文件，可能是字符串
+    //最终形成字符串传给htmlTemplateText
+    this.htmlTemplateText = "";
+    //最终会形成一独立html字符串，dom结构的标签
+    this.htmlElement = null;
+    this.idPrefix = "id_"; //id前缀
+    this.parentId = "";
+    this.id = "";
+    this.className = "";
+    this.event = {
+        onClick: null,
+        onDblclick: null,
+        onKeydown: null,
+        onKeypress: null,
+        onKeyup: null,
+        onMousedown: null,
+        onMousemove: null,
+        onMouseout: null,
+        onMouseover: null,
+        onMouseup: null
+    };
+    this.elementEvent = null;
+};
+
+itemTemplate.prototype.load = function (itemIndex, itemDataSource) {
+    var sender = this;
+    var id = sender.parentId + "_" + sender.idPrefix + itemIndex;
+    sender.id = id;
+    var element = $("&lt;div id='" + id + "'&gt;&lt;/div&gt;");
+    var html = "";
+    var _templateText = sender.htmlTemplateText;
+    tempHtm = _templateText;
+    $.each(itemDataSource, function (i, item) {
+        var id = item;
+        var regStr = "/\\{%" + i + "%\\}/g";
+        var reg = eval(regStr);
+        tempHtm = tempHtm.replace(reg, item);
+    });
+    html = tempHtm;
+    element.append($(html))
+    if (sender.className &amp;&amp; sender.className.length &gt; 0)
+        element.attr("class", sender.className);
+    sender.htmlElement = element;
+    sender.bindEvent();
+};
+
+itemTemplate.prototype.bindEvent = function () {
+    var sender = this;
+    var element = sender.htmlElement;
+    var events = sender.event;
+    $.each(events, function (eventKey, funcName) {
+        //        alert(funcKey + "---" + funcValue);
+        if (funcName &amp;&amp; typeof (funcName) == "function") {
+            var _event = eventKey;
+            _event = _event.substring(2, _event.length);
+            _event = _event.toLowerCase();
+            element.unbind(_event);
+            element.bind(_event, function () {
+                funcName.call(sender);
+            });
+        }
+    });
+};
+
+itemTemplate.prototype.getItemElement = function (elementKey) {
+    var sender = this;
+    var id = "#" + sender.id + " " + elementKey;
+    var element = $(id);
+    return element;
+};
+itemTemplate.prototype.bindAllElementEvent = function () {
+    var sender = this;
+    var itemElementEvents = sender.elementEvent;
+    //    alert(element+"=="+id);
+    //数据项元素事件绑定
+    $.each(itemElementEvents, function (eventObjKey, eventObj) {
+        var elementKey = eventObj.elementKey;
+        var eventType = eventObj.eventType;
+        var funcName = eventObj.funcName;
+        sender.bindElementEvent(elementKey, eventType, funcName);
+    });
+};
+itemTemplate.prototype.bindElementEvent = function (elementKey, eventType, funcName) {
+    var sender = this;
+    var id = "#" + sender.id + " " + elementKey;
+    var element = $(id);
+    if (funcName &amp;&amp; typeof (funcName) == "function") {
+        if (eventType == "ready") {
+            element.ready(function () {
+                funcName.call(sender);
+            });
+        } else {
+            element.unbind(eventType);
+            element.bind(eventType, function () {
+                funcName.call(sender);
+            });
+        }
+    }
+};
+</pre>
+</div>
+<p>　　</p>
+<div class="cnblogs_Highlighter">
+<pre class="brush:csharp;gutter:false;">//ajax后台处理代码：
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Web;
+using System.Web.UI;
+using System.Web.UI.WebControls;
+using System.Data;
+using Newtonsoft.Json;
+
+public partial class js仿net控件_02dataList_Ajax : System.Web.UI.Page
+{
+    protected void Page_Load(object sender, EventArgs e)
+    {
+        if (!IsPostBack)
+        {
+            DataAccess db = new DataAccess();
+            DataTable dt = null;
+            string sql = "";
+            if (Request["sql"] != null)
+            {
+                sql = Request.QueryString["sql"].ToString();
+                dt = db.GetDataTable(sql);
+            }
+            string jsonText = getJson(dt);
+            Response.Clear();
+            Response.ContentType = "application/json";
+            Response.Write(jsonText);
+            Response.End();
+        }
+    }
+    private string getJson(DataTable dt)
+    {
+        string jsonText = JsonConvert.SerializeObject(dt);
+        return jsonText;
+    }
+    private string getStr(DataTable dt)
+    {
+        string json = "{";
+        for (int i = 0; i &lt; dt.Rows.Count; i++)
+        {
+            json = json + "row_"+i.ToString()+":"+"{";
+            for (int j = 0; j &lt; dt.Columns.Count; j++)
+            {
+                string colKey = dt.Columns[j].ColumnName;
+                string colValue = dt.Rows[i][j].ToString();
+                //colValue = colValue.Replace("\"","\\\"");
+                json = json + colKey + ":" + colValue + ",";
+            }
+            json = json.Substring(0, json.Length - 1);
+            json = json + "},";
+        }
+        json = json.Substring(0, json.Length - 1);
+        json = json + "}";
+        return json;
+    }
+}
+</pre>
+</div>
+<p>　　</p>
+<p><strong><span style="font-size: 18pt;">前台调用，此处详细说明下</span></strong></p>
+<hr>
+<p>&nbsp;</p>
+<div class="cnblogs_Highlighter">
+<pre class="brush:javascript;gutter:true;">&lt;!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"&gt;
+&lt;html xmlns="http://www.w3.org/1999/xhtml"&gt;
+&lt;head&gt;
+    &lt;title&gt;&lt;/title&gt;
+    &lt;script src="scripts/jquery-1.4.1.js" type="text/javascript"&gt;&lt;/script&gt;
+    &lt;script src="js/itemTemplate.js" type="text/javascript"&gt;&lt;/script&gt;
+    &lt;script src="js/dataList.js" type="text/javascript"&gt;&lt;/script&gt;
+    &lt;script type="text/javascript"&gt;
+        $(document).ready(function () {
+            var dataItems = {};
+            $.ajax({
+                type: "post",
+                url: "Ajax.aspx?sql=select top 3 * from Item where ItemKind=1 ",
+                type: "json",
+                async: false,
+                success: function (data) {
+                    dataItems = data;
+                }
+            });
+            var $div = $("#wl");
+            var listItem = new dataList("newsItem", "itemTemplate/items.spt");
+            var itemElementEvents = {
+                loadItemNews: {
+                    elementKey: "#itemNews",
+                    eventType: "ready",
+                    funcName: elementDatabind
+                },
+                newsMaxOrMinSize: {
+                    elementKey: ".maxOrMinSize",
+                    eventType: "click",
+                    funcName: newsMaxOrMinSizeClick
+                }
+            };
+
+            listItem.itemElementEvent = itemElementEvents;
+            listItem.dataSource = dataItems;
+            listItem.dataBind($div);
+
+            function newsMaxOrMinSizeClick() {
+                var sender = this;
+                var $itemId = sender.getItemElement("#itemId");
+                var $maxNews = $("#maxNews");
+                var id = $itemId.html();
+                var dataNews = {};
+                $.ajax({
+                    type: "post",
+                    url: "Ajax.aspx?sql=select top 10  newsId,newsName, newsContent from news where itemId='" + id + "' ",
+                    type: "json",
+                    async: false,
+                    success: function (data) {
+                        dataNews = data;
+                    }
+                });
+                var _itemElementEvents = {
+                    contentClick: {
+                        elementKey: ".newsMore",
+                        eventType: "click",
+                        funcName: maxContentMoreClick
+                    }
+                };
+                var newsMaxList = new dataList("newsMax", "itemTemplate/itemMax.spt");
+                newsMaxList.deleteButton.visible = true;
+                newsMaxList.deleteButton.html = $("&lt;input value='最小化' type='button'  &gt;&lt;/a&gt;");
+                newsMaxList.deleteButton.clickEvent = newsMin;
+
+                newsMaxList.editButton.visible = true;
+                newsMaxList.editButton.html = $("&lt;input value='编辑' type='button'  &gt;&lt;/a&gt;");
+                newsMaxList.editButton.clickEvent = newsMin;
+
+                newsMaxList.itemEvent.onMousemove = itemmousemove;
+                newsMaxList.itemEvent.onMouseout = itemmouseout;
+                newsMaxList.itemElementEvent = _itemElementEvents;
+                newsMaxList.dataSource = dataNews;
+                newsMaxList.dataBind($maxNews);
+                $div.hide(1000);
+                $maxNews.show(1000);
+            }
+
+            function elementDatabind() {
+                var sender = this;
+                var $itemId = sender.getItemElement("#itemId");
+                var $itemNews = sender.getItemElement("#itemNews");
+                var id = sender.id;
+                var id = $itemId.html();
+                var s = $itemNews.html();
+                var dataNews = {};
+                $.ajax({
+                    type: "post",
+                    url: "Ajax.aspx?sql=select top 5  newsId,newsName, newsContent from news where itemId='" + id + "' ",
+                    type: "json",
+                    async: false,
+                    success: function (data) {
+                        dataNews = data;
+                    }
+                });
+                var listItemNews = new dataList(id + "_news", "itemTemplate/itemTemplate.spt");
+                listItemNews.itemEvent.onMousemove = itemmousemove;
+                listItemNews.itemEvent.onMouseout = itemmouseout;
+                listItemNews.dataSource = dataNews;
+                listItemNews.dataBind($itemNews);
+            }
+            function newsMin() {
+                var sender = this;
+                var $maxNews = $("#maxNews");
+                $maxNews.html("");
+                $div.show(1000);
+                $maxNews.hide(1000);
+            }
+            function maxContentMoreClick() {
+                var sender = this;
+                var newsContent = sender.getItemElement(".newsContent");
+                var contentMore = sender.getItemElement(".newsMore");
+                if (newsContent.css("display") == "none") {
+                    contentMore.attr("value", "隐藏");
+                    newsContent.css("display", "");
+                } else {
+                    contentMore.attr("value", "详情");
+                    newsContent.css("display", "none");
+                }
+            }
+
+            function itemmousemove() {
+                var sender = this;
+                var $ee = sender.htmlElement;
+                $ee.css("background", "Gray");
+            }
+            function itemmouseout() {
+                var sender = this;
+                var $ee = sender.htmlElement;
+                $ee.css("background", "white");
+            }
+
+        });
+    &lt;/script&gt;
+&lt;/head&gt;
+&lt;body&gt;
+    &lt;div id="wl"   &gt;
+    &lt;/div&gt;
+    &lt;div id="maxNews" style=" display:none;"&gt;
+    
+    &lt;/div&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+</div>
+<p>　　</p>
+<p><strong><span style="font-size: 18pt;">前台调用说明</span></strong></p>
+<hr>
+<p>&nbsp;</p>
+<p><strong><span style="font-size: 16px;">① 获得数据源：</span></strong></p>
+<p>&nbsp;</p>
+<div class="cnblogs_Highlighter">
+<pre class="brush:javascript;gutter:false;">[{"ItemID":79,"ParentID":0,"ItemName":"学院新闻11","ItemContent":"","ItemSort":7,"ItemKind":1,"ItemUrl":"","IsTop":0,</pre>
+<pre class="brush:javascript;gutter:false;">"IsImportant":null,"IsHome":null,"NewsSort":null},{"ItemID":150,"ParentID":79,"ItemName":"学生工作","ItemContent":"",</pre>
+<pre class="brush:javascript;gutter:false;">"ItemSort":1,"ItemKind":1,"ItemUrl":"","IsTop":1,"IsImportant":null,"IsHome":1,"NewsSort":null},{"ItemID":162,"ParentID":129</pre>
+<pre class="brush:javascript;gutter:false;">,"ItemName":"常规工作","ItemContent":"","ItemSort":4,"ItemKind":1,"ItemUrl":"","IsTop":1,"IsImportant":null,"IsHome":1,"NewsSort":null}]
+</pre>
+</div>
+<p>　　</p>
+<p><strong><span style="font-size: 16px;">&nbsp;第一个datalist的绑定与生成：</span></strong></p>
+<div class="cnblogs_Highlighter">
+<pre class="brush:javascript;gutter:true;">var $div = $("#wl");
+            var listItem = new dataList("newsItem", "itemTemplate/items.spt");
+            var itemElementEvents = {
+                loadItemNews: {
+                    elementKey: "#itemNews",
+                    eventType: "ready",
+                    funcName: elementDatabind
+                },
+                newsMaxOrMinSize: {
+                    elementKey: ".maxOrMinSize",
+                    eventType: "click",
+                    funcName: newsMaxOrMinSizeClick
+                }
+            };
+
+            listItem.itemElementEvent = itemElementEvents;
+            listItem.dataSource = dataItems;
+            listItem.dataBind($div);
+</pre>
+</div>
+<p>　　</p>
+<p>① 准备一个装datalist的容器div</p>
+<p>② 初始化datalist为其设置id与对应模板文件地址（其实数据源与模板文件后期必须想法接受多个方案，比如xml或者数组、地址什么的）</p>
+<p>③ 因为模板里面的元素我们无法控制，所有使用jquery的选择器进行元素选择（这个必须在该元素生成结束才能事件绑定，<span style="color: #ff0000;"><strong>这个地方有问题</strong></span>）</p>
+<p>&nbsp;&nbsp;&nbsp; <span style="color: #ff0000;">注意第一个事件绑定，在这里html元素生成后，便会执行此函数，但是不知道这样写有没有问题</span></p>
+<p><span style="color: #ff0000;">&nbsp;&nbsp;&nbsp; 第二个事件便是最大化按钮点击事件</span></p>
+<p>④ 然后bind结束第一个datalist生成结束</p>
+<p>具体html代码如下：</p>
+<div class="cnblogs_Highlighter">
+<pre class="brush:html;collapse:true;;gutter:false;">    &lt;div id="wl"&gt;
+    &lt;div id="newsItem"&gt;&lt;div id="newsItem_id_0"&gt;&lt;div&gt;
+  &lt;div id="itemId" style="display: none;"&gt;79&lt;/div&gt;
+  &lt;h1&gt;学院新闻11&lt;/h1&gt;
+  &lt;input class="maxOrMinSize" value="最大化" type="button"&gt;
+&lt;/div&gt;
+&lt;div id="itemNews"&gt;
+&lt;div id="79_news"&gt;&lt;div id="79_news_id_0"&gt;&lt;div&gt;
+  柯玲副校长率队看望慰问暑期留校学生(图)
+&lt;/div&gt;&lt;/div&gt;&lt;div id="79_news_id_1"&gt;&lt;div&gt;
+  我校承办2010年第四届未来计算论坛
+&lt;/div&gt;&lt;/div&gt;&lt;div style="background: none repeat scroll 0% 0% white;" id="79_news_id_2"&gt;&lt;div&gt;
+  暑期社会实践纪实十一（色彩爱心）
+&lt;/div&gt;&lt;/div&gt;&lt;div style="background: none repeat scroll 0% 0% white;" id="79_news_id_3"&gt;&lt;div&gt;
+  暑期社会实践纪实十（收获的季节）
+&lt;/div&gt;&lt;/div&gt;&lt;div style="background: none repeat scroll 0% 0% white;" id="79_news_id_4"&gt;&lt;div&gt;
+  暑期社会实践纪实九（&ldquo;心系汶川&rdquo;文艺汇演）
+&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;
+&lt;hr&gt;&lt;/div&gt;&lt;div id="newsItem_id_1"&gt;&lt;div&gt;
+  &lt;div id="itemId" style="display: none;"&gt;150&lt;/div&gt;
+  &lt;h1&gt;学生工作&lt;/h1&gt;
+  &lt;input class="maxOrMinSize" value="最大化" type="button"&gt;
+&lt;/div&gt;
+&lt;div id="itemNews"&gt;
+&lt;div id="150_news"&gt;&lt;div id="150_news_id_0"&gt;&lt;div&gt;
+  学院院长刘先强教授在上海出席国际学术研讨会
+&lt;/div&gt;&lt;/div&gt;&lt;div id="150_news_id_1"&gt;&lt;div&gt;
+  风大哥大哥
+&lt;/div&gt;&lt;/div&gt;&lt;div id="150_news_id_2"&gt;&lt;div&gt;
+  发生的范德萨的说法
+&lt;/div&gt;&lt;/div&gt;&lt;div id="150_news_id_3"&gt;&lt;div&gt;
+  aaaa
+&lt;/div&gt;&lt;/div&gt;&lt;div id="150_news_id_4"&gt;&lt;div&gt;
+  事实上
+&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;
+&lt;hr&gt;&lt;/div&gt;&lt;div id="newsItem_id_2"&gt;&lt;div&gt;
+  &lt;div id="itemId" style="display: none;"&gt;162&lt;/div&gt;
+  &lt;h1&gt;常规工作&lt;/h1&gt;
+  &lt;input class="maxOrMinSize" value="最大化" type="button"&gt;
+&lt;/div&gt;
+&lt;div id="itemNews"&gt;
+&lt;div id="162_news"&gt;&lt;div id="162_news_id_0"&gt;&lt;div&gt;
+  暑期社会实践纪实七（爱.延续）
+&lt;/div&gt;&lt;/div&gt;&lt;div id="162_news_id_1"&gt;&lt;div&gt;
+  学前志愿者跃动的风采
+&lt;/div&gt;&lt;/div&gt;&lt;div id="162_news_id_2"&gt;&lt;div&gt;
+  学前教育学院新生已经报到92%
+&lt;/div&gt;&lt;/div&gt;&lt;div id="162_news_id_3"&gt;&lt;div&gt;
+  学院召开新学期全院教职工大会 
+&lt;/div&gt;&lt;/div&gt;&lt;div id="162_news_id_4"&gt;&lt;div&gt;
+  学院学生会分团委隆重欢迎新同学(图)
+&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;
+&lt;hr&gt;&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;
+    &lt;div id="maxNews" style=" display:none;"&gt;
+    
+    &lt;/div&gt;
+</pre>
+</div>
+<p>　　</p>
+<p><strong><span style="font-size: 16px;">第二个datalist绑定</span></strong></p>
+<div class="cnblogs_Highlighter">
+<pre class="brush:javascript;gutter:false;"> function elementDatabind() {
+                var sender = this;
+                var $itemId = sender.getItemElement("#itemId");
+                var $itemNews = sender.getItemElement("#itemNews");
+                var id = sender.id;
+                var id = $itemId.html();
+                var s = $itemNews.html();
+                var dataNews = {};
+                $.ajax({
+                    type: "post",
+                    url: "Ajax.aspx?sql=select top 5  newsId,newsName, newsContent from news where itemId='" + id + "' ",
+                    type: "json",
+                    async: false,
+                    success: function (data) {
+                        dataNews = data;
+                    }
+                });
+                var listItemNews = new dataList(id + "_news", "itemTemplate/itemTemplate.spt");
+                listItemNews.itemEvent.onMousemove = itemmousemove;
+                listItemNews.itemEvent.onMouseout = itemmouseout;
+                listItemNews.dataSource = dataNews;
+                listItemNews.dataBind($itemNews);
+            }
+</pre>
+</div>
+<p>　　</p>
+<p>此处接着第一个datalist的事件绑定，绑定结束后便又初始化各个datalist，并加入对应容器中。并加上新闻列滑动事件。</p>
+<p><span style="color: #ff0000;">注意此处id最好不要重复</span></p>
+<p><strong><span style="font-size: 16px;">点击最大化后，弹出的第三个datalist</span></strong></p>
+<div class="cnblogs_Highlighter">
+<pre class="brush:javascript;gutter:false;"> function newsMaxOrMinSizeClick() {
+                var sender = this;
+                var $itemId = sender.getItemElement("#itemId");
+                var $maxNews = $("#maxNews");
+                var id = $itemId.html();
+                var dataNews = {};
+                $.ajax({
+                    type: "post",
+                    url: "Ajax.aspx?sql=select top 10  newsId,newsName, newsContent from news where itemId='" + id + "' ",
+                    type: "json",
+                    async: false,
+                    success: function (data) {
+                        dataNews = data;
+                    }
+                });
+                var _itemElementEvents = {
+                    contentClick: {
+                        elementKey: ".newsMore",
+                        eventType: "click",
+                        funcName: maxContentMoreClick
+                    }
+                };
+                var newsMaxList = new dataList("newsMax", "itemTemplate/itemMax.spt");
+                newsMaxList.deleteButton.visible = true;
+                newsMaxList.deleteButton.html = $("&lt;input value='最小化' type='button'  &gt;&lt;/a&gt;");
+                newsMaxList.deleteButton.clickEvent = newsMin;
+
+                newsMaxList.editButton.visible = true;
+                newsMaxList.editButton.html = $("&lt;input value='编辑' type='button'  &gt;&lt;/a&gt;");
+                newsMaxList.editButton.clickEvent = newsMin;
+
+                newsMaxList.itemEvent.onMousemove = itemmousemove;
+                newsMaxList.itemEvent.onMouseout = itemmouseout;
+                newsMaxList.itemElementEvent = _itemElementEvents;
+                newsMaxList.dataSource = dataNews;
+                newsMaxList.dataBind($maxNews);
+                $div.hide(1000);
+                $maxNews.show(1000);
+            }
+</pre>
+</div>
+<p>　　</p>
+<p>那撒，说是详细说明好像也不详细。最后效果是想以此为基础模拟igoogle的效果。可惜我不是美工，我那个悲剧的css水平确实不行。</p>
+<p>若是有用，我以后在持续更新吧。</p>
+<p>　　</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+                </div>
+
+                <div class='span3 sidebar'>
+                    <h2>导航栏</h2>
+                    <ul class="nav nav-tabs nav-stacked">
+                             				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/Fiddlerznqddsq/index.html">Fiddler真乃前端大杀器！！！</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/Requirejs/index.html">Requirejs</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/RequireJSyBackbonejdzh/index.html">RequireJS与Backbone简单整合</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/RequireJSxxbj/index.html">RequireJS学习笔记</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/Webqdyhctxdpzyyqdgsgpng/index.html">Web前端优化初探，小弟抛砖引玉，期待高手共破难关！</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/Webqdlqjrctxsqwpzyyqdgsgpng/index.html">Web前端浏览器兼容初探，小生浅文抛砖引玉，期待高手攻破难关！</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/jqueryfdataListxnyhmbybysxtgxn10bys/index.html">【jquery仿dataList——性能优化】模板预编译思想提高性能10倍以上！！！</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/jqueryfdataListyyzmfigoogledzhtdpxzdhfp/index.html">【jquery仿dataList】应用之——模仿igoogle【定制化、拖动排序，最大化、分屏】</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/jqueryfdatalistdygwtqzszmxxsjlkzDIVdjjbf/index.html">【jquery仿datalist的一个问题，求助】——设置每行显示几列，块状DIV的解决办法</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/jquerymfnetkjcbGridViewmxsxjqjdyy/index.html">【jquery模仿net控件】初步GridView模型实现，及其简单应用</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/jquerymfnetkjjdfykj10fsgridviewsycs/index.html">【jquery模仿net控件】简单分页控件10，附上gridview使用测试</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/jquerymfnetkjjdddatalistkjgxjqjdyy/index.html">【jquery模仿net控件】简单的datalist控件更新，及其简单应用</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/jquerymfnetkjjdddropdownlistydatalist/index.html">【jquery模仿net控件】简单的dropdownlist与datalist</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/jquerybnetkjdropdownlistfymhydjzdzzpz/index.html">【jquery版net控件—dropdownlist】附源码，欢迎大家指点、指正、拍砖！！！</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/positionykyhfzddccyslsbdws/index.html">【position也可以很复杂】当弹出层遇上了鼠标定位（上）</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/positionykyhfzddccyslsbdwx/index.html">【position也可以很复杂】当弹出层遇上了鼠标定位（下）</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/SEOzmlwljnmtsbwmlyqkkSEOb/index.html">【SEO】周末了，为了纪念明天上班，我们来一起看看SEO吧</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/webqdyhqdwyhyrzrz/index.html">【web前端优化】前端无优化，庸人自扰之！</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/webqdyhzreflowjsymdhl/index.html">【web前端优化之reflow】减少页面的回流</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/webqdyhztpycjzctzwbsxwbk/index.html">【web前端优化之图片延迟加载初探】中午不睡，下午崩溃</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/webqdyhztpmhdqxkwQQkjrhxsxp/index.html">【web前端优化之图片模糊到清晰】看我QQ空间如何显示相片</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/webqdpxzqhddphsywmsxdDatalistsmwtb/index.html">【web前端培训之前后端的配合（上）】以我们熟悉的Datalist说明问题吧</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/webqdpxzqhddphzjxzrdgs/index.html">【web前端培训之前后端的配合（中）】继续昨日的故事</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/dyyygybkydbfgqym/index.html">【单页应用】关于博客园的补发（高清有码）。。。</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/xtsstringifysBUGlocalstoragesxxmSafarialertksfycjzym10pxbp/index.html">【小贴士】【stringify神BUG】【localstorage失效】【消灭Safarialert框】【是否延迟加载】【页面10px白屏】</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/dalhdmsthhdsdmstjsh/index.html">【答阿里寒冬面试题】呵呵，大神的面试题就是好！</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/ycsjmstdldgwxxdgjxxdff/index.html">一次上机面试题带来的感悟【学习的感觉、学习的方法】</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/ydmstdldqdyhsxxxdp/index.html">一道面试题带来的前端优化——实现星星点评</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/zysyzjjhfzwebqdbfxlgxmndjjfa/index.html">只言碎语总结，今后发展web前端，并分享两个项目难点解决方案。</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/gwjlytbllbnwmljxwwdbdyzb/index.html">各位加了一天班累了吧？那我们来继续未完的表单验证吧</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/gwzmwlytllbwmyqlzldmstbjstbdy/index.html">各位周末玩了一天累了吧，我们一起来做两道面试题吧（据说淘宝的哟）！</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/jyjQuerydxlcdcjzwsy/index.html">基于jQuery的下拉菜单插件，诸位上眼！！！</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/jyjQuerydxlcdcd02zwsy/index.html">基于jQuery的下拉菜单菜单【02】，诸位上眼！！！</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/gzzpddyxdxdccktfybwjsc/index.html">工作中碰到的一些东西【弹出窗口】【拖放】【异步文件上传】</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/gzlygxqgwydllbnwmyqlbdyzyfb/index.html">工作了一个星期各位一定累了吧，那我们一起来表单验证一番吧！</a></li>
+    				                                         
+                    </ul>
+                </div>
+            </div>
+
+        </div>
+    </body>
+</html>

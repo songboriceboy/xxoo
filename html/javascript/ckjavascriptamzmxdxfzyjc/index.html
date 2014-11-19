@@ -1,0 +1,385 @@
+﻿<!DOCTYPE html>
+
+<html lang="zh">
+    <head>
+        <meta charset="utf-8">
+        <meta name="description" content="android,ios" />
+        <meta name="keywords" content="android,ios" />
+
+        <title>叶小钗</title>
+        <style type='text/css'>
+            body {
+                background-color: #CCC;
+            }
+        </style>
+        <link rel="stylesheet" href="../../../css/bootstrap.css" />
+    </head>
+
+    <body>
+        <div class="container">
+
+            <h1>叶小钗</h1>
+
+            <div class='navbar navbar-inverse'>
+                <div class='navbar-inner nav-collapse' style="height: auto;">
+                    <ul class="nav">
+                              				<li><a href="http://songboriceboy.github.io/xxoo/html/blade/index.html">blade</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/css/index.html">css</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/HTML5&CSS3/index.html">HTML5&CSS3</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/index.html">javascript</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Javaxx/index.html">Java学习</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/nodejs/index.html">nodejs</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/requirejs/index.html">requirejs</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/index.html">Web前端</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/xxgw/index.html">学习感悟</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/gzdd/index.html">工作点滴</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/jkxx/index.html">接口学习</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/wfl/index.html">未分类</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/ydkf/index.html">移动开发</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/sjms/index.html">设计模式</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/mst/index.html">面试题</a></li>
+    				                      </ul>
+                </div>
+            </div>
+
+            <div id='content' class='row-fluid'>
+
+                <div class='span9 main'>
+				<div style="color:blue" align=center>【初窥javascript奥秘之面向对象】封装与继承</div><br><h1>前言</h1>
+<p>javascript是一种基于对象的语言，意思是我们遇到的所有东西几乎都是对象（函数也是）。</p>
+<p>虽然class为js的保留字，但是他没有任何实际意义（当他有实际意义了，我们很多代码又要重新写啦。。。），因为js并不是真正意义上的变相对象编程语言，所以class名存实亡。</p>
+<p>js面向对象的路在何方？</p>
+<p><span style="color: #ff0000;">本人才疏学浅所以文中会有一些错误请各位指出，因为是边写做实验的，所以会有我的思考过程，行文可能会有点乱，请见谅。</span></p>
+<h1>最简单的封装</h1>
+<p>我们来看一个&ldquo;面向对象&rdquo;的例子：</p>
+<div class="cnblogs_code">
+<pre><span style="color: #008000;">//</span><span style="color: #008000;">        var Person = new Object();</span>
+<span style="color: #0000ff;">var</span> Person =<span style="color: #000000;"> {
+    name: </span>'叶小钗'<span style="color: #000000;">,
+    getName: </span><span style="color: #0000ff;">function</span><span style="color: #000000;"> () {
+        </span><span style="color: #0000ff;">return</span> <span style="color: #0000ff;">this</span><span style="color: #000000;">.name;
+    }
+};
+
+</span><span style="color: #0000ff;">var</span> n =<span style="color: #000000;"> Person.getName();
+alert(n);</span></pre>
+</div>
+<p>这种写法让我们感觉一目了然，他让我们感觉到了面向对象，但是他的缺点也很明显：</p>
+<p>按道理说name应该是私有变量，但我们这里可以无耻的访问之，修改之。</p>
+<p>另外就是想要用这种方法生产多个实例就是一个传说（虽说可以实现）</p>
+<p>虽说如此，他还是完成了js最简单的封装，具有面向对象的特性了。</p>
+<p>但是这种方式其实并不适合用来定义程序相关流程，而应该用来保存数据，比如json相关，所以曾经这么做的同学以后建议不要这么做了。</p>
+<h1>隐藏私有变量</h1>
+<div class="cnblogs_code">
+<pre><span style="color: #008080;"> 1</span> <span style="color: #0000ff;">var</span> info =<span style="color: #000000;"> {
+</span><span style="color: #008080;"> 2</span>     name: '叶小钗'<span style="color: #000000;">,
+</span><span style="color: #008080;"> 3</span>     age: 105
+<span style="color: #008080;"> 4</span> <span style="color: #000000;">};
+</span><span style="color: #008080;"> 5</span> 
+<span style="color: #008080;"> 6</span> <span style="color: #0000ff;">var</span> Person = <span style="color: #0000ff;">function</span><span style="color: #000000;"> (cfg) {
+</span><span style="color: #008080;"> 7</span>     <span style="color: #0000ff;">this</span>.name = cfg.name || ''<span style="color: #000000;">;
+</span><span style="color: #008080;"> 8</span>     <span style="color: #0000ff;">function</span><span style="color: #000000;"> getName() {
+</span><span style="color: #008080;"> 9</span>         <span style="color: #0000ff;">return</span><span style="color: #000000;"> getName;
+</span><span style="color: #008080;">10</span> <span style="color: #000000;">    }
+</span><span style="color: #008080;">11</span> <span style="color: #000000;">}
+</span><span style="color: #008080;">12</span> 
+<span style="color: #008080;">13</span> <span style="color: #0000ff;">var</span> name = Person.getName();</pre>
+</div>
+<p>以上代码，我就是想说明会<span style="color: #ff0000;">报错</span>罢了，因为在js中只有函数具有作用域，函数外部是无法访问还是内部的变量的，函数内部却可以访问函数外部的东西，在函数内存在内部函数，且内部函数用到了外部函数变量便会延长作用域链，形成传说中的闭包。</p>
+<p>但是，在以上情况下，若我要访问其中的方法有以下做法：</p>
+<p>1 将getName做返回值返回</p>
+<p>2 在外部定义全局变量，在函数内部将getName赋予他（最简单window.getName = getName）</p>
+<p>这两种方法各有各的问题，方法一函数每次都会创建，用完便会销毁；方法二永远不会销毁</p>
+<p>由于以上原因便因此了今天的主角&mdash;&mdash;构造函数。</p>
+<h1>new与构造函数</h1>
+<div class="cnblogs_code">
+<pre><span style="color: #000000;">当一个函数被构建时，Function构造器产生的函数会被隐式赋予一个prototype属性
+prototype包含一个constructor对象，而constructor便是该新函数对象
+constructor意义不大，但记住每个函数都会拥有prototype属性</span></pre>
+</div>
+<p><img src="20897239995885.jpg" alt=""></p>
+<p>我们这里再来理一理这个prototype：</p>
+<div class="cnblogs_code">
+<pre><span style="color: #000000;">在js中函数都会有一个prototype属性
+该属性指向另一对象（亦包含prototype），如此便形成了原型链，并最终指向object对象
+在某个对象调用某个方法时，若是他没有该方法就会向上查找直到object<br>新声明函数的prototype指向object对象，其constructor指向函数对象本身<br>PS：所以根据构造函数创造的对象，其原型指向构造函数的原型</span></pre>
+</div>
+<p>算了，通俗点来说便是：<br>prototype就是一模板，新创建的模板就是对他的一个拷贝（虽说本质是指针的指向。。。）</p>
+<p>即构造函数拥有prototype属性（指向一个对象，包括方法与属性），这些都会被构造函数实例继承。</p>
+<div class="cnblogs_code">
+<pre><span style="color: #008080;"> 1</span> <span style="color: #0000ff;">var</span> Person = <span style="color: #0000ff;">function</span><span style="color: #000000;"> (name) {
+</span><span style="color: #008080;"> 2</span>     <span style="color: #0000ff;">this</span>.name =<span style="color: #000000;"> name;
+</span><span style="color: #008080;"> 3</span> <span style="color: #000000;">};
+</span><span style="color: #008080;"> 4</span> Person.prototype.getName = <span style="color: #0000ff;">function</span><span style="color: #000000;"> () {
+</span><span style="color: #008080;"> 5</span>     <span style="color: #0000ff;">return</span> <span style="color: #0000ff;">this</span><span style="color: #000000;">.name;
+</span><span style="color: #008080;"> 6</span> <span style="color: #000000;">};
+</span><span style="color: #008080;"> 7</span> 
+<span style="color: #008080;"> 8</span> <span style="color: #0000ff;">var</span> y = <span style="color: #0000ff;">new</span> Person('叶小钗'<span style="color: #000000;">);
+</span><span style="color: #008080;"> 9</span> <span style="color: #0000ff;">var</span> n =<span style="color: #000000;"> y.getName();
+</span><span style="color: #008080;">10</span> <span style="color: #0000ff;">var</span> s = '';</pre>
+</div>
+<p>以上便是一个简单的应用，但我们还是来理一理：</p>
+<div class="cnblogs_code">
+<pre><span style="color: #008080;"> 1</span> (<span style="color: #0000ff;">function</span><span style="color: #000000;"> () {
+</span><span style="color: #008080;"> 2</span>     <span style="color: #0000ff;">var</span> Person = <span style="color: #0000ff;">function</span><span style="color: #000000;"> (name) {
+</span><span style="color: #008080;"> 3</span>         <span style="color: #0000ff;">this</span>.name =<span style="color: #000000;"> name;
+</span><span style="color: #008080;"> 4</span> <span style="color: #000000;">    };
+</span><span style="color: #008080;"> 5</span>     Person.prototype.getName = <span style="color: #0000ff;">function</span><span style="color: #000000;"> () {
+</span><span style="color: #008080;"> 6</span>         <span style="color: #0000ff;">return</span> <span style="color: #0000ff;">this</span><span style="color: #000000;">.name;
+</span><span style="color: #008080;"> 7</span> <span style="color: #000000;">    };
+</span><span style="color: #008080;"> 8</span>     <span style="color: #0000ff;">var</span> y = <span style="color: #0000ff;">new</span> Person('叶小钗'<span style="color: #000000;">);
+</span><span style="color: #008080;"> 9</span>     <span style="color: #0000ff;">var</span> s0 = Person.constructor.constructor ===<span style="color: #000000;"> Function;
+</span><span style="color: #008080;">10</span>     <span style="color: #0000ff;">var</span> s1 = Person.constructor ===<span style="color: #000000;"> Function;
+</span><span style="color: #008080;">11</span>     <span style="color: #0000ff;">var</span> s2 = Person.prototype.constructor ===<span style="color: #000000;"> Person;
+</span><span style="color: #008080;">12</span>     <span style="color: #0000ff;">var</span> s3 = Person.prototype ===<span style="color: #000000;"> Object;
+</span><span style="color: #008080;">13</span>     <span style="color: #0000ff;">var</span> s4 = Person.constructor ===<span style="color: #000000;"> Object;
+</span><span style="color: #008080;">14</span>     <span style="color: #0000ff;">var</span> s5 = y.constructor ===<span style="color: #000000;"> Person;
+</span><span style="color: #008080;">15</span>     
+<span style="color: #008080;">16</span>     <span style="color: #0000ff;">var</span> s = ''<span style="color: #000000;">;
+</span><span style="color: #008080;">17</span> })()</pre>
+</div>
+<p><img src="29857629680206.jpg" alt=""></p>
+<p>如图所示：</p>
+<p>1 对象y的构造函数指向Person构造函数</p>
+<p>2 构造函数Person原型中包含了指向自己的constructor属性</p>
+<p>3 构造函数的constructor属性指向Function</p>
+<p>4 Function的constructor最终指向object</p>
+<p>我们抛开其他的不说，就说y对象：</p>
+<p>我们根据new操作符实例化了y对象，按照之前说的，y对象便会对Person构造函数的prototype属性做一次拷贝</p>
+<p>而拷贝的属性中暗藏一个constructor属性，而该constructor属性指向了Person，所以他们产生了联系，我们这里可以做个小小的变动：</p>
+<div class="cnblogs_code">
+<pre><span style="color: #0000ff;">instanceof</span>：如果obj对象是构造函数Fun的一个实例，则 obj <span style="color: #0000ff;">instanceof</span> Fun 返回 <span style="color: #0000ff;">true</span>，</pre>
+</div>
+<div class="cnblogs_code">
+<pre><span style="color: #008080;"> 1</span> (<span style="color: #0000ff;">function</span><span style="color: #000000;"> () {
+</span><span style="color: #008080;"> 2</span>     <span style="color: #0000ff;">var</span> Person = <span style="color: #0000ff;">function</span><span style="color: #000000;"> (name) {
+</span><span style="color: #008080;"> 3</span>         <span style="color: #0000ff;">this</span>.name =<span style="color: #000000;"> name;
+</span><span style="color: #008080;"> 4</span> <span style="color: #000000;">    };
+</span><span style="color: #008080;"> 5</span> 
+<span style="color: #008080;"> 6</span>     Person.prototype =<span style="color: #000000;"> {
+</span><span style="color: #008080;"> 7</span>         getName: <span style="color: #0000ff;">function</span><span style="color: #000000;"> () {
+</span><span style="color: #008080;"> 8</span>             <span style="color: #0000ff;">return</span> <span style="color: #0000ff;">this</span><span style="color: #000000;">.name;
+</span><span style="color: #008080;"> 9</span> <span style="color: #000000;">        }
+</span><span style="color: #008080;">10</span> <span style="color: #000000;">    };
+</span><span style="color: #008080;">11</span>     <span style="color: #0000ff;">var</span> y = <span style="color: #0000ff;">new</span> Person('叶小钗'<span style="color: #000000;">);
+</span><span style="color: #008080;">12</span>     <span style="color: #0000ff;">var</span> s1 = Person.prototype.constructor ===<span style="color: #000000;"> Person;
+</span><span style="color: #008080;">13</span>     <span style="color: #0000ff;">var</span> s2 = y.constructor ===<span style="color: #000000;"> Person;
+</span><span style="color: #008080;">14</span>     <span style="color: #0000ff;">var</span> s3 = y <span style="color: #0000ff;">instanceof</span><span style="color: #000000;"> Person;
+</span><span style="color: #008080;">15</span> 
+<span style="color: #008080;">16</span>     <span style="color: #0000ff;">var</span> s = ''<span style="color: #000000;">;
+</span><span style="color: #008080;">17</span> })()</pre>
+</div>
+<p><img src="9597205884622.jpg" alt=""></p>
+<p>我们看到，虽然我们强制取消了构造函数的constructor属性，但是y还是属于Person的实例，所以constructor真没什么用了。。。</p>
+<h1>继承</h1>
+<p>我们所谓继承，便是子类拥有父类公开出来的方法罢了，到这里理解就变成了子函数拥有父函数所有prototype属性，于是：</p>
+<div class="cnblogs_code">
+<pre><span style="color: #008080;"> 1</span> (<span style="color: #0000ff;">function</span><span style="color: #000000;"> () {
+</span><span style="color: #008080;"> 2</span>     <span style="color: #0000ff;">var</span> Person = <span style="color: #0000ff;">function</span><span style="color: #000000;"> (name) {
+</span><span style="color: #008080;"> 3</span>         <span style="color: #0000ff;">this</span>.name =<span style="color: #000000;"> name;
+</span><span style="color: #008080;"> 4</span> <span style="color: #000000;">    };
+</span><span style="color: #008080;"> 5</span>     <span style="color: #008000;">//</span><span style="color: #008000;">Person.prototype = {};//这句将影响十分具有constructor属性</span>
+<span style="color: #008080;"> 6</span>     Person.prototype.getName = <span style="color: #0000ff;">function</span><span style="color: #000000;"> () {
+</span><span style="color: #008080;"> 7</span>         <span style="color: #0000ff;">return</span> <span style="color: #0000ff;">this</span><span style="color: #000000;">.name;
+</span><span style="color: #008080;"> 8</span> <span style="color: #000000;">    };
+</span><span style="color: #008080;"> 9</span> 
+<span style="color: #008080;">10</span>     <span style="color: #0000ff;">var</span> Student = <span style="color: #0000ff;">function</span><span style="color: #000000;"> (name, sex, id) {
+</span><span style="color: #008080;">11</span>         <span style="color: #0000ff;">this</span>.name = name || '无名氏'<span style="color: #000000;">;
+</span><span style="color: #008080;">12</span>         <span style="color: #0000ff;">this</span>.sex = sex || '不明'<span style="color: #000000;">;
+</span><span style="color: #008080;">13</span>         <span style="color: #0000ff;">this</span>.id = id || '未填'; <span style="color: #008000;">//</span><span style="color: #008000;">学号</span>
+<span style="color: #008080;">14</span> <span style="color: #000000;">    };
+</span><span style="color: #008080;">15</span>     <span style="color: #008000;">//</span><span style="color: #008000;">相当于将其prototype复制了一次，若是包含constructor的话将指向Person</span>
+<span style="color: #008080;">16</span>     Student.prototype = <span style="color: #0000ff;">new</span><span style="color: #000000;"> Person();
+</span><span style="color: #008080;">17</span>     Student.prototype.getId = <span style="color: #0000ff;">function</span><span style="color: #000000;"> () {
+</span><span style="color: #008080;">18</span>         <span style="color: #0000ff;">return</span> <span style="color: #0000ff;">this</span><span style="color: #000000;">.id;
+</span><span style="color: #008080;">19</span> <span style="color: #000000;">    }
+</span><span style="color: #008080;">20</span>     <span style="color: #0000ff;">var</span> y = <span style="color: #0000ff;">new</span><span style="color: #000000;"> Person();
+</span><span style="color: #008080;">21</span>     <span style="color: #0000ff;">var</span> s = <span style="color: #0000ff;">new</span><span style="color: #000000;"> Student;
+</span><span style="color: #008080;">22</span>     <span style="color: #0000ff;">var</span> s1 = y <span style="color: #0000ff;">instanceof</span><span style="color: #000000;"> Person;
+</span><span style="color: #008080;">23</span>     <span style="color: #0000ff;">var</span> s2 = s <span style="color: #0000ff;">instanceof</span><span style="color: #000000;"> Student;
+</span><span style="color: #008080;">24</span>     <span style="color: #0000ff;">var</span> s3 = s <span style="color: #0000ff;">instanceof</span><span style="color: #000000;"> Person;
+</span><span style="color: #008080;">25</span>     <span style="color: #0000ff;">var</span> s4 = Student.prototype.constructor ===<span style="color: #000000;"> Person;
+</span><span style="color: #008080;">26</span>     <span style="color: #0000ff;">var</span> s5 = Student.constructor ===<span style="color: #000000;"> Person;
+</span><span style="color: #008080;">27</span>     <span style="color: #0000ff;">var</span> s6 = Student.constructor ===<span style="color: #000000;"> Function;
+</span><span style="color: #008080;">28</span> 
+<span style="color: #008080;">29</span>     <span style="color: #0000ff;">var</span> s = ''<span style="color: #000000;">;
+</span><span style="color: #008080;">30</span> })();</pre>
+</div>
+<p><img src="42690098176996.jpg" alt=""></p>
+<p>根据此例子，他们彼此间的关系还是比较明显了，我这里单独说下prototype下的属性：</p>
+<p>一般情况下，prototype下用于定义函数，但并不是说他属性没用，若是给他定义属性的话相当于每个子对象共享着一个数据！</p>
+<p>一个重要的暗示便是：我们可以根据该数据（数组、对象字面量）来传递信息，比如我们会遇到这个场景的。</p>
+<p>我们做了一个用于验证表单输入的控件，他对每个元素进行单独验证，但是当我们提交表单时我们会需要知道整个表单上哪些元素可以，哪些不可以，这个时候我们的prototype属性可能就可以派上用场了！（<span style="color: #ff0000;">个人理解，有误请指出</span>）</p>
+<p>又如，我前面写过一篇文章：<a id="cb_post_title_url" class="postTitle2" href="http://www.cnblogs.com/yexiaochai/archive/2013/04/01/2993806.html">基于jQuery的下拉菜单菜单【02】，诸位上眼！！！</a>，里面就用到了这个东西，具体便不展开了。</p>
+<h1>isPrototypeOf/hasOwnPrototype</h1>
+<p>isrototypeOf该方法拥有判断某个prototype对象和某个实例之间的关系：</p>
+<div class="cnblogs_code">
+<pre><span style="color: #008080;"> 1</span> (<span style="color: #0000ff;">function</span><span style="color: #000000;"> () {
+</span><span style="color: #008080;"> 2</span>     <span style="color: #0000ff;">var</span> Person = <span style="color: #0000ff;">function</span><span style="color: #000000;"> (name) {
+</span><span style="color: #008080;"> 3</span>         <span style="color: #0000ff;">this</span>.name =<span style="color: #000000;"> name;
+</span><span style="color: #008080;"> 4</span> <span style="color: #000000;">    };
+</span><span style="color: #008080;"> 5</span>     <span style="color: #008000;">//</span><span style="color: #008000;">Person.prototype = {};//这句将影响十分具有constructor属性</span>
+<span style="color: #008080;"> 6</span>     Person.prototype.getName = <span style="color: #0000ff;">function</span><span style="color: #000000;"> () {
+</span><span style="color: #008080;"> 7</span>         <span style="color: #0000ff;">return</span> <span style="color: #0000ff;">this</span><span style="color: #000000;">.name;
+</span><span style="color: #008080;"> 8</span> <span style="color: #000000;">    };
+</span><span style="color: #008080;"> 9</span> 
+<span style="color: #008080;">10</span>     <span style="color: #0000ff;">var</span> Student = <span style="color: #0000ff;">function</span><span style="color: #000000;"> (name, sex, id) {
+</span><span style="color: #008080;">11</span>         <span style="color: #0000ff;">this</span>.name = name || '无名氏'<span style="color: #000000;">;
+</span><span style="color: #008080;">12</span>         <span style="color: #0000ff;">this</span>.sex = sex || '不明'<span style="color: #000000;">;
+</span><span style="color: #008080;">13</span>         <span style="color: #0000ff;">this</span>.id = id || '未填'; <span style="color: #008000;">//</span><span style="color: #008000;">学号</span>
+<span style="color: #008080;">14</span> <span style="color: #000000;">    };
+</span><span style="color: #008080;">15</span>     <span style="color: #008000;">//</span><span style="color: #008000;">相当于将其prototype复制了一次，若是包含constructor的话将指向Person</span>
+<span style="color: #008080;">16</span>     Student.prototype = <span style="color: #0000ff;">new</span><span style="color: #000000;"> Person();
+</span><span style="color: #008080;">17</span>     Student.prototype.getId = <span style="color: #0000ff;">function</span><span style="color: #000000;"> () {
+</span><span style="color: #008080;">18</span>         <span style="color: #0000ff;">return</span> <span style="color: #0000ff;">this</span><span style="color: #000000;">.id;
+</span><span style="color: #008080;">19</span> <span style="color: #000000;">    }
+</span><span style="color: #008080;">20</span>     <span style="color: #0000ff;">var</span> y = <span style="color: #0000ff;">new</span><span style="color: #000000;"> Person();
+</span><span style="color: #008080;">21</span>     <span style="color: #0000ff;">var</span> s = <span style="color: #0000ff;">new</span><span style="color: #000000;"> Student;
+</span><span style="color: #008080;">22</span> 
+<span style="color: #008080;">23</span>     <span style="color: #0000ff;">var</span> s1 =<span style="color: #000000;"> Student.prototype.isPrototypeOf(s);
+</span><span style="color: #008080;">24</span>     <span style="color: #0000ff;">var</span> s2 =<span style="color: #000000;"> Student.prototype.isPrototypeOf(y);
+</span><span style="color: #008080;">25</span>     <span style="color: #0000ff;">var</span> s3 =<span style="color: #000000;"> Person.prototype.isPrototypeOf(y);
+</span><span style="color: #008080;">26</span>     <span style="color: #0000ff;">var</span> s4 =<span style="color: #000000;"> Person.prototype.isPrototypeOf(Student);
+</span><span style="color: #008080;">27</span>     <span style="color: #0000ff;">var</span> s5 =<span style="color: #000000;"> Person.prototype.isPrototypeOf(Student.prototype);
+</span><span style="color: #008080;">28</span> 
+<span style="color: #008080;">29</span> 
+<span style="color: #008080;">30</span>     <span style="color: #0000ff;">var</span> s = ''<span style="color: #000000;">;
+</span><span style="color: #008080;">31</span> })();</pre>
+</div>
+<p><img src="12641927215715.jpg" alt=""></p>
+<p>说白了就是看某个实例是否是属于自己，这里随便提一个问题大家看看：</p>
+<div class="cnblogs_code">
+<pre>    <span style="color: #0000ff;">var</span> s6 =<span style="color: #000000;"> Function.prototype.isPrototypeOf(Person);
+    </span><span style="color: #0000ff;">var</span> s7 = Function.prototype.isPrototypeOf(Student);</pre>
+</div>
+<p><strong>hasOwnPrototype</strong>用来判断一个属性到底是本地属性还是继承自prototype，这里就不举例了</p>
+<h1>语法糖</h1>
+<p>关于以上继承的写法也许不太&ldquo;面向对象&rdquo;，所以我们提供看这个语法糖：</p>
+<div class="cnblogs_code">
+<pre><span style="color: #008080;"> 1</span> (<span style="color: #0000ff;">function</span><span style="color: #000000;"> () {
+</span><span style="color: #008080;"> 2</span>     Function.prototype.method = <span style="color: #0000ff;">function</span><span style="color: #000000;"> (name, func) {
+</span><span style="color: #008080;"> 3</span>         <span style="color: #0000ff;">this</span>.prototype[name] =<span style="color: #000000;"> func;
+</span><span style="color: #008080;"> 4</span>         <span style="color: #0000ff;">return</span> <span style="color: #0000ff;">this</span><span style="color: #000000;">;
+</span><span style="color: #008080;"> 5</span> <span style="color: #000000;">    };
+</span><span style="color: #008080;"> 6</span>     Function.method('inherits', <span style="color: #0000ff;">function</span><span style="color: #000000;"> (Parent) {
+</span><span style="color: #008080;"> 7</span>         <span style="color: #0000ff;">this</span>.prototype = <span style="color: #0000ff;">new</span><span style="color: #000000;"> Parent();
+</span><span style="color: #008080;"> 8</span>         <span style="color: #0000ff;">return</span> <span style="color: #0000ff;">this</span><span style="color: #000000;">;
+</span><span style="color: #008080;"> 9</span> <span style="color: #000000;">    });
+</span><span style="color: #008080;">10</span> 
+<span style="color: #008080;">11</span>     <span style="color: #0000ff;">var</span> Person = <span style="color: #0000ff;">function</span><span style="color: #000000;"> (name) {
+</span><span style="color: #008080;">12</span>         <span style="color: #0000ff;">this</span>.name =<span style="color: #000000;"> name;
+</span><span style="color: #008080;">13</span> <span style="color: #000000;">    };
+</span><span style="color: #008080;">14</span> 
+<span style="color: #008080;">15</span>     Person.method('getName', <span style="color: #0000ff;">function</span><span style="color: #000000;"> () {
+</span><span style="color: #008080;">16</span>         <span style="color: #0000ff;">return</span> <span style="color: #0000ff;">this</span><span style="color: #000000;">.name;
+</span><span style="color: #008080;">17</span> <span style="color: #000000;">    });
+</span><span style="color: #008080;">18</span> 
+<span style="color: #008080;">19</span>     <span style="color: #0000ff;">var</span> Student = <span style="color: #0000ff;">function</span><span style="color: #000000;"> (name, sex, id) {
+</span><span style="color: #008080;">20</span>         <span style="color: #0000ff;">this</span>.name = name || '无名氏'<span style="color: #000000;">;
+</span><span style="color: #008080;">21</span>         <span style="color: #0000ff;">this</span>.sex = sex || '不明'<span style="color: #000000;">;
+</span><span style="color: #008080;">22</span>         <span style="color: #0000ff;">this</span>.id = id || '未填'; <span style="color: #008000;">//</span><span style="color: #008000;">学号</span>
+<span style="color: #008080;">23</span> <span style="color: #000000;">    };
+</span><span style="color: #008080;">24</span> 
+<span style="color: #008080;">25</span> <span style="color: #000000;">    Student.inherits(Person);
+</span><span style="color: #008080;">26</span>     Student.method('getId', <span style="color: #0000ff;">function</span><span style="color: #000000;"> () {
+</span><span style="color: #008080;">27</span>         <span style="color: #0000ff;">return</span> <span style="color: #0000ff;">this</span><span style="color: #000000;">.id;
+</span><span style="color: #008080;">28</span> <span style="color: #000000;">    });
+</span><span style="color: #008080;">29</span> 
+<span style="color: #008080;">30</span>     <span style="color: #0000ff;">var</span> y = <span style="color: #0000ff;">new</span><span style="color: #000000;"> Person();
+</span><span style="color: #008080;">31</span>     <span style="color: #0000ff;">var</span> s = <span style="color: #0000ff;">new</span><span style="color: #000000;"> Student;
+</span><span style="color: #008080;">32</span> 
+<span style="color: #008080;">33</span>     <span style="color: #0000ff;">var</span> s = ''<span style="color: #000000;">;
+</span><span style="color: #008080;">34</span> })();</pre>
+</div>
+<p>&nbsp;</p>
+<h1>结语</h1>
+<p>小弟自知对面向对象相关了解不够透彻，今天便写到这里吧，希望某天能带来面向对象的作品。</p>
+<p><strong>如果你觉得这篇文章还不错，请帮忙点击一下推荐，谢谢！</strong></p>
+<p>&nbsp;</p>
+                </div>
+
+                <div class='span3 sidebar'>
+                    <h2>导航栏</h2>
+                    <ul class="nav nav-tabs nav-stacked">
+                             				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/javascriptzdyxhxzsdyjxyzyddf/index.html">javascript中的一些核心知识点以及需要注意的地方</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/[zd]webappdyhzlyzydqdyhdpyjlkkb/index.html">[置顶]【webapp的优化整理】要做移动前端优化的朋友进来看看吧</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/[zd]yddjrwtyjjavascriptsjjzxjsjydjr/index.html">[置顶]【移动端兼容问题研究】javascript事件机制详解（涉及移动兼容）</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/gruntzhb30fzxhsygruntdbqddm/index.html">【grunt整合版】30分钟学会使用grunt打包前端代码</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/gruntdyd30fzxhsygruntdbqddm/index.html">【grunt第一弹】30分钟学会使用grunt打包前端代码</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/gruntdsdgruntzqdsjxmzdyy/index.html">【grunt第三弹】grunt在前端实际项目中的应用</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/gruntded30fzxhsygruntdbqddm02/index.html">【grunt第二弹】30分钟学会使用grunt打包前端代码（02）</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/IScrollsrxxtpyddhadlqs/index.html">【IScroll深入学习】突破移动端黑暗的利器（上）</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/IScrollsrxxjjIScrollynzz/index.html">【IScroll深入学习】解决IScroll疑难杂症</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/iScrollymxx00mniScroll/index.html">【iScroll源码学习00】模拟iScroll</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/iScrollymxx01zbjd/index.html">【iScroll源码学习01】准备阶段</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/iScrollymxx02fjiScrollsghxsjd/index.html">【iScroll源码学习02】分解iScroll三个核心事件点</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/iScrollymxx03iScrollsjjzygdtdsx/index.html">【iScroll源码学习03】iScroll事件机制与滚动条的实现</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/iScrollymxx04flIScrollhx/index.html">【iScroll源码学习04】分离IScroll核心</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/javascriptpxdytyyjc/index.html">【javascript培训第一天】语言基础</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/javascriptpxdstcybl/index.html">【javascript培训第三天】查遗补漏</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/javascriptpxdetDOMyBOM/index.html">【javascript培训第二天】DOM与BOM</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/javascriptjzdsk01mkhbc/index.html">【javascript激增的思考01】模块化编程</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/javascriptjzdsk02mkhyMVC/index.html">【javascript激增的思考02】模块化与MVC</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/javascriptjzdsk03MVVMyKnockout/index.html">【javascript激增的思考03】MVVM与Knockout</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/javascriptjzdsk04MVCyBackbonejs(beta)/index.html">【javascript激增的思考04】MVC与Backbonejs(beta)</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/javascriptmxdxzlrwmyqltkdzb01/index.html">【javascript面向对象之路】让我们一起来坦克大战吧01</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/NodeJSxxbj04xwfbxt/index.html">【NodeJS学习笔记04】新闻发布系统</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/requireJSymxx01ljzgrequireJSdjg/index.html">【requireJS源码学习01】了解整个requireJS的结构</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/requireJSymxx02datamainjzdsx/index.html">【requireJS源码学习02】datamain加载的实现</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/requireJSymxx03xjrequireJSdjzlc/index.html">【requireJS源码学习03】细究requireJS的加载流程</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/UIcjkfygjdrlcjs/index.html">【UI插件】开发一个简单日历插件（上）</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/UIcjjddrlcjxxxMVCsx/index.html">【UI插件】简单的日历插件（下）——学习MVC思想</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/zeptoxxbj01hxff$()/index.html">【zepto学习笔记01】核心方法$()</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/zeptoxxbj01hxff$()b/index.html">【zepto学习笔记01】核心方法$()（补）</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/zeptoxxbj02lsd/index.html">【zepto学习笔记02】零碎点</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/zeptoxxbj03sjjz/index.html">【zepto学习笔记03】事件机制</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/ycmsztjavascriptzdjc/index.html">【一次面试】再谈javascript中的继承</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/ztbackbone01mxModel/index.html">【再探backbone01】模型Model</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/ztbackbone02jhCollection/index.html">【再探backbone02】集合Collection</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/ztbackbone03bkydyyysltgym/index.html">【再探backbone03】博客园单页应用实例（提供源码）</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/ztbackbone04dyyydjslycl/index.html">【再探backbone04】单页应用的基石路由处理</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/ctUnderscorezsmbyq/index.html">【初探Underscore】再说模版引擎</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/ckjavascriptamzAjaxjsxnszddAjax/index.html">【初窥javascript奥秘之Ajax】简述下你所知道的Ajax？</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/ckjavascriptamzsjmpnxnwmyqmdp/index.html">【初窥javascript奥秘之事件冒泡】那些年我们一起冒的泡</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/ckjavascriptamzsjjzldtygdj/index.html">【初窥javascript奥秘之事件机制】论“点透”与“鬼点击”</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/ckjavascriptamzrrzmbddthisnzdxzthiszxnlm/index.html">【初窥javascript奥秘之让人捉摸不定的this】你知道现在this指向哪里吗？？？</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/ckjavascriptamzbbydxbdhlqbcl/index.html">【初窥javascript奥秘之闭包】叶大侠病都好了，求不踩了：）</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/ckjavascriptamzmxdxfzyjc/index.html">【初窥javascript奥秘之面向对象】封装与继承</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/qdmdsjdjgjdnzdljm/index.html">【前端盲点】事件的几个阶段你真的了解么？？？</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/dyyyviewymodelxgsl/index.html">【单页应用】view与model相关梳理</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/dyyyyqldyyybsxjdwbgns/index.html">【单页应用】一起来单页应用吧，实现简单微博功能！（上）</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/dyyyqjkzqappyggxsm/index.html">【单页应用】全局控制器app应该干些什么？</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/dyyywmgrhclkjdcccjgx/index.html">【单页应用】我们该如何处理框架弹出层层级关系？</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/dyyyljMVC/index.html">【单页应用】理解MVC</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/dyyyztxjzviewzjygrhtx/index.html">【单页应用之通信机制】view之间应该如何通信</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/dyyyjkzHistoryxsHistorydgdyyydm/index.html">【单页应用巨坑之History】细数History带给单页应用的噩梦</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/xtszeptofindysyjiosdcjpknrnhtt/index.html">【小贴士】zeptofind元素以及ios弹出键盘可能让你很头疼</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/xtsgytransitionEndanimatedygyqgs/index.html">【小贴士】关于transitionEndanimate的一个有趣故事</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/xtsgzzdbbysjwtdzzmp/index.html">【小贴士】工作中的”闭包“与事件委托的”阻止冒泡“</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/xtstytjavascriptzdreplace/index.html">【小贴士】探一探javascript中的replace</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/xtsxnjpyfixeddgydddt/index.html">【小贴士】虚拟键盘与fixed带给移动端的痛！</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/ttjavascriptsjjzdcsxyl/index.html">【探讨】javascript事件机制底层实现原理</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/mkhbcljrequireJSsxygjddmkjzq/index.html">【模块化编程】理解requireJS实现一个简单的模块加载器</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/zyJavaScriptmfjmtsdqlxkjzbfgndcljz/index.html">【转】【译】JavaScript魔法揭秘探索当前流行框架中部分功能的处理机制</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/zxjavascriptgszl01javascriptcszds/index.html">【追寻javascript高手之路01】javascript参数知多少？</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/zxjavascriptgszl02blzyyzds/index.html">【追寻javascript高手之路02】变量、作用域知多少？</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/zxjavascriptgszl03javascriptdxdld/index.html">【追寻javascript高手之路03】javascript对象大乱斗</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/zxjavascriptgszl04ljprototype/index.html">【追寻javascript高手之路04】理解prototype</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/zxjavascriptgszl05ljsjl/index.html">【追寻javascript高手之路05】理解事件流</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/zgbj04zxzzsj(2)/index.html">【重构笔记04】重新组织数据(2)</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/zgbj05jhtjbds/index.html">【重构笔记05】简化条件表达式</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/zgbj06jhhsdy/index.html">【重构笔记06】简化函数调用</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/ycmshgttbxysjfl/index.html">一次面试回顾——探讨表现与数据分离</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/dhzwebappzdxz/index.html">动画在webapp中的现状</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/ysandriodlqhthdomclicksjqtsxwttj/index.html">原生andriod浏览器回退后dom（click）事件全体失效问题探究</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/scsbdjxysdsbsjytouchsjdnxs/index.html">手持设备点击响应速度，鼠标事件与touch事件的那些事</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/mnbjQueryzeptohxymfx/index.html">迷你版jQuery——zepto核心源码分析</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/dbsgzdlwmlyqxjdddomxzqb/index.html">都别说工资低了，我们来一起写简单的dom选择器吧！</a></li>
+    				                                         
+                    </ul>
+                </div>
+            </div>
+
+        </div>
+    </body>
+</html>

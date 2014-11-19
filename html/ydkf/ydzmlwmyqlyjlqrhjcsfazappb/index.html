@@ -1,0 +1,353 @@
+﻿<!DOCTYPE html>
+
+<html lang="zh">
+    <head>
+        <meta charset="utf-8">
+        <meta name="description" content="android,ios" />
+        <meta name="keywords" content="android,ios" />
+
+        <title>叶小钗</title>
+        <style type='text/css'>
+            body {
+                background-color: #CCC;
+            }
+        </style>
+        <link rel="stylesheet" href="../../../css/bootstrap.css" />
+    </head>
+
+    <body>
+        <div class="container">
+
+            <h1>叶小钗</h1>
+
+            <div class='navbar navbar-inverse'>
+                <div class='navbar-inner nav-collapse' style="height: auto;">
+                    <ul class="nav">
+                              				<li><a href="http://songboriceboy.github.io/xxoo/html/blade/index.html">blade</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/css/index.html">css</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/HTML5&CSS3/index.html">HTML5&CSS3</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/index.html">javascript</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Javaxx/index.html">Java学习</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/nodejs/index.html">nodejs</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/requirejs/index.html">requirejs</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/index.html">Web前端</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/xxgw/index.html">学习感悟</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/gzdd/index.html">工作点滴</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/jkxx/index.html">接口学习</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/wfl/index.html">未分类</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/ydkf/index.html">移动开发</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/sjms/index.html">设计模式</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/mst/index.html">面试题</a></li>
+    				                      </ul>
+                </div>
+            </div>
+
+            <div id='content' class='row-fluid'>
+
+                <div class='span9 main'>
+				<div style="color:blue" align=center>又到周末了，我们一起来研究【浏览器如何检测是否安装app】吧</div><br><h1>前言</h1>
+<h2>扯淡</h2>
+<p>这个月比较倒霉，我送了女朋友一台笔记本电脑作为生日礼物，结果15天一过电脑就坏了，悲剧的我还把电脑盒子给扔了！淘宝不给换更不给退</p>
+<p>于是被女朋友臭骂了一过星期后，今天本来在公司有任务的，但是去修了个电脑（换主板啊......），一蹉跎就快五点了，现在反正干劲也不行，就写篇博客吧</p>
+<h2>需求</h2>
+<p>上周五的时候，确切说是周四晚上，老板终于又递上了一个神奇的需求</p>
+<div class="cnblogs_code">
+<pre><span style="color: #800000;">浏览器检测手机是否安装app</span></pre>
+</div>
+<p>尼玛，反正在我看来，这个需求够奇葩的，当时我还一致认为不能完成，但是最后也居然想出了（抄出了）一个办法，于是这里拿出来与各位分享下</p>
+<p>在此之前，我们继续聊下上次遇到的tap点透问题</p>
+<h1>tap&ldquo;点透&rdquo;再探索</h1>
+<p><a href="http://www.cnblogs.com/yexiaochai/p/3377900.html">http://www.cnblogs.com/yexiaochai/p/3377900.html</a></p>
+<p><a href="http://www.cnblogs.com/yexiaochai/p/3391015.html">http://www.cnblogs.com/yexiaochai/p/3391015.html</a></p>
+<p>看过上面两篇博客的的朋友应该知道我们为什么要使用tap事件替换click事件，然后大概知道tap会带来哪些问题，以及我是如何解决这些问题的</p>
+<p>虽然完整解决方案因为公司财产问题未拿出来，但是基本思路是有了，其核心就是蒙版遮盖！</p>
+<p>话说还头，这个蒙版其实还是不太能让人接受，这不我又请教了我一个同事，我们同事提出了一个属性：</p>
+<h3>pointer-events属性值详解</h3>
+<ul>
+<li>auto&mdash;&mdash;效果和没有定义pointer-events属性相同，鼠标不会穿透当前层。在SVG中，该值和visiblePainted的效果相同。</li>
+<li>none&mdash;&mdash;元素不再是鼠标事件的目标，鼠标不再监听当前层而去监听下面的层中的元素。但是如果它的子元素设置了pointer-events为其它值，比如auto，鼠标还是会监听这个子元素的。</li>
+<li>其它属性值为SVG专用，这里不再多介绍了。</li>
+</ul>
+<p>这个属性，通过前端观察/和张鑫旭的博客再深入了解一番过后发现，这个家伙可以消除一个元素的鼠标事件呢！！！自然也包括touchstart了，于是老夫感兴趣了，便有了今天这个插曲</p>
+<h2>是否继承</h2>
+<p>我们首先来看看这个属性是否会被继承：</p>
+<p><a href="36464539504751.jpg">36464539504751.jpg</a></p>
+<div class="cnblogs_code">
+<pre><span style="color: #008080;"> 1</span> <span style="color: #0000ff;">&lt;!</span><span style="color: #ff00ff;">DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 2</span> <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">html </span><span style="color: #ff0000;">xmlns</span><span style="color: #0000ff;">="http://www.w3.org/1999/xhtml"</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 3</span> <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">head</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 4</span>     <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">title</span><span style="color: #0000ff;">&gt;&lt;/</span><span style="color: #800000;">title</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 5</span>     <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">meta </span><span style="color: #ff0000;">name</span><span style="color: #0000ff;">="viewport"</span><span style="color: #ff0000;"> content</span><span style="color: #0000ff;">="width=device-width,initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no"</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 6</span>     <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">meta </span><span style="color: #ff0000;">content</span><span style="color: #0000ff;">="telephone=no"</span><span style="color: #ff0000;"> name</span><span style="color: #0000ff;">="format-detection"</span> <span style="color: #0000ff;">/&gt;</span>
+<span style="color: #008080;"> 7</span>     <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">meta </span><span style="color: #ff0000;">name</span><span style="color: #0000ff;">="apple-mobile-web-app-capable"</span><span style="color: #ff0000;"> content</span><span style="color: #0000ff;">="yes"</span> <span style="color: #0000ff;">/&gt;</span>
+<span style="color: #008080;"> 8</span>     <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">style</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 9</span> <span style="background-color: #f5f5f5; color: #800000;">        div </span><span style="background-color: #f5f5f5; color: #000000;">{</span><span style="background-color: #f5f5f5; color: #ff0000;"> display</span><span style="background-color: #f5f5f5; color: #000000;">:</span><span style="background-color: #f5f5f5; color: #0000ff;"> block</span><span style="background-color: #f5f5f5; color: #000000;">;</span><span style="background-color: #f5f5f5; color: #ff0000;"> border</span><span style="background-color: #f5f5f5; color: #000000;">:</span><span style="background-color: #f5f5f5; color: #0000ff;"> 1px solid black</span><span style="background-color: #f5f5f5; color: #000000;">;</span><span style="background-color: #f5f5f5; color: #ff0000;">  margin</span><span style="background-color: #f5f5f5; color: #000000;">:</span><span style="background-color: #f5f5f5; color: #0000ff;"> 10px</span><span style="background-color: #f5f5f5; color: #000000;">;</span><span style="background-color: #f5f5f5; color: #ff0000;"> padding</span><span style="background-color: #f5f5f5; color: #000000;">:</span><span style="background-color: #f5f5f5; color: #0000ff;"> 10px</span><span style="background-color: #f5f5f5; color: #000000;">;</span> <span style="background-color: #f5f5f5; color: #000000;">}</span>
+<span style="color: #008080;">10</span>     <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">style</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">11</span>     <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">script </span><span style="color: #ff0000;">id</span><span style="color: #0000ff;">="others_zepto_10rc1"</span><span style="color: #ff0000;"> type</span><span style="color: #0000ff;">="text/javascript"</span><span style="color: #ff0000;"> class</span><span style="color: #0000ff;">="library"</span><span style="color: #ff0000;"> src</span><span style="color: #0000ff;">="/js/sandbox/other/zepto.min.js"</span><span style="color: #0000ff;">&gt;&lt;/</span><span style="color: #800000;">script</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">12</span>     
+<span style="color: #008080;">13</span> <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">head</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">14</span> <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">body</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">15</span> 
+<span style="color: #008080;">16</span>     <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">div </span><span style="color: #ff0000;">id</span><span style="color: #0000ff;">="p1"</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">17</span> <span style="color: #000000;">        p1
+</span><span style="color: #008080;">18</span>         <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">div </span><span style="color: #ff0000;">id</span><span style="color: #0000ff;">="p1-1"</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">19</span> <span style="color: #000000;">            p1-1
+</span><span style="color: #008080;">20</span>             <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">div </span><span style="color: #ff0000;">id</span><span style="color: #0000ff;">="p1-1-1"</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">21</span> <span style="color: #000000;">                p1-1-1
+</span><span style="color: #008080;">22</span>             <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">div</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">23</span>              <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">div </span><span style="color: #ff0000;">id</span><span style="color: #0000ff;">="p1-1-2"</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">24</span> <span style="color: #000000;">                p1-1-2
+</span><span style="color: #008080;">25</span>             <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">div</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">26</span>         <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">div</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">27</span>     <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">div</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">28</span> 
+<span style="color: #008080;">29</span>      <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">div </span><span style="color: #ff0000;">id</span><span style="color: #0000ff;">="p2"</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">30</span> <span style="color: #000000;">        p2
+</span><span style="color: #008080;">31</span>         <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">div </span><span style="color: #ff0000;">id</span><span style="color: #0000ff;">="p2-1"</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">32</span> <span style="color: #000000;">            2-1
+</span><span style="color: #008080;">33</span>             <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">div </span><span style="color: #ff0000;">id</span><span style="color: #0000ff;">="p2-1-1"</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">34</span> <span style="color: #000000;">                p2-1-1
+</span><span style="color: #008080;">35</span>             <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">div</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">36</span>              <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">div </span><span style="color: #ff0000;">id</span><span style="color: #0000ff;">="p2-1-2"</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">37</span> <span style="color: #000000;">                p2-1-2
+</span><span style="color: #008080;">38</span>             <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">div</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">39</span>         <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">div</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">40</span>     <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">div</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">41</span> 
+<span style="color: #008080;">42</span> <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">body</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">43</span> <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">script </span><span style="color: #ff0000;">type</span><span style="color: #0000ff;">="text/javascript"</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">44</span> <span style="background-color: #f5f5f5; color: #000000;">    $(</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">div</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">).click(</span><span style="background-color: #f5f5f5; color: #0000ff;">function</span><span style="background-color: #f5f5f5; color: #000000;"> () {
+</span><span style="color: #008080;">45</span> <span style="background-color: #f5f5f5; color: #000000;">        alert($(</span><span style="background-color: #f5f5f5; color: #0000ff;">this</span><span style="background-color: #f5f5f5; color: #000000;">).attr(</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">id</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">))
+</span><span style="color: #008080;">46</span> 
+<span style="color: #008080;">47</span> <span style="background-color: #f5f5f5; color: #000000;">    })
+</span><span style="color: #008080;">48</span> <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">script</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">49</span> <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">html</span><span style="color: #0000ff;">&gt;</span></pre>
+</div>
+<p><span style="line-height: 1.5;">首先，现在鼠标点击会有一个冒泡的过程，所以会一次弹出提示框，现在我们将下面的p2的style加上我们的</span><span style="line-height: 1.5;">pointer-events属性试试点击是否有效果</span></p>
+<p><span style="line-height: 1.5;"><span>结果表明，设置了pointer-events: none;</span>&nbsp;后，该元素以及下面的元素的click事件全部没有了</span></p>
+<p><span style="line-height: 1.5;">甚至是我们的input框都不会获取焦点了！！！，所以这个家伙确实够厉害，但是不会取消事件冒泡</span></p>
+<p><iframe src="36464539504751.jpg" width="90%" height="300"></iframe></p>
+<p>有了这个结论，我们上我们的重量级代码吧，<span style="color: #ff0000;"><strong>这个代码请各位用手机测试</strong></span></p>
+<h2><span style="line-height: 1.5;">属性解决点透</span><span style="color: #0000ff;"><br></span></h2>
+<p>&nbsp;</p>
+<div class="cnblogs_code">
+<pre><span style="color: #008080;"> 1</span> <span style="color: #0000ff;">&lt;!</span><span style="color: #ff00ff;">DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 2</span> <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">html </span><span style="color: #ff0000;">xmlns</span><span style="color: #0000ff;">="http://www.w3.org/1999/xhtml"</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 3</span> <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">head</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 4</span>     <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">title</span><span style="color: #0000ff;">&gt;&lt;/</span><span style="color: #800000;">title</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 5</span>     <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">meta </span><span style="color: #ff0000;">name</span><span style="color: #0000ff;">="viewport"</span><span style="color: #ff0000;"> content</span><span style="color: #0000ff;">="width=device-width,initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no"</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 6</span>     <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">meta </span><span style="color: #ff0000;">content</span><span style="color: #0000ff;">="telephone=no"</span><span style="color: #ff0000;"> name</span><span style="color: #0000ff;">="format-detection"</span> <span style="color: #0000ff;">/&gt;</span>
+<span style="color: #008080;"> 7</span>     <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">meta </span><span style="color: #ff0000;">name</span><span style="color: #0000ff;">="apple-mobile-web-app-capable"</span><span style="color: #ff0000;"> content</span><span style="color: #0000ff;">="yes"</span> <span style="color: #0000ff;">/&gt;</span>
+<span style="color: #008080;"> 8</span>     <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">style</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 9</span> <span style="background-color: #f5f5f5; color: #800000;">        #list </span><span style="background-color: #f5f5f5; color: #000000;">{</span><span style="background-color: #f5f5f5; color: #ff0000;"> display</span><span style="background-color: #f5f5f5; color: #000000;">:</span><span style="background-color: #f5f5f5; color: #0000ff;"> block</span><span style="background-color: #f5f5f5; color: #000000;">;</span><span style="background-color: #f5f5f5; color: #ff0000;"> position</span><span style="background-color: #f5f5f5; color: #000000;">:</span><span style="background-color: #f5f5f5; color: #0000ff;"> absolute</span><span style="background-color: #f5f5f5; color: #000000;">;</span><span style="background-color: #f5f5f5; color: #ff0000;"> top</span><span style="background-color: #f5f5f5; color: #000000;">:</span><span style="background-color: #f5f5f5; color: #0000ff;"> 100px</span><span style="background-color: #f5f5f5; color: #000000;">;</span><span style="background-color: #f5f5f5; color: #ff0000;"> left</span><span style="background-color: #f5f5f5; color: #000000;">:</span><span style="background-color: #f5f5f5; color: #0000ff;"> 10px</span><span style="background-color: #f5f5f5; color: #000000;">;</span><span style="background-color: #f5f5f5; color: #ff0000;"> width</span><span style="background-color: #f5f5f5; color: #000000;">:</span><span style="background-color: #f5f5f5; color: #0000ff;"> 200px</span><span style="background-color: #f5f5f5; color: #000000;">;</span><span style="background-color: #f5f5f5; color: #ff0000;"> height</span><span style="background-color: #f5f5f5; color: #000000;">:</span><span style="background-color: #f5f5f5; color: #0000ff;"> 100px</span><span style="background-color: #f5f5f5; color: #000000;">;</span> <span style="background-color: #f5f5f5; color: #000000;">}</span>
+<span style="color: #008080;">10</span> <span style="background-color: #f5f5f5; color: #800000;">        div </span><span style="background-color: #f5f5f5; color: #000000;">{</span><span style="background-color: #f5f5f5; color: #ff0000;"> display</span><span style="background-color: #f5f5f5; color: #000000;">:</span><span style="background-color: #f5f5f5; color: #0000ff;"> block</span><span style="background-color: #f5f5f5; color: #000000;">;</span><span style="background-color: #f5f5f5; color: #ff0000;"> border</span><span style="background-color: #f5f5f5; color: #000000;">:</span><span style="background-color: #f5f5f5; color: #0000ff;"> 1px solid black</span><span style="background-color: #f5f5f5; color: #000000;">;</span><span style="background-color: #f5f5f5; color: #ff0000;"> height</span><span style="background-color: #f5f5f5; color: #000000;">:</span><span style="background-color: #f5f5f5; color: #0000ff;"> 500px</span><span style="background-color: #f5f5f5; color: #000000;">;</span><span style="background-color: #f5f5f5; color: #ff0000;"> width</span><span style="background-color: #f5f5f5; color: #000000;">:</span><span style="background-color: #f5f5f5; color: #0000ff;"> 100%</span><span style="background-color: #f5f5f5; color: #000000;">;</span> <span style="background-color: #f5f5f5; color: #000000;">}</span>
+<span style="color: #008080;">11</span> <span style="background-color: #f5f5f5; color: #800000;">        #input </span><span style="background-color: #f5f5f5; color: #000000;">{</span><span style="background-color: #f5f5f5; color: #ff0000;"> width</span><span style="background-color: #f5f5f5; color: #000000;">:</span><span style="background-color: #f5f5f5; color: #0000ff;"> 80px</span><span style="background-color: #f5f5f5; color: #000000;">;</span><span style="background-color: #f5f5f5; color: #ff0000;"> height</span><span style="background-color: #f5f5f5; color: #000000;">:</span><span style="background-color: #f5f5f5; color: #0000ff;"> 200px</span><span style="background-color: #f5f5f5; color: #000000;">;</span><span style="background-color: #f5f5f5; color: #ff0000;"> display</span><span style="background-color: #f5f5f5; color: #000000;">:</span><span style="background-color: #f5f5f5; color: #0000ff;"> block</span><span style="background-color: #f5f5f5; color: #000000;">;</span> <span style="background-color: #f5f5f5; color: #000000;">}</span>
+<span style="color: #008080;">12</span>     <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">style</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">13</span>     <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">script </span><span style="color: #ff0000;">id</span><span style="color: #0000ff;">="others_zepto_10rc1"</span><span style="color: #ff0000;"> type</span><span style="color: #0000ff;">="text/javascript"</span><span style="color: #ff0000;"> class</span><span style="color: #0000ff;">="library"</span><span style="color: #ff0000;"> src</span><span style="color: #0000ff;">="/js/sandbox/other/zepto.min.js"</span><span style="color: #0000ff;">&gt;&lt;/</span><span style="color: #800000;">script</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">14</span> <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">head</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">15</span> <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">body</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">16</span>     <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">div </span><span style="color: #ff0000;">id</span><span style="color: #0000ff;">="list"</span><span style="color: #ff0000;"> style</span><span style="color: #0000ff;">="background: gray;"</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">17</span>     <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">div</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">18</span>     <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">div </span><span style="color: #ff0000;">id</span><span style="color: #0000ff;">="wrapper"</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">19</span>         <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">div </span><span style="color: #ff0000;">id</span><span style="color: #0000ff;">="d"</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">20</span>             <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">input </span><span style="color: #ff0000;">type</span><span style="color: #0000ff;">="text"</span><span style="color: #ff0000;"> id</span><span style="color: #0000ff;">="input"</span> <span style="color: #0000ff;">/&gt;</span>
+<span style="color: #008080;">21</span>         <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">div</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">22</span>     <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">div</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">23</span> <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">body</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">24</span> <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">script </span><span style="color: #ff0000;">type</span><span style="color: #0000ff;">="text/javascript"</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">25</span>     <span style="background-color: #f5f5f5; color: #0000ff;">var</span><span style="background-color: #f5f5f5; color: #000000;"> list </span><span style="background-color: #f5f5f5; color: #000000;">=</span><span style="background-color: #f5f5f5; color: #000000;"> $(</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">#list</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">);
+</span><span style="color: #008080;">26</span>     <span style="background-color: #f5f5f5; color: #0000ff;">var</span><span style="background-color: #f5f5f5; color: #000000;"> d </span><span style="background-color: #f5f5f5; color: #000000;">=</span><span style="background-color: #f5f5f5; color: #000000;"> $(</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">#d</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">);
+</span><span style="color: #008080;">27</span>     <span style="background-color: #f5f5f5; color: #0000ff;">var</span><span style="background-color: #f5f5f5; color: #000000;"> input </span><span style="background-color: #f5f5f5; color: #000000;">=</span><span style="background-color: #f5f5f5; color: #000000;"> $(</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">#input</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">);
+</span><span style="color: #008080;">28</span> <span style="background-color: #f5f5f5; color: #000000;">    input.tap(</span><span style="background-color: #f5f5f5; color: #0000ff;">function</span><span style="background-color: #f5f5f5; color: #000000;"> (e) {
+</span><span style="color: #008080;">29</span> <span style="background-color: #f5f5f5; color: #000000;">        input.val(</span><span style="background-color: #f5f5f5; color: #0000ff;">new</span><span style="background-color: #f5f5f5; color: #000000;"> Date().getTime());
+</span><span style="color: #008080;">30</span> <span style="background-color: #f5f5f5; color: #000000;">    });
+</span><span style="color: #008080;">31</span> <span style="background-color: #f5f5f5; color: #000000;">    list.tap(</span><span style="background-color: #f5f5f5; color: #0000ff;">function</span><span style="background-color: #f5f5f5; color: #000000;"> (e) {
+</span><span style="color: #008080;">32</span>         <span style="background-color: #f5f5f5; color: #008000;">//</span><span style="background-color: #f5f5f5; color: #008000;">        $('input').css("pointer-events", "none");</span>
+<span style="color: #008080;">33</span> <span style="background-color: #f5f5f5; color: #000000;">        list.hide();
+</span><span style="color: #008080;">34</span> <span style="background-color: #f5f5f5; color: #000000;">        setTimeout(</span><span style="background-color: #f5f5f5; color: #0000ff;">function</span><span style="background-color: #f5f5f5; color: #000000;"> () {
+</span><span style="color: #008080;">35</span> <span style="background-color: #f5f5f5; color: #000000;">            list.show();
+</span><span style="color: #008080;">36</span>             <span style="background-color: #f5f5f5; color: #008000;">//</span><span style="background-color: #f5f5f5; color: #008000;">            $('input').css("pointer-events", "auto");</span>
+<span style="color: #008080;">37</span> <span style="background-color: #f5f5f5; color: #000000;">        }, </span><span style="background-color: #f5f5f5; color: #000000;">1000</span><span style="background-color: #f5f5f5; color: #000000;">);
+</span><span style="color: #008080;">38</span> <span style="background-color: #f5f5f5; color: #000000;">    });
+</span><span style="color: #008080;">39</span> <span style="background-color: #f5f5f5; color: #000000;">    d.tap(</span><span style="background-color: #f5f5f5; color: #0000ff;">function</span><span style="background-color: #f5f5f5; color: #000000;"> () {
+</span><span style="color: #008080;">40</span> <span style="background-color: #f5f5f5; color: #000000;">        d.append($(</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">&lt;p&gt;div tap&lt;/p&gt;</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">));
+</span><span style="color: #008080;">41</span> <span style="background-color: #f5f5f5; color: #000000;">    });
+</span><span style="color: #008080;">42</span>     
+<span style="color: #008080;">43</span> <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">script</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">44</span> <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">html</span><span style="color: #0000ff;">&gt;</span></pre>
+</div>
+<p>&nbsp;</p>
+<p><iframe style="line-height: 1.5;" src="37487910291357.jpg" width="90%" height="300"></iframe></p>
+<p><span style="color: #ff0000;"><strong><a href="37487910291357.jpg"><span style="color: #ff0000;">37487910291357.jpg</span></a></strong></span></p>
+<p>这里各位请使用手机访问试试，现在这个网页有几个问题：</p>
+<p>我点击灰色区域会将灰色区域隐藏，灰色区域消失，一秒后重现，于是可能发生两个问题：</p>
+<p>① 某些浏览器中后面的div tap事件会触发</p>
+<p>② input元素必定获得焦点</p>
+<p>div事件有些时候我们可以通过阻止冒泡处理，但是input这个问题基本不可调和，因为其获得焦点弹出键盘十分恼火</p>
+<p>元素我们是通过一个蒙版解决，先我们来看看是否可以给我们的容器wrapper加上一个css属性解决呢？？？</p>
+<div class="cnblogs_code">
+<pre><span style="color: #008080;"> 1</span> <span style="color: #0000ff;">&lt;!</span><span style="color: #ff00ff;">DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 2</span> <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">html </span><span style="color: #ff0000;">xmlns</span><span style="color: #0000ff;">="http://www.w3.org/1999/xhtml"</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 3</span> <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">head</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 4</span>     <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">title</span><span style="color: #0000ff;">&gt;&lt;/</span><span style="color: #800000;">title</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 5</span>     <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">meta </span><span style="color: #ff0000;">name</span><span style="color: #0000ff;">="viewport"</span><span style="color: #ff0000;"> content</span><span style="color: #0000ff;">="width=device-width,initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no"</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 6</span>     <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">meta </span><span style="color: #ff0000;">content</span><span style="color: #0000ff;">="telephone=no"</span><span style="color: #ff0000;"> name</span><span style="color: #0000ff;">="format-detection"</span> <span style="color: #0000ff;">/&gt;</span>
+<span style="color: #008080;"> 7</span>     <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">meta </span><span style="color: #ff0000;">name</span><span style="color: #0000ff;">="apple-mobile-web-app-capable"</span><span style="color: #ff0000;"> content</span><span style="color: #0000ff;">="yes"</span> <span style="color: #0000ff;">/&gt;</span>
+<span style="color: #008080;"> 8</span>     <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">style</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 9</span> <span style="background-color: #f5f5f5; color: #800000;">        #list </span><span style="background-color: #f5f5f5; color: #000000;">{</span><span style="background-color: #f5f5f5; color: #ff0000;"> display</span><span style="background-color: #f5f5f5; color: #000000;">:</span><span style="background-color: #f5f5f5; color: #0000ff;"> block</span><span style="background-color: #f5f5f5; color: #000000;">;</span><span style="background-color: #f5f5f5; color: #ff0000;"> position</span><span style="background-color: #f5f5f5; color: #000000;">:</span><span style="background-color: #f5f5f5; color: #0000ff;"> absolute</span><span style="background-color: #f5f5f5; color: #000000;">;</span><span style="background-color: #f5f5f5; color: #ff0000;"> top</span><span style="background-color: #f5f5f5; color: #000000;">:</span><span style="background-color: #f5f5f5; color: #0000ff;"> 100px</span><span style="background-color: #f5f5f5; color: #000000;">;</span><span style="background-color: #f5f5f5; color: #ff0000;"> left</span><span style="background-color: #f5f5f5; color: #000000;">:</span><span style="background-color: #f5f5f5; color: #0000ff;"> 10px</span><span style="background-color: #f5f5f5; color: #000000;">;</span><span style="background-color: #f5f5f5; color: #ff0000;"> width</span><span style="background-color: #f5f5f5; color: #000000;">:</span><span style="background-color: #f5f5f5; color: #0000ff;"> 200px</span><span style="background-color: #f5f5f5; color: #000000;">;</span><span style="background-color: #f5f5f5; color: #ff0000;"> height</span><span style="background-color: #f5f5f5; color: #000000;">:</span><span style="background-color: #f5f5f5; color: #0000ff;"> 100px</span><span style="background-color: #f5f5f5; color: #000000;">;</span> <span style="background-color: #f5f5f5; color: #000000;">}</span>
+<span style="color: #008080;">10</span> <span style="background-color: #f5f5f5; color: #800000;">        div </span><span style="background-color: #f5f5f5; color: #000000;">{</span><span style="background-color: #f5f5f5; color: #ff0000;"> display</span><span style="background-color: #f5f5f5; color: #000000;">:</span><span style="background-color: #f5f5f5; color: #0000ff;"> block</span><span style="background-color: #f5f5f5; color: #000000;">;</span><span style="background-color: #f5f5f5; color: #ff0000;"> border</span><span style="background-color: #f5f5f5; color: #000000;">:</span><span style="background-color: #f5f5f5; color: #0000ff;"> 1px solid black</span><span style="background-color: #f5f5f5; color: #000000;">;</span><span style="background-color: #f5f5f5; color: #ff0000;"> height</span><span style="background-color: #f5f5f5; color: #000000;">:</span><span style="background-color: #f5f5f5; color: #0000ff;"> 500px</span><span style="background-color: #f5f5f5; color: #000000;">;</span><span style="background-color: #f5f5f5; color: #ff0000;"> width</span><span style="background-color: #f5f5f5; color: #000000;">:</span><span style="background-color: #f5f5f5; color: #0000ff;"> 100%</span><span style="background-color: #f5f5f5; color: #000000;">;</span> <span style="background-color: #f5f5f5; color: #000000;">}</span>
+<span style="color: #008080;">11</span> <span style="background-color: #f5f5f5; color: #800000;">        #input </span><span style="background-color: #f5f5f5; color: #000000;">{</span><span style="background-color: #f5f5f5; color: #ff0000;"> width</span><span style="background-color: #f5f5f5; color: #000000;">:</span><span style="background-color: #f5f5f5; color: #0000ff;"> 80px</span><span style="background-color: #f5f5f5; color: #000000;">;</span><span style="background-color: #f5f5f5; color: #ff0000;"> height</span><span style="background-color: #f5f5f5; color: #000000;">:</span><span style="background-color: #f5f5f5; color: #0000ff;"> 200px</span><span style="background-color: #f5f5f5; color: #000000;">;</span><span style="background-color: #f5f5f5; color: #ff0000;"> display</span><span style="background-color: #f5f5f5; color: #000000;">:</span><span style="background-color: #f5f5f5; color: #0000ff;"> block</span><span style="background-color: #f5f5f5; color: #000000;">;</span> <span style="background-color: #f5f5f5; color: #000000;">}</span>
+<span style="color: #008080;">12</span>     <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">style</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">13</span>     <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">script </span><span style="color: #ff0000;">id</span><span style="color: #0000ff;">="others_zepto_10rc1"</span><span style="color: #ff0000;"> type</span><span style="color: #0000ff;">="text/javascript"</span><span style="color: #ff0000;"> class</span><span style="color: #0000ff;">="library"</span><span style="color: #ff0000;"> src</span><span style="color: #0000ff;">="/js/sandbox/other/zepto.min.js"</span><span style="color: #0000ff;">&gt;&lt;/</span><span style="color: #800000;">script</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">14</span> <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">head</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">15</span> <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">body</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">16</span>     <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">div </span><span style="color: #ff0000;">id</span><span style="color: #0000ff;">="list"</span><span style="color: #ff0000;"> style</span><span style="color: #0000ff;">="background: gray;"</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">17</span>     <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">div</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">18</span>     <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">div </span><span style="color: #ff0000;">id</span><span style="color: #0000ff;">="wrapper"</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">19</span>         <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">div </span><span style="color: #ff0000;">id</span><span style="color: #0000ff;">="d"</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">20</span>             <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">input </span><span style="color: #ff0000;">type</span><span style="color: #0000ff;">="text"</span><span style="color: #ff0000;"> id</span><span style="color: #0000ff;">="input"</span> <span style="color: #0000ff;">/&gt;</span>
+<span style="color: #008080;">21</span>         <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">div</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">22</span>     <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">div</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">23</span> <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">body</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">24</span> <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">script </span><span style="color: #ff0000;">type</span><span style="color: #0000ff;">="text/javascript"</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">25</span>     <span style="background-color: #f5f5f5; color: #0000ff;">var</span><span style="background-color: #f5f5f5; color: #000000;"> list </span><span style="background-color: #f5f5f5; color: #000000;">=</span><span style="background-color: #f5f5f5; color: #000000;"> $(</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">#list</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">);
+</span><span style="color: #008080;">26</span>     <span style="background-color: #f5f5f5; color: #0000ff;">var</span><span style="background-color: #f5f5f5; color: #000000;"> d </span><span style="background-color: #f5f5f5; color: #000000;">=</span><span style="background-color: #f5f5f5; color: #000000;"> $(</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">#d</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">);
+</span><span style="color: #008080;">27</span>     <span style="background-color: #f5f5f5; color: #0000ff;">var</span><span style="background-color: #f5f5f5; color: #000000;"> input </span><span style="background-color: #f5f5f5; color: #000000;">=</span><span style="background-color: #f5f5f5; color: #000000;"> $(</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">#input</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">);
+</span><span style="color: #008080;">28</span> <span style="background-color: #f5f5f5; color: #000000;">    input.tap(</span><span style="background-color: #f5f5f5; color: #0000ff;">function</span><span style="background-color: #f5f5f5; color: #000000;"> (e) {
+</span><span style="color: #008080;">29</span> <span style="background-color: #f5f5f5; color: #000000;">        input.val(</span><span style="background-color: #f5f5f5; color: #0000ff;">new</span><span style="background-color: #f5f5f5; color: #000000;"> Date().getTime());
+</span><span style="color: #008080;">30</span> <span style="background-color: #f5f5f5; color: #000000;">    });
+</span><span style="color: #008080;">31</span> <span style="background-color: #f5f5f5; color: #000000;">    list.tap(</span><span style="background-color: #f5f5f5; color: #0000ff;">function</span><span style="background-color: #f5f5f5; color: #000000;"> (e) {
+</span><span style="color: #008080;">32</span> <span style="background-color: #f5f5f5; color: #000000;">        $(</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">#wrapper</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">).css(</span><span style="background-color: #f5f5f5; color: #000000;">"</span><span style="background-color: #f5f5f5; color: #000000;">pointer-events</span><span style="background-color: #f5f5f5; color: #000000;">"</span><span style="background-color: #f5f5f5; color: #000000;">, </span><span style="background-color: #f5f5f5; color: #000000;">"</span><span style="background-color: #f5f5f5; color: #000000;">none</span><span style="background-color: #f5f5f5; color: #000000;">"</span><span style="background-color: #f5f5f5; color: #000000;">);
+</span><span style="color: #008080;">33</span> <span style="background-color: #f5f5f5; color: #000000;">        list.hide();
+</span><span style="color: #008080;">34</span> <span style="background-color: #f5f5f5; color: #000000;">        setTimeout(</span><span style="background-color: #f5f5f5; color: #0000ff;">function</span><span style="background-color: #f5f5f5; color: #000000;"> () {
+</span><span style="color: #008080;">35</span> <span style="background-color: #f5f5f5; color: #000000;">            $(</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">#wrapper</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">).css(</span><span style="background-color: #f5f5f5; color: #000000;">"</span><span style="background-color: #f5f5f5; color: #000000;">pointer-events</span><span style="background-color: #f5f5f5; color: #000000;">"</span><span style="background-color: #f5f5f5; color: #000000;">, </span><span style="background-color: #f5f5f5; color: #000000;">"</span><span style="background-color: #f5f5f5; color: #000000;">auto</span><span style="background-color: #f5f5f5; color: #000000;">"</span><span style="background-color: #f5f5f5; color: #000000;">);
+</span><span style="color: #008080;">36</span> <span style="background-color: #f5f5f5; color: #000000;">        }, </span><span style="background-color: #f5f5f5; color: #000000;">350</span><span style="background-color: #f5f5f5; color: #000000;">)
+</span><span style="color: #008080;">37</span> <span style="background-color: #f5f5f5; color: #000000;">        setTimeout(</span><span style="background-color: #f5f5f5; color: #0000ff;">function</span><span style="background-color: #f5f5f5; color: #000000;"> () {
+</span><span style="color: #008080;">38</span> <span style="background-color: #f5f5f5; color: #000000;">            list.show();
+</span><span style="color: #008080;">39</span> <span style="background-color: #f5f5f5; color: #000000;">        }, </span><span style="background-color: #f5f5f5; color: #000000;">1000</span><span style="background-color: #f5f5f5; color: #000000;">);
+</span><span style="color: #008080;">40</span> <span style="background-color: #f5f5f5; color: #000000;">    });
+</span><span style="color: #008080;">41</span> <span style="background-color: #f5f5f5; color: #000000;">    d.tap(</span><span style="background-color: #f5f5f5; color: #0000ff;">function</span><span style="background-color: #f5f5f5; color: #000000;"> () {
+</span><span style="color: #008080;">42</span> <span style="background-color: #f5f5f5; color: #000000;">        d.append($(</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">&lt;p&gt;div tap&lt;/p&gt;</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">));
+</span><span style="color: #008080;">43</span> <span style="background-color: #f5f5f5; color: #000000;">    });
+</span><span style="color: #008080;">44</span>     
+<span style="color: #008080;">45</span> <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">script</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">46</span> <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">html</span><span style="color: #0000ff;">&gt;</span></pre>
+</div>
+<p><span style="color: #ff0000;"><a href="24818526472845.jpg"><span style="color: #ff0000;">24818526472845.jpg</span></a></span></p>
+<p><iframe src="24818526472845.jpg" width="90%" height="300"></iframe></p>
+<p><span style="line-height: 1.5;">可以看到，我们解决了点透的问题，所以有我有这些厉害的同事是很幸运的，有了这个方案，我们就可以在zepto中封装我们的代码了</span></p>
+<p>在tap点击后为容器标签设置该属性，350ms后取消即可，这样可以最大程度的包装代码不会修改</p>
+<p><span style="line-height: 1.5;">但是这个方案不是没有问题：</span></p>
+<p><span style="line-height: 1.5;">最重要的是他依然有个时间阀值，经过我测试时350ms，意思是我使用tap事件后会有350ms的事件某些区域完全无法点击</span></p>
+<p><span style="line-height: 1.5;">那么容器所占区域小的话还可接受，如果所占区域大的话就是噩梦，因为用户的点击明显会出现阻力</span></p>
+<p>然后，毕竟会点透的情况不是多数，所以此方案仍有缺陷，最后还是得动一些其它力气</p>
+<h2>后续</h2>
+<p><span style="line-height: 1.5;">这次tap的研究先到这里，我们我们有机会再继续，所以回到我们今天的主题吧！！！</span></p>
+<h1>浏览器检测手机是否安装app</h1>
+<p><span style="line-height: 1.5;">这个需求初次提出其实让人感觉很为难，至少我是很为难的，因为压根就找不到办法嘛，经过周四晚上的纠结，基本就放弃了</span></p>
+<p><span style="line-height: 1.5;">第二天也给老大说搞不定，老大基本也仍为搞不定，但是这个需求是最大的老大提出的，所以跟进力度很强，这不是，过了没多久就来了个vip（代表级别高......）</span></p>
+<p>哥来了就寄出了法宝，先是一个国外的网站，然后就是我们传说中的淘宝了</p>
+<p>PS：说实话，虽然电脑的事情与淘宝无关，但是老夫现在对淘宝还是比较怨念的！！！！</p>
+<p>淘宝不愧是业内技术领先的技术团队，我们来看看他的网站：</p>
+<p><img src="10433915944146.png" alt=""></p>
+<p>其它不必关注，我们就看这个&ldquo;立即打开&rdquo;！！！各位知道手机上这个立即打开干了什么吗？</p>
+<p><span style="line-height: 1.5;">这个家伙不得了，如果按照了app 的话点击立即打开就会打开app，如果没有按照的话居然跳向了市场连接</span></p>
+<p><span style="line-height: 1.5;">在某些时候这个对等与他有一个a标签会根据需求而获得不同的值！！！</span></p>
+<p><span style="line-height: 1.5;">但是，我们知道打开app是安装了app才会打开的，不然就是个死链接，死链接必然打不开！于是带着好奇带着敬畏，我们打开了淘宝的js库</span></p>
+<p><span style="line-height: 1.5;">PS：淘宝压缩混淆后js确实很小，而且没有使用类库哦</span></p>
+<p><span style="line-height: 1.5;"><img src="19431028366383.png" alt=""></span></p>
+<p>&nbsp;</p>
+<p><span style="line-height: 1.5;">各位看官直接找到这个目录吧，于是进去我们一步步跟进去：</span></p>
+<h3><span style="line-height: 1.5;">① 点击点</span></h3>
+<p>虽然小生本领不行，但是读代码还是入门的，所以国内一旦出了什么心技术，基本很快就能普及，这就是国内的技术，不是做不出来，就是不知道做出了是什么样子</p>
+<p>一旦你做出了，那么我也能做出了，并且做的更好，所以我们缺乏创新啊......</p>
+<p><img src="3896877948619.png" alt=""></p>
+<p>我们找到了入口，于是进入install方法</p>
+<h3>② install</h3>
+<p><img src="50440416992922.png" alt=""></p>
+<p>这群代码一目了然，读到这里，其实可以很轻易的猜测实现方案了！</p>
+<p><img src="45740327587196.png" alt=""></p>
+<h3>③ 猜测实现方案</h3>
+<p>于是我就开始猜测，猜测的结果就是：</p>
+<div class="cnblogs_code">
+<pre><span style="color: #800000;">如果安装app 的情况下，打开链接会让window失去焦点，于是清除了计时器
+如果没有安装app计时器里面的代码会执行，所以跳向了app市场</span></pre>
+</div>
+<p>当然，最后发现一个问题：手机上<strong><span style="color: #ff0000;">网页无法失去焦点</span></strong>，这只是我自己的判断（无法失去焦点），所以最后也放弃了这个猜测</p>
+<h3>④ 陷入僵局</h3>
+<p><span style="line-height: 1.5;">于是思路再次陷入僵局，任务不能实现，但是将淘宝代码搞下来，也无法实现，最后就开始以各种漫无目的，垃圾的办法搞，终于不注意成功了一次！！！</span></p>
+<p><span style="line-height: 1.5;">无意义的成功是因为将定时器设置的很大......</span></p>
+<h3><span style="line-height: 1.5;">⑤ 解决方案</span></h3>
+<p><span style="line-height: 1.5;">最后发现了方案，安装app 的情况下，网页会进入后台打开app！！！</span></p>
+<div class="cnblogs_code">
+<pre><span style="color: #800000;">网页进入后台后会挂起js 的执行，但是这个期间有600-1000ms的时间js仍然会执行</span></pre>
+</div>
+<p>淘宝执行的阀值是600，我们大概是900，所以一直在原地踏步了很久</p>
+<p>这个网页进入后台却成了解决问题的关键，于是新鲜代码出来了:</p>
+<div class="cnblogs_code">
+<pre><span style="color: #008080;"> 1</span> <span style="color: #0000ff;">var</span> log = <span style="color: #0000ff;">function</span><span style="color: #000000;"> (msg) {
+</span><span style="color: #008080;"> 2</span>     $('body').before('&lt;div class="log"&gt;' + msg + '&lt;/div&gt;'<span style="color: #000000;">);
+</span><span style="color: #008080;"> 3</span> <span style="color: #000000;">};
+</span><span style="color: #008080;"> 4</span> <span style="color: #0000ff;">var</span> timeout, t = 1000, hasApp = <span style="color: #0000ff;">true</span><span style="color: #000000;">;
+</span><span style="color: #008080;"> 5</span> setTimeout(<span style="color: #0000ff;">function</span><span style="color: #000000;"> () {
+</span><span style="color: #008080;"> 6</span>     <span style="color: #0000ff;">if</span><span style="color: #000000;"> (hasApp) {
+</span><span style="color: #008080;"> 7</span>         log('安装了app'<span style="color: #000000;">);
+</span><span style="color: #008080;"> 8</span>         $('#dl_app'<span style="color: #000000;">).hide();
+</span><span style="color: #008080;"> 9</span> 
+<span style="color: #008080;">10</span>     } <span style="color: #0000ff;">else</span><span style="color: #000000;"> {
+</span><span style="color: #008080;">11</span>         log('未安装app'<span style="color: #000000;">);
+</span><span style="color: #008080;">12</span>         $('#dl_app'<span style="color: #000000;">).show();
+</span><span style="color: #008080;">13</span>         log('开始强制下载'<span style="color: #000000;">);
+</span><span style="color: #008080;">14</span> <span style="color: #000000;">        forceDownload();
+</span><span style="color: #008080;">15</span> <span style="color: #000000;">    }
+</span><span style="color: #008080;">16</span> }, 2000<span style="color: #000000;">)
+</span><span style="color: #008080;">17</span> <span style="color: #0000ff;">function</span><span style="color: #000000;"> testApp() {
+</span><span style="color: #008080;">18</span>     <span style="color: #0000ff;">var</span> t1 =<span style="color: #000000;"> Date.now();
+</span><span style="color: #008080;">19</span>     <span style="color: #0000ff;">var</span> ifr = $('&lt;iframe id="ifr"&gt;&lt;/iframe&gt;'<span style="color: #000000;">)
+</span><span style="color: #008080;">20</span>     ifr.attr('src', '您们app的协议'<span style="color: #000000;">);
+</span><span style="color: #008080;">21</span>     $('body'<span style="color: #000000;">).append(ifr);
+</span><span style="color: #008080;">22</span>     timeout = setTimeout(<span style="color: #0000ff;">function</span><span style="color: #000000;"> () {
+</span><span style="color: #008080;">23</span> <span style="color: #000000;">        try_to_open_app(t1);
+</span><span style="color: #008080;">24</span> <span style="color: #000000;">    }, t);
+</span><span style="color: #008080;">25</span> <span style="color: #000000;">}
+</span><span style="color: #008080;">26</span> <span style="color: #0000ff;">function</span><span style="color: #000000;"> try_to_open_app(t1) {
+</span><span style="color: #008080;">27</span>     <span style="color: #0000ff;">var</span> t2 =<span style="color: #000000;"> Date.now();
+</span><span style="color: #008080;">28</span>     <span style="color: #0000ff;">if</span> (!t1 || t2 - t1 &lt; t + 200<span style="color: #000000;">) {
+</span><span style="color: #008080;">29</span>         hasApp = <span style="color: #0000ff;">false</span><span style="color: #000000;">;
+</span><span style="color: #008080;">30</span> <span style="color: #000000;">    }
+</span><span style="color: #008080;">31</span> <span style="color: #000000;">}
+</span><span style="color: #008080;">32</span> testApp();</pre>
+</div>
+<p>将这段代码加入网站首页1-2秒后hasApp就会告诉我们是否安装了app，当然问题也很明显：</p>
+<h2>缺陷</h2>
+<p><span style="line-height: 1.5;">① 经测试，如果未安装app的情况下，safari会给出一个alert类似的提示，老夫将它去不掉！！！</span></p>
+<p><strong><span style="line-height: 1.5; color: #ff0000;">PS：如果各位知道怎么去掉，请赐教</span></strong></p>
+<p><span style="line-height: 1.5;">② 进入H5站点，如果安装了app便会打开app，这个是无法避免的</span></p>
+<p><span style="line-height: 1.5;">除了上面两个较明显的缺陷，其它还好了......</span></p>
+<h1><span style="line-height: 1.5;">结语</span></h1>
+<p><span style="line-height: 1.5;">我们今天的学习暂时到此，也不知道对各位有没有用</span></p>
+                </div>
+
+                <div class='span3 sidebar'>
+                    <h2>导航栏</h2>
+                    <ul class="nav nav-tabs nav-stacked">
+                             				<li><a href="http://songboriceboy.github.io/xxoo/html/ydkf/ctydqdkf01jhyp/index.html">【初探移动前端开发01】惊鸿一瞥</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/ydkf/ctydqdkf02ydsbdym/index.html">【初探移动前端开发02】移动设备的页面</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/ydkf/ctydqdkf03jQueryMobiles/index.html">【初探移动前端开发03】jQueryMobile（上）</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/ydkf/ctydqdkf04jQueryMobile(z)/index.html">【初探移动前端开发04】jQueryMobile(中)</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/ydkf/ctydqdkf05jQueryMobile(x)/index.html">【初探移动前端开发05】jQueryMobile(下)</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/ydkf/ctydqdkf05jQueryMobile(zhb)/index.html">【初探移动前端开发05】jQueryMobile(整合版)</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/ydkf/dyyyyqldyyybsxjdwbgnx/index.html">【单页应用】一起来单页应用吧，实现简单微博功能！（下）</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/ydkf/dyyyyqldyyybsxjdwbgnzj/index.html">【单页应用】一起来单页应用吧，实现简单微博功能！（总结）</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/ydkf/dfastclickymygcdjjtapdttsydddjxysd/index.html">【读fastclick源码有感】彻底解决tap“点透”，提升移动端点击响应速度</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/ydkf/fiphonerlcj(beta)/index.html">仿iphone日历插件(beta)</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/ydkf/ydzmlwmyqlyjlqrhjcsfazappb/index.html">又到周末了，我们一起来研究【浏览器如何检测是否安装app】吧</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/ydkf/tsscsbdjsdztouchsjdldk/index.html">提升手持设备点击速度之touch事件带来的坑！</a></li>
+    				                                         
+                    </ul>
+                </div>
+            </div>
+
+        </div>
+    </body>
+</html>

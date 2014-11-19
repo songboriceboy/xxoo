@@ -1,0 +1,835 @@
+﻿<!DOCTYPE html>
+
+<html lang="zh">
+    <head>
+        <meta charset="utf-8">
+        <meta name="description" content="android,ios" />
+        <meta name="keywords" content="android,ios" />
+
+        <title>叶小钗</title>
+        <style type='text/css'>
+            body {
+                background-color: #CCC;
+            }
+        </style>
+        <link rel="stylesheet" href="../../../css/bootstrap.css" />
+    </head>
+
+    <body>
+        <div class="container">
+
+            <h1>叶小钗</h1>
+
+            <div class='navbar navbar-inverse'>
+                <div class='navbar-inner nav-collapse' style="height: auto;">
+                    <ul class="nav">
+                              				<li><a href="http://songboriceboy.github.io/xxoo/html/blade/index.html">blade</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/css/index.html">css</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/HTML5&CSS3/index.html">HTML5&CSS3</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/index.html">javascript</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Javaxx/index.html">Java学习</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/nodejs/index.html">nodejs</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/requirejs/index.html">requirejs</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/index.html">Web前端</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/xxgw/index.html">学习感悟</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/gzdd/index.html">工作点滴</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/jkxx/index.html">接口学习</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/wfl/index.html">未分类</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/ydkf/index.html">移动开发</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/sjms/index.html">设计模式</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/mst/index.html">面试题</a></li>
+    				                      </ul>
+                </div>
+            </div>
+
+            <div id='content' class='row-fluid'>
+
+                <div class='span9 main'>
+				<div style="color:blue" align=center>【UI插件】开发一个简单日历插件（上）</div><br><h1>前言</h1>
+<p>最近开始整理我们的单页应用框架了，虽然可能比不上MVVM模式的开发效率，也可能没有Backbone框架模块清晰，但是好歹也是自己开发出来</p>
+<p>而且也用于了这么多频道的东西，如果没有总结，没有整理，没有开源就太可惜了......所以最近开始整理框架相关的东西，争取抽象一点东西出来</p>
+<p>框架出来还需要一点时间，但是框架会需要相关的UI库，这个东西可以先有思路，最后再根据框架做一点调整吧</p>
+<p>日历对于UI插件而言还是比较难的，里面涉及到的东西很多，就阴历与阳历一块就有很多东西，然后涉及到很多算法，其中节日的设置更是有一定动态性</p>
+<p>各种各样的需求也是莫名其妙，所以我们今天便来实现一个简单的日历插件吧，当然他的主要应用场景还是单页应用</p>
+<h1>构思</h1>
+<p>首先，我们这里用这套东西实现继承</p>
+<div class="cnblogs_code">
+<pre><span style="color: #0000ff;">var</span> arr =<span style="color: #000000;"> [];
+</span><span style="color: #0000ff;">var</span> slice =<span style="color: #000000;"> arr.slice;
+
+</span><span style="color: #0000ff;">function</span><span style="color: #000000;"> create() {
+  </span><span style="color: #0000ff;">if</span> (arguments.length == 0 || arguments.length &gt; 2) <span style="color: #0000ff;">throw</span> '参数错误'<span style="color: #000000;">;
+
+  </span><span style="color: #0000ff;">var</span> parent = <span style="color: #0000ff;">null</span><span style="color: #000000;">;
+  </span><span style="color: #008000;">//</span><span style="color: #008000;">将参数转换为数组</span>
+  <span style="color: #0000ff;">var</span> properties =<span style="color: #000000;"> slice.call(arguments);
+
+  </span><span style="color: #008000;">//</span><span style="color: #008000;">如果第一个参数为类（function），那么就将之取出</span>
+  <span style="color: #0000ff;">if</span> (<span style="color: #0000ff;">typeof</span> properties[0] === 'function'<span style="color: #000000;">)
+    parent </span>=<span style="color: #000000;"> properties.shift();
+  properties </span>= properties[0<span style="color: #000000;">];
+
+  </span><span style="color: #0000ff;">function</span><span style="color: #000000;"> klass() {
+    </span><span style="color: #0000ff;">this</span>.initialize.apply(<span style="color: #0000ff;">this</span><span style="color: #000000;">, arguments);
+  }
+
+  klass.superclass </span>=<span style="color: #000000;"> parent;
+  klass.subclasses </span>=<span style="color: #000000;"> [];
+
+  </span><span style="color: #0000ff;">if</span><span style="color: #000000;"> (parent) {
+    </span><span style="color: #0000ff;">var</span> subclass = <span style="color: #0000ff;">function</span><span style="color: #000000;"> () { };
+    subclass.prototype </span>=<span style="color: #000000;"> parent.prototype;
+    klass.prototype </span>= <span style="color: #0000ff;">new</span><span style="color: #000000;"> subclass;
+    parent.subclasses.push(klass);
+  }
+
+  </span><span style="color: #0000ff;">var</span> ancestor = klass.superclass &amp;&amp;<span style="color: #000000;"> klass.superclass.prototype;
+  </span><span style="color: #0000ff;">for</span> (<span style="color: #0000ff;">var</span> k <span style="color: #0000ff;">in</span><span style="color: #000000;"> properties) {
+    </span><span style="color: #0000ff;">var</span> value =<span style="color: #000000;"> properties[k];
+
+    </span><span style="color: #008000;">//</span><span style="color: #008000;">满足条件就重写</span>
+    <span style="color: #0000ff;">if</span> (ancestor &amp;&amp; <span style="color: #0000ff;">typeof</span> value == 'function'<span style="color: #000000;">) {
+      </span><span style="color: #0000ff;">var</span> argslist = /^\s*function\s*\(([^\(\)]*?)\)\s*?\{/i.exec(value.toString())[1].replace(/\s/i, '').split(','<span style="color: #000000;">);
+      </span><span style="color: #008000;">//</span><span style="color: #008000;">只有在第一个参数为$super情况下才需要处理（是否具有重复方法需要用户自己决定）</span>
+      <span style="color: #0000ff;">if</span> (argslist[0] === '$super' &amp;&amp;<span style="color: #000000;"> ancestor[k]) {
+        value </span>= (<span style="color: #0000ff;">function</span><span style="color: #000000;"> (methodName, fn) {
+          </span><span style="color: #0000ff;">return</span> <span style="color: #0000ff;">function</span><span style="color: #000000;"> () {
+            </span><span style="color: #0000ff;">var</span> scope = <span style="color: #0000ff;">this</span><span style="color: #000000;">;
+            </span><span style="color: #0000ff;">var</span> args = [<span style="color: #0000ff;">function</span><span style="color: #000000;"> () {
+              </span><span style="color: #0000ff;">return</span><span style="color: #000000;"> ancestor[methodName].apply(scope, arguments);
+            } ];
+            </span><span style="color: #0000ff;">return</span> fn.apply(<span style="color: #0000ff;">this</span><span style="color: #000000;">, args.concat(slice.call(arguments)));
+          };
+        })(k, value);
+      }
+    }
+
+    klass.prototype[k] </span>=<span style="color: #000000;"> value;
+  }
+
+  </span><span style="color: #0000ff;">if</span> (!<span style="color: #000000;">klass.prototype.initialize)
+    klass.prototype.initialize </span>= <span style="color: #0000ff;">function</span><span style="color: #000000;"> () { };
+
+  klass.prototype.constructor </span>=<span style="color: #000000;"> klass;
+
+  </span><span style="color: #0000ff;">return</span><span style="color: #000000;"> klass;
+}</span></pre>
+</div>
+<p>其次，我们的日历做出来应该是可定制化的，可定制化的粒度控制到每一个单元格，意思是每一个单元格是可操作的</p>
+<p>这个时候最好的解决办法就是模板，并且释放一个操作某个日期的接口，比如我们现在要实现阴历节日或者阳历节日完全是实现抽象的日历，这样可以最大的提高扩展性</p>
+<p>所以，我们这里的第一步是实现一个最基本的抽象日历</p>
+<h1>abstract.calendar</h1>
+<p>像日历这类插件，我首先还是想到用表格来做，但是CSS3的出现也能让我们的代码很好的实现，所以我这里使用li做，具体实现我们后面再说，我们要完成的第一个事情是</p>
+<h2>渲染当月</h2>
+<p>我们做的第一个事情是给一个日期，然后当月的数据便出来了，比如我们这里给的是20140420，就是当前日期，然后便需要形成这个月的日期，这里就涉及到一连串东西了</p>
+<p>解决这个问题，我们需要第一个api，算出给定日期一共有多少天，第二步便是排列第一个日期为星期几即可</p>
+<p>众所周知，计算月份天数时候有一个例外的情况便是闰年的二月，所以我们需要检查是否为闰年的接口，这个接口一般由公共日期类库提供</p>
+<p>所以我们在做日历相关的过程中，完全可以整理一套日期的API出来，这也是今天一个任务</p>
+<h2>日期操作类库</h2>
+<p>这里首先给出两个接口，一个判断是否为闰年，一个判断一个月有多少天</p>
+<div class="cnblogs_code">
+<pre><span style="color: #0000ff;">var</span> dateUtil =<span style="color: #000000;"> {
+  </span><span style="color: #008000;">//</span><span style="color: #008000;"> @description 是否为闰年</span>
+  <span style="color: #008000;">//</span><span style="color: #008000;"> @param year {num} 可能是年份或者为一个date时间</span>
+  <span style="color: #008000;">//</span><span style="color: #008000;"> @return {boolean} 返回值</span>
+  isLeapYear: <span style="color: #0000ff;">function</span><span style="color: #000000;"> (year) {
+    </span><span style="color: #008000;">//</span><span style="color: #008000;">传入为时间格式需要处理</span>
+    <span style="color: #0000ff;">if</span> ((<span style="color: #0000ff;">typeof</span> year == 'object') &amp;&amp; (year <span style="color: #0000ff;">instanceof</span> Date)) year =<span style="color: #000000;"> year.getFullYear()
+    </span><span style="color: #0000ff;">if</span> ((year % 4 == 0 &amp;&amp; year % 100 != 0) || (year % 400 == 0)) <span style="color: #0000ff;">return</span> <span style="color: #0000ff;">true</span><span style="color: #000000;">;
+    </span><span style="color: #0000ff;">else</span> <span style="color: #0000ff;">return</span> <span style="color: #0000ff;">false</span><span style="color: #000000;">;
+  },
+
+  </span><span style="color: #008000;">//</span><span style="color: #008000;"> @description 获取一个月份的天数</span>
+  <span style="color: #008000;">//</span><span style="color: #008000;"> @param year {num} 可能是年份或者为一个date时间</span>
+  <span style="color: #008000;">//</span><span style="color: #008000;"> @param year {num} 月份</span>
+  <span style="color: #008000;">//</span><span style="color: #008000;"> @return {num} 返回天数</span>
+  getDaysOfMonth: <span style="color: #0000ff;">function</span><span style="color: #000000;"> (year, month) {
+    </span><span style="color: #0000ff;">if</span> ((<span style="color: #0000ff;">typeof</span> year == 'object') &amp;&amp; (year <span style="color: #0000ff;">instanceof</span><span style="color: #000000;"> Date)) {
+      month </span>= year.getmonth() + 1; <span style="color: #008000;">//</span><span style="color: #008000;">注意此处月份要加1</span>
+      year =<span style="color: #000000;"> year.getFullYear();
+    }
+    </span><span style="color: #0000ff;">return</span> [31, dateUtil.isLeapYear(year) ? 29 : 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31<span style="color: #000000;">][month];
+  }
+};</span></pre>
+</div>
+<p>官方的getDay即可返回某天为星期几</p>
+<p>0-6：星期天-星期六</p>
+<p>所以，理论上我们给一个日期，就可以获得那一天的dom结构了，我们来试试，获取本月的日历数据</p>
+<p>这里我们需要新增一个API告诉我们一年中的某一个月是由周几开始的</p>
+<div class="cnblogs_code">
+<pre><span style="color: #008000;">//</span><span style="color: #008000;"> @description 获取一个月份1号是星期几，注意此时的月份传入时需要自主减一</span><span style="color: #008000;">
+//</span><span style="color: #008000;"> @param year {num} 可能是年份或者为一个date时间</span><span style="color: #008000;">
+//</span><span style="color: #008000;"> @param year {num} 月份</span><span style="color: #008000;">
+//</span><span style="color: #008000;"> @return {num} 当月一号为星期几0-6</span>
+getBeginDayOfMouth: <span style="color: #0000ff;">function</span><span style="color: #000000;"> (year, month) {
+  </span><span style="color: #0000ff;">if</span> ((<span style="color: #0000ff;">typeof</span> year == 'object') &amp;&amp; (year <span style="color: #0000ff;">instanceof</span><span style="color: #000000;"> Date)) {
+    month </span>= year.getMonth(); <span style="color: #008000;">//</span><span style="color: #008000;">注意此处月份要加1</span>
+    year =<span style="color: #000000;"> year.getFullYear();
+  }
+  </span><span style="color: #0000ff;">var</span> d = <span style="color: #0000ff;">new</span> Date(year, month, 1<span style="color: #000000;">);
+  </span><span style="color: #0000ff;">return</span><span style="color: #000000;"> d.getDay();
+}</span></pre>
+</div>
+<h2>渲染dom</h2>
+<p>这个时候我们尝试生成我们的dom结构就出来了：</p>
+<p><img src="476981510012675.png" alt=""></p>
+<div class="cnblogs_code">
+<pre><span style="color: #0000ff;">&lt;</span><span style="color: #800000;">style </span><span style="color: #ff0000;">type</span><span style="color: #0000ff;">="text/css"</span><span style="color: #0000ff;">&gt;</span><span style="background-color: #f5f5f5; color: #800000;">
+    ul, li </span><span style="background-color: #f5f5f5; color: #000000;">{</span><span style="background-color: #f5f5f5; color: #ff0000;"> padding</span><span style="background-color: #f5f5f5; color: #000000;">:</span><span style="background-color: #f5f5f5; color: #0000ff;"> 0</span><span style="background-color: #f5f5f5; color: #000000;">;</span><span style="background-color: #f5f5f5; color: #ff0000;"> margin</span><span style="background-color: #f5f5f5; color: #000000;">:</span><span style="background-color: #f5f5f5; color: #0000ff;"> 0</span><span style="background-color: #f5f5f5; color: #000000;">;</span> <span style="background-color: #f5f5f5; color: #000000;">}</span><span style="background-color: #f5f5f5; color: #800000;">
+    .cui_calendar, .cui_week </span><span style="background-color: #f5f5f5; color: #000000;">{</span><span style="background-color: #f5f5f5; color: #ff0000;"> list-style</span><span style="background-color: #f5f5f5; color: #000000;">:</span><span style="background-color: #f5f5f5; color: #0000ff;"> none</span><span style="background-color: #f5f5f5; color: #000000;">;</span> <span style="background-color: #f5f5f5; color: #000000;">}</span><span style="background-color: #f5f5f5; color: #800000;">
+    .cui_calendar li, .cui_week li </span><span style="background-color: #f5f5f5; color: #000000;">{</span><span style="background-color: #f5f5f5; color: #ff0000;"> float</span><span style="background-color: #f5f5f5; color: #000000;">:</span><span style="background-color: #f5f5f5; color: #0000ff;"> left</span><span style="background-color: #f5f5f5; color: #000000;">;</span><span style="background-color: #f5f5f5; color: #ff0000;"> width</span><span style="background-color: #f5f5f5; color: #000000;">:</span><span style="background-color: #f5f5f5; color: #0000ff;"> 14%</span><span style="background-color: #f5f5f5; color: #000000;">;</span><span style="background-color: #f5f5f5; color: #ff0000;"> overflow</span><span style="background-color: #f5f5f5; color: #000000;">:</span><span style="background-color: #f5f5f5; color: #0000ff;"> hidden</span><span style="background-color: #f5f5f5; color: #000000;">;</span><span style="background-color: #f5f5f5; color: #ff0000;"> padding</span><span style="background-color: #f5f5f5; color: #000000;">:</span><span style="background-color: #f5f5f5; color: #0000ff;"> 4px 0</span><span style="background-color: #f5f5f5; color: #000000;">;</span><span style="background-color: #f5f5f5; color: #ff0000;"> text-align</span><span style="background-color: #f5f5f5; color: #000000;">:</span><span style="background-color: #f5f5f5; color: #0000ff;"> center</span><span style="background-color: #f5f5f5; color: #000000;">;</span> <span style="background-color: #f5f5f5; color: #000000;">}</span>
+  <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">style</span><span style="color: #0000ff;">&gt;</span></pre>
+</div>
+<p>我们这里做一次简单的封装后，开始引入模板相关的东西，于是最后形成的东西：</p>
+<div class="cnblogs_code" onclick="cnblogs_code_show('6a1bbc45-6081-400c-bdc1-e190c9009a6f')"><img id="code_img_closed_6a1bbc45-6081-400c-bdc1-e190c9009a6f" class="code_img_closed" src="43570758473519.gif" alt=""><img id="code_img_opened_6a1bbc45-6081-400c-bdc1-e190c9009a6f" class="code_img_opened" style="display: none;" onclick="cnblogs_code_hide('6a1bbc45-6081-400c-bdc1-e190c9009a6f',event)" src="16365178109279.gif" alt="">
+<div id="cnblogs_code_open_6a1bbc45-6081-400c-bdc1-e190c9009a6f" class="cnblogs_code_hide">
+<pre><span style="color: #0000ff;">&lt;!</span><span style="color: #ff00ff;">DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #0000ff;">&lt;</span><span style="color: #800000;">html </span><span style="color: #ff0000;">xmlns</span><span style="color: #0000ff;">="http://www.w3.org/1999/xhtml"</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #0000ff;">&lt;</span><span style="color: #800000;">head</span><span style="color: #0000ff;">&gt;</span>
+  <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">title</span><span style="color: #0000ff;">&gt;&lt;/</span><span style="color: #800000;">title</span><span style="color: #0000ff;">&gt;</span>
+  <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">style </span><span style="color: #ff0000;">type</span><span style="color: #0000ff;">="text/css"</span><span style="color: #0000ff;">&gt;</span><span style="background-color: #f5f5f5; color: #800000;">
+    ul, li </span><span style="background-color: #f5f5f5; color: #000000;">{</span><span style="background-color: #f5f5f5; color: #ff0000;"> padding</span><span style="background-color: #f5f5f5; color: #000000;">:</span><span style="background-color: #f5f5f5; color: #0000ff;"> 0</span><span style="background-color: #f5f5f5; color: #000000;">;</span><span style="background-color: #f5f5f5; color: #ff0000;"> margin</span><span style="background-color: #f5f5f5; color: #000000;">:</span><span style="background-color: #f5f5f5; color: #0000ff;"> 0</span><span style="background-color: #f5f5f5; color: #000000;">;</span> <span style="background-color: #f5f5f5; color: #000000;">}</span><span style="background-color: #f5f5f5; color: #800000;">
+    .cui_calendar, .cui_week </span><span style="background-color: #f5f5f5; color: #000000;">{</span><span style="background-color: #f5f5f5; color: #ff0000;"> list-style</span><span style="background-color: #f5f5f5; color: #000000;">:</span><span style="background-color: #f5f5f5; color: #0000ff;"> none</span><span style="background-color: #f5f5f5; color: #000000;">;</span> <span style="background-color: #f5f5f5; color: #000000;">}</span><span style="background-color: #f5f5f5; color: #800000;">
+    .cui_calendar li, .cui_week li </span><span style="background-color: #f5f5f5; color: #000000;">{</span><span style="background-color: #f5f5f5; color: #ff0000;"> float</span><span style="background-color: #f5f5f5; color: #000000;">:</span><span style="background-color: #f5f5f5; color: #0000ff;"> left</span><span style="background-color: #f5f5f5; color: #000000;">;</span><span style="background-color: #f5f5f5; color: #ff0000;"> width</span><span style="background-color: #f5f5f5; color: #000000;">:</span><span style="background-color: #f5f5f5; color: #0000ff;"> 14%</span><span style="background-color: #f5f5f5; color: #000000;">;</span><span style="background-color: #f5f5f5; color: #ff0000;"> overflow</span><span style="background-color: #f5f5f5; color: #000000;">:</span><span style="background-color: #f5f5f5; color: #0000ff;"> hidden</span><span style="background-color: #f5f5f5; color: #000000;">;</span><span style="background-color: #f5f5f5; color: #ff0000;"> padding</span><span style="background-color: #f5f5f5; color: #000000;">:</span><span style="background-color: #f5f5f5; color: #0000ff;"> 4px 0</span><span style="background-color: #f5f5f5; color: #000000;">;</span><span style="background-color: #f5f5f5; color: #ff0000;"> text-align</span><span style="background-color: #f5f5f5; color: #000000;">:</span><span style="background-color: #f5f5f5; color: #0000ff;"> center</span><span style="background-color: #f5f5f5; color: #000000;">;</span> <span style="background-color: #f5f5f5; color: #000000;">}</span>
+  <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">style</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">head</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #0000ff;">&lt;</span><span style="color: #800000;">body</span><span style="color: #0000ff;">&gt;</span>
+  <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">script </span><span style="color: #ff0000;">src</span><span style="color: #0000ff;">="zepto.js"</span><span style="color: #ff0000;"> type</span><span style="color: #0000ff;">="text/javascript"</span><span style="color: #0000ff;">&gt;&lt;/</span><span style="color: #800000;">script</span><span style="color: #0000ff;">&gt;</span>
+  <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">script </span><span style="color: #ff0000;">src</span><span style="color: #0000ff;">="underscore-min.js"</span><span style="color: #ff0000;"> type</span><span style="color: #0000ff;">="text/javascript"</span><span style="color: #0000ff;">&gt;&lt;/</span><span style="color: #800000;">script</span><span style="color: #0000ff;">&gt;</span>
+  <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">script </span><span style="color: #ff0000;">type</span><span style="color: #0000ff;">="text/javascript"</span><span style="color: #0000ff;">&gt;</span>
+
+  <span style="background-color: #f5f5f5; color: #0000ff;">var</span><span style="background-color: #f5f5f5; color: #000000;"> arr </span><span style="background-color: #f5f5f5; color: #000000;">=</span><span style="background-color: #f5f5f5; color: #000000;"> [];
+</span><span style="background-color: #f5f5f5; color: #0000ff;">var</span><span style="background-color: #f5f5f5; color: #000000;"> slice </span><span style="background-color: #f5f5f5; color: #000000;">=</span><span style="background-color: #f5f5f5; color: #000000;"> arr.slice;
+</span><span style="background-color: #f5f5f5; color: #008000;">/*</span><span style="background-color: #f5f5f5; color: #008000;">*
+* @description inherit方法，js的继承，默认为两个参数
+* @param {function} supClass 可选，要继承的类
+* @param {object} subProperty 被创建类的成员
+* @return {function} 被创建的类
+</span><span style="background-color: #f5f5f5; color: #008000;">*/</span>
+<span style="background-color: #f5f5f5; color: #0000ff;">var</span><span style="background-color: #f5f5f5; color: #000000;"> inherit </span><span style="background-color: #f5f5f5; color: #000000;">=</span> <span style="background-color: #f5f5f5; color: #0000ff;">function</span><span style="background-color: #f5f5f5; color: #000000;"> () {
+
+  </span><span style="background-color: #f5f5f5; color: #008000;">//</span><span style="background-color: #f5f5f5; color: #008000;"> @description 参数检测，该继承方法，只支持一个参数创建类，或者两个参数继承类</span>
+  <span style="background-color: #f5f5f5; color: #0000ff;">if</span><span style="background-color: #f5f5f5; color: #000000;"> (arguments.length </span><span style="background-color: #f5f5f5; color: #000000;">==</span> <span style="background-color: #f5f5f5; color: #000000;">0</span> <span style="background-color: #f5f5f5; color: #000000;">||</span><span style="background-color: #f5f5f5; color: #000000;"> arguments.length </span><span style="background-color: #f5f5f5; color: #000000;">&gt;</span> <span style="background-color: #f5f5f5; color: #000000;">2</span><span style="background-color: #f5f5f5; color: #000000;">) </span><span style="background-color: #f5f5f5; color: #0000ff;">throw</span> <span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">参数错误</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">;
+
+  </span><span style="background-color: #f5f5f5; color: #0000ff;">var</span><span style="background-color: #f5f5f5; color: #000000;"> parent </span><span style="background-color: #f5f5f5; color: #000000;">=</span> <span style="background-color: #f5f5f5; color: #0000ff;">null</span><span style="background-color: #f5f5f5; color: #000000;">;
+
+  </span><span style="background-color: #f5f5f5; color: #008000;">//</span><span style="background-color: #f5f5f5; color: #008000;"> @description 将参数转换为数组</span>
+  <span style="background-color: #f5f5f5; color: #0000ff;">var</span><span style="background-color: #f5f5f5; color: #000000;"> properties </span><span style="background-color: #f5f5f5; color: #000000;">=</span><span style="background-color: #f5f5f5; color: #000000;"> slice.call(arguments);
+
+  </span><span style="background-color: #f5f5f5; color: #008000;">//</span><span style="background-color: #f5f5f5; color: #008000;"> @description 如果第一个参数为类（function），那么就将之取出</span>
+  <span style="background-color: #f5f5f5; color: #0000ff;">if</span><span style="background-color: #f5f5f5; color: #000000;"> (</span><span style="background-color: #f5f5f5; color: #0000ff;">typeof</span><span style="background-color: #f5f5f5; color: #000000;"> properties[</span><span style="background-color: #f5f5f5; color: #000000;">0</span><span style="background-color: #f5f5f5; color: #000000;">] </span><span style="background-color: #f5f5f5; color: #000000;">===</span> <span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">function</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">)
+    parent </span><span style="background-color: #f5f5f5; color: #000000;">=</span><span style="background-color: #f5f5f5; color: #000000;"> properties.shift();
+  properties </span><span style="background-color: #f5f5f5; color: #000000;">=</span><span style="background-color: #f5f5f5; color: #000000;"> properties[</span><span style="background-color: #f5f5f5; color: #000000;">0</span><span style="background-color: #f5f5f5; color: #000000;">];
+
+  </span><span style="background-color: #f5f5f5; color: #008000;">//</span><span style="background-color: #f5f5f5; color: #008000;"> @description 创建新类用于返回</span>
+  <span style="background-color: #f5f5f5; color: #0000ff;">function</span><span style="background-color: #f5f5f5; color: #000000;"> klass() {
+    </span><span style="background-color: #f5f5f5; color: #0000ff;">this</span><span style="background-color: #f5f5f5; color: #000000;">.initialize.apply(</span><span style="background-color: #f5f5f5; color: #0000ff;">this</span><span style="background-color: #f5f5f5; color: #000000;">, arguments);
+  }
+
+  klass.superclass </span><span style="background-color: #f5f5f5; color: #000000;">=</span><span style="background-color: #f5f5f5; color: #000000;"> parent;
+  klass.subclasses </span><span style="background-color: #f5f5f5; color: #000000;">=</span><span style="background-color: #f5f5f5; color: #000000;"> [];
+
+  </span><span style="background-color: #f5f5f5; color: #0000ff;">if</span><span style="background-color: #f5f5f5; color: #000000;"> (parent) {
+    </span><span style="background-color: #f5f5f5; color: #008000;">//</span><span style="background-color: #f5f5f5; color: #008000;"> @description 中间过渡类，防止parent的构造函数被执行</span>
+    <span style="background-color: #f5f5f5; color: #0000ff;">var</span><span style="background-color: #f5f5f5; color: #000000;"> subclass </span><span style="background-color: #f5f5f5; color: #000000;">=</span> <span style="background-color: #f5f5f5; color: #0000ff;">function</span><span style="background-color: #f5f5f5; color: #000000;"> () { };
+    subclass.prototype </span><span style="background-color: #f5f5f5; color: #000000;">=</span><span style="background-color: #f5f5f5; color: #000000;"> parent.prototype;
+    klass.prototype </span><span style="background-color: #f5f5f5; color: #000000;">=</span> <span style="background-color: #f5f5f5; color: #0000ff;">new</span><span style="background-color: #f5f5f5; color: #000000;"> subclass;
+    parent.subclasses.push(klass);
+  }
+
+  </span><span style="background-color: #f5f5f5; color: #0000ff;">var</span><span style="background-color: #f5f5f5; color: #000000;"> ancestor </span><span style="background-color: #f5f5f5; color: #000000;">=</span><span style="background-color: #f5f5f5; color: #000000;"> klass.superclass </span><span style="background-color: #f5f5f5; color: #000000;">&amp;&amp;</span><span style="background-color: #f5f5f5; color: #000000;"> klass.superclass.prototype;
+  </span><span style="background-color: #f5f5f5; color: #0000ff;">for</span><span style="background-color: #f5f5f5; color: #000000;"> (</span><span style="background-color: #f5f5f5; color: #0000ff;">var</span><span style="background-color: #f5f5f5; color: #000000;"> k </span><span style="background-color: #f5f5f5; color: #0000ff;">in</span><span style="background-color: #f5f5f5; color: #000000;"> properties) {
+    </span><span style="background-color: #f5f5f5; color: #0000ff;">var</span><span style="background-color: #f5f5f5; color: #000000;"> value </span><span style="background-color: #f5f5f5; color: #000000;">=</span><span style="background-color: #f5f5f5; color: #000000;"> properties[k];
+
+    </span><span style="background-color: #f5f5f5; color: #008000;">//</span><span style="background-color: #f5f5f5; color: #008000;">满足条件就重写</span>
+    <span style="background-color: #f5f5f5; color: #0000ff;">if</span><span style="background-color: #f5f5f5; color: #000000;"> (ancestor </span><span style="background-color: #f5f5f5; color: #000000;">&amp;&amp;</span> <span style="background-color: #f5f5f5; color: #0000ff;">typeof</span><span style="background-color: #f5f5f5; color: #000000;"> value </span><span style="background-color: #f5f5f5; color: #000000;">==</span> <span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">function</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">) {
+      </span><span style="background-color: #f5f5f5; color: #0000ff;">var</span><span style="background-color: #f5f5f5; color: #000000;"> argslist </span><span style="background-color: #f5f5f5; color: #000000;">=</span> <span style="background-color: #f5f5f5; color: #000000;">/</span><span style="background-color: #f5f5f5; color: #000000;">^\s*function\s*\(([^\(\)]*?)\)\s*?\{</span><span style="background-color: #f5f5f5; color: #000000;">/</span><span style="background-color: #f5f5f5; color: #000000;">i.exec(value.toString())[</span><span style="background-color: #f5f5f5; color: #000000;">1</span><span style="background-color: #f5f5f5; color: #000000;">].replace(</span><span style="background-color: #f5f5f5; color: #000000;">/</span><span style="background-color: #f5f5f5; color: #000000;">\s</span><span style="background-color: #f5f5f5; color: #000000;">/</span><span style="background-color: #f5f5f5; color: #000000;">i, </span><span style="background-color: #f5f5f5; color: #000000;">''</span><span style="background-color: #f5f5f5; color: #000000;">).split(</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">,</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">);
+      </span><span style="background-color: #f5f5f5; color: #008000;">//</span><span style="background-color: #f5f5f5; color: #008000;">只有在第一个参数为$super情况下才需要处理（是否具有重复方法需要用户自己决定）</span>
+      <span style="background-color: #f5f5f5; color: #0000ff;">if</span><span style="background-color: #f5f5f5; color: #000000;"> (argslist[</span><span style="background-color: #f5f5f5; color: #000000;">0</span><span style="background-color: #f5f5f5; color: #000000;">] </span><span style="background-color: #f5f5f5; color: #000000;">===</span> <span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">$super</span><span style="background-color: #f5f5f5; color: #000000;">'</span> <span style="background-color: #f5f5f5; color: #000000;">&amp;&amp;</span><span style="background-color: #f5f5f5; color: #000000;"> ancestor[k]) {
+        value </span><span style="background-color: #f5f5f5; color: #000000;">=</span><span style="background-color: #f5f5f5; color: #000000;"> (</span><span style="background-color: #f5f5f5; color: #0000ff;">function</span><span style="background-color: #f5f5f5; color: #000000;"> (methodName, fn) {
+          </span><span style="background-color: #f5f5f5; color: #0000ff;">return</span> <span style="background-color: #f5f5f5; color: #0000ff;">function</span><span style="background-color: #f5f5f5; color: #000000;"> () {
+            </span><span style="background-color: #f5f5f5; color: #0000ff;">var</span><span style="background-color: #f5f5f5; color: #000000;"> scope </span><span style="background-color: #f5f5f5; color: #000000;">=</span> <span style="background-color: #f5f5f5; color: #0000ff;">this</span><span style="background-color: #f5f5f5; color: #000000;">;
+            </span><span style="background-color: #f5f5f5; color: #0000ff;">var</span><span style="background-color: #f5f5f5; color: #000000;"> args </span><span style="background-color: #f5f5f5; color: #000000;">=</span><span style="background-color: #f5f5f5; color: #000000;"> [</span><span style="background-color: #f5f5f5; color: #0000ff;">function</span><span style="background-color: #f5f5f5; color: #000000;"> () {
+              </span><span style="background-color: #f5f5f5; color: #0000ff;">return</span><span style="background-color: #f5f5f5; color: #000000;"> ancestor[methodName].apply(scope, arguments);
+            } ];
+            </span><span style="background-color: #f5f5f5; color: #0000ff;">return</span><span style="background-color: #f5f5f5; color: #000000;"> fn.apply(</span><span style="background-color: #f5f5f5; color: #0000ff;">this</span><span style="background-color: #f5f5f5; color: #000000;">, args.concat(slice.call(arguments)));
+          };
+        })(k, value);
+      }
+    }
+
+    klass.prototype[k] </span><span style="background-color: #f5f5f5; color: #000000;">=</span><span style="background-color: #f5f5f5; color: #000000;"> value;
+  }
+
+  </span><span style="background-color: #f5f5f5; color: #0000ff;">if</span><span style="background-color: #f5f5f5; color: #000000;"> (</span><span style="background-color: #f5f5f5; color: #000000;">!</span><span style="background-color: #f5f5f5; color: #000000;">klass.prototype.initialize)
+    klass.prototype.initialize </span><span style="background-color: #f5f5f5; color: #000000;">=</span> <span style="background-color: #f5f5f5; color: #0000ff;">function</span><span style="background-color: #f5f5f5; color: #000000;"> () { };
+
+  klass.prototype.constructor </span><span style="background-color: #f5f5f5; color: #000000;">=</span><span style="background-color: #f5f5f5; color: #000000;"> klass;
+
+  </span><span style="background-color: #f5f5f5; color: #0000ff;">return</span><span style="background-color: #f5f5f5; color: #000000;"> klass;
+};
+
+
+    </span><span style="background-color: #f5f5f5; color: #0000ff;">var</span><span style="background-color: #f5f5f5; color: #000000;"> dateUtil </span><span style="background-color: #f5f5f5; color: #000000;">=</span><span style="background-color: #f5f5f5; color: #000000;"> {
+      </span><span style="background-color: #f5f5f5; color: #008000;">//</span><span style="background-color: #f5f5f5; color: #008000;"> @description 是否为闰年</span>
+      <span style="background-color: #f5f5f5; color: #008000;">//</span><span style="background-color: #f5f5f5; color: #008000;"> @param year {num} 可能是年份或者为一个date时间</span>
+      <span style="background-color: #f5f5f5; color: #008000;">//</span><span style="background-color: #f5f5f5; color: #008000;"> @return {boolean} 返回值</span>
+<span style="background-color: #f5f5f5; color: #000000;">      isLeapYear: </span><span style="background-color: #f5f5f5; color: #0000ff;">function</span><span style="background-color: #f5f5f5; color: #000000;"> (year) {
+        </span><span style="background-color: #f5f5f5; color: #008000;">//</span><span style="background-color: #f5f5f5; color: #008000;">传入为时间格式需要处理</span>
+        <span style="background-color: #f5f5f5; color: #0000ff;">if</span><span style="background-color: #f5f5f5; color: #000000;"> ((</span><span style="background-color: #f5f5f5; color: #0000ff;">typeof</span><span style="background-color: #f5f5f5; color: #000000;"> year </span><span style="background-color: #f5f5f5; color: #000000;">==</span> <span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">object</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">) </span><span style="background-color: #f5f5f5; color: #000000;">&amp;&amp;</span><span style="background-color: #f5f5f5; color: #000000;"> (year </span><span style="background-color: #f5f5f5; color: #0000ff;">instanceof</span><span style="background-color: #f5f5f5; color: #000000;"> Date)) year </span><span style="background-color: #f5f5f5; color: #000000;">=</span><span style="background-color: #f5f5f5; color: #000000;"> year.getFullYear()
+        </span><span style="background-color: #f5f5f5; color: #0000ff;">if</span><span style="background-color: #f5f5f5; color: #000000;"> ((year </span><span style="background-color: #f5f5f5; color: #000000;">%</span> <span style="background-color: #f5f5f5; color: #000000;">4</span> <span style="background-color: #f5f5f5; color: #000000;">==</span> <span style="background-color: #f5f5f5; color: #000000;">0</span> <span style="background-color: #f5f5f5; color: #000000;">&amp;&amp;</span><span style="background-color: #f5f5f5; color: #000000;"> year </span><span style="background-color: #f5f5f5; color: #000000;">%</span> <span style="background-color: #f5f5f5; color: #000000;">100</span> <span style="background-color: #f5f5f5; color: #000000;">!=</span> <span style="background-color: #f5f5f5; color: #000000;">0</span><span style="background-color: #f5f5f5; color: #000000;">) </span><span style="background-color: #f5f5f5; color: #000000;">||</span><span style="background-color: #f5f5f5; color: #000000;"> (year </span><span style="background-color: #f5f5f5; color: #000000;">%</span> <span style="background-color: #f5f5f5; color: #000000;">400</span> <span style="background-color: #f5f5f5; color: #000000;">==</span> <span style="background-color: #f5f5f5; color: #000000;">0</span><span style="background-color: #f5f5f5; color: #000000;">)) </span><span style="background-color: #f5f5f5; color: #0000ff;">return</span> <span style="background-color: #f5f5f5; color: #0000ff;">true</span><span style="background-color: #f5f5f5; color: #000000;">;
+        </span><span style="background-color: #f5f5f5; color: #0000ff;">else</span> <span style="background-color: #f5f5f5; color: #0000ff;">return</span> <span style="background-color: #f5f5f5; color: #0000ff;">false</span><span style="background-color: #f5f5f5; color: #000000;">;
+      },
+
+      </span><span style="background-color: #f5f5f5; color: #008000;">//</span><span style="background-color: #f5f5f5; color: #008000;"> @description 获取一个月份的天数</span>
+      <span style="background-color: #f5f5f5; color: #008000;">//</span><span style="background-color: #f5f5f5; color: #008000;"> @param year {num} 可能是年份或者为一个date时间</span>
+      <span style="background-color: #f5f5f5; color: #008000;">//</span><span style="background-color: #f5f5f5; color: #008000;"> @param year {num} 月份</span>
+      <span style="background-color: #f5f5f5; color: #008000;">//</span><span style="background-color: #f5f5f5; color: #008000;"> @return {num} 返回天数</span>
+<span style="background-color: #f5f5f5; color: #000000;">      getDaysOfMonth: </span><span style="background-color: #f5f5f5; color: #0000ff;">function</span><span style="background-color: #f5f5f5; color: #000000;"> (year, month) {
+        </span><span style="background-color: #f5f5f5; color: #0000ff;">if</span><span style="background-color: #f5f5f5; color: #000000;"> ((</span><span style="background-color: #f5f5f5; color: #0000ff;">typeof</span><span style="background-color: #f5f5f5; color: #000000;"> year </span><span style="background-color: #f5f5f5; color: #000000;">==</span> <span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">object</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">) </span><span style="background-color: #f5f5f5; color: #000000;">&amp;&amp;</span><span style="background-color: #f5f5f5; color: #000000;"> (year </span><span style="background-color: #f5f5f5; color: #0000ff;">instanceof</span><span style="background-color: #f5f5f5; color: #000000;"> Date)) {
+          month </span><span style="background-color: #f5f5f5; color: #000000;">=</span><span style="background-color: #f5f5f5; color: #000000;"> year.getMonth(); </span><span style="background-color: #f5f5f5; color: #008000;">//</span><span style="background-color: #f5f5f5; color: #008000;">注意此处月份要加1，所以我们要减一</span>
+<span style="background-color: #f5f5f5; color: #000000;">          year </span><span style="background-color: #f5f5f5; color: #000000;">=</span><span style="background-color: #f5f5f5; color: #000000;"> year.getFullYear();
+        }
+        </span><span style="background-color: #f5f5f5; color: #0000ff;">return</span><span style="background-color: #f5f5f5; color: #000000;"> [</span><span style="background-color: #f5f5f5; color: #000000;">31</span><span style="background-color: #f5f5f5; color: #000000;">, dateUtil.isLeapYear(year) </span><span style="background-color: #f5f5f5; color: #000000;">?</span> <span style="background-color: #f5f5f5; color: #000000;">29</span><span style="background-color: #f5f5f5; color: #000000;"> : </span><span style="background-color: #f5f5f5; color: #000000;">28</span><span style="background-color: #f5f5f5; color: #000000;">, </span><span style="background-color: #f5f5f5; color: #000000;">31</span><span style="background-color: #f5f5f5; color: #000000;">, </span><span style="background-color: #f5f5f5; color: #000000;">30</span><span style="background-color: #f5f5f5; color: #000000;">, </span><span style="background-color: #f5f5f5; color: #000000;">31</span><span style="background-color: #f5f5f5; color: #000000;">, </span><span style="background-color: #f5f5f5; color: #000000;">30</span><span style="background-color: #f5f5f5; color: #000000;">, </span><span style="background-color: #f5f5f5; color: #000000;">31</span><span style="background-color: #f5f5f5; color: #000000;">, </span><span style="background-color: #f5f5f5; color: #000000;">31</span><span style="background-color: #f5f5f5; color: #000000;">, </span><span style="background-color: #f5f5f5; color: #000000;">30</span><span style="background-color: #f5f5f5; color: #000000;">, </span><span style="background-color: #f5f5f5; color: #000000;">31</span><span style="background-color: #f5f5f5; color: #000000;">, </span><span style="background-color: #f5f5f5; color: #000000;">30</span><span style="background-color: #f5f5f5; color: #000000;">, </span><span style="background-color: #f5f5f5; color: #000000;">31</span><span style="background-color: #f5f5f5; color: #000000;">][month];
+      },
+
+      </span><span style="background-color: #f5f5f5; color: #008000;">//</span><span style="background-color: #f5f5f5; color: #008000;"> @description 获取一个月份1号是星期几，注意此时的月份传入时需要自主减一</span>
+      <span style="background-color: #f5f5f5; color: #008000;">//</span><span style="background-color: #f5f5f5; color: #008000;"> @param year {num} 可能是年份或者为一个date时间</span>
+      <span style="background-color: #f5f5f5; color: #008000;">//</span><span style="background-color: #f5f5f5; color: #008000;"> @param year {num} 月份</span>
+      <span style="background-color: #f5f5f5; color: #008000;">//</span><span style="background-color: #f5f5f5; color: #008000;"> @return {num} 当月一号为星期几0-6</span>
+<span style="background-color: #f5f5f5; color: #000000;">      getBeginDayOfMouth: </span><span style="background-color: #f5f5f5; color: #0000ff;">function</span><span style="background-color: #f5f5f5; color: #000000;"> (year, month) {
+        </span><span style="background-color: #f5f5f5; color: #0000ff;">if</span><span style="background-color: #f5f5f5; color: #000000;"> ((</span><span style="background-color: #f5f5f5; color: #0000ff;">typeof</span><span style="background-color: #f5f5f5; color: #000000;"> year </span><span style="background-color: #f5f5f5; color: #000000;">==</span> <span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">object</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">) </span><span style="background-color: #f5f5f5; color: #000000;">&amp;&amp;</span><span style="background-color: #f5f5f5; color: #000000;"> (year </span><span style="background-color: #f5f5f5; color: #0000ff;">instanceof</span><span style="background-color: #f5f5f5; color: #000000;"> Date)) {
+          month </span><span style="background-color: #f5f5f5; color: #000000;">=</span><span style="background-color: #f5f5f5; color: #000000;"> year.getMonth(); </span><span style="background-color: #f5f5f5; color: #008000;">//</span><span style="background-color: #f5f5f5; color: #008000;">注意此处月份要加1</span>
+<span style="background-color: #f5f5f5; color: #000000;">          year </span><span style="background-color: #f5f5f5; color: #000000;">=</span><span style="background-color: #f5f5f5; color: #000000;"> year.getFullYear();
+        }
+        </span><span style="background-color: #f5f5f5; color: #0000ff;">var</span><span style="background-color: #f5f5f5; color: #000000;"> d </span><span style="background-color: #f5f5f5; color: #000000;">=</span> <span style="background-color: #f5f5f5; color: #0000ff;">new</span><span style="background-color: #f5f5f5; color: #000000;"> Date(year, month, </span><span style="background-color: #f5f5f5; color: #000000;">1</span><span style="background-color: #f5f5f5; color: #000000;">);
+        </span><span style="background-color: #f5f5f5; color: #0000ff;">return</span><span style="background-color: #f5f5f5; color: #000000;"> d.getDay();
+      }
+    };
+
+    </span><span style="background-color: #f5f5f5; color: #0000ff;">var</span><span style="background-color: #f5f5f5; color: #000000;"> Calendar </span><span style="background-color: #f5f5f5; color: #000000;">=</span><span style="background-color: #f5f5f5; color: #000000;"> inherit({
+      initialize: </span><span style="background-color: #f5f5f5; color: #0000ff;">function</span><span style="background-color: #f5f5f5; color: #000000;"> () {
+        </span><span style="background-color: #f5f5f5; color: #0000ff;">this</span><span style="background-color: #f5f5f5; color: #000000;">.dateObj </span><span style="background-color: #f5f5f5; color: #000000;">=</span> <span style="background-color: #f5f5f5; color: #0000ff;">new</span><span style="background-color: #f5f5f5; color: #000000;"> Date();
+        </span><span style="background-color: #f5f5f5; color: #0000ff;">this</span><span style="background-color: #f5f5f5; color: #000000;">.rootBox </span><span style="background-color: #f5f5f5; color: #000000;">=</span><span style="background-color: #f5f5f5; color: #000000;"> $(</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">body</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">);
+       
+        </span><span style="background-color: #f5f5f5; color: #008000;">//</span><span style="background-color: #f5f5f5; color: #008000;">星期项目模板</span>
+        <span style="background-color: #f5f5f5; color: #0000ff;">this</span><span style="background-color: #f5f5f5; color: #000000;">.weekDayItemTmpt </span><span style="background-color: #f5f5f5; color: #000000;">=</span> <span style="background-color: #f5f5f5; color: #000000;">"</span><span style="background-color: #f5f5f5; color: #000000;">&lt;li&gt;&lt;%=['日', '一', '二', '三', '四', '五', '六'][day] %&gt;&lt;/li&gt;</span><span style="background-color: #f5f5f5; color: #000000;">"</span><span style="background-color: #f5f5f5; color: #000000;">;
+        </span><span style="background-color: #f5f5f5; color: #008000;">//</span><span style="background-color: #f5f5f5; color: #008000;">星期包裹层模板，传入今天星期几，内部怎么实现自己来</span>
+        <span style="background-color: #f5f5f5; color: #0000ff;">this</span><span style="background-color: #f5f5f5; color: #000000;">.weekDayTmpt </span><span style="background-color: #f5f5f5; color: #000000;">=</span> <span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">&lt;ul class="cui_week"&gt;&lt;%for(var day = 0; day &lt; 7; day++) { %&gt; </span><span style="background-color: #f5f5f5; color: #000000;">'</span> <span style="background-color: #f5f5f5; color: #000000;">+</span> <span style="background-color: #f5f5f5; color: #0000ff;">this</span><span style="background-color: #f5f5f5; color: #000000;">.weekDayItemTmpt </span><span style="background-color: #f5f5f5; color: #000000;">+</span> <span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;"> &lt;%} %&gt;&lt;/ul&gt;</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">;
+
+        </span><span style="background-color: #f5f5f5; color: #008000;">//</span><span style="background-color: #f5f5f5; color: #008000;">各个单元格的模板，可以重写</span>
+        <span style="background-color: #f5f5f5; color: #0000ff;">this</span><span style="background-color: #f5f5f5; color: #000000;">.itemTmpt </span><span style="background-color: #f5f5f5; color: #000000;">=</span> <span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">&lt;li class="cui_calendar_item"&gt;&lt;%=day %&gt;&lt;/li&gt;</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">;
+        </span><span style="background-color: #f5f5f5; color: #008000;">//</span><span style="background-color: #f5f5f5; color: #008000;">无效项目模板</span>
+        <span style="background-color: #f5f5f5; color: #0000ff;">this</span><span style="background-color: #f5f5f5; color: #000000;">.invalidTmpt </span><span style="background-color: #f5f5f5; color: #000000;">=</span> <span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">&lt;li class="cui_invalid"&gt;&lt;/li&gt;</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">;
+
+        </span><span style="background-color: #f5f5f5; color: #008000;">//</span><span style="background-color: #f5f5f5; color: #008000;">月份模板，给定当前年月，以及天数，第一天星期几，让用户自己构造月度日历模板</span>
+        <span style="background-color: #f5f5f5; color: #0000ff;">this</span><span style="background-color: #f5f5f5; color: #000000;">.mouthTmpt </span><span style="background-color: #f5f5f5; color: #000000;">=</span><span style="background-color: #f5f5f5; color: #000000;"> [
+          </span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">&lt;ul class="cui_calendar"&gt;</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">,
+            </span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">&lt;% for(var i = 0; i &lt; _beginWeek; i++) { %&gt;</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">,
+              </span><span style="background-color: #f5f5f5; color: #0000ff;">this</span><span style="background-color: #f5f5f5; color: #000000;">.invalidTmpt,
+            </span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">&lt;% } %&gt;</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">,
+            </span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">&lt;% for(i = 0; i &lt; days; i++) { %&gt;</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">,
+              </span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">&lt;% day = i + 1; %&gt;</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">,
+                </span><span style="background-color: #f5f5f5; color: #0000ff;">this</span><span style="background-color: #f5f5f5; color: #000000;">.itemTmpt,
+            </span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">&lt;% } %&gt;</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">,
+          </span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">&lt;/ul&gt;</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">
+        ].join(</span><span style="background-color: #f5f5f5; color: #000000;">''</span><span style="background-color: #f5f5f5; color: #000000;">);
+
+        </span><span style="background-color: #f5f5f5; color: #0000ff;">this</span><span style="background-color: #f5f5f5; color: #000000;">._initDom();
+      },
+
+      _initDom: </span><span style="background-color: #f5f5f5; color: #0000ff;">function</span><span style="background-color: #f5f5f5; color: #000000;"> () {
+        </span><span style="background-color: #f5f5f5; color: #0000ff;">var</span><span style="background-color: #f5f5f5; color: #000000;"> d </span><span style="background-color: #f5f5f5; color: #000000;">=</span> <span style="background-color: #f5f5f5; color: #0000ff;">this</span><span style="background-color: #f5f5f5; color: #000000;">.dateObj;
+        </span><span style="background-color: #f5f5f5; color: #008000;">//</span><span style="background-color: #f5f5f5; color: #008000;">获取天数</span>
+        <span style="background-color: #f5f5f5; color: #0000ff;">var</span><span style="background-color: #f5f5f5; color: #000000;"> days </span><span style="background-color: #f5f5f5; color: #000000;">=</span><span style="background-color: #f5f5f5; color: #000000;"> dateUtil.getDaysOfMonth(d);
+        </span><span style="background-color: #f5f5f5; color: #008000;">//</span><span style="background-color: #f5f5f5; color: #008000;">获取那个月第一天时星期几</span>
+        <span style="background-color: #f5f5f5; color: #0000ff;">var</span><span style="background-color: #f5f5f5; color: #000000;"> _beginWeek </span><span style="background-color: #f5f5f5; color: #000000;">=</span><span style="background-color: #f5f5f5; color: #000000;"> dateUtil.getBeginDayOfMouth(d);
+
+        </span><span style="background-color: #f5f5f5; color: #0000ff;">var</span><span style="background-color: #f5f5f5; color: #000000;"> weekDom </span><span style="background-color: #f5f5f5; color: #000000;">=</span><span style="background-color: #f5f5f5; color: #000000;"> _.template(</span><span style="background-color: #f5f5f5; color: #0000ff;">this</span><span style="background-color: #f5f5f5; color: #000000;">.weekDayTmpt)();
+        </span><span style="background-color: #f5f5f5; color: #0000ff;">var</span><span style="background-color: #f5f5f5; color: #000000;"> calendarDom </span><span style="background-color: #f5f5f5; color: #000000;">=</span><span style="background-color: #f5f5f5; color: #000000;"> _.template(</span><span style="background-color: #f5f5f5; color: #0000ff;">this</span><span style="background-color: #f5f5f5; color: #000000;">.mouthTmpt, {
+          _beginWeek: _beginWeek,
+          days: days
+        });
+        </span><span style="background-color: #f5f5f5; color: #0000ff;">this</span><span style="background-color: #f5f5f5; color: #000000;">.rootBox.append(weekDom); 
+        </span><span style="background-color: #f5f5f5; color: #0000ff;">this</span><span style="background-color: #f5f5f5; color: #000000;">.rootBox.append(calendarDom);
+      }
+    });
+    </span><span style="background-color: #f5f5f5; color: #0000ff;">var</span><span style="background-color: #f5f5f5; color: #000000;"> c </span><span style="background-color: #f5f5f5; color: #000000;">=</span> <span style="background-color: #f5f5f5; color: #0000ff;">new</span><span style="background-color: #f5f5f5; color: #000000;"> Calendar();
+  </span><span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">script</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">body</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">html</span><span style="color: #0000ff;">&gt;</span></pre>
+</div>
+<span class="cnblogs_code_collapse">View Code</span></div>
+<div class="cnblogs_code">
+<pre><span style="color: #0000ff;">var</span> Calendar =<span style="color: #000000;"> inherit({
+  initialize: </span><span style="color: #0000ff;">function</span><span style="color: #000000;"> () {
+    </span><span style="color: #0000ff;">this</span>.dateObj = <span style="color: #0000ff;">new</span><span style="color: #000000;"> Date();
+    </span><span style="color: #0000ff;">this</span>.rootBox = $('body'<span style="color: #000000;">);
+       
+    </span><span style="color: #008000;">//</span><span style="color: #008000;">星期项目模板</span>
+    <span style="color: #0000ff;">this</span>.weekDayItemTmpt = "&lt;li&gt;&lt;%=['日', '一', '二', '三', '四', '五', '六'][day] %&gt;&lt;/li&gt;"<span style="color: #000000;">;
+    </span><span style="color: #008000;">//</span><span style="color: #008000;">星期包裹层模板，传入今天星期几，内部怎么实现自己来</span>
+    <span style="color: #0000ff;">this</span>.weekDayTmpt = '&lt;ul class="cui_week"&gt;&lt;%for(var day = 0; day &lt; 7; day++) { %&gt; ' + <span style="color: #0000ff;">this</span>.weekDayItemTmpt + ' &lt;%} %&gt;&lt;/ul&gt;'<span style="color: #000000;">;
+
+    </span><span style="color: #008000;">//</span><span style="color: #008000;">各个单元格的模板，可以重写</span>
+    <span style="color: #0000ff;">this</span>.itemTmpt = '&lt;li class="cui_calendar_item"&gt;&lt;%=day %&gt;&lt;/li&gt;'<span style="color: #000000;">;
+    </span><span style="color: #008000;">//</span><span style="color: #008000;">无效项目模板</span>
+    <span style="color: #0000ff;">this</span>.invalidTmpt = '&lt;li class="cui_invalid"&gt;&lt;/li&gt;'<span style="color: #000000;">;
+
+    </span><span style="color: #008000;">//</span><span style="color: #008000;">月份模板，给定当前年月，以及天数，第一天星期几，让用户自己构造月度日历模板</span>
+    <span style="color: #0000ff;">this</span>.mouthTmpt =<span style="color: #000000;"> [
+      </span>'&lt;ul class="cui_calendar"&gt;'<span style="color: #000000;">,
+        </span>'&lt;% for(var i = 0; i &lt; _beginWeek; i++) { %&gt;'<span style="color: #000000;">,
+          </span><span style="color: #0000ff;">this</span><span style="color: #000000;">.invalidTmpt,
+        </span>'&lt;% } %&gt;'<span style="color: #000000;">,
+        </span>'&lt;% for(i = 0; i &lt; days; i++) { %&gt;'<span style="color: #000000;">,
+          </span>'&lt;% day = i + 1; %&gt;'<span style="color: #000000;">,
+            </span><span style="color: #0000ff;">this</span><span style="color: #000000;">.itemTmpt,
+        </span>'&lt;% } %&gt;'<span style="color: #000000;">,
+      </span>'&lt;/ul&gt;'<span style="color: #000000;">
+    ].join(</span>''<span style="color: #000000;">);
+
+    </span><span style="color: #0000ff;">this</span><span style="color: #000000;">._initDom();
+  },
+
+  _initDom: </span><span style="color: #0000ff;">function</span><span style="color: #000000;"> () {
+    </span><span style="color: #0000ff;">var</span> d = <span style="color: #0000ff;">this</span><span style="color: #000000;">.dateObj;
+    </span><span style="color: #008000;">//</span><span style="color: #008000;">获取天数</span>
+    <span style="color: #0000ff;">var</span> days =<span style="color: #000000;"> dateUtil.getDaysOfMonth(d);
+    </span><span style="color: #008000;">//</span><span style="color: #008000;">获取那个月第一天时星期几</span>
+    <span style="color: #0000ff;">var</span> _beginWeek =<span style="color: #000000;"> dateUtil.getBeginDayOfMouth(d);
+
+    </span><span style="color: #0000ff;">var</span> weekDom = _.template(<span style="color: #0000ff;">this</span><span style="color: #000000;">.weekDayTmpt)();
+    </span><span style="color: #0000ff;">var</span> calendarDom = _.template(<span style="color: #0000ff;">this</span><span style="color: #000000;">.mouthTmpt, {
+      _beginWeek: _beginWeek,
+      days: days
+    });
+    </span><span style="color: #0000ff;">this</span><span style="color: #000000;">.rootBox.append(weekDom); 
+    </span><span style="color: #0000ff;">this</span><span style="color: #000000;">.rootBox.append(calendarDom);
+  }
+});</span></pre>
+</div>
+<p><span style="line-height: 1.5;">这里将许多可能定制化的东西以模板的方式提了出来，比如我们的week，比如我们的月份模板，这里各个业务同事可以分别按照自己的需求进行扩展</span></p>
+<p><span style="line-height: 1.5;">这里定制的粒度完全由开发人员决定，他可以只定制各个项目，或者定制整个月份的模板，</span><span style="line-height: 1.5;">当然，我们这里需要传入的参数还不够，还需要增加</span></p>
+<h2><span style="line-height: 1.5;">扩展</span></h2>
+<p><span style="line-height: 1.5;">比如，我们要在每月上面显示当前是某年某月就需要更多的数据了，模板的扩展程度，很多时候取决于数据的完善性，这里年月属性我们都需要传入</span></p>
+<p><span style="line-height: 1.5;">所以我们模板处可以稍作修改就变成这个样子了：</span></p>
+<p><span style="line-height: 1.5;"><img src="29854979894966.png" alt=""></span></p>
+<div class="cnblogs_code">
+<pre><span style="color: #0000ff;">var</span> c = <span style="color: #0000ff;">new</span><span style="color: #000000;"> Calendar({
+  mouthTmpt: [
+  </span>'&lt;div style="overflow: hidden; width: 100%; text-align: center;"&gt;&lt;%=year %&gt;年-&lt;%=mouth %&gt;月&lt;/div&gt;'<span style="color: #000000;">,
+  </span>'&lt;ul class="cui_calendar"&gt;'<span style="color: #000000;">,
+    </span>'&lt;% for(var i = 0; i &lt; beginWeek; i++) { %&gt;'<span style="color: #000000;">,
+      </span>'&lt;li class="cui_invalid"&gt;&lt;/li&gt;'<span style="color: #000000;">,
+    </span>'&lt;% } %&gt;'<span style="color: #000000;">,
+    </span>'&lt;% for(i = 0; i &lt; days; i++) { %&gt;'<span style="color: #000000;">,
+      </span>'&lt;% day = i + 1; %&gt;'<span style="color: #000000;">,
+        </span>'&lt;li class="cui_calendar_item"&gt;&lt;%=day %&gt;&lt;/li&gt;'<span style="color: #000000;">,
+    </span>'&lt;% } %&gt;'<span style="color: #000000;">,
+  </span>'&lt;/ul&gt;'<span style="color: #000000;">
+].join(</span>'')</pre>
+</div>
+<p>又或者，我们想让周末变成橙色的话，我们需要这么干，并且再加一点数据，我们直接告诉每项当前的年月日，所以他自己可以做很多判断</p>
+<p><img src="1939536349673.png" alt=""></p>
+<div class="cnblogs_code">
+<pre><span style="color: #0000ff;">var</span> c = <span style="color: #0000ff;">new</span><span style="color: #000000;"> Calendar({
+  itemTmpt: </span>'&lt;li class="cui_calendar_item" &lt;% var d = new Date(year, month, day); <br>if(d.getDay() == 0 || d.getDay() == 6) %&gt;style="color: orange; "&lt;% %&gt;  &gt;&lt;%=day %&gt;&lt;/li&gt;'<span style="color: #000000;">
+
+});</span></pre>
+</div>
+<p><span style="line-height: 1.5;">然后我们得将相关属性赋予dom结构的一个属性，方便后续操作，很多时候事件相关我们还是得依赖dom之间的映射，动态为每个dom增加data-date属性，年月日之间-分割</span></p>
+<p><span style="line-height: 1.5;">因为日模板可以被复写，所以这里需要一个规范，如果这个规范没有了，可能导致日期操作失效</span></p>
+<p><span style="line-height: 1.5;"><img src="28806678924319.png" alt=""></span></p>
+<p>&nbsp;</p>
+<p><span style="line-height: 1.5;">我们知道日期的月份由0开始，我们现在是四月，所以对应的月份却应该是3月</span></p>
+<h1><span style="line-height: 1.5;">代码分解</span></h1>
+<p><span style="line-height: 1.5;">经过前面的学习，我们简单的日历原型其实应该出来了，现在要对其中代码做一些优化</span></p>
+<p><span style="line-height: 1.5;">PS：其实现在代码比较少，优化点不多，我们首先将构造星期与日历相关dom结构的两个方法分离出来</span></p>
+<div class="cnblogs_code">
+<pre>_getWeekDom: <span style="color: #0000ff;">function</span><span style="color: #000000;"> () {
+  </span><span style="color: #0000ff;">return</span> _.template(<span style="color: #0000ff;">this</span><span style="color: #000000;">.weekDayTmpt)();
+},
+</span><span style="color: #008000;">//</span><span style="color: #008000;">description 获得某月的dom结构</span>
+_getMonthDom: <span style="color: #0000ff;">function</span><span style="color: #000000;"> (year, month) {
+  </span><span style="color: #0000ff;">var</span> d = <span style="color: #0000ff;">new</span><span style="color: #000000;"> Date(year, month);
+  </span><span style="color: #008000;">//</span><span style="color: #008000;">description 获取天数</span>
+  <span style="color: #0000ff;">var</span> days =<span style="color: #000000;"> dateUtil.getDaysOfMonth(d);
+  </span><span style="color: #008000;">//</span><span style="color: #008000;">description 获取那个月第一天时星期几</span>
+  <span style="color: #0000ff;">var</span> _beginWeek =<span style="color: #000000;"> dateUtil.getBeginDayOfMouth(d);
+
+  </span><span style="color: #0000ff;">var</span> weekDom = _.template(<span style="color: #0000ff;">this</span><span style="color: #000000;">.weekDayTmpt)();
+  </span><span style="color: #0000ff;">return</span> _.template(<span style="color: #0000ff;">this</span><span style="color: #000000;">.mouthTmpt, {
+    year: d.getFullYear(),
+    month: d.getMonth(),
+    beginWeek: _beginWeek,
+    days: days
+  });
+},
+init: </span><span style="color: #0000ff;">function</span><span style="color: #000000;"> () {
+  </span><span style="color: #0000ff;">this</span>.rootBox.append(<span style="color: #0000ff;">this</span><span style="color: #000000;">._getWeekDom());
+  </span><span style="color: #0000ff;">this</span>.rootBox.append(<span style="color: #0000ff;">this</span>._getMonthDom(<span style="color: #0000ff;">this</span>.dateObj.getFullYear(), <span style="color: #0000ff;">this</span><span style="color: #000000;">.dateObj.getMonth()));
+}</span></pre>
+</div>
+<p>其次，这里的dateObj比较关键，一旦出问题就会导致许多错误，所以我们最开始应该有一个验证的方法，验证是否是日期的方法当然该由dateUtil提供</p>
+<p>这里不但需要验证是否为日期，还需要提供新的日期格式化方法，parseDate方法，用于转变常用日期字符串为日期</p>
+<h2>日期操作</h2>
+<p>首先验证日期我们简单一点</p>
+<div class="cnblogs_code">
+<pre>isDate: <span style="color: #0000ff;">function</span><span style="color: #000000;"> (d) {
+  </span><span style="color: #0000ff;">if</span> ((<span style="color: #0000ff;">typeof</span> d == 'object') &amp;&amp; (d <span style="color: #0000ff;">instanceof</span> Date)) <span style="color: #0000ff;">return</span> <span style="color: #0000ff;">true</span><span style="color: #000000;">;
+  </span><span style="color: #0000ff;">return</span> <span style="color: #0000ff;">false</span><span style="color: #000000;">;
+},</span></pre>
+</div>
+<p>然后是比较复杂的转换字符串为日期对象，以及转换日期对象为常用字符串</p>
+<h3>格式化日期字符串parse</h3>
+<p>这句话的思考是可以匹配各种我们认为是日期格式的字符串，我们只需要告诉年月日的格式化方式或者位置即可，比如以下几种</p>
+<p>2014年4月20日、2014420、2014-4-20、2014 4 20、2041/4/20</p>
+<div class="cnblogs_code">
+<pre><span style="color: #008080;"> 1</span> <span style="color: #008000;">//</span><span style="color: #008000;">将字符串转换为日期</span>
+<span style="color: #008080;"> 2</span> <span style="color: #008000;">//</span><span style="color: #008000;">支持格式y-m-d ymd (y m r)以及标准的</span>
+<span style="color: #008080;"> 3</span> parse: <span style="color: #0000ff;">function</span><span style="color: #000000;"> (dateStr, formatStr) {
+</span><span style="color: #008080;"> 4</span>   <span style="color: #0000ff;">if</span> (<span style="color: #0000ff;">typeof</span> dateStr === 'undefined') <span style="color: #0000ff;">return</span> <span style="color: #0000ff;">null</span><span style="color: #000000;">;
+</span><span style="color: #008080;"> 5</span>   <span style="color: #0000ff;">if</span> (<span style="color: #0000ff;">typeof</span> formatStr === 'string'<span style="color: #000000;">) {
+</span><span style="color: #008080;"> 6</span>     <span style="color: #008000;">//</span><span style="color: #008000;">首先取得顺序相关字符串</span>
+<span style="color: #008080;"> 7</span>     <span style="color: #0000ff;">var</span> arrStr = formatStr.replace(/[^ymd]/g, '').split(''<span style="color: #000000;">);
+</span><span style="color: #008080;"> 8</span>     <span style="color: #0000ff;">if</span> (!arrStr) <span style="color: #0000ff;">return</span> <span style="color: #0000ff;">null</span><span style="color: #000000;">;
+</span><span style="color: #008080;"> 9</span>     <span style="color: #0000ff;">var</span> formatStr = formatStr.replace('y', '(\\{b}{4})'<span style="color: #000000;">);
+</span><span style="color: #008080;">10</span>     <span style="color: #0000ff;">var</span> formatStr = formatStr.replace('m', '(\\{b}{1,2})'<span style="color: #000000;">);
+</span><span style="color: #008080;">11</span>     <span style="color: #0000ff;">var</span> formatStr = formatStr.replace('d', '(\\{b}{1,2})'<span style="color: #000000;">);
+</span><span style="color: #008080;">12</span>     <span style="color: #0000ff;">var</span> formatStr = formatStr.replace(/\{b\}/g, 'd'<span style="color: #000000;">);
+</span><span style="color: #008080;">13</span> 
+<span style="color: #008080;">14</span>     <span style="color: #0000ff;">var</span> reg = <span style="color: #0000ff;">new</span> RegExp(formatStr, 'g'<span style="color: #000000;">);
+</span><span style="color: #008080;">15</span>     <span style="color: #0000ff;">var</span> arr =<span style="color: #000000;"> reg.exec(dateStr)
+</span><span style="color: #008080;">16</span> 
+<span style="color: #008080;">17</span>     <span style="color: #0000ff;">var</span> dateObj =<span style="color: #000000;"> {};
+</span><span style="color: #008080;">18</span>     <span style="color: #0000ff;">for</span> (<span style="color: #0000ff;">var</span> i = 0, len = arrStr.length; i &lt; len; i++<span style="color: #000000;">) {
+</span><span style="color: #008080;">19</span>       dateObj[arrStr[i]] = arr[i + 1<span style="color: #000000;">];
+</span><span style="color: #008080;">20</span> <span style="color: #000000;">    }
+</span><span style="color: #008080;">21</span>     <span style="color: #0000ff;">return</span> <span style="color: #0000ff;">new</span> Date(dateObj['y'], dateObj['m'], dateObj['d'<span style="color: #000000;">]);
+</span><span style="color: #008080;">22</span> <span style="color: #000000;">  }
+</span><span style="color: #008080;">23</span>   <span style="color: #0000ff;">return</span> <span style="color: #0000ff;">null</span><span style="color: #000000;">;
+</span><span style="color: #008080;">24</span> },</pre>
+</div>
+<p>因为楼主正则不是很好，上面的代码应该不是最优写法，基本调用方法如下：</p>
+<div class="cnblogs_code">
+<pre>console.log( dateUtil.parse('2012-4-1', 'y-m-d'<span style="color: #000000;">));
+console.log(dateUtil.parse(</span>'2/4/2014', 'd/m/y'<span style="color: #000000;">));
+console.log(dateUtil.parse(</span>'2014 4 3', 'y m d'<span style="color: #000000;">));
+console.log(dateUtil.parse(</span>'2014年4月4日', 'y年m月d日'<span style="color: #000000;">));
+console.log(dateUtil.parse(</span>'2012-04-05', 'y-m-d'<span style="color: #000000;">));
+console.log(dateUtil.parse(</span>'06/4/2014', 'd/m/y'<span style="color: #000000;">));
+console.log(dateUtil.parse(</span>'2014 4 07', 'y m d'<span style="color: #000000;">));
+console.log(dateUtil.parse(</span>'2014年4月08日', 'y年m月d日'<span style="color: #000000;">));
+
+</span><span style="color: #008000;">//</span><span style="color: #008000;">输出结果</span>
+Tue May 01 2012 00:00:00 GMT+0800 (中国标准时间) 01.htm:229<span style="color: #000000;">
+Fri May </span>02 2014 00:00:00 GMT+0800 (中国标准时间) 01.htm:230<span style="color: #000000;">
+Sat May </span>03 2014 00:00:00 GMT+0800 (中国标准时间) 01.htm:231<span style="color: #000000;">
+Sun May </span>04 2014 00:00:00 GMT+0800 (中国标准时间) 01.htm:232<span style="color: #000000;">
+Sat May </span>05 2012 00:00:00 GMT+0800 (中国标准时间) 01.htm:233<span style="color: #000000;">
+Tue May </span>06 2014 00:00:00 GMT+0800 (中国标准时间) 01.htm:234<span style="color: #000000;">
+Wed May </span>07 2014 00:00:00 GMT+0800 (中国标准时间) 01.htm:235<span style="color: #000000;">
+Thu May </span>08 2014 00:00:00 GMT+0800 (中国标准时间) </pre>
+</div>
+<p>从结果来看，返回时正确的，若是有什么不对，就再说吧。。。。。。</p>
+<h3>格式化日期为字符串format</h3>
+<p>上面我们将特殊字符串转换为了日期，我们还得有个借口将日期格式化为需要的字符串</p>
+<p>这个网上有一个很不错的方案，这里直接抄了。。。。。。</p>
+<div class="cnblogs_code">
+<pre>console.log(dateUtil.format('YYYY年MM月DD日'<span style="color: #000000;">));
+console.log(dateUtil.format(</span>'YYYY-MM-DD'<span style="color: #000000;">));
+
+2014年4月20日 </span>01.htm:251
+2014-4-20</pre>
+</div>
+<p>稍有不足便是没有进行1与01相关的选择，我们这里稍作修改，而且这里对我们上面的代码优化提出了方案，我们一并修改</p>
+<div class="cnblogs_code">
+<pre>    <span style="color: #0000ff;">function</span><span style="color: #000000;"> formatDate(date, format) {
+        </span><span style="color: #0000ff;">if</span> (arguments.length &lt; 2 &amp;&amp; !<span style="color: #000000;">date.getTime) {
+            format </span>=<span style="color: #000000;"> date;
+            date </span>= <span style="color: #0000ff;">new</span><span style="color: #000000;"> Date();
+        }
+        </span><span style="color: #0000ff;">typeof</span> format != 'string' &amp;&amp; (format = 'YYYY年MM月DD日 hh时mm分ss秒'<span style="color: #000000;">);
+        </span><span style="color: #0000ff;">var</span> week = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', '日', '一', '二', '三', '四', '五', '六'<span style="color: #000000;">];
+        </span><span style="color: #0000ff;">return</span> format.replace(/YYYY|YY|MM|DD|hh|mm|ss|星期|周|www|week/g, <span style="color: #0000ff;">function</span><span style="color: #000000;">(a) {
+            </span><span style="color: #0000ff;">switch</span><span style="color: #000000;"> (a) {
+            </span><span style="color: #0000ff;">case</span> "YYYY": <span style="color: #0000ff;">return</span><span style="color: #000000;"> date.getFullYear();
+            </span><span style="color: #0000ff;">case</span> "YY": <span style="color: #0000ff;">return</span> (date.getFullYear()+"").slice(2<span style="color: #000000;">);
+            </span><span style="color: #0000ff;">case</span> "MM": <span style="color: #0000ff;">return</span> date.getMonth() + 1<span style="color: #000000;">;
+            </span><span style="color: #0000ff;">case</span> "DD": <span style="color: #0000ff;">return</span><span style="color: #000000;"> date.getDate();
+            </span><span style="color: #0000ff;">case</span> "hh": <span style="color: #0000ff;">return</span><span style="color: #000000;"> date.getHours();
+            </span><span style="color: #0000ff;">case</span> "mm": <span style="color: #0000ff;">return</span><span style="color: #000000;"> date.getMinutes();
+            </span><span style="color: #0000ff;">case</span> "ss": <span style="color: #0000ff;">return</span><span style="color: #000000;"> date.getSeconds();
+            </span><span style="color: #0000ff;">case</span> "星期": <span style="color: #0000ff;">return</span> "星期" + week[date.getDay() + 7<span style="color: #000000;">];
+            </span><span style="color: #0000ff;">case</span> "周": <span style="color: #0000ff;">return</span> "周" +  week[date.getDay() + 7<span style="color: #000000;">];
+            </span><span style="color: #0000ff;">case</span> "week": <span style="color: #0000ff;">return</span><span style="color: #000000;"> week[date.getDay()];
+            </span><span style="color: #0000ff;">case</span> "www": <span style="color: #0000ff;">return</span> week[date.getDay()].slice(0,3<span style="color: #000000;">);
+            }
+        });
+    }</span></pre>
+</div>
+<div class="cnblogs_code">
+<pre>format: <span style="color: #0000ff;">function</span><span style="color: #000000;"> (date, formatStr) {
+  </span><span style="color: #0000ff;">if</span> (arguments.length &lt; 2 &amp;&amp; !<span style="color: #000000;">date.getTime) {
+    format </span>=<span style="color: #000000;"> date;
+    date </span>= <span style="color: #0000ff;">new</span><span style="color: #000000;"> Date();
+  }
+  </span><span style="color: #0000ff;">typeof</span> format != 'string' &amp;&amp; (format = 'Y年M月D日 H时F分S秒'<span style="color: #000000;">);
+  </span><span style="color: #0000ff;">return</span> format.replace(/Y|y|M|m|D|d|H|h|F|f|S|s/g, <span style="color: #0000ff;">function</span><span style="color: #000000;"> (a) {
+    </span><span style="color: #0000ff;">switch</span><span style="color: #000000;"> (a) {
+      </span><span style="color: #0000ff;">case</span> "y": <span style="color: #0000ff;">return</span> (date.getFullYear() + "").slice(2<span style="color: #000000;">);
+      </span><span style="color: #0000ff;">case</span> "Y": <span style="color: #0000ff;">return</span><span style="color: #000000;"> date.getFullYear();
+      </span><span style="color: #0000ff;">case</span> "m": <span style="color: #0000ff;">return</span> date.getMonth() + 1<span style="color: #000000;">;
+      </span><span style="color: #0000ff;">case</span> "M": <span style="color: #0000ff;">return</span> dateUtil.formatNum(date.getMonth() + 1<span style="color: #000000;">);
+      </span><span style="color: #0000ff;">case</span> "d": <span style="color: #0000ff;">return</span><span style="color: #000000;"> date.getDate();
+      </span><span style="color: #0000ff;">case</span> "D": <span style="color: #0000ff;">return</span><span style="color: #000000;"> dateUtil.formatNum(date.getDate());
+      </span><span style="color: #0000ff;">case</span> "h": <span style="color: #0000ff;">return</span><span style="color: #000000;"> date.getHours();
+      </span><span style="color: #0000ff;">case</span> "H": <span style="color: #0000ff;">return</span><span style="color: #000000;"> dateUtil.formatNum(date.getHours());
+      </span><span style="color: #0000ff;">case</span> "f": <span style="color: #0000ff;">return</span><span style="color: #000000;"> date.getMinutes();
+      </span><span style="color: #0000ff;">case</span> "F": <span style="color: #0000ff;">return</span><span style="color: #000000;"> dateUtil.formatNum(date.getMinutes());
+      </span><span style="color: #0000ff;">case</span> "s": <span style="color: #0000ff;">return</span><span style="color: #000000;"> date.getSeconds();
+      </span><span style="color: #0000ff;">case</span> "S": <span style="color: #0000ff;">return</span><span style="color: #000000;"> dateUtil.formatNum(date.getSeconds());
+    }
+  });
+},</span></pre>
+</div>
+<p>由于这里月与分钟都是以m开头，这里会有问题，所以我这里可耻的将分改为F。。。。。。</p>
+<p>对应日期处理工厂现在变成这个样子了</p>
+<div class="cnblogs_code" onclick="cnblogs_code_show('3f3e87d4-00d4-4f4c-8bbb-71987fe792f7')"><img id="code_img_closed_3f3e87d4-00d4-4f4c-8bbb-71987fe792f7" class="code_img_closed" src="43570758473519.gif" alt=""><img id="code_img_opened_3f3e87d4-00d4-4f4c-8bbb-71987fe792f7" class="code_img_opened" style="display: none;" onclick="cnblogs_code_hide('3f3e87d4-00d4-4f4c-8bbb-71987fe792f7',event)" src="16365178109279.gif" alt="">
+<div id="cnblogs_code_open_3f3e87d4-00d4-4f4c-8bbb-71987fe792f7" class="cnblogs_code_hide">
+<pre><span style="color: #008080;"> 1</span> <span style="color: #0000ff;">var</span> dateUtil =<span style="color: #000000;"> {
+</span><span style="color: #008080;"> 2</span>   formatNum: <span style="color: #0000ff;">function</span><span style="color: #000000;"> (n) {
+</span><span style="color: #008080;"> 3</span>     <span style="color: #0000ff;">if</span> (n &lt; 10) <span style="color: #0000ff;">return</span> '0' +<span style="color: #000000;"> n;
+</span><span style="color: #008080;"> 4</span>     <span style="color: #0000ff;">return</span><span style="color: #000000;"> n;
+</span><span style="color: #008080;"> 5</span> <span style="color: #000000;">  },
+</span><span style="color: #008080;"> 6</span>   <span style="color: #008000;">//</span><span style="color: #008000;">将字符串转换为日期</span>
+<span style="color: #008080;"> 7</span>   <span style="color: #008000;">//</span><span style="color: #008000;">支持格式y-m-d ymd (y m r)以及标准的</span>
+<span style="color: #008080;"> 8</span>   parse: <span style="color: #0000ff;">function</span><span style="color: #000000;"> (dateStr, formatStr) {
+</span><span style="color: #008080;"> 9</span>     <span style="color: #0000ff;">if</span> (<span style="color: #0000ff;">typeof</span> dateStr === 'undefined') <span style="color: #0000ff;">return</span> <span style="color: #0000ff;">null</span><span style="color: #000000;">;
+</span><span style="color: #008080;">10</span>     <span style="color: #0000ff;">if</span> (<span style="color: #0000ff;">typeof</span> formatStr === 'string'<span style="color: #000000;">) {
+</span><span style="color: #008080;">11</span>       <span style="color: #008000;">//</span><span style="color: #008000;">首先取得顺序相关字符串</span>
+<span style="color: #008080;">12</span>       <span style="color: #0000ff;">var</span> arrStr = formatStr.replace(/[^ymd]/g, '').split(''<span style="color: #000000;">);
+</span><span style="color: #008080;">13</span>       <span style="color: #0000ff;">if</span> (!arrStr &amp;&amp; arrStr.length != 3) <span style="color: #0000ff;">return</span> <span style="color: #0000ff;">null</span><span style="color: #000000;">;
+</span><span style="color: #008080;">14</span> 
+<span style="color: #008080;">15</span>       <span style="color: #0000ff;">var</span> formatStr = formatStr.replace(/y|m|d/g, <span style="color: #0000ff;">function</span><span style="color: #000000;"> (k) {
+</span><span style="color: #008080;">16</span>         <span style="color: #0000ff;">switch</span><span style="color: #000000;"> (k) {
+</span><span style="color: #008080;">17</span>           <span style="color: #0000ff;">case</span> 'y': <span style="color: #0000ff;">return</span> '(\\d{4})'<span style="color: #000000;">;
+</span><span style="color: #008080;">18</span>           <span style="color: #0000ff;">case</span> 'm'<span style="color: #000000;">: ;
+</span><span style="color: #008080;">19</span>           <span style="color: #0000ff;">case</span> 'd': <span style="color: #0000ff;">return</span> '(\\d{1,2})'<span style="color: #000000;">;
+</span><span style="color: #008080;">20</span> <span style="color: #000000;">        }
+</span><span style="color: #008080;">21</span> <span style="color: #000000;">      });
+</span><span style="color: #008080;">22</span> 
+<span style="color: #008080;">23</span>       <span style="color: #0000ff;">var</span> reg = <span style="color: #0000ff;">new</span> RegExp(formatStr, 'g'<span style="color: #000000;">);
+</span><span style="color: #008080;">24</span>       <span style="color: #0000ff;">var</span> arr =<span style="color: #000000;"> reg.exec(dateStr)
+</span><span style="color: #008080;">25</span> 
+<span style="color: #008080;">26</span>       <span style="color: #0000ff;">var</span> dateObj =<span style="color: #000000;"> {};
+</span><span style="color: #008080;">27</span>       <span style="color: #0000ff;">for</span> (<span style="color: #0000ff;">var</span> i = 0, len = arrStr.length; i &lt; len; i++<span style="color: #000000;">) {
+</span><span style="color: #008080;">28</span>         dateObj[arrStr[i]] = arr[i + 1<span style="color: #000000;">];
+</span><span style="color: #008080;">29</span> <span style="color: #000000;">      }
+</span><span style="color: #008080;">30</span>       <span style="color: #0000ff;">return</span> <span style="color: #0000ff;">new</span> Date(dateObj['y'], dateObj['m'], dateObj['d'<span style="color: #000000;">]);
+</span><span style="color: #008080;">31</span> <span style="color: #000000;">    }
+</span><span style="color: #008080;">32</span>     <span style="color: #0000ff;">return</span> <span style="color: #0000ff;">null</span><span style="color: #000000;">;
+</span><span style="color: #008080;">33</span> <span style="color: #000000;">  },
+</span><span style="color: #008080;">34</span>   <span style="color: #008000;">//</span><span style="color: #008000;">将日期格式化为字符串</span>
+<span style="color: #008080;">35</span>   format: <span style="color: #0000ff;">function</span><span style="color: #000000;"> (date, formatStr) {
+</span><span style="color: #008080;">36</span>     <span style="color: #0000ff;">if</span> (arguments.length &lt; 2 &amp;&amp; !<span style="color: #000000;">date.getTime) {
+</span><span style="color: #008080;">37</span>       format =<span style="color: #000000;"> date;
+</span><span style="color: #008080;">38</span>       date = <span style="color: #0000ff;">new</span><span style="color: #000000;"> Date();
+</span><span style="color: #008080;">39</span> <span style="color: #000000;">    }
+</span><span style="color: #008080;">40</span>     <span style="color: #0000ff;">typeof</span> format != 'string' &amp;&amp; (format = 'Y年M月D日 H时F分S秒'<span style="color: #000000;">);
+</span><span style="color: #008080;">41</span>     <span style="color: #0000ff;">return</span> format.replace(/Y|y|M|m|D|d|H|h|F|f|S|s/g, <span style="color: #0000ff;">function</span><span style="color: #000000;"> (a) {
+</span><span style="color: #008080;">42</span>       <span style="color: #0000ff;">switch</span><span style="color: #000000;"> (a) {
+</span><span style="color: #008080;">43</span>         <span style="color: #0000ff;">case</span> "y": <span style="color: #0000ff;">return</span> (date.getFullYear() + "").slice(2<span style="color: #000000;">);
+</span><span style="color: #008080;">44</span>         <span style="color: #0000ff;">case</span> "Y": <span style="color: #0000ff;">return</span><span style="color: #000000;"> date.getFullYear();
+</span><span style="color: #008080;">45</span>         <span style="color: #0000ff;">case</span> "m": <span style="color: #0000ff;">return</span> date.getMonth() + 1<span style="color: #000000;">;
+</span><span style="color: #008080;">46</span>         <span style="color: #0000ff;">case</span> "M": <span style="color: #0000ff;">return</span> dateUtil.formatNum(date.getMonth() + 1<span style="color: #000000;">);
+</span><span style="color: #008080;">47</span>         <span style="color: #0000ff;">case</span> "d": <span style="color: #0000ff;">return</span><span style="color: #000000;"> date.getDate();
+</span><span style="color: #008080;">48</span>         <span style="color: #0000ff;">case</span> "D": <span style="color: #0000ff;">return</span><span style="color: #000000;"> dateUtil.formatNum(date.getDate());
+</span><span style="color: #008080;">49</span>         <span style="color: #0000ff;">case</span> "h": <span style="color: #0000ff;">return</span><span style="color: #000000;"> date.getHours();
+</span><span style="color: #008080;">50</span>         <span style="color: #0000ff;">case</span> "H": <span style="color: #0000ff;">return</span><span style="color: #000000;"> dateUtil.formatNum(date.getHours());
+</span><span style="color: #008080;">51</span>         <span style="color: #0000ff;">case</span> "f": <span style="color: #0000ff;">return</span><span style="color: #000000;"> date.getMinutes();
+</span><span style="color: #008080;">52</span>         <span style="color: #0000ff;">case</span> "F": <span style="color: #0000ff;">return</span><span style="color: #000000;"> dateUtil.formatNum(date.getMinutes());
+</span><span style="color: #008080;">53</span>         <span style="color: #0000ff;">case</span> "s": <span style="color: #0000ff;">return</span><span style="color: #000000;"> date.getSeconds();
+</span><span style="color: #008080;">54</span>         <span style="color: #0000ff;">case</span> "S": <span style="color: #0000ff;">return</span><span style="color: #000000;"> dateUtil.formatNum(date.getSeconds());
+</span><span style="color: #008080;">55</span> <span style="color: #000000;">      }
+</span><span style="color: #008080;">56</span> <span style="color: #000000;">    });
+</span><span style="color: #008080;">57</span> <span style="color: #000000;">  },
+</span><span style="color: #008080;">58</span>   <span style="color: #008000;">//</span><span style="color: #008000;"> @description 是否为为日期对象，该方法可能有坑，使用需要慎重</span>
+<span style="color: #008080;">59</span>   <span style="color: #008000;">//</span><span style="color: #008000;"> @param year {num} 日期对象</span>
+<span style="color: #008080;">60</span>   <span style="color: #008000;">//</span><span style="color: #008000;"> @return {boolean} 返回值</span>
+<span style="color: #008080;">61</span>   isDate: <span style="color: #0000ff;">function</span><span style="color: #000000;"> (d) {
+</span><span style="color: #008080;">62</span>     <span style="color: #0000ff;">if</span> ((<span style="color: #0000ff;">typeof</span> d == 'object') &amp;&amp; (d <span style="color: #0000ff;">instanceof</span> Date)) <span style="color: #0000ff;">return</span> <span style="color: #0000ff;">true</span><span style="color: #000000;">;
+</span><span style="color: #008080;">63</span>     <span style="color: #0000ff;">return</span> <span style="color: #0000ff;">false</span><span style="color: #000000;">;
+</span><span style="color: #008080;">64</span> <span style="color: #000000;">  },
+</span><span style="color: #008080;">65</span>   <span style="color: #008000;">//</span><span style="color: #008000;"> @description 是否为闰年</span>
+<span style="color: #008080;">66</span>   <span style="color: #008000;">//</span><span style="color: #008000;"> @param year {num} 可能是年份或者为一个date时间</span>
+<span style="color: #008080;">67</span>   <span style="color: #008000;">//</span><span style="color: #008000;"> @return {boolean} 返回值</span>
+<span style="color: #008080;">68</span>   isLeapYear: <span style="color: #0000ff;">function</span><span style="color: #000000;"> (year) {
+</span><span style="color: #008080;">69</span>     <span style="color: #008000;">//</span><span style="color: #008000;">传入为时间格式需要处理</span>
+<span style="color: #008080;">70</span>     <span style="color: #0000ff;">if</span> (dateUtil.isDate(year)) year =<span style="color: #000000;"> year.getFullYear()
+</span><span style="color: #008080;">71</span>     <span style="color: #0000ff;">if</span> ((year % 4 == 0 &amp;&amp; year % 100 != 0) || (year % 400 == 0)) <span style="color: #0000ff;">return</span> <span style="color: #0000ff;">true</span><span style="color: #000000;">;
+</span><span style="color: #008080;">72</span>     <span style="color: #0000ff;">else</span> <span style="color: #0000ff;">return</span> <span style="color: #0000ff;">false</span><span style="color: #000000;">;
+</span><span style="color: #008080;">73</span> <span style="color: #000000;">  },
+</span><span style="color: #008080;">74</span> 
+<span style="color: #008080;">75</span>   <span style="color: #008000;">//</span><span style="color: #008000;"> @description 获取一个月份的天数</span>
+<span style="color: #008080;">76</span>   <span style="color: #008000;">//</span><span style="color: #008000;"> @param year {num} 可能是年份或者为一个date时间</span>
+<span style="color: #008080;">77</span>   <span style="color: #008000;">//</span><span style="color: #008000;"> @param year {num} 月份</span>
+<span style="color: #008080;">78</span>   <span style="color: #008000;">//</span><span style="color: #008000;"> @return {num} 返回天数</span>
+<span style="color: #008080;">79</span>   getDaysOfMonth: <span style="color: #0000ff;">function</span><span style="color: #000000;"> (year, month) {
+</span><span style="color: #008080;">80</span>     <span style="color: #0000ff;">if</span><span style="color: #000000;"> (dateUtil.isDate(year)) {
+</span><span style="color: #008080;">81</span>       month = year.getMonth(); <span style="color: #008000;">//</span><span style="color: #008000;">注意此处月份要加1，所以我们要减一</span>
+<span style="color: #008080;">82</span>       year =<span style="color: #000000;"> year.getFullYear();
+</span><span style="color: #008080;">83</span> <span style="color: #000000;">    }
+</span><span style="color: #008080;">84</span>     <span style="color: #0000ff;">return</span> [31, dateUtil.isLeapYear(year) ? 29 : 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31<span style="color: #000000;">][month];
+</span><span style="color: #008080;">85</span> <span style="color: #000000;">  },
+</span><span style="color: #008080;">86</span> 
+<span style="color: #008080;">87</span>   <span style="color: #008000;">//</span><span style="color: #008000;"> @description 获取一个月份1号是星期几，注意此时的月份传入时需要自主减一</span>
+<span style="color: #008080;">88</span>   <span style="color: #008000;">//</span><span style="color: #008000;"> @param year {num} 可能是年份或者为一个date时间</span>
+<span style="color: #008080;">89</span>   <span style="color: #008000;">//</span><span style="color: #008000;"> @param year {num} 月份</span>
+<span style="color: #008080;">90</span>   <span style="color: #008000;">//</span><span style="color: #008000;"> @return {num} 当月一号为星期几0-6</span>
+<span style="color: #008080;">91</span>   getBeginDayOfMouth: <span style="color: #0000ff;">function</span><span style="color: #000000;"> (year, month) {
+</span><span style="color: #008080;">92</span>     <span style="color: #0000ff;">if</span> ((<span style="color: #0000ff;">typeof</span> year == 'object') &amp;&amp; (year <span style="color: #0000ff;">instanceof</span><span style="color: #000000;"> Date)) {
+</span><span style="color: #008080;">93</span>       month = year.getMonth(); <span style="color: #008000;">//</span><span style="color: #008000;">注意此处月份要加1</span>
+<span style="color: #008080;">94</span>       year =<span style="color: #000000;"> year.getFullYear();
+</span><span style="color: #008080;">95</span> <span style="color: #000000;">    }
+</span><span style="color: #008080;">96</span>     <span style="color: #0000ff;">var</span> d = <span style="color: #0000ff;">new</span> Date(year, month, 1<span style="color: #000000;">);
+</span><span style="color: #008080;">97</span>     <span style="color: #0000ff;">return</span><span style="color: #000000;"> d.getDay();
+</span><span style="color: #008080;">98</span> <span style="color: #000000;">  }
+</span><span style="color: #008080;">99</span> };</pre>
+</div>
+<span class="cnblogs_code_collapse">View Code</span></div>
+<h2><span style="line-height: 1.5;">日期操作接口</span></h2>
+<p><span style="line-height: 1.5;">既然是日期，一定会有日期项目的操作，我们这里需要提供一个接口将某一项交给用户操作</span></p>
+<p><span style="line-height: 1.5;">这个接口本身不是很难，比较烦的一个时期，就是这里传入的月份是否应该加1的问题</span></p>
+<p><span style="line-height: 1.5;">比如我们操作的明明是4月却要这样写2014-3-20，这个事情比较烦，所以建议传日期对象算了</span></p>
+<div class="cnblogs_code">
+<pre><span style="color: #008000;">//</span><span style="color: #008000;">操作每一个日期</span>
+handleDay: <span style="color: #0000ff;">function</span><span style="color: #000000;"> (dateStr, fn) {
+  </span><span style="color: #0000ff;">if</span> (dateUtil.isDate(dateStr)) dateStr = dateUtil.format(dateStr, 'Y-m-d'<span style="color: #000000;">);
+  </span><span style="color: #0000ff;">var</span> el = <span style="color: #0000ff;">this</span>.root.find('[data-date="' + dateStr + '"]'<span style="color: #000000;">);
+
+  </span><span style="color: #0000ff;">if</span> (<span style="color: #0000ff;">typeof</span> fn == 'function') fn(el, dateUtil.parse(dateStr, 'y-m-d'), <span style="color: #0000ff;">this</span><span style="color: #000000;">);
+
+}
+
+</span><span style="color: #0000ff;">var</span> c = <span style="color: #0000ff;">new</span><span style="color: #000000;"> Calendar({ });
+c.handleDay(</span><span style="color: #0000ff;">new</span> Date(), <span style="color: #0000ff;">function</span><span style="color: #000000;"> (el, date, calendar) {
+  el.html(</span>'今天'<span style="color: #000000;">);
+});</span></pre>
+</div>
+<p><img src="2995607674676.png" alt=""></p>
+<p>这个的好处是什么呢，若是我们有一个需求需要修改某一个星期，或者几个连续工作日的属性便可以如此操作，但是需要操作每个dom结构似乎有点不舒服</p>
+<p>比如我们现在要去这个月周三高亮显示，这个时候我们的日历还需要提供一个接口，让外面可以对自己做遍历操作</p>
+<h2>遍历操作结构eachDay</h2>
+<div class="cnblogs_code">
+<pre>eachDay: <span style="color: #0000ff;">function</span><span style="color: #000000;"> (fn) {
+  </span><span style="color: #0000ff;">var</span> els = <span style="color: #0000ff;">this</span>.root.find('[data-date]'<span style="color: #000000;">);
+  </span><span style="color: #0000ff;">if</span> (<span style="color: #0000ff;">typeof</span> fn == 'function'<span style="color: #000000;">) fn(els);
+}
+
+c.eachDay(</span><span style="color: #0000ff;">function</span><span style="color: #000000;"> (els) {
+  $.each(els, </span><span style="color: #0000ff;">function</span><span style="color: #000000;"> (i, el) {
+    el </span>=<span style="color: #000000;"> $(el);
+    el.html(el.html() </span>+ '号'<span style="color: #000000;">);
+  });
+});
+
+c.handleDay(</span><span style="color: #0000ff;">new</span> Date(), <span style="color: #0000ff;">function</span><span style="color: #000000;"> (el, date, calendar) {
+  el.html(</span>'今天'<span style="color: #000000;">);
+});</span></pre>
+</div>
+<p><img src="12160446912487.png" alt=""></p>
+<p>这里依旧有一个问题：DOM操作太多了，这个方案有问题，所以我们还得优化</p>
+<h1>事件绑定</h1>
+<p>待续......</p>
+<p>&nbsp;</p>
+<h1>结语</h1>
+<p><span style="line-height: 1.5;">今天太晚了，我们下次继续</span></p>
+                </div>
+
+                <div class='span3 sidebar'>
+                    <h2>导航栏</h2>
+                    <ul class="nav nav-tabs nav-stacked">
+                             				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/javascriptzdyxhxzsdyjxyzyddf/index.html">javascript中的一些核心知识点以及需要注意的地方</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/[zd]webappdyhzlyzydqdyhdpyjlkkb/index.html">[置顶]【webapp的优化整理】要做移动前端优化的朋友进来看看吧</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/[zd]yddjrwtyjjavascriptsjjzxjsjydjr/index.html">[置顶]【移动端兼容问题研究】javascript事件机制详解（涉及移动兼容）</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/gruntzhb30fzxhsygruntdbqddm/index.html">【grunt整合版】30分钟学会使用grunt打包前端代码</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/gruntdyd30fzxhsygruntdbqddm/index.html">【grunt第一弹】30分钟学会使用grunt打包前端代码</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/gruntdsdgruntzqdsjxmzdyy/index.html">【grunt第三弹】grunt在前端实际项目中的应用</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/gruntded30fzxhsygruntdbqddm02/index.html">【grunt第二弹】30分钟学会使用grunt打包前端代码（02）</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/IScrollsrxxtpyddhadlqs/index.html">【IScroll深入学习】突破移动端黑暗的利器（上）</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/IScrollsrxxjjIScrollynzz/index.html">【IScroll深入学习】解决IScroll疑难杂症</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/iScrollymxx00mniScroll/index.html">【iScroll源码学习00】模拟iScroll</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/iScrollymxx01zbjd/index.html">【iScroll源码学习01】准备阶段</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/iScrollymxx02fjiScrollsghxsjd/index.html">【iScroll源码学习02】分解iScroll三个核心事件点</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/iScrollymxx03iScrollsjjzygdtdsx/index.html">【iScroll源码学习03】iScroll事件机制与滚动条的实现</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/iScrollymxx04flIScrollhx/index.html">【iScroll源码学习04】分离IScroll核心</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/javascriptpxdytyyjc/index.html">【javascript培训第一天】语言基础</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/javascriptpxdstcybl/index.html">【javascript培训第三天】查遗补漏</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/javascriptpxdetDOMyBOM/index.html">【javascript培训第二天】DOM与BOM</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/javascriptjzdsk01mkhbc/index.html">【javascript激增的思考01】模块化编程</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/javascriptjzdsk02mkhyMVC/index.html">【javascript激增的思考02】模块化与MVC</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/javascriptjzdsk03MVVMyKnockout/index.html">【javascript激增的思考03】MVVM与Knockout</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/javascriptjzdsk04MVCyBackbonejs(beta)/index.html">【javascript激增的思考04】MVC与Backbonejs(beta)</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/javascriptmxdxzlrwmyqltkdzb01/index.html">【javascript面向对象之路】让我们一起来坦克大战吧01</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/NodeJSxxbj04xwfbxt/index.html">【NodeJS学习笔记04】新闻发布系统</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/requireJSymxx01ljzgrequireJSdjg/index.html">【requireJS源码学习01】了解整个requireJS的结构</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/requireJSymxx02datamainjzdsx/index.html">【requireJS源码学习02】datamain加载的实现</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/requireJSymxx03xjrequireJSdjzlc/index.html">【requireJS源码学习03】细究requireJS的加载流程</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/UIcjkfygjdrlcjs/index.html">【UI插件】开发一个简单日历插件（上）</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/UIcjjddrlcjxxxMVCsx/index.html">【UI插件】简单的日历插件（下）——学习MVC思想</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/zeptoxxbj01hxff$()/index.html">【zepto学习笔记01】核心方法$()</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/zeptoxxbj01hxff$()b/index.html">【zepto学习笔记01】核心方法$()（补）</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/zeptoxxbj02lsd/index.html">【zepto学习笔记02】零碎点</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/zeptoxxbj03sjjz/index.html">【zepto学习笔记03】事件机制</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/ycmsztjavascriptzdjc/index.html">【一次面试】再谈javascript中的继承</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/ztbackbone01mxModel/index.html">【再探backbone01】模型Model</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/ztbackbone02jhCollection/index.html">【再探backbone02】集合Collection</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/ztbackbone03bkydyyysltgym/index.html">【再探backbone03】博客园单页应用实例（提供源码）</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/ztbackbone04dyyydjslycl/index.html">【再探backbone04】单页应用的基石路由处理</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/ctUnderscorezsmbyq/index.html">【初探Underscore】再说模版引擎</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/ckjavascriptamzAjaxjsxnszddAjax/index.html">【初窥javascript奥秘之Ajax】简述下你所知道的Ajax？</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/ckjavascriptamzsjmpnxnwmyqmdp/index.html">【初窥javascript奥秘之事件冒泡】那些年我们一起冒的泡</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/ckjavascriptamzsjjzldtygdj/index.html">【初窥javascript奥秘之事件机制】论“点透”与“鬼点击”</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/ckjavascriptamzrrzmbddthisnzdxzthiszxnlm/index.html">【初窥javascript奥秘之让人捉摸不定的this】你知道现在this指向哪里吗？？？</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/ckjavascriptamzbbydxbdhlqbcl/index.html">【初窥javascript奥秘之闭包】叶大侠病都好了，求不踩了：）</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/ckjavascriptamzmxdxfzyjc/index.html">【初窥javascript奥秘之面向对象】封装与继承</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/qdmdsjdjgjdnzdljm/index.html">【前端盲点】事件的几个阶段你真的了解么？？？</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/dyyyviewymodelxgsl/index.html">【单页应用】view与model相关梳理</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/dyyyyqldyyybsxjdwbgns/index.html">【单页应用】一起来单页应用吧，实现简单微博功能！（上）</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/dyyyqjkzqappyggxsm/index.html">【单页应用】全局控制器app应该干些什么？</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/dyyywmgrhclkjdcccjgx/index.html">【单页应用】我们该如何处理框架弹出层层级关系？</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/dyyyljMVC/index.html">【单页应用】理解MVC</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/dyyyztxjzviewzjygrhtx/index.html">【单页应用之通信机制】view之间应该如何通信</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/dyyyjkzHistoryxsHistorydgdyyydm/index.html">【单页应用巨坑之History】细数History带给单页应用的噩梦</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/xtszeptofindysyjiosdcjpknrnhtt/index.html">【小贴士】zeptofind元素以及ios弹出键盘可能让你很头疼</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/xtsgytransitionEndanimatedygyqgs/index.html">【小贴士】关于transitionEndanimate的一个有趣故事</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/xtsgzzdbbysjwtdzzmp/index.html">【小贴士】工作中的”闭包“与事件委托的”阻止冒泡“</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/xtstytjavascriptzdreplace/index.html">【小贴士】探一探javascript中的replace</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/xtsxnjpyfixeddgydddt/index.html">【小贴士】虚拟键盘与fixed带给移动端的痛！</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/ttjavascriptsjjzdcsxyl/index.html">【探讨】javascript事件机制底层实现原理</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/mkhbcljrequireJSsxygjddmkjzq/index.html">【模块化编程】理解requireJS实现一个简单的模块加载器</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/zyJavaScriptmfjmtsdqlxkjzbfgndcljz/index.html">【转】【译】JavaScript魔法揭秘探索当前流行框架中部分功能的处理机制</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/zxjavascriptgszl01javascriptcszds/index.html">【追寻javascript高手之路01】javascript参数知多少？</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/zxjavascriptgszl02blzyyzds/index.html">【追寻javascript高手之路02】变量、作用域知多少？</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/zxjavascriptgszl03javascriptdxdld/index.html">【追寻javascript高手之路03】javascript对象大乱斗</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/zxjavascriptgszl04ljprototype/index.html">【追寻javascript高手之路04】理解prototype</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/zxjavascriptgszl05ljsjl/index.html">【追寻javascript高手之路05】理解事件流</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/zgbj04zxzzsj(2)/index.html">【重构笔记04】重新组织数据(2)</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/zgbj05jhtjbds/index.html">【重构笔记05】简化条件表达式</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/zgbj06jhhsdy/index.html">【重构笔记06】简化函数调用</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/ycmshgttbxysjfl/index.html">一次面试回顾——探讨表现与数据分离</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/dhzwebappzdxz/index.html">动画在webapp中的现状</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/ysandriodlqhthdomclicksjqtsxwttj/index.html">原生andriod浏览器回退后dom（click）事件全体失效问题探究</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/scsbdjxysdsbsjytouchsjdnxs/index.html">手持设备点击响应速度，鼠标事件与touch事件的那些事</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/mnbjQueryzeptohxymfx/index.html">迷你版jQuery——zepto核心源码分析</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/dbsgzdlwmlyqxjdddomxzqb/index.html">都别说工资低了，我们来一起写简单的dom选择器吧！</a></li>
+    				                                         
+                    </ul>
+                </div>
+            </div>
+
+        </div>
+    </body>
+</html>

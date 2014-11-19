@@ -1,0 +1,121 @@
+	<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title></title>
+    <style type="text/css">
+        body { font: 12px 'PTSansRegular',Arial,Helvetica,sans-serif; background: #D1D1D1; }
+        ul, li { margin: 0; padding: 0}
+        li { list-style: none; }
+        
+        #tabs_container { width: 400px; height: 200px; background: white;}
+        #tabs { border-bottom: 1px solid #1C87D5; padding: 5px 5px 0;  width: 690px; margin: 0 auto;  }
+        #tabs li { padding: 5px 10px;  cursor: pointer; display: inline-block; background: #1C87D5; color: White; }
+        #tabs li.sec { color: black;}
+        
+        #parent { width: 700px; height: 400px; background: white; margin: 0 auto; position: relative; }
+        #parent div { filter:alpha(opacity=50); -moz-opacity:0.5; opacity:0.5; font-weight:bold; background: red; position: absolute; }
+    </style>
+</head>
+<body>
+    <ul id="tabs" >
+        <li type="draw" class="sec">画矩形框</li>
+        <li type="drag">拖到矩形框</li>
+    </ul>
+    <div id="parent">
+    </div>
+    <div id="state"></div>
+    <script type="text/javascript">
+        var parent = document.getElementById('parent'),
+            tabs = document.getElementById('tabs'),
+            state = document.getElementById('state'),
+            con = document.getElementById('content'),
+            li = tabs.getElementsByTagName('li'),
+            type = 'draw'; //drag
+
+        tabs.addEventListener('click', function (e) {
+            for (var i = 0; i < li.length; i++) {
+                var el = li[i];
+                el.className = '';
+                var s = '';
+            }
+            var cur_el = e.target;
+            cur_el.className = 'sec';
+            type = cur_el.type;
+
+            var s = '';
+        }, false);
+
+        parent.addEventListener('mousedown', function (e) {
+            var scope = this;
+            if (type == 'draw') {
+                (function () {
+                    var el = e.target, //当前点击元素，父div或者拖到div
+                        x = e.clientX,
+                        y = e.clientY,
+                        offsetTop = scope.offsetTop,
+                        offsetLeft = scope.offsetLeft;
+                    var div_x = x - offsetLeft,
+                        div_y = y - offsetTop;
+                    var div = document.createElement('div');
+                    var style = 'left: ' + div_x + 'px; top: ' + div_y + 'px;';
+                    div.setAttribute('style', style);
+                    div.innerHTML = scope.getElementsByTagName('div').length;
+                    scope.appendChild(div);
+                    var func_move = function (ee) {
+                        var x1 = ee.clientX,
+                        y1 = ee.clientY;
+                        var w = x1 - x;
+                        var h = y1 - y;
+                        if (w > 5 || h > 5) {
+                            div.setAttribute('style', style + 'width: ' + w + 'px; height: ' + h + 'px;');
+                        }
+                    }; 
+                    var func_up = function (ee) {
+                        document.removeEventListener('mousemove', func_move, false);
+                        document.removeEventListener('mouseup', func_up, false);
+                    };
+                    document.addEventListener('mousemove', func_move, false);
+                    document.addEventListener('mouseup', func_up, false);
+                })();
+
+            } else {
+                (function () {
+                    var el = e.target; //当前点击元素，父div或者拖到div
+                    var x1 = e.clientX - el.offsetLeft;
+                    var y1 = e.clientY - el.offsetTop;
+
+                    var func_move = function (ee) {
+                        var cur_el = ee.target;
+                        if (cur_el.id && cur_el.id == 'parent') return false;
+                        var x2 = 0;
+                        var y2 = 0;
+
+                        x2 = ee.clientX - x1 ;
+                        y2 = ee.clientY - y1 ;
+                        x2 = x2 > 0 ? x2 : 0;
+                        y2 = y2 > 0 ? y2 : 0;
+
+                        if (Math.abs(x2) > 5 || Math.abs(y2) > 5) {
+                            cur_el.style.top = (y2) + 'px';
+                            cur_el.style.left = (x2) + 'px';
+                        }
+                    };
+
+                    var func_up = function (ee) {
+                        el.removeEventListener('mousemove', func_move, false);
+                        el.removeEventListener('mouseup', func_up, false);
+                    };
+                    el.addEventListener('mousemove', func_move, false);
+                    el.addEventListener('mouseup', func_up, false);
+                })();
+            }
+
+        }, false);
+    </script>
+</body>
+</html>
+
+    	<style></style>
+	    		<script></script>
+	
+<!-- Generated by RunJS (Wed Nov 19 14:37:39 CST 2014) 2ms -->

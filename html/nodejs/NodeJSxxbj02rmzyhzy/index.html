@@ -1,0 +1,104 @@
+﻿<!DOCTYPE html>
+
+<html lang="zh">
+    <head>
+        <meta charset="utf-8">
+        <meta name="description" content="android,ios" />
+        <meta name="keywords" content="android,ios" />
+
+        <title>叶小钗</title>
+        <style type='text/css'>
+            body {
+                background-color: #CCC;
+            }
+        </style>
+        <link rel="stylesheet" href="../../../css/bootstrap.css" />
+    </head>
+
+    <body>
+        <div class="container">
+
+            <h1>叶小钗</h1>
+
+            <div class='navbar navbar-inverse'>
+                <div class='navbar-inner nav-collapse' style="height: auto;">
+                    <ul class="nav">
+                              				<li><a href="http://songboriceboy.github.io/xxoo/html/blade/index.html">blade</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/css/index.html">css</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/HTML5&CSS3/index.html">HTML5&CSS3</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/index.html">javascript</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Javaxx/index.html">Java学习</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/nodejs/index.html">nodejs</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/requirejs/index.html">requirejs</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/index.html">Web前端</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/xxgw/index.html">学习感悟</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/gzdd/index.html">工作点滴</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/jkxx/index.html">接口学习</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/wfl/index.html">未分类</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/ydkf/index.html">移动开发</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/sjms/index.html">设计模式</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/mst/index.html">面试题</a></li>
+    				                      </ul>
+                </div>
+            </div>
+
+            <div id='content' class='row-fluid'>
+
+                <div class='span9 main'>
+				<div style="color:blue" align=center>【NodeJS学习笔记02】入门资源很重要</div><br><h1>前言</h1>
+<p>在我映像中，异步最早出现与ajax，当时我还在搞.net，然后.net居然出了一个异步的控件......</p>
+<p>虽然我最后知道了他不是异步的......然后，前端异步用得特别多，如果不是异步的程序，你都不好意思说是自己写的NodeJs是机遇javascript做出来的，</p>
+<p>异步编程模型这一特点也被带了过来，异步有很多优点，但是对设计而言却是一个噩梦，异步会打乱时序，所以加大了设计困难，</p>
+<p>但是异步对性能提升、对用户体验有了革命性的提高，所以NodeJS的 异步特性相当明显，今天我们就来简单学习</p>
+<h1>异步I/O</h1>
+<p>其实在操作系统层面上，只有两种I/O方式，堵塞和非堵塞</p>
+<p>在堵塞模型中，应用程序需要等待I/O完成才返回结果，他的特点是调用后腰等待系统完成所有操作才行，这个会造成CPU的等待，而非堵塞调用后会马上返回</p>
+<p>我初学是看的是一本书，但是这里感觉没有描述清楚，而且异步模型来说其实很大只是感受层面的提高，举一个简单的例子</p>
+<p>我现在有一个搜索页和列表页两个单页应用的view，我搜索时候就是需要通过各种渠道搜索，深圳需要调用第三方，第三方再从具体渠道获取数据</p>
+<p>这个时候当然很慢，我如果直接由A切入B在B在搞一个loading框什么的加载数据自然没有问题，但是现在问题是我A切换到B需要动画效果</p>
+<p>这个就要求切换时候Bview渲染已经结束，至少不会再运到过程中获取数据开始渲染，所以此时异步可能就不那么好使，就是是异步请求数据，也是要数据获取才能加载页面</p>
+<p>这个仍然是堵塞加载，这个在业务上是没有办法的</p>
+<p>任何技术皆非完美，堵塞造成CPU等待浪费，非堵塞打乱逻辑不说可能还需要轮询以确认是否完成加载（曾经我使用轮询检测一个dom是否生成）</p>
+<p>NodeJs采用的是事件循环机制，在进程启动时，Node会创建一个死循环，每执行一次循环体的过程就是一次Tick，每个Tick的过程就是才看是否有事件需要处理</p>
+<p>如果有就取出事件相关，执行之，然后进入下一逻辑，没有就退出循环</p>
+<p>每个Tick过程中，每个事件循环中有一个或者多个观察者，判断是否有事件要处理的过程就是向这些观察者询问是否需要处理这个事件</p>
+<p>以我们html的事件模型为例</p>
+<p>对html来说，其实他的每个DOM都是一个观察者，页面的DOM观察着我们的Web Page的变化，我们对一个DOM提供一个addEventListener后，便会对其注册一个回调函数，我们注册的事件会被放到一个&ldquo;容器&rdquo;对象中，这时只是注册，这些函数在满足条件后会被触发（页面变化时），相关的事件会从容器中取出执行</p>
+<p>我们现在点击了一次页面上一个点，然后我们会由容器中取出click事件集合，我们会找到相关的dom，然后触发这些dom的回调函数</p>
+<p>事件可能来自用户的点击或者数据变化，在Node中事件主要来自于网络请求，文件I/O，<span style="line-height: 1.5;">这些事件都会有对应的观察者，如文件观察者，网络观察者</span></p>
+<p><span style="line-height: 1.5;">这也是一个典型生产/消费模型，异步I/O ，网络请求提供事件生产，事件传递到各个观察者，观察者注册事件，事件循环负责取出事件然后执行事件</span></p>
+<p><span style="line-height: 1.5;">PS：以click为例，各个DOM观察者先注册事件，</span><span style="line-height: 1.5;">页面进程不停的监视页面，</span><span style="line-height: 1.5;">用户click页面生产事件，然后由容器中取出注册的click事件并执行，</span></p>
+<p><span style="line-height: 1.5;">一般的函数逻辑由我们控制：</span></p>
+<div class="cnblogs_code">
+<pre><span style="color: #008080;">1</span> <span style="color: #0000ff;">var</span> forEach = <span style="color: #0000ff;">function</span><span style="color: #000000;"> (list, callback) {
+</span><span style="color: #008080;">2</span>     <span style="color: #0000ff;">for</span> (<span style="color: #0000ff;">var</span> i = 0, len = list.length; i &lt; len; i++<span style="color: #000000;">) {
+</span><span style="color: #008080;">3</span> <span style="color: #000000;">        callback(list[i], i, list);
+</span><span style="color: #008080;">4</span> <span style="color: #000000;">    }
+</span><span style="color: #008080;">5</span> }</pre>
+</div>
+<p>异步的情况下回调函数不由开发者控制了，每次js发起调用会产生一个过渡产品请求对象</p>
+<div class="cnblogs_code">
+<pre><span style="color: #008080;">1</span> fs.open = <span style="color: #0000ff;">function</span><span style="color: #000000;"> (path, flags, mode, callback) {
+</span><span style="color: #008080;">2</span> <span style="color: #000000;">  bingding.open(pathModule._makeLong(path), stringToFlags(flags), mode, callback);
+</span><span style="color: #008080;">3</span> };</pre>
+</div>
+<p>fs.open根据路径和参数打开一个文件，从而得到相关数据，内部调用了c++相关接口，过程中会产生一个中间对象，我们的所有状态会在其中......</p>
+<p>PS：看了这么久，我感觉不太好</p>
+<h1>结语</h1>
+<p>这里搞了一本书来看，以为入门级别看书比较轻松，结果越绕越远了.......接下来我们直接走实例，不看书了......</p>
+                </div>
+
+                <div class='span3 sidebar'>
+                    <h2>导航栏</h2>
+                    <ul class="nav nav-tabs nav-stacked">
+                             				<li><a href="http://songboriceboy.github.io/xxoo/html/nodejs/NodeJSxxbj01bxjll/index.html">【NodeJS学习笔记01】不学就老了</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/nodejs/NodeJSxxbj02rmzyhzy/index.html">【NodeJS学习笔记02】入门资源很重要</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/nodejs/NodeJSxxbj03xyxqlzs/index.html">【NodeJS学习笔记03】先运行起来再说</a></li>
+    				                                         
+                    </ul>
+                </div>
+            </div>
+
+        </div>
+    </body>
+</html>

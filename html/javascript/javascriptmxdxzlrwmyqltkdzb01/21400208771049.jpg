@@ -1,0 +1,215 @@
+	<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title></title>
+    <style type="text/css">
+        .map { background: gray; border: 1px solid black; position: relative; margin: 50px auto; width: 416px; height: 416px; }
+        .tank { background-image: url("http://images.cnitblog.com/blog/294743/201306/12123133-eaa9ada8690e4216a2bee3e56442e032.gif"); background-repeat: no-repeat; overflow: hidden; position: absolute; width: 32px; height: 32px; z-index: 3; }
+    </style>
+</head>
+<body>
+    <div class="map" id="map">
+        <div id="me" class="tank">
+        </div>
+    </div>
+    <script type="text/javascript">
+        function getById(id) {
+            return !id ? null : document.getElementById(id);
+        }
+
+        function getAttr(el, k) {
+            if (el) {
+                var v = el.getAttribute[k] ? el.getAttribute[k] : null;
+                return v;
+            }
+        }
+
+        function setAttr(el, k, v) {
+            if (el) {
+                el.setAttribute(k, v);
+            }
+        }
+
+        function getCss(el, k) {
+            if (el) {
+
+                if (el.style[k]) {
+                    return el.style[k];
+                }
+                return null;
+            }
+        }
+
+        function setCss(el, k, v) {
+            if (el) {
+                if (!el.style || el.style.length == 0) {
+                    el.style = {};
+                }
+                el.style[k] = v;
+            }
+        }
+
+        var MyGlobal = {
+            mapWidth: 416,
+            mapHeight: 416,
+            width: 448,
+            height: 512
+        };
+
+        var Tank = function (id, dir, x, y) {
+            this.el = getById(id);
+            this.direction = dir ? dir : 'up';
+            this.tid = null;
+            this.speed = 10;
+            //坦克活动状态 0 未活动 1 正在活动
+            this.activeState = 0;
+            this.x = x ? x : 100;
+            this.y = y ? y : 200;
+            this.dirState = {
+                up: 1,
+                right: 1,
+                down: 1,
+                left: 1
+            };
+        };
+        Tank.prototype.init = function () {
+            var dir = this.direction;
+            var tank = this.el;
+            setCss(tank, 'left', this.x + 'px');
+            setCss(tank, 'top', this.y + 'px');
+            this.setDirection(dir);
+        };
+        Tank.prototype.setDirection = function (dir) {
+            var tank = this.el;
+            if (dir == 'up') {
+                setCss(tank, 'backgroundPosition', '0 0');
+            }
+            if (dir == 'right') {
+                setCss(tank, 'backgroundPosition', '-5px -36px');
+            }
+            if (dir == 'down') {
+                setCss(tank, 'backgroundPosition', '0 -73px');
+            }
+            if (dir == 'left') {
+                setCss(tank, 'backgroundPosition', '0 -105px');
+            }
+            this.dirState[dir] = 1;
+        };
+
+        Tank.prototype.move = function (dir) {
+            if (this.activeState != 0) return false; //正在运动我们便不管他
+            this.activeState = 1; //将当前状态设置为正在运动
+            if (this.direction != dir) {
+                this.direction = dir;
+                this.setDirection(dir);
+            }
+            //处理运动中的定时器
+            if (this.tid) {
+                clearTimeout(this.tid);
+                this.tid = null;
+            }
+            var state = this.dirState[dir];
+            var tank = this.el;
+            if (state == 1 || state == -1) {
+                var strPos = getCss(tank, 'backgroundPosition');
+                var arrPos = strPos.split(' ');
+                var l = arrPos ? arrPos[0] : 0;
+                var t = arrPos ? arrPos[1] : 0;
+                var curPos = parseInt(l);
+                var top = parseInt(t);
+                var po = curPos - (43) * (state);
+                var curPos = po + 'px ' + t + 'px';
+                setCss(tank, 'backgroundPosition', curPos);
+            }
+            var xpos = getCss(tank, 'left') ? getCss(tank, 'left') : 0;
+            var ypos = getCss(tank, 'top') ? getCss(tank, 'top') : 0;
+            xpos = parseInt(xpos);
+            ypos = parseInt(ypos);
+            var mx = MyGlobal.mapWidth - 32;
+            var my = MyGlobal.mapHeight - 32;
+            switch (dir) {
+                case 'up': ypos <= 0 ? 0 : ypos--; break;
+                case 'right': xpos >= mx ? mx : xpos++; break;
+                case 'down': ypos >= my ? my : ypos++; break;
+                case 'left': xpos <= 0 ? 0 : xpos--; break;
+            }
+            setCss(tank, 'left', xpos + 'px');
+            setCss(tank, 'top', ypos + 'px');
+            var scope = this;
+            var speed = this.speed;
+            var repeat = function () {
+                scope.move(dir);
+            };
+            if (!this.tid) {
+                this.tid = setTimeout(repeat, speed);
+            }
+            //移动结束
+            this.activeState = 0;
+        }
+        Tank.prototype.stop = function () {
+            clearTimeout(this.tid);
+            this.tid = null;
+        };
+
+        var tank = new Tank('me', 'up', 100, 100);
+        tank.init();
+
+        function getDir(code) {
+            if (code == '87' || code == '119') {
+                return 'up';
+            }
+            if (code == '100' || code == '68') {
+                return 'right';
+            }
+            if (code == '115' || code == '83') {
+                return 'down';
+            }
+            if (code == '97' || code == '65') {
+                return 'left';
+            }
+            return null;
+        }
+
+        document.onkeydown = function (evt) {
+            evt = (evt) ? evt : window.event;
+            var keyCode = evt.keyCode;
+            var charCode = evt.charCode;
+            var dir = getDir();
+            if (keyCode) {
+                dir = getDir(keyCode.toString());
+            }
+            if (charCode) {
+                dir = getDir(charCode.toString());
+            }
+            tank.move(dir);
+
+            evt.preventDefault();
+            return false;
+        };
+        document.onkeyup = function (evt) {
+            tank.stop();
+        };
+        document.onkeypress = function (evt) {
+            evt = (evt) ? evt : window.event;
+            var keyCode = evt.keyCode;
+            var charCode = evt.charCode;
+            var dir = getDir();
+            if (keyCode) {
+                dir = getDir(keyCode.toString());
+            }
+            if (charCode) {
+                dir = getDir(charCode.toString());
+            }
+            tank.move(dir);
+
+            evt.preventDefault();
+            return false;
+        };
+    </script>
+</body>
+</html>
+
+    	<style></style>
+	    		<script></script>
+	
+<!-- Generated by RunJS (Wed Nov 19 14:37:56 CST 2014) 2ms -->

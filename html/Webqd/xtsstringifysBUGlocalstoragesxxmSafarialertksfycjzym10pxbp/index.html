@@ -1,0 +1,327 @@
+﻿<!DOCTYPE html>
+
+<html lang="zh">
+    <head>
+        <meta charset="utf-8">
+        <meta name="description" content="android,ios" />
+        <meta name="keywords" content="android,ios" />
+
+        <title>叶小钗</title>
+        <style type='text/css'>
+            body {
+                background-color: #CCC;
+            }
+        </style>
+        <link rel="stylesheet" href="../../../css/bootstrap.css" />
+    </head>
+
+    <body>
+        <div class="container">
+
+            <h1>叶小钗</h1>
+
+            <div class='navbar navbar-inverse'>
+                <div class='navbar-inner nav-collapse' style="height: auto;">
+                    <ul class="nav">
+                              				<li><a href="http://songboriceboy.github.io/xxoo/html/blade/index.html">blade</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/css/index.html">css</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/HTML5&CSS3/index.html">HTML5&CSS3</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/index.html">javascript</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Javaxx/index.html">Java学习</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/nodejs/index.html">nodejs</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/requirejs/index.html">requirejs</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/index.html">Web前端</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/xxgw/index.html">学习感悟</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/gzdd/index.html">工作点滴</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/jkxx/index.html">接口学习</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/wfl/index.html">未分类</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/ydkf/index.html">移动开发</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/sjms/index.html">设计模式</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/mst/index.html">面试题</a></li>
+    				                      </ul>
+                </div>
+            </div>
+
+            <div id='content' class='row-fluid'>
+
+                <div class='span9 main'>
+				<div style="color:blue" align=center>【小贴士】【stringify神BUG】【localst</div><br><h1>前言</h1>
+<div>最近碰到几个恶心问题，也发现一点优化技巧，以及对Hybrid知识的一些整理，这里便一并拿出来做分享了，关于Hybrid的调试，会是我今后一个重点</div>
+<div>我的博客首先是学习笔记，方便自己做知识沉淀，以后好查阅，其次才是分享，所以其中有误请提出，觉得乱是很有可能的~~~~~~</div>
+<div>我们在工作中一般会有这么一个流程：发现问题-&gt;定位问题-&gt;解决问题</div>
+<div>其中最难就是定位问题，有时候我们会花上几天时间定位问题，而解决问题却只需要几秒......</div>
+<div>所以定位问题的能力非常重要，这也是经验的体现，所谓高手其实就是坑踩得多而又善于总结罢了</div>
+<div>我这里首先分享一个坑爹的问题，然后由此问题展开今天的学习</div>
+<h1>JSON.stringify出BUG啦！</h1>
+<div>没错，这个我最近碰到最为恶心的一个问题！！！</div>
+<div>所有页面，本来在手机上好好的，就算所有手机、奇葩机都测试通过了，最后Hybrid联调时总会出两个莫名其妙的BUG</div>
+<div>PS：不知道Hybrid各位听过么？没有听过的前端需要好好补补课了，最近2年这个可能是一大趋势，在与Hybrid的战斗中，Hybrid表现出了移动开发万恶之源的应有素质，配合索尼小米三星组成了一个难以逾越的障碍墙（UC我们就不提了）</div>
+<div>
+<div>问题的现象是，一个服务器下发的数据对象被存到了localstorage中，拿出来后其中的小数变成null了</div>
+<div>该问题暂时发现发生于<strong>Hybrid&nbsp;</strong><span lang="EN-US"><strong>三星</strong><span lang="EN-US"><strong>S3</strong>&nbsp;<strong>Sony L39H</strong>中，应该还有不少其它低端机型有问题。</span></span></div>
+<div>几经定位发现现象如下：</div>
+</div>
+<div class="cnblogs_code">
+<pre><span style="color: #0000ff;">var</span> testObject1 =<span style="color: #000000;"> {
+  OrderAmount: </span>0.11<span style="color: #000000;">
+};
+JSON.stringify(testObject1) </span>=&gt; OrderAmount: <span style="color: #0000ff;">null</span></pre>
+</div>
+<div>① 进页面便触发这段代码不会出问题~~</div>
+<div>② click事件中执行上面代码在60%的概率中便中招了！</div>
+<div>最初我当然不相信原生的JSON.stringify会出问题，便反复测试，反复定位，最后页面的代码删到只有几行的时候，我不得不承认是他出了问题~~~~~~Hybrid就是让你料想不到</div>
+<div>一旦定位问题后，这里的解决方案也便出来了：</div>
+<div>在Hybrid中判断useAgent，重写掉JSON.stringify的逻辑即可，这里贴一段参考代码：</div>
+<div class="cnblogs_code" onclick="cnblogs_code_show('ddb97ddd-9c2f-4dde-bc59-a8113a07ccf4')"><img id="code_img_closed_ddb97ddd-9c2f-4dde-bc59-a8113a07ccf4" class="code_img_closed" src="43570758473519.gif" alt=""><img id="code_img_opened_ddb97ddd-9c2f-4dde-bc59-a8113a07ccf4" class="code_img_opened" style="display: none;" onclick="cnblogs_code_hide('ddb97ddd-9c2f-4dde-bc59-a8113a07ccf4',event)" src="16365178109279.gif" alt="">
+<div id="cnblogs_code_open_ddb97ddd-9c2f-4dde-bc59-a8113a07ccf4" class="cnblogs_code_hide">
+<pre><span style="color: #0000ff;">var</span> json2 =<span style="color: #000000;"> {
+  type: </span><span style="color: #0000ff;">function</span><span style="color: #000000;"> (obj) {
+    </span><span style="color: #0000ff;">if</span> (obj == <span style="color: #0000ff;">null</span>) <span style="color: #0000ff;">return</span><span style="color: #000000;"> String(obj);
+    </span><span style="color: #0000ff;">var</span> h = { '[object Boolean]': 'boolean', '[object Number]': 'number', '[object String]': 'string', '[object Function]': 'function', '[object Array]': 'array', '[object Date]': 'date', '[object RegExp]': 'regexp', '[object Error]': 'error'<span style="color: #000000;"> };
+    </span><span style="color: #0000ff;">var</span> t =<span style="color: #000000;"> Object.prototype.toString.call(obj);
+    </span><span style="color: #0000ff;">if</span> (t <span style="color: #0000ff;">in</span> h) <span style="color: #0000ff;">return</span><span style="color: #000000;"> h[t];
+    </span><span style="color: #0000ff;">if</span> (t == '[object Object]') t = obj + ''<span style="color: #000000;">;
+    </span><span style="color: #0000ff;">var</span> arr = t.match(/^\[object (HTML\w+)\]$/<span style="color: #000000;">);
+    </span><span style="color: #0000ff;">if</span> (arr) <span style="color: #0000ff;">return</span> arr[1<span style="color: #000000;">];
+    </span><span style="color: #0000ff;">return</span> 'object'<span style="color: #000000;">;
+  },
+  stringifyJSON: </span><span style="color: #0000ff;">function</span><span style="color: #000000;"> (obj) {
+    </span><span style="color: #0000ff;">var</span> str, t =<span style="color: #000000;"> window.JSON;
+    </span><span style="color: #0000ff;">var</span> rstringifyJSON = /([\n\r\f\\\/\'\"])/<span style="color: #000000;">g;
+    </span><span style="color: #0000ff;">var</span> arr = [], i = 0<span style="color: #000000;">, n, p;
+    </span><span style="color: #0000ff;">var</span> stringHash =<span style="color: #000000;"> {
+      </span>'\n': '\\n'<span style="color: #000000;">,
+      </span>'\r': '\\r'<span style="color: #000000;">,
+      </span>'\f': '\\f'<span style="color: #000000;">
+    };
+    </span><span style="color: #0000ff;">switch</span><span style="color: #000000;"> (json2.type(obj)) {
+      </span><span style="color: #0000ff;">case</span> <span style="color: #0000ff;">null</span><span style="color: #000000;">:
+        str </span>= 'null'<span style="color: #000000;">;
+        </span><span style="color: #0000ff;">break</span><span style="color: #000000;">;
+      </span><span style="color: #0000ff;">case</span> 'undefined'<span style="color: #000000;">:
+        str </span>= 'undefined'<span style="color: #000000;">;
+        </span><span style="color: #0000ff;">break</span><span style="color: #000000;">;
+      </span><span style="color: #0000ff;">case</span> 'object'<span style="color: #000000;">:
+        </span><span style="color: #0000ff;">for</span> (p <span style="color: #0000ff;">in</span><span style="color: #000000;"> obj) {
+          </span><span style="color: #0000ff;">if</span><span style="color: #000000;"> (obj.hasOwnProperty(p)) {
+            arr[i</span>++] = json2.stringifyJSON(p) + ':' +<span style="color: #000000;"> json2.stringifyJSON(obj[p]);
+          }
+        }
+        str </span>= '{' + arr.join(',') + '}'<span style="color: #000000;">;
+        </span><span style="color: #0000ff;">break</span><span style="color: #000000;">;
+      </span><span style="color: #0000ff;">case</span> 'array'<span style="color: #000000;">:
+        </span><span style="color: #0000ff;">for</span> (i = 0, n = obj.length; i &lt; n; i++<span style="color: #000000;">) {
+          arr[i] </span>=<span style="color: #000000;"> json2.stringifyJSON(obj[i]);
+        }
+        str </span>= '[' + arr.join(',') + ']'<span style="color: #000000;">;
+        </span><span style="color: #0000ff;">break</span><span style="color: #000000;">;
+      </span><span style="color: #0000ff;">case</span> 'string'<span style="color: #000000;">:
+        str </span>= '\"' + obj.replace(rstringifyJSON, <span style="color: #0000ff;">function</span><span style="color: #000000;"> (a) {
+          </span><span style="color: #0000ff;">return</span> stringHash[a] || '\\' +<span style="color: #000000;"> a;
+        }) </span>+ '\"'<span style="color: #000000;">;
+        </span><span style="color: #0000ff;">break</span><span style="color: #000000;">;
+      </span><span style="color: #0000ff;">case</span> 'date'<span style="color: #000000;">:
+        str </span>= 'new Date(' + obj.getTime() + ')'<span style="color: #000000;">;
+        </span><span style="color: #0000ff;">break</span><span style="color: #000000;">;
+      </span><span style="color: #0000ff;">case</span> 'number'<span style="color: #000000;">:
+      </span><span style="color: #0000ff;">case</span> 'boolean'<span style="color: #000000;">:
+      </span><span style="color: #0000ff;">case</span> 'function'<span style="color: #000000;">:
+      </span><span style="color: #0000ff;">case</span> 'regexp'<span style="color: #000000;">:
+        str </span>=<span style="color: #000000;"> obj.toString();
+        </span><span style="color: #0000ff;">break</span><span style="color: #000000;">;
+      </span><span style="color: #0000ff;">default</span><span style="color: #000000;">:
+        str </span>= 'null'<span style="color: #000000;">;
+    }
+    </span><span style="color: #0000ff;">return</span><span style="color: #000000;"> str;
+  }
+};
+
+JSON.stringify </span>= json2.stringifyJSON; </pre>
+</div>
+<span class="cnblogs_code_collapse">View Code</span></div>
+<p>当然，我这里其实挖掘的不够彻底，我只是定位到了JSON.stringify有问题，却不能再定位里面哪个环节有问题了......</p>
+<p>更加优雅的做法：</p>
+<div class="cnblogs_code">
+<pre><span style="color: #0000ff;">var</span> stringifyFunc =<span style="color: #000000;"> JSON.stringify
+JSON.stringify </span>= <span style="color: #0000ff;">function</span><span style="color: #000000;"> () {
+  </span><span style="color: #0000ff;">if</span> (arguments.length == 1<span style="color: #000000;">) {
+    </span><span style="color: #0000ff;">return</span> stringifyFunc.call(<span style="color: #0000ff;">this</span>, arguments[0], <span style="color: #0000ff;">function</span><span style="color: #000000;"> (k, v) {
+      </span><span style="color: #0000ff;">if</span> (!isNaN(v)) <span style="color: #0000ff;">return</span> v + ''<span style="color: #000000;">;
+      </span><span style="color: #0000ff;">else</span> <span style="color: #0000ff;">return</span><span style="color: #000000;"> v;
+    })
+  }
+  </span><span style="color: #0000ff;">else</span><span style="color: #000000;"> {
+    stringifyFunc.apply(</span><span style="color: #0000ff;">this</span><span style="color: #000000;">, arguments);
+  }
+}</span></pre>
+</div>
+<h1>localstorage读取失效</h1>
+<p>上面说到了localstorage，这里正好将它拿出来说下，首先有几个必须要牢记的规则</p>
+<div class="cnblogs_code">
+<pre><span style="color: #800000;">① localstorage最大字符为500多万（5M）
+各个手机有所差异，但是不会太大，所以使用localstorage一定要记得清理，不清理可能导致
+读取localstorage效率下降，localstorage满了会引发业务逻辑错误
+② localstorage读取文件的
+所以其性能没有内存读取快，firefox更是会一次性将数据导入内存，想想就觉得吓人啊
+③ localstorage不被爬虫识别，所以与SEO相关的关键信息需要避免使用localstorage，否则后续会被坑死</span></pre>
+</div>
+<div>上面说了几个localstorage需要注意的地方，事实上localstorage对性能提升还是有一些作用的</div>
+<div>存储不太重要的数据，比如城市信息；存取1分钟内有用的数据也是可以减少请求的</div>
+<div>但是在android Hybrid中有一个神奇的后退按钮，此按钮一旦按下会回到上一个页面，这个时候里面的localstorage可能会读取失效！！！一个简单不靠谱的解决方案是在webapp中加入：</div>
+<div>
+<div class="cnblogs_code">
+<pre>window.onunload = <span style="color: #0000ff;">function</span> () { };<span style="color: #008000;">//</span><span style="color: #008000;">不要问我为什么，我也不知道！</span></pre>
+</div>
+<p>最后在开启隐私模式下时，safari的localstorage读写是不可用的，但是qq浏览器却可以，至于原因我就不知道了......</p>
+<h1>消除链接失效时safari alert框</h1>
+</div>
+<div>该问题的使用场景首先出现在这里：</div>
+<div><a href="http://www.cnblogs.com/yexiaochai/p/3439179.html">http://www.cnblogs.com/yexiaochai/p/3439179.html</a></div>
+<div>导致alert框的出现的原因是我点击了一个无效链接，这个时候Safari便会弹框提示</div>
+<div>
+<div class="cnblogs_code">
+<pre><span style="color: #0000ff;">&lt;</span><span style="color: #800000;">html </span><span style="color: #ff0000;">xmlns</span><span style="color: #0000ff;">="http://www.w3.org/1999/xhtml"</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #0000ff;">&lt;</span><span style="color: #800000;">head</span><span style="color: #0000ff;">&gt;</span>
+  <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">title</span><span style="color: #0000ff;">&gt;&lt;/</span><span style="color: #800000;">title</span><span style="color: #0000ff;">&gt;</span>
+  <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">meta </span><span style="color: #ff0000;">name</span><span style="color: #0000ff;">="viewport"</span><span style="color: #ff0000;"> content</span><span style="color: #0000ff;">="width=320.1, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no,minimal-ui"</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">head</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #0000ff;">&lt;</span><span style="color: #800000;">body</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #0000ff;">&lt;</span><span style="color: #800000;">a </span><span style="color: #ff0000;">href</span><span style="color: #0000ff;">="http://www.baidu.com"</span><span style="color: #0000ff;">&gt;</span>百度一下<span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">a</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #0000ff;">&lt;</span><span style="color: #800000;">a </span><span style="color: #ff0000;">href</span><span style="color: #0000ff;">="taobao://wireless"</span><span style="color: #0000ff;">&gt;</span>测试无效URL<span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">a</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">body</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">html</span><span style="color: #0000ff;">&gt;</span></pre>
+</div>
+<p><img src="33490256227918.jpg" alt="" width="274" height="411"></p>
+<div>前段时间，小钗的一个同事找到了解决方案，大致做法如下：</div>
+<div><a href="http://sandbox.runjs.cn/show/h3ec96kr">http://sandbox.runjs.cn/show/h3ec96kr</a></div>
+<div>
+<div class="cnblogs_code" onclick="cnblogs_code_show('3b077fbb-c6c7-458d-8d3f-b636c76562a0')"><img id="code_img_closed_3b077fbb-c6c7-458d-8d3f-b636c76562a0" class="code_img_closed" src="43570758473519.gif" alt=""><img id="code_img_opened_3b077fbb-c6c7-458d-8d3f-b636c76562a0" class="code_img_opened" style="display: none;" onclick="cnblogs_code_hide('3b077fbb-c6c7-458d-8d3f-b636c76562a0',event)" src="16365178109279.gif" alt="">
+<div id="cnblogs_code_open_3b077fbb-c6c7-458d-8d3f-b636c76562a0" class="cnblogs_code_hide">
+<pre><span style="color: #008080;"> 1</span> <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">html </span><span style="color: #ff0000;">xmlns</span><span style="color: #0000ff;">="http://www.w3.org/1999/xhtml"</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 2</span> <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">head</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 3</span>   <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">title</span><span style="color: #0000ff;">&gt;&lt;/</span><span style="color: #800000;">title</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 4</span>   <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">meta </span><span style="color: #ff0000;">name</span><span style="color: #0000ff;">="viewport"</span><span style="color: #ff0000;"> content</span><span style="color: #0000ff;">="width=320.1, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no,minimal-ui"</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 5</span>   <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">script </span><span style="color: #ff0000;">id</span><span style="color: #0000ff;">="others_zepto_10rc1"</span><span style="color: #ff0000;"> type</span><span style="color: #0000ff;">="text/javascript"</span><span style="color: #ff0000;"> class</span><span style="color: #0000ff;">="library"</span><span style="color: #ff0000;"> src</span><span style="color: #0000ff;">="/js/sandbox/other/zepto.min.js"</span><span style="color: #0000ff;">&gt;&lt;/</span><span style="color: #800000;">script</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 6</span> <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">head</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 7</span> <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">body</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 8</span>   <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">a </span><span style="color: #ff0000;">href</span><span style="color: #0000ff;">="http://www.baidu.com"</span><span style="color: #0000ff;">&gt;</span>百度一下<span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">a</span><span style="color: #0000ff;">&gt;</span> <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">a </span><span style="color: #ff0000;">href</span><span style="color: #0000ff;">="taobao://wireless"</span><span style="color: #0000ff;">&gt;</span>测试无效URL<span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">a</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 9</span>   <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">script </span><span style="color: #ff0000;">type</span><span style="color: #0000ff;">="text/javascript"</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">10</span> <span style="background-color: #f5f5f5; color: #000000;">    $(</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">a</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">).click(</span><span style="background-color: #f5f5f5; color: #0000ff;">function</span><span style="background-color: #f5f5f5; color: #000000;"> (e) {
+</span><span style="color: #008080;">11</span>       <span style="background-color: #f5f5f5; color: #0000ff;">var</span><span style="background-color: #f5f5f5; color: #000000;"> el </span><span style="background-color: #f5f5f5; color: #000000;">=</span><span style="background-color: #f5f5f5; color: #000000;"> $(e.target);
+</span><span style="color: #008080;">12</span>       <span style="background-color: #f5f5f5; color: #0000ff;">var</span><span style="background-color: #f5f5f5; color: #000000;"> url </span><span style="background-color: #f5f5f5; color: #000000;">=</span><span style="background-color: #f5f5f5; color: #000000;"> el.attr(</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">href</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">);
+</span><span style="color: #008080;">13</span>       <span style="background-color: #f5f5f5; color: #0000ff;">if</span><span style="background-color: #f5f5f5; color: #000000;"> (url.indexOf(</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">taobao</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">) </span><span style="background-color: #f5f5f5; color: #000000;">!=</span> <span style="background-color: #f5f5f5; color: #000000;">-</span><span style="background-color: #f5f5f5; color: #000000;">1</span><span style="background-color: #f5f5f5; color: #000000;">) {
+</span><span style="color: #008080;">14</span>         <span style="background-color: #f5f5f5; color: #0000ff;">var</span><span style="background-color: #f5f5f5; color: #000000;"> ifm </span><span style="background-color: #f5f5f5; color: #000000;">=</span><span style="background-color: #f5f5f5; color: #000000;"> document.createElement(</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">iframe</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">);
+</span><span style="color: #008080;">15</span> <span style="background-color: #f5f5f5; color: #000000;">        ifm.onload </span><span style="background-color: #f5f5f5; color: #000000;">=</span> <span style="background-color: #f5f5f5; color: #0000ff;">function</span><span style="background-color: #f5f5f5; color: #000000;"> () {
+</span><span style="color: #008080;">16</span> <span style="background-color: #f5f5f5; color: #000000;">          ifm.contentWindow.document.write(</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">&lt;script&gt;location.href="</span><span style="background-color: #f5f5f5; color: #000000;">'</span> <span style="background-color: #f5f5f5; color: #000000;">+</span><span style="background-color: #f5f5f5; color: #000000;"> url </span><span style="background-color: #f5f5f5; color: #000000;">+</span> <span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">"&lt;/</span><span style="background-color: #f5f5f5; color: #000000;">'</span> <span style="background-color: #f5f5f5; color: #000000;">+</span> <span style="background-color: #f5f5f5; color: #000000;">''</span> <span style="background-color: #f5f5f5; color: #000000;">+</span> <span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">script&gt;</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">);
+</span><span style="color: #008080;">17</span> <span style="background-color: #f5f5f5; color: #000000;">        }
+</span><span style="color: #008080;">18</span> <span style="background-color: #f5f5f5; color: #000000;">        ifm.src </span><span style="background-color: #f5f5f5; color: #000000;">=</span> <span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">about:blank</span><span style="background-color: #f5f5f5; color: #000000;">'</span><span style="background-color: #f5f5f5; color: #000000;">;
+</span><span style="color: #008080;">19</span> <span style="background-color: #f5f5f5; color: #000000;">        document.body.appendChild(ifm);
+</span><span style="color: #008080;">20</span> <span style="background-color: #f5f5f5; color: #000000;">      } </span><span style="background-color: #f5f5f5; color: #0000ff;">else</span><span style="background-color: #f5f5f5; color: #000000;"> {
+</span><span style="color: #008080;">21</span> <span style="background-color: #f5f5f5; color: #000000;">        window.location </span><span style="background-color: #f5f5f5; color: #000000;">=</span><span style="background-color: #f5f5f5; color: #000000;"> url;
+</span><span style="color: #008080;">22</span> <span style="background-color: #f5f5f5; color: #000000;">      }
+</span><span style="color: #008080;">23</span> <span style="background-color: #f5f5f5; color: #000000;">      e.preventDefault();
+</span><span style="color: #008080;">24</span> <span style="background-color: #f5f5f5; color: #000000;">    });
+</span><span style="color: #008080;">25</span>   <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">script</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">26</span> <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">body</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">27</span> <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">html</span><span style="color: #0000ff;">&gt;</span></pre>
+</div>
+<span class="cnblogs_code_collapse">View Code</span></div>
+<p>核心代码在此：</p>
+<div class="cnblogs_code">
+<pre><span style="color: #008080;"> 1</span>     $('a').click(<span style="color: #0000ff;">function</span><span style="color: #000000;"> (e) {
+</span><span style="color: #008080;"> 2</span>       <span style="color: #0000ff;">var</span> el =<span style="color: #000000;"> $(e.target);
+</span><span style="color: #008080;"> 3</span>       <span style="color: #0000ff;">var</span> url = el.attr('href'<span style="color: #000000;">);
+</span><span style="color: #008080;"> 4</span>       <span style="color: #0000ff;">if</span> (url.indexOf('taobao') != -1<span style="color: #000000;">) {
+</span><span style="color: #008080;"> 5</span>         <span style="color: #0000ff;">var</span> ifm = document.createElement('iframe'<span style="color: #000000;">);
+</span><span style="color: #008080;"> 6</span>         ifm.onload = <span style="color: #0000ff;">function</span><span style="color: #000000;"> () {
+</span><span style="color: #008080;"> 7</span>           ifm.contentWindow.document.write('&lt;script&gt;location.href="' + url + '"&lt;/' + '' + 'script&gt;'<span style="color: #000000;">);
+</span><span style="color: #008080;"> 8</span> <span style="color: #000000;">        }
+</span><span style="color: #008080;"> 9</span>         ifm.src = 'about:blank'<span style="color: #000000;">;
+</span><span style="color: #008080;">10</span> <span style="color: #000000;">        document.body.appendChild(ifm);
+</span><span style="color: #008080;">11</span>       } <span style="color: #0000ff;">else</span><span style="color: #000000;"> {
+</span><span style="color: #008080;">12</span>         window.location =<span style="color: #000000;"> url;
+</span><span style="color: #008080;">13</span> <span style="color: #000000;">      }
+</span><span style="color: #008080;">14</span>       e.preventDefault();</pre>
+</div>
+<p>其原理就是iframe中url解析错误的话，Safari不太理睬~~~~~~</p>
+<h1>延迟加载&middot;性能与体验</h1>
+</div>
+</div>
+<div>以延迟加载来说，最常见的便是图片延迟加载，但是很多朋友却不知道为什么要做延迟加载</div>
+<div>浏览器能同时请求的并发数是有限的，对于手机来说一般是4-6之间，不同型号的手机或者浏览器会有所不同，差距不会太大</div>
+<div>这个请求数限制存于浏览器，所以一处请求卡死，就算新开标签也会受到影响（手机一般不考虑tab），下面有一个场景：</div>
+<div>一个页面打开，里面有N多图片，并且有几个js待加载，这个时候若是图片先加载的话，图片会占用js的并发数，从而阻塞页面的加载~~~~~~</div>
+<div>举个webapp的例子，我们进一个列表页，加载了15个图片，用户点击列表项booking页模块js开始加载（requireJS规则），这个时候业务js需要等待前面图片加载结束后才能加载，至少需要空闲并发数</div>
+<div>所以，图片是有可能堵塞JS的，这个也是我们做图片延迟加载的主要原因</div>
+<h3>首屏载入速度</h3>
+<div>延迟加载是提升首页载入速度的一大手段，对于webapp来说，操作会有所不同</div>
+<div>webapp中一个个业务view都是一个独立的js文件，我们能控制第二个view在首页是否加载</div>
+<div>或者说，页面中用到的组件，我们皆可以按需加载，但这里就有一个情况需要取舍</div>
+<div>首屏快，操作慢VS首屏慢操作快</div>
+<div>说得多不如亲身操作：</div>
+<div><iframe style="line-height: 1.5;" src="14869608319504.html#index" width="450" height="700"></iframe><span style="line-height: 1.5;">&nbsp;&nbsp;<iframe src="11859987331967.html#index" width="450" height="700"></iframe></span></div>
+<div>第一个便是首屏快的代码，其它组件全部采用按需加载的手段，但是事实上这类做法会导致后续操作十分卡！！因为每一个操作可能引发一次请求！</div>
+<div>第二个便是首屏将UI与View业务代码全部打包一起了，这样首屏加载会比较慢，他的效果时后续操作的无缝性</div>
+<div>当然，是否需要将js全部打包，这会是一场口水战，直接有一个阀值，有一个区间，只要做到这个区间便好</div>
+<h1>统计代码导致10px白屏</h1>
+<p><span style="line-height: 1.5;">很多大型网站都会具有统计代码，而此类统计代码一般是以img做请求发出，但是他可以导致10px白屏你知道吗？</span></p>
+<p><img src="207909510156346.png" alt="" width="301" height="200"></p>
+<p><img src="15067405723521.png" alt=""></p>
+<div>
+<div>会出现10px左右的白屏区域，这个问题导致的原因是：</div>
+<div>独立的inline元素出现时，会为他创建一个line boxes，这个就是传说中的文字框</div>
+<div>一行文字有一个line boxes，line boxes的高度由line-height控制而不是行内元素的width height控制</div>
+<div>所以，img的高度与line boxes没有关系</div>
+<div>下面那一行白屏空间其实就是一个匿名line boxes，这个时候给body设置line-height他便会消失，或者让img脱离文档流即可</div>
+</div>
+<h1>结语</h1>
+<div>依旧这句话，问题的定位才是难点，若能定位一个问题，其解决方案往往是分分钟的事情......</div>
+<div>这里记录这些奇怪的知识点，以便今后查阅，也希望对各位有所帮助！</div>
+                </div>
+
+                <div class='span3 sidebar'>
+                    <h2>导航栏</h2>
+                    <ul class="nav nav-tabs nav-stacked">
+                             				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/Fiddlerznqddsq/index.html">Fiddler真乃前端大杀器！！！</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/Requirejs/index.html">Requirejs</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/RequireJSyBackbonejdzh/index.html">RequireJS与Backbone简单整合</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/RequireJSxxbj/index.html">RequireJS学习笔记</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/Webqdyhctxdpzyyqdgsgpng/index.html">Web前端优化初探，小弟抛砖引玉，期待高手共破难关！</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/Webqdlqjrctxsqwpzyyqdgsgpng/index.html">Web前端浏览器兼容初探，小生浅文抛砖引玉，期待高手攻破难关！</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/jqueryfdataListxnyhmbybysxtgxn10bys/index.html">【jquery仿dataList——性能优化】模板预编译思想提高性能10倍以上！！！</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/jqueryfdataListyyzmfigoogledzhtdpxzdhfp/index.html">【jquery仿dataList】应用之——模仿igoogle【定制化、拖动排序，最大化、分屏】</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/jqueryfdatalistdygwtqzszmxxsjlkzDIVdjjbf/index.html">【jquery仿datalist的一个问题，求助】——设置每行显示几列，块状DIV的解决办法</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/jquerymfnetkjcbGridViewmxsxjqjdyy/index.html">【jquery模仿net控件】初步GridView模型实现，及其简单应用</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/jquerymfnetkjjdfykj10fsgridviewsycs/index.html">【jquery模仿net控件】简单分页控件10，附上gridview使用测试</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/jquerymfnetkjjdddatalistkjgxjqjdyy/index.html">【jquery模仿net控件】简单的datalist控件更新，及其简单应用</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/jquerymfnetkjjdddropdownlistydatalist/index.html">【jquery模仿net控件】简单的dropdownlist与datalist</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/jquerybnetkjdropdownlistfymhydjzdzzpz/index.html">【jquery版net控件—dropdownlist】附源码，欢迎大家指点、指正、拍砖！！！</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/positionykyhfzddccyslsbdws/index.html">【position也可以很复杂】当弹出层遇上了鼠标定位（上）</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/positionykyhfzddccyslsbdwx/index.html">【position也可以很复杂】当弹出层遇上了鼠标定位（下）</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/SEOzmlwljnmtsbwmlyqkkSEOb/index.html">【SEO】周末了，为了纪念明天上班，我们来一起看看SEO吧</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/webqdyhqdwyhyrzrz/index.html">【web前端优化】前端无优化，庸人自扰之！</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/webqdyhzreflowjsymdhl/index.html">【web前端优化之reflow】减少页面的回流</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/webqdyhztpycjzctzwbsxwbk/index.html">【web前端优化之图片延迟加载初探】中午不睡，下午崩溃</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/webqdyhztpmhdqxkwQQkjrhxsxp/index.html">【web前端优化之图片模糊到清晰】看我QQ空间如何显示相片</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/webqdpxzqhddphsywmsxdDatalistsmwtb/index.html">【web前端培训之前后端的配合（上）】以我们熟悉的Datalist说明问题吧</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/webqdpxzqhddphzjxzrdgs/index.html">【web前端培训之前后端的配合（中）】继续昨日的故事</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/dyyygybkydbfgqym/index.html">【单页应用】关于博客园的补发（高清有码）。。。</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/xtsstringifysBUGlocalstoragesxxmSafarialertksfycjzym10pxbp/index.html">【小贴士】【stringify神BUG】【localstorage失效】【消灭Safarialert框】【是否延迟加载】【页面10px白屏】</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/dalhdmsthhdsdmstjsh/index.html">【答阿里寒冬面试题】呵呵，大神的面试题就是好！</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/ycsjmstdldgwxxdgjxxdff/index.html">一次上机面试题带来的感悟【学习的感觉、学习的方法】</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/ydmstdldqdyhsxxxdp/index.html">一道面试题带来的前端优化——实现星星点评</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/zysyzjjhfzwebqdbfxlgxmndjjfa/index.html">只言碎语总结，今后发展web前端，并分享两个项目难点解决方案。</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/gwjlytbllbnwmljxwwdbdyzb/index.html">各位加了一天班累了吧？那我们来继续未完的表单验证吧</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/gwzmwlytllbwmyqlzldmstbjstbdy/index.html">各位周末玩了一天累了吧，我们一起来做两道面试题吧（据说淘宝的哟）！</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/jyjQuerydxlcdcjzwsy/index.html">基于jQuery的下拉菜单插件，诸位上眼！！！</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/jyjQuerydxlcdcd02zwsy/index.html">基于jQuery的下拉菜单菜单【02】，诸位上眼！！！</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/gzzpddyxdxdccktfybwjsc/index.html">工作中碰到的一些东西【弹出窗口】【拖放】【异步文件上传】</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/gzlygxqgwydllbnwmyqlbdyzyfb/index.html">工作了一个星期各位一定累了吧，那我们一起来表单验证一番吧！</a></li>
+    				                                         
+                    </ul>
+                </div>
+            </div>
+
+        </div>
+    </body>
+</html>

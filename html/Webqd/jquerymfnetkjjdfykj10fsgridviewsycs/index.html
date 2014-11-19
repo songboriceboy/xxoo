@@ -1,0 +1,413 @@
+﻿<!DOCTYPE html>
+
+<html lang="zh">
+    <head>
+        <meta charset="utf-8">
+        <meta name="description" content="android,ios" />
+        <meta name="keywords" content="android,ios" />
+
+        <title>叶小钗</title>
+        <style type='text/css'>
+            body {
+                background-color: #CCC;
+            }
+        </style>
+        <link rel="stylesheet" href="../../../css/bootstrap.css" />
+    </head>
+
+    <body>
+        <div class="container">
+
+            <h1>叶小钗</h1>
+
+            <div class='navbar navbar-inverse'>
+                <div class='navbar-inner nav-collapse' style="height: auto;">
+                    <ul class="nav">
+                              				<li><a href="http://songboriceboy.github.io/xxoo/html/blade/index.html">blade</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/css/index.html">css</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/HTML5&CSS3/index.html">HTML5&CSS3</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/javascript/index.html">javascript</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Javaxx/index.html">Java学习</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/nodejs/index.html">nodejs</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/requirejs/index.html">requirejs</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/index.html">Web前端</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/xxgw/index.html">学习感悟</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/gzdd/index.html">工作点滴</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/jkxx/index.html">接口学习</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/wfl/index.html">未分类</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/ydkf/index.html">移动开发</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/sjms/index.html">设计模式</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/mst/index.html">面试题</a></li>
+    				                      </ul>
+                </div>
+            </div>
+
+            <div id='content' class='row-fluid'>
+
+                <div class='span9 main'>
+				<div style="color:blue" align=center>【jquery模仿net控件】简单分页控件10，附上gridview使用测试</div><br><h1>前言</h1>
+<hr>
+<p>最近项目需求需要用到jquery的分页功能，所以就自己模仿着其它地方的写了一个，现在配合着原来写的gridview一起使用看看效果。</p>
+<p>我们项目有个地方有点痛苦，他不能返回数据的总记录数，这个bug不修复我这边都只能动态附初始值，另外首页尾页等因为刚刚写起皆暂时未实现，</p>
+<p>等后面点调整后，有必要便一起发出来。</p>
+<h1>截图</h1>
+<hr>
+<p><img src="44199987140940.gif" alt=""></p>
+<p><img src="2062229924593.gif" alt=""></p>
+<p><img src="24164746465748.gif" alt=""></p>
+<h1>分页代码使用示例</h1>
+<hr>
+<div class="cnblogs_code">
+<pre>&lt;!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"&gt;
+&lt;html xmlns="http://www.w3.org/1999/xhtml"&gt;
+&lt;head&gt;
+    &lt;title&gt;&lt;/title&gt;
+    &lt;link href="../css/pagination.css" rel="stylesheet" type="text/css" /&gt;
+    &lt;script src="../js/jquery-1.7.1.min.js" type="text/javascript"&gt;&lt;/script&gt;
+    &lt;script src="../js/Pagination.js" type="text/javascript"&gt;&lt;/script&gt;
+    &lt;script src="http://www.cnblogs.com/03GridView/js/GridViewBase.js" type="text/javascript"&gt;&lt;/script&gt;
+    &lt;script src="http://www.cnblogs.com/03GridView/js/GridColum.js" type="text/javascript"&gt;&lt;/script&gt;
+    &lt;script src="http://www.cnblogs.com/03GridView/js/GridRow.js" type="text/javascript"&gt;&lt;/script&gt;
+    &lt;script src="http://www.cnblogs.com/03GridView/js/GridView.js" type="text/javascript"&gt;&lt;/script&gt;
+    &lt;script type="text/javascript"&gt;
+        <span style="color: #008000;">//</span><span style="color: #008000;">initGrid</span>
+
+        <span style="color: #0000ff;">var</span> gridDataBind = <span style="color: #0000ff;">function</span><span style="color: #000000;"> (data) {
+            </span><span style="color: #0000ff;">var</span> tb = $("#tb"<span style="color: #000000;">);
+            </span><span style="color: #0000ff;">var</span> grid = <span style="color: #0000ff;">new</span><span style="color: #000000;"> GridView();
+            grid.style </span>=<span style="color: #000000;"> {
+                width: </span>'70%'<span style="color: #000000;">
+            };
+            grid.attribute </span>=<span style="color: #000000;"> {
+                className: </span>'infolist_hr'<span style="color: #000000;">
+            };
+            grid.parentEl </span>=<span style="color: #000000;"> tb;
+            grid.dataSource </span>=<span style="color: #000000;"> data;
+            grid.colModel </span>=<span style="color: #000000;"> [{
+                </span>'th': { 'title': '&lt;input type="checkbox" class="th_select" /&gt;', 'attribute': { 'className': 'common'<span style="color: #000000;">} },
+                </span>'td': { 'template': '&lt;input type="checkbox" class="td_select" /&gt;', 'style': { 'width': '2%' }, 'attribute': { 'className': 'common indentten'<span style="color: #000000;">} }
+            }, {
+                </span>'th': { 'title': '标题', 'attribute': { 'className': 'common'<span style="color: #000000;">} },
+                </span>'td': { 'template': '{%title%}', 'style': { 'width': '40%' }, 'attribute': { 'className': 'common indentten'<span style="color: #000000;">} }
+            }, {
+                </span>'th': { 'title': '来源', 'attribute': { 'className': 'common'<span style="color: #000000;">} },
+                </span>'td': { 'template': '{%from%}', 'style': { 'width': '20%' }, 'attribute': { 'className': 'common indentten'<span style="color: #000000;">} }
+            }, {
+                </span>'th': { 'title': '时间', 'attribute': { 'className': 'common'<span style="color: #000000;">} },
+                </span>'td': { 'template': '{%created%}', 'style': { 'width': '15%' }, 'attribute': { 'className': 'common indentten'<span style="color: #000000;">} }
+            }, {
+                </span>'th': { 'title': '', 'attribute': { 'className': 'common'<span style="color: #000000;">} },
+                </span>'td': { 'template': '&lt;span class="edit" style="cursor: pointer;" &gt;编辑&lt;/span&gt;&amp;nbsp;&amp;nbsp;&lt;span class="delete" style="cursor: pointer;" &gt;删除&lt;/span&gt;', 'style': { 'width': '13%' }, 'attribute': { 'className': 'common indentten'<span style="color: #000000;">} }
+            }];
+
+            grid.render();
+        };
+        </span><span style="color: #0000ff;">var</span> bind = <span style="color: #0000ff;">function</span><span style="color: #000000;"> (start, limit) {
+            </span><span style="color: #0000ff;">if</span> (!<span style="color: #000000;">start) {
+                start </span>= 0<span style="color: #000000;">;
+            }
+            </span><span style="color: #0000ff;">if</span> (!<span style="color: #000000;">limit) {
+                limit </span>= 9<span style="color: #000000;">;
+            }
+            </span><span style="color: #0000ff;">var</span> url = "http://113.142.30.139/tpw-webapp/rest/proxy/news_ln_statistics?jsonp=?&amp;start=" + start + "&amp;limit=" +<span style="color: #000000;"> limit;
+            </span><span style="color: #0000ff;">var</span> tb = $("#tb"<span style="color: #000000;">);
+            tb.html(</span>"数据正在加载......"<span style="color: #000000;">);
+            $.getJSON(url, </span><span style="color: #0000ff;">function</span><span style="color: #000000;"> (data) {
+                tb.html(</span>""<span style="color: #000000;">);
+                </span><span style="color: #0000ff;">if</span> (data &amp;&amp; <span style="color: #0000ff;">typeof</span> (data) == 'string'<span style="color: #000000;">) {
+                    data </span>= eval('(' + data + ')'<span style="color: #000000;">);
+                } </span><span style="color: #008000;">//</span><span style="color: #008000;">if</span>
+                <span style="color: #0000ff;">if</span><span style="color: #000000;"> (data.data) {
+                    data </span>=<span style="color: #000000;"> data.data;
+                }
+
+                gridDataBind(data);
+               
+            }); </span><span style="color: #008000;">//</span><span style="color: #008000;">$.getJSON(</span>
+<span style="color: #000000;">        };
+        </span><span style="color: #0000ff;">var</span> pageChanged = <span style="color: #0000ff;">function</span><span style="color: #000000;"> (page) {
+            </span><span style="color: #0000ff;">var</span> start = page.pageIndex *<span style="color: #000000;"> page.cfg.pageSize;
+            </span><span style="color: #0000ff;">var</span> limit =<span style="color: #000000;"> page.cfg.pageSize;
+            bind(start, limit);
+            </span><span style="color: #0000ff;">return</span> <span style="color: #0000ff;">false</span><span style="color: #000000;">;
+        };
+        </span><span style="color: #0000ff;">var</span> initPage = <span style="color: #0000ff;">function</span><span style="color: #000000;"> () {
+            </span><span style="color: #0000ff;">var</span> page = $('#page'<span style="color: #000000;">);
+            </span><span style="color: #0000ff;">var</span> url = "http://113.142.30.139/tpw-webapp/rest/proxy/news_ln_statistics"<span style="color: #000000;">;
+            </span><span style="color: #0000ff;">var</span> page = <span style="color: #0000ff;">new</span><span style="color: #000000;"> Pagination({
+                parentEl: page,
+                pageChanged: pageChanged
+            });
+            page.allRow </span>= 100<span style="color: #000000;">;
+            page.render();
+        };
+
+        $(document).ready(</span><span style="color: #0000ff;">function</span><span style="color: #000000;"> () {
+            bind();
+            initPage();
+        });      </span><span style="color: #008000;">//</span><span style="color: #008000;">$(document)</span>
+    &lt;/script&gt;
+&lt;/head&gt;
+&lt;body&gt;
+    &lt;div id="tb"&gt;
+    &lt;/div&gt;
+    &lt;div id="page"&gt;
+    &lt;/div&gt;
+&lt;/body&gt;
+&lt;/html&gt;</pre>
+</div>
+<p>&nbsp;</p>
+<h1>分页控件代码</h1>
+<hr>
+<div class="cnblogs_code">
+<pre><span style="color: #0000ff;">var</span> Pagination = <span style="color: #0000ff;">function</span><span style="color: #000000;"> (_cfg) {
+    </span><span style="color: #0000ff;">var</span> sender = <span style="color: #0000ff;">this</span><span style="color: #000000;">;
+    </span><span style="color: #0000ff;">this</span>.cfg =<span style="color: #000000;"> {
+        parentEl: $(</span>'body'<span style="color: #000000;">),
+        pageSize: </span>10<span style="color: #000000;">,
+        pageNum: </span>7, <span style="color: #008000;">//</span><span style="color: #008000;">每页放几个显示的1,2,3,4</span>
+        pageEdge: 2<span style="color: #000000;">,
+        linkTo: </span>'#'<span style="color: #000000;">,
+        linkText: </span>'pageno'<span style="color: #000000;">,
+        preText: </span>'上一页'<span style="color: #000000;">,
+        nextText: </span>'下一页'<span style="color: #000000;">,
+        ellipseText: </span>"..."<span style="color: #000000;">,
+        pageChaged: </span><span style="color: #0000ff;">function</span> () { <span style="color: #0000ff;">return</span> <span style="color: #0000ff;">false</span><span style="color: #000000;">; }
+    };
+    </span><span style="color: #0000ff;">if</span><span style="color: #000000;"> (_cfg) {
+        $.each(_cfg, </span><span style="color: #0000ff;">function</span><span style="color: #000000;"> (key, value) {
+            sender.cfg[key] </span>=<span style="color: #000000;"> value;
+        });
+    }
+    </span><span style="color: #0000ff;">this</span>.pageIndex = 0<span style="color: #000000;">;
+    </span><span style="color: #0000ff;">this</span>.allRow = 0<span style="color: #000000;">;
+    </span><span style="color: #0000ff;">this</span>.totalPage = 0<span style="color: #000000;">;
+    </span><span style="color: #0000ff;">this</span>.el = <span style="color: #0000ff;">null</span><span style="color: #000000;">;
+    </span><span style="color: #0000ff;">this</span>.visible = <span style="color: #0000ff;">false</span><span style="color: #000000;">;
+    </span><span style="color: #0000ff;">this</span>.prePage = <span style="color: #0000ff;">null</span><span style="color: #000000;">;
+    </span><span style="color: #0000ff;">this</span>.nextPage = <span style="color: #0000ff;">null</span><span style="color: #000000;">;
+    </span><span style="color: #0000ff;">this</span>.numPage = <span style="color: #0000ff;">null</span><span style="color: #000000;">;
+};
+
+Pagination.prototype.render </span>= <span style="color: #0000ff;">function</span><span style="color: #000000;"> () {
+    </span><span style="color: #0000ff;">this</span><span style="color: #000000;">.onInit();
+    </span><span style="color: #0000ff;">this</span><span style="color: #000000;">.preRender();
+};
+
+Pagination.prototype.preRender </span>= <span style="color: #0000ff;">function</span><span style="color: #000000;"> () {
+    </span><span style="color: #0000ff;">var</span> scope = <span style="color: #0000ff;">this</span><span style="color: #000000;">;
+    </span><span style="color: #0000ff;">var</span> prePage = <span style="color: #0000ff;">this</span><span style="color: #000000;">.prePage;
+    </span><span style="color: #0000ff;">var</span> nextPage = <span style="color: #0000ff;">this</span><span style="color: #000000;">.nextPage;
+    </span><span style="color: #0000ff;">var</span> numPage = <span style="color: #0000ff;">this</span><span style="color: #000000;">.numPage;
+    </span><span style="color: #0000ff;">var</span> total = <span style="color: #0000ff;">this</span><span style="color: #000000;">.totalPage;
+    </span><span style="color: #0000ff;">var</span> index = <span style="color: #0000ff;">this</span><span style="color: #000000;">.pageIndex;
+    prePage.attr(</span>'class', 'prev'<span style="color: #000000;">);
+    </span><span style="color: #0000ff;">if</span> (index == 0<span style="color: #000000;">) {
+        prePage.attr(</span>'class', 'current prev'<span style="color: #000000;">);
+    }
+    nextPage.attr(</span>'class', 'next'<span style="color: #000000;">);
+    </span><span style="color: #0000ff;">if</span> (index == total - 1<span style="color: #000000;">) {
+        nextPage.attr(</span>'class', 'current next'<span style="color: #000000;">);
+    }
+    $.each(numPage, </span><span style="color: #0000ff;">function</span><span style="color: #000000;"> (i, item) {
+        item.removeAttr(</span>'class'<span style="color: #000000;">);
+        </span><span style="color: #0000ff;">if</span> (scope.pageIndex == parseInt(item.html()) - 1<span style="color: #000000;">) {
+            item.attr(</span>'class', 'current'<span style="color: #000000;">);
+        }
+    });
+};
+
+Pagination.prototype.onInit </span>= <span style="color: #0000ff;">function</span><span style="color: #000000;"> () {
+    </span><span style="color: #0000ff;">this</span><span style="color: #000000;">.init();
+    </span><span style="color: #0000ff;">this</span><span style="color: #000000;">.initHtml();
+    </span><span style="color: #0000ff;">this</span><span style="color: #000000;">.eventBind();
+};
+
+Pagination.prototype.init </span>= <span style="color: #0000ff;">function</span><span style="color: #000000;"> () {
+    </span><span style="color: #0000ff;">var</span> cfg = <span style="color: #0000ff;">this</span><span style="color: #000000;">.cfg;
+    </span><span style="color: #0000ff;">var</span> totalPage = <span style="color: #0000ff;">this</span><span style="color: #000000;">.totalPage;
+    </span><span style="color: #0000ff;">var</span> allRow = <span style="color: #0000ff;">this</span><span style="color: #000000;">.allRow;
+    </span><span style="color: #0000ff;">var</span> pageSize =<span style="color: #000000;"> cfg.pageSize;
+    </span><span style="color: #0000ff;">this</span>.totalPage = allRow % pageSize == 0 ? allRow / pageSize : allRow / pageSize + 1<span style="color: #000000;">;
+    </span><span style="color: #0000ff;">this</span>.totalPage = parseInt(<span style="color: #0000ff;">this</span><span style="color: #000000;">.totalPage);
+    </span><span style="color: #0000ff;">if</span> (totalPage &lt;= 1<span style="color: #000000;">) {
+        </span><span style="color: #0000ff;">this</span>.visible = <span style="color: #0000ff;">false</span><span style="color: #000000;">;
+    }
+};
+
+Pagination.prototype.getNumPage </span>= <span style="color: #0000ff;">function</span><span style="color: #000000;"> () {
+    </span><span style="color: #0000ff;">var</span> cfg = <span style="color: #0000ff;">this</span><span style="color: #000000;">.cfg;
+    </span><span style="color: #0000ff;">var</span> pageSize =<span style="color: #000000;"> cfg.pageSize;
+    </span><span style="color: #0000ff;">var</span> index = <span style="color: #0000ff;">this</span><span style="color: #000000;">.pageIndex;
+    </span><span style="color: #0000ff;">var</span> totalPage = <span style="color: #0000ff;">this</span><span style="color: #000000;">.totalPage;
+    </span><span style="color: #0000ff;">var</span> pageNum =<span style="color: #000000;"> cfg.pageNum;
+    </span><span style="color: #0000ff;">var</span> limit = pageNum / 2<span style="color: #000000;">;
+    </span><span style="color: #0000ff;">var</span> _limit =<span style="color: #000000;"> parseInt(limit);
+    limit </span>= limit &gt; _limit ? _limit + 1<span style="color: #000000;"> : _limit;
+    </span><span style="color: #0000ff;">var</span> numPage =<span style="color: #000000;"> [];
+    </span><span style="color: #0000ff;">var</span> numArr =<span style="color: #000000;"> [];
+    </span><span style="color: #0000ff;">for</span> (<span style="color: #0000ff;">var</span> i = 0; i &lt; pageNum; i++<span style="color: #000000;">) {
+        </span><span style="color: #0000ff;">if</span> (index &lt;<span style="color: #000000;"> limit) {
+            numArr.push(i </span>+ 1<span style="color: #000000;">);
+        } </span><span style="color: #0000ff;">else</span> <span style="color: #0000ff;">if</span> (totalPage - index &lt;=<span style="color: #000000;"> limit) {
+            numArr.push(totalPage </span>- pageNum + i + 1<span style="color: #000000;">);
+        } </span><span style="color: #0000ff;">else</span><span style="color: #000000;"> {
+            numArr.push(index </span>- limit + i + 2<span style="color: #000000;">);
+        }
+    }
+    </span><span style="color: #0000ff;">var</span> elStr = ''<span style="color: #000000;">;
+    </span><span style="color: #0000ff;">var</span> linkTo =<span style="color: #000000;"> cfg.linkTo;
+    </span><span style="color: #0000ff;">if</span> (linkTo == '#'<span style="color: #000000;">) {
+        </span><span style="color: #0000ff;">for</span> (<span style="color: #0000ff;">var</span> i = 0, len = numArr.length; i &lt; len; i++<span style="color: #000000;">) {
+            </span><span style="color: #0000ff;">var</span> tempEl = $('&lt;a href="#"&gt;' + numArr[i].toString() + '&lt;/a&gt;'<span style="color: #000000;">);
+            numPage.push(tempEl)
+        }
+    } </span><span style="color: #0000ff;">else</span><span style="color: #000000;"> {
+        </span><span style="color: #0000ff;">var</span> linkText =<span style="color: #000000;"> cfg.linkText;
+        </span><span style="color: #0000ff;">var</span> sign = '?'<span style="color: #000000;">;
+        </span><span style="color: #0000ff;">if</span> (linkTo.indexOf('?') != -1<span style="color: #000000;">) {
+            sign </span>= '&amp;'<span style="color: #000000;">;
+        }
+        </span><span style="color: #0000ff;">for</span> (<span style="color: #0000ff;">var</span> i = 0, len = numArr.length; i &lt; len; i++<span style="color: #000000;">) {
+            </span><span style="color: #0000ff;">var</span> tempEl = $('&lt;a href="' + linkTo + sign + linkText + '=' + i.toString() + '"&gt;' + numArr[i].toString() + '&lt;/a&gt;'<span style="color: #000000;">);
+            numPage.push(tempEl);
+        }
+    }
+    </span><span style="color: #0000ff;">return</span><span style="color: #000000;"> numPage;
+};
+
+Pagination.prototype.initHtml </span>= <span style="color: #0000ff;">function</span><span style="color: #000000;"> () {
+    </span><span style="color: #0000ff;">var</span> cfg = <span style="color: #0000ff;">this</span><span style="color: #000000;">.cfg;
+    </span><span style="color: #0000ff;">var</span> pageInfo = $('&lt;div class="pagination"&gt;&lt;/div&gt;'<span style="color: #000000;">);
+    </span><span style="color: #0000ff;">var</span> linkTo =<span style="color: #000000;"> cfg.linkTo;
+    </span><span style="color: #0000ff;">var</span> _pre = '&lt;a href="#" class="prev"&gt;上一页&lt;/a&gt;'<span style="color: #000000;">;
+    </span><span style="color: #0000ff;">var</span> _nex = '&lt;a href="#" class="next"&gt;下一页&lt;/a&gt;'<span style="color: #000000;">;
+    </span><span style="color: #0000ff;">if</span> (linkTo != '#'<span style="color: #000000;">) {
+        </span><span style="color: #0000ff;">var</span> linkText =<span style="color: #000000;"> cfg.linkText;
+        </span><span style="color: #0000ff;">var</span> sign = '?'<span style="color: #000000;">;
+        </span><span style="color: #0000ff;">if</span> (linkTo.indexOf('?') != -1<span style="color: #000000;">) {
+            sign </span>= '&amp;'<span style="color: #000000;">;
+        }
+        _pre </span>= '&lt;a href="' + linkTo + sign + linkText + '=' + (parseInt(<span style="color: #0000ff;">this</span>.pageIndex) - 1) + '" class="prev"&gt;上一页&lt;/a&gt;'<span style="color: #000000;">;
+        _nex </span>= '&lt;a href="' + linkTo + sign + linkText + '=' + (parseInt(<span style="color: #0000ff;">this</span>.pageIndex) + 1) + '" class="next"&gt;下一页&lt;/a&gt;'<span style="color: #000000;">;
+
+    }
+
+    </span><span style="color: #0000ff;">var</span> prePage =<span style="color: #000000;"> $(_pre);
+    </span><span style="color: #0000ff;">var</span> nextPage =<span style="color: #000000;"> $(_nex);
+    </span><span style="color: #0000ff;">var</span> numPage = <span style="color: #0000ff;">this</span><span style="color: #000000;">.getNumPage();
+    pageInfo.append(prePage);
+
+    $.each(numPage, </span><span style="color: #0000ff;">function</span><span style="color: #000000;"> (i, item) {
+        pageInfo.append(item);
+    });
+
+    pageInfo.append(nextPage);
+    </span><span style="color: #0000ff;">this</span>.el =<span style="color: #000000;"> pageInfo;
+    </span><span style="color: #0000ff;">this</span>.prePage =<span style="color: #000000;"> prePage;
+    </span><span style="color: #0000ff;">this</span>.nextPage =<span style="color: #000000;"> nextPage;
+    </span><span style="color: #0000ff;">this</span>.numPage =<span style="color: #000000;"> numPage;
+    cfg.parentEl.append(pageInfo);
+};
+
+Pagination.prototype.eventBind </span>= <span style="color: #0000ff;">function</span><span style="color: #000000;"> (func) {
+    </span><span style="color: #0000ff;">var</span> scope = <span style="color: #0000ff;">this</span><span style="color: #000000;">;
+    </span><span style="color: #0000ff;">var</span> cfg = <span style="color: #0000ff;">this</span><span style="color: #000000;">.cfg;
+    </span><span style="color: #0000ff;">var</span> prePage = <span style="color: #0000ff;">this</span><span style="color: #000000;">.prePage;
+    </span><span style="color: #0000ff;">var</span> nextPage = <span style="color: #0000ff;">this</span><span style="color: #000000;">.nextPage;
+    </span><span style="color: #0000ff;">var</span> numPage = <span style="color: #0000ff;">this</span><span style="color: #000000;">.numPage;
+
+
+    prePage.unbind(</span>'click'<span style="color: #000000;">);
+    prePage.bind(</span>'click', <span style="color: #0000ff;">function</span><span style="color: #000000;"> (e) {
+        </span><span style="color: #0000ff;">if</span> (scope.pageIndex != 0<span style="color: #000000;">) {
+            scope.pageIndex </span>= scope.pageIndex - 1<span style="color: #000000;">;
+            scope.pageChanged();
+        }
+    });
+    $.each(numPage, </span><span style="color: #0000ff;">function</span><span style="color: #000000;"> (i, item) {
+        item.unbind(</span>'click'<span style="color: #000000;">);
+        item.bind(</span>'click', <span style="color: #0000ff;">function</span><span style="color: #000000;"> (e) {
+            </span><span style="color: #0000ff;">if</span> (scope.pageIndex != parseInt(item.html()) - 1<span style="color: #000000;">) {
+                scope.pageIndex </span>= parseInt(item.html()) - 1<span style="color: #000000;">;
+                scope.pageChanged();
+            }
+        });
+    });
+
+    nextPage.unbind(</span>'click'<span style="color: #000000;">);
+    nextPage.bind(</span>'click', <span style="color: #0000ff;">function</span><span style="color: #000000;"> (e) {
+        </span><span style="color: #0000ff;">if</span> (scope.pageIndex != scope.totalPage - 1<span style="color: #000000;">) {
+            scope.pageIndex </span>= scope.pageIndex + 1<span style="color: #000000;">;
+            scope.pageChanged();
+        }
+    });
+};
+
+Pagination.prototype.pageChanged </span>= <span style="color: #0000ff;">function</span><span style="color: #000000;"> () {
+    </span><span style="color: #0000ff;">var</span> scope = <span style="color: #0000ff;">this</span><span style="color: #000000;">;
+    </span><span style="color: #0000ff;">var</span> cfg = <span style="color: #0000ff;">this</span><span style="color: #000000;">.cfg;
+    scope.el.remove();
+    </span><span style="color: #0000ff;">var</span> pageChaged =<span style="color: #000000;"> cfg.pageChanged;
+    </span><span style="color: #0000ff;">if</span> (pageChaged &amp;&amp; <span style="color: #0000ff;">typeof</span> (pageChaged) == 'function'<span style="color: #000000;">) {
+        pageChaged(</span><span style="color: #0000ff;">this</span><span style="color: #000000;">);
+      
+    }
+    </span><span style="color: #0000ff;">this</span><span style="color: #000000;">.render();
+    </span><span style="color: #008000;">//</span><span style="color: #008000;">    alert(this.pageIndex);</span>
+};</pre>
+</div>
+<p>&nbsp;</p>
+<h1>后续</h1>
+<hr>
+<p>由于各方面皆不完整，此处便不作详细说明，有必要的话，以后整理后会形成API，但是可能没有必要，因为代码总的来说还是很水的......</p>
+<p>在学习吧......</p>
+<p>&nbsp;</p>
+                </div>
+
+                <div class='span3 sidebar'>
+                    <h2>导航栏</h2>
+                    <ul class="nav nav-tabs nav-stacked">
+                             				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/Fiddlerznqddsq/index.html">Fiddler真乃前端大杀器！！！</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/Requirejs/index.html">Requirejs</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/RequireJSyBackbonejdzh/index.html">RequireJS与Backbone简单整合</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/RequireJSxxbj/index.html">RequireJS学习笔记</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/Webqdyhctxdpzyyqdgsgpng/index.html">Web前端优化初探，小弟抛砖引玉，期待高手共破难关！</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/Webqdlqjrctxsqwpzyyqdgsgpng/index.html">Web前端浏览器兼容初探，小生浅文抛砖引玉，期待高手攻破难关！</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/jqueryfdataListxnyhmbybysxtgxn10bys/index.html">【jquery仿dataList——性能优化】模板预编译思想提高性能10倍以上！！！</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/jqueryfdataListyyzmfigoogledzhtdpxzdhfp/index.html">【jquery仿dataList】应用之——模仿igoogle【定制化、拖动排序，最大化、分屏】</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/jqueryfdatalistdygwtqzszmxxsjlkzDIVdjjbf/index.html">【jquery仿datalist的一个问题，求助】——设置每行显示几列，块状DIV的解决办法</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/jquerymfnetkjcbGridViewmxsxjqjdyy/index.html">【jquery模仿net控件】初步GridView模型实现，及其简单应用</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/jquerymfnetkjjdfykj10fsgridviewsycs/index.html">【jquery模仿net控件】简单分页控件10，附上gridview使用测试</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/jquerymfnetkjjdddatalistkjgxjqjdyy/index.html">【jquery模仿net控件】简单的datalist控件更新，及其简单应用</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/jquerymfnetkjjdddropdownlistydatalist/index.html">【jquery模仿net控件】简单的dropdownlist与datalist</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/jquerybnetkjdropdownlistfymhydjzdzzpz/index.html">【jquery版net控件—dropdownlist】附源码，欢迎大家指点、指正、拍砖！！！</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/positionykyhfzddccyslsbdws/index.html">【position也可以很复杂】当弹出层遇上了鼠标定位（上）</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/positionykyhfzddccyslsbdwx/index.html">【position也可以很复杂】当弹出层遇上了鼠标定位（下）</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/SEOzmlwljnmtsbwmlyqkkSEOb/index.html">【SEO】周末了，为了纪念明天上班，我们来一起看看SEO吧</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/webqdyhqdwyhyrzrz/index.html">【web前端优化】前端无优化，庸人自扰之！</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/webqdyhzreflowjsymdhl/index.html">【web前端优化之reflow】减少页面的回流</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/webqdyhztpycjzctzwbsxwbk/index.html">【web前端优化之图片延迟加载初探】中午不睡，下午崩溃</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/webqdyhztpmhdqxkwQQkjrhxsxp/index.html">【web前端优化之图片模糊到清晰】看我QQ空间如何显示相片</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/webqdpxzqhddphsywmsxdDatalistsmwtb/index.html">【web前端培训之前后端的配合（上）】以我们熟悉的Datalist说明问题吧</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/webqdpxzqhddphzjxzrdgs/index.html">【web前端培训之前后端的配合（中）】继续昨日的故事</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/dyyygybkydbfgqym/index.html">【单页应用】关于博客园的补发（高清有码）。。。</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/xtsstringifysBUGlocalstoragesxxmSafarialertksfycjzym10pxbp/index.html">【小贴士】【stringify神BUG】【localstorage失效】【消灭Safarialert框】【是否延迟加载】【页面10px白屏】</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/dalhdmsthhdsdmstjsh/index.html">【答阿里寒冬面试题】呵呵，大神的面试题就是好！</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/ycsjmstdldgwxxdgjxxdff/index.html">一次上机面试题带来的感悟【学习的感觉、学习的方法】</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/ydmstdldqdyhsxxxdp/index.html">一道面试题带来的前端优化——实现星星点评</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/zysyzjjhfzwebqdbfxlgxmndjjfa/index.html">只言碎语总结，今后发展web前端，并分享两个项目难点解决方案。</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/gwjlytbllbnwmljxwwdbdyzb/index.html">各位加了一天班累了吧？那我们来继续未完的表单验证吧</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/gwzmwlytllbwmyqlzldmstbjstbdy/index.html">各位周末玩了一天累了吧，我们一起来做两道面试题吧（据说淘宝的哟）！</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/jyjQuerydxlcdcjzwsy/index.html">基于jQuery的下拉菜单插件，诸位上眼！！！</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/jyjQuerydxlcdcd02zwsy/index.html">基于jQuery的下拉菜单菜单【02】，诸位上眼！！！</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/gzzpddyxdxdccktfybwjsc/index.html">工作中碰到的一些东西【弹出窗口】【拖放】【异步文件上传】</a></li>
+    				          				<li><a href="http://songboriceboy.github.io/xxoo/html/Webqd/gzlygxqgwydllbnwmyqlbdyzyfb/index.html">工作了一个星期各位一定累了吧，那我们一起来表单验证一番吧！</a></li>
+    				                                         
+                    </ul>
+                </div>
+            </div>
+
+        </div>
+    </body>
+</html>
